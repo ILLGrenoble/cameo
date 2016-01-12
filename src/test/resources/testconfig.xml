@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config port="7000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
+
+	<applications>
+		<application name="fast" starting_time="0" retries="0" stopping_time="1" stream="no" multiple="no" restart="no" pass_info="no">
+			<start executable="java" args="-classpath libs/nappli-server.jar fr.ill.ics.cameo.FastApplication"/>
+		</application>
+						
+		<application name="fastout" starting_time="0" retries="0" log_directory="logs" multiple="no" restart="no" pass_info="no">
+			<start executable="java">
+				<arg value="-classpath"/>
+				<arg value="libs/nappli-server.jar"/>
+				<arg value="fr.ill.ics.cameo.FastApplication"/>
+			</start>
+		</application>
+						
+		<application name="fastpar" starting_time="0" retries="0" stopping_time="1" multiple="yes" restart="no" pass_info="no">
+			<start executable="java" args="-classpath libs/nappli-server.jar fr.ill.ics.cameo.FastApplication"/>
+		</application>
+	
+		<application name="error" starting_time="0" retries="0" stopping_time="1" multiple="no" restart="no" pass_info="no">
+			<start executable="java" args="-classpath libs/nappli-server.jar fr.ill.ics.cameo.ErrorApplication"/>
+			<error executable="java" args="-classpath libs/nappli-server.jar fr.ill.ics.cameo.ProcessErrorApplication"/>
+		</application>
+						
+		<application name="noapp" starting_time="0" retries="0" stopping_time="1" stream="no" multiple="no" restart="no" pass_info="no">
+			<start executable="not a path to an executable"/>
+		</application>
+
+	</applications>
+	
+</config>
