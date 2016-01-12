@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# This file is copied from omniorb4-nameserver and modified
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DAEMON=/usr/bin/java
+INSTALL_PATH=/users/legoc/nappli/NappliServer
+CONFIG_FILE=/users/legoc/nappli/NomadServerTest/nsconfig.xml
+EXEC_DIR=/users/legoc/nappli/NomadServerTest/
+DAEMON_ARGS="-classpath $INSTALL_PATH/libs/protobuf-java-2.5.0.jar:$INSTALL_PATH/libs/jeromq-0.3.5.jar:$INSTALL_PATH/libs/jdom-2.0.5.jar:$INSTALL_PATH/libs/nappli-server.jar fr.ill.ics.nappli.server.Server $CONFIG_FILE"
+NAME=nappli-server
+DESC="Nappli server"
+
+# we can set the user (group if necessary)
+USER=legoc
+
+# path of the pidfile
+# test with /var/run or keep execution directory?
+# PIDFILE=/var/run/$NAME/$NAME.pid
+PIDFILE=$EXEC_DIR/$NAME.pid
+
+test -f $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+ulimit -c unlimited
+
+do_start() {
+	# chdir sets the directory where the daemon is executed
+	# it must be a directory which the USER has the right to write
+	start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --chdir $EXEC_DIR --exec $DAEMON -c $USER -- $DAEMON_ARGS
+}
+
+do_stop() {
+	start-stop-daemon --oknodo --stop --quiet --pidfile $PIDFILE --exec $DAEMON
+}
+
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC" "$NAME"
+	do_start
+	log_end_msg $?
+	;;
+  stop)
+	log_daemon_msg "Stopping $DESC" "$NAME"
+	do_stop
+	log_end_msg $?
+	;;
+  restart|force-reload)
+	log_daemon_msg "Restarting $DESC: " "$NAME"
+	do_stop
+	sleep 1
+	do_start
+        log_end_msg $?
+	;;
+  try-restart|status)
+        log_failure_msg "Unimplemented feature"
+        exit 3
+        ;;
+  *)
+	echo "Usage: nappli-server {start|stop|restart|force-reload}" >&2
+	exit 2
+	;;
+esac
+
+exit 0
+
+
+
+:
