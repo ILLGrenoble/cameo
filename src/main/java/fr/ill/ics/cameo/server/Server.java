@@ -56,8 +56,8 @@ public class Server {
 		
 		// verify args
 		if (args.length < 1) {
-			System.out.printf("syntax: Server <XML file>\n");
-			System.exit(0);
+			System.out.printf("usage: <XML config file>\n");
+			System.exit(1);
 		}
 		
 		// start manager
