@@ -9,7 +9,7 @@
 
 	<!-- Check connection -->
 	<scm>
-		<connection>scm:git:git://code.ill.fr/instrument-control/cameo-server.git</connection>
+		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-server.git</connection>
 	</scm>
 
 	<properties>
