@@ -7,7 +7,7 @@
 	<name>CameoServer</name>
 	<description>Cameo Server</description>
 
-	<!-- Check connection -->
+	<!-- Connection to git repository -->
 	<scm>
 		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-server.git</connection>
 	</scm>
