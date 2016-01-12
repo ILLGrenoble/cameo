@@ -136,4 +136,5 @@
 		</plugins>
 	</build>
 
+	<url>https://code.ill.fr/instrument-control/cameo-server</url>
 </project>
