@@ -1,0 +1,232 @@
+package proto;
+
+option java_package = "fr.ill.ics.cameo.proto";
+option java_outer_classname = "Messages";
+option optimize_for = SPEED;
+
+message MessageType {
+
+	enum Type {
+		INIT = 1;
+		START = 2;
+		STOP = 3;
+		CONNECT = 4;
+		SHOWALL = 5;
+		SHOW = 6;
+		ENABLESTREAM = 7;
+		ISALIVE = 8;
+		SENDPARAMETERS = 9;
+		KILL = 10;
+		STATUS = 11;
+		ALLAVAILABLE = 12;
+		OUTPUT = 13;
+		SETSTATUS = 14;
+		GETSTATUS = 15;
+		CREATEPUBLISHER = 16;
+		TERMINATEPUBLISHER = 17;
+		CONNECTPUBLISHER = 18;
+		SUBSCRIBEPUBLISHER = 19;
+		CANCEL = 20;
+		SETRESULT = 21;
+		REQUESTPORT = 22;
+		CONNECTPORT = 23;
+		REMOVEPORT = 24;
+		REQUEST = 25;
+		RESPONSE = 26;
+	}
+
+	required Type type = 1;
+}
+
+message Init {
+}
+
+message StartCommand {
+	required string name = 1;
+	repeated string args = 2;
+	required string instanceReference = 3;
+}
+
+message RequestResponse {
+	required int32 value = 1;
+	optional string message = 2;
+}
+
+message StopCommand {
+	required int32 id = 1;
+}
+
+message ConnectCommand {
+	required string name = 1;
+}
+
+message AllAvailableCommand {
+}
+
+message ApplicationConfig {
+	required string name = 1;
+	optional string description = 2;
+	required bool runsSingle = 3;
+	required bool restart = 4;
+	required int32 startingTime = 5;
+	required int32 retries = 6;
+	required int32 stoppingTime = 7;
+}
+
+message AllAvailableResponse {
+	repeated ApplicationConfig applicationConfig = 1;
+}
+
+message ShowAllCommand {
+}
+
+message StatusEvent {
+	required int32 id = 1;
+	required string name = 2;
+	required int32 applicationState = 3;
+	required int32 pastApplicationStates = 4;
+}
+
+message PublisherEvent {
+	required int32 id = 1;
+	required string name = 2;
+	required string publisherName = 3;
+}
+
+message ResultEvent {
+	required int32 id = 1;
+	required string name = 2;
+	required bytes data = 3;
+}
+
+message PortEvent {
+	required int32 id = 1;
+	required string name = 2;
+	required string portName = 3;
+}
+
+message ApplicationInfo {
+	required int32 id = 1;
+	required string name = 2;
+	required int32 applicationState = 3;
+	required int32 pastApplicationStates = 4;
+	required string args = 5;
+}
+
+message ApplicationInfoListResponse {
+	repeated ApplicationInfo applicationInfo = 1;
+}
+
+message ShowStreamCommand {
+	required int32 id = 1;
+}
+
+message IsAliveCommand {
+	required int32 id = 1;
+}
+
+message IsAliveResponse {
+	required bool isAlive = 1;
+}
+
+message ApplicationStream {
+	required int32 id = 1;
+	required string message = 2;
+}
+
+message SendParametersCommand {
+	required int32 id = 1;
+	repeated string parameters = 2;
+}
+
+message KillCommand {
+	required int32 id = 1;
+}
+
+message OutputCommand {
+	required string name = 1;
+}
+
+message SetStatusCommand {
+	required int32 id = 1;
+	required int32 applicationState = 2;
+}
+
+message GetStatusCommand {
+	required int32 id = 1;
+}
+
+message SetResultCommand {
+	required int32 id = 1;
+	required bytes data = 2;
+}
+
+message RequestPortCommand {
+	required int32 id = 1;
+	required string name = 2;
+}
+
+message ConnectPortCommand {
+	required int32 id = 1;
+	required string name = 2;
+}
+
+message RemovePortCommand {
+	required int32 id = 1;
+	required string name = 2;
+}
+
+message CreatePublisherCommand {
+	required int32 id = 1;
+	required string name = 2;
+	required int32 numberOfSubscribers = 3;
+}
+
+message TerminatePublisherCommand {
+	required int32 id = 1;
+	required string name = 2;
+}
+
+message ConnectPublisherCommand {
+	required int32 applicationId = 1;
+	required string publisherName = 2;
+}
+
+message SubscribePublisherCommand {
+}
+
+message CancelPublisherSyncCommand {
+}
+
+message PublisherResponse {
+	optional string message = 1;
+	required int32 publisherPort = 2;
+	required int32 synchronizerPort = 3;
+	optional int32 numberOfSubscribers = 4;
+}
+
+message Request {
+	required int32 applicationId = 1;
+	required bytes message = 2;
+	required string endpoint = 3;
+}
+
+message StringValue {
+	required string value = 1;
+}
+
+message Int32Array {
+	repeated int32 value = 1 [packed=true];
+}
+
+message Int64Array {
+	repeated int64 value = 1 [packed=true];
+}
+
+message Float32Array {
+	repeated float value = 1 [packed=true];
+}
+
+message Float64Array {
+	repeated double value = 1 [packed=true];
+}
