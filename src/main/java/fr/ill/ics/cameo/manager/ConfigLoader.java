@@ -1,0 +1,227 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
+package fr.ill.ics.cameo.manager;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+
+import fr.ill.ics.cameo.exception.UnknownApplicationException;
+
+public abstract class ConfigLoader {
+
+	protected Set<ApplicationConfig> applicationSet;
+
+	public ConfigLoader(String path) {
+		loadXml(path);
+	}
+
+	private String[] loadArgs(Element item) {
+		
+		String argsString = item.getAttributeValue("args");
+		int argsLength = 0;
+		String[] startArgs = null;
+		if (argsString != null) {
+			startArgs = argsString.split(" ");
+			argsLength = startArgs.length;
+		}
+		List<Element> args = item.getChildren("arg");
+		String[] finalArgs = new String[argsLength + args.size()];
+		
+		int i = 0;
+		while (i < argsLength) {
+			finalArgs[i] = startArgs[i];
+			++i;
+		}
+		
+		for (Element arg : args) {
+			finalArgs[i] = arg.getAttributeValue("value");
+			++i;
+		}
+		
+		return finalArgs;
+	}
+	
+	/**
+	 * Load config of applications from xml file
+	 */
+	private void loadXml(String path) {
+		
+		// Load the configuration
+		LogInfo.getInstance().getLogger().fine("Loading config");
+		org.jdom2.Document configXML = null;
+		Element root;
+		SAXBuilder builder = new SAXBuilder();
+		
+		try {
+			configXML = builder.build(new File(path));
+			
+		} catch (JDOMException e) {
+			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+		} catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+		}
+		root = configXML.getRootElement();
+		
+		// Set the attributes
+		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue("max_applications"));
+		ConfigManager.getInstance().setHost(root.getAttributeValue("host"));
+		ConfigManager.getInstance().setFirstPort(root.getAttributeValue("port"));
+		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
+		ConfigManager.getInstance().setDebugMode(root.getAttributeValue("debug"));
+		
+		int pollingTime = 100;
+		String pollingTimeString = root.getAttributeValue("polling_time");
+		try {
+			pollingTime = Integer.parseInt(pollingTimeString);
+		} catch (NumberFormatException e) {
+			// Set default value
+			LogInfo.getInstance().getLogger().severe("Error while parsing polling time");
+		}
+		
+		ConfigManager.getInstance().setPollingTime(pollingTime);
+		
+		// Get applications
+		List<Element> listApplication = root.getChild("applications").getChildren("application");
+		applicationSet = new HashSet<ApplicationConfig>();
+
+		for (Element item : listApplication) {
+			
+			ApplicationConfig application = new ApplicationConfig();
+			
+			application.setName(item.getAttributeValue("name"));
+			application.setDescription(item.getAttributeValue("description"));
+			application.setDirectory(item.getAttributeValue("working_directory"));
+			application.setErrorExecutable(item.getAttributeValue("error_command"));
+			application.setLogPath(item.getAttributeValue("log_directory"));
+			application.setStartingTime(item.getAttributeValue("starting_time"));
+			application.setRetries(item.getAttributeValue("retries"));
+			application.setStoppingTime(item.getAttributeValue("stopping_time"));
+			application.setStopExecutable(item.getAttributeValue("stop_command"));
+			application.setRunMultiple(item.getAttributeValue("multiple"));
+			application.setStream(item.getAttributeValue("stream"));
+			application.setPassInfo(item.getAttributeValue("pass_info"));
+			application.setRestart(item.getAttributeValue("restart"));
+		
+			if (application.hasStream()) {
+				application.setStreamPort(ConfigManager.getInstance().getNextPort());
+			}
+
+			// Start command
+			Element startItem = item.getChild("start");
+			if (startItem == null) {
+				LogInfo.getInstance().getLogger().severe("application node must contain a start node");
+				continue;
+			}
+			application.setStartExecutable(startItem.getAttributeValue("executable"));
+			String[] startArgs = loadArgs(startItem);
+			application.setStartArgs(startArgs);
+			
+			// Stop command
+			Element stopItem = item.getChild("stop");
+			if (stopItem != null) {
+				application.setStopExecutable(stopItem.getAttributeValue("executable"));
+				String[] stopArgs = loadArgs(stopItem);
+				application.setStopArgs(stopArgs);
+			}
+
+			// Error command
+			Element errorItem = item.getChild("error");
+			if (errorItem != null) {
+				application.setErrorExecutable(errorItem.getAttributeValue("executable"));
+				String[] errorArgs = loadArgs(errorItem);
+				application.setErrorArgs(errorArgs);
+			}
+			
+			applicationSet.add(application);
+		}
+		
+	}
+
+	/**
+	 * Resturns the list of available applications.
+	 * @return
+	 */
+	public Set<ApplicationConfig> getAvailableApplications() {
+		return applicationSet;
+	}
+	
+	/**
+	 * verify command from user and return ApplicationConfig
+	 * 
+	 * @param commandArray
+	 * @throws UnknownApplicationException
+	 * @return ApplicationConfig
+	 */
+	protected ApplicationConfig verifyApplicationExistence(String name) throws UnknownApplicationException {
+		LogInfo.getInstance().getLogger().fine("Verify command from user");
+
+		ApplicationConfig ApplicationConfig = null;
+		boolean isPresent = false;
+		Iterator<ApplicationConfig> it = applicationSet.iterator();
+
+		LogInfo.getInstance().getLogger().fine("Application " + name + " has no argument");
+		while (it.hasNext()) {
+			ApplicationConfig element = (ApplicationConfig) it.next();
+			// if name is correct
+			if (element.getName().equalsIgnoreCase(name)) {
+				isPresent = true;
+				ApplicationConfig = element;
+				break;
+			}
+		}
+
+		if (!isPresent) {
+			throw new UnknownApplicationException();
+		}
+		return ApplicationConfig;
+	}
+
+	/**
+	 * show config of applications, only used to debug
+	 */
+	protected void showApplicationConfigs() {
+		LogInfo.getInstance().getLogger().fine("*********************************");
+		LogInfo.getInstance().getLogger().fine("List of applications            *");
+		Iterator<ApplicationConfig> it = applicationSet.iterator();
+		while (it.hasNext()) {
+			LogInfo.getInstance().getLogger().fine("*********************************");
+			LogInfo.getInstance().getLogger().fine(((ApplicationConfig)it.next()).toString());
+		}
+		LogInfo.getInstance().getLogger().fine("*********************************");
+	}
+	
+	public int getApplicationStreamPort(String name) {
+		Iterator<ApplicationConfig> it = applicationSet.iterator();
+		while (it.hasNext()) {
+			ApplicationConfig config = it.next();
+			if (config.getName().equals(name)) {
+				return config.getStreamPort();
+			}
+		}
+		
+		return -1;
+	}
+
+}
