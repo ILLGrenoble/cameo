@@ -20,12 +20,12 @@ import java.util.List;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.proto.Messages.Float32Array;
-import fr.ill.ics.nappli.proto.Messages.Float64Array;
-import fr.ill.ics.nappli.proto.Messages.Int32Array;
-import fr.ill.ics.nappli.proto.Messages.Int64Array;
-import fr.ill.ics.nappli.proto.Messages.StringValue;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.proto.Messages.Float32Array;
+import fr.ill.ics.cameo.proto.Messages.Float64Array;
+import fr.ill.ics.cameo.proto.Messages.Int32Array;
+import fr.ill.ics.cameo.proto.Messages.Int64Array;
+import fr.ill.ics.cameo.proto.Messages.StringValue;
 
 public class Serializer {
 

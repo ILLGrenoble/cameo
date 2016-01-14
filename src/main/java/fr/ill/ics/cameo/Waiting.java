@@ -17,7 +17,7 @@ package fr.ill.ics.cameo;
 
 
 
-import fr.ill.ics.nappli.Application.This;
+import fr.ill.ics.cameo.Application.This;
 
 /**
  * The class implementation must be here to access the package protected member of This.

@@ -23,10 +23,10 @@ import org.zeromq.ZMQ.Socket;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.Application;
-import fr.ill.ics.nappli.ConnectionTimeout;
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.proto.Messages;
+import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.proto.Messages;
 
 public class SubscriberImpl {
 

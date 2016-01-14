@@ -21,7 +21,7 @@ import org.zeromq.ZMsg;
 
 import com.google.protobuf.ByteString;
 
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 
 public class RequestImpl {
 

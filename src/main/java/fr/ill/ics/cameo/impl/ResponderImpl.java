@@ -23,8 +23,8 @@ import org.zeromq.ZMsg;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.proto.Messages.MessageType;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.MessageType;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 
 public class ResponderImpl {
 
@@ -86,7 +86,7 @@ public class ResponderImpl {
 			
 			if (type.getType() == Type.REQUEST) {
 				// Parse the message
-				fr.ill.ics.nappli.proto.Messages.Request request = fr.ill.ics.nappli.proto.Messages.Request.parseFrom(messageData);
+				fr.ill.ics.cameo.proto.Messages.Request request = fr.ill.ics.cameo.proto.Messages.Request.parseFrom(messageData);
 			
 				// Create the request
 				return new RequestImpl(application, context, request.getEndpoint(), request.getMessage(), request.getApplicationId());

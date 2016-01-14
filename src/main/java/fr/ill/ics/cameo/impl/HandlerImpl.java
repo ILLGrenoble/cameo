@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.impl;
 
-import fr.ill.ics.nappli.Application.State;
+import fr.ill.ics.cameo.Application.State;
 
 public class HandlerImpl {
 

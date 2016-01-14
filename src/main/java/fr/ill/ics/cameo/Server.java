@@ -20,8 +20,8 @@ package fr.ill.ics.cameo;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ill.ics.nappli.impl.InstanceImpl;
-import fr.ill.ics.nappli.impl.ServerImpl;
+import fr.ill.ics.cameo.impl.InstanceImpl;
+import fr.ill.ics.cameo.impl.ServerImpl;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -35,7 +35,7 @@ public class Server {
 		
 	/**
 	 * Constructor with endpoint.
-	 * This constructor must be used when the services are related to another nappli server that
+	 * This constructor must be used when the services are related to another cameo server that
 	 * has not started the current application.
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
 	 * @param endpoint

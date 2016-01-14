@@ -21,32 +21,32 @@ import org.zeromq.ZMsg;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.Application;
-import fr.ill.ics.nappli.Application.State;
-import fr.ill.ics.nappli.CancelEvent;
-import fr.ill.ics.nappli.ConnectionTimeout;
-import fr.ill.ics.nappli.Event;
-import fr.ill.ics.nappli.EventListener;
-import fr.ill.ics.nappli.PublisherCreationException;
-import fr.ill.ics.nappli.PublisherDestructionException;
-import fr.ill.ics.nappli.RequesterCreationException;
-import fr.ill.ics.nappli.ResponderCreationException;
-import fr.ill.ics.nappli.StateException;
-import fr.ill.ics.nappli.StatusEvent;
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.WaitingSet;
-import fr.ill.ics.nappli.proto.Messages;
-import fr.ill.ics.nappli.proto.Messages.ConnectPortCommand;
-import fr.ill.ics.nappli.proto.Messages.CreatePublisherCommand;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
-import fr.ill.ics.nappli.proto.Messages.PublisherResponse;
-import fr.ill.ics.nappli.proto.Messages.RemovePortCommand;
-import fr.ill.ics.nappli.proto.Messages.RequestPortCommand;
-import fr.ill.ics.nappli.proto.Messages.RequestResponse;
-import fr.ill.ics.nappli.proto.Messages.SetResultCommand;
-import fr.ill.ics.nappli.proto.Messages.SetStatusCommand;
-import fr.ill.ics.nappli.proto.Messages.StopCommand;
-import fr.ill.ics.nappli.proto.Messages.TerminatePublisherCommand;
+import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.Application.State;
+import fr.ill.ics.cameo.CancelEvent;
+import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.Event;
+import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.PublisherCreationException;
+import fr.ill.ics.cameo.PublisherDestructionException;
+import fr.ill.ics.cameo.RequesterCreationException;
+import fr.ill.ics.cameo.ResponderCreationException;
+import fr.ill.ics.cameo.StateException;
+import fr.ill.ics.cameo.StatusEvent;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.WaitingSet;
+import fr.ill.ics.cameo.proto.Messages;
+import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
+import fr.ill.ics.cameo.proto.Messages.CreatePublisherCommand;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.PublisherResponse;
+import fr.ill.ics.cameo.proto.Messages.RemovePortCommand;
+import fr.ill.ics.cameo.proto.Messages.RequestPortCommand;
+import fr.ill.ics.cameo.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.proto.Messages.SetResultCommand;
+import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
+import fr.ill.ics.cameo.proto.Messages.StopCommand;
+import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 
 public class ApplicationImpl extends ServicesImpl {
 	
@@ -65,7 +65,7 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	/**
 	 * Constructor with application arguments.
-	 * This constructor must be used when the services are related to the nappli server that
+	 * This constructor must be used when the services are related to the cameo server that
 	 * has started the current application.
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set.
 	 * @param args

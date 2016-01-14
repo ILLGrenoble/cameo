@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.impl;
 
-import fr.ill.ics.nappli.Waiting;
+import fr.ill.ics.cameo.Waiting;
 
 public class SubscriberWaitingImpl extends Waiting {
 

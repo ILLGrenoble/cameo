@@ -20,13 +20,13 @@ package fr.ill.ics.cameo;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ill.ics.nappli.impl.ApplicationImpl;
-import fr.ill.ics.nappli.impl.InstanceImpl;
-import fr.ill.ics.nappli.impl.PublisherImpl;
-import fr.ill.ics.nappli.impl.RequestImpl;
-import fr.ill.ics.nappli.impl.RequesterImpl;
-import fr.ill.ics.nappli.impl.ResponderImpl;
-import fr.ill.ics.nappli.impl.SubscriberImpl;
+import fr.ill.ics.cameo.impl.ApplicationImpl;
+import fr.ill.ics.cameo.impl.InstanceImpl;
+import fr.ill.ics.cameo.impl.PublisherImpl;
+import fr.ill.ics.cameo.impl.RequestImpl;
+import fr.ill.ics.cameo.impl.RequesterImpl;
+import fr.ill.ics.cameo.impl.ResponderImpl;
+import fr.ill.ics.cameo.impl.SubscriberImpl;
 
 public class Application {
 	

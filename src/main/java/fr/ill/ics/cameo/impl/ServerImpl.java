@@ -28,34 +28,34 @@ import org.zeromq.ZMsg;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.Application;
-import fr.ill.ics.nappli.ConnectionTimeout;
-import fr.ill.ics.nappli.EventListener;
-import fr.ill.ics.nappli.Option;
-import fr.ill.ics.nappli.OutputStreamException;
-import fr.ill.ics.nappli.OutputStreamSocket;
-import fr.ill.ics.nappli.SubscriberCreationException;
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.WriteException;
-import fr.ill.ics.nappli.proto.Messages;
-import fr.ill.ics.nappli.proto.Messages.AllAvailableCommand;
-import fr.ill.ics.nappli.proto.Messages.AllAvailableResponse;
-import fr.ill.ics.nappli.proto.Messages.ApplicationInfoListResponse;
-import fr.ill.ics.nappli.proto.Messages.ConnectCommand;
-import fr.ill.ics.nappli.proto.Messages.ConnectPublisherCommand;
-import fr.ill.ics.nappli.proto.Messages.IsAliveCommand;
-import fr.ill.ics.nappli.proto.Messages.IsAliveResponse;
-import fr.ill.ics.nappli.proto.Messages.KillCommand;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
-import fr.ill.ics.nappli.proto.Messages.OutputCommand;
-import fr.ill.ics.nappli.proto.Messages.PublisherResponse;
-import fr.ill.ics.nappli.proto.Messages.RequestResponse;
-import fr.ill.ics.nappli.proto.Messages.SendParametersCommand;
-import fr.ill.ics.nappli.proto.Messages.ShowAllCommand;
-import fr.ill.ics.nappli.proto.Messages.ShowStreamCommand;
-import fr.ill.ics.nappli.proto.Messages.StartCommand;
-import fr.ill.ics.nappli.proto.Messages.StopCommand;
-import fr.ill.ics.nappli.proto.Messages.SubscribePublisherCommand;
+import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.Option;
+import fr.ill.ics.cameo.OutputStreamException;
+import fr.ill.ics.cameo.OutputStreamSocket;
+import fr.ill.ics.cameo.SubscriberCreationException;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.WriteException;
+import fr.ill.ics.cameo.proto.Messages;
+import fr.ill.ics.cameo.proto.Messages.AllAvailableCommand;
+import fr.ill.ics.cameo.proto.Messages.AllAvailableResponse;
+import fr.ill.ics.cameo.proto.Messages.ApplicationInfoListResponse;
+import fr.ill.ics.cameo.proto.Messages.ConnectCommand;
+import fr.ill.ics.cameo.proto.Messages.ConnectPublisherCommand;
+import fr.ill.ics.cameo.proto.Messages.IsAliveCommand;
+import fr.ill.ics.cameo.proto.Messages.IsAliveResponse;
+import fr.ill.ics.cameo.proto.Messages.KillCommand;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.OutputCommand;
+import fr.ill.ics.cameo.proto.Messages.PublisherResponse;
+import fr.ill.ics.cameo.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.proto.Messages.SendParametersCommand;
+import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
+import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
+import fr.ill.ics.cameo.proto.Messages.StartCommand;
+import fr.ill.ics.cameo.proto.Messages.StopCommand;
+import fr.ill.ics.cameo.proto.Messages.SubscribePublisherCommand;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -71,7 +71,7 @@ public class ServerImpl extends ServicesImpl {
 		
 	/**
 	 * Constructor with endpoint.
-	 * This constructor must be used when the services are related to another nappli server that
+	 * This constructor must be used when the services are related to another cameo server that
 	 * has not started the current application.
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
 	 * @param endpoint
@@ -162,7 +162,7 @@ public class ServerImpl extends ServicesImpl {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	private fr.ill.ics.nappli.impl.Response startApplication(String name, String[] args, String instanceReference) throws ConnectionTimeout {
+	private fr.ill.ics.cameo.impl.Response startApplication(String name, String[] args, String instanceReference) throws ConnectionTimeout {
 		
 		ZMsg request = createStartRequest(name, args, instanceReference);
 		ZMsg reply = tryRequest(request);
@@ -175,7 +175,7 @@ public class ServerImpl extends ServicesImpl {
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
-		return new fr.ill.ics.nappli.impl.Response(requestResponse.getValue(), requestResponse.getMessage());
+		return new fr.ill.ics.cameo.impl.Response(requestResponse.getValue(), requestResponse.getMessage());
 	}
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
@@ -287,7 +287,7 @@ public class ServerImpl extends ServicesImpl {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	fr.ill.ics.nappli.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
+	fr.ill.ics.cameo.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
 		// create msg
 		ZMsg request;
 		
@@ -309,7 +309,7 @@ public class ServerImpl extends ServicesImpl {
 			throw new UnexpectedException("Cannot parse response");
 		}
 		
-		return new fr.ill.ics.nappli.impl.Response(id, response.getMessage());
+		return new fr.ill.ics.cameo.impl.Response(id, response.getMessage());
 	}
 		
 	public void killAllAndWaitFor(String name) {

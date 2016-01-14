@@ -18,15 +18,15 @@ package fr.ill.ics.cameo.impl;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import fr.ill.ics.nappli.Application;
-import fr.ill.ics.nappli.EndOfStream;
-import fr.ill.ics.nappli.Event;
-import fr.ill.ics.nappli.EventListener;
-import fr.ill.ics.nappli.EventStreamSocket;
-import fr.ill.ics.nappli.PortEvent;
-import fr.ill.ics.nappli.PublisherEvent;
-import fr.ill.ics.nappli.ResultEvent;
-import fr.ill.ics.nappli.StatusEvent;
+import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.EndOfStream;
+import fr.ill.ics.cameo.Event;
+import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.EventStreamSocket;
+import fr.ill.ics.cameo.PortEvent;
+import fr.ill.ics.cameo.PublisherEvent;
+import fr.ill.ics.cameo.ResultEvent;
+import fr.ill.ics.cameo.StatusEvent;
 
 class EventThread extends Thread {
 

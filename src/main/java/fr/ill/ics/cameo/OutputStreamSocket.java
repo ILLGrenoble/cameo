@@ -22,7 +22,7 @@ import org.zeromq.ZMQ.Socket;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.proto.Messages;
+import fr.ill.ics.cameo.proto.Messages;
 
 public class OutputStreamSocket {
 	

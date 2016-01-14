@@ -24,14 +24,14 @@ import org.zeromq.ZMsg;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.ConnectionTimeout;
-import fr.ill.ics.nappli.EventStreamSocket;
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.proto.Messages.GetStatusCommand;
-import fr.ill.ics.nappli.proto.Messages.Init;
-import fr.ill.ics.nappli.proto.Messages.MessageType;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
-import fr.ill.ics.nappli.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.EventStreamSocket;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
+import fr.ill.ics.cameo.proto.Messages.Init;
+import fr.ill.ics.cameo.proto.Messages.MessageType;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.RequestResponse;
 
 public class ServicesImpl {
 

@@ -16,17 +16,17 @@
 
 package fr.ill.ics.cameo.impl;
 
-import fr.ill.ics.nappli.Application;
-import fr.ill.ics.nappli.CancelEvent;
-import fr.ill.ics.nappli.ConnectionTimeout;
-import fr.ill.ics.nappli.Event;
-import fr.ill.ics.nappli.EventListener;
-import fr.ill.ics.nappli.OutputStreamSocket;
-import fr.ill.ics.nappli.PortEvent;
-import fr.ill.ics.nappli.PublisherEvent;
-import fr.ill.ics.nappli.ResultEvent;
-import fr.ill.ics.nappli.StatusEvent;
-import fr.ill.ics.nappli.SubscriberCreationException;
+import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.CancelEvent;
+import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.Event;
+import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.OutputStreamSocket;
+import fr.ill.ics.cameo.PortEvent;
+import fr.ill.ics.cameo.PublisherEvent;
+import fr.ill.ics.cameo.ResultEvent;
+import fr.ill.ics.cameo.StatusEvent;
+import fr.ill.ics.cameo.SubscriberCreationException;
 
 
 /**

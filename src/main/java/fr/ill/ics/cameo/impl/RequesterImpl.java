@@ -24,9 +24,9 @@ import org.zeromq.ZMsg;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.proto.Messages.MessageType;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
-import fr.ill.ics.nappli.proto.Messages.Request;
+import fr.ill.ics.cameo.proto.Messages.MessageType;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.Request;
 
 public class RequesterImpl {
 

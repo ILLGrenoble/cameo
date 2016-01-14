@@ -23,11 +23,11 @@ import org.zeromq.ZMsg;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.nappli.UnexpectedException;
-import fr.ill.ics.nappli.proto.Messages.CancelPublisherSyncCommand;
-import fr.ill.ics.nappli.proto.Messages.MessageType;
-import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
-import fr.ill.ics.nappli.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.proto.Messages.CancelPublisherSyncCommand;
+import fr.ill.ics.cameo.proto.Messages.MessageType;
+import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.proto.Messages.RequestResponse;
 
 public class PublisherImpl {
 
