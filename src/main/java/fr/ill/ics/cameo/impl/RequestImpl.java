@@ -1,0 +1,66 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
+package fr.ill.ics.cameo.impl;
+
+import org.zeromq.ZContext;
+import org.zeromq.ZMsg;
+
+import com.google.protobuf.ByteString;
+
+import fr.ill.ics.nappli.proto.Messages.MessageType.Type;
+
+public class RequestImpl {
+
+	private ApplicationImpl application;
+	ZContext context;
+	private String requesterEndpoint;
+	private ByteString message;
+	private int requesterApplicationId;
+
+	public RequestImpl(ApplicationImpl application, ZContext context, String requesterEndpoint, ByteString message, int requesterApplicationId) {
+		this.application = application;
+		this.context = context;
+		this.requesterEndpoint = requesterEndpoint;
+		this.message = message;
+		this.requesterApplicationId = requesterApplicationId;
+	}
+	
+	public ByteString get() {
+		return message;
+	}
+
+	public void send(byte[] response) {
+		
+		ZMsg responseMessage = application.createRequest(Type.RESPONSE);
+		responseMessage.add(response);
+		
+		application.tryRequest(responseMessage, requesterEndpoint);
+	}
+	
+	public void send(String response) {
+		send(Serializer.serialize(response));
+	}
+
+	@Override
+	public String toString() {
+		return "Request [endpoint=" + requesterEndpoint + ", id=" + requesterApplicationId + "]";
+	}
+	
+	
+
+
+}
