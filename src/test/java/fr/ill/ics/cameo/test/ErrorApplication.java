@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo;
+package fr.ill.ics.cameo.test;
 
 
 
