@@ -6,6 +6,7 @@
 	<version>0.0.1</version>
 	<name>CameoServer</name>
 	<description>Cameo Server</description>
+	<url>https://code.ill.fr/instrument-control/cameo-server</url>
 
 	<!-- Connection to git repository -->
 	<scm>
@@ -139,6 +140,4 @@
 			
 		</plugins>
 	</build>
-
-	<url>https://code.ill.fr/instrument-control/cameo-server</url>
 </project>
