@@ -73,6 +73,10 @@
 				<version>2.6</version>
 				<configuration>
 					<archive>
+						<manifest>
+              			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              			<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            			</manifest>
 						<manifestEntries>
 							<SCM-Revision>${buildNumber}</SCM-Revision>
 						</manifestEntries>
