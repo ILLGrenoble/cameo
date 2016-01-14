@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-api-java</artifactId>
@@ -80,8 +79,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- We generate the sources from proto in process-resources to ensure 
-				to have them before the compile phase -->
+			<!-- We generate the sources from proto in process-resources to ensure to have them before the compile phase -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -91,15 +89,12 @@
 						<phase>process-resources</phase>
 						<configuration>
 							<target>
-								<property name="protoFlags"
-									value="-I${env.NOMAD_HOME}/src/common/protobuf/proto --java_out=src/main/java" />
-								<property name="protoDir"
-									value="${env.NOMAD_HOME}/src/common/protobuf/proto" />
+								<property name="protoFlags" value="-I${env.NOMAD_HOME}/src/common/protobuf/proto --java_out=src/main/java" />
+								<property name="protoDir" value="${env.NOMAD_HOME}/src/common/protobuf/proto" />
 
 								<echo message="Generating Messages.java" />
 								<exec executable="protoc">
-									<arg
-										line="-Isrc/main/proto --java_out=src/main/java src/main/proto/Messages.proto" />
+									<arg line="-Isrc/main/proto --java_out=src/main/java src/main/proto/Messages.proto" />
 								</exec>
 
 							</target>
@@ -139,5 +134,4 @@
 
 		</plugins>
 	</build>
-
 </project>

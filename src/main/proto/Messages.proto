@@ -1,6 +1,6 @@
 package proto;
 
-option java_package = "fr.ill.ics.nappli.proto";
+option java_package = "fr.ill.ics.cameo.proto";
 option java_outer_classname = "Messages";
 option optimize_for = SPEED;
 
