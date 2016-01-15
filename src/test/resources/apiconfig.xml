@@ -4,7 +4,7 @@
 
 	<applications>
 		
-		<!-- These applications are provided with the cameo-api-java sources but used in the server test -->
+		<!-- These applications are provided with the cameo-api-java sources -->
 		<application name="fastres" starting_time="0" retries="0" stopping_time="1" multiple="yes" restart="no">
 			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.FastResultApplication"/>
 		</application>
@@ -59,6 +59,51 @@
 
 		<application name="reqrepjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
 			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestRequesterAndResponderApplication"/>
+		</application>
+
+		<!-- These applications are provided with the cameo-api-cpp sources -->
+		<application name="statecpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/teststate"/>
+		</application>
+
+		<application name="pubcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testpublisher"/>
+		</application>
+		
+		<application name="publoopcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testpublisherloop"/>
+		</application>
+
+		<application name="subpubcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testsubscriberandpublisher"/>
+		</application>
+		
+		<application name="rescpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testresult"/>
+		</application>
+
+		<application name="startrescpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/teststartwithresult"/>
+		</application>
+
+		<application name="stopcpp" starting_time="0" retries="0" stopping_time="1000" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/teststop"/>
+		</application>
+
+		<application name="startstopcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/teststartwithstop"/>
+		</application>
+		
+		<application name="cancelcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testcancel"/>
+		</application>
+
+		<application name="repcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testresponder"/>
+		</application>
+
+		<application name="reqrepcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/testrequesterandresponder"/>
 		</application>
 
 	</applications>
