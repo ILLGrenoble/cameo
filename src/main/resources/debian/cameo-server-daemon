@@ -3,12 +3,12 @@
 # This file is copied from omniorb4-nameserver and modified
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DAEMON=/usr/bin/java
-INSTALL_PATH=/users/legoc/nappli/NappliServer
+INSTALL_PATH=/users/legoc/nappli/cameo-server
 CONFIG_FILE=/users/legoc/nappli/NomadServerTest/nsconfig.xml
 EXEC_DIR=/users/legoc/nappli/NomadServerTest/
-DAEMON_ARGS="-classpath $INSTALL_PATH/libs/protobuf-java-2.5.0.jar:$INSTALL_PATH/libs/jeromq-0.3.5.jar:$INSTALL_PATH/libs/jdom-2.0.5.jar:$INSTALL_PATH/libs/nappli-server.jar fr.ill.ics.nappli.server.Server $CONFIG_FILE"
-NAME=nappli-server
-DESC="Nappli server"
+DAEMON_ARGS="-jar $INSTALL_PATH/target/cameo-server-0.0.1-full.jar $CONFIG_FILE"
+NAME=cameo-server
+DESC="cameo server"
 
 # we can set the user (group if necessary)
 USER=legoc
@@ -57,7 +57,7 @@ case "$1" in
         exit 3
         ;;
   *)
-	echo "Usage: nappli-server {start|stop|restart|force-reload}" >&2
+	echo "Usage: cameo-server-daemon {start|stop|restart|force-reload}" >&2
 	exit 2
 	;;
 esac
