@@ -14,8 +14,6 @@ DESC="cameo server"
 USER=legoc
 
 # path of the pidfile
-# test with /var/run or keep execution directory?
-# PIDFILE=/var/run/$NAME/$NAME.pid
 PIDFILE=$EXEC_DIR/$NAME.pid
 
 test -f $DAEMON || exit 0
@@ -36,17 +34,17 @@ do_stop() {
 
 case "$1" in
   start)
-	log_daemon_msg "Starting $DESC" "$NAME"
+	log_daemon_msg "$DESC" "start"
 	do_start
 	log_end_msg $?
 	;;
   stop)
-	log_daemon_msg "Stopping $DESC" "$NAME"
+	log_daemon_msg "$DESC" "stop"
 	do_stop
 	log_end_msg $?
 	;;
   restart|force-reload)
-	log_daemon_msg "Restarting $DESC: " "$NAME"
+	log_daemon_msg "$DESC" "restart"
 	do_stop
 	sleep 1
 	do_start
