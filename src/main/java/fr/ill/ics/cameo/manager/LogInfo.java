@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.manager;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.ConsoleHandler;
@@ -55,6 +56,13 @@ public final class LogInfo {
 		logger.setLevel(Level.FINE);
 		
 		try {
+			File logDirectory = new File(ConfigManager.getInstance().getLogPath());
+
+			// If the directory does not exist, create it
+			if (!logDirectory.exists()) {
+				logDirectory.mkdir();
+			}
+			
 			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/nappli.log", false);
 			fileHandler.setFormatter(new LogFormatter());
 			fileHandler.setLevel(Level.FINE);
