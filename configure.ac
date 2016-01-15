@@ -4,7 +4,7 @@
 #
 # -----------------------------------------------------------------------------
 
-AC_INIT(cameo, 0.3.0)
+AC_INIT(cameo, 0.0.1)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(src/cameo/Application.cpp)
 
