@@ -1,0 +1,52 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
+#include "../../cameo/impl/RequestImpl.h"
+
+#include "../../cameo/Application.h"
+#include "../../cameo/impl/ApplicationImpl.h"
+#include "../../cameo/impl/Serializer.h"
+
+using namespace std;
+
+namespace cameo {
+
+RequestImpl::RequestImpl(const application::This * application, const std::string & requesterEndpoint, const std::string& message, int requesterApplicationId) :
+	m_application(application),
+	m_requesterEndpoint(requesterEndpoint),
+	m_message(message),
+	m_requesterApplicationId(requesterApplicationId) {
+}
+
+RequestImpl::~RequestImpl() {
+}
+
+void RequestImpl::sendBinary(const std::string& response) {
+	string strRequestType = m_application->m_impl->createRequest(PROTO_RESPONSE);
+	m_application->m_impl->tryRequestWithOnePartReply(strRequestType, response, m_requesterEndpoint);
+}
+
+void RequestImpl::send(const std::string& response) {
+
+	// encode the data
+	string result;
+	serialize(response, result);
+
+	sendBinary(result);
+}
+
+}
+
