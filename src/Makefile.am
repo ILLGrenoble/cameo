@@ -10,7 +10,6 @@ lib_LTLIBRARIES = libcameo.la
 
 # header files that must be in the dist package but not installed are sources
 libcameo_la_SOURCES = \
-	proto/Messages.pb.cc \
 	cameo/impl/Serializer.cpp \
 	cameo/Event.cpp \
 	cameo/StatusEvent.cpp \
@@ -59,9 +58,8 @@ libcameo_la_SOURCES = \
 	cameo/impl/RequesterImpl.h \
 	cameo/impl/Serializer.h \
 	cameo/impl/zmq.hpp \
-	proto/Messages.proto \
-	proto/Messages.pb.h
-	
+	proto/Messages.proto
+		
 # header files that are installed
 nobase_include_HEADERS = \
 	cameo/Application.h \
