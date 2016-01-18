@@ -9,11 +9,11 @@ fi
 version=$1
 prefixInstallDir=$2
 
-mkdir -p $prefixInstallDir/lib
-mkdir -p $prefixInstallDir/lib/java
-mkdir -p $prefixInstallDir/bin
-libDir=$prefixInstallDir/lib/java
-binDir=$prefixInstallDir/bin
+mkdir -p "$prefixInstallDir/lib"
+mkdir -p "$prefixInstallDir/lib/java"
+mkdir -p "$prefixInstallDir/bin"
+libDir="$prefixInstallDir/lib/java"
+binDir="$prefixInstallDir/bin"
 
 libName="cameo-server-"$version"-full.jar"
 targetLibName="../target/$libName"
@@ -24,18 +24,18 @@ then
 	exit 1
 fi
 
-cp $targetLibName $libDir 
+cp "$targetLibName" "$libDir"
 
 libNoVersionName="cameo-server-full.jar"
-rm $libDir/$libNoVersionName
-ln -s $libDir/$libName $libDir/$libNoVersionName
+rm "$libDir/$libNoVersionName"
+ln -s "$libDir/$libName" "$libDir/$libNoVersionName"
 
 echo "Installed $libName into $libDir"
 
-fileName="$binDir/cmo-server"
-echo "#!/bin/sh" > $fileName
-echo "java -jar $libDir/$libNoVersionName \$@" >> $fileName
+fileName="$binDir/cameo-server"
+echo "#!/bin/sh" > "$fileName"
+echo "java -jar \"$libDir/$libNoVersionName\" \$@" >> "$fileName"
 
-chmod 755 $fileName
+chmod 755 "$fileName"
 
-echo "Installed cmo-server into $binDir"
+echo "Installed cameo-server into $binDir"

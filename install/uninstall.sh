@@ -14,8 +14,8 @@ binDir=$prefixInstallDir/bin
 libName="cameo-server-"$version"-full.jar"
 targetLibName="$libDir/$libName"
 
-rm -f $targetLibName
+rm -f "$targetLibName"
 echo "Deleted $targetLibName."
 
-rm -f $binDir/cmo-server
-echo "Deleted $binDir/cmo-server."
+rm -f "$binDir/cameo-server"
+echo "Deleted $binDir/cameo-server."
