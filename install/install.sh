@@ -9,9 +9,9 @@ fi
 version=$1
 prefixInstallDir=$2
 
-mkdir -p $prefixInstallDir/lib
-mkdir -p $prefixInstallDir/lib/java
-mkdir -p $prefixInstallDir/bin
+mkdir -p "$prefixInstallDir/lib"
+mkdir -p "$prefixInstallDir/lib/java"
+mkdir -p "$prefixInstallDir/bin"
 libDir=$prefixInstallDir/lib/java
 binDir=$prefixInstallDir/bin
 
@@ -24,14 +24,14 @@ then
 	exit 1
 fi
 
-cp $targetLibName $libDir 
+cp "$targetLibName" "$libDir"
 
 echo "Installed $libName into $libDir"
 
 fileName="$binDir/cmo"
-echo "#!/bin/sh" > $fileName
-echo "java -jar $libDir/$libName \$@" >> $fileName
+echo "#!/bin/sh" > "$fileName"
+echo "java -jar \"$libDir/$libName\" \$@" >> "$fileName"
 
-chmod 755 $fileName
+chmod 755 "$fileName"
 
 echo "Installed cmo into $binDir"
