@@ -56,7 +56,7 @@ public class Server {
 		
 		// verify args
 		if (args.length < 1) {
-			System.out.printf("usage: <XML config file>\n");
+			System.out.printf("Usage: <XML config file>\n");
 			System.exit(1);
 		}
 		
