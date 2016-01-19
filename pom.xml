@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.ill.ics</groupId>
-  <artifactId>cameo-console</artifactId>
-  <version>0.0.1</version>
-  <name>CameoConsole</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.ill.ics</groupId>
+	<artifactId>cameo-console</artifactId>
+	<version>0.0.1</version>
+	<name>CameoConsole</name>
 	<description>Cameo Console</description>
 	<url>https://code.ill.fr/instrument-control/cameo-console</url>
 
@@ -13,6 +13,7 @@
 	</scm>
 
 	<properties>
+		<!-- <project.scm.id>git</project.scm.id> -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -26,7 +27,6 @@
 
 	<build>
 		<plugins>
-
 			<!-- We force the compilation with 1.7 to ensure SUSE and Android execution -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -38,7 +38,7 @@
 			</plugin>
 
 			<!-- Plugin to get the SVN revision -->
-			<plugin>
+	 		<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.3</version>
@@ -53,6 +53,8 @@
 				<configuration>
 					<doCheck>false</doCheck>
 					<doUpdate>true</doUpdate>
+ 					<username>ics</username>
+					<password>icsics</password>
 				</configuration>
 			</plugin>
 
@@ -64,16 +66,16 @@
 				<configuration>
 					<archive>
 						<manifest>
-              			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              			<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-            			</manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
 						<manifestEntries>
 							<SCM-Revision>${buildNumber}</SCM-Revision>
 						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
-			
+
 			<!-- Assemble a single jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -99,8 +101,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
-  
+
 </project>

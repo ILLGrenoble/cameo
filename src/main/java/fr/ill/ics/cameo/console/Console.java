@@ -32,25 +32,27 @@ public class Console {
 	private String endpoint;
 	private Server server;
 	String[] applicationArgs;
-	private String applicationName;
-	private int applicationId;
+	private String applicationName = null;
+	private String commandName = "list";
+	private int applicationId = -1;
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
 	public Console(String[] args) {
 		super();
 		
-		int startIndex = 0;
-		// Searching for endpoint
-		if ("-e".equals(args[0])) {
-			if (args.length > 1) {
-				endpoint = args[1];
-				startIndex = 2;
+		int currentIndex = 0;
+		// Searching for endpoint.
+		if ("-e".equals(args[currentIndex])) {
+			if (args.length > currentIndex + 1) {
+				currentIndex += 1;
+				endpoint = args[currentIndex];
+				currentIndex += 1;
 				
 			} else {
 				System.out.println("Endpoint is missing.");
 				System.exit(1);
 			}
-			
+		
 		} else {
 			// Check environment
 			Map<String, String> environment = System.getenv();
@@ -62,12 +64,46 @@ public class Console {
 			}
 		}
 
-		server = new Server(endpoint);
-		
-		applicationArgs = new String[args.length - startIndex];
-		for (int i = 0; i < args.length - startIndex; i++) {
-			applicationArgs[i] = args[i + startIndex];
+		// Searching for the application name.
+		if ("-a".equals(args[currentIndex])) {
+			// The application is specified with -a option.
+			if (args.length > currentIndex + 1) {
+				currentIndex += 1;
+				applicationName = args[currentIndex];
+				currentIndex += 1;
+				
+			} else {
+				System.out.println("Application name is missing.");
+				System.exit(1);
+			}
+			
+			if (args.length > currentIndex) {
+				commandName = args[currentIndex];
+				currentIndex += 1;
+				
+			} else {
+				commandName = "show";
+			}
+			
+		} else {
+			// The application name is not specified with -a option.
+			// The command name is then first
+			commandName = args[currentIndex];
+			currentIndex += 1;
+			
+			if (args.length > currentIndex) {
+				applicationName = args[currentIndex];
+				currentIndex += 1;
+			}
 		}
+				
+		applicationArgs = new String[args.length - currentIndex];
+		for (int i = 0; i < args.length - currentIndex; i++) {
+			applicationArgs[i] = args[i + currentIndex];
+		}
+		
+		// Initialise the server.
+		server = new Server(endpoint);
 	}
 	
 	public void terminate() {
@@ -76,29 +112,6 @@ public class Console {
 
 	public void execute() {
 
-		String command;
-		
-		// if last argument is an integer, then this is applicationID
-		String lastArg = applicationArgs[applicationArgs.length - 1];
-		
-		if (applicationArgs.length == 0) {
-			command = "list";
-			
-		} else if (applicationArgs.length == 1) {
-			command = applicationArgs[0];
-			
-		} else {
-			try {
-				applicationId = Integer.parseInt(lastArg);
-				applicationName = applicationArgs[0];
-				command = applicationArgs[1];
-			} catch (NumberFormatException e) {
-				applicationId = -1;
-				applicationName = applicationArgs[0];
-				command = applicationArgs[1];	
-			}
-		}	
-				
 		try {
 			// test connection
 			if (!server.isAvailable()) {
@@ -106,31 +119,31 @@ public class Console {
 				return;
 			}
 			
-			if (command.equals("start")) {
-				processStart(applicationArgs);
-			} else if (command.equals("stop")) {
-				processStop(applicationArgs);
-			} else if (command.equals("kill")) {
-				processKill(applicationArgs);
-			} else if (command.equals("show")) {
+			if (commandName.equals("start")) {
+				processStart();
+			} else if (commandName.equals("stop")) {
+				processStop();
+			} else if (commandName.equals("kill")) {
+				processKill();
+			} else if (commandName.equals("show")) {
 				if (applicationName == null) {
 					processShowAll();
 				} else {
-					processShow(applicationArgs);
+					processShow();
 				}
 				
-			} else if (command.equals("list")) {
+			} else if (commandName.equals("list")) {
 				processAllAvailable();
-			} else if (command.equals("test")) {
-				processTest(applicationArgs);
-			} else if (command.equals("connect")) {
-				processConnect(applicationArgs, true);
-			} else if (command.equals("listen")) {
-				processConnect(applicationArgs, false);
-			} else if (command.equals("id")) {
-				processID(applicationArgs);
+			} else if (commandName.equals("test")) {
+				processTest();
+			} else if (commandName.equals("connect")) {
+				processConnect(true);
+			} else if (commandName.equals("listen")) {
+				processConnect(false);
+			} else if (commandName.equals("id")) {
+				processID();
 			} else {
-				System.out.println("Unknown command " + command + ".");
+				System.out.println("Unknown command " + commandName + ".");
 			}
 			
 		} catch (ConnectionTimeout e) {
@@ -187,15 +200,13 @@ public class Console {
 		}
 	}
 
-	private void processShow(String[] args) {
+	private void processShow() {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
-
-		String applicationName = args[0];
-
+		
 		LinkedList<Integer> applicationIDs = getIDs(applicationName);
 		
 		if (applicationIDs.isEmpty()) {
@@ -211,16 +222,13 @@ public class Console {
 		}
 	}
 	
-	private void processID(String[] args) {
+	private void processID() {
 
-		// check arguments
-		if (args.length < 2) {
-			System.out.println("\tid ...");
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
-
-		String applicationName = args[0];
-
+		
 		LinkedList<Integer> applicationIDs = getIDs(applicationName);
 		
 		if (applicationIDs.isEmpty()) {
@@ -233,13 +241,22 @@ public class Console {
 		
 	}
 	
-	private void processStop(String[] args) {
+	private void processStop() {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
-
+		
+		if (applicationArgs.length > 0) {
+			try {
+				applicationId = Integer.parseInt(applicationArgs[0]);
+				
+			} catch (NumberFormatException e) {
+				System.out.println("Cannot get the application id.");
+			}
+		}
+		
 		List<Application.Instance> applications = server.connectAll(applicationName);
 		
 		for (Application.Instance application : applications) {
@@ -250,16 +267,25 @@ public class Console {
 				
 				application.stop();
 				application.waitFor();
-				System.out.println("Done");
+				System.out.println("Done.");
 			}
 		}
 	}
 	
-	private void processKill(String[] args) {
+	private void processKill() {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
+		}
+		
+		if (applicationArgs.length > 0) {
+			try {
+				applicationId = Integer.parseInt(applicationArgs[0]);
+				
+			} catch (NumberFormatException e) {
+				System.out.println("Cannot get the application id.");
+			}
 		}
 		
 		List<Application.Instance> applications = server.connectAll(applicationName);
@@ -272,25 +298,18 @@ public class Console {
 				
 				application.kill();
 				application.waitFor();
-				System.out.println("Done");
+				System.out.println("Done.");
 			}
 		}
 	}
 
-	private void processStart(String[] args) {
+	private void processStart() {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
-
-		String applicationName = args[0];
-
-		String[] applicationArgs = new String[args.length - 2];
-		for (int i = 0; i < args.length - 2; i++) {
-			applicationArgs[i] = args[i + 2];
-		}
-
+		
 		Application.Instance result = server.start(applicationName, applicationArgs);
 
 		if (result.exists()) {
@@ -300,18 +319,11 @@ public class Console {
 		}
 	}
 
-	private void processTest(String[] args) {
+	private void processTest() {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
-		}
-
-		final String applicationName = args[0];
-
-		String[] applicationArgs = new String[args.length - 2];
-		for (int i = 0; i < args.length - 2; i++) {
-			applicationArgs[i] = args[i + 2];
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
 		
 		// then start the application
@@ -405,14 +417,12 @@ public class Console {
 		}
 	}
 	
-	private void processConnect(String[] args, boolean input) {
+	private void processConnect(boolean input) {
 
-		// check arguments
-		if (args.length < 2) {
-			return;
+		if (applicationName == null) {
+			System.out.println("Application name is missing.");
+			System.exit(1);
 		}
-		
-		final String applicationName = args[0];
 		
 		List<Application.Instance> results = server.connectAll(applicationName, Option.OUTPUTSTREAM);
 		
@@ -458,16 +468,23 @@ public class Console {
 		System.out.println("[-e <endpoint>]         Defines the server endpoint.");
 		System.out.println("                        If not specified, the CAMEO_SERVER environment variable is used.");
 		System.out.println("                        Default value is tcp://localhost:7000.");
+		System.out.println("[-a <name>]             Defines the application name.");
 		System.out.println("[commands]");
 		System.out.println("  list                  Lists the available applications.");
 		System.out.println("  [name] show           Shows all the started applications.");
-		System.out.println("  <name> start   <args> Starts the application.");
-		System.out.println("  <name> test    <args> Tests the application.");
-		System.out.println("  <name> stop    [id]   Stops the application.");
-		System.out.println("  <name> kill    [id]   Kills the application.");
-		System.out.println("  <name> connect        Connects the application.");
-		System.out.println("  <name> listen         Listens to the application.");
-		System.out.println("  <name> id             Prints the ids of the application.");
+		System.out.println("  [name] start   <args> Starts the application with name.");
+		System.out.println("  [name] test    <args> Tests the application with name.");
+		System.out.println("  [name] stop    [id]   Stops the application with name.");
+		System.out.println("  [name] kill    [id]   Kills the application with name.");
+		System.out.println("  [name] connect        Connects the application with name.");
+		System.out.println("  [name] listen         Listens to the application with name.");
+		System.out.println("  [name] id             Prints the ids of the application with name.");
+		System.out.println("");
+		System.out.println("Examples:");
+		System.out.println("test subpubjava pubjava");
+		System.out.println("kill subpubjava");
+		System.out.println("-a subpubjava test pubjava");
+		System.out.println("-e tcp://localhost:7000 -a subpubjava test pubjava");
 	}
 	
 	public static void main(String[] args) {
@@ -482,7 +499,6 @@ public class Console {
 				
 		try {
 			console = new Console(args);
-	
 			console.execute();
 			
 		} finally {
