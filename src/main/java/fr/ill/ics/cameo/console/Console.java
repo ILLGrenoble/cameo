@@ -134,8 +134,8 @@ public class Console {
 				
 			} else if (commandName.equals("list")) {
 				processAllAvailable();
-			} else if (commandName.equals("test")) {
-				processTest();
+			} else if (commandName.equals("exec") || commandName.equals("test")) {
+				processExec();
 			} else if (commandName.equals("connect")) {
 				processConnect(true);
 			} else if (commandName.equals("listen")) {
@@ -319,7 +319,7 @@ public class Console {
 		}
 	}
 
-	private void processTest() {
+	private void processExec() {
 
 		if (applicationName == null) {
 			System.out.println("Application name is missing.");
@@ -473,7 +473,8 @@ public class Console {
 		System.out.println("  list                  Lists the available applications.");
 		System.out.println("  [name] show           Shows all the started applications.");
 		System.out.println("  [name] start   <args> Starts the application with name.");
-		System.out.println("  [name] test    <args> Tests the application with name.");
+		System.out.println("  [name] exec    <args> Starts the application with name and blocks until its termination. Output streams are displayed");
+		System.out.println("  [name] test    <args> Same than exec.");
 		System.out.println("  [name] stop    [id]   Stops the application with name.");
 		System.out.println("  [name] kill    [id]   Kills the application with name.");
 		System.out.println("  [name] connect        Connects the application with name.");
@@ -481,7 +482,7 @@ public class Console {
 		System.out.println("  [name] id             Prints the ids of the application with name.");
 		System.out.println("");
 		System.out.println("Examples:");
-		System.out.println("test subpubjava pubjava");
+		System.out.println("exec subpubjava pubjava");
 		System.out.println("kill subpubjava");
 		System.out.println("-a subpubjava test pubjava");
 		System.out.println("-e tcp://localhost:7000 -a subpubjava test pubjava");
