@@ -784,11 +784,11 @@ public class Application {
 			this.impl = impl;
 		}
 		
-		public byte[] get() {
+		public byte[] getBinaryData() {
 			return impl.get().toByteArray();
 		}
 		
-		public String getString() {
+		public String getStringData() {
 			return impl.get().toStringUtf8();
 		}
 		
