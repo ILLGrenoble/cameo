@@ -339,10 +339,11 @@ class Request {
 public:
 	~Request();
 
-	const std::string& get() const;
+	const std::string& getBinaryData() const;
+	std::string getData() const;
 
-	void sendBinary(const std::string& response);
-	void send(const std::string& response);
+	void replyBinary(const std::string& response);
+	void reply(const std::string& response);
 
 private:
 	Request(std::auto_ptr<RequestImpl> & impl);

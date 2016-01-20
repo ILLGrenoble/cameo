@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
 		cout << "received request " << *request << endl;
 
-		request->send("done");
+		request->reply("done");
 
 		cout << "finished the application" << endl;
 	}

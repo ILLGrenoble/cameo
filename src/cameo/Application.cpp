@@ -861,16 +861,24 @@ Request::Request(std::auto_ptr<RequestImpl> & impl) :
 Request::~Request() {
 }
 
-const std::string& Request::get() const {
+const std::string& Request::getBinaryData() const {
 	return m_impl->m_message;
 }
 
-void Request::sendBinary(const std::string& response) {
-	m_impl->sendBinary(response);
+std::string Request::getData() const {
+
+	string data;
+	parse(m_impl->m_message, data);
+
+	return data;
 }
 
-void Request::send(const std::string& response) {
-	m_impl->send(response);
+void Request::replyBinary(const std::string& response) {
+	m_impl->replyBinary(response);
+}
+
+void Request::reply(const std::string& response) {
+	m_impl->reply(response);
 }
 
 ///////////////////////////////////////////////////////////////////////////

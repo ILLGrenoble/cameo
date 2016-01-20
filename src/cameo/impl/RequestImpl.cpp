@@ -34,18 +34,18 @@ RequestImpl::RequestImpl(const application::This * application, const std::strin
 RequestImpl::~RequestImpl() {
 }
 
-void RequestImpl::sendBinary(const std::string& response) {
+void RequestImpl::replyBinary(const std::string& response) {
 	string strRequestType = m_application->m_impl->createRequest(PROTO_RESPONSE);
 	m_application->m_impl->tryRequestWithOnePartReply(strRequestType, response, m_requesterEndpoint);
 }
 
-void RequestImpl::send(const std::string& response) {
+void RequestImpl::reply(const std::string& response) {
 
 	// encode the data
 	string result;
 	serialize(response, result);
 
-	sendBinary(result);
+	replyBinary(result);
 }
 
 }

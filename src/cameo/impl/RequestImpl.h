@@ -34,8 +34,8 @@ public:
 	RequestImpl(const application::This * application, const std::string & requesterEndpoint, const std::string& message, int requesterApplicationId);
 	~RequestImpl();
 
-	void sendBinary(const std::string& response);
-	void send(const std::string& response);
+	void replyBinary(const std::string& response);
+	void reply(const std::string& response);
 
 	const application::This * m_application;
 	std::string m_requesterEndpoint;
