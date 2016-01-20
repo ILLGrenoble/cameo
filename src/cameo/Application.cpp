@@ -957,17 +957,10 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 	delete reply;
 
-	cout << "tried to connect" << endl;
-
 	int responderPort = requestResponse.value();
 	if (responderPort == -1) {
-
-		cout << "waiting for responder" << endl;
-
 		// Wait for the responder port.
 		instance.waitFor(0, responderPortName);
-
-		cout << "waiting for responder ok" << endl;
 
 		// Retry to connect.
 		reply = This::m_instance->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
