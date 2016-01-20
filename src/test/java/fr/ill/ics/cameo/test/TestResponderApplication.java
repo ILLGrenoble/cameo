@@ -42,7 +42,7 @@ public class TestResponderApplication {
 			
 			System.out.println("received request " + request);
 			
-			request.send("done");
+			request.reply("done");
 			
 		} catch (RemoteException e) {
 			System.out.println("responder error");

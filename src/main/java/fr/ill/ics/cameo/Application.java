@@ -792,12 +792,12 @@ public class Application {
 			return impl.get().toStringUtf8();
 		}
 		
-		public void send(byte[] response) {
-			impl.send(response);
+		public void reply(byte[] response) {
+			impl.reply(response);
 		}
 		
-		public void send(String response) {
-			impl.send(response);
+		public void reply(String response) {
+			impl.reply(response);
 		}
 		
 		@Override

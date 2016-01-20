@@ -43,7 +43,7 @@ public class RequestImpl {
 		return message;
 	}
 
-	public void send(byte[] response) {
+	public void reply(byte[] response) {
 		
 		ZMsg responseMessage = application.createRequest(Type.RESPONSE);
 		responseMessage.add(response);
@@ -51,8 +51,8 @@ public class RequestImpl {
 		application.tryRequest(responseMessage, requesterEndpoint);
 	}
 	
-	public void send(String response) {
-		send(Serializer.serialize(response));
+	public void reply(String response) {
+		reply(Serializer.serialize(response));
 	}
 
 	@Override
