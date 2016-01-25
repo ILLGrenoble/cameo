@@ -108,9 +108,7 @@
 				</executions>
 			</plugin>
 
-			<!-- Do not assemble a single jar because it is a library, not an executable -->
-			
-			<!-- Assemble a single jar -->
+			<!-- Assemble a single jar for tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
