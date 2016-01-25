@@ -52,7 +52,7 @@
 				</executions>
 				<configuration>
 					<doCheck>false</doCheck>
-					<doUpdate>true</doUpdate>
+					<doUpdate>false</doUpdate>
  					<username>ics</username>
 					<password>icsics</password>
 				</configuration>
