@@ -88,6 +88,7 @@
 				<version>1.8</version>
 				<executions>
 					<execution>
+						<id>process-resources</id>
 						<phase>process-resources</phase>
 						<configuration>
 							<target>
@@ -105,6 +106,18 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy file="target/${project.artifactId}-${project.version}-test.jar" tofile="target/${project.artifactId}-test.jar"/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 
@@ -116,7 +129,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<finalName>${project.artifactId}-test</finalName>
+					<!-- No version is provided to simplify the test with server. -->
+					<finalName>${project.artifactId}-${project.version}-test</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
@@ -128,7 +142,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 </project>
