@@ -6,59 +6,59 @@
 		
 		<!-- These applications are provided with the cameo-api-java sources -->
 		<application name="fastres" starting_time="0" retries="0" stopping_time="1" multiple="yes" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.FastResultApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.FastResultApplication"/>
 		</application>
 		
 		<application name="statejava" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestStateApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestStateApplication"/>
 		</application>
 						
 		<application name="pubjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestPublisherApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestPublisherApplication"/>
 		</application>
 		
 		<application name="publoopjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestPublisherLoopApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestPublisherLoopApplication"/>
 		</application>
 						
 		<application name="subpubjava" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestSubscriberAndPublisherApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestSubscriberAndPublisherApplication"/>
 		</application>
 
 		<application name="nsubjava" starting_time="0" retries="0" stopping_time="1" log_directory="logs" multiple="yes" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestNonSyncSubscriberApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestNonSyncSubscriberApplication"/>
 		</application>
 		
 		<application name="nsubpubjava" starting_time="0" retries="0" stopping_time="-1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestNonSyncSubscribersAndPublisherApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestNonSyncSubscribersAndPublisherApplication"/>
 		</application>
 
 		<application name="resjava" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestResultApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestResultApplication"/>
 		</application>
 		
 		<application name="startresjava" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestStartWithResultApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestStartWithResultApplication"/>
 		</application>
 		
 		<application name="stopjava" starting_time="0" retries="0" stopping_time="1000" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestStopApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestStopApplication"/>
 		</application>
 		
 		<application name="startstopjava" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestStartWithStopApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestStartWithStopApplication"/>
 		</application>
 								
 		<application name="canceljava" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestCancelApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestCancelApplication"/>
 		</application>
 		
 		<application name="repjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestResponderApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestResponderApplication"/>
 		</application>
 
 		<application name="reqrepjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar:../cameo-api-java/target/test-classes fr.ill.ics.cameo.test.TestRequesterAndResponderApplication"/>
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestRequesterAndResponderApplication"/>
 		</application>
 
 		<!-- These applications are provided with the cameo-api-cpp sources -->
