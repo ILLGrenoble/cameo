@@ -85,4 +85,7 @@ nobase_include_HEADERS = \
 	cameo/cameo.h
 		
 libcameo_la_CPPFLAGS = \
-	$(CAMEO_CXXFLAGS) -export-dynamic
+	$(CAMEO_CXXFLAGS)
+
+libcameo_la_LDFLAGS = \
+	-version-number $(LIBRARY_VERSION) -export-dynamic $(LDFLAGS)

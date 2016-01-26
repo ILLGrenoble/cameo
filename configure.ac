@@ -5,6 +5,8 @@
 # -----------------------------------------------------------------------------
 
 AC_INIT(cameo-api-cpp, 0.0.1)
+LIBRARY_VERSION=0:0:1
+
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(src/cameo/Application.cpp)
 
@@ -28,7 +30,7 @@ AC_ARG_ENABLE(tests,
              esac],[tests=false])
 AM_CONDITIONAL([TESTS], [test "$tests" = true])
 
-
+AC_SUBST(LIBRARY_VERSION)
 
 # temporarily disabled
 #AX_CXX_COMPILE_STDCXX_11
