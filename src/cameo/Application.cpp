@@ -86,7 +86,7 @@ void This::init(int argc, char *argv[]) {
 std::string This::getReference() {
 	if (m_instance != 0) {
 		ostringstream os;
-		os << getName() << "." << getId() << "@" << getHostEndpoint();
+		os << getName() << "." << getId() << "@" << getEndpoint();
 		return os.str();
 	}
 	return "";
@@ -119,9 +119,10 @@ This::This(int argc, char *argv[]) :
 	string port = tokens[2];
 	istringstream is(port);
 	is >> m_port;
-	m_hostEndpoint = m_url + ":" + port;
 
-	m_url = "tcp://localhost";
+	// We separated host endpoint and server in the past (server being tcp://localhost)
+	// but that generates troubles when two applications communicate remotely.
+	// However leave the same value seems to be ok.
 	m_serverEndpoint = m_url + ":" + port;
 
 	string nameId = tokens[3];
@@ -181,9 +182,9 @@ int This::getTimeout() {
 	return m_instance->Services::getTimeout();
 }
 
-const std::string& This::getHostEndpoint() {
+const std::string& This::getEndpoint() {
 	if (m_instance != 0) {
-		return m_instance->m_hostEndpoint;
+		return m_instance->m_serverEndpoint;
 	}
 	static string result;
 	return result;
@@ -1203,7 +1204,7 @@ std::ostream& operator<<(std::ostream& os, const application::Responder& respond
 	os << "rep." << responder.getName()
 		<< ":" << responder.m_impl->m_application->getName()
 		<< "." << responder.m_impl->m_application->getId()
-		<< "@" << responder.m_impl->m_application->getHostEndpoint();
+		<< "@" << responder.m_impl->m_application->getEndpoint();
 
 	return os;
 }
@@ -1213,7 +1214,7 @@ std::ostream& operator<<(std::ostream& os, const application::Requester& request
 	os << "req." << requester.getName()
 		<< ":" << requester.m_impl->m_application->getName()
 		<< "." << requester.m_impl->m_application->getId()
-		<< "@" << requester.m_impl->m_application->getHostEndpoint();
+		<< "@" << requester.m_impl->m_application->getEndpoint();
 
 	return os;
 }

@@ -99,7 +99,7 @@ public:
 	static int getId();
 	static void setTimeout(int timeout);
 	static int getTimeout();
-	static const std::string& getHostEndpoint();
+	static const std::string& getEndpoint();
 	static Server& getServer();
 
 	/**
@@ -150,7 +150,6 @@ private:
 	void handleStopImpl(StopFunctionType function);
 
 	ApplicationImpl * m_impl;
-	std::string m_hostEndpoint;
 	std::string m_name;
 	int m_id;
 
