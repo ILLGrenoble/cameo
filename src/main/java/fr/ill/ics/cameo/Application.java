@@ -63,11 +63,11 @@ public class Application {
 			impl.setTimeout(timeout);
 		}
 		
-		static public String getHostEndpoint() {
+		static public String getEndpoint() {
 			if (impl == null) {
 				return "";				
 			}
-			return impl.getHostEndpoint();
+			return impl.getEndpoint();
 		}
 		
 		static public Server getServer() {
@@ -177,7 +177,7 @@ public class Application {
 		
 		static String getReference() {
 			if (impl != null) {
-				return getName() + "." + getId() + "@" + getHostEndpoint();
+				return getName() + "." + getId() + "@" + getEndpoint();
 			}
 			return "";
 		}

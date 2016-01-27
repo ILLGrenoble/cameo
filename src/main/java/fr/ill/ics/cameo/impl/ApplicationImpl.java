@@ -50,7 +50,6 @@ import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 
 public class ApplicationImpl extends ServicesImpl {
 	
-	private String hostEndpoint;
 	private String name;
 	private int id;
 
@@ -90,9 +89,10 @@ public class ApplicationImpl extends ServicesImpl {
 		
 		url = tokens[0] + ":" + tokens[1];
 		port = Integer.parseInt(tokens[2]);
-		hostEndpoint = url + ":" + port;
 		
-		url = "tcp://localhost";
+		// We separated host endpoint and server in the past (server being tcp://localhost)
+		// but that generates troubles when two applications communicate remotely.
+		// However leave the same value seems to be ok.
 		serverEndpoint = url + ":" + port;
 		
 		String nameId = tokens[3];
@@ -125,10 +125,6 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	public String getEndpoint() {
 		return serverEndpoint;
-	}
-	
-	public String getHostEndpoint() {
-		return hostEndpoint;
 	}
 	
 	public String getStarterEndpoint() {
