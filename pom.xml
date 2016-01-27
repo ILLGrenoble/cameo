@@ -12,6 +12,14 @@
 		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-api-java.git</connection>
 	</scm>
 
+	<distributionManagement>
+		<repository>
+			<id>ill.repo</id>
+			<name>The ILL Maven Repository</name>
+			<url>https://maven.ill.fr/content/repositories/releases</url>
+		</repository>
+	</distributionManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -111,7 +119,7 @@
 						<phase>install</phase>
 						<configuration>
 							<target>
-								<copy file="target/${project.artifactId}-${project.version}-test.jar" tofile="target/${project.artifactId}-test.jar"/>
+								<copy file="target/${project.artifactId}-${project.version}-test.jar" tofile="target/${project.artifactId}-test.jar" />
 							</target>
 						</configuration>
 						<goals>
@@ -143,6 +151,17 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.6</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ill.repo</serverId>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<nexusUrl>https://maven.ill.fr</nexusUrl>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
