@@ -4,16 +4,16 @@
 #
 AC_DEFUN([AC_LIBPROTOBUF],
 [ 
-  AC_ARG_WITH([libprotobuf],
-         AS_HELP_STRING([--with-libprotobuf=PREFIX],[Specify protobuf library location]),
+  AC_ARG_WITH([protobuf],
+         AS_HELP_STRING([--with-protobuf=PREFIX],[Specify protobuf library location]),
          [],
-              [with_libprotobuf=yes])
+              [with_protobuf=yes])
 
     PROTOBUF_LIBS=
     protobuf_save_LIBS="$LIBS"
-    if test $with_libprotobuf != no; then
-        if test $with_libprotobuf != yes; then
-            protobuf_possible_path="$with_libprotobuf"
+    if test $with_protobuf != no; then
+        if test $with_protobuf != yes; then
+            protobuf_possible_path="$with_protobuf"
         else
             protobuf_possible_path="/usr/local /usr /opt /var"
         fi

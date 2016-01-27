@@ -4,16 +4,16 @@
 #
 AC_DEFUN([AC_LIBZMQ],
 [ 
-  AC_ARG_WITH([libzmq],
-         AS_HELP_STRING([--with-libzmq=PREFIX],[Specify zeromq library location]),
+  AC_ARG_WITH([zmq],
+         AS_HELP_STRING([--with-zmq=PREFIX],[Specify zeromq library location]),
          [],
-              [with_libzmq=yes])
+              [with_zmq=yes])
 
     ZEROMQ_LIBS=
     zmq_save_LIBS="$LIBS"
-    if test $with_libzmq != no; then
-        if test $with_libzmq != yes; then
-            zeromq_possible_path="$with_libzmq"
+    if test $with_zmq != no; then
+        if test $with_zmq != yes; then
+            zeromq_possible_path="$with_zmq"
         else
             zeromq_possible_path="/usr/local /usr /opt /var"
         fi
