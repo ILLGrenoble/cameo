@@ -60,6 +60,8 @@ public class Manager extends ConfigLoader {
 		super(xmlPath);
 		LogInfo.getInstance().init();
 		
+		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		
 		showApplicationConfigs();
 		
 		applicationMap = new ConcurrentHashMap<Integer, Application>();
