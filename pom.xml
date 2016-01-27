@@ -11,9 +11,8 @@
 	<scm>
 		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-console.git</connection>
 	</scm>
-
+	<!-- <repositories> <repository> <id>ill.repo</id> <url>https://maven.ill.fr/content/repositories/snapshots</url> </repository> </repositories> -->
 	<properties>
-		<!-- <project.scm.id>git</project.scm.id> -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -38,7 +37,7 @@
 			</plugin>
 
 			<!-- Plugin to get the SVN revision -->
-	 		<plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 				<version>1.3</version>
@@ -53,7 +52,7 @@
 				<configuration>
 					<doCheck>false</doCheck>
 					<doUpdate>false</doUpdate>
- 					<username>ics</username>
+					<username>ics</username>
 					<password>icsics</password>
 				</configuration>
 			</plugin>
