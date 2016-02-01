@@ -519,7 +519,7 @@ public class Console {
 				Manifest manifest = new Manifest(resources.nextElement().openStream());
 				Attributes attributes = manifest.getMainAttributes();
 				
-				System.out.println("Cameo console version " + attributes.getValue("Specification-Version"));
+				System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "-" + attributes.getValue("Build-Timestamp"));
 				
 				return;
 			}
