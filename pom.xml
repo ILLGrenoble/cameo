@@ -81,6 +81,7 @@
 						</manifest>
 						<manifestEntries>
 							<SCM-Revision>${buildNumber}</SCM-Revision>
+							<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -126,6 +127,7 @@
 						</manifest>
 						<manifestEntries>
 							<SCM-Revision>${buildNumber}</SCM-Revision>
+							<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
 						</manifestEntries>
 					</archive>
 					<descriptorRefs>
