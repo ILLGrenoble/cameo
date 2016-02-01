@@ -525,8 +525,8 @@ public class Console {
 			}
 		
 		} catch (IOException E) {
-		      // handle
-		    }
+	      // handle
+	    }
 	}
 
 	public static void main(String[] args) {
