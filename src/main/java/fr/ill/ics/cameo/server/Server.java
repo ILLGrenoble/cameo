@@ -16,6 +16,12 @@
 
 package fr.ill.ics.cameo.server;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
@@ -56,6 +62,7 @@ public class Server {
 		
 		// verify args
 		if (args.length < 1) {
+			showVersion();
 			System.out.printf("Usage: <XML config file>\n");
 			System.exit(1);
 		}
@@ -203,5 +210,24 @@ public class Server {
 		}
 		
 		context.close();
+	}
+
+	private static void showVersion() {
+		try {
+			Enumeration<URL> resources = Server.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+			
+			while (resources.hasMoreElements()) {
+			    
+				Manifest manifest = new Manifest(resources.nextElement().openStream());
+				Attributes attributes = manifest.getMainAttributes();
+				
+				System.out.println("Cameo server version " + attributes.getValue("Specification-Version"));
+				
+				return;
+			}
+		
+		} catch (IOException E) {
+	      // handle
+	    }
 	}
 }
