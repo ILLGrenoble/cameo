@@ -16,9 +16,14 @@
 
 package fr.ill.ics.cameo.console;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
@@ -64,8 +69,11 @@ public class Console {
 			}
 		}
 
-		// Searching for the application name.
-		if ("-a".equals(args[currentIndex])) {
+		if (args.length == currentIndex) {
+			commandName = "show";
+			
+		} else 	if ("-a".equals(args[currentIndex])) {
+			// Searching for the application name.
 			// The application is specified with -a option.
 			if (args.length > currentIndex + 1) {
 				currentIndex += 1;
@@ -119,7 +127,9 @@ public class Console {
 				return;
 			}
 			
-			if (commandName.equals("start")) {
+			if (commandName.equals("version")) {
+				processVersion();
+			} else if (commandName.equals("start")) {
 				processStart();
 			} else if (commandName.equals("stop")) {
 				processStop();
@@ -151,6 +161,15 @@ public class Console {
 		}
 	}
 
+	private void processVersion() {
+
+		if (applicationName == null) {
+			System.out.println("Version of the server is not yet implemented.");
+		} else {
+			System.out.println("Version of an application is not yet implemented.");
+		}
+	}
+	
 	private LinkedList<Integer> getIDs(String applicationName) {
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
 		LinkedList<Integer> ids = new LinkedList<Integer>();
@@ -464,6 +483,8 @@ public class Console {
 
 	private static void help() {
 		
+		showVersion();
+		
 		System.out.println("Usage:");
 		System.out.println("[-e <endpoint>]         Defines the server endpoint.");
 		System.out.println("                        If not specified, the CAMEO_SERVER environment variable is used.");
@@ -488,6 +509,26 @@ public class Console {
 		System.out.println("-e tcp://localhost:7000 -a subpubjava test pubjava");
 	}
 	
+	private static void showVersion() {
+		
+		try {
+			Enumeration<URL> resources = Console.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+			
+			while (resources.hasMoreElements()) {
+			    
+				Manifest manifest = new Manifest(resources.nextElement().openStream());
+				Attributes attributes = manifest.getMainAttributes();
+				
+				System.out.println("Cameo console version " + attributes.getValue("Specification-Version"));
+				
+				return;
+			}
+		
+		} catch (IOException E) {
+		      // handle
+		    }
+	}
+
 	public static void main(String[] args) {
 
 		// test arguments
