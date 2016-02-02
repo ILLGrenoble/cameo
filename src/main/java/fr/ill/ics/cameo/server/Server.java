@@ -213,6 +213,7 @@ public class Server {
 	}
 
 	private static void showVersion() {
+		
 		try {
 			Enumeration<URL> resources = Server.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
 			
@@ -221,9 +222,13 @@ public class Server {
 				Manifest manifest = new Manifest(resources.nextElement().openStream());
 				Attributes attributes = manifest.getMainAttributes();
 				
-				System.out.println("Cameo server version " + attributes.getValue("Specification-Version") + "-" + attributes.getValue("Build-Timestamp"));
-				
-				return;
+				if (attributes.getValue("Specification-Version") != null 
+					&& attributes.getValue("Build-Timestamp") != null) {
+					System.out.println("Cameo server version " + attributes.getValue("Specification-Version") + "--" + attributes.getValue("Build-Timestamp"));
+					
+					// The manifest is found, we can return.
+					return;
+				}
 			}
 		
 		} catch (IOException E) {
