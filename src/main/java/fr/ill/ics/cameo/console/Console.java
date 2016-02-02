@@ -519,9 +519,13 @@ public class Console {
 				Manifest manifest = new Manifest(resources.nextElement().openStream());
 				Attributes attributes = manifest.getMainAttributes();
 				
-				System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "-" + attributes.getValue("Build-Timestamp"));
-				
-				return;
+				if (attributes.getValue("Specification-Version") != null 
+					&& attributes.getValue("Build-Timestamp") != null) {
+					System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "-" + attributes.getValue("Build-Timestamp"));
+					
+					// The manifest is found, we can return.
+					return;
+				}
 			}
 		
 		} catch (IOException E) {
