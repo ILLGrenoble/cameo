@@ -521,7 +521,7 @@ public class Console {
 				
 				if (attributes.getValue("Specification-Version") != null 
 					&& attributes.getValue("Build-Timestamp") != null) {
-					System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "-" + attributes.getValue("Build-Timestamp"));
+					System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "--" + attributes.getValue("Build-Timestamp"));
 					
 					// The manifest is found, we can return.
 					return;
