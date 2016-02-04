@@ -38,7 +38,7 @@ public class Console {
 	private Server server;
 	String[] applicationArgs;
 	private String applicationName = null;
-	private String commandName = "list";
+	private String commandName = "show";
 	private int applicationId = -1;
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
@@ -494,7 +494,7 @@ public class Console {
 		System.out.println("  list                  Lists the available applications.");
 		System.out.println("  [name] show           Shows all the started applications.");
 		System.out.println("  [name] start   <args> Starts the application with name.");
-		System.out.println("  [name] exec    <args> Starts the application with name and blocks until its termination. Output streams are displayed");
+		System.out.println("  [name] exec    <args> Starts the application with name and blocks until its termination. Output streams are displayed.");
 		System.out.println("  [name] test    <args> Same than exec.");
 		System.out.println("  [name] stop    [id]   Stops the application with name.");
 		System.out.println("  [name] kill    [id]   Kills the application with name.");
