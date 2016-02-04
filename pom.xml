@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-console</artifactId>
-	<version>0.0.1-TEST</version>
+	<version>0.0.1</version>
 	<name>CameoConsole</name>
 	<description>Cameo Console</description>
 	<url>https://code.ill.fr/instrument-control/cameo-console</url>

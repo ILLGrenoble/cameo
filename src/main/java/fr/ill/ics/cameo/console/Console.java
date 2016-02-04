@@ -38,7 +38,7 @@ public class Console {
 	private Server server;
 	String[] applicationArgs;
 	private String applicationName = null;
-	private String commandName = "show";
+	private String commandName = "apps";
 	private int applicationId = -1;
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
@@ -70,7 +70,7 @@ public class Console {
 		}
 
 		if (args.length == currentIndex) {
-			commandName = "show";
+			commandName = "apps";
 			
 		} else 	if ("-a".equals(args[currentIndex])) {
 			// Searching for the application name.
@@ -90,7 +90,7 @@ public class Console {
 				currentIndex += 1;
 				
 			} else {
-				commandName = "show";
+				commandName = "apps";
 			}
 			
 		} else {
@@ -135,7 +135,7 @@ public class Console {
 				processStop();
 			} else if (commandName.equals("kill")) {
 				processKill();
-			} else if (commandName.equals("show")) {
+			} else if (commandName.equals("apps")) {
 				if (applicationName == null) {
 					processShowAll();
 				} else {
@@ -492,7 +492,7 @@ public class Console {
 		System.out.println("[-a <name>]             Defines the application name.");
 		System.out.println("[commands]");
 		System.out.println("  list                  Lists the available applications.");
-		System.out.println("  [name] show           Shows all the started applications.");
+		System.out.println("  [name] apps           Shows all the started applications.");
 		System.out.println("  [name] start   <args> Starts the application with name.");
 		System.out.println("  [name] exec    <args> Starts the application with name and blocks until its termination. Output streams are displayed.");
 		System.out.println("  [name] test    <args> Same than exec.");
