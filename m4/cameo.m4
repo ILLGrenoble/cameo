@@ -10,7 +10,7 @@ AC_DEFUN([AC_CAMEO],
               [with_cameo=yes])
 
     AC_LIBZMQ
-    AC_LIBPROTOBUF
+    AC_LIBPROTOBUF_LITE
     AX_BOOST_THREAD
 
     CAMEO_CFLAGS=
