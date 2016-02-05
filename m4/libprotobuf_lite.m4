@@ -2,7 +2,7 @@
 # Version 01/07/2015
 # defines LIBPROTOBUF_LDFLAGS, LIBPROTOBUF_LIB
 #
-AC_DEFUN([AC_LIBPROTOBUFLITE],
+AC_DEFUN([AC_LIBPROTOBUF_LITE],
 [ 
   AC_ARG_WITH([protobuf],
          AS_HELP_STRING([--with-protobuf=PREFIX],[Specify protobuf library location]),
