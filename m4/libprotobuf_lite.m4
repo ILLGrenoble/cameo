@@ -2,7 +2,7 @@
 # Version 01/07/2015
 # defines LIBPROTOBUF_LDFLAGS, LIBPROTOBUF_LIB
 #
-AC_DEFUN([AC_LIBPROTOBUF],
+AC_DEFUN([AC_LIBPROTOBUFLITE],
 [ 
   AC_ARG_WITH([protobuf],
          AS_HELP_STRING([--with-protobuf=PREFIX],[Specify protobuf library location]),
@@ -17,10 +17,10 @@ AC_DEFUN([AC_LIBPROTOBUF],
         else
             protobuf_possible_path="/usr/local /usr /opt /var"
         fi
-        AC_MSG_CHECKING([for protobuf -lprotobuf])
+        AC_MSG_CHECKING([for protobuf -lprotobuf-lite])
         protobuf_found=no
         for protobuf_path_tmp in $protobuf_possible_path ; do
-            LIBS="$LIBS $PROTOBUF_LIBS -lprotobuf"
+            LIBS="$LIBS $PROTOBUF_LIBS -lprotobuf-lite"
             AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],[[]])],
                         [PROTOBUF_LIBS="-L$protobuf_path_tmp/lib"
                          protobuf_found=yes]
@@ -33,7 +33,7 @@ AC_DEFUN([AC_LIBPROTOBUF],
         if test $protobuf_found = yes; then
                     
             LIBPROTOBUF_LDFLAGS="$PROTOBUF_LIBS"
-            LIBPROTOBUF_LIB="-lprotobuf"
+            LIBPROTOBUF_LIB="-lprotobuf-lite"
         
             AC_MSG_RESULT(yes)
             AC_SUBST(LIBPROTOBUF_LDFLAGS)
