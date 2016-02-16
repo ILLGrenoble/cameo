@@ -87,6 +87,7 @@ Improvements:
 + improve the error messages
 	should always be set when ERROR state occurs
 + change implementation of the communication client/server with JSON (more portable than protobuf)
+	look at string encoding: UTF8? with ZeroMQ?
 + implement toString methods with JSON format
 + refactor use of ZeroMQ
 	gather code
