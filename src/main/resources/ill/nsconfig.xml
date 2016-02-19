@@ -15,7 +15,7 @@
 		</application>
 
 		<application name="nsv" starting_time="inf" retries="0" stopping_time="1" multiple="no" restart="no" pass_info="yes" working_directory="/users/legoc/nomad/NomadServer/bin">
-			<start executable="valgrind" args="--error-limit=no --log-file=nomad.log /users/legoc/nomad/NomadServer/bin/nomad -ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
+			<start executable="valgrind" args="--error-limit=no --log-file=nomadvalgrind.log /users/legoc/nomad/NomadServer/bin/nomad -ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
 		</application>
 	</applications>
 	
