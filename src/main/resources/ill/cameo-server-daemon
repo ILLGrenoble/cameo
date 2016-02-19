@@ -4,7 +4,7 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DAEMON=/usr/bin/java
 INSTALL_PATH=/users/legoc/nappli/cameo-server
-CONFIG_FILE=/users/legoc/nappli/NomadServerTest/nsdppconfig.xml
+CONFIG_FILE=/users/legoc/nappli/NomadServerTest/nsconfig.xml
 EXEC_DIR=/users/legoc/nappli/NomadServerTest/
 DAEMON_ARGS="-jar $INSTALL_PATH/target/cameo-server-0.0.1-full.jar $CONFIG_FILE"
 NAME=cameo-server
