@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 public final class LogInfo {
 
-	private final Logger logger = Logger.getLogger("nappli.log");
+	private final Logger logger = Logger.getLogger("cameo.log");
 	private final static LogInfo instance = new LogInfo();
 
 	private static class DebugFormatter extends Formatter {
@@ -63,7 +63,7 @@ public final class LogInfo {
 				logDirectory.mkdir();
 			}
 			
-			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/nappli.log", false);
+			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/cameo.log", false);
 			fileHandler.setFormatter(new LogFormatter());
 			fileHandler.setLevel(Level.FINE);
 			logger.addHandler(fileHandler);
@@ -79,7 +79,7 @@ public final class LogInfo {
 			logger.setUseParentHandlers(false);
 
 			// first log
-			logger.fine("Logs written to " + ConfigManager.getInstance().getLogPath() + "/nappli.log");
+			logger.fine("Logs written to " + ConfigManager.getInstance().getLogPath() + "/cameo.log");
 			
 		} catch (SecurityException e) {
 			e.printStackTrace();
