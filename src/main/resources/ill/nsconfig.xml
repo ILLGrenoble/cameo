@@ -9,7 +9,7 @@
 			<error executable="/users/legoc/nomad/NomadServer/bin/nomadservererror.sh"/>
 		</application>
 
-		<application name="nsd" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes" working_directory="/users/legoc/nomad/NomadServer/bin">
+		<application name="nsd" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes" working_directory="/users/legoc/nomad/NomadServer/bin" log_directory="/users/legoc/nappli/NomadServerTest">
 			<start executable="/users/legoc/nomad/NomadServer/bin/nomad" args="-ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
 			<stop executable="kill" args="-2 $PID"/>
 		</application>
