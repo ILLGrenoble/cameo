@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="7000" max_applications="20" log_directory="/users/legoc/nappli/NomadServerTest" debug="ON" polling_time="100">
+<config port="7000" max_applications="20" log_directory="/home/dpt/legoc/serverlog" debug="ON" polling_time="100">
 
 	<applications>
 		<application name="ns" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes" working_directory="/users/legoc/nomad/NomadServer/bin">
