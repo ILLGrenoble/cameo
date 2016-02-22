@@ -114,7 +114,15 @@ public abstract class ConfigLoader {
 			application.setDescription(item.getAttributeValue("description"));
 			application.setDirectory(item.getAttributeValue("working_directory"));
 			application.setErrorExecutable(item.getAttributeValue("error_command"));
-			application.setLogPath(item.getAttributeValue("log_directory"));
+			
+			String logDirectory = item.getAttributeValue("log_directory");
+			
+			if ("default".equals(logDirectory)) {
+				application.setLogPath(ConfigManager.getInstance().getLogPath());	
+			} else {
+				application.setLogPath(logDirectory);
+			}
+						
 			application.setStartingTime(item.getAttributeValue("starting_time"));
 			application.setRetries(item.getAttributeValue("retries"));
 			application.setStoppingTime(item.getAttributeValue("stopping_time"));

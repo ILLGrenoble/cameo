@@ -46,7 +46,11 @@ public final class ConfigManager {
 	}
 	
 	public void setLogPath(String path) {
-		logPath = path;
+		if (path == null) {
+			logPath = ".";
+		} else {
+			logPath = path;
+		}	
 	}
 
 	public int getPollingTime() {
