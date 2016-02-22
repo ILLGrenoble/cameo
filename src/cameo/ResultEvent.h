@@ -18,8 +18,8 @@
 #define CAMEO_RESULTEVENT_H_
 
 #include <iostream>
-#include "../cameo/Application.h"
-#include "../cameo/Event.h"
+#include "Application.h"
+#include "Event.h"
 
 namespace cameo {
 

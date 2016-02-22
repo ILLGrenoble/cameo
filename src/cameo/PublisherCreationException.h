@@ -17,7 +17,7 @@
 #ifndef CAMEO_PUBLISHERCREATIONEXCEPTION_H_
 #define CAMEO_PUBLISHERCREATIONEXCEPTION_H_
 
-#include "../cameo/RemoteException.h"
+#include "RemoteException.h"
 
 namespace cameo {
 

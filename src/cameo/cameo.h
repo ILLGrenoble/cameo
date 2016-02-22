@@ -17,7 +17,7 @@
 #ifndef CAMEO_H_
 #define CAMEO_H_
 
-#include "../cameo/Application.h"
-#include "../cameo/Server.h"
+#include "Application.h"
+#include "Server.h"
 
 #endif

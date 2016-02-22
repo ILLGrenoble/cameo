@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/ResponderCreationException.h"
+#include "ResponderCreationException.h"
 
 namespace cameo {
 

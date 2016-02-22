@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/RemoteException.h"
+#include "RemoteException.h"
 
 namespace cameo {
 

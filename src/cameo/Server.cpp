@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/Server.h"
+#include "Server.h"
 
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
-#include "../cameo/Application.h"
-#include "../cameo/impl/ServicesImpl.h"
-#include "../cameo/impl/SocketImpl.h"
-#include "../cameo/ProtoType.h"
+#include "Application.h"
+#include "impl/ServicesImpl.h"
+#include "impl/SocketImpl.h"
+#include "ProtoType.h"
 
 using namespace std;
 

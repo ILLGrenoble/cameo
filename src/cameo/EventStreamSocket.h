@@ -18,7 +18,7 @@
 #define CAMEO_EVENTSTREAMSOCKET_H_
 
 #include <memory>
-#include "../cameo/Event.h"
+#include "Event.h"
 
 namespace cameo {
 

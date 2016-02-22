@@ -17,8 +17,8 @@
 #ifndef CAMEO_APPLICATIONIMPL_H_
 #define CAMEO_APPLICATIONIMPL_H_
 
-#include "../../cameo/impl/HandlerImpl.h"
-#include "../../cameo/impl/ServicesImpl.h"
+#include "HandlerImpl.h"
+#include "ServicesImpl.h"
 
 namespace cameo {
 

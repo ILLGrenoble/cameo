@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/StarterServerException.h"
+#include "StarterServerException.h"
 
 namespace cameo {
 

@@ -23,13 +23,13 @@
 #include <set>
 #include <memory>
 #include <stdint.h>
-#include "../cameo/ConnectionTimeout.h"
-#include "../cameo/PublisherCreationException.h"
-#include "../cameo/RequesterCreationException.h"
-#include "../cameo/ResponderCreationException.h"
-#include "../cameo/Response.h"
-#include "../cameo/Services.h"
-#include "../cameo/StateException.h"
+#include "ConnectionTimeout.h"
+#include "PublisherCreationException.h"
+#include "RequesterCreationException.h"
+#include "ResponderCreationException.h"
+#include "Response.h"
+#include "Services.h"
+#include "StateException.h"
 
 namespace cameo {
 

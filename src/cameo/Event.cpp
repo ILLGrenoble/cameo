@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/Event.h"
+#include "Event.h"
 
 #include <iostream>
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/SocketImpl.h"
+#include "SocketImpl.h"
 
 #include <iostream>
 

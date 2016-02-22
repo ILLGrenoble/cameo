@@ -21,8 +21,8 @@
 #include <vector>
 #include <stdint.h>
 
-#include "../../cameo/impl/SocketWaitingImpl.h"
-#include "../../cameo/impl/zmq.hpp"
+#include "SocketWaitingImpl.h"
+#include "zmq.hpp"
 
 namespace cameo {
 

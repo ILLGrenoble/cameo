@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/Serializer.h"
+#include "Serializer.h"
 
 #include "../../proto/Messages.pb.h"
 

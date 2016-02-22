@@ -19,8 +19,8 @@
 
 #include "../../proto/Messages.pb.h"
 #include <vector>
-#include "../../cameo/impl/zmq.hpp"
-#include "../../cameo/ProtoType.h"
+#include "zmq.hpp"
+#include "../ProtoType.h"
 
 namespace cameo {
 

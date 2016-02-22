@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/StatusEvent.h"
+#include "StatusEvent.h"
 
 #include <iostream>
 

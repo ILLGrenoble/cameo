@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/PortEvent.h"
+#include "PortEvent.h"
 
 #include <iostream>
 

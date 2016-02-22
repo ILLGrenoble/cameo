@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/WaitingImplSet.h"
+#include "WaitingImplSet.h"
 
-#include "../../cameo/impl/WaitingImpl.h"
+#include "WaitingImpl.h"
 
 using namespace std;
 

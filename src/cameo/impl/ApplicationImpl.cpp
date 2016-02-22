@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/ApplicationImpl.h"
+#include "ApplicationImpl.h"
 
 #include "../EventStreamSocket.h"
 #include <memory>
 #include <boost/bind.hpp>
 
 #include <iostream>
-#include "../../cameo/Application.h"
+#include "../Application.h"
 
 using namespace std;
 

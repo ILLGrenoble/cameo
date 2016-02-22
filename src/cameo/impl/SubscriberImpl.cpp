@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/SubscriberImpl.h"
+#include "SubscriberImpl.h"
 
 #include <sstream>
-#include "../../cameo/impl/CancelIdGenerator.h"
-#include "../../cameo/impl/Serializer.h"
-#include "../../cameo/impl/ServicesImpl.h"
-#include "../../cameo/Server.h"
+#include "CancelIdGenerator.h"
+#include "Serializer.h"
+#include "ServicesImpl.h"
+#include "../Server.h"
 
 using namespace std;
 

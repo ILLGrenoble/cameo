@@ -19,8 +19,8 @@
 
 #include <string>
 #include <memory>
-#include "../../cameo/impl/WaitingImpl.h"
-#include "../../cameo/impl/zmq.hpp"
+#include "WaitingImpl.h"
+#include "zmq.hpp"
 
 namespace cameo {
 

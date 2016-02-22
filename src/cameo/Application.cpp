@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/Application.h"
+#include "Application.h"
 
 #include <sstream>
 #include <iostream>
@@ -22,25 +22,25 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include "../cameo/EventStreamSocket.h"
-#include "../cameo/impl/ApplicationImpl.h"
-#include "../cameo/impl/PublisherImpl.h"
-#include "../cameo/impl/RequesterImpl.h"
-#include "../cameo/impl/RequestImpl.h"
-#include "../cameo/impl/ResponderImpl.h"
-#include "../cameo/impl/Serializer.h"
-#include "../cameo/impl/SocketImpl.h"
-#include "../cameo/impl/SubscriberImpl.h"
-#include "../cameo/impl/WaitingImpl.h"
-#include "../cameo/impl/WaitingImplSet.h"
-#include "../cameo/PortEvent.h"
-#include "../cameo/ProtoType.h"
-#include "../cameo/PublisherEvent.h"
-#include "../cameo/ResultEvent.h"
-#include "../cameo/Server.h"
-#include "../cameo/StarterServerException.h"
-#include "../cameo/StatusEvent.h"
-#include "../cameo/StatusEvent.h"
+#include "EventStreamSocket.h"
+#include "impl/ApplicationImpl.h"
+#include "impl/PublisherImpl.h"
+#include "impl/RequesterImpl.h"
+#include "impl/RequestImpl.h"
+#include "impl/ResponderImpl.h"
+#include "impl/Serializer.h"
+#include "impl/SocketImpl.h"
+#include "impl/SubscriberImpl.h"
+#include "impl/WaitingImpl.h"
+#include "impl/WaitingImplSet.h"
+#include "PortEvent.h"
+#include "ProtoType.h"
+#include "PublisherEvent.h"
+#include "ResultEvent.h"
+#include "Server.h"
+#include "StarterServerException.h"
+#include "StatusEvent.h"
+#include "StatusEvent.h"
 
 using namespace std;
 

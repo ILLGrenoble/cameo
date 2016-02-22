@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/Response.h"
+#include "Response.h"
 
 namespace cameo {
 

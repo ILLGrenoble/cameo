@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/ResponderImpl.h"
+#include "ResponderImpl.h"
 
 #include <boost/bind.hpp>
 #include <sstream>
-#include "../../cameo/Application.h"
-#include "../../cameo/impl/ApplicationImpl.h"
-#include "../../cameo/impl/RequestImpl.h"
-#include "../../cameo/impl/Serializer.h"
+#include "../Application.h"
+#include "ApplicationImpl.h"
+#include "RequestImpl.h"
+#include "Serializer.h"
 
 using namespace std;
 using namespace boost;

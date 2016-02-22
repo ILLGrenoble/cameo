@@ -18,7 +18,7 @@
 #define CAMEO_PUBLISHEREVENT_H_
 
 #include <iostream>
-#include "../cameo/Event.h"
+#include "Event.h"
 
 namespace cameo {
 

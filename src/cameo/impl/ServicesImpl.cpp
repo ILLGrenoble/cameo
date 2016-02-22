@@ -14,11 +14,11 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/ServicesImpl.h"
+#include "ServicesImpl.h"
 
 #include <iostream>
 #include <sstream>
-#include "../../cameo/ConnectionTimeout.h"
+#include "../ConnectionTimeout.h"
 
 using namespace std;
 

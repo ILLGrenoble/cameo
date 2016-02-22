@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include "../../cameo/impl/zmq.hpp"
+#include "zmq.hpp"
 
 namespace cameo {
 

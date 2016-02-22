@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/ConnectionTimeout.h"
+#include "ConnectionTimeout.h"
 
 namespace cameo {
 

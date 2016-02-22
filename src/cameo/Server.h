@@ -19,11 +19,11 @@
 
 #include <vector>
 #include <memory>
-#include "../cameo/Application.h"
-#include "../cameo/ConnectionTimeout.h"
-#include "../cameo/Response.h"
-#include "../cameo/Services.h"
-#include "../cameo/SubscriberCreationException.h"
+#include "Application.h"
+#include "ConnectionTimeout.h"
+#include "Response.h"
+#include "Services.h"
+#include "SubscriberCreationException.h"
 
 namespace cameo {
 

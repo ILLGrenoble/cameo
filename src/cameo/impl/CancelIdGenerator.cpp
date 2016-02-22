@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/CancelIdGenerator.h"
+#include "CancelIdGenerator.h"
 
 using namespace std;
 

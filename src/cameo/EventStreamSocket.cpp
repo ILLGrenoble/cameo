@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/EventStreamSocket.h"
+#include "EventStreamSocket.h"
 
-#include "../cameo/impl/SocketImpl.h"
-#include "../cameo/impl/SocketWaitingImpl.h"
-#include "../cameo/PortEvent.h"
-#include "../cameo/PublisherEvent.h"
-#include "../cameo/ResultEvent.h"
-#include "../cameo/StatusEvent.h"
+#include "impl/SocketImpl.h"
+#include "impl/SocketWaitingImpl.h"
+#include "PortEvent.h"
+#include "PublisherEvent.h"
+#include "ResultEvent.h"
+#include "StatusEvent.h"
 #include "../proto/Messages.pb.h"
 
 using namespace std;

@@ -14,16 +14,16 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/Services.h"
+#include "Services.h"
 
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "../cameo/impl/CancelIdGenerator.h"
-#include "../cameo/impl/ServicesImpl.h"
-#include "../cameo/impl/SocketImpl.h"
-#include "../cameo/ProtoType.h"
+#include "impl/CancelIdGenerator.h"
+#include "impl/ServicesImpl.h"
+#include "impl/SocketImpl.h"
+#include "ProtoType.h"
 
 using namespace std;
 

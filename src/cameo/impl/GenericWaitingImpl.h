@@ -18,7 +18,7 @@
 #define CAMEO_GENERICWAITINGIMPL_H_
 
 #include <boost/function.hpp>
-#include "../../cameo/impl/WaitingImpl.h"
+#include "WaitingImpl.h"
 
 namespace cameo {
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/ResultEvent.h"
+#include "ResultEvent.h"
 
 #include <iostream>
 

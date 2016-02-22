@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/PublisherEvent.h"
+#include "PublisherEvent.h"
 
 #include <iostream>
 

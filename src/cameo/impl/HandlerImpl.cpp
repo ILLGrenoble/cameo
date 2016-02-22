@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/HandlerImpl.h"
+#include "HandlerImpl.h"
 
 namespace cameo {
 

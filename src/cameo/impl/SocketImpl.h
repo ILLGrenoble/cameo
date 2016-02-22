@@ -19,7 +19,7 @@
 
 #include <string>
 #include <memory>
-#include "../../cameo/impl/zmq.hpp"
+#include "zmq.hpp"
 
 namespace cameo {
 

@@ -14,11 +14,11 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/RequestImpl.h"
+#include "RequestImpl.h"
 
-#include "../../cameo/Application.h"
-#include "../../cameo/impl/ApplicationImpl.h"
-#include "../../cameo/impl/Serializer.h"
+#include "../Application.h"
+#include "ApplicationImpl.h"
+#include "Serializer.h"
 
 using namespace std;
 

@@ -19,7 +19,7 @@
 
 #include <string>
 #include <vector>
-#include "../cameo/EventStreamSocket.h"
+#include "EventStreamSocket.h"
 
 namespace cameo {
 

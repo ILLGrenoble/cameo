@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-#include "../../cameo/impl/GenericWaitingImpl.h"
+#include "GenericWaitingImpl.h"
 
 #include <iostream>
 
-#include "../../cameo/Application.h"
-#include "../../cameo/impl/WaitingImplSet.h"
+#include "../Application.h"
+#include "WaitingImplSet.h"
 
 using namespace std;
 

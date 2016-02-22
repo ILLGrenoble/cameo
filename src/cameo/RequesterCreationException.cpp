@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/RequesterCreationException.h"
+#include "RequesterCreationException.h"
 
 namespace cameo {
 

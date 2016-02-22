@@ -21,8 +21,8 @@
 #include <string>
 #include <stdint.h>
 
-#include "../../cameo/impl/GenericWaitingImpl.h"
-#include "../../cameo/impl/zmq.hpp"
+#include "GenericWaitingImpl.h"
+#include "zmq.hpp"
 
 namespace cameo {
 

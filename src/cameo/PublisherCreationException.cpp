@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/PublisherCreationException.h"
+#include "PublisherCreationException.h"
 
 namespace cameo {
 

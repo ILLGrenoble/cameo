@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/SubscriberCreationException.h"
+#include "SubscriberCreationException.h"
 
 namespace cameo {
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "../cameo/StateException.h"
+#include "StateException.h"
 
 namespace cameo {
 
