@@ -12,7 +12,7 @@
 USER=`hostname`
 HOME=/users/$USER
 NOMAD_HOME=$HOME/nomad/NomadServer
-PATH=$NOMAD_HOME/bin:/sbin:/usr/sbin:/bin:/usr/bin
+PATH=$NOMAD_HOME/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
 DAEMON=/usr/bin/java
 INSTALL_PATH=/usr/bin/cameo-server
 CONFIG_FILE=/users/$USER/.cameo/config.xml
