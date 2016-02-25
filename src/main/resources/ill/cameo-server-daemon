@@ -1,17 +1,25 @@
 #!/bin/sh
-
-# This file is copied from omniorb4-nameserver and modified
-PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DAEMON=/usr/bin/java
-INSTALL_PATH=/users/legoc/nappli/cameo-server
-CONFIG_FILE=/users/legoc/nappli/cameo-server/src/main/resources/ill/nsconfig.xml
-EXEC_DIR=/users/legoc/nappli/NomadServerTest/
-DAEMON_ARGS="-jar $INSTALL_PATH/target/cameo-server-0.0.1-full.jar $CONFIG_FILE"
-NAME=cameo-server
-DESC="cameo server"
+### BEGIN INIT INFO
+# Provides: cameo-server-daemon
+# Required-Start: 
+# Required-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: Start cameo server daemon
+### END INIT INFO
 
 # we can set the user (group if necessary)
-USER=legoc
+USER=`hostname`
+HOME=/users/$USER
+NOMAD_HOME=$HOME/nomad/NomadServer
+PATH=$NOMAD_HOME/bin:/sbin:/usr/sbin:/bin:/usr/bin
+DAEMON=/usr/bin/java
+INSTALL_PATH=/usr/bin/cameo-server
+CONFIG_FILE=/users/$USER/.cameo/config.xml
+EXEC_DIR=/users/$USER/.cameo
+DAEMON_ARGS="-jar /usr/share/java/cameo-server-0.0.1-full.jar $CONFIG_FILE"
+NAME=cameo-server
+DESC="cameo server"
 
 # path of the pidfile
 PIDFILE=$EXEC_DIR/$NAME.pid
