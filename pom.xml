@@ -14,7 +14,7 @@
 
 	<distributionManagement>
 		<repository>
-			<id>ill.repo</id>
+			<id>ill-repo</id>
 			<name>The ILL Maven Repository</name>
 			<url>https://maven.ill.fr/content/repositories/releases</url>
 		</repository>
