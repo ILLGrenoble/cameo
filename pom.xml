@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-api-java</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>CameoJavaAPI</name>
 	<description>Cameo Java API</description>
 	<url>https://code.ill.fr/instrument-control/cameo-api-java</url>
@@ -18,6 +18,11 @@
 			<name>The ILL Maven Repository</name>
 			<url>https://maven.ill.fr/content/repositories/releases</url>
 		</repository>
+		<snapshotRepository>
+			<id>ill-repo</id>
+			<name>The ILL Maven Repository</name>
+			<url>https://maven.ill.fr/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<properties>
