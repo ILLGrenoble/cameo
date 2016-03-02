@@ -152,13 +152,14 @@
 				</executions>
 			</plugin>
 
+			<!--  Replacement for Maven default deployment -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.6</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ill.repo</serverId>
+					<serverId>ill-repo</serverId>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 					<nexusUrl>https://maven.ill.fr</nexusUrl>
 				</configuration>
