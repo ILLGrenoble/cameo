@@ -12,6 +12,14 @@
 		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-server.git</connection>
 	</scm>
 
+	<distributionManagement>
+		<repository>
+			<id>ill-repo</id>
+			<name>The ILL Maven Repository</name>
+			<url>https://maven.ill.fr/content/repositories/releases</url>
+		</repository>
+	</distributionManagement>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
