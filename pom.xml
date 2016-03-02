@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-console</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>CameoConsole</name>
 	<description>Cameo Console</description>
 	<url>https://code.ill.fr/instrument-control/cameo-console</url>
@@ -18,16 +18,24 @@
 			<name>The ILL Maven Repository</name>
 			<url>https://maven.ill.fr/content/repositories/releases</url>
 		</repository>
+		<snapshotRepository>
+			<id>ill-repo</id>
+			<name>The ILL Maven Repository</name>
+			<url>https://maven.ill.fr/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<repositories>
 		<repository>
-			<id>ill-repo</id>
+			<id>ill-repo-releases</id>
 			<url>https://maven.ill.fr/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>ill-repo-snapshots</id>
+			<url>https://maven.ill.fr/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 
-	<!-- <repositories> <repository> <id>ill.repo</id> <url>https://maven.ill.fr/content/repositories/snapshots</url> </repository> </repositories> -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -36,7 +44,7 @@
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-api-java</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
