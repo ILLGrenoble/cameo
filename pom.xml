@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-server</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>CameoServer</name>
 	<description>Cameo Server</description>
 	<url>https://code.ill.fr/instrument-control/cameo-server</url>
@@ -24,6 +24,21 @@
 			<url>https://maven.ill.fr/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>ill-repo-thirdparty</id>
+			<url>https://maven.ill.fr/content/repositories/thirdparty</url>
+		</repository>
+		<repository>
+			<id>ill-repo-releases</id>
+			<url>https://maven.ill.fr/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>ill-repo-snapshots</id>
+			<url>https://maven.ill.fr/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
