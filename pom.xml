@@ -27,6 +27,10 @@
 
 	<repositories>
 		<repository>
+			<id>ill-repo-thirdparty</id>
+			<url>https://maven.ill.fr/content/repositories/thirdparty</url>
+		</repository>
+		<repository>
 			<id>ill-repo-releases</id>
 			<url>https://maven.ill.fr/content/repositories/releases</url>
 		</repository>
