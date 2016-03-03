@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-api-java</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>CameoJavaAPI</name>
 	<description>Cameo Java API</description>
 	<url>https://code.ill.fr/instrument-control/cameo-api-java</url>
@@ -155,19 +155,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-			<!--  Replacement for Maven default deployment -->
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.6</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ill-repo</serverId>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-					<nexusUrl>https://maven.ill.fr</nexusUrl>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
