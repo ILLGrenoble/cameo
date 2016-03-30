@@ -81,6 +81,8 @@ public class Server {
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
+				
+				manager.killAllApplications();
 				LogInfo.getInstance().getLogger().fine("Exited");
 			}
 		}));

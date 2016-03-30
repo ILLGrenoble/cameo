@@ -16,6 +16,11 @@
 
 package fr.ill.ics.cameo.manager;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 public class ApplicationConfig {
 
@@ -31,14 +36,15 @@ public class ApplicationConfig {
 	protected boolean runSingle;
 	protected boolean restart;
 	protected boolean passInfo;
-
+	protected HashMap<String, String> environmentVariables = new HashMap<String, String>(); 
+	
 	protected String startExecutable;
 	protected String[] startArgs;
 	protected String stopExecutable;
 	protected String[] stopArgs;
 	protected String errorExecutable;
 	protected String[] errorArgs;
-	
+		
 	private static final String INF = "inf";
 	
 	public ApplicationConfig() {
@@ -65,6 +71,8 @@ public class ApplicationConfig {
 		this.setStopArgs(applicationConfig.getStopArgs());
 		this.setErrorExecutable(applicationConfig.getErrorExecutable());
 		this.setErrorArgs(applicationConfig.getErrorArgs());
+		
+		this.setEnvironmentVariables(applicationConfig.getEnvironmentVariables());
 	}
 
 	public String getName() {
@@ -78,7 +86,7 @@ public class ApplicationConfig {
 			}
 			this.name = name;
 		} catch (NullPointerException e) {
-			System.err.println("Error with property 'name' in XML file, 'name' is necessary");
+			System.err.println("Error with property 'name' in configuration file, 'name' is necessary");
 			System.exit(-1);
 		}
 	}
@@ -114,7 +122,7 @@ public class ApplicationConfig {
 			}
 			this.startExecutable = executable;
 		} catch (NullPointerException e) {
-			System.err.println("Error with property 'start_command' in XML file, 'start_command' is necessary");
+			System.err.println("Error with property 'start_command' in configuration file, 'start_command' is necessary");
 			System.exit(-1);
 		}
 	}
@@ -177,7 +185,7 @@ public class ApplicationConfig {
 				this.startingTime = Integer.parseInt(startingTime);
 			}
 		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'starting_time' in XML file");
+			System.err.println("Error with property 'starting_time' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -198,10 +206,10 @@ public class ApplicationConfig {
 				}
 			}
 		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'retries' in XML file");
+			System.err.println("Error with property 'retries' in configuration file");
 			System.exit(-1);
 		} catch (NullPointerException e) {
-			System.err.println("Error with property 'retries' in XML file, 'retries' is necessary");
+			System.err.println("Error with property 'retries' in configuration file, 'retries' is necessary");
 			System.exit(-1);
 		}
 	}
@@ -236,7 +244,7 @@ public class ApplicationConfig {
 		} else if (value.equalsIgnoreCase("no")) {
 			this.stream = false;
 		} else {
-			System.err.println("Error with property 'output_stream' in XML File");
+			System.err.println("Error with property 'output_stream' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -276,7 +284,7 @@ public class ApplicationConfig {
 			}
 			
 		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'stopping_time' in XML file");
+			System.err.println("Error with property 'stopping_time' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -294,7 +302,7 @@ public class ApplicationConfig {
 		} else if (value.equalsIgnoreCase("yes")) {
 			this.runSingle = false;
 		} else {
-			System.err.println("Error with property 'multiple' in XML File");
+			System.err.println("Error with property 'multiple' in configuration file");
 			System.exit(-1);
 
 		}
@@ -312,7 +320,7 @@ public class ApplicationConfig {
 		} else if (value.equalsIgnoreCase("no")) {
 			this.restart = false;
 		} else {
-			System.err.println("Error with property 'restart' in XML File");
+			System.err.println("Error with property 'restart' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -342,11 +350,43 @@ public class ApplicationConfig {
 			this.passInfo = false;	
 			
 		} else {
-			System.err.println("Error with property 'pass_info' in XML File");
+			System.err.println("Error with property 'pass_info' in configuration file");
 			System.exit(-1);
 		}
 	}
 
+	public void setEnvironmentFile(String environmentFile) {
+		
+		if (environmentFile == null) {
+			return;
+		}
+		
+		try {
+			FileInputStream input = new FileInputStream(environmentFile);
+			Properties variables = new Properties();
+			variables.load(input);
+
+			// Copying the content to the hash map.
+			for (Entry<Object, Object> e : variables.entrySet()) {
+				
+				if (e.getKey() instanceof String && e.getValue() instanceof String) {
+					environmentVariables.put((String) e.getKey(), (String) e.getValue());		
+				}
+			}
+			
+		} catch (IOException e) {
+			System.err.println("Error with property 'environment' in configuration file, cannot load the file");
+		}
+	}
+	
+	public void setEnvironmentVariables(HashMap<String, String> variables) {
+		environmentVariables = variables;
+	}
+	
+	public HashMap<String, String> getEnvironmentVariables() {
+		return environmentVariables;
+	}
+	
 	@Override
 	public String toString() {
 		String startArgsString = "";

@@ -175,6 +175,7 @@ public class VerifyApplicationThread extends Thread {
 
 			try {
 				Thread.sleep(ConfigManager.getInstance().getPollingTime());
+				
 			} catch (InterruptedException e) {
 				// do nothing
 			}

@@ -193,7 +193,7 @@ public class Application extends ApplicationConfig {
 			streamThread.sendEndOfStream();
 		}
 	}
-		
+			
 	/**
 	 * The method is synchronized as it is not blocking.
 	 */
@@ -242,13 +242,9 @@ public class Application extends ApplicationConfig {
 			
 			// Standard output and error output are merged
 			builder.redirectErrorStream(true); 
-			
-			// Workaround for Mac OS
-			// Copy the MACOS_LIBRARY_PATH to DYLD_LIBRARY_PATH.
-			Map<String, String> environment = System.getenv();
-			if (environment.containsKey("MACOS_LIBRARY_PATH") && !environment.containsKey("DYLD_LIBRARY_PATH")) {
-				builder.environment().put("DYLD_LIBRARY_PATH", environment.get("MACOS_LIBRARY_PATH"));
-			}
+
+			// Add the environment variables from the application file.
+			builder.environment().putAll(getEnvironmentVariables());
 						
 			// Start the process
 			this.process = builder.start();

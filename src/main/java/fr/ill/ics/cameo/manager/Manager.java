@@ -308,6 +308,31 @@ public class Manager extends ConfigLoader {
 	}
 	
 	/**
+	 * kill application
+	 * 
+	 * @param id
+	 * @throws IdNotFoundException
+	 */
+	public synchronized void killAllApplications() {
+
+		for (Application application : applicationMap.values()) {
+		
+			if (application != null) {
+				
+				// if process is dead, there is not thread on it
+				if (application.getProcessState().equals(ProcessState.DEAD)) {
+					removeApplication(application);
+				} else {
+					application.setHasToStop(true, true);
+				}
+				LogInfo.getInstance().getLogger().info("Killing application " + application.getNameId());
+				application.kill();
+				LogInfo.getInstance().getLogger().info("Killed application " + application.getNameId());
+			}
+		}
+	}
+	
+	/**
 	 * show process, and add them to a reply
 	 * 
 	 * @return reply with running appli

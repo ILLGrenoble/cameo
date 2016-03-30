@@ -131,7 +131,8 @@ public abstract class ConfigLoader {
 			application.setStream(item.getAttributeValue("stream"));
 			application.setPassInfo(item.getAttributeValue("pass_info"));
 			application.setRestart(item.getAttributeValue("restart"));
-		
+			application.setEnvironmentFile(item.getAttributeValue("environment"));
+			
 			if (application.hasStream()) {
 				application.setStreamPort(ConfigManager.getInstance().getNextPort());
 			}
