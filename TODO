@@ -1,6 +1,3 @@
-license?
-other projects ZeroMQ, Tango are under LGPLv3
-
 New features:
 + add the PROGRESSION stream messages (optional)
 	set a minimum frequency to avoid resource leaks
@@ -101,6 +98,7 @@ Improvements:
 	change create method to builder?
 	
 Minor updates:
++ if the host is not available, zmq throws an exception (ex: muttiport shutdown), catch it (everywhere a socket is open?).
 + request version of the server
 + test outputStreamSocket null
 	can occur when connecting to application and it dies before

@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.manager;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class ApplicationConfig {
 	protected String[] errorArgs;
 		
 	private static final String INF = "inf";
+	private static final String ENVIRONMENT_SUFFIX = "-environment.properties";
 	
 	public ApplicationConfig() {
 		super();
@@ -358,7 +360,16 @@ public class ApplicationConfig {
 	public void setEnvironmentFile(String environmentFile) {
 		
 		if (environmentFile == null) {
-			return;
+			
+			// Trying to load a default file.
+			File defaultEnvironmentFile = new File(name + ENVIRONMENT_SUFFIX);
+			if (!defaultEnvironmentFile.exists()) {
+				return;
+				
+			} else {
+				// The file exists and can be loaded.
+				environmentFile = name + ENVIRONMENT_SUFFIX;
+			}
 		}
 		
 		try {

@@ -245,7 +245,7 @@ public class Application extends ApplicationConfig {
 
 			// Add the environment variables from the application file.
 			builder.environment().putAll(getEnvironmentVariables());
-						
+			
 			// Start the process
 			this.process = builder.start();
 															
