@@ -1,16 +1,25 @@
 #!/bin/sh
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
-	echo "Usage: uninstall.sh <version> <install directory>"
+	echo "Usage: uninstall.sh <version> [lib dir] [bin dir]"
 	exit 1
 fi
 
 version=$1
-prefixInstallDir=$2
+libDir=$2
+binDir=$3
 
-libDir=$prefixInstallDir/lib/java
-binDir=$prefixInstallDir/bin
+if [ "$libDir" = "" ]
+then
+	libDir="/usr/share/java/"
+fi
+
+if [ "$binDir" = "" ]
+then
+	binDir="/usr/local/bin/"
+fi
+
 libName="cameo-server-"$version"-full.jar"
 targetLibName="$libDir/$libName"
 

@@ -1,19 +1,27 @@
 #!/bin/sh
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
-	echo "Usage: install.sh <version> <install directory>"
+	echo "Usage: install.sh <version> [lib dir] [bin dir]"
 	exit 1
 fi
 
 version=$1
-prefixInstallDir=$2
+libDir=$2
+binDir=$3
 
-mkdir -p "$prefixInstallDir/lib"
-mkdir -p "$prefixInstallDir/lib/java"
-mkdir -p "$prefixInstallDir/bin"
-libDir="$prefixInstallDir/lib/java"
-binDir="$prefixInstallDir/bin"
+if [ "$libDir" = "" ]
+then
+	libDir="/usr/share/java/"
+fi
+
+if [ "$binDir" = "" ]
+then
+	binDir="/usr/local/bin/"
+fi
+
+mkdir -p "$libDir"
+mkdir -p "$binDir"
 
 libName="cameo-server-"$version"-full.jar"
 targetLibName="../target/$libName"
