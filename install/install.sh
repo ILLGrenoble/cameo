@@ -34,7 +34,7 @@ fi
 
 cp "$targetLibName" "$libDir"
 
-libNoVersionName="cameo-server-full.jar"
+libNoVersionName="cameo-server.jar"
 rm "$libDir/$libNoVersionName"
 ln -s "$libDir/$libName" "$libDir/$libNoVersionName"
 
