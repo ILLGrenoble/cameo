@@ -59,7 +59,6 @@ public class Manager extends ConfigLoader {
 	public Manager(String xmlPath) {
 		super(xmlPath);
 		LogInfo.getInstance().init();
-		
 		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
 		showApplicationConfigs();

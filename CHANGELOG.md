@@ -1,3 +1,8 @@
+0.0.3
+-----
+
+* Changed the loading of the file referenced by 'environment' 
+
 0.0.2
 -----
 

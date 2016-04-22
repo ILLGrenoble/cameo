@@ -68,6 +68,10 @@ public abstract class ConfigLoader {
 	 */
 	private void loadXml(String path) {
 		
+		File configFile = new File(path);
+		
+		ConfigManager.getInstance().setConfigParent(configFile.getParent());
+		
 		// Load the configuration
 		LogInfo.getInstance().getLogger().fine("Loading config");
 		org.jdom2.Document configXML = null;
@@ -75,7 +79,7 @@ public abstract class ConfigLoader {
 		SAXBuilder builder = new SAXBuilder();
 		
 		try {
-			configXML = builder.build(new File(path));
+			configXML = builder.build(configFile);
 			
 		} catch (JDOMException e) {
 			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());

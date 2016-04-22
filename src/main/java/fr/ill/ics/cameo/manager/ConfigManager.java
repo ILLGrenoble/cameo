@@ -26,6 +26,7 @@ public final class ConfigManager {
 
 	private int maxNumberOfApplications;
 	private boolean debugMode = false;
+	private String configParent;
 	private String host;
 	private int port;
 	private int streamPort;
@@ -41,6 +42,14 @@ public final class ConfigManager {
 		return instance;
 	}
 
+	public void setConfigParent(String parent) {
+		this.configParent = parent;
+	}
+	
+	public String getConfigParent() {
+		return configParent;
+	}
+	
 	public String getLogPath() {
 		return logPath;
 	}

@@ -357,23 +357,45 @@ public class ApplicationConfig {
 		}
 	}
 
-	public void setEnvironmentFile(String environmentFile) {
+	public void setEnvironmentFile(String filename) {
 		
-		if (environmentFile == null) {
-			
-			// Trying to load a default file.
-			File defaultEnvironmentFile = new File(name + ENVIRONMENT_SUFFIX);
-			if (!defaultEnvironmentFile.exists()) {
-				return;
-				
-			} else {
-				// The file exists and can be loaded.
-				environmentFile = name + ENVIRONMENT_SUFFIX;
-			}
+		String environmentFilename;
+		
+		if (filename == null) {
+			environmentFilename = name + ENVIRONMENT_SUFFIX;
+		}
+		else {
+			environmentFilename = filename;
 		}
 		
+		// Test if the environment file is absolute.
+		File file = new File(environmentFilename);
+		
+		if (file.isAbsolute()) {
+			if (!file.exists()) {
+				return;
+			}
+			
+			// We keep the file as is.
+		}
+		else {
+			
+			if (ConfigManager.getInstance().getConfigParent() != null) {
+				
+				// We try with the parent config file as parent directory.
+				file = new File(ConfigManager.getInstance().getConfigParent(), environmentFilename);
+				
+				if (!file.exists()) {
+					file = new File(environmentFilename);
+					if (!file.exists()) {
+						return;
+					}
+				}
+			}
+		}
+			
 		try {
-			FileInputStream input = new FileInputStream(environmentFile);
+			FileInputStream input = new FileInputStream(file);
 			Properties variables = new Properties();
 			variables.load(input);
 
@@ -385,8 +407,10 @@ public class ApplicationConfig {
 				}
 			}
 			
+			System.out.println("Loaded environment file " + file);
+			
 		} catch (IOException e) {
-			System.err.println("Error with property 'environment' in configuration file, cannot load the file");
+			// Do nothing.
 		}
 	}
 	
