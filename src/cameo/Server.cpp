@@ -16,7 +16,6 @@
 
 #include "Server.h"
 
-#include <unistd.h>
 #include <iostream>
 #include <sstream>
 #include "Application.h"

@@ -18,7 +18,6 @@
 #include <boost/thread.hpp>
 #include <boost/shared_ptr.hpp>
 #include <iostream>
-#include <unistd.h>
 #include <string>
 #include <vector>
 #include <sstream>
