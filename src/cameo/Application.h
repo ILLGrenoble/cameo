@@ -62,6 +62,8 @@ class Waiting;
 
 typedef int32_t State;
 
+#undef ERROR
+
 const State UNKNOWN = 0;
 const State STARTING = 1;
 const State RUNNING = 2;

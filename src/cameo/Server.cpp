@@ -380,7 +380,7 @@ void Server::addConnectionHandler(std::string const & name, ConnectionHandlerTyp
 }
 
 bool Server::removeConnectionHandler(std::string const & name) {
-	m_connectionHandlerSet->remove(name);
+	return m_connectionHandlerSet->remove(name);
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

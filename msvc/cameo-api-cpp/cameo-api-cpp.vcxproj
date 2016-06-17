@@ -18,6 +18,82 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\cameo\Application.cpp" />
+    <ClCompile Include="..\..\src\cameo\ConnectionTimeout.cpp" />
+    <ClCompile Include="..\..\src\cameo\Event.cpp" />
+    <ClCompile Include="..\..\src\cameo\EventStreamSocket.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\ApplicationImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\CancelIdGenerator.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\ConnectionHandlerSet.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\GenericWaitingImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\HandlerImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\PublisherImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\RequesterImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\RequestImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\ResponderImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\Serializer.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\ServicesImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\SocketImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\SocketWaitingImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\SubscriberImpl.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\TimeCondition.cpp" />
+    <ClCompile Include="..\..\src\cameo\impl\WaitingImplSet.cpp" />
+    <ClCompile Include="..\..\src\cameo\PortEvent.cpp" />
+    <ClCompile Include="..\..\src\cameo\PublisherCreationException.cpp" />
+    <ClCompile Include="..\..\src\cameo\PublisherEvent.cpp" />
+    <ClCompile Include="..\..\src\cameo\RemoteException.cpp" />
+    <ClCompile Include="..\..\src\cameo\RequesterCreationException.cpp" />
+    <ClCompile Include="..\..\src\cameo\ResponderCreationException.cpp" />
+    <ClCompile Include="..\..\src\cameo\Response.cpp" />
+    <ClCompile Include="..\..\src\cameo\ResultEvent.cpp" />
+    <ClCompile Include="..\..\src\cameo\Server.cpp" />
+    <ClCompile Include="..\..\src\cameo\Services.cpp" />
+    <ClCompile Include="..\..\src\cameo\StarterServerException.cpp" />
+    <ClCompile Include="..\..\src\cameo\StateException.cpp" />
+    <ClCompile Include="..\..\src\cameo\StatusEvent.cpp" />
+    <ClCompile Include="..\..\src\cameo\SubscriberCreationException.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\cameo\Application.h" />
+    <ClInclude Include="..\..\src\cameo\cameo.h" />
+    <ClInclude Include="..\..\src\cameo\ConnectionTimeout.h" />
+    <ClInclude Include="..\..\src\cameo\Event.h" />
+    <ClInclude Include="..\..\src\cameo\EventStreamSocket.h" />
+    <ClInclude Include="..\..\src\cameo\impl\ApplicationImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\CancelIdGenerator.h" />
+    <ClInclude Include="..\..\src\cameo\impl\ConnectionHandlerSet.h" />
+    <ClInclude Include="..\..\src\cameo\impl\GenericWaitingImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\HandlerImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\PublisherImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\RequesterImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\RequestImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\ResponderImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\Serializer.h" />
+    <ClInclude Include="..\..\src\cameo\impl\ServicesImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\SocketImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\SocketWaitingImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\SubscriberImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\TimeCondition.h" />
+    <ClInclude Include="..\..\src\cameo\impl\WaitingImpl.h" />
+    <ClInclude Include="..\..\src\cameo\impl\WaitingImplSet.h" />
+    <ClInclude Include="..\..\src\cameo\impl\zmq.hpp" />
+    <ClInclude Include="..\..\src\cameo\PortEvent.h" />
+    <ClInclude Include="..\..\src\cameo\ProtoType.h" />
+    <ClInclude Include="..\..\src\cameo\PublisherCreationException.h" />
+    <ClInclude Include="..\..\src\cameo\PublisherEvent.h" />
+    <ClInclude Include="..\..\src\cameo\RemoteException.h" />
+    <ClInclude Include="..\..\src\cameo\RequesterCreationException.h" />
+    <ClInclude Include="..\..\src\cameo\ResponderCreationException.h" />
+    <ClInclude Include="..\..\src\cameo\Response.h" />
+    <ClInclude Include="..\..\src\cameo\ResultEvent.h" />
+    <ClInclude Include="..\..\src\cameo\Server.h" />
+    <ClInclude Include="..\..\src\cameo\Services.h" />
+    <ClInclude Include="..\..\src\cameo\StarterServerException.h" />
+    <ClInclude Include="..\..\src\cameo\StateException.h" />
+    <ClInclude Include="..\..\src\cameo\StatusEvent.h" />
+    <ClInclude Include="..\..\src\cameo\SubscriberCreationException.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4C9E3D2B-5244-4971-BC21-41E865CB0732}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -69,7 +145,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;C:\Program Files\ZeroMQ 3.2.4\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;C:\Program Files\ZeroMQ 3.2.4\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>
@@ -126,9 +207,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
