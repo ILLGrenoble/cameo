@@ -11,6 +11,7 @@ lib_LTLIBRARIES = libcameo.la
 # header files that must be in the dist package but not installed are sources
 libcameo_la_SOURCES = \
 	cameo/impl/Serializer.cpp \
+	cameo/impl/TimeCondition.cpp \
 	cameo/Event.cpp \
 	cameo/StatusEvent.cpp \
 	cameo/ResultEvent.cpp \
@@ -29,6 +30,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/GenericWaitingImpl.cpp \
 	cameo/impl/WaitingImplSet.cpp \
 	cameo/impl/CancelIdGenerator.cpp \
+	cameo/impl/ConnectionHandlerSet.cpp \
 	cameo/EventStreamSocket.cpp \
 	cameo/Response.cpp \
 	cameo/impl/PublisherImpl.cpp \

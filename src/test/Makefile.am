@@ -13,7 +13,8 @@ bin_PROGRAMS = \
 	testpublisherloop \
 	testresponder \
 	testrequesterandresponder \
-	testcancel
+	testcancel \
+	teststarttimeout
 
 
 testcameo_SOURCES = \
@@ -119,3 +120,10 @@ testcancel_CPPFLAGS = $(CAMEO_CXXFLAGS)
 testcancel_LDFLAGS = $(CAMEO_LDFLAGS)
 testcancel_LDADD = ../libcameo.la $(CAMEO_LIBS)
 
+
+teststarttimeout_SOURCES = \
+	TestStartTimeoutApplication.cpp
+
+teststarttimeout_CPPFLAGS = $(CAMEO_CXXFLAGS)
+teststarttimeout_LDFLAGS = $(CAMEO_LDFLAGS)
+teststarttimeout_LDADD = ../libcameo.la $(CAMEO_LIBS)

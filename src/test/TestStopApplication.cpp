@@ -20,19 +20,27 @@
 #include <vector>
 #include <sstream>
 #include "../cameo/cameo.h"
+#include <boost/shared_ptr.hpp>
 
 using namespace std;
+using namespace boost;
 using namespace cameo;
 
-bool stopping = false;
+struct StopData {
+	bool stopping;
+
+	StopData() : stopping(false) {}
+};
 
 struct Stop {
-	void operator()() {
-		stopping = true;
-	}
 
-	static void handle() {
-		stopping = true;
+	shared_ptr<StopData> data;
+
+	Stop(shared_ptr<StopData> sharedData) : data(sharedData) {}
+
+	void operator()() {
+		cout << "stop requested" << endl;
+		data->stopping = true;
 	}
 };
 
@@ -48,11 +56,12 @@ int main(int argc, char *argv[]) {
 
 		application::This::setRunning();
 
-		//application::This::handleStop(Stop()); // Works too
-		application::This::handleStop(&Stop::handle);
+		// Define an object StopData that is shared with the handler.
+		shared_ptr<StopData> data(new StopData());
+		application::This::handleStop(Stop(data));
 
 		int i = 0;
-		while (!stopping) {
+		while (!data->stopping) {
 			cout << "waiting " << i << "..." << endl;
 			usleep(100000);
 			i++;

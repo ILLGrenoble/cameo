@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "impl/ServicesImpl.h"
 #include "impl/SocketImpl.h"
+#include "impl/ConnectionHandlerSet.h"
 #include "ProtoType.h"
 
 using namespace std;
@@ -29,7 +30,7 @@ using namespace std;
 namespace cameo {
 
 Server::Server(const std::string& endpoint) :
-	Services() {
+	Services(), m_connectionPollingTimeMs(10000) {
 
 	m_impl = new ServicesImpl();
 	Services::setImpl(m_impl);
@@ -45,17 +46,39 @@ Server::Server(const std::string& endpoint) :
 	istringstream is(port);
 	is >> m_port;
 	m_serverEndpoint = m_url + ":" + port;
+
+
+	// Create the connection handler set.
+	m_connectionHandlerSet = auto_ptr<ConnectionHandlerSet>(new ConnectionHandlerSet(this));
 }
 
 Server::~Server() {
 }
 
-void Server::setTimeout(int timeout) {
-	Services::setTimeout(timeout);
+void Server::setTimeout(int timeoutMs, int connectionPollingTimeMs) {
+	Services::setTimeout(timeoutMs);
+
+	m_connectionPollingTimeMs = connectionPollingTimeMs;
+
+	// Start the connection thread if timeout is positive.
+	if (timeoutMs > 0) {
+		m_connectionHandlerSet->startThread(timeoutMs, m_connectionPollingTimeMs);
+	}
+	else {
+		m_connectionHandlerSet->stopThread();
+	}
+}
+
+void Server::setTimeout(int timeoutMs) {
+	setTimeout(timeoutMs, m_connectionPollingTimeMs);
 }
 
 int Server::getTimeout() const {
 	return Services::getTimeout();
+}
+
+int Server::getConnectionPollingTime() const {
+	return m_connectionPollingTimeMs;
 }
 
 const std::string& Server::getEndpoint() const {
@@ -72,6 +95,16 @@ int Server::getPort() const {
 
 bool Server::isAvailable(int timeout) const {
 	return Services::isAvailable(timeout);
+}
+
+bool Server::isAvailable() const {
+
+	int timeout = getTimeout();
+	if (timeout > 0) {
+		return isAvailable(timeout);
+	}
+	// Default timeout value is 10000ms.
+	return isAvailable(10000);
 }
 
 std::auto_ptr<application::Instance> Server::makeInstance() {
@@ -341,6 +374,14 @@ std::auto_ptr<application::Subscriber> Server::createSubscriber(int id, const st
 	subscriber->init();
 
 	return subscriber;
+}
+
+void Server::addConnectionHandler(std::string const & name, ConnectionHandlerType handler) {
+	m_connectionHandlerSet->add(name, handler);
+}
+
+bool Server::removeConnectionHandler(std::string const & name) {
+	m_connectionHandlerSet->remove(name);
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

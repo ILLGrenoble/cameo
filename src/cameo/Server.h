@@ -27,6 +27,8 @@
 
 namespace cameo {
 
+class ConnectionHandlerSet;
+
 namespace application {
 	class This;
 }
@@ -41,15 +43,25 @@ class Server : private Services {
 	friend std::ostream& operator<<(std::ostream&, const Server&);
 
 public:
+	typedef boost::function<void (bool)> ConnectionHandlerType;
+
 	Server(const std::string& endpoint);
 	~Server();
 
-	void setTimeout(int timeout);
+	void setTimeout(int timeoutMs, int connectionPollingTimeMs);
+	void setTimeout(int timeoutMs);
+
 	int getTimeout() const;
+	int getConnectionPollingTime() const;
 	const std::string& getEndpoint() const;
 	const std::string& getUrl() const;
 	int getPort() const;
-	bool isAvailable(int timeout = 10000) const;
+	bool isAvailable(int timeoutMs) const;
+
+	/**
+	 * Returns true if is available. Uses the timeout if set or 10000ms.
+	 */
+	bool isAvailable() const;
 
 	std::auto_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
 	std::auto_ptr<application::Instance> start(const std::string& name, Option options = NONE);
@@ -81,13 +93,26 @@ public:
 	 */
 	std::auto_ptr<EventStreamSocket> openEventStream();
 
+	/**
+	 * Adds a connection handler.
+	 */
+	void addConnectionHandler(std::string const & name, ConnectionHandlerType handler);
+
+	/**
+	 * Removes a connection handler. Returns true if the handler is found and removed.
+	 */
+	bool removeConnectionHandler(std::string const & name);
+
 private:
-	ServicesImpl * m_impl;
 	std::auto_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
 	std::auto_ptr<application::Instance> stop(int id, bool immediately);
 	std::auto_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
+
+	ServicesImpl * m_impl;
+	int m_connectionPollingTimeMs;
+	std::auto_ptr<ConnectionHandlerSet> m_connectionHandlerSet;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

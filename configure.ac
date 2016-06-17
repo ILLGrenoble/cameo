@@ -4,8 +4,8 @@
 #
 # -----------------------------------------------------------------------------
 
-AC_INIT(cameo-api-cpp, 0.0.1)
-LIBRARY_VERSION=0:0:1
+AC_INIT(cameo-api-cpp, 0.1.0)
+LIBRARY_VERSION=0:1:0
 
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(src/cameo/Application.cpp)
@@ -36,6 +36,7 @@ AC_SUBST(LIBRARY_VERSION)
 #AX_CXX_COMPILE_STDCXX_11
 AX_PTHREAD(,[AC_MSG_ERROR([Posix threads required])])
 AX_BOOST_BASE([1.41],, [AC_MSG_ERROR([Boost 1.41 required])])
+AX_BOOST_DATE_TIME
 AX_BOOST_THREAD
 AX_BOOST_SYSTEM
 AC_ZMQ
@@ -49,7 +50,8 @@ CAMEO_LDFLAGS="$BOOST_LDFLAGS \
 	$ZMQ_LDFLAGS \
 	$PROTOBUF_LDFLAGS"
  
-CAMEO_LIBS="$BOOST_THREAD_LIB \
+CAMEO_LIBS="$BOOST_DATE_TIME_LIB \
+	$BOOST_THREAD_LIB \
 	$BOOST_SYSTEM_LIB \
 	$ZMQ_LIB \
 	$PROTOBUF_LIB"

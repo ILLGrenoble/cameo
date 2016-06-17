@@ -17,6 +17,10 @@
 #ifndef CAMEO_H_
 #define CAMEO_H_
 
+#define CAMEO_API_VERSION_MAJOR 0
+#define CAMEO_API_VERSION_MINOR 1
+#define CAMEO_API_VERSION_REVISION 0
+
 #include "Application.h"
 #include "Server.h"
 

@@ -1,0 +1,5 @@
+0.1.0
+-----
+
+* Corrected Server::isAvailable implementation when timeout is set.
+* Implemented connection handler.
