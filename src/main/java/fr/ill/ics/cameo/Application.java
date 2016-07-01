@@ -30,6 +30,10 @@ import fr.ill.ics.cameo.impl.SubscriberImpl;
 
 public class Application {
 	
+	public static interface Handler {
+		void handle();
+	}
+	
 	public static class This {
 			
 		static ApplicationImpl impl;
@@ -127,8 +131,8 @@ public class Application {
 		 * @return
 		 * @throws StateException, ConnectionTimeout
 		 */
-		static public void setRunning() throws StateException {
-			impl.setRunning();
+		static public boolean setRunning() {
+			return impl.setRunning();
 		}
 	
 		/**
@@ -143,8 +147,8 @@ public class Application {
 		 * Sets the stop handler.
 		 * @param handler
 		 */
-		static public void handleStop(final Runnable runnable) {
-			impl.createStopHandler(runnable);
+		static public void handleStop(final Handler handler) {
+			impl.createStopHandler(handler);
 		}
 				
 		/**

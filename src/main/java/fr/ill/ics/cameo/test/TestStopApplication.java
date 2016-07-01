@@ -30,13 +30,15 @@ public class TestStopApplication {
 		Application.This.init(args);
 		
 		try {
-		
 			Date begin = new Date();
 			
-			Application.This.handleStop(new Runnable() {
-				public void run() {
+			Application.This.handleStop(new Application.Handler() {
+				
+				@Override
+				public void handle() {
 					stopping = true;
 					System.out.println("stop handler executed");
+					
 				}
 			});
 			

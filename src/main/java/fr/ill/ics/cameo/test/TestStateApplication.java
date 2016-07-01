@@ -34,11 +34,8 @@ public class TestStateApplication {
 		}
 		
 		try {
-			try {
-				Application.This.setRunning();
-				
-			} catch (RemoteException e) {	
-				System.out.println("error while setting the state: " + e.getMessage());
+			if (!Application.This.setRunning()) {
+				System.out.println("error while setting the state");
 			}
 			
 			int i = 0;

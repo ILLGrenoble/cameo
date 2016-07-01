@@ -26,6 +26,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventStreamSocket;
+import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.Init;
@@ -185,14 +186,20 @@ public class ServicesImpl {
 	 * @param request
 	 * @return reply
 	 * @throws ConnectionTimeout 
+	 * @throws SocketException 
 	 */
-	protected ZMsg tryRequest(ZMsg request, String endpoint, int overrideTimeout) throws ConnectionTimeout {
+	protected ZMsg tryRequest(ZMsg request, String endpoint, int overrideTimeout) throws ConnectionTimeout, SocketException {
 		
 		Socket socket = context.createSocket(ZMQ.REQ);
 		
 		try {
-			socket.connect(endpoint);
-	
+			try {
+				socket.connect(endpoint);
+			}
+			catch (Exception e) {
+				throw new SocketException(e.getMessage());
+			}
+			
 			// send request, wait safely for reply
 			ZMsg msg = request.duplicate();
 			msg.send(socket);
@@ -211,7 +218,7 @@ public class ServicesImpl {
 				// in case a response is returned before timeout
 				if (items[0].isReadable()) {
 					reply = ZMsg.recvMsg(socket);
-
+	
 				} else {
 					throw new ConnectionTimeout();
 				}

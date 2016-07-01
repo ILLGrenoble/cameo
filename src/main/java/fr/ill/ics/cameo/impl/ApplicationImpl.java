@@ -22,16 +22,17 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.Application.Handler;
 import fr.ill.ics.cameo.Application.State;
 import fr.ill.ics.cameo.CancelEvent;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.PublisherCreationException;
 import fr.ill.ics.cameo.PublisherDestructionException;
 import fr.ill.ics.cameo.RequesterCreationException;
 import fr.ill.ics.cameo.ResponderCreationException;
-import fr.ill.ics.cameo.StateException;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.WaitingSet;
@@ -75,7 +76,7 @@ public class ApplicationImpl extends ServicesImpl {
 		
 		// analysing args to get the endpoint and the id
 		if (args.length == 0) {
-			throw new IllegalArgumentException("missing info argument");			
+			throw new InvalidArgumentException("missing info argument");			
 		}
 
 		// the last argument contains the necessary information
@@ -84,7 +85,7 @@ public class ApplicationImpl extends ServicesImpl {
 		
 		// check length
 		if (tokens.length < 4) {
-			throw new IllegalArgumentException(info + " is not a valid argument");
+			throw new InvalidArgumentException(info + " is not a valid argument");
 		}
 		
 		url = tokens[0] + ":" + tokens[1];
@@ -198,7 +199,7 @@ public class ApplicationImpl extends ServicesImpl {
 	 * @return
 	 * @throws StateException, ConnectionTimeout
 	 */
-	public void setRunning() throws StateException {
+	public boolean setRunning() {
 		
 		ZMsg request = createSetStatusRequest(id, Application.State.RUNNING);
 		
@@ -208,12 +209,14 @@ public class ApplicationImpl extends ServicesImpl {
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
 			if (requestResponse.getValue() == -1) {
-				throw new StateException(requestResponse.getMessage());
+				return false;
 			}
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
+		
+		return true;
 	}
 
 	/**
@@ -293,8 +296,8 @@ public class ApplicationImpl extends ServicesImpl {
 	/**
 	 * 
 	 */
-	public void createStopHandler(Runnable runnable) {
-		stopHandler = new HandlerImpl(this, runnable);
+	public void createStopHandler(Handler handler) {
+		stopHandler = new HandlerImpl(this, handler);
 		stopHandler.start();
 	}
 	

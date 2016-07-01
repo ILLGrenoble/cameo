@@ -16,17 +16,18 @@
 
 package fr.ill.ics.cameo.impl;
 
+import fr.ill.ics.cameo.Application.Handler;
 import fr.ill.ics.cameo.Application.State;
 
 public class HandlerImpl {
 
 	private ApplicationImpl application;
-	private Runnable runnable;
+	private Handler handler;
 	private Thread thread = null;
 		
-	public HandlerImpl(ApplicationImpl application, Runnable runnable) {
+	public HandlerImpl(ApplicationImpl application, Handler handler) {
 		this.application = application;
-		this.runnable = runnable;
+		this.handler = handler;
 	}
 
 	public void start() {
@@ -37,7 +38,7 @@ public class HandlerImpl {
 				
 				// Only run in case of STOPPING
 				if (state == State.STOPPING) {
-					runnable.run();
+					handler.handle();
 				}	
 			}
 		});

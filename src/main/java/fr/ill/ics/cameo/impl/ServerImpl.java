@@ -31,6 +31,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputStreamException;
 import fr.ill.ics.cameo.OutputStreamSocket;
@@ -82,7 +83,7 @@ public class ServerImpl extends ServicesImpl {
 
 		// check length
 		if (tokens.length < 3) {
-			throw new IllegalArgumentException(endpoint + " is not a valid endpoint");
+			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
 		}
 		
 		url = tokens[0] + ":" + tokens[1];

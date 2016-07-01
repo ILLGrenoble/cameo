@@ -39,6 +39,7 @@ public class Server {
 	 * has not started the current application.
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
 	 * @param endpoint
+	 * throws SocketException.
 	 */
 	public Server(String endpoint) {
 		impl = new ServerImpl(endpoint);
@@ -64,6 +65,15 @@ public class Server {
 		return impl.getPort();
 	}
 	
+	private int getAvailableTimeout() {
+		int timeout = getTimeout();
+		if (timeout > 0) {
+			return timeout;
+		}
+		
+		return 10000;
+	}
+	
 	/**
 	 * Connects to the server. Returns false if there is no connection.
 	 * It must be called to initialize the receiving status.
@@ -77,7 +87,7 @@ public class Server {
 	 * It must be called to initialize the receiving status.
 	 */
 	public boolean isAvailable() {
-		return impl.isAvailable(10000);
+		return impl.isAvailable(getAvailableTimeout());
 	}
 
 	public void terminate() {
@@ -229,6 +239,33 @@ public class Server {
 		impl.writeToInputStream(id, parameters);
 	}
 	
+	/**
+	 * Creates a connection checker.
+	 * @param handler
+	 * @return
+	 */
+	public ConnectionChecker createConnectionChecker(ConnectionChecker.Handler handler) {
+		
+		ConnectionChecker connectionChecker = new ConnectionChecker(impl, handler);
+		connectionChecker.start(getAvailableTimeout(), 10000);
+		
+		return connectionChecker;
+	}
+	
+	/**
+	 * Creates a connection checker.
+	 * @param handler
+	 * @param pollingTimeMs
+	 * @return
+	 */
+	public ConnectionChecker createConnectionChecker(ConnectionChecker.Handler handler, int pollingTimeMs) {
+		
+		ConnectionChecker connectionChecker = new ConnectionChecker(impl, handler);
+		connectionChecker.start(getAvailableTimeout(), pollingTimeMs);
+		
+		return connectionChecker;
+	}
+	
 	@Override
 	public String toString() {
 		return impl.toString();
@@ -241,5 +278,5 @@ public class Server {
 		}
 		return result;
 	}
-	
+		
 }
