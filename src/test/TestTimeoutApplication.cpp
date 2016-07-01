@@ -19,18 +19,9 @@
 #include <vector>
 #include <sstream>
 #include "../cameo/cameo.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace std;
 using namespace cameo;
-
-struct ConnectionHandler {
-	void operator()(bool available) {
-		if (!available) {
-			application::This::cancelWaitings();
-		}
-	}
-};
 
 int main(int argc, char *argv[]) {
 
@@ -38,35 +29,14 @@ int main(int argc, char *argv[]) {
 
 	// The start function must be called into a block to ensure the destructor of Instance is called before This::terminate()
 	{
-		Server server("tcp://localhost:8000");
+		Server server("tcp://localhost:9000");
 
-		server.addConnectionHandler("timeout", ConnectionHandler());
-		server.setTimeout(100, 100);
-		sleep(1);
-		//server.setTimeout(0);
-
-		cout << "reset timeout" << endl;
-
-		/*
-		if (server.isAvailable()) {
-			cout << "connected" << endl;
-
-			auto_ptr<application::Instance> resultApplication = server.start("test");
-
-			cout << "finished the application" << endl;
+		while (server.isAvailable(1000)) {
+			cout << "server is available" << endl;
+			sleep(1);
 		}
-		else {
-			cout << "not connected" << endl;
 
-			try {
-				auto_ptr<application::Instance> resultApplication = server.start("test");
-			}
-			catch (ConnectionTimeout const & e) {
-				cout << e.what() << endl;
-			}
-
-			cout << "started" << endl;
-		}*/
+		cout << "server is not available" << endl;
 	}
 
 	application::This::terminate();

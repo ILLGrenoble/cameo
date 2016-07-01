@@ -20,14 +20,13 @@
 #include <vector>
 #include <memory>
 #include "Application.h"
+#include "ConnectionChecker.h"
 #include "ConnectionTimeout.h"
 #include "Response.h"
 #include "Services.h"
 #include "SubscriberCreationException.h"
 
 namespace cameo {
-
-class ConnectionHandlerSet;
 
 namespace application {
 	class This;
@@ -43,16 +42,14 @@ class Server : private Services {
 	friend std::ostream& operator<<(std::ostream&, const Server&);
 
 public:
-	typedef boost::function<void (bool)> ConnectionHandlerType;
+	typedef boost::function<void (bool)> ConnectionCheckerType;
 
 	Server(const std::string& endpoint);
 	~Server();
 
-	void setTimeout(int timeoutMs, int connectionPollingTimeMs);
 	void setTimeout(int timeoutMs);
 
 	int getTimeout() const;
-	int getConnectionPollingTime() const;
 	const std::string& getEndpoint() const;
 	const std::string& getUrl() const;
 	int getPort() const;
@@ -94,14 +91,9 @@ public:
 	std::auto_ptr<EventStreamSocket> openEventStream();
 
 	/**
-	 * Adds a connection handler.
+	 * Creates a connection handler with polling time.
 	 */
-	void addConnectionHandler(std::string const & name, ConnectionHandlerType handler);
-
-	/**
-	 * Removes a connection handler. Returns true if the handler is found and removed.
-	 */
-	bool removeConnectionHandler(std::string const & name);
+	std::auto_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
 
 private:
 	std::auto_ptr<application::Instance> makeInstance();
@@ -109,10 +101,9 @@ private:
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
 	std::auto_ptr<application::Instance> stop(int id, bool immediately);
 	std::auto_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
+	int getAvailableTimeout() const;
 
 	ServicesImpl * m_impl;
-	int m_connectionPollingTimeMs;
-	std::auto_ptr<ConnectionHandlerSet> m_connectionHandlerSet;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

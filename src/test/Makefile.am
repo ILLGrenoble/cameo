@@ -2,6 +2,7 @@ INCLUDES = -I$(top_srcdir)/src
 
 bin_PROGRAMS = \
 	testcameo \
+	testbadendpoint \
 	teststate \
 	testpublisher \
 	testsubscriber \
@@ -14,7 +15,8 @@ bin_PROGRAMS = \
 	testresponder \
 	testrequesterandresponder \
 	testcancel \
-	teststarttimeout
+	testtimeout \
+	testconnectionchecker
 
 
 testcameo_SOURCES = \
@@ -23,6 +25,14 @@ testcameo_SOURCES = \
 testcameo_CPPFLAGS = $(CAMEO_CXXFLAGS)
 testcameo_LDFLAGS = $(CAMEO_LDFLAGS)
 testcameo_LDADD = ../libcameo.la $(CAMEO_LIBS)
+
+
+testbadendpoint_SOURCES = \
+	TestBadEndpoint.cpp
+
+testbadendpoint_CPPFLAGS = $(CAMEO_CXXFLAGS)
+testbadendpoint_LDFLAGS = $(CAMEO_LDFLAGS)
+testbadendpoint_LDADD = ../libcameo.la $(CAMEO_LIBS)
 
 
 teststate_SOURCES = \
@@ -121,9 +131,17 @@ testcancel_LDFLAGS = $(CAMEO_LDFLAGS)
 testcancel_LDADD = ../libcameo.la $(CAMEO_LIBS)
 
 
-teststarttimeout_SOURCES = \
-	TestStartTimeoutApplication.cpp
+testtimeout_SOURCES = \
+	TestTimeoutApplication.cpp
 
-teststarttimeout_CPPFLAGS = $(CAMEO_CXXFLAGS)
-teststarttimeout_LDFLAGS = $(CAMEO_LDFLAGS)
-teststarttimeout_LDADD = ../libcameo.la $(CAMEO_LIBS)
+testtimeout_CPPFLAGS = $(CAMEO_CXXFLAGS)
+testtimeout_LDFLAGS = $(CAMEO_LDFLAGS)
+testtimeout_LDADD = ../libcameo.la $(CAMEO_LIBS)
+
+
+testconnectionchecker_SOURCES = \
+	TestConnectionCheckerApplication.cpp
+
+testconnectionchecker_CPPFLAGS = $(CAMEO_CXXFLAGS)
+testconnectionchecker_LDFLAGS = $(CAMEO_LDFLAGS)
+testconnectionchecker_LDADD = ../libcameo.la $(CAMEO_LIBS)

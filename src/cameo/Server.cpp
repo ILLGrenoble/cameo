@@ -19,9 +19,9 @@
 #include <iostream>
 #include <sstream>
 #include "Application.h"
+#include "ConnectionChecker.h"
 #include "impl/ServicesImpl.h"
 #include "impl/SocketImpl.h"
-#include "impl/ConnectionHandlerSet.h"
 #include "ProtoType.h"
 
 using namespace std;
@@ -29,7 +29,7 @@ using namespace std;
 namespace cameo {
 
 Server::Server(const std::string& endpoint) :
-	Services(), m_connectionPollingTimeMs(10000) {
+	Services() {
 
 	m_impl = new ServicesImpl();
 	Services::setImpl(m_impl);
@@ -37,7 +37,7 @@ Server::Server(const std::string& endpoint) :
 	vector<string> tokens = split(endpoint);
 
 	if (tokens.size() < 3) {
-		throw invalid_argument(endpoint + " is not a valid endpoint");
+		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
 	}
 
 	m_url = tokens[0] + ":" + tokens[1];
@@ -45,39 +45,17 @@ Server::Server(const std::string& endpoint) :
 	istringstream is(port);
 	is >> m_port;
 	m_serverEndpoint = m_url + ":" + port;
-
-
-	// Create the connection handler set.
-	m_connectionHandlerSet = auto_ptr<ConnectionHandlerSet>(new ConnectionHandlerSet(this));
 }
 
 Server::~Server() {
 }
 
-void Server::setTimeout(int timeoutMs, int connectionPollingTimeMs) {
-	Services::setTimeout(timeoutMs);
-
-	m_connectionPollingTimeMs = connectionPollingTimeMs;
-
-	// Start the connection thread if timeout is positive.
-	if (timeoutMs > 0) {
-		m_connectionHandlerSet->startThread(timeoutMs, m_connectionPollingTimeMs);
-	}
-	else {
-		m_connectionHandlerSet->stopThread();
-	}
-}
-
 void Server::setTimeout(int timeoutMs) {
-	setTimeout(timeoutMs, m_connectionPollingTimeMs);
+	Services::setTimeout(timeoutMs);
 }
 
 int Server::getTimeout() const {
 	return Services::getTimeout();
-}
-
-int Server::getConnectionPollingTime() const {
-	return m_connectionPollingTimeMs;
 }
 
 const std::string& Server::getEndpoint() const {
@@ -97,13 +75,17 @@ bool Server::isAvailable(int timeout) const {
 }
 
 bool Server::isAvailable() const {
+	return isAvailable(getAvailableTimeout());
+}
 
+int Server::getAvailableTimeout() const {
 	int timeout = getTimeout();
 	if (timeout > 0) {
-		return isAvailable(timeout);
+		return timeout;
 	}
-	// Default timeout value is 10000ms.
-	return isAvailable(10000);
+	else {
+		return 10000;
+	}
 }
 
 std::auto_ptr<application::Instance> Server::makeInstance() {
@@ -375,12 +357,12 @@ std::auto_ptr<application::Subscriber> Server::createSubscriber(int id, const st
 	return subscriber;
 }
 
-void Server::addConnectionHandler(std::string const & name, ConnectionHandlerType handler) {
-	m_connectionHandlerSet->add(name, handler);
-}
+std::auto_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
 
-bool Server::removeConnectionHandler(std::string const & name) {
-	return m_connectionHandlerSet->remove(name);
+	auto_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
+	connectionChecker->startThread(getAvailableTimeout(), pollingTimeMs);
+
+	return connectionChecker;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

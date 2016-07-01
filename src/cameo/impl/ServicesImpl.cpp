@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <sstream>
+#include "../SocketException.h"
 #include "../ConnectionTimeout.h"
 
 using namespace std;
@@ -84,6 +85,12 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 zmq::message_t* ServicesImpl::tryRequest(const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
 
 	zmq::socket_t socket(m_context, ZMQ_REQ);
+
+	// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
+	int value = 0;
+	socket.setsockopt(ZMQ_LINGER, &value, sizeof(int));
+
+	// Connect to the endpoint.
 	socket.connect(endpoint.c_str());
 
 	int requestDataSize = strRequestData.length();
@@ -121,7 +128,17 @@ zmq::message_t* ServicesImpl::tryRequest(const std::string& strRequestData, cons
 zmq::message_t* ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
 
 	zmq::socket_t socket(m_context, ZMQ_REQ);
-	socket.connect(endpoint.c_str());
+	try {
+		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
+		int value = 0;
+		socket.setsockopt(ZMQ_LINGER, &value, sizeof(int));
+
+		// Connect to the endpoint.
+		socket.connect(endpoint.c_str());
+	}
+	catch (exception const & e) {
+		throw SocketException(e.what());
+	}
 
 	int requestTypeSize = strRequestType.length();
 	int requestDataSize = strRequestData.length();
@@ -228,14 +245,6 @@ zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint)
 	publisher->bind(endpoint.c_str());
 
 	return publisher;
-}
-
-zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
-
-	zmq::socket_t * socket = new zmq::socket_t(m_context, ZMQ_REQ);
-	socket->connect(endpoint.c_str());
-
-	return socket;
 }
 
 std::string ServicesImpl::createShowStreamRequest(int id) const {

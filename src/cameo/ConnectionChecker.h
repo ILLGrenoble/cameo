@@ -14,10 +14,10 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_CONNECTIONHANDLERSET_H_
-#define CAMEO_CONNECTIONHANDLERSET_H_
+#ifndef CAMEO_CONNECTIONCHECKER_H_
+#define CAMEO_CONNECTIONCHECKER_H_
 
-#include "TimeCondition.h"
+#include "impl/TimeCondition.h"
 #include <boost/function.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -30,31 +30,27 @@ namespace cameo {
 class Server;
 
 /**
- * Class containing a set of connection handler objects.
- * It is protected with a mutex because the class must be thread-safe.
+ * Class providing a simple connection checker.
  */
-class ConnectionHandlerSet {
+class ConnectionChecker {
+
+	friend class Server;
 
 public:
 	typedef boost::function<void (bool)> FunctionType;
 
-	ConnectionHandlerSet(Server * server);
-	~ConnectionHandlerSet();
+	ConnectionChecker(Server * server, FunctionType handler);
+	~ConnectionChecker();
 
-	void add(std::string const & name, FunctionType handler);
-	bool remove(std::string const & name);
-
+private:
 	void startThread(int timeoutMs, int pollingTimeMs);
 	void stopThread();
 
-private:
-	void apply(bool available);
 	void loop(int timeoutMs, int pollingTimeMs);
 
 	Server * m_server;
 	TimeCondition m_waitCondition;
-	boost::mutex m_mutex;
-	std::map<std::string, FunctionType> m_set;
+	FunctionType m_function;
 	std::auto_ptr<boost::thread> m_thread;
 };
 

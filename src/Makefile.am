@@ -18,8 +18,9 @@ libcameo_la_SOURCES = \
 	cameo/PublisherEvent.cpp \
 	cameo/PortEvent.cpp \
 	cameo/RemoteException.cpp \
+	cameo/InvalidArgumentException.cpp \
 	cameo/ConnectionTimeout.cpp \
-	cameo/StateException.cpp \
+	cameo/SocketException.cpp \
 	cameo/PublisherCreationException.cpp \
 	cameo/SubscriberCreationException.cpp \
 	cameo/StarterServerException.cpp \
@@ -30,7 +31,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/GenericWaitingImpl.cpp \
 	cameo/impl/WaitingImplSet.cpp \
 	cameo/impl/CancelIdGenerator.cpp \
-	cameo/impl/ConnectionHandlerSet.cpp \
+	cameo/ConnectionChecker.cpp \
 	cameo/EventStreamSocket.cpp \
 	cameo/Response.cpp \
 	cameo/impl/PublisherImpl.cpp \
@@ -77,9 +78,11 @@ nobase_include_HEADERS = \
 	cameo/PortEvent.h \
 	cameo/RemoteException.h \
 	cameo/Response.h \
+	cameo/ConnectionChecker.h \
 	cameo/Server.h \
 	cameo/Services.h \
-	cameo/StateException.h \
+	cameo/InvalidArgumentException.h \
+	cameo/SocketException.h \
 	cameo/StatusEvent.h \
 	cameo/ResultEvent.h \
 	cameo/SubscriberCreationException.h \

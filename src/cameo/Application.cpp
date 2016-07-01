@@ -103,14 +103,14 @@ This::This(int argc, char *argv[]) :
 	Services::setImpl(m_impl);
 
 	if (argc == 0) {
-		throw invalid_argument("missing info argument");
+		throw InvalidArgumentException("missing info argument");
 	}
 
 	string info(argv[argc - 1]);
 	vector<string> tokens = split(info);
 
 	if (tokens.size() < 4) {
-		throw invalid_argument(info + " is not a valid argument");
+		throw InvalidArgumentException(info + " is not a valid argument");
 	}
 
 	m_url = tokens[0] + ":" + tokens[1];
@@ -224,7 +224,7 @@ void This::init() {
 	initStatus();
 }
 
-void This::setRunning() {
+bool This::setRunning() {
 
 	string strRequestType = m_instance->m_impl->createRequest(PROTO_SETSTATUS);
 	string strRequestData = m_instance->m_impl->createSetStatusRequest(m_instance->m_id, RUNNING);
@@ -235,8 +235,10 @@ void This::setRunning() {
 	delete reply;
 
 	if (requestResponse.value() == -1) {
-		throw StateException(requestResponse.message());
+		return false;
 	}
+
+	return true;
 }
 
 void This::setBinaryResult(const std::string& data) {

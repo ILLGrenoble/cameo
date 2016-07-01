@@ -23,13 +23,14 @@
 #include <set>
 #include <memory>
 #include <stdint.h>
+#include "InvalidArgumentException.h"
+#include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "PublisherCreationException.h"
 #include "RequesterCreationException.h"
 #include "ResponderCreationException.h"
 #include "Response.h"
 #include "Services.h"
-#include "StateException.h"
 
 namespace cameo {
 
@@ -119,10 +120,7 @@ public:
 
 	static void cancelWaitings();
 
-	/**
-	 * throws StateException.
-	 */
-	static void setRunning();
+	static bool setRunning();
 
 	/**
 	 * Sets the result.
