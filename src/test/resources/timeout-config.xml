@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config port="9000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
+
+	<applications>
+	</applications>
+	
+</config>

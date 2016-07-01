@@ -54,8 +54,6 @@ Improvements:
 	procedure to add/reserve ports
 	reserve a pool of ports? limit its number?
 	accept multiple=yes with show stream?
-+ Maven configuration to be implemented
-	manage versions
 + C++11
 	replace auto_ptr by unique_ptr	
 	noncopyable
@@ -96,6 +94,8 @@ Improvements:
 	extract services from Application (and Impl) required to implement as external (the idea is to have an example of how to create a communication service)
 	=> enable communication extensibility
 	change create method to builder?
++ plugin based (maven?) for customising the behaviour
+	plugins would be loaded at runtime
 	
 Minor updates:
 + if the host is not available, zmq throws an exception (ex: muttiport shutdown), catch it (everywhere a socket is open?).
@@ -140,9 +140,6 @@ Minor updates:
 	the application terminates successfully even if it fails (e.g. segmentation fault)
 + test incompatible versions of cameo java : is the server okay if parsing fails?
 	example : server in different version than client
-+ daemon on MacOS
-	https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html
-	we can explain that cameo is like a unified daemon manager
 + review application::This::Scope app(argc, argv); // object built
 + setResult(void *, size), setBinaryResult(string) in C++
 	complete the API
@@ -173,5 +170,6 @@ Minor updates:
 		update when state is inactive
      	do not push the start request if the app is UPDATING (the queue will be implemented later) 
 	This can access version
-
++ test C++ API with zmq 4
+	automatized tests
  	

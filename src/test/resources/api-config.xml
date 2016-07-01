@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="7000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
+<config port="8000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
 
 	<applications>
 		
@@ -60,6 +60,14 @@
 		<application name="reqrepjava" starting_time="inf" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
 			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestRequesterAndResponderApplication"/>
 		</application>
+		
+		<application name="timeoutjava" starting_time="0" retries="0" stopping_time="1000" stream="yes" multiple="no" restart="no">
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestTimeoutApplication"/>
+		</application>
+		
+		<application name="connectioncheckerjava" starting_time="0" retries="0" stopping_time="1000" stream="yes" multiple="no" restart="no">
+			<start executable="java" args="-classpath ../cameo-api-java/target/cameo-api-java-test.jar fr.ill.ics.cameo.test.TestConnectionCheckerApplication"/>
+		</application>
 
 		<!-- These applications are provided with the cameo-api-cpp sources -->
 		<application name="statecpp" starting_time="0" retries="0" stopping_time="1" stream="yes" log_directory="logs" multiple="no" restart="no">
@@ -104,6 +112,14 @@
 
 		<application name="reqrepcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
 			<start executable="../cameo-api-cpp/build/src/test/testrequesterandresponder"/>
+		</application>
+		
+		<application name="timeoutcpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/.libs/testtimeout"/>
+		</application>
+		
+		<application name="connectioncheckercpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/.libs/testconnectionchecker"/>
 		</application>
 
 	</applications>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="7000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
+<config port="8000" max_applications="20" log_directory="logs" debug="ON" polling_time="100">
 
 	<applications>
 		<application name="fast" starting_time="0" retries="0" stopping_time="1" stream="no" multiple="no" restart="no" pass_info="no">
