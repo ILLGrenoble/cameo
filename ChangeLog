@@ -2,4 +2,7 @@
 -----
 
 * Corrected Server::isAvailable implementation when timeout is set.
-* Implemented connection handler.
+* Implemented connection checker by creating a ConnectionChecker class.
+* Removed StateException, setRunning now returns a boolean.
+* Added InvalidArgumentException to replace invalid_argument exception.
+* Added SocketException thrown when the Server connect fails.
