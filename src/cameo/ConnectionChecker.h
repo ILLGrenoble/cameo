@@ -17,7 +17,6 @@
 #ifndef CAMEO_CONNECTIONCHECKER_H_
 #define CAMEO_CONNECTIONCHECKER_H_
 
-#include "impl/TimeCondition.h"
 #include <boost/function.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -28,6 +27,7 @@
 namespace cameo {
 
 class Server;
+class TimeCondition;
 
 /**
  * Class providing a simple connection checker.
@@ -49,7 +49,7 @@ private:
 	void loop(int timeoutMs, int pollingTimeMs);
 
 	Server * m_server;
-	TimeCondition m_waitCondition;
+	std::auto_ptr<TimeCondition> m_waitCondition;
 	FunctionType m_function;
 	std::auto_ptr<boost::thread> m_thread;
 };

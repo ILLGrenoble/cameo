@@ -15,6 +15,7 @@
  */
 
 #include "ConnectionChecker.h"
+#include "impl/TimeCondition.h"
 #include "Server.h"
 
 using namespace std;
@@ -22,6 +23,7 @@ using namespace std;
 namespace cameo {
 
 ConnectionChecker::ConnectionChecker(Server * server, ConnectionChecker::FunctionType handler) : m_server(server), m_function(handler) {
+	m_waitCondition.reset(new TimeCondition());
 }
 
 ConnectionChecker::~ConnectionChecker() {
@@ -32,7 +34,7 @@ void ConnectionChecker::loop(int timeoutMs, int pollingTimeMs) {
 
 	// Loop until the condition is notified.
 	while (true) {
-		bool stopped = m_waitCondition.wait(pollingTimeMs);
+		bool stopped = m_waitCondition->wait(pollingTimeMs);
 		if (stopped) {
 			return;
 		}
@@ -57,7 +59,7 @@ void ConnectionChecker::startThread(int timeoutMs, int pollingTimeMs) {
 void ConnectionChecker::stopThread() {
 
 	if (m_thread.get() != 0) {
-		m_waitCondition.notify();
+		m_waitCondition->notify();
 		m_thread->join();
 	}
 }
