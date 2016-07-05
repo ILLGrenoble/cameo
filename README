@@ -1,8 +1,1 @@
-To compile:
-build.sh
-
-cd build
-../configure OPTIONS
-make proto
-make
-make install (by root if necessary)
+Please read the README.md file.
