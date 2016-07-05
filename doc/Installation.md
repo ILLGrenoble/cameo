@@ -1,6 +1,6 @@
 The Cameo C++ API sources can be compiled on different platforms.
 
-* Automake/Libtool
+# Automake/Libtool
 
 To compile as a developer:
 
@@ -11,26 +11,26 @@ To compile as a developer:
 	make
 	make install (by root if necessary)
 
-* Visual Studio 2015
+# Visual Studio 2015
 
 Install the following components:
 
-** Install Visual C++ Community
+## IDE
 
-	Maybe repair the installation if it fails
+Download and install Visual C++ Community. You will maybe have to repair the installation if it fails to install.
  
-** ZeroMQ
+## ZeroMQ
 
-	Download the installer 
+Download the installer from the [page] (http://zeromq.org/distro:microsoft-windows) 
     
-** Protocol Buffers
+## Protocol Buffers
 
-	Download the compiler pre-built 2.6.1
-	Change the path so that protoc is accessible from the command line
-	Compile Protocol Buffers 2.6.1 with VS 2015
-    	Use the projects in vsprojects (implies their migration)
-    	Add _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS in preprocessor definitions
-    Install Boost 1.59 with the installer
+Download the compiler pre-built 2.6.1.
+Change the path so that protoc is accessible from the command line
+Compile Protocol Buffers 2.6.1 with VS 2015
+* Compile the projects in vsprojects (implies their migration)
+* Add _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS in preprocessor definitions
+Install Boost 1.59 with the installer.
   
 Notes:
-** Boost threads do not work with the Matlab 2015b engine because Matlab depends on an older Boost version.
+Boost threads do not work with the Matlab 2015b engine because Matlab depends on an older Boost version.
