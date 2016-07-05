@@ -16,7 +16,8 @@ bin_PROGRAMS = \
 	testrequesterandresponder \
 	testcancel \
 	testtimeout \
-	testconnectionchecker
+	testconnectionchecker \
+	testveryfast
 
 
 testcameo_SOURCES = \
@@ -145,3 +146,11 @@ testconnectionchecker_SOURCES = \
 testconnectionchecker_CPPFLAGS = $(CAMEO_CXXFLAGS)
 testconnectionchecker_LDFLAGS = $(CAMEO_LDFLAGS)
 testconnectionchecker_LDADD = ../libcameo.la $(CAMEO_LIBS)
+
+
+testveryfast_SOURCES = \
+	TestVeryFast.cpp
+
+testveryfast_CPPFLAGS = $(CAMEO_CXXFLAGS)
+testveryfast_LDFLAGS = $(CAMEO_LDFLAGS)
+testveryfast_LDADD = ../libcameo.la $(CAMEO_LIBS)
