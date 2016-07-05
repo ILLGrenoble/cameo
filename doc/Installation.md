@@ -21,15 +21,15 @@ Download and install Visual C++ Community. You will maybe have to repair the ins
  
 ### ZeroMQ
 
-Download the installer from the [page] (http://zeromq.org/distro:microsoft-windows) 
+Download the installer from the [page] (http://zeromq.org/distro:microsoft-windows).  
     
 ### Protocol Buffers
 
 Download the compiler pre-built 2.6.1.  
-Change the path so that protoc is accessible from the command line  
-Compile Protocol Buffers 2.6.1 with VS 2015  
+Change the path so that protoc is accessible from the command line.  
+Compile Protocol Buffers 2.6.1 with VS 2015.  
 * Compile the projects in vsprojects (implies their migration)  
-* Add _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS in preprocessor definitions  
+* Add _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS in preprocessor definitions.  
 Install Boost 1.59 with the installer.  
   
 Notes:
