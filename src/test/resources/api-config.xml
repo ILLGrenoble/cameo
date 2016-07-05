@@ -121,6 +121,10 @@
 		<application name="connectioncheckercpp" starting_time="0" retries="0" stopping_time="1" stream="yes" multiple="no" restart="no">
 			<start executable="../cameo-api-cpp/build/src/test/.libs/testconnectionchecker"/>
 		</application>
+		
+		<application name="veryfastcpp" starting_time="0" retries="0" stopping_time="0" stream="yes" multiple="no" restart="no">
+			<start executable="../cameo-api-cpp/build/src/test/.libs/testveryfast"/>
+		</application>
 
 	</applications>
 	

@@ -27,6 +27,10 @@
 		<application name="noapp" starting_time="0" retries="0" stopping_time="1" stream="no" multiple="no" restart="no" pass_info="no">
 			<start executable="not a path to an executable"/>
 		</application>
+		
+		<application name="veryfast" starting_time="0" retries="0" stopping_time="0" stream="yes" multiple="no" restart="no" pass_info="no">
+			<start executable="java" args="-classpath target/classes fr.ill.ics.cameo.test.VeryFastApplication"/>
+		</application>
 
 	</applications>
 	
