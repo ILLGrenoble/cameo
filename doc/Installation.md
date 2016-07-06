@@ -32,7 +32,7 @@ Compile Protocol Buffers 2.6.1 with VS 2015.
 * Add _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS in preprocessor definitions.
 
 ### Boost C++
-  
+
 Install Boost 1.59 with the installer from the [page] (https://sourceforge.net/projects/boost/files/boost-binaries/).  
   
 ### Cameo
@@ -42,7 +42,7 @@ Compile the Protocol Buffers files:
 	cd src/proto  
 	protoc -I=. --cpp_out=. Messages.proto  
   
-Open the project in the msvc/cameo-api-cpp.  
+Open the project in msvc/cameo-api-cpp.  
 Modify the paths of ZeroMQ, Protocol Buffers and Boost.   
 Generate the library which is a static library.  
   
