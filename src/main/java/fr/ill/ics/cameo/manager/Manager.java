@@ -578,11 +578,16 @@ public class Manager extends ConfigLoader {
 		if (!applicationMap.containsKey(id)) {
 			throw new IdNotFoundException();
 		}
-		
+	
 		Application application = applicationMap.get(id);
-		int port = ConfigManager.getInstance().getNextPort();
-
 		HashMap<String, Integer> ports = application.getPorts();
+		
+		if (ports.containsKey(portName)) {
+			// The port already exists.
+			return -1;
+		}
+		
+		int port = ConfigManager.getInstance().getNextPort();
 		ports.put(portName, port);
 
 		sendPort(id, application.getName(), portName);
@@ -620,6 +625,7 @@ public class Manager extends ConfigLoader {
 		
 		if (ports.containsKey(portName)) {
 			ConfigManager.getInstance().removePort(ports.get(portName));
+			ports.remove(portName);
 			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " removed socket " + portName);
 			
 			return true;

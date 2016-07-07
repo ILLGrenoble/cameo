@@ -1,7 +1,8 @@
 0.0.3
 -----
 
-* Changed the loading of the file referenced by 'environment' 
+* Changed the loading of the file referenced by 'environment'.
+* It is impossible to request two port with the same name without an error.
 
 0.0.2
 -----
