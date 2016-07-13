@@ -31,6 +31,7 @@
 #include "ResponderCreationException.h"
 #include "Response.h"
 #include "Services.h"
+#include "TimeCondition.h"
 
 namespace cameo {
 
@@ -174,6 +175,8 @@ class Instance {
 	friend std::ostream& operator<<(std::ostream&, const Instance&);
 
 public:
+	typedef boost::function<void (State)> StateHandlerType;
+
 	~Instance();
 
 	const std::string& getName() const;
@@ -187,8 +190,11 @@ public:
 	State getInitialState() const;
 	bool stop();
 	bool kill();
-	State waitFor(int states = 0);
-	State waitFor(int states, const std::string& eventName);
+
+	State waitFor(StateHandlerType handler = 0);
+	State waitFor(int states, StateHandlerType handler = 0);
+	State waitFor(int states, const std::string& eventName, StateHandlerType handler = 0);
+
 	void cancelWaitFor();
 
 	bool getBinaryResult(std::string& result);

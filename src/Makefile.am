@@ -11,7 +11,7 @@ lib_LTLIBRARIES = libcameo.la
 # header files that must be in the dist package but not installed are sources
 libcameo_la_SOURCES = \
 	cameo/impl/Serializer.cpp \
-	cameo/impl/TimeCondition.cpp \
+	cameo/TimeCondition.cpp \
 	cameo/Event.cpp \
 	cameo/StatusEvent.cpp \
 	cameo/ResultEvent.cpp \
@@ -67,6 +67,7 @@ libcameo_la_SOURCES = \
 		
 # header files that are installed
 nobase_include_HEADERS = \
+	cameo/TimeCondition.h \
 	cameo/Application.h \
 	cameo/ProtoType.h \
 	cameo/ConnectionTimeout.h \

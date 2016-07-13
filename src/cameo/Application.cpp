@@ -498,7 +498,7 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string& eventName) {
+State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler) {
 
 	if (!exists()) {
 		// the application was not launched
@@ -537,6 +537,11 @@ State Instance::waitFor(int states, const std::string& eventName) {
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
+				// call the state handler.
+				if (!handler.empty()) {
+					handler(state);
+				}
+
 				// test the terminal state
 				if (state == SUCCESS
 					|| state == STOPPED
@@ -574,8 +579,12 @@ State Instance::waitFor(int states, const std::string& eventName) {
 	return m_lastState;
 }
 
-State Instance::waitFor(int states) {
-	return waitFor(states, "");
+State Instance::waitFor(int states, StateHandlerType handler) {
+	return waitFor(states, "", handler);
+}
+
+State Instance::waitFor(StateHandlerType handler) {
+	return waitFor(0, "", handler);
 }
 
 void Instance::cancelWaitFor() {

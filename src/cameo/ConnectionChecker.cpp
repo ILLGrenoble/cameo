@@ -15,8 +15,8 @@
  */
 
 #include "ConnectionChecker.h"
-#include "impl/TimeCondition.h"
 #include "Server.h"
+#include "TimeCondition.h"
 
 using namespace std;
 

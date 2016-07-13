@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 01/07/2015
+# Version 11/07/2016
 # defines CAMEO_CFLAGS, CAMEO_LDFLAGS, CAMEO_LIBS
 #
 AC_DEFUN([AC_CAMEO],
@@ -11,8 +11,10 @@ AC_DEFUN([AC_CAMEO],
 
     AC_LIBZMQ
     AC_LIBPROTOBUF_LITE
-    AX_BOOST_THREAD
-
+    AX_BOOST_DATE_TIME
+	AX_BOOST_THREAD
+	AX_BOOST_SYSTEM
+    
     CAMEO_CFLAGS=
     CAMEO_LIBS=
     if test $with_cameo != no; then

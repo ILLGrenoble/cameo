@@ -23,6 +23,12 @@
 using namespace std;
 using namespace cameo;
 
+struct StateHandler {
+	void operator()(application::State state) {
+		cout << "received state " << application::toString(state) << endl;
+	}
+};
+
 int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
@@ -42,6 +48,8 @@ int main(int argc, char *argv[]) {
 
 		cout << "stopping application " << stopApplication->getNameId() << endl;
 		stopApplication->stop();
+
+		stopApplication->waitFor(StateHandler());
 
 		string result;
 		if (stopApplication->getResult(result)) {
