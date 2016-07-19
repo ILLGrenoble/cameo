@@ -135,40 +135,6 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>install</id>
-						<phase>install</phase>
-						<configuration>
-							<target>
-								<copy file="target/${project.artifactId}-${project.version}-test.jar" tofile="target/${project.artifactId}-test.jar" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Assemble a single jar for tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<!-- No version is provided to simplify the test with server. -->
-					<finalName>${project.artifactId}-${project.version}-test</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
 				</executions>
 			</plugin>
 		</plugins>
