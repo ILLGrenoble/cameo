@@ -1,8 +1,4 @@
-if TESTS
-TESTSDIR = test
-endif
-
-SUBDIRS = . $(TESTSDIR)
+SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/src
 

@@ -21,15 +21,6 @@ AC_PROG_LIBTOOL
 
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_ARG_ENABLE(tests,
-             [  --enable-tests compile test applications],
-             [case "${enableval}" in
-             yes) tests=true ;;
-             no)  tests=false ;;
-             *) AC_MSG_ERROR(bad value ${enableval} for --enable-tests) ;;
-             esac],[tests=false])
-AM_CONDITIONAL([TESTS], [test "$tests" = true])
-
 AC_SUBST(LIBRARY_VERSION)
 
 # temporarily disabled
@@ -65,5 +56,4 @@ top_srcdir=.
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/test/Makefile
 ])
