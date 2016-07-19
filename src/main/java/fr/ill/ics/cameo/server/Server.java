@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.server;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
@@ -57,18 +58,27 @@ import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 public class Server {
 
 	private static ZContext context;
+	private String configFileName;
+	private InputStream configStream;
 
-	public static void main(String[] args) {
-		
-		// verify args
-		if (args.length < 1) {
-			showVersion();
-			System.out.printf("Usage: <XML config file>\n");
-			System.exit(1);
-		}
-		
+	public Server(String configFileName) {
+		this.configFileName = configFileName;
+	}
+
+	public Server(InputStream configStream) {
+		this.configStream = configStream;
+	}
+
+	public void run() {
 		// start manager
-		final Manager manager = new Manager(args[0]);
+		final Manager manager;
+		
+		if (configFileName != null) {
+			manager = new Manager(configFileName);
+		}
+		else {
+			manager = new Manager(configStream);
+		}
 
 		context = new ZContext();
 		Socket server = context.createSocket(ZMQ.REP);
@@ -76,29 +86,29 @@ public class Server {
 
 		// wait command (listen)
 		LogInfo.getInstance().getLogger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
-				
+
 		manager.initStreamSockets(context);
-		
+
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
-				
+
 				manager.killAllApplications();
 				LogInfo.getInstance().getLogger().fine("Exited");
 			}
 		}));
-		
+
 		while (true) {
 
 			ZMsg message = null;
 			ZMsg reply = null;
-			
+
 			try {
 				message = ZMsg.recvMsg(server);
-	
+
 				if (message == null) {
 					break;
 				}
-	
+
 				// check there are not 2 frames
 				if (message.size() != 2) {
 					System.err.println("Unexpected number of frames, should be 2");
@@ -109,13 +119,13 @@ public class Server {
 				// get last frame
 				byte[] messageData = message.getLast().getData();
 				ProcessRequest process = new ProcessRequest();
-				
+
 				// dispatch message
 				MessageType type = MessageType.parseFrom(typeData);
-				
+
 				if (type.getType() == Type.INIT) {
 					reply = process.processInit(manager);
-					
+
 				} else if (type.getType() == Type.START) {
 					reply = process.processStartCommand(StartCommand.parseFrom(messageData), manager);
 
@@ -127,16 +137,16 @@ public class Server {
 
 				} else if (type.getType() == Type.KILL) {
 					reply = process.processKillCommand(KillCommand.parseFrom(messageData), manager);
-					
+
 				} else if (type.getType() == Type.CONNECT) {
 					reply = process.processConnectCommand(ConnectCommand.parseFrom(messageData), manager);
-					
+
 				} else if (type.getType() == Type.SHOW) {
 					reply = process.processShowStreamCommand(ShowStreamCommand.parseFrom(messageData), manager);
 
 				} else if (type.getType() == Type.ISALIVE) {
 					reply = process.processIsAliveCommand(IsAliveCommand.parseFrom(messageData), manager);
-				
+
 				} else if (type.getType() == Type.SENDPARAMETERS) {
 					reply = process.processSendParametersCommand(SendParametersCommand.parseFrom(messageData), manager);
 
@@ -145,7 +155,7 @@ public class Server {
 
 				} else if (type.getType() == Type.ALLAVAILABLE) {
 					reply = process.processAllAvailableCommand(AllAvailableCommand.parseFrom(messageData), manager);
-					
+
 				} else if (type.getType() == Type.OUTPUT) {
 					reply = process.processOutputCommand(OutputCommand.parseFrom(messageData), manager);
 
@@ -158,83 +168,95 @@ public class Server {
 				} else if (type.getType() == Type.SETRESULT) {
 					reply = process.processSetResultCommand(SetResultCommand.parseFrom(messageData), manager);
 
-				// Port
+					// Port
 				} else if (type.getType() == Type.REQUESTPORT) {
 					reply = process.processRequestPortCommand(RequestPortCommand.parseFrom(messageData), manager);
-				
+
 				} else if (type.getType() == Type.CONNECTPORT) {
 					reply = process.processConnectPortCommand(ConnectPortCommand.parseFrom(messageData), manager);
-					
+
 				} else if (type.getType() == Type.REMOVEPORT) {
 					reply = process.processRemovePortCommand(RemovePortCommand.parseFrom(messageData), manager);
-					
-				// Publisher/Subscriber
+
+					// Publisher/Subscriber
 				} else if (type.getType() == Type.CREATEPUBLISHER) {
 					reply = process.processCreatePublisherCommand(CreatePublisherCommand.parseFrom(messageData), manager);
 
 				} else if (type.getType() == Type.TERMINATEPUBLISHER) {
-					reply = process.processTerminatePublisherCommand(TerminatePublisherCommand.parseFrom(messageData), manager);					
-					
+					reply = process.processTerminatePublisherCommand(TerminatePublisherCommand.parseFrom(messageData), manager);
+
 				} else if (type.getType() == Type.CONNECTPUBLISHER) {
 					reply = process.processConnectPublisherCommand(ConnectPublisherCommand.parseFrom(messageData), manager);
-				
+
 				} else {
 					System.err.println("unknown message type " + type.getType());
 					message.send(server);
 				}
-				
+
 				// send to the client
 				if (reply != null) {
 					reply.send(server);
 				}
-				
+
 			} catch (InvalidProtocolBufferException e) {
 				System.err.println("problem in parsing of message");
-				
+
 			} finally {
-				
+
 				if (message != null) {
 					message.destroy();
-				}	
-				
+				}
+
 				if (reply != null) {
 					reply.destroy();
 				}
-				
+
 				// requesting gc
 				System.gc();
 			}
-			
+
 		}
-		
+
 		if (Thread.currentThread().isInterrupted()) {
 			System.out.printf("interrupted\n");
 		}
-		
+
 		context.close();
 	}
 
 	private static void showVersion() {
-		
+
 		try {
 			Enumeration<URL> resources = Server.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
-			
+
 			while (resources.hasMoreElements()) {
-			    
+
 				Manifest manifest = new Manifest(resources.nextElement().openStream());
 				Attributes attributes = manifest.getMainAttributes();
-				
-				if (attributes.getValue("Specification-Version") != null 
-					&& attributes.getValue("Build-Timestamp") != null) {
+
+				if (attributes.getValue("Specification-Version") != null && attributes.getValue("Build-Timestamp") != null) {
 					System.out.println("Cameo server version " + attributes.getValue("Specification-Version") + "--" + attributes.getValue("Build-Timestamp"));
-					
+
 					// The manifest is found, we can return.
 					return;
 				}
 			}
-		
+
 		} catch (IOException E) {
-	      // handle
-	    }
+			// handle
+		}
+	}
+	
+	public static void main(String[] args) {
+
+		// verify args
+		if (args.length < 1) {
+			showVersion();
+			System.out.printf("Usage: <XML config file>\n");
+			System.exit(1);
+		}
+
+		Server server = new Server(args[0]);
+		server.run();
 	}
 }

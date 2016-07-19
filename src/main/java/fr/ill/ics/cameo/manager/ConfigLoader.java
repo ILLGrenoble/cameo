@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.manager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,11 @@ public abstract class ConfigLoader {
 	protected Set<ApplicationConfig> applicationSet;
 
 	public ConfigLoader(String path) {
-		loadXml(path);
+		loadXml(buildXml(path));
+	}
+
+	public ConfigLoader(InputStream configStream) {
+		loadXml(buildXml(configStream));
 	}
 
 	private String[] loadArgs(Element item) {
@@ -63,11 +68,7 @@ public abstract class ConfigLoader {
 		return finalArgs;
 	}
 	
-	/**
-	 * Load config of applications from xml file
-	 */
-	private void loadXml(String path) {
-		
+	private org.jdom2.Document buildXml(String path) {
 		File configFile = new File(path);
 		
 		ConfigManager.getInstance().setConfigParent(configFile.getParent());
@@ -75,18 +76,45 @@ public abstract class ConfigLoader {
 		// Load the configuration
 		LogInfo.getInstance().getLogger().fine("Loading config");
 		org.jdom2.Document configXML = null;
-		Element root;
 		SAXBuilder builder = new SAXBuilder();
 		
 		try {
 			configXML = builder.build(configFile);
-			
+						
 		} catch (JDOMException e) {
 			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
 		} catch (IOException e) {
 			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
 		}
-		root = configXML.getRootElement();
+		
+		return configXML;
+	}
+	
+	private org.jdom2.Document buildXml(InputStream stream) {
+		
+		// Load the configuration
+		LogInfo.getInstance().getLogger().fine("Loading config");
+		org.jdom2.Document configXML = null;
+		SAXBuilder builder = new SAXBuilder();
+		
+		try {
+			configXML = builder.build(stream);
+						
+		} catch (JDOMException e) {
+			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+		} catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+		}
+		
+		return configXML;
+	}
+	
+	/**
+	 * Load config of applications from xml file
+	 */
+	private void loadXml(org.jdom2.Document configXML) {
+		
+		Element root = configXML.getRootElement();
 		
 		// Set the attributes
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue("max_applications"));
@@ -169,6 +197,11 @@ public abstract class ConfigLoader {
 			
 			applicationSet.add(application);
 		}
+		
+	}
+	
+	private void loadXml(InputStream configStream) {
+		
 		
 	}
 

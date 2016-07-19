@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.manager;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,6 +59,23 @@ public class Manager extends ConfigLoader {
 	
 	public Manager(String xmlPath) {
 		super(xmlPath);
+		LogInfo.getInstance().init();
+		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		
+		showApplicationConfigs();
+		
+		applicationMap = new ConcurrentHashMap<Integer, Application>();
+		
+		// security test
+		if (ConfigManager.getInstance().getMaxNumberOfApplications() > MAX_ID) {
+			MAX_ID = ConfigManager.getInstance().getMaxNumberOfApplications();
+		}
+		
+		LogInfo.getInstance().getLogger().fine("Max Id is " + MAX_ID);
+	}
+
+	public Manager(InputStream configStream) {
+		super(configStream);
 		LogInfo.getInstance().init();
 		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
