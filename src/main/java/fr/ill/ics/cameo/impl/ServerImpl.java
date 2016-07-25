@@ -647,6 +647,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		ZMsg request = createSubscribePublisherRequest();
 		ZMsg reply = tryRequest(request, endpoint);
+		
 		byte[] messageData = reply.getFirst().getData();
 		RequestResponse requestResponse = null;
 		
@@ -842,7 +843,7 @@ public class ServerImpl extends ServicesImpl {
 		return request;
 	}
 	
-	private ZMsg createSubscribePublisherRequest() {
+	protected ZMsg createSubscribePublisherRequest() {
 		
 		ZMsg request = createRequest(Type.SUBSCRIBEPUBLISHER);
 		SubscribePublisherCommand command = SubscribePublisherCommand.newBuilder().build();

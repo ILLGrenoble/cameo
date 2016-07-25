@@ -253,7 +253,7 @@ public class PublisherImpl {
 		
 		ZMsg reply = new ZMsg();
 		reply.add("Connection OK");
-		
+				
 		return reply;
 	}
 	

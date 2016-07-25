@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.impl;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMsg;
 import org.zeromq.ZMQ.PollItem;
 import org.zeromq.ZMQ.Socket;
 
@@ -27,6 +28,7 @@ import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.proto.Messages;
+import fr.ill.ics.cameo.proto.Messages.RequestResponse;
 
 public class SubscriberImpl {
 
@@ -90,16 +92,28 @@ public class SubscriberImpl {
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
-		
+			
 			String endpoint = url + ":" + synchronizerPort;
 			
+			// Create a socket that will be used for several requests.
+			RequestSocket requestSocket = server.createSocket(endpoint);
+						
 			// Polling to wait for connection
 			PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
 			
 			boolean ready = false;
 			while (!ready) {
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				server.sendInit(endpoint);
+				ZMsg request = server.createInitRequest();
+				ZMsg reply = null;
+				try {
+					reply = requestSocket.request(request);
+					reply.destroy();
+					request.destroy();
+
+				} catch (ConnectionTimeout e) {
+					// do nothing
+				}
 	
 				// Polling until the first SYNC message is received
 				ZMQ.poll(items, 100);
@@ -109,8 +123,23 @@ public class SubscriberImpl {
 				}
 			}
 			
-			// The subscriber is connected and ready to receive data
-			server.subscribeToPublisher(endpoint);
+			// The subscriber is connected and ready to receive data.
+			// Notify the publisher that it can send data.
+			ZMsg request = server.createSubscribePublisherRequest();
+			ZMsg reply = requestSocket.request(request);
+			
+			byte[] messageData = reply.getFirst().getData();
+			RequestResponse requestResponse = null;
+			
+			try {
+				requestResponse = RequestResponse.parseFrom(messageData);
+				
+			} catch (InvalidProtocolBufferException e) {
+				throw new UnexpectedException("Cannot parse response");
+			}
+
+			
+			requestSocket.terminate();
 		}
 	}
 	

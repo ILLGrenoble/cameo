@@ -251,7 +251,21 @@ public class ServicesImpl {
 	protected ZMsg tryRequest(ZMsg request) throws ConnectionTimeout {
 		return tryRequest(request, serverEndpoint, -1); 
 	}
-
+	
+	protected RequestSocket createSocket(String endpoint) throws SocketException {
+	
+		Socket socket = context.createSocket(ZMQ.REQ);
+		
+		try {
+			socket.connect(endpoint);
+		}
+		catch (Exception e) {
+			throw new SocketException(e.getMessage());
+		}
+		
+		return new RequestSocket(context, socket, timeout);
+	}
+	
 	/**
 	 * 
 	 * @param type
