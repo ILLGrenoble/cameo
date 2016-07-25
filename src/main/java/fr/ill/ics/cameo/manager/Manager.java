@@ -235,7 +235,7 @@ public class Manager extends ConfigLoader {
 			LogInfo.getInstance().getLogger().info("Max number of applications reached");
 			throw new MaxNumberOfApplicationsReached();
 		}
-
+		
 		// Create application
 		Application application = new Application(ConfigManager.getInstance().getHostEndpoint(), id, applicationConfig, args, starterReference);
 		applicationMap.put(id, application);
