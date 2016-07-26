@@ -154,7 +154,7 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 				if (state == application::SUCCESS
 					|| state == application::STOPPED
 					|| state == application::KILLED
-					|| state == application::ERROR) {
+					|| state == application::FAILURE) {
 					// Exit because the remote application has terminated.
 					return false;
 				}

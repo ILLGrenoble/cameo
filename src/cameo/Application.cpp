@@ -64,7 +64,7 @@ State This::parseState(const std::string& value) {
 	} else if (value == "PROCESSING_ERROR") {
 		return PROCESSING_ERROR;
 	} else if (value == "ERROR") {
-		return ERROR;
+		return FAILURE;
 	} else if (value == "SUCCESS") {
 		return SUCCESS;
 	} else if (value == "STOPPED") {
@@ -509,7 +509,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 	if (m_lastState == SUCCESS
 		|| m_lastState == STOPPED
 		|| m_lastState == KILLED
-		|| m_lastState == ERROR) {
+		|| m_lastState == FAILURE) {
 		// the application is already terminated
 		return m_lastState;
 	}
@@ -546,7 +546,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 				if (state == SUCCESS
 					|| state == STOPPED
 					|| state == KILLED
-					|| state == ERROR) {
+					|| state == FAILURE) {
 					break;
 				}
 
@@ -793,7 +793,7 @@ std::auto_ptr<Subscriber> Subscriber::create(Instance & instance, const std::str
 	if (lastState == SUCCESS
 		|| lastState == STOPPED
 		|| lastState == KILLED
-		|| lastState == ERROR) {
+		|| lastState == FAILURE) {
 		return auto_ptr<Subscriber>(0);
 	}
 
@@ -1130,7 +1130,7 @@ std::string toString(cameo::application::State applicationStates) {
 		states.push_back("PROCESSING_ERROR");
 	}
 
-	if ((applicationStates & ERROR) != 0) {
+	if ((applicationStates & FAILURE) != 0) {
 		states.push_back("ERROR");
 	}
 
