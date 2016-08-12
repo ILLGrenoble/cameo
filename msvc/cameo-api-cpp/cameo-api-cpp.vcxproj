@@ -37,7 +37,6 @@
     <ClCompile Include="..\..\src\cameo\impl\SocketImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\SocketWaitingImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\SubscriberImpl.cpp" />
-    <ClCompile Include="..\..\src\cameo\impl\TimeCondition.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\WaitingImplSet.cpp" />
     <ClCompile Include="..\..\src\cameo\InvalidArgumentException.cpp" />
     <ClCompile Include="..\..\src\cameo\PortEvent.cpp" />
@@ -54,6 +53,7 @@
     <ClCompile Include="..\..\src\cameo\StarterServerException.cpp" />
     <ClCompile Include="..\..\src\cameo\StatusEvent.cpp" />
     <ClCompile Include="..\..\src\cameo\SubscriberCreationException.cpp" />
+    <ClCompile Include="..\..\src\cameo\TimeCondition.cpp" />
     <ClCompile Include="..\..\src\proto\Messages.pb.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -76,7 +76,6 @@
     <ClInclude Include="..\..\src\cameo\impl\SocketImpl.h" />
     <ClInclude Include="..\..\src\cameo\impl\SocketWaitingImpl.h" />
     <ClInclude Include="..\..\src\cameo\impl\SubscriberImpl.h" />
-    <ClInclude Include="..\..\src\cameo\impl\TimeCondition.h" />
     <ClInclude Include="..\..\src\cameo\impl\WaitingImpl.h" />
     <ClInclude Include="..\..\src\cameo\impl\WaitingImplSet.h" />
     <ClInclude Include="..\..\src\cameo\impl\zmq.hpp" />
@@ -96,6 +95,7 @@
     <ClInclude Include="..\..\src\cameo\StarterServerException.h" />
     <ClInclude Include="..\..\src\cameo\StatusEvent.h" />
     <ClInclude Include="..\..\src\cameo\SubscriberCreationException.h" />
+    <ClInclude Include="..\..\src\cameo\TimeCondition.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4C9E3D2B-5244-4971-BC21-41E865CB0732}</ProjectGuid>
