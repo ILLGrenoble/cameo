@@ -77,7 +77,7 @@ public class StreamApplicationThread extends Thread {
 					.build();
 
 			publisher.sendMore("STREAM");
-			publisher.send(stream.toByteArray());
+			publisher.send(stream.toByteArray(), 0);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class StreamApplicationThread extends Thread {
 				.build();
 		
 			publisher.sendMore("ENDSTREAM");
-			publisher.send(stream.toByteArray());
+			publisher.send(stream.toByteArray(), 0);
 		}
 	}
 	

@@ -128,7 +128,7 @@ public class Manager extends ConfigLoader {
 										.build();
 			
 		eventPublisher.sendMore("STATUS");
-		eventPublisher.send(event.toByteArray());
+		eventPublisher.send(event.toByteArray(), 0);
 	}
 
 	public synchronized void sendResult(int id, String name, ByteString data) {
@@ -140,7 +140,7 @@ public class Manager extends ConfigLoader {
 				.build();
 
 		eventPublisher.sendMore("RESULT");
-		eventPublisher.send(event.toByteArray());
+		eventPublisher.send(event.toByteArray(), 0);
 	}
 	
 	public synchronized void sendPublisher(int id, String name, String publisherName) {
@@ -152,7 +152,7 @@ public class Manager extends ConfigLoader {
 										.build();
 				
 		eventPublisher.sendMore("PUBLISHER");
-		eventPublisher.send(event.toByteArray());
+		eventPublisher.send(event.toByteArray(), 0);
 	}
 	
 	public synchronized void sendPort(int id, String name, String portName) {
@@ -164,7 +164,7 @@ public class Manager extends ConfigLoader {
 										.build();
 				
 		eventPublisher.sendMore("PORT");
-		eventPublisher.send(event.toByteArray());
+		eventPublisher.send(event.toByteArray(), 0);
 	}
 	
 	private int findFreeId(int begin, int end) {
