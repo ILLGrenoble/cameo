@@ -76,7 +76,8 @@ public class PublisherImpl {
 		try {
 			// create a socket to receive the messages from the subscribers
 			synchronizer = context.createSocket(ZMQ.REP);
-			String endpoint = application.getUrl() + ":" + synchronizerPort;
+			String endpoint = "tcp://*:" + synchronizerPort;
+			
 			synchronizer.bind(endpoint);
 			
 			// loop until the number of subscribers is reached
@@ -174,7 +175,7 @@ public class PublisherImpl {
 
 	public void send(byte[] data) {
 		publisher.sendMore(STREAM);
-		publisher.send(data);
+		publisher.send(data, 0);
 	}
 	
 	public void send(String data) {
@@ -182,7 +183,7 @@ public class PublisherImpl {
 		byte[] result = Serializer.serialize(data);
 		
 		publisher.sendMore(STREAM);
-		publisher.send(result);
+		publisher.send(result, 0);
 	}
 	
 	public void send(int[] data) {
@@ -190,7 +191,7 @@ public class PublisherImpl {
 		byte[] result = Serializer.serialize(data);
 		
 		publisher.sendMore(STREAM);
-		publisher.send(result);
+		publisher.send(result, 0);
 	}
 
 	public void send(long[] data) {
@@ -198,7 +199,7 @@ public class PublisherImpl {
 		byte[] result = Serializer.serialize(data);
 		
 		publisher.sendMore(STREAM);
-		publisher.send(result);
+		publisher.send(result, 0);
 	}
 	
 	public void send(float[] data) {
@@ -206,7 +207,7 @@ public class PublisherImpl {
 		byte[] result = Serializer.serialize(data);
 		
 		publisher.sendMore(STREAM);
-		publisher.send(result);
+		publisher.send(result, 0);
 	}
 	
 	public void send(double[] data) {
@@ -214,7 +215,7 @@ public class PublisherImpl {
 		byte[] result = Serializer.serialize(data);
 		
 		publisher.sendMore(STREAM);
-		publisher.send(result);
+		publisher.send(result, 0);
 	}
 	
 

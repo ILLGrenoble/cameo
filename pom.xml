@@ -42,14 +42,40 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>jzmq</id>
+			<properties>
+				<zmq.implementation>jzmq</zmq.implementation>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.zeromq</groupId>
+					<artifactId>jzmq</artifactId>
+					<version>3.1.0</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>jeromq</id>
+			<properties>
+				<zmq.implementation>jeromq</zmq.implementation>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.zeromq</groupId>
+					<artifactId>jeromq</artifactId>
+					<version>0.3.5</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<dependencies>
-		<dependency>
-			<groupId>org.zeromq</groupId>
-			<artifactId>jeromq</artifactId>
-			<version>0.3.5</version>
-		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-lite-java</artifactId>
@@ -59,16 +85,6 @@
 
 	<build>
 		<plugins>
-
-			<!-- We force the compilation with 1.7 to ensure SUSE and Android execution -->
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
 
 			<!-- Plugin to get the SVN revision -->
 			<plugin>
