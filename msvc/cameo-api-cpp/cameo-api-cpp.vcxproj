@@ -158,7 +158,7 @@
     <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;C:\Program Files\ZeroMQ 3.2.4\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;C:\Program Files\ZeroMQ 3.2.4\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;$(ZEROMQ_HOME)\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
