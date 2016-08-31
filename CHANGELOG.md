@@ -1,9 +1,14 @@
+0.1.0
+-----
+
+* JZMQ support.
+
 0.0.3
 -----
 
 * Changed the loading of the file referenced by 'environment'.
 * It is impossible to request two port with the same name without an error.
-* Moved the basic tests to the cameo-tests project
+* Moved the basic tests to the cameo-tests project.
 
 0.0.2
 -----
