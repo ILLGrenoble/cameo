@@ -237,7 +237,7 @@ public class Manager extends ConfigLoader {
 		}
 		
 		// Create application
-		Application application = new Application(ConfigManager.getInstance().getHostEndpoint(), id, applicationConfig, args, starterReference);
+		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, applicationConfig, args, starterReference);
 		applicationMap.put(id, application);
 		
 		// Threads
@@ -485,16 +485,7 @@ public class Manager extends ConfigLoader {
 			throw new IdNotFoundException();
 		}
 	}
-			
-	/**
-	 * The set application process is synchronized to ensure that the manager can access the value safely.
-	 * @param application
-	 * @param process
-	 */
-	public synchronized void setApplicationProcess(Application application, Process process) {
-		application.setProcess(process);
-	}
-
+	
 	public synchronized void setApplicationState(Application application, int applicationState) {
 		
 		// states are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED

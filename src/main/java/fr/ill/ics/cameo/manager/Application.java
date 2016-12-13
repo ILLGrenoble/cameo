@@ -30,20 +30,18 @@ import fr.ill.ics.cameo.threads.StreamApplicationThread;
 /**
  * describe an application
  */
-public class Application extends ApplicationConfig {
+public abstract class Application extends ApplicationConfig {
 
-	private String endpoint;
-	private String starterReference;
-	private int id;
-	private String[] args;
-	private java.lang.Process process;
-	private int applicationState = ApplicationState.UNKNOWN;
-	private int pastApplicationStates = ApplicationState.UNKNOWN;
-	private ProcessState processState = ProcessState.UNKNOWN;
-	private boolean hasToStop = false;
-	private boolean hasToStopImmediately = false;
-	private StreamApplicationThread streamThread = null;
-	private boolean streamThreadStarted = false;
+	protected String endpoint;
+	protected int id;
+	
+	protected int applicationState = ApplicationState.UNKNOWN;
+	protected int pastApplicationStates = ApplicationState.UNKNOWN;
+	protected ProcessState processState = ProcessState.UNKNOWN;
+	protected boolean hasToStop = false;
+	protected boolean hasToStopImmediately = false;
+	protected StreamApplicationThread streamThread = null;
+	protected boolean streamThreadStarted = false;
 	
 	public static class Publisher {
 		public int numberOfSubscribers;
@@ -53,13 +51,11 @@ public class Application extends ApplicationConfig {
 	private HashMap<String, Publisher> publishers = new HashMap<String, Publisher>();
 	private HashSet<String> responders = new HashSet<String>();
 	
-	public Application(String endpoint, int id, ApplicationConfig applicationConfig, String[] args, String starterReference) {
-		super(applicationConfig);
+	public Application(String endpoint, int id) {
+		super();
 		
 		this.endpoint = endpoint;
-		this.starterReference = starterReference;
 		this.id = id;
-		this.args = args;
 	}
 
 	public int getId() {
@@ -70,9 +66,7 @@ public class Application extends ApplicationConfig {
 		return name + "." + id;
 	}
 
-	public String[] getArgs() {
-		return args;
-	}
+	abstract public String[] getArgs();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Synchronized get methods
@@ -81,16 +75,8 @@ public class Application extends ApplicationConfig {
 		return (logPath != null);
 	}
 	
-	synchronized public Process getProcess() {
-		return process;
-	}
-
-	synchronized public boolean isAlive() {
-		if (process != null) {
-			return process.isAlive();
-		}
-		return false;
-	}
+	abstract public Process getProcess();
+	abstract public boolean isAlive();
 	
 	/**
 	 * Returns true if duration 
@@ -148,10 +134,6 @@ public class Application extends ApplicationConfig {
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Synchronized set methods
 	
-	synchronized void setProcess(Process process) {
-		this.process = process;
-	}
-	
 	synchronized void setState(int applicationState) {
 		if (applicationState != this.applicationState) {
 			LogInfo.getInstance().getLogger().fine("Application " + getNameId() + " sets application state " + Converter.toString(applicationState));
@@ -194,65 +176,7 @@ public class Application extends ApplicationConfig {
 		}
 	}
 			
-	/**
-	 * The method is synchronized as it is not blocking.
-	 */
-	public synchronized void start() {
-		
-		try {
-			// Build the command arguments
-			ArrayList<String> commandList = new ArrayList<String>();
-			
-			// First add the executable
-			commandList.add(getStartExecutable());
-			
-			// Add the args
-			if (startArgs != null) {
-				for (int i = 0; i < startArgs.length; i++) {
-					commandList.add(startArgs[i]);
-				}
-			}
-			
-			// Add the additional args
-			if (args != null) {
-				for (int i = 0; i < args.length; i++) {
-					commandList.add(args[i]);
-				}
-			}
-			
-			// Add the endpoint and id
-			if (isPassInfo()) {
-				commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":" + starterReference);
-			}
-			
-			// Prepare the command
-			String command[] = new String[commandList.size()];
-			commandList.toArray(command);
-
-			String commandString = String.join(" ", command);
-			LogInfo.getInstance().getLogger().fine("Start " + commandString);
-			
-			// Create the builder from the command
-			ProcessBuilder builder = new ProcessBuilder(command);
-			
-			// Set the working directory
-			if (getDirectory() != null) {
-				builder.directory(new File(getDirectory()));
-			}	
-			
-			// Standard output and error output are merged
-			builder.redirectErrorStream(true); 
-
-			// Add the environment variables from the application file.
-			builder.environment().putAll(getEnvironmentVariables());
-			
-			// Start the process
-			this.process = builder.start();
-															
-		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
-		}
-	}
+	abstract public void start();
 	
 	/**
 	 * Launches the error executable.
@@ -315,64 +239,9 @@ public class Application extends ApplicationConfig {
 		LogInfo.getInstance().getLogger().info("Finished processing error for application " + this.getNameId());
 	}
 	
-	/**
-	 * Launches the stop executable.
-	 * It is not blocking.
-	 */
-	public void executeStop(String PID) {
-		
-		if (stopExecutable == null) {
-			return;
-		}
-		
-		LogInfo.getInstance().getLogger().fine("Launching stop executable for application " + this.getNameId());
-		
-		// Build the command arguments
-		ArrayList<String> commandList = new ArrayList<String>();
-		commandList.add(stopExecutable);
-		
-		if (stopArgs != null) {
-			for (int i = 0; i < stopArgs.length; i++) {
-				String arg = stopArgs[i].replace("$PID", PID);
-				commandList.add(arg);
-			}
-		}
-		
-		// Prepare the command
-		String command[] = new String[commandList.size()];
-		commandList.toArray(command);
-	
-		String commandString = String.join(" ", command);
-		LogInfo.getInstance().getLogger().fine("Start " + commandString);
-			
-		ProcessBuilder builder = new ProcessBuilder(command);
-		
-		// Set the working directory
-		if (getDirectory() != null) {
-			builder.directory(new File(getDirectory()));
-		}	
-		
-		try {
-			builder.start();
-			
-		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Stop executable is not launched for application " + this.getNameId() + " : " + e.getMessage());
-			e.printStackTrace();
-		}
-		LogInfo.getInstance().getLogger().info("Launched stop executable for application " + this.getNameId());
-	}
-	
-	public synchronized void kill() {
-		if (process != null) {
-			process.destroyForcibly();
-		}	
-	}
-	
-	public synchronized void reset() {
-		process = null;
-		hasToStop = false;
-		hasToStopImmediately = false;
-	}	
+	abstract public void executeStop(String PID);
+	abstract public void kill();
+	abstract public void reset();
 	
 	/**
 	 * @override

@@ -1,0 +1,176 @@
+package fr.ill.ics.cameo.manager;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class ManagedApplication extends Application {
+
+	private java.lang.Process process;
+	protected String[] args;
+	protected String starterReference;
+	
+	public ManagedApplication(String endpoint, int id, ApplicationConfig config, String[] args, String starterReference) {
+		super(endpoint, id);
+		
+		// Set the config.
+		this.setName(config.getName());
+		this.setDescription(config.getDescription());
+		this.setDirectory(config.getDirectory());
+		this.setStartingTime(config.getStartingTime());
+		this.setRetries(config.getRetries());
+		this.setLogPath(config.getLogPath());
+		this.setStream(config.hasStream());
+		this.setStreamPort(config.getStreamPort());
+		this.setStoppingTime(config.getStoppingTime());
+		this.setRunMultiple(config.runsSingle());
+		this.setRestart(config.isRestart());
+		this.setPassInfo(config.isPassInfo());
+
+		this.setStartExecutable(config.getStartExecutable());
+		this.setStartArgs(config.getStartArgs());
+		this.setStopExecutable(config.getStopExecutable());
+		this.setStopArgs(config.getStopArgs());
+		this.setErrorExecutable(config.getErrorExecutable());
+		this.setErrorArgs(config.getErrorArgs());
+		
+		this.setEnvironmentVariables(config.getEnvironmentVariables());
+		
+		this.args = args;
+		this.starterReference = starterReference;
+	}
+	
+	@Override
+	public String[] getArgs() {
+		return args;
+	}
+	
+	@Override
+	synchronized public Process getProcess() {
+		return process;
+	}
+
+	@Override
+	synchronized public boolean isAlive() {
+		if (process != null) {
+			return process.isAlive();
+		}
+		return false;
+	}
+	
+	@Override
+	public synchronized void start() {
+		
+		try {
+			// Build the command arguments
+			ArrayList<String> commandList = new ArrayList<String>();
+			
+			// First add the executable
+			commandList.add(getStartExecutable());
+			
+			// Add the args
+			if (startArgs != null) {
+				for (int i = 0; i < startArgs.length; i++) {
+					commandList.add(startArgs[i]);
+				}
+			}
+			
+			// Add the additional args
+			if (args != null) {
+				for (int i = 0; i < args.length; i++) {
+					commandList.add(args[i]);
+				}
+			}
+			
+			// Add the endpoint and id
+			if (isPassInfo()) {
+				commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":" + starterReference);
+			}
+			
+			// Prepare the command
+			String command[] = new String[commandList.size()];
+			commandList.toArray(command);
+
+			String commandString = String.join(" ", command);
+			LogInfo.getInstance().getLogger().fine("Start " + commandString);
+			
+			// Create the builder from the command
+			ProcessBuilder builder = new ProcessBuilder(command);
+			
+			// Set the working directory
+			if (getDirectory() != null) {
+				builder.directory(new File(getDirectory()));
+			}	
+			
+			// Standard output and error output are merged
+			builder.redirectErrorStream(true); 
+
+			// Add the environment variables from the application file.
+			builder.environment().putAll(getEnvironmentVariables());
+			
+			// Start the process
+			this.process = builder.start();
+															
+		} catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public void executeStop(String PID) {
+		
+		if (stopExecutable == null) {
+			return;
+		}
+		
+		LogInfo.getInstance().getLogger().fine("Launching stop executable for application " + this.getNameId());
+		
+		// Build the command arguments
+		ArrayList<String> commandList = new ArrayList<String>();
+		commandList.add(stopExecutable);
+		
+		if (stopArgs != null) {
+			for (int i = 0; i < stopArgs.length; i++) {
+				String arg = stopArgs[i].replace("$PID", PID);
+				commandList.add(arg);
+			}
+		}
+		
+		// Prepare the command
+		String command[] = new String[commandList.size()];
+		commandList.toArray(command);
+	
+		String commandString = String.join(" ", command);
+		LogInfo.getInstance().getLogger().fine("Start " + commandString);
+			
+		ProcessBuilder builder = new ProcessBuilder(command);
+		
+		// Set the working directory
+		if (getDirectory() != null) {
+			builder.directory(new File(getDirectory()));
+		}	
+		
+		try {
+			builder.start();
+			
+		} catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Stop executable is not launched for application " + this.getNameId() + " : " + e.getMessage());
+			e.printStackTrace();
+		}
+		LogInfo.getInstance().getLogger().info("Launched stop executable for application " + this.getNameId());
+	}
+	
+	@Override
+	public synchronized void kill() {
+		if (process != null) {
+			process.destroyForcibly();
+		}	
+	}
+	
+	@Override
+	public synchronized void reset() {
+		process = null;
+		hasToStop = false;
+		hasToStopImmediately = false;
+	}	
+}

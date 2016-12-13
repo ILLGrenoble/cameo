@@ -26,16 +26,16 @@ import java.util.Properties;
 public class ApplicationConfig {
 
 	protected String name;
-	protected String description;
+	protected String description = "";
 	protected String directory;
-	protected int startingTime;
-	protected int retries;
+	protected int startingTime = -1;
+	protected int retries = 0;
 	protected String logPath;
 	protected boolean stream = true;
 	protected int streamPort = -1;
 	protected int stoppingTime;
 	protected boolean runSingle;
-	protected boolean restart;
+	protected boolean restart = false;
 	protected boolean passInfo;
 	protected HashMap<String, String> environmentVariables = new HashMap<String, String>(); 
 	
@@ -51,30 +51,6 @@ public class ApplicationConfig {
 	
 	public ApplicationConfig() {
 		super();
-	}
-
-	public ApplicationConfig(ApplicationConfig applicationConfig) {
-		this.setName(applicationConfig.getName());
-		this.setDescription(applicationConfig.getDescription());
-		this.setDirectory(applicationConfig.getDirectory());
-		this.setStartingTime(applicationConfig.getStartingTime());
-		this.setRetries(applicationConfig.getRetries());
-		this.setLogPath(applicationConfig.getLogPath());
-		this.setStream(applicationConfig.hasStream());
-		this.setStreamPort(applicationConfig.getStreamPort());
-		this.setStoppingTime(applicationConfig.getStoppingTime());
-		this.setRunMultiple(applicationConfig.runsSingle());
-		this.setRestart(applicationConfig.isRestart());
-		this.setPassInfo(applicationConfig.isPassInfo());
-
-		this.setStartExecutable(applicationConfig.getStartExecutable());
-		this.setStartArgs(applicationConfig.getStartArgs());
-		this.setStopExecutable(applicationConfig.getStopExecutable());
-		this.setStopArgs(applicationConfig.getStopArgs());
-		this.setErrorExecutable(applicationConfig.getErrorExecutable());
-		this.setErrorArgs(applicationConfig.getErrorArgs());
-		
-		this.setEnvironmentVariables(applicationConfig.getEnvironmentVariables());
 	}
 
 	public String getName() {
@@ -137,7 +113,6 @@ public class ApplicationConfig {
 		startArgs = args;
 	}
 	
-	
 	public String getStopExecutable() {
 		return stopExecutable;
 	}
@@ -153,7 +128,6 @@ public class ApplicationConfig {
 	public void setStopArgs(String[] args) {
 		stopArgs = args;
 	}
-
 	
 	public String getErrorExecutable() {
 		return errorExecutable;
