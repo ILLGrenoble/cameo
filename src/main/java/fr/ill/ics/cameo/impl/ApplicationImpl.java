@@ -53,6 +53,7 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	private String name;
 	private int id;
+	private boolean managed = false;
 
 	private String starterEndpoint;
 	private String starterName;
@@ -78,15 +79,18 @@ public class ApplicationImpl extends ServicesImpl {
 		if (args.length == 0) {
 			throw new InvalidArgumentException("missing info argument");			
 		}
-
+		
 		// the last argument contains the necessary information
 		String info = args[args.length - 1];
 		String[] tokens = info.split(":");
-		
+
 		// check length
 		if (tokens.length < 4) {
 			throw new InvalidArgumentException(info + " is not a valid argument");
 		}
+
+		// Init the services part.
+		init();
 		
 		url = tokens[0] + ":" + tokens[1];
 		port = Integer.parseInt(tokens[2]);
@@ -96,11 +100,22 @@ public class ApplicationImpl extends ServicesImpl {
 		// However leave the same value seems to be ok.
 		serverEndpoint = url + ":" + port;
 		
+		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
 		String nameId = tokens[3];
 		int index = nameId.lastIndexOf('.');
-		name = nameId.substring(0, index);
-		id = Integer.parseInt(nameId.substring(index + 1));
 		
+		if (index != -1) {
+			managed = true;
+			name = nameId.substring(0, index);
+			id = Integer.parseInt(nameId.substring(index + 1));
+		}
+		else {
+			managed = false;
+			name = nameId;
+			id = initUnmanagedApplication();
+		}
+		
+		// Search for the starter reference.
 		if (tokens.length >= 7) {
 			index = tokens[4].lastIndexOf('@');
 			starterEndpoint = tokens[4].substring(index + 1) + ":" + tokens[5] + ":" + tokens[6]; 
@@ -109,8 +124,6 @@ public class ApplicationImpl extends ServicesImpl {
 			starterName = starterNameId.substring(0, index);
 			starterId = Integer.parseInt(starterNameId.substring(index + 1));
 		}
-		
-		init();
 		
 		// Init listener
 		eventListener.setName(name);
@@ -153,8 +166,12 @@ public class ApplicationImpl extends ServicesImpl {
 		waitingSet.terminateAll();
 		
 		super.terminate();
-	}	
-
+		
+		// Tell the cameo server that the application is terminated if it is unmanaged.
+		if (!managed) {
+			terminateUnmanagedApplication();
+		}
+	}
 	
 	public void setResult(byte[] data) {
 		
@@ -219,6 +236,36 @@ public class ApplicationImpl extends ServicesImpl {
 		return true;
 	}
 
+	private int initUnmanagedApplication() {
+		
+		ZMsg request = createStartedUnmanagedRequest(name);
+		
+		try {
+			ZMsg reply = tryRequest(request);
+			byte[] messageData = reply.getFirst().getData();
+			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
+			
+			return requestResponse.getValue();
+			
+		} catch (InvalidProtocolBufferException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}		
+	}
+	
+	private void terminateUnmanagedApplication() {
+		
+		ZMsg request = createTerminatedUnmanagedRequest(id);
+		
+		try {
+			ZMsg reply = tryRequest(request);
+			byte[] messageData = reply.getFirst().getData();
+			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
+						
+		} catch (InvalidProtocolBufferException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}		
+	}
+		
 	/**
 	 * Gets the application state.
 	 * @return

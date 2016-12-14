@@ -33,6 +33,8 @@ import fr.ill.ics.cameo.proto.Messages.Init;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
 import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 import fr.ill.ics.cameo.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
+import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 
 public class ServicesImpl {
 
@@ -56,7 +58,7 @@ public class ServicesImpl {
 		return cancelEndpoint;
 	}
 	
-	protected void init() {
+	final protected void init() {
 		this.context = new ZContext();
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 	}
@@ -324,5 +326,35 @@ public class ServicesImpl {
 		
 		return request;
 	}
-
+	
+	/**
+	 * create startedUnmanaged request
+	 * 
+	 * @param text
+	 * @return
+	 */
+	protected ZMsg createStartedUnmanagedRequest(String name) {
+		
+		ZMsg request = createRequest(Type.STARTEDUNMANAGED);
+		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder().setName(name).build();
+		request.add(command.toByteArray());
+		
+		return request;
+	}
+	
+	/**
+	 * create terminatedUnmanaged request
+	 * 
+	 * @param text
+	 * @return
+	 */
+	protected ZMsg createTerminatedUnmanagedRequest(int id) {
+		
+		ZMsg request = createRequest(Type.TERMINATEDUNMANAGED);
+		TerminatedUnmanagedCommand command = TerminatedUnmanagedCommand.newBuilder().setId(id).build();
+		request.add(command.toByteArray());
+		
+		return request;
+	}
+	
 }

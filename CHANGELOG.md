@@ -8,3 +8,4 @@
 * Added SocketException thrown when the Server connect fails.
 * Changed the interface for the stop handler.
 * JZMQ support.
+* Implementation of unmanaged applications.
