@@ -28,16 +28,16 @@ SocketWaitingImpl::SocketWaitingImpl(std::auto_ptr<zmq::socket_t>& socket, const
 	m_socket(socket), m_message(message) {
 
 	// Add the object in the waiting set if This exists.
-	if (application::This::m_instance != 0) {
-		application::This::m_instance->m_waitingSet->add(this);
+	if (application::This::m_instance.m_impl != 0) {
+		application::This::m_instance.m_waitingSet->add(this);
 	}
 }
 
 SocketWaitingImpl::~SocketWaitingImpl() {
 
 	// Remove the object in the waiting set if This exists.
-	if (application::This::m_instance != 0) {
-		application::This::m_instance->m_waitingSet->remove(this);
+	if (application::This::m_instance.m_impl != 0) {
+		application::This::m_instance.m_waitingSet->remove(this);
 	}
 
 	m_socket->close();

@@ -36,7 +36,12 @@ Services::Services() :
 
 Services::~Services() {
 	// Delete impl here to avoid order troubles.
+	terminate();
+}
+
+void Services::terminate() {
 	delete m_impl;
+	m_impl = 0;
 }
 
 void Services::setImpl(ServicesImpl * impl) {

@@ -29,16 +29,16 @@ GenericWaitingImpl::GenericWaitingImpl(GenericWaitingImpl::Function function)
 : m_function(function) {
 
 	// Add the object in the waiting set if This exists.
-	if (application::This::m_instance != 0) {
-		application::This::m_instance->m_waitingSet->add(this);
+	if (application::This::m_instance.m_impl != 0) {
+		application::This::m_instance.m_waitingSet->add(this);
 	}
 }
 
 GenericWaitingImpl::~GenericWaitingImpl() {
 
 	// Remove the object in the waiting set if This exists.
-	if (application::This::m_instance != 0) {
-		application::This::m_instance->m_waitingSet->remove(this);
+	if (application::This::m_instance.m_impl != 0) {
+		application::This::m_instance.m_waitingSet->remove(this);
 	}
 }
 

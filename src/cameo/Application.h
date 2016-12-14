@@ -96,7 +96,14 @@ class This : private Services {
 	typedef boost::function<void ()> StopFunctionType;
 
 public:
+	This();
+	~This();
+
 	static void init(int argc, char *argv[]);
+
+	/**
+	 * The terminate call is not necessary unless the static instance of This is not destroyed automatically.
+	 */
 	static void terminate();
 
 	static const std::string& getName();
@@ -116,7 +123,7 @@ public:
 
 	template<typename Type>
 	static void handleStop(Type function) {
-		m_instance->handleStopImpl(function);
+		m_instance.handleStopImpl(function);
 	}
 
 	static void cancelWaitings();
@@ -139,8 +146,7 @@ public:
 	static std::auto_ptr<Instance> connectToStarter();
 
 private:
-	This(int argc, char *argv[]);
-	~This();
+	void initApplication(int argc, char *argv[]);
 
 	static std::string getReference();
 	static State parseState(const std::string& value);
@@ -168,7 +174,7 @@ private:
 
 	std::auto_ptr<WaitingImplSet> m_waitingSet;
 
-	static This * m_instance;
+	static This m_instance;
 	static const std::string RUNNING_STATE;
 };
 

@@ -8,3 +8,4 @@
 * Added SocketException thrown when the Server connect fails.
 * Renamed ERROR into FAILURE.
 * Implementation of unmanaged applications.
+* Implemented This static instance without pointer so that it is not necessary to call This::terminate() except if the destruction of the static instance is not automatic.

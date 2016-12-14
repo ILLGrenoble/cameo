@@ -31,6 +31,8 @@ public:
 	Services();
 	~Services();
 
+	void terminate();
+
 	void setImpl(ServicesImpl * impl);
 	std::vector<std::string> split(const std::string& info);
 
