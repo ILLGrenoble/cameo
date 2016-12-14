@@ -57,6 +57,8 @@ public:
 	std::string createRequestPortRequest(int id, const std::string& name) const;
 	std::string createConnectPortRequest(int id, const std::string& name) const;
 	std::string createRemovePortRequest(int id, const std::string& name) const;
+	std::string createStartedUnmanagedRequest(const std::string& name) const;
+	std::string createTerminatedUnmanagedRequest(int id) const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);

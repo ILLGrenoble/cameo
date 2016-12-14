@@ -6,4 +6,5 @@
 * Removed StateException, setRunning now returns a boolean.
 * Added InvalidArgumentException to replace invalid_argument exception.
 * Added SocketException thrown when the Server connect fails.
-* Renamed ERROR into FAILURE
+* Renamed ERROR into FAILURE.
+* Implementation of unmanaged applications.

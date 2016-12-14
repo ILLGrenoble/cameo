@@ -33,6 +33,8 @@ message MessageType {
 		REMOVEPORT = 24;
 		REQUEST = 25;
 		RESPONSE = 26;
+		STARTEDUNMANAGED = 27;
+		TERMINATEDUNMANAGED = 28;
 	}
 
 	required Type type = 1;
@@ -209,6 +211,14 @@ message Request {
 	required int32 applicationId = 1;
 	required bytes message = 2;
 	required string endpoint = 3;
+}
+
+message StartedUnmanagedCommand {
+	required string name = 1;
+}
+
+message TerminatedUnmanagedCommand {
+	required int32 id = 1;
 }
 
 message StringValue {

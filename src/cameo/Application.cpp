@@ -92,12 +92,19 @@ std::string This::getReference() {
 }
 
 void This::terminate() {
+	// Tell the cameo server that the application is terminated if it is unmanaged.
+	if (!m_instance->m_managed) {
+		m_instance->terminateUnmanagedApplication();
+	}
+
 	delete m_instance;
 }
 
 This::This(int argc, char *argv[]) :
 	Services(),
-	m_id(-1) {
+	m_id(-1),
+	m_managed(false),
+	m_starterId(0) {
 
 	m_impl = new ApplicationImpl();
 	Services::setImpl(m_impl);
@@ -127,28 +134,38 @@ This::This(int argc, char *argv[]) :
 	string nameId = tokens[3];
 
 	int index = nameId.find_last_of('.');
-	m_name = nameId.substr(0, index);
-	string sid = nameId.substr(index + 1);
-	{
-		istringstream is(sid);
-		is >> m_id;
+
+	// Search for the . character meaning that the application is managed and already has an id.
+	if (index != string::npos) {
+		m_managed = true;
+		m_name = nameId.substr(0, index);
+		string sid = nameId.substr(index + 1);
+		{
+			istringstream is(sid);
+			is >> m_id;
+		}
+	}
+	else {
+		m_managed = false;
+		m_name = nameId;
+		m_id = initUnmanagedApplication();
 	}
 
 	if (tokens.size() >= 7) {
-
 		index = tokens[4].find_last_of('@');
 		m_starterEndpoint = tokens[4].substr(index + 1) + ":" + tokens[5] + ":" + tokens[6];
 		string starterNameId = tokens[4].substr(0, index);
 		index = starterNameId.find_last_of('.');
 		m_starterName = starterNameId.substr(0, index);
-		sid = starterNameId.substr(index + 1);
+		string sid = starterNameId.substr(index + 1);
 		{
 			istringstream is(sid);
 			is >> m_starterId;
 		}
 	}
 
-	init();
+	// Must be here because the server endpoint is required.
+	initStatus();
 
 	// Create the local server
 	m_server = auto_ptr<Server>(new Server(m_serverEndpoint));
@@ -218,10 +235,28 @@ void This::cancelWaitings() {
 	m_instance->m_waitingSet->cancelAll();
 }
 
-void This::init() {
+int This::initUnmanagedApplication() {
 
-	// initialises the status port
-	initStatus();
+	string strRequestType = m_impl->createRequest(PROTO_STARTEDUNMANAGED);
+	string strRequestData = m_impl->createStartedUnmanagedRequest(m_name);
+	zmq::message_t* reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+
+	proto::RequestResponse requestResponse;
+	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	delete reply;
+
+	return requestResponse.value();
+}
+
+void This::terminateUnmanagedApplication() {
+
+	string strRequestType = m_impl->createRequest(PROTO_TERMINATEDUNMANAGED);
+	string strRequestData = m_impl->createTerminatedUnmanagedRequest(m_id);
+	zmq::message_t* reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+
+	proto::RequestResponse requestResponse;
+	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	delete reply;
 }
 
 bool This::setRunning() {
@@ -393,7 +428,6 @@ std::auto_ptr<Instance> This::connectToStarter() {
 void This::handleStopImpl(StopFunctionType function) {
 	m_impl->handleStop(m_instance, function);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Instance

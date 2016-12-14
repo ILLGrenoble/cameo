@@ -141,10 +141,14 @@ public:
 private:
 	This(int argc, char *argv[]);
 	~This();
-	void init();
+
 	static std::string getReference();
 	static State parseState(const std::string& value);
 	State getState(int id) const;
+
+	int initUnmanagedApplication();
+	void terminateUnmanagedApplication();
+
 	bool destroyPublisher(const std::string& name) const;
 	bool removePort(const std::string& name) const;
 	State waitForStop();
@@ -153,6 +157,7 @@ private:
 	ApplicationImpl * m_impl;
 	std::string m_name;
 	int m_id;
+	bool m_managed;
 
 	std::string m_starterEndpoint;
 	std::string m_starterName;

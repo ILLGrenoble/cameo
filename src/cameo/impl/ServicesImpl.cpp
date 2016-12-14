@@ -310,6 +310,24 @@ std::string ServicesImpl::createRemovePortRequest(int id, const std::string& nam
 	return result;
 }
 
+std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
+	proto::StartedUnmanagedCommand command;
+	command.set_name(name);
+	std::string result;
+	command.SerializeToString(&result);
+
+	return result;
+}
+
+std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
+	proto::TerminatedUnmanagedCommand command;
+	command.set_id(id);
+	std::string result;
+	command.SerializeToString(&result);
+
+	return result;
+}
+
 bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout) {
 
 	try {
@@ -409,6 +427,10 @@ proto::MessageType_Type ServicesImpl::convertToProtoType(ProtoType type) const {
 		return proto::MessageType_Type_RESPONSE;
 	} else if (type == PROTO_CANCEL) {
 		return proto::MessageType_Type_CANCEL;
+	} else if (type == PROTO_STARTEDUNMANAGED) {
+		return proto::MessageType_Type_STARTEDUNMANAGED;
+	} else if (type == PROTO_TERMINATEDUNMANAGED) {
+		return proto::MessageType_Type_TERMINATEDUNMANAGED;
 	} else {
 		cerr << "unsupported proto type" << endl;
 		return proto::MessageType_Type(0);
