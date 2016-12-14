@@ -61,8 +61,10 @@ import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
 import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
 import fr.ill.ics.cameo.proto.Messages.StartCommand;
+import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
 import fr.ill.ics.cameo.proto.Messages.StopCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
+import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 
 /**
  * 
@@ -715,5 +717,55 @@ public class ProcessRequest {
 		return reply;		
 	}
 
+	public ZMsg processStartedUnmanagedCommand(StartedUnmanagedCommand message, Manager manager) {
+
+		LogInfo.getInstance().getLogger().fine("Received StartedUnmanagedCommand message");
+		
+		int applicationId = 0;
+		
+		try {
+			applicationId = manager.newStartedUnmanagedApplication(message.getName());
+			
+		} catch (MaxNumberOfApplicationsReached e) {
+			ZMsg reply = new ZMsg();
+			RequestResponse response = RequestResponse.newBuilder()
+												.setValue(-1)
+												.setMessage(e.getMessage())
+												.build();
+			reply.add(response.toByteArray());
+			return reply;
+		}
+		
+		ZMsg reply = new ZMsg();
+		RequestResponse response = RequestResponse.newBuilder()
+												.setValue(applicationId)
+												.setMessage("OK")
+												.build();
+		reply.add(response.toByteArray());
+		
+		return reply;
+	}
+
+	public ZMsg processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand message, Manager manager) {
+		
+		LogInfo.getInstance().getLogger().fine("Received TerminatedUnmanagedCommand message");
+		
+		try {
+			String applicationName = manager.setUnmanagedApplicationTerminated(message.getId());
+
+			ZMsg reply = new ZMsg();
+			RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage(applicationName).build();
+			reply.add(response.toByteArray());
+			
+			return reply;
+			
+		} catch (IdNotFoundException e) {
+			ZMsg reply = new ZMsg();
+			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
+			reply.add(response.toByteArray());
+			
+			return reply;
+		}		
+	}
 	
 }

@@ -162,12 +162,12 @@ public class VerifyApplicationThread extends Thread {
 		// negative values indicate that the application is responsible to send the RUNNING state
 		if (application.getStartingTime() >= 0) {
 			manager.setApplicationState(application, ApplicationState.RUNNING);
-			
-			if (forceRunning) {
+
+			if (forceRunning && application.getStartingTime() > 0) {
 				logger.info("Application " + application.getNameId() + " is RUNNING before starting time expired");
 			} else {
 				logger.info("Application " + application.getNameId() + " is now RUNNING");
-			}	
+			}
 		}
 
 		// loop while application is alive and has not to stop

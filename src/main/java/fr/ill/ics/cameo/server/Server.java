@@ -52,8 +52,10 @@ import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
 import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
 import fr.ill.ics.cameo.proto.Messages.StartCommand;
+import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
 import fr.ill.ics.cameo.proto.Messages.StopCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
+import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 
 public class Server {
 
@@ -188,6 +190,13 @@ public class Server {
 				} else if (type.getType() == Type.CONNECTPUBLISHER) {
 					reply = process.processConnectPublisherCommand(ConnectPublisherCommand.parseFrom(messageData), manager);
 
+					// Unmanaged app.
+				} else if (type.getType() == Type.STARTEDUNMANAGED) {
+					reply = process.processStartedUnmanagedCommand(StartedUnmanagedCommand.parseFrom(messageData), manager);
+
+				} else if (type.getType() == Type.TERMINATEDUNMANAGED) {
+					reply = process.processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand.parseFrom(messageData), manager);
+					
 				} else {
 					System.err.println("unknown message type " + type.getType());
 					message.send(server);

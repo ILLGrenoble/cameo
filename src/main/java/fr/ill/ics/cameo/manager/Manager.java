@@ -177,6 +177,30 @@ public class Manager extends ConfigLoader {
 		
 		return -1;
 	}
+
+	private int findId() throws MaxNumberOfApplicationsReached {
+
+		// First iteration
+		int id = findFreeId(maxId + 1, MAX_ID + 1);
+		if (id != -1) {
+			// Found an id
+			maxId = id;
+		} else {
+			// Found no id, iterate from the beginning to maxId
+			id = findFreeId(1, maxId + 1);
+			if (id != -1) {
+				// Found an id
+				maxId = id;
+			}
+		}
+		
+		if (id == -1) {
+			LogInfo.getInstance().getLogger().info("Max number of applications reached");
+			throw new MaxNumberOfApplicationsReached();
+		}
+		
+		return id;
+	}
 	
 	private void removeApplication(Application application) {
 		
@@ -217,24 +241,9 @@ public class Manager extends ConfigLoader {
 			throw new MaxNumberOfApplicationsReached();
 		}
 		
-		// First iteration
-		int id = findFreeId(maxId + 1, MAX_ID + 1);
-		if (id != -1) {
-			// Found an id
-			maxId = id;
-		} else {
-			// Found no id, iterate from the beginning to maxId
-			id = findFreeId(1, maxId + 1);
-			if (id != -1) {
-				// Found an id
-				maxId = id;
-			}
-		}
-		
-		if (id == -1) {
-			LogInfo.getInstance().getLogger().info("Max number of applications reached");
-			throw new MaxNumberOfApplicationsReached();
-		}
+
+		// Find an id, throws an exception if there is no id available.
+		int id = findId();
 		
 		// Create application
 		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, applicationConfig, args, starterReference);
@@ -761,5 +770,46 @@ public class Manager extends ConfigLoader {
 		result[1] = ports.get(synchronizerKey);
 				
 		return result;
+	}
+
+	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached {
+		
+		// Find an id, throws an exception if there is no id available.
+		int id = findId();
+		
+		// Create application
+		Application application = new UnmanagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, name);
+		applicationMap.put(id, application);
+		
+		// Threads
+		// Verifiy application thread
+		VerifyApplicationThread verifyThread = new VerifyApplicationThread(application, this, LogInfo.getInstance().getLogger());
+		verifyThread.start();
+		
+		LogInfo.getInstance().getLogger().fine("Unmanaged application " + application.getNameId() + " is started");
+		
+		// No stream thread.
+		return id;
+	}
+
+	public String setUnmanagedApplicationTerminated(int id) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			
+			String name = application.getName();
+			
+			// Remove the application.
+			removeApplication(application);
+			
+			LogInfo.getInstance().getLogger().info("Unmanaged application " + application.getNameId() + " is terminated");
+			
+			return name;
+			
+		} else {
+			LogInfo.getInstance().getLogger().info("Unmanaged application with id " + id + " doesn't exist");
+			throw new IdNotFoundException();
+		}
 	}
 }

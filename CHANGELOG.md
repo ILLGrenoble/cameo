@@ -2,6 +2,7 @@
 -----
 
 * JZMQ support.
+* Implementation of unmanaged applications.
 
 0.0.3
 -----

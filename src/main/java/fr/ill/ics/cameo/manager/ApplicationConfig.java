@@ -28,7 +28,7 @@ public class ApplicationConfig {
 	protected String name;
 	protected String description = "";
 	protected String directory;
-	protected int startingTime = -1;
+	protected int startingTime = 0;
 	protected int retries = 0;
 	protected String logPath;
 	protected boolean stream = true;
