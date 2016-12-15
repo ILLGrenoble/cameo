@@ -15,6 +15,7 @@ libcameo_la_SOURCES = \
 	cameo/PortEvent.cpp \
 	cameo/RemoteException.cpp \
 	cameo/InvalidArgumentException.cpp \
+	cameo/UnmanagedApplicationException.cpp \
 	cameo/ConnectionTimeout.cpp \
 	cameo/SocketException.cpp \
 	cameo/PublisherCreationException.cpp \
@@ -79,6 +80,7 @@ nobase_include_HEADERS = \
 	cameo/Server.h \
 	cameo/Services.h \
 	cameo/InvalidArgumentException.h \
+	cameo/UnmanagedApplicationException.h \
 	cameo/SocketException.h \
 	cameo/StatusEvent.h \
 	cameo/ResultEvent.h \

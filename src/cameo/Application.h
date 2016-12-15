@@ -24,6 +24,7 @@
 #include <memory>
 #include <stdint.h>
 #include "InvalidArgumentException.h"
+#include "UnmanagedApplicationException.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "PublisherCreationException.h"

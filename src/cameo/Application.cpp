@@ -39,7 +39,6 @@
 #include "Server.h"
 #include "StarterServerException.h"
 #include "StatusEvent.h"
-#include "StatusEvent.h"
 
 using namespace std;
 
@@ -164,6 +163,10 @@ void This::initApplication(int argc, char *argv[]) {
 		m_managed = false;
 		m_name = nameId;
 		m_id = initUnmanagedApplication();
+
+		if (m_id == -1) {
+			throw UnmanagedApplicationException(string("Maximum number of applications ") + m_name + " reached");
+		}
 	}
 
 	if (tokens.size() >= 7) {
