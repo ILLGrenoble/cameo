@@ -18,9 +18,9 @@ package fr.ill.ics.cameo.impl;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMsg;
 import org.zeromq.ZMQ.PollItem;
 import org.zeromq.ZMQ.Socket;
+import org.zeromq.ZMsg;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 

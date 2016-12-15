@@ -35,6 +35,7 @@ import fr.ill.ics.cameo.RequesterCreationException;
 import fr.ill.ics.cameo.ResponderCreationException;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.UnmanagedApplicationException;
 import fr.ill.ics.cameo.WaitingSet;
 import fr.ill.ics.cameo.proto.Messages;
 import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
@@ -113,6 +114,10 @@ public class ApplicationImpl extends ServicesImpl {
 			managed = false;
 			name = nameId;
 			id = initUnmanagedApplication();
+			
+			if (id == -1) {
+				throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
+			}
 		}
 		
 		// Search for the starter reference.
