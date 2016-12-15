@@ -75,6 +75,7 @@ public abstract class Application extends ApplicationConfig {
 		return (logPath != null);
 	}
 	
+	abstract public boolean isManaged();
 	abstract public Process getProcess();
 	abstract public boolean isAlive();
 	

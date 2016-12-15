@@ -16,6 +16,11 @@ public class UnmanagedApplication extends Application {
 	}
 	
 	@Override
+	public boolean isManaged() {
+		return false;
+	}
+	
+	@Override
 	synchronized public Process getProcess() {
 		return null;
 	}

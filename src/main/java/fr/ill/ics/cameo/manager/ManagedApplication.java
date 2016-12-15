@@ -46,6 +46,11 @@ public class ManagedApplication extends Application {
 	}
 	
 	@Override
+	public boolean isManaged() {
+		return true;
+	}
+	
+	@Override
 	synchronized public Process getProcess() {
 		return process;
 	}

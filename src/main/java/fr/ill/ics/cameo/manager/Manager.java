@@ -800,6 +800,9 @@ public class Manager extends ConfigLoader {
 			
 			String name = application.getName();
 			
+			// Terminate the application that is unmanaged.
+			((UnmanagedApplication)application).terminate();
+			
 			// Remove the application.
 			removeApplication(application);
 			

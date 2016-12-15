@@ -26,6 +26,7 @@ import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.ProcessPID;
 import fr.ill.ics.cameo.manager.ProcessState;
+import fr.ill.ics.cameo.manager.UnmanagedApplication;
 
 public class VerifyApplicationThread extends Thread {
 
@@ -57,6 +58,11 @@ public class VerifyApplicationThread extends Thread {
 	}
 
 	private boolean launchErrorIfNeeded() {
+		
+		// do nothing if the application is unmanaged
+		if (!application.isManaged()) {
+			return false;
+		}
 		
 		// the process can be null if it was impossible to launch the executable
 		if (application.getProcess() == null) {

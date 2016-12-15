@@ -33,7 +33,7 @@ public class ApplicationConfig {
 	protected String logPath;
 	protected boolean stream = true;
 	protected int streamPort = -1;
-	protected int stoppingTime;
+	protected int stoppingTime = -1; // Default value is infinity
 	protected boolean runSingle;
 	protected boolean restart = false;
 	protected boolean passInfo;
