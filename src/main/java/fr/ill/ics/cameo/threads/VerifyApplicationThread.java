@@ -26,7 +26,6 @@ import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.ProcessPID;
 import fr.ill.ics.cameo.manager.ProcessState;
-import fr.ill.ics.cameo.manager.UnmanagedApplication;
 
 public class VerifyApplicationThread extends Thread {
 

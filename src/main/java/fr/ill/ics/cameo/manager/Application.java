@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import fr.ill.ics.cameo.server.Converter;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
