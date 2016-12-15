@@ -3,6 +3,7 @@
 
 * JZMQ support.
 * Implementation of unmanaged applications.
+* Max applications property is now restricted to the set of application instances with the same name and not the entire set.
 
 0.0.3
 -----

@@ -227,26 +227,17 @@ public class Manager extends ConfigLoader {
 	 */
 	public synchronized Application startApplication(String name, String[] args, String starterReference) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
 		
-		ApplicationConfig applicationConfig = this.verifyApplicationExistence(name);
+		ApplicationConfig config = this.verifyApplicationExistence(name);
 		LogInfo.getInstance().getLogger().fine("Trying to start " + name);
 
-		// Verify if the application is already running and if run = single
-		if (applicationConfig.runsSingle()) {
-			verifyNumberOfInstance(applicationConfig);
-		}
-
-		if (applicationMap.size() == ConfigManager.getInstance().getMaxNumberOfApplications()) {
-			
-			LogInfo.getInstance().getLogger().info("Max number of applications reached");
-			throw new MaxNumberOfApplicationsReached();
-		}
-		
+		// Verify if the application is already running
+		verifyNumberOfInstances(config.getName(), config.runsSingle());
 
 		// Find an id, throws an exception if there is no id available.
 		int id = findId();
 		
 		// Create application
-		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, applicationConfig, args, starterReference);
+		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starterReference);
 		applicationMap.put(id, application);
 		
 		// Threads
@@ -412,21 +403,41 @@ public class Manager extends ConfigLoader {
 	/**
 	 * verify if an application already run
 	 * 
-	 * @param instanceOfApplication
+	 * @param config
 	 * @throws ApplicationAlreadyRunning
+	 * @throws MaxNumberOfApplicationsReached 
 	 */
-	private void verifyNumberOfInstance(ApplicationConfig instanceOfApplication) throws ApplicationAlreadyRunning {
+	private void verifyNumberOfInstances(String name, boolean single) throws ApplicationAlreadyRunning, MaxNumberOfApplicationsReached {
+		
+		// count the application instances
+		int counter = 0;
+		
 		// just check name
 		for (java.util.Map.Entry<Integer, Application> entry : applicationMap.entrySet()) {
-			Application value = entry.getValue();
-			if (value.getName().equalsIgnoreCase(instanceOfApplication.getName())) {
+		
+			Application application = entry.getValue();
+			
+			if (application.getName().equals(name)) {
+				
 				// check if application is dead
-				if (value.getProcessState() == ProcessState.DEAD) {
-					removeApplication(value);
-				} else {
-					LogInfo.getInstance().getLogger().fine("The application is already running");
-					LogInfo.getInstance().getLogger().info("Application with name " + value.getName() + " is already running with id " + value.getId());
-					throw new ApplicationAlreadyRunning();
+				if (application.getProcessState() == ProcessState.DEAD) {
+					removeApplication(application);
+				}
+				else {
+					// increment the counter
+					++counter;
+					
+					if (single) {
+						LogInfo.getInstance().getLogger().fine("The application is already running");
+						LogInfo.getInstance().getLogger().info("Application with name " + application.getName() + " is already running with id " + application.getId());
+				
+						throw new ApplicationAlreadyRunning();
+					}
+					else if (counter >= ConfigManager.getInstance().getMaxNumberOfApplications()) {
+						LogInfo.getInstance().getLogger().info("Max number of applications reached");
+						
+						throw new MaxNumberOfApplicationsReached();
+					}
 				}
 			}
 		}
@@ -572,7 +583,15 @@ public class Manager extends ConfigLoader {
 	public synchronized StatusEvent getApplicationState(int id) throws IdNotFoundException {
 		
 		if (!applicationMap.containsKey(id)) {
-			throw new IdNotFoundException();
+			StatusEvent status = StatusEvent.newBuilder()
+					.setId(id)
+					.setName("?")
+					.setApplicationState(ApplicationState.UNKNOWN)
+					.setPastApplicationStates(0)
+					.setPastApplicationStates(0)
+					.build();
+			
+			return status;
 		}
 		
 		Application application = applicationMap.get(id);
@@ -772,7 +791,10 @@ public class Manager extends ConfigLoader {
 		return result;
 	}
 
-	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached {
+	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+		
+		// Verify if the application is already running
+		verifyNumberOfInstances(name, false);
 		
 		// Find an id, throws an exception if there is no id available.
 		int id = findId();

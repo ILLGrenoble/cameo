@@ -726,7 +726,7 @@ public class ProcessRequest {
 		try {
 			applicationId = manager.newStartedUnmanagedApplication(message.getName());
 			
-		} catch (MaxNumberOfApplicationsReached e) {
+		} catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
 			ZMsg reply = new ZMsg();
 			RequestResponse response = RequestResponse.newBuilder()
 												.setValue(-1)
@@ -734,7 +734,7 @@ public class ProcessRequest {
 												.build();
 			reply.add(response.toByteArray());
 			return reply;
-		}
+		} 
 		
 		ZMsg reply = new ZMsg();
 		RequestResponse response = RequestResponse.newBuilder()
