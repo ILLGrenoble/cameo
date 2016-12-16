@@ -150,10 +150,6 @@ public abstract class Application extends ApplicationConfig {
 	}
 	
 	synchronized void setHasToStop(boolean hasToStop, boolean immediately) {
-		// Return immediately if the application is already stopping.
-		if (this.hasToStop) {
-			return;
-		}
 		this.hasToStop = hasToStop;
 		this.hasToStopImmediately = immediately;
 	}

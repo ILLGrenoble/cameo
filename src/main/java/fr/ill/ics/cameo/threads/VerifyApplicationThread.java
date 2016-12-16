@@ -227,7 +227,9 @@ public class VerifyApplicationThread extends Thread {
 				}
 
 				// in case stopping time is -1, we wait undefinitely
-				while (application.isAlive() && (!application.isTimeout((System.currentTimeMillis() - time) / 1000.0))) {
+				while (application.isAlive()
+					&& (!application.isTimeout((System.currentTimeMillis() - time) / 1000.0))
+					&& (!application.hasToBeKilled())) {
 
 					try {
 						Thread.sleep(ConfigManager.getInstance().getPollingTime());

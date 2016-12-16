@@ -456,7 +456,8 @@ public class Manager extends ConfigLoader {
 			int state = application.getApplicationState();
 			
 			if (state == ApplicationState.STARTING
-				|| state == ApplicationState.RUNNING) {
+				|| state == ApplicationState.RUNNING
+				|| state == ApplicationState.STOPPING) {
 				return true;
 			}
 			return false;
