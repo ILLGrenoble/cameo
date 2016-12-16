@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.impl;
 
+import java.net.UnknownHostException;
+
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.PollItem;
@@ -109,6 +111,8 @@ public class ServicesImpl {
 
 		} catch (ConnectionTimeout e) {
 			// do nothing, timeout
+		} catch (Exception e) {
+			// do nothing
 		}
 		
 		return false;
@@ -149,8 +153,7 @@ public class ServicesImpl {
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
-			
-		} catch (ConnectionTimeout e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
