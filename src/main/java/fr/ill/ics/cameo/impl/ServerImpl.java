@@ -31,6 +31,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputStreamException;
@@ -77,7 +78,9 @@ public class ServerImpl extends ServicesImpl {
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
 	 * @param endpoint
 	 */
-	public ServerImpl(String endpoint) {
+	public ServerImpl(String endpoint, int timeout) {
+		
+		this.timeout = timeout;
 		
 		String[] tokens = endpoint.split(":");
 
@@ -96,9 +99,13 @@ public class ServerImpl extends ServicesImpl {
 		cancelPublisher = context.createSocket(ZMQ.PUB);
 		cancelPublisher.bind(getCancelEndpoint());
 		
-		// start the status thread
-		eventThread = new EventThread(this, openEventStream());
-		eventThread.start();
+		// start the status thread if it is possible.
+		EventStreamSocket streamSocket = openEventStream();
+		
+		if (streamSocket != null) {
+			eventThread = new EventThread(this, streamSocket);
+			eventThread.start();
+		}
 	}
 	
 	/**

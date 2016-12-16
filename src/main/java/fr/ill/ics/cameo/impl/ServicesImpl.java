@@ -139,17 +139,21 @@ public class ServicesImpl {
 	protected EventStreamSocket openEventStream() {
 
 		ZMsg request = createShowStatusRequest();
-		ZMsg reply = tryRequest(request);
-
-		byte[] messageData = reply.getFirst().getData();
 		RequestResponse requestResponse = null;
 		
 		try {
+			ZMsg reply = tryRequest(request);
+	
+			byte[] messageData = reply.getFirst().getData();
 			requestResponse = RequestResponse.parseFrom(messageData);
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
+			
+		} catch (ConnectionTimeout e) {
+			return null;
 		}
+		
 		// Prepare our context and subscriber
 		Socket subscriber = context.createSocket(ZMQ.SUB);
 		
@@ -167,18 +171,21 @@ public class ServicesImpl {
 		// polling to wait for connection
 		PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
 		
-		boolean ready = false;
-		while (!ready) {
-			// the server returns a STATUS message that is used to synchronize the subscriber
-			sendInit();
+		// the server returns a STATUS message that is used to synchronize the subscriber
+		sendInit();
+
+		if (timeout > 0) {
+			ZMQ.poll(items, timeout);
 			
-			ZMQ.poll(items, 100);
-			
-			if (items[0].isReadable()) {
-				ready = true;
+			if (!items[0].isReadable()) {
+				return null;
 			}
+					
+		} else {
+			// direct receive
+			ZMsg reply = ZMsg.recvMsg(subscriber);
 		}
-				
+
 		return new EventStreamSocket(context, subscriber);
 	}
 

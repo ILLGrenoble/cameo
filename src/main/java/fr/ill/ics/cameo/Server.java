@@ -42,7 +42,19 @@ public class Server {
 	 * throws SocketException.
 	 */
 	public Server(String endpoint) {
-		impl = new ServerImpl(endpoint);
+		impl = new ServerImpl(endpoint, 0);
+	}
+	
+	/**
+	 * Constructor with endpoint and timeout.
+	 * This constructor must be used when the services are related to another cameo server that
+	 * has not started the current application.
+	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
+	 * @param endpoint
+	 * throws SocketException.
+	 */
+	public Server(String endpoint, int timeout) {
+		impl = new ServerImpl(endpoint, timeout);
 	}
 	
 	public int getTimeout() {
