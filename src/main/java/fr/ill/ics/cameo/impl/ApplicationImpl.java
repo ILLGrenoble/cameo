@@ -197,23 +197,23 @@ public class ApplicationImpl extends ServicesImpl {
 	}
 	
 	public void setResult(String data) {
-		setResult(Serializer.serialize(data));		
+		setResult(Buffer.serialize(data));		
 	}
 	
 	public void setResult(int[] data) {
-		setResult(Serializer.serialize(data));
+		setResult(Buffer.serialize(data));
 	}
 
 	public void setResult(long[] data) {
-		setResult(Serializer.serialize(data));
+		setResult(Buffer.serialize(data));
 	}
 	
 	public void setResult(float[] data) {
-		setResult(Serializer.serialize(data));
+		setResult(Buffer.serialize(data));
 	}
 	
 	public void setResult(double[] data) {
-		setResult(Serializer.serialize(data));
+		setResult(Buffer.serialize(data));
 	}
 		
 	/**

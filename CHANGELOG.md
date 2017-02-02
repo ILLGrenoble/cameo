@@ -9,3 +9,4 @@
 * Changed the interface for the stop handler.
 * JZMQ support.
 * Implementation of unmanaged applications.
+* Added two binary parts message for publisher/subscriber.

@@ -328,23 +328,23 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	public String getStringResult() {
-		return Serializer.parseString(getResult());
+		return Buffer.parseString(getResult());
 	}
 	
 	public int[] getInt32Result() {
-		return Serializer.parseInt32(getResult());
+		return Buffer.parseInt32(getResult());
 	}
 	
 	public long[] getInt64Result() {
-		return Serializer.parseInt64(getResult());
+		return Buffer.parseInt64(getResult());
 	}
 	
 	public float[] getFloatResult() {
-		return Serializer.parseFloat(getResult());
+		return Buffer.parseFloat(getResult());
 	}
 
 	public double[] getDoubleResult() {
-		return Serializer.parseDouble(getResult());
+		return Buffer.parseDouble(getResult());
 	}
 	
 	public OutputStreamSocket getOutputStreamSocket() {

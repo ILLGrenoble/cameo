@@ -27,7 +27,7 @@ import fr.ill.ics.cameo.proto.Messages.Int32Array;
 import fr.ill.ics.cameo.proto.Messages.Int64Array;
 import fr.ill.ics.cameo.proto.Messages.StringValue;
 
-public class Serializer {
+public class Buffer {
 
 	public static byte[] serialize(String data) {
 		

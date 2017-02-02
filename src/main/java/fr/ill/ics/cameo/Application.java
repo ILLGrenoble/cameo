@@ -653,6 +653,10 @@ public class Application {
 			impl.send(data);
 		}
 		
+		public void sendTwoParts(byte[] data1, byte[] data2) {
+			impl.sendTwoParts(data1, data2);
+		}
+		
 		public void sendEnd() {
 			impl.sendEnd();
 		}
@@ -759,6 +763,14 @@ public class Application {
 		 */
 		public double[] receiveDouble() {
 			return impl.receiveDouble();
+		}
+		
+		/**
+		 * 
+		 * @return the two parts byte[][] data. If the return value is null, then the stream is finished. 
+		 */
+		public byte[][] receiveTwoParts() {
+			return impl.receiveTwoParts();
 		}
 		
 		public void cancel() {

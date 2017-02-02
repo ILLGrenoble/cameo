@@ -212,6 +212,57 @@ public class SubscriberImpl {
 	
 	/**
 	 * 
+	 * @return the byte[] data. If the return value is null, then the stream is finished. 
+	 */
+	public byte[][] receiveTwoParts() {
+
+		while (true) {
+			String response = subscriber.recvStr();
+			
+			if (response.equals(STREAM)) {
+				byte[][] result = new byte[2][];
+				result[0] = subscriber.recv();
+				result[1] = subscriber.recv();
+				
+				return result;
+				
+			} else if (response.equals(ENDSTREAM)) {
+				endOfStream = true;
+				return null;
+				
+			} else if (response.equals(CANCEL)) {
+				return null;
+				
+			} else if (response.equals(STATUS)) {
+				byte[] statusResponse = subscriber.recv();
+				
+				try {
+					Messages.StatusEvent protoStatus = Messages.StatusEvent.parseFrom(statusResponse);
+					
+					if (instance.getId() == protoStatus.getId()) {
+						
+						// Get the state
+						int state = protoStatus.getApplicationState();
+						
+						// Test if the state is terminal
+						if (state == Application.State.SUCCESS 
+								|| state == Application.State.STOPPED
+								|| state == Application.State.KILLED
+								|| state == Application.State.ERROR) {
+							// Exit because the remote application has terminated.
+							return null;
+						}
+					}
+					
+				} catch (InvalidProtocolBufferException e) {
+					throw new UnexpectedException("Cannot parse response");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
 	 * @return the string data. If the return value is null, then the stream is finished. 
 	 */
 	public String receiveString() {
@@ -222,7 +273,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Serializer.parseString(data);
+		return Buffer.parseString(data);
 	}
 	
 	/**
@@ -237,7 +288,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Serializer.parseInt32(data);
+		return Buffer.parseInt32(data);
 	}
 	
 	/**
@@ -252,7 +303,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Serializer.parseInt64(data);
+		return Buffer.parseInt64(data);
 	}
 	
 	/**
@@ -267,7 +318,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Serializer.parseFloat(data);
+		return Buffer.parseFloat(data);
 	}
 
 	/**
@@ -282,7 +333,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Serializer.parseDouble(data);
+		return Buffer.parseDouble(data);
 	}
 	
 	public void cancel() {

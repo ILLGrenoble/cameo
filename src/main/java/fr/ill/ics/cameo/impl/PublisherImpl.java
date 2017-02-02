@@ -174,13 +174,14 @@ public class PublisherImpl {
 	}
 
 	public void send(byte[] data) {
+		
 		publisher.sendMore(STREAM);
 		publisher.send(data, 0);
 	}
 	
 	public void send(String data) {
 		
-		byte[] result = Serializer.serialize(data);
+		byte[] result = Buffer.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
@@ -188,7 +189,7 @@ public class PublisherImpl {
 	
 	public void send(int[] data) {
 		
-		byte[] result = Serializer.serialize(data);
+		byte[] result = Buffer.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
@@ -196,7 +197,7 @@ public class PublisherImpl {
 
 	public void send(long[] data) {
 
-		byte[] result = Serializer.serialize(data);
+		byte[] result = Buffer.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
@@ -204,7 +205,7 @@ public class PublisherImpl {
 	
 	public void send(float[] data) {
 
-		byte[] result = Serializer.serialize(data);
+		byte[] result = Buffer.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
@@ -212,13 +213,21 @@ public class PublisherImpl {
 	
 	public void send(double[] data) {
 
-		byte[] result = Serializer.serialize(data);
+		byte[] result = Buffer.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
 	}
 	
-
+	public void sendTwoParts(byte[] data1, byte[] data2) {
+		
+		publisher.sendMore(STREAM);
+		
+		// Send with the flag '2' which is the value for more - same in jzmq and jeromq.
+		publisher.send(data1, 2);
+		publisher.send(data2, 0);
+	}
+	
 	public void sendEnd() {
 		
 		if (!ended) {

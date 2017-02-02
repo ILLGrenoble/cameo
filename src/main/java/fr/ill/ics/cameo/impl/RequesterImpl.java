@@ -127,7 +127,7 @@ public class RequesterImpl {
 	}
 
 	public String receiveString() {
-		return Serializer.parseString(receive());
+		return Buffer.parseString(receive());
 	}
 	
 	public void cancel() {

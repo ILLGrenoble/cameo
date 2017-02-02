@@ -52,7 +52,7 @@ public class RequestImpl {
 	}
 	
 	public void reply(String response) {
-		reply(Serializer.serialize(response));
+		reply(Buffer.serialize(response));
 	}
 
 	@Override
