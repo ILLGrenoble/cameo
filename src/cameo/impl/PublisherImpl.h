@@ -51,11 +51,14 @@ public:
 	void send(const int64_t* data, std::size_t size);
 	void send(const float* data, std::size_t size);
 	void send(const double* data, std::size_t size);
+	void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
 	void setEnd();
 	bool hasEnded();
 	void terminate();
 
 	void publish(const std::string& header, const char* data, std::size_t size);
+	void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2);
+
 	zmq::message_t * processInitCommand();
 	zmq::message_t * processSubscribePublisherCommand();
 	zmq::message_t * processCancelPublisherSyncCommand();

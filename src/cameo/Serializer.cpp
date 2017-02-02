@@ -15,8 +15,7 @@
  */
 
 #include "Serializer.h"
-
-#include "../../proto/Messages.pb.h"
+#include "../proto/Messages.pb.h"
 
 namespace cameo {
 

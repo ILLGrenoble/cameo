@@ -17,8 +17,9 @@
 #include "SubscriberImpl.h"
 
 #include <sstream>
+
+#include "../Serializer.h"
 #include "CancelIdGenerator.h"
-#include "Serializer.h"
 #include "ServicesImpl.h"
 #include "../Server.h"
 
@@ -233,6 +234,61 @@ bool SubscriberImpl::receive(std::vector<double>& data) {
 	parse(bytes, data);
 
 	return true;
+}
+
+bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data2) {
+
+	while (true) {
+		zmq::message_t * message = new zmq::message_t();
+		m_subscriber->recv(message);
+
+		string response(static_cast<char*>(message->data()), message->size());
+		delete message;
+
+		if (response == STREAM) {
+			message = new zmq::message_t();
+			m_subscriber->recv(message);
+			data1 = string(static_cast<char*>(message->data()), message->size());
+			delete message;
+
+			message = new zmq::message_t();
+			m_subscriber->recv(message);
+			data2 = string(static_cast<char*>(message->data()), message->size());
+			delete message;
+
+			return true;
+
+		} else if (response == ENDSTREAM) {
+			m_endOfStream = true;
+			return false;
+
+		} else if (response == CANCEL) {
+			return false;
+
+		} else if (response == STATUS) {
+			message = new zmq::message_t();
+			m_subscriber->recv(message);
+
+			proto::StatusEvent protoStatus;
+			protoStatus.ParseFromArray(message->data(), message->size());
+			delete message;
+
+			if (protoStatus.id() == m_instanceId) {
+				application::State state = protoStatus.applicationstate();
+
+				// test the terminal state
+				if (state == application::SUCCESS
+					|| state == application::STOPPED
+					|| state == application::KILLED
+					|| state == application::FAILURE) {
+					// Exit because the remote application has terminated.
+					return false;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 WaitingImpl * SubscriberImpl::waiting() {

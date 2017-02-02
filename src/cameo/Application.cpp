@@ -27,7 +27,6 @@
 #include "impl/RequesterImpl.h"
 #include "impl/RequestImpl.h"
 #include "impl/ResponderImpl.h"
-#include "impl/Serializer.h"
 #include "impl/SocketImpl.h"
 #include "impl/SubscriberImpl.h"
 #include "impl/WaitingImpl.h"
@@ -817,6 +816,10 @@ void Publisher::send(const double* data, std::size_t size) const {
 	m_impl->send(data, size);
 }
 
+void Publisher::sendTwoBinaryParts(const std::string& data1, const std::string& data2) const {
+	m_impl->sendTwoBinaryParts(data1, data2);
+}
+
 bool Publisher::hasEnded() const {
 	return m_impl->hasEnded();
 }
@@ -913,6 +916,10 @@ bool Subscriber::receive(std::vector<float>& data) const {
 
 bool Subscriber::receive(std::vector<double>& data) const {
 	return m_impl->receive(data);
+}
+
+bool Subscriber::receiveTwoBinaryParts(std::string& data1, std::string& data2) const {
+	return m_impl->receiveTwoBinaryParts(data1, data2);
 }
 
 void Subscriber::cancel() {

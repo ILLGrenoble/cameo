@@ -31,6 +31,7 @@
 #include "RequesterCreationException.h"
 #include "ResponderCreationException.h"
 #include "Response.h"
+#include "Serializer.h"
 #include "Services.h"
 #include "TimeCondition.h"
 
@@ -294,6 +295,7 @@ public:
 	void send(const int64_t* data, std::size_t size) const;
 	void send(const float* data, std::size_t size) const;
 	void send(const double* data, std::size_t size) const;
+	void sendTwoBinaryParts(const std::string& data1, const std::string& data2) const;
 	void sendEnd() const;
 	bool hasEnded() const;
 
@@ -334,6 +336,7 @@ public:
 	bool receive(std::vector<int64_t>& data) const;
 	bool receive(std::vector<float>& data) const;
 	bool receive(std::vector<double>& data) const;
+	bool receiveTwoBinaryParts(std::string& data1, std::string& data2) const;
 
 	void cancel();
 

@@ -19,8 +19,8 @@
 #include <boost/bind.hpp>
 #include <sstream>
 #include "../Application.h"
+#include "../Serializer.h"
 #include "ApplicationImpl.h"
-#include "Serializer.h"
 
 using namespace std;
 using namespace boost;

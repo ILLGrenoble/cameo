@@ -19,8 +19,8 @@
 #include <boost/bind.hpp>
 #include <sstream>
 #include "../Application.h"
+#include "../Serializer.h"
 #include "ApplicationImpl.h"
-#include "Serializer.h"
 
 using namespace std;
 using namespace boost;
@@ -215,6 +215,12 @@ void PublisherImpl::send(const double* data, std::size_t size) {
 	publish(STREAM, result.c_str(), result.length());
 }
 
+void PublisherImpl::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {
+
+	// send a STREAM message by the publisher socket
+	publishTwoParts(STREAM, data1.c_str(), data1.length(), data2.c_str(), data2.length());
+}
+
 void PublisherImpl::setEnd() {
 
 	if (!m_ended && m_publisher.get() != 0) {
@@ -246,11 +252,29 @@ void PublisherImpl::terminate() {
 void PublisherImpl::publish(const std::string& header, const char* data, std::size_t size) {
 
 	zmq::message_t requestType(header.length());
-	zmq::message_t requestData(size);
 	memcpy((void *) requestType.data(), header.c_str(), header.length());
+
+	zmq::message_t requestData(size);
 	memcpy((void *) requestData.data(), data, size);
+
 	m_publisher->send(requestType, ZMQ_SNDMORE);
 	m_publisher->send(requestData);
+}
+
+void PublisherImpl::publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
+
+	zmq::message_t requestType(header.length());
+	memcpy((void *) requestType.data(), header.c_str(), header.length());
+
+	zmq::message_t requestData1(size1);
+	memcpy((void *) requestData1.data(), data1, size1);
+
+	zmq::message_t requestData2(size2);
+	memcpy((void *) requestData2.data(), data2, size2);
+
+	m_publisher->send(requestType, ZMQ_SNDMORE);
+	m_publisher->send(requestData1, ZMQ_SNDMORE);
+	m_publisher->send(requestData2);
 }
 
 zmq::message_t * PublisherImpl::processInitCommand() {

@@ -42,6 +42,7 @@ public:
 	bool receive(std::vector<int64_t>& data);
 	bool receive(std::vector<float>& data);
 	bool receive(std::vector<double>& data);
+	bool receiveTwoBinaryParts(std::string& data1, std::string& data2);
 
 	WaitingImpl * waiting();
 

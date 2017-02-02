@@ -17,8 +17,8 @@
 #include "RequestImpl.h"
 
 #include "../Application.h"
+#include "../Serializer.h"
 #include "ApplicationImpl.h"
-#include "Serializer.h"
 
 using namespace std;
 
