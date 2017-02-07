@@ -89,9 +89,16 @@ public class ResponderImpl {
 				fr.ill.ics.cameo.proto.Messages.Request request = fr.ill.ics.cameo.proto.Messages.Request.parseFrom(messageData);
 			
 				// Create the request
-				return new RequestImpl(application, context, request.getEndpoint(), request.getMessage(), request.getApplicationId());
+				RequestImpl impl = new RequestImpl(application, context, request.getEndpoint(), request.getMessage(), request.getApplicationId());
 				
-			} else if (type.getType() == Type.CANCEL) {
+				// Set the optional message 2.
+				if (request.hasMessage2()) {
+					impl.setMessage2(request.getMessage2());
+				}
+				
+				return impl;
+			}
+			else if (type.getType() == Type.CANCEL) {
 				ended = true;
 				
 				return null;

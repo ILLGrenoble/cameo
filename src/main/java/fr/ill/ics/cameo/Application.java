@@ -800,12 +800,21 @@ public class Application {
 			this.impl = impl;
 		}
 		
-		public byte[] getBinaryData() {
+		public byte[] getBinary() {
 			return impl.get().toByteArray();
 		}
 		
-		public String getStringData() {
+		public String get() {
 			return impl.get().toStringUtf8();
+		}
+		
+		public byte[][] getTwoBinaryParts() {
+			
+			byte[][] result = new byte[2][];
+			result[0] = impl.get().toByteArray();
+			result[1] = impl.get2().toByteArray();
+			
+			return result;
 		}
 		
 		public void reply(byte[] response) {
@@ -903,6 +912,10 @@ public class Application {
 		
 		public void send(String request) {
 			impl.send(request);
+		}
+		
+		public void sendTwoParts(byte[] request1, byte[] request2) {
+			impl.sendTwoParts(request1, request2);
 		}
 		
 		public byte[] receive() {

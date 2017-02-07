@@ -29,6 +29,7 @@ public class RequestImpl {
 	ZContext context;
 	private String requesterEndpoint;
 	private ByteString message;
+	private ByteString message2;
 	private int requesterApplicationId;
 
 	public RequestImpl(ApplicationImpl application, ZContext context, String requesterEndpoint, ByteString message, int requesterApplicationId) {
@@ -39,8 +40,16 @@ public class RequestImpl {
 		this.requesterApplicationId = requesterApplicationId;
 	}
 	
+	public void setMessage2(ByteString message2) {
+		this.message2 = message2;
+	}
+	
 	public ByteString get() {
 		return message;
+	}
+	
+	public ByteString get2() {
+		return message2;
 	}
 
 	public void reply(byte[] response) {

@@ -72,12 +72,31 @@ public class RequesterImpl {
 		application.tryRequest(requestMessage, responderEndpoint);
 	}
 	
+	private void send(ByteString request1, ByteString request2) {
+		ZMsg requestMessage = application.createRequest(Type.REQUEST);
+		String requesterEndpoint = application.getUrl() + ":" + requesterPort;
+		
+		Request command = Request.newBuilder()
+										.setApplicationId(application.getId())
+										.setMessage(request1)
+										.setMessage2(request2)
+										.setEndpoint(requesterEndpoint)
+										.build();
+		requestMessage.add(command.toByteArray());
+		
+		application.tryRequest(requestMessage, responderEndpoint);
+	}
+	
 	public void send(byte[] request) {
 		send(ByteString.copyFrom(request));
 	}
 	
 	public void send(String request) {
 		send(ByteString.copyFromUtf8(request));
+	}
+	
+	public void sendTwoParts(byte[] request1, byte[] request2) {
+		send(ByteString.copyFrom(request1), ByteString.copyFrom(request2));
 	}
 
 	public byte[] receive() {
