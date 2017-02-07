@@ -83,6 +83,28 @@ void RequesterImpl::send(const std::string& request) {
 	sendBinary(result);
 }
 
+void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
+
+	stringstream requesterEndpoint;
+	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
+
+	string strRequestType = m_application->m_impl->createRequest(PROTO_REQUEST);
+	string strRequestData;
+
+	proto::Request requestCommand;
+	requestCommand.set_applicationid(m_application->getId());
+	requestCommand.set_message(request1);
+	requestCommand.set_message2(request2);
+	requestCommand.set_endpoint(requesterEndpoint.str());
+	requestCommand.SerializeToString(&strRequestData);
+
+	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+
+	proto::RequestResponse requestResponse;
+	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	delete reply;
+}
+
 bool RequesterImpl::receiveBinary(std::string& response) {
 
 	zmq::message_t * message = new zmq::message_t;

@@ -936,16 +936,20 @@ Request::Request(std::auto_ptr<RequestImpl> & impl) :
 Request::~Request() {
 }
 
-const std::string& Request::getBinaryData() const {
+const std::string& Request::getBinary() const {
 	return m_impl->m_message;
 }
 
-std::string Request::getData() const {
+std::string Request::get() const {
 
 	string data;
 	parse(m_impl->m_message, data);
 
 	return data;
+}
+
+const std::string& Request::getSecondBinaryPart() const {
+	return m_impl->m_message2;
 }
 
 void Request::replyBinary(const std::string& response) {
@@ -1082,6 +1086,10 @@ void Requester::sendBinary(const std::string& request) {
 
 void Requester::send(const std::string& request) {
 	m_impl->send(request);
+}
+
+void Requester::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
+	m_impl->sendTwoBinaryParts(request1, request2);
 }
 
 bool Requester::receiveBinary(std::string& response) {

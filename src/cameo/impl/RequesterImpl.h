@@ -40,6 +40,7 @@ public:
 
 	void sendBinary(const std::string& request);
 	void send(const std::string& request);
+	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
 
 	bool receiveBinary(std::string& response);
 	bool receive(std::string& response);

@@ -359,8 +359,9 @@ class Request {
 public:
 	~Request();
 
-	const std::string& getBinaryData() const;
-	std::string getData() const;
+	const std::string& getBinary() const;
+	std::string get() const;
+	const std::string& getSecondBinaryPart() const;
 
 	void replyBinary(const std::string& response);
 	void reply(const std::string& response);
@@ -420,6 +421,7 @@ public:
 
 	void sendBinary(const std::string& request);
 	void send(const std::string& request);
+	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
 
 	bool receiveBinary(std::string& response);
 	bool receive(std::string& response);

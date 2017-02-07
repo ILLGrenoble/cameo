@@ -40,6 +40,7 @@ public:
 	const application::This * m_application;
 	std::string m_requesterEndpoint;
 	std::string m_message;
+	std::string m_message2;
 	int m_requesterApplicationId;
 };
 

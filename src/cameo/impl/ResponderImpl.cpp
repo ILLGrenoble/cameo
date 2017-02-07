@@ -105,6 +105,11 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 		// Create the request
 		result = auto_ptr<RequestImpl>(new RequestImpl(m_application, messageRequest.endpoint(), messageRequest.message(), messageRequest.applicationid()));
 
+		// Set message 2 if it exists.
+		if (messageRequest.has_message2()) {
+			result->m_message2 = messageRequest.message2();
+		}
+
 	} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
 		m_ended = true;
 
