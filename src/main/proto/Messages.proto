@@ -210,7 +210,8 @@ message PublisherResponse {
 message Request {
 	required int32 applicationId = 1;
 	required bytes message = 2;
-	required string endpoint = 3;
+	optional bytes message2 = 3;
+	required string endpoint = 4;
 }
 
 message StartedUnmanagedCommand {

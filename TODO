@@ -30,10 +30,6 @@ New features:
 + add start(..., boolean linkExecution = true)
 	if linkExecution, then the child application stops after the main application dies
 + python client API
-+ deployment
-	send binary content for update
-		or an archive that is open => replaces the installation dir : define a <deploy>
-	versioning of application : optional value
 + a cameo server R can be a router
 	a server R records another server S : in configuration file of S
 	start "app" : is dispatched to the most available server
@@ -43,13 +39,12 @@ New features:
 	generalize use of signals: handleStop recorded as handler for a state change
 
 Improvements:
-+ process priority?
++ process priority
 + check timeout strategy
-	ideas
-		for a blocking call like waitFor, periodical tests must be provided
-		zeromq reliability: http://zguide.zeromq.org/php:chapter4
-		failure example: remote app starts but a network failure happens before the setResult
-		the change of state is ok but not the starter blocks on getResult (recv call)
+	for a blocking call like waitFor, periodical tests must be provided
+	zeromq reliability: http://zguide.zeromq.org/php:chapter4
+	failure example: remote app starts but a network failure happens before the setResult
+	the change of state is ok but not the starter blocks on getResult (recv call)
 + can we check the availability of a port? reserve some ports?
 	procedure to add/reserve ports
 	reserve a pool of ports? limit its number?
@@ -94,11 +89,9 @@ Improvements:
 	extract services from Application (and Impl) required to implement as external (the idea is to have an example of how to create a communication service)
 	=> enable communication extensibility
 	change create method to builder?
-+ plugin based (maven?) for customising the behaviour
-	plugins would be loaded at runtime
++ plugin architecture
 	
 Minor updates:
-+ if the host is not available, zmq throws an exception (ex: muttiport shutdown), catch it (everywhere a socket is open?).
 + request version of the server
 + test outputStreamSocket null
 	can occur when connecting to application and it dies before
@@ -113,9 +106,7 @@ Minor updates:
 	imposes to have a different thread to manage error inputs
 	we should wait to have a different way to do it?
 + add log to Application and Server in local applications?
-+ check kill can be done at any time (e.g. during stopping)	
 + console : CTL-C 1 = stopping, CTL-C 2 = killing
-+ check the attributes that are defined by default in config (ex: stop_command)
 + warning
 	with remote calls that change the state of an application, ex: waitForStop
 	what happens if waitForStop occurs between hasToBeKilled and other subsequent calls 
@@ -140,7 +131,6 @@ Minor updates:
 	the application terminates successfully even if it fails (e.g. segmentation fault)
 + test incompatible versions of cameo java : is the server okay if parsing fails?
 	example : server in different version than client
-+ review application::This::Scope app(argc, argv); // object built
 + setResult(void *, size), setBinaryResult(string) in C++
 	complete the API
 + manage errors
@@ -170,6 +160,4 @@ Minor updates:
 		update when state is inactive
      	do not push the start request if the app is UPDATING (the queue will be implemented later) 
 	This can access version
-+ test C++ API with zmq 4
-	automatized tests
  	
