@@ -10,3 +10,4 @@
 * JZMQ support.
 * Implementation of unmanaged applications.
 * Added two binary parts message for publisher/subscriber and requester/responder.
+* Refined internal requester port name by adding the responder id.
