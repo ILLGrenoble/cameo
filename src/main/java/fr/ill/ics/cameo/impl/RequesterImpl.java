@@ -37,15 +37,17 @@ public class RequesterImpl {
 	private String responderEndpoint;
 	private int requesterPort;
 	private String name;
+	private int responderId;
 	private Socket requester = null;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 	
-	public RequesterImpl(ApplicationImpl application, ZContext context, String url, int requesterPort, int responderPort, String name) {
+	public RequesterImpl(ApplicationImpl application, ZContext context, String url, int requesterPort, int responderPort, String name, int responderId) {
 		this.application = application;
 		this.context = context;
 		this.requesterPort = requesterPort;
 		this.responderEndpoint = url + ":" + responderPort;
 		this.name = name;
+		this.responderId = responderId;
 
 		// create a socket REP
 		requester = context.createSocket(ZMQ.REP);
@@ -56,6 +58,10 @@ public class RequesterImpl {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public static String getRequesterPortName(String name, int responderId) {
+		return REQUESTER_PREFIX + name + "." + responderId;
 	}
 	
 	private void send(ByteString request) {
@@ -166,7 +172,7 @@ public class RequesterImpl {
 		context.destroySocket(requester);
 		
 		try {
-			application.removePort(REQUESTER_PREFIX + name);
+			application.removePort(getRequesterPortName(name, responderId));
 			
 		} catch (Exception e) {
 			System.err.println("Cannot terminate requester: " + e.getMessage());
