@@ -33,8 +33,10 @@ namespace application {
 class RequesterImpl {
 
 public:
-	RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name);
+	RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId);
 	~RequesterImpl();
+
+	static std::string getRequesterPortName(const std::string& name, int responderId);
 
 	WaitingImpl * waiting();
 
@@ -52,6 +54,7 @@ public:
 	int m_requesterPort;
 	std::string m_responderEndpoint;
 	std::string m_name;
+	int m_responderId;
 	std::auto_ptr<zmq::socket_t> m_requester;
 
 	static const std::string REQUESTER_PREFIX;

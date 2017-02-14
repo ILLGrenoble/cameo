@@ -29,10 +29,11 @@ namespace cameo {
 
 const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
 
-RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name) :
+RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId) :
 	m_application(application),
 	m_requesterPort(requesterPort),
-	m_name(name) {
+	m_name(name),
+	m_responderId(responderId) {
 
 	stringstream repEndpoint;
 	repEndpoint << url << ":" << responderPort;
@@ -48,6 +49,14 @@ RequesterImpl::RequesterImpl(const application::This * application, const std::s
 
 RequesterImpl::~RequesterImpl() {
 	terminate();
+}
+
+std::string RequesterImpl::getRequesterPortName(const std::string& name, int responderId) {
+
+	stringstream requesterPortName;
+	requesterPortName << REQUESTER_PREFIX << name << "." << responderId;
+
+	return requesterPortName.str();
 }
 
 WaitingImpl * RequesterImpl::waiting() {
@@ -176,7 +185,7 @@ void RequesterImpl::terminate() {
 	if (m_requester.get() != 0) {
 		m_requester.reset(0);
 
-		bool success = m_application->removePort(REQUESTER_PREFIX + m_name);
+		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId));
 		if (!success) {
 			cerr << "server cannot destroy requester " << m_name << endl;
 		}

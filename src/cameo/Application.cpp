@@ -1017,8 +1017,8 @@ bool Responder::hasEnded() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name) :
-	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name)) {
+Requester::Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId) :
+	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name, responderId)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -1034,7 +1034,7 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 	string responderEndpoint = instance.getEndpoint();
 
 	string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
-	string requesterPortName = RequesterImpl::REQUESTER_PREFIX + name;
+	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId);
 
 	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CONNECTPORT);
 	string strRequestData = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
@@ -1073,7 +1073,7 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 		throw RequesterCreationException(requestResponse.message());
 	}
 
-	return auto_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name));
+	return auto_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId));
 }
 
 const std::string& Requester::getName() const {
