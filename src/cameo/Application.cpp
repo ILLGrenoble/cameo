@@ -960,6 +960,24 @@ void Request::reply(const std::string& response) {
 	m_impl->reply(response);
 }
 
+std::auto_ptr<Instance> Request::connectToRequester() {
+
+	// Instantiate the requester server.
+	m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint));
+
+	// Connect and find the instance.
+	InstanceArray instances = m_requesterServer->connectAll(m_impl->m_requesterApplicationName);
+
+	for (int i = 0; i < instances.size(); i++) {
+		if (instances[i]->getId() == m_impl->m_requesterApplicationId) {
+			return auto_ptr<Instance>(instances[i]);
+		}
+	}
+
+	// Not found.
+	return auto_ptr<Instance>(0);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 

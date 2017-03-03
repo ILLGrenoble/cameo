@@ -103,7 +103,13 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 		messageRequest.ParseFromArray((*message).data(), (*message).size());
 
 		// Create the request
-		result = auto_ptr<RequestImpl>(new RequestImpl(m_application, messageRequest.endpoint(), messageRequest.message(), messageRequest.applicationid()));
+		result = auto_ptr<RequestImpl>(new RequestImpl(m_application,
+				messageRequest.applicationname(),
+				messageRequest.applicationid(),
+				messageRequest.message(),
+				messageRequest.serverurl(),
+				messageRequest.serverport(),
+				messageRequest.requesterport()));
 
 		// Set message 2 if it exists.
 		if (messageRequest.has_message2()) {

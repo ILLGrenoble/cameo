@@ -366,10 +366,13 @@ public:
 	void replyBinary(const std::string& response);
 	void reply(const std::string& response);
 
+	std::auto_ptr<Instance> connectToRequester();
+
 private:
 	Request(std::auto_ptr<RequestImpl> & impl);
 
 	std::auto_ptr<RequestImpl> m_impl;
+	std::auto_ptr<Server> m_requesterServer;
 };
 
 ///////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace application {
 class RequestImpl {
 
 public:
-	RequestImpl(const application::This * application, const std::string & requesterEndpoint, const std::string& message, int requesterApplicationId);
+	RequestImpl(const application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort);
 	~RequestImpl();
 
 	void replyBinary(const std::string& response);
@@ -41,7 +41,9 @@ public:
 	std::string m_requesterEndpoint;
 	std::string m_message;
 	std::string m_message2;
+	std::string m_requesterApplicationName;
 	int m_requesterApplicationId;
+	std::string m_requesterServerEndpoint;
 };
 
 }

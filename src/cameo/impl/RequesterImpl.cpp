@@ -65,16 +65,16 @@ WaitingImpl * RequesterImpl::waiting() {
 
 void RequesterImpl::sendBinary(const std::string& request) {
 
-	stringstream requesterEndpoint;
-	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
-
 	string strRequestType = m_application->m_impl->createRequest(PROTO_REQUEST);
 	string strRequestData;
 
 	proto::Request requestCommand;
+	requestCommand.set_applicationname(m_application->getName());
 	requestCommand.set_applicationid(m_application->getId());
 	requestCommand.set_message(request);
-	requestCommand.set_endpoint(requesterEndpoint.str());
+	requestCommand.set_serverurl(m_application->getUrl());
+	requestCommand.set_serverport(m_application->getPort());
+	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
 	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
@@ -94,17 +94,17 @@ void RequesterImpl::send(const std::string& request) {
 
 void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
 
-	stringstream requesterEndpoint;
-	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
-
 	string strRequestType = m_application->m_impl->createRequest(PROTO_REQUEST);
 	string strRequestData;
 
 	proto::Request requestCommand;
+	requestCommand.set_applicationname(m_application->getName());
 	requestCommand.set_applicationid(m_application->getId());
 	requestCommand.set_message(request1);
 	requestCommand.set_message2(request2);
-	requestCommand.set_endpoint(requesterEndpoint.str());
+	requestCommand.set_serverurl(m_application->getUrl());
+	requestCommand.set_serverport(m_application->getPort());
+	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
 	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);

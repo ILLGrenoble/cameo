@@ -11,3 +11,4 @@
 * Implemented This static instance without pointer so that it is not necessary to call This::terminate() except if the destruction of the static instance is not automatic.
 * Added two binary parts message for publisher/subscriber and requester/responder.
 * Refined internal requester port name by adding the responder id.
+* Added connectToRequester function to Request.

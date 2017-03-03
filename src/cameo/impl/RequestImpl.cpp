@@ -19,16 +19,25 @@
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ApplicationImpl.h"
+#include <sstream>
 
 using namespace std;
 
 namespace cameo {
 
-RequestImpl::RequestImpl(const application::This * application, const std::string & requesterEndpoint, const std::string& message, int requesterApplicationId) :
+RequestImpl::RequestImpl(const application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort) :
 	m_application(application),
-	m_requesterEndpoint(requesterEndpoint),
 	m_message(message),
+	m_requesterApplicationName(requesterApplicationName),
 	m_requesterApplicationId(requesterApplicationId) {
+
+	stringstream requesterEndpoint;
+	requesterEndpoint << serverUrl << ":" << requesterPort;
+	m_requesterEndpoint = requesterEndpoint.str();
+
+	stringstream requesterServerEndpoint;
+	requesterServerEndpoint << serverUrl << ":" << serverPort;
+	m_requesterServerEndpoint = requesterServerEndpoint.str();
 }
 
 RequestImpl::~RequestImpl() {
