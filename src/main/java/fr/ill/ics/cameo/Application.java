@@ -829,8 +829,10 @@ public class Application {
 		
 		public Instance connectToRequester() {
 			
-			// Instantiate the requester server.
-			requesterServer = new Server(impl.getRequesterServerEndpoint());
+			// Instantiate the requester server if it is null.
+			if (requesterServer == null) {
+				requesterServer = new Server(impl.getRequesterServerEndpoint());
+			}	
 			
 			// Connect and find the instance.
 			List<Instance> instances = requesterServer.connectAll(impl.getRequesterApplicationName());
@@ -843,6 +845,19 @@ public class Application {
 			
 			// Not found.
 			return null;
+		}
+		
+		/**
+		 * Gets the requester server and transfers the ownership. The client code is responsible to terminate the server.
+		 * @return
+		 */
+		public Server getServer() {
+			
+			// Transfers the ownership of the server.
+			Server result = requesterServer;
+			requesterServer = null;
+			
+			return result;
 		}
 		
 		public void terminate() {
