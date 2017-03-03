@@ -368,6 +368,11 @@ public:
 
 	std::auto_ptr<Instance> connectToRequester();
 
+	/**
+	 * Transfers the ownership of the requester server.
+	 */
+	std::auto_ptr<Server> getServer();
+
 private:
 	Request(std::auto_ptr<RequestImpl> & impl);
 

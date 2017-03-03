@@ -962,8 +962,10 @@ void Request::reply(const std::string& response) {
 
 std::auto_ptr<Instance> Request::connectToRequester() {
 
-	// Instantiate the requester server.
-	m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint));
+	// Instantiate the requester server if it does not exist.
+	if (m_requesterServer.get() == 0) {
+		m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint));
+	}
 
 	// Connect and find the instance.
 	InstanceArray instances = m_requesterServer->connectAll(m_impl->m_requesterApplicationName);
@@ -976,6 +978,10 @@ std::auto_ptr<Instance> Request::connectToRequester() {
 
 	// Not found.
 	return auto_ptr<Instance>(0);
+}
+
+std::auto_ptr<Server> Request::getServer() {
+	return m_requesterServer;
 }
 
 ///////////////////////////////////////////////////////////////////////////
