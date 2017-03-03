@@ -20,6 +20,7 @@ package fr.ill.ics.cameo;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.impl.ApplicationImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;
@@ -795,6 +796,7 @@ public class Application {
 	public static class Request {
 		
 		private RequestImpl impl;
+		private Server requesterServer = null;
 		
 		Request(RequestImpl impl) {
 			this.impl = impl;
@@ -823,6 +825,31 @@ public class Application {
 		
 		public void reply(String response) {
 			impl.reply(response);
+		}
+		
+		public Instance connectToRequester() {
+			
+			// Instantiate the requester server.
+			requesterServer = new Server(impl.getRequesterServerEndpoint());
+			
+			// Connect and find the instance.
+			List<Instance> instances = requesterServer.connectAll(impl.getRequesterApplicationName());
+			
+			for (Instance instance : instances) {
+				if (instance.getId() == impl.getRequesterApplicationId()) {
+					return instance;
+				}
+			}
+			
+			// Not found.
+			return null;
+		}
+		
+		public void terminate() {
+			
+			if (requesterServer != null) {
+				requesterServer.terminate();
+			}
 		}
 		
 		@Override

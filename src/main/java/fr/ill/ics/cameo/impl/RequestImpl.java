@@ -30,14 +30,21 @@ public class RequestImpl {
 	private String requesterEndpoint;
 	private ByteString message;
 	private ByteString message2;
+	private String requesterApplicationName;
 	private int requesterApplicationId;
-
-	public RequestImpl(ApplicationImpl application, ZContext context, String requesterEndpoint, ByteString message, int requesterApplicationId) {
+	private String requesterServerEndpoint;
+	
+	public RequestImpl(ApplicationImpl application, ZContext context, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
+		
 		this.application = application;
 		this.context = context;
-		this.requesterEndpoint = requesterEndpoint;
+		this.requesterEndpoint = serverUrl + ":" + requesterPort;
 		this.message = message;
+		
+		this.requesterApplicationName = requesterApplicationName;
 		this.requesterApplicationId = requesterApplicationId;
+		
+		this.requesterServerEndpoint = serverUrl + ":" + serverPort;
 	}
 	
 	public void setMessage2(ByteString message2) {
@@ -63,13 +70,21 @@ public class RequestImpl {
 	public void reply(String response) {
 		reply(Buffer.serialize(response));
 	}
+	
+	public String getRequesterApplicationName() {
+		return requesterApplicationName;
+	}
+
+	public int getRequesterApplicationId() {
+		return requesterApplicationId;
+	}
+	
+	public String getRequesterServerEndpoint() {
+		return requesterServerEndpoint;
+	}
 
 	@Override
 	public String toString() {
 		return "Request [endpoint=" + requesterEndpoint + ", id=" + requesterApplicationId + "]";
 	}
-	
-	
-
-
 }

@@ -87,9 +87,15 @@ public class ResponderImpl {
 			if (type.getType() == Type.REQUEST) {
 				// Parse the message
 				fr.ill.ics.cameo.proto.Messages.Request request = fr.ill.ics.cameo.proto.Messages.Request.parseFrom(messageData);
-			
+				
 				// Create the request
-				RequestImpl impl = new RequestImpl(application, context, request.getEndpoint(), request.getMessage(), request.getApplicationId());
+				RequestImpl impl = new RequestImpl(application, context, 
+						request.getApplicationName(), 
+						request.getApplicationId(), 
+						request.getMessage(), 
+						request.getServerUrl(),
+						request.getServerPort(),
+						request.getRequesterPort());
 				
 				// Set the optional message 2.
 				if (request.hasMessage2()) {

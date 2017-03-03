@@ -66,12 +66,14 @@ public class RequesterImpl {
 	
 	private void send(ByteString request) {
 		ZMsg requestMessage = application.createRequest(Type.REQUEST);
-		String requesterEndpoint = application.getUrl() + ":" + requesterPort;
 		
 		Request command = Request.newBuilder()
+										.setApplicationName(application.getName())
 										.setApplicationId(application.getId())
 										.setMessage(request)
-										.setEndpoint(requesterEndpoint)
+										.setServerUrl(application.getUrl())
+										.setServerPort(application.getPort())
+										.setRequesterPort(requesterPort)
 										.build();
 		requestMessage.add(command.toByteArray());
 		
@@ -80,13 +82,15 @@ public class RequesterImpl {
 	
 	private void send(ByteString request1, ByteString request2) {
 		ZMsg requestMessage = application.createRequest(Type.REQUEST);
-		String requesterEndpoint = application.getUrl() + ":" + requesterPort;
 		
 		Request command = Request.newBuilder()
+										.setApplicationName(application.getName())						
 										.setApplicationId(application.getId())
 										.setMessage(request1)
 										.setMessage2(request2)
-										.setEndpoint(requesterEndpoint)
+										.setServerUrl(application.getUrl())
+										.setServerPort(application.getPort())
+										.setRequesterPort(requesterPort)
 										.build();
 		requestMessage.add(command.toByteArray());
 		
