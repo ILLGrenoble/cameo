@@ -39,7 +39,7 @@ class EventStreamSocket {
 public:
 	~EventStreamSocket();
 
-	std::auto_ptr<Event> receive();
+	std::auto_ptr<Event> receive(bool blocking = true);
 	void cancel();
 
 private:

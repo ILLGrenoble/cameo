@@ -34,9 +34,14 @@ EventStreamSocket::EventStreamSocket(SocketImpl * impl) : m_impl(impl) {
 EventStreamSocket::~EventStreamSocket() {
 }
 
-std::auto_ptr<Event> EventStreamSocket::receive() {
+std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
-	zmq::message_t * message = m_impl->receive();
+	zmq::message_t * message = m_impl->receive(blocking);
+
+	// In case of non-blocking call, the message can be null.
+	if (message == 0) {
+		return auto_ptr<Event>(0);
+	}
 
 	string response(static_cast<char*>(message->data()), message->size());
 	delete message;

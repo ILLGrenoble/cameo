@@ -200,7 +200,6 @@ public:
 	bool hasResult() const;
 	bool exists() const;
 	const std::string& getErrorMessage() const;
-	State getInitialState() const;
 	bool stop();
 	bool kill();
 
@@ -209,6 +208,8 @@ public:
 	State waitFor(int states, const std::string& eventName, StateHandlerType handler = 0);
 
 	void cancelWaitFor();
+
+	State now();
 
 	bool getBinaryResult(std::string& result);
 	bool getResult(std::string& result);
@@ -225,6 +226,7 @@ private:
 	void setErrorMessage(const std::string& message);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
+	State waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking);
 
 	const Server * m_server;
 	std::auto_ptr<EventStreamSocket> m_eventSocket;

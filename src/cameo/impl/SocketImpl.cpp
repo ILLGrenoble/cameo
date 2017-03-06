@@ -39,12 +39,19 @@ void SocketImpl::send(const std::string& data) {
 	m_socket->send(messageData);
 }
 
-zmq::message_t * SocketImpl::receive() {
-	// use the message interface
-	zmq::message_t * message = new zmq::message_t();
-	m_socket->recv(message);
+zmq::message_t * SocketImpl::receive(bool blocking) {
 
-	return message;
+	// Use the message interface.
+	zmq::message_t * message = new zmq::message_t();
+	if (m_socket->recv(message, (blocking ? 0 : ZMQ_DONTWAIT))) {
+		// The message exists.
+		return message;
+	}
+
+	// No message.
+	delete message;
+
+	return 0;
 }
 
 void SocketImpl::cancel() {

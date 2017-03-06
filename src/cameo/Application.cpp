@@ -489,6 +489,9 @@ void Instance::setPastStates(State pastStates) {
 
 void Instance::setInitialState(State state) {
 	m_initialState = state;
+
+	// It is important to set the last state, because in case of a call to the function now without any incoming state.
+	m_lastState = state;
 }
 
 const std::string& Instance::getName() const {
@@ -526,10 +529,6 @@ const std::string& Instance::getErrorMessage() const {
 	return m_errorMessage;
 }
 
-State Instance::getInitialState() const {
-	return m_initialState;
-}
-
 bool Instance::stop() {
 	try {
 		Response response = m_server->stopApplicationAsynchronously(m_id, false);
@@ -554,33 +553,33 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler) {
+State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking) {
 
 	if (!exists()) {
-		// the application was not launched
+		// The application was not launched
 		return m_lastState;
 	}
 
-	// test the terminal state
+	// Test the terminal state
 	if (m_lastState == SUCCESS
 		|| m_lastState == STOPPED
 		|| m_lastState == KILLED
 		|| m_lastState == FAILURE) {
-		// the application is already terminated
+		// The application is already terminated
 		return m_lastState;
 	}
 
-	// test the requested states
+	// Test the requested states
 	if ((states & m_pastStates) != 0) {
-		// the state is already received
+		// The state is already received
 		return m_lastState;
 	}
 
 	while (true) {
-		// waits for a new incoming status
-		auto_ptr<Event> event = m_eventSocket->receive();
+		// Waits for a new incoming status
+		auto_ptr<Event> event = m_eventSocket->receive(blocking);
 
-		// The socket is canceled.
+		// The socket is canceled or the non-blocking call returns a null message.
 		if (event.get() == 0) {
 			return m_lastState;
 		}
@@ -593,7 +592,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
-				// call the state handler.
+				// Call the state handler.
 				if (!handler.empty()) {
 					handler(state);
 				}
@@ -635,6 +634,10 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 	return m_lastState;
 }
 
+State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler) {
+	return waitFor(states, eventName, handler, true);
+}
+
 State Instance::waitFor(int states, StateHandlerType handler) {
 	return waitFor(states, "", handler);
 }
@@ -645,6 +648,10 @@ State Instance::waitFor(StateHandlerType handler) {
 
 void Instance::cancelWaitFor() {
 	m_waiting->cancel();
+}
+
+State Instance::now() {
+	return waitFor(0, "", 0, false);
 }
 
 bool Instance::getBinaryResult(std::string& result) {
