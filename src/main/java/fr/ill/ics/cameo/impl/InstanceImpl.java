@@ -74,6 +74,9 @@ public class InstanceImpl extends EventListener {
 	
 	void setInitialState(int state) {
 		initialState = state;
+		
+		// It is important to set the last state at this point because it may be the state returned by the method now if no state was received.
+		lastState = state;
 	}
 	
 	public String getName() {
@@ -175,12 +178,12 @@ public class InstanceImpl extends EventListener {
 			terminate();
 		}
 	}
-	
+		
 	/**
 	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
 	 * The method is not thread-safe and must not be called concurrently.
 	 */
-	public int waitFor(int states, String eventName) {
+	private int waitFor(int states, String eventName, boolean blocking) {
 
 		if (!exists()) {
 			return lastState;
@@ -203,7 +206,12 @@ public class InstanceImpl extends EventListener {
 	
 		while (true) {
 			// waits for a new incoming status
-			Event event = popEvent();
+			Event event = popEvent(blocking);
+			
+			// If the event is null, then it is the result of non-blocking call.
+			if (event == null) {
+				break;
+			}
 			
 			if (event.getId() == id) {
 			
@@ -257,6 +265,10 @@ public class InstanceImpl extends EventListener {
 		return lastState;
 	}
 	
+	public int waitFor(int states, String eventName) {
+		return waitFor(states, eventName, true);
+	}
+	
 	public int waitFor(int states) {
 		return waitFor(states, null);
 	}
@@ -266,6 +278,13 @@ public class InstanceImpl extends EventListener {
 	 */
 	public int waitFor() {
 		return waitFor(0);
+	}
+	
+	/**
+	 * The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
+	 */
+	public int now() {
+		return waitFor(0, null, false);
 	}
 	
 	public void cancelWaitFor() {

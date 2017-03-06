@@ -347,18 +347,7 @@ public class Application {
 		public String getErrorMessage() {
 			return impl.getErrorMessage();
 		}
-		
-		/**
-		 * Returns the initial state of the application when the Instance is created.
-		 * This is the value of the application state when the connect was requested.
-		 * Otherwise the value is UNKNOWN when the Instance is created from a start, stop or kill request. 
-		 * The value returned is not synchronized with the waitFor method. 
-		 * @return
-		 */
-		public int getInitialState() {
-			return impl.getInitialState();
-		}
-			
+					
 		/**
 		 * Requests the stop of the application.
 		 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
@@ -392,6 +381,13 @@ public class Application {
 		
 		public void cancelWaitFor() {
 			impl.cancelWaitFor();
+		}
+		
+		/**
+		 * The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
+		 */
+		public int now() {
+			return impl.now();
 		}
 		
 		/**

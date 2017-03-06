@@ -51,14 +51,21 @@ public class EventListener {
 		}
 	}
 	
-	public Event popEvent() {
+	public Event popEvent(boolean blocking) {
 		try {
-			return eventQueue.take();
+			if (blocking) {
+				return eventQueue.take();
+			}
+			return eventQueue.poll();
 			
 		} catch (InterruptedException e) {
 			System.out.println("interrupted StatusListener while popping");
 			return null;
 		}
+	}
+	
+	public Event popEvent() {
+		return popEvent(true);
 	}
 	
 	public void cancel(int id) {
