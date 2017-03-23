@@ -1,1 +1,1 @@
-Please go to the [Wiki](../wikis/home).
+Please go to the [Wiki](https://code.ill.fr/cameo/cameo-docs/wikis/home).
