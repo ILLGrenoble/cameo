@@ -1,1 +1,1 @@
-Please go to the [Wiki](wiki).
+Please go to the [Wiki](../wikis/home).
