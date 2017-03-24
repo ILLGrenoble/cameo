@@ -56,7 +56,6 @@ libcameo_la_SOURCES = \
 	cameo/impl/RequestImpl.h \
 	cameo/impl/ResponderImpl.h \
 	cameo/impl/RequesterImpl.h \
-	cameo/impl/Serializer.h \
 	cameo/impl/zmq.hpp \
 	proto/Messages.pb.cc \
 	proto/Messages.proto
