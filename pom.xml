@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-console</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>CameoConsole</name>
 	<description>Cameo Console</description>
 	<url>https://code.ill.fr/instrument-control/cameo-console</url>
@@ -69,7 +69,7 @@
 				<dependency>
 					<groupId>org.zeromq</groupId>
 					<artifactId>jeromq</artifactId>
-					<version>0.3.5</version>
+					<version>0.3.6</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-api-java</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
