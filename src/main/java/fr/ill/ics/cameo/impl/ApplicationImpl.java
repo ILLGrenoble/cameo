@@ -169,13 +169,13 @@ public class ApplicationImpl extends ServicesImpl {
 		}
 		
 		waitingSet.terminateAll();
-		
-		super.terminate();
-		
+
 		// Tell the cameo server that the application is terminated if it is unmanaged.
 		if (!managed) {
 			terminateUnmanagedApplication();
 		}
+		
+		super.terminate();
 	}
 	
 	public void setResult(byte[] data) {
