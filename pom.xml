@@ -96,7 +96,6 @@
 	<build>
 		<plugins>
 
-			<!-- Incorporate the SVN revision in the Manifest -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
