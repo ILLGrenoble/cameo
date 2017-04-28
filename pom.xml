@@ -9,7 +9,7 @@
 
 	<!-- Connection to git repository -->
 	<scm>
-		<connection>scm:git:https://legoc@code.ill.fr/instrument-control/cameo-server.git</connection>
+		<connection>scm:git:https://code.ill.fr/instrument-control/cameo-server.git</connection>
 	  <tag>v2.0.0</tag>
   </scm>
 
