@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-server</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<name>CameoServer</name>
 	<description>Cameo Server</description>
 	<url>https://code.ill.fr/cameo/cameo-server</url>
@@ -10,7 +10,6 @@
 	<!-- Connection to git repository -->
 	<scm>
 		<connection>scm:git:https://code.ill.fr/cameo/cameo-server.git</connection>
-	  <tag>v2.0.0</tag>
 	</scm>
 
 	<distributionManagement>
