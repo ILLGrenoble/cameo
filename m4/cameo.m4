@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 11/07/2016
+# Version 18/05/2017
 # defines CAMEO_CFLAGS, CAMEO_LDFLAGS, CAMEO_LIBS
 #
 AC_DEFUN([AC_CAMEO],
@@ -60,7 +60,7 @@ AC_DEFUN([AC_CAMEO],
                 HAVE_CAMEO=1
                 LIBS="$cameo_save_LIBS"
                 CAMEO_LDFLAGS="$LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $CAMEO_LIBS"
-                CAMEO_LIBS="$LIBZMQ_LIB $LIBPROTOBUF_LIB $BOOST_THREAD_LIB -lcameo"
+                CAMEO_LIBS="-lcameo $LIBZMQ_LIB $LIBPROTOBUF_LIB $BOOST_THREAD_LIB"
             fi
 
             if test $cameo_found = yes; then
