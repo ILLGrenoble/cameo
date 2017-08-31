@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.impl;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
@@ -38,16 +40,22 @@ public class RequesterImpl {
 	private int requesterPort;
 	private String name;
 	private int responderId;
+	
+	// Need for a unique id per Application instance.
+	private int requesterId;
+	private static AtomicInteger requesterCounter = new AtomicInteger();
+	
 	private Socket requester = null;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
-	
-	public RequesterImpl(ApplicationImpl application, ZContext context, String url, int requesterPort, int responderPort, String name, int responderId) {
+		
+	public RequesterImpl(ApplicationImpl application, ZContext context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.application = application;
 		this.context = context;
 		this.requesterPort = requesterPort;
 		this.responderEndpoint = url + ":" + responderPort;
 		this.name = name;
 		this.responderId = responderId;
+		this.requesterId = requesterId;
 
 		// create a socket REP
 		requester = context.createSocket(ZMQ.REP);
@@ -60,8 +68,12 @@ public class RequesterImpl {
 		return name;
 	}
 	
-	public static String getRequesterPortName(String name, int responderId) {
-		return REQUESTER_PREFIX + name + "." + responderId;
+	public static int newRequesterId() {
+		return requesterCounter.incrementAndGet();
+	}
+	
+	public static String getRequesterPortName(String name, int responderId, int requesterId) {
+		return REQUESTER_PREFIX + name + "." + responderId + "." + requesterId;
 	}
 	
 	private void send(ByteString request) {
@@ -176,7 +188,7 @@ public class RequesterImpl {
 		context.destroySocket(requester);
 		
 		try {
-			application.removePort(getRequesterPortName(name, responderId));
+			application.removePort(getRequesterPortName(name, responderId, requesterId));
 			
 		} catch (Exception e) {
 			System.err.println("Cannot terminate requester: " + e.getMessage());
@@ -185,7 +197,7 @@ public class RequesterImpl {
 	
 	@Override
 	public String toString() {
-		return REQUESTER_PREFIX + name + ":" + application.getName() + "." + application.getId() + "@" + application.getEndpoint();
+		return REQUESTER_PREFIX + name + "." + requesterId + ":" + application.getName() + "." + application.getId() + "@" + application.getEndpoint();
 	}
 	
 }

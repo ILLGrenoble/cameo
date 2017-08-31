@@ -1,3 +1,9 @@
+0.1.2
+-----
+
+* Replaced the profiles by submodules for jeromq and jzmq.
+* Enabled to define more than one requester on the same responder in one Application instance.
+
 0.1.0
 -----
 

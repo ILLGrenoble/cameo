@@ -2,7 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-api-java</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>CameoJavaAPI</name>
 	<description>Cameo Java API</description>
 	<url>https://code.ill.fr/cameo/cameo-api-java</url>
@@ -49,12 +50,18 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-lite-java</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+	</dependencies>
+	
+	<!-- The profile is used into Eclipse to compile the code. It must not be used with mvn in command line. -->
 	<profiles>
 		<profile>
-			<id>jzmq</id>
-			<properties>
-				<zmq.implementation>jzmq</zmq.implementation>
-			</properties>
+			<id>dependencies-for-compilation</id>
 			<dependencies>
 				<dependency>
 					<groupId>org.zeromq</groupId>
@@ -63,28 +70,7 @@
 				</dependency>
 			</dependencies>
 		</profile>
-		<profile>
-			<id>jeromq</id>
-			<properties>
-				<zmq.implementation>jeromq</zmq.implementation>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.zeromq</groupId>
-					<artifactId>jeromq</artifactId>
-					<version>0.3.6</version>
-				</dependency>
-			</dependencies>
-		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-lite-java</artifactId>
-			<version>2.6.1</version>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<plugins>
@@ -106,34 +92,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- We generate the sources from proto in process-resources to ensure to have them before the compile phase -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<id>process-resources</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<target>
-								<property name="protoFlags" value="-I${env.NOMAD_HOME}/src/common/protobuf/proto --java_out=src/main/java" />
-								<property name="protoDir" value="${env.NOMAD_HOME}/src/common/protobuf/proto" />
-
-								<echo message="Generating Messages.java" />
-								<exec executable="protoc">
-									<arg line="-Isrc/main/proto --java_out=src/main/java src/main/proto/Messages.proto" />
-								</exec>
-
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -147,4 +105,8 @@
 			
 		</plugins>
 	</build>
+	<modules>
+		<module>cameo-api-java-jzmq</module>
+		<module>cameo-api-java-jeromq</module>
+	</modules>
 </project>

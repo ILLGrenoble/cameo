@@ -466,7 +466,9 @@ public class ApplicationImpl extends ServicesImpl {
 		String responderEndpoint = instanceImpl.getEndpoint();
 		
 		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
-		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId);
+		
+		int requesterId = RequesterImpl.newRequesterId();
+		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
 		
 		try {
 			// First connect to the responder
@@ -507,7 +509,7 @@ public class ApplicationImpl extends ServicesImpl {
 				throw new RequesterCreationException(requestResponse.getMessage());
 			}
 			
-			return new RequesterImpl(this, context, responderUrl, requesterPort, responderPort, name, responderId);
+			return new RequesterImpl(this, context, responderUrl, requesterPort, responderPort, name, responderId, requesterId);
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
