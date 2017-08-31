@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fr.ill.ics</groupId>
+		<artifactId>cameo-server</artifactId>
+		<version>0.1.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>cameo-server-jzmq</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.zeromq</groupId>
+			<artifactId>jzmq</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>../src/main/java</sourceDirectory>
+		<plugins>
+			<!-- We generate the sources from proto in process-resources to ensure to have them before the compile phase -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<configuration>
+							<target>
+								<echo message="Generating Messages.java" />
+								<exec executable="protoc">
+									<arg line="-I../src/main/proto --java_out=../src/main/java ../src/main/proto/Messages.proto" />
+								</exec>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
