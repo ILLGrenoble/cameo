@@ -1048,8 +1048,8 @@ bool Responder::hasEnded() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId) :
-	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name, responderId)) {
+Requester::Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name, responderId, requesterId)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -1065,7 +1065,8 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 	string responderEndpoint = instance.getEndpoint();
 
 	string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
-	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId);
+	int requesterId = RequesterImpl::newRequesterId();
+	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
 	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CONNECTPORT);
 	string strRequestData = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
@@ -1104,7 +1105,7 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 		throw RequesterCreationException(requestResponse.message());
 	}
 
-	return auto_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId));
+	return auto_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
 }
 
 const std::string& Requester::getName() const {
@@ -1325,6 +1326,7 @@ std::ostream& operator<<(std::ostream& os, const application::Responder& respond
 std::ostream& operator<<(std::ostream& os, const application::Requester& requester) {
 
 	os << "req." << requester.getName()
+		<< "." << requester.m_impl->m_requesterId
 		<< ":" << requester.m_impl->m_application->getName()
 		<< "." << requester.m_impl->m_application->getId()
 		<< "@" << requester.m_impl->m_application->getEndpoint();

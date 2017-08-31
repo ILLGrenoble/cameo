@@ -439,7 +439,7 @@ public:
 	void cancel();
 
 private:
-	Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId);
+	Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 
 	std::auto_ptr<RequesterImpl> m_impl;
 	std::auto_ptr<WaitingImpl> m_waiting;

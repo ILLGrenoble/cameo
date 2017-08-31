@@ -1,3 +1,8 @@
+0.1.2
+-----
+
+* Enabled to define more than one requester on the same responder in one Application instance.
+
 0.1.0
 -----
 

@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-
+#include <boost/thread.hpp>
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"
 
@@ -33,10 +33,11 @@ namespace application {
 class RequesterImpl {
 
 public:
-	RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId);
+	RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 	~RequesterImpl();
 
-	static std::string getRequesterPortName(const std::string& name, int responderId);
+	static int newRequesterId();
+	static std::string getRequesterPortName(const std::string& name, int responderId, int requesterId);
 
 	WaitingImpl * waiting();
 
@@ -55,9 +56,13 @@ public:
 	std::string m_responderEndpoint;
 	std::string m_name;
 	int m_responderId;
+	int m_requesterId;
 	std::auto_ptr<zmq::socket_t> m_requester;
 
 	static const std::string REQUESTER_PREFIX;
+
+	static boost::mutex m_mutex;
+	static int m_requesterCounter;
 };
 
 }

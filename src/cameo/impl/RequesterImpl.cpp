@@ -28,12 +28,15 @@ using namespace boost;
 namespace cameo {
 
 const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
+boost::mutex RequesterImpl::m_mutex;
+int RequesterImpl::m_requesterCounter = 0;
 
-RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId) :
+RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
 	m_application(application),
 	m_requesterPort(requesterPort),
 	m_name(name),
-	m_responderId(responderId) {
+	m_responderId(responderId),
+	m_requesterId(requesterId) {
 
 	stringstream repEndpoint;
 	repEndpoint << url << ":" << responderPort;
@@ -51,10 +54,18 @@ RequesterImpl::~RequesterImpl() {
 	terminate();
 }
 
-std::string RequesterImpl::getRequesterPortName(const std::string& name, int responderId) {
+int RequesterImpl::newRequesterId() {
+
+	boost::mutex::scoped_lock lock(m_mutex);
+	m_requesterCounter++;
+
+	return m_requesterCounter;
+}
+
+std::string RequesterImpl::getRequesterPortName(const std::string& name, int responderId, int requesterId) {
 
 	stringstream requesterPortName;
-	requesterPortName << REQUESTER_PREFIX << name << "." << responderId;
+	requesterPortName << REQUESTER_PREFIX << name << "." << responderId << "." << requesterId;
 
 	return requesterPortName.str();
 }
@@ -185,7 +196,7 @@ void RequesterImpl::terminate() {
 	if (m_requester.get() != 0) {
 		m_requester.reset(0);
 
-		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId));
+		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 		if (!success) {
 			cerr << "server cannot destroy requester " << m_name << endl;
 		}
