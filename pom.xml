@@ -2,7 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-console</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>CameoConsole</name>
 	<description>Cameo Console</description>
 	<url>https://code.ill.fr/cameo/cameo-console</url>
@@ -49,42 +50,19 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<!-- The profile is used into Eclipse to compile the code. It must not be used with mvn in command line. -->
 	<profiles>
 		<profile>
-			<id>jzmq</id>
-			<properties>
-				<zmq.implementation>jzmq</zmq.implementation>
-			</properties>
+			<id>dependencies-for-compilation</id>
 			<dependencies>
 				<dependency>
-					<groupId>org.zeromq</groupId>
-					<artifactId>jzmq</artifactId>
-					<version>3.1.0</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>jeromq</id>
-			<properties>
-				<zmq.implementation>jeromq</zmq.implementation>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.zeromq</groupId>
-					<artifactId>jeromq</artifactId>
-					<version>0.3.6</version>
+					<groupId>fr.ill.ics</groupId>
+					<artifactId>cameo-api-java</artifactId>
+					<version>0.1.2-SNAPSHOT</version>
 				</dependency>
 			</dependencies>
 		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>fr.ill.ics</groupId>
-			<artifactId>cameo-api-java</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<plugins>
@@ -126,7 +104,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<finalName>${project.artifactId}-${zmq.implementation}-${project.version}-full</finalName>
+					<finalName>${project.artifactId}-${project.version}-full</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
@@ -153,4 +131,8 @@
 		</plugins>
 	</build>
 
+	<modules>
+		<module>cameo-console-jeromq</module>
+		<module>cameo-console-jzmq</module>
+	</modules>
 </project>
