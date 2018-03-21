@@ -3,6 +3,7 @@
 
 * Enabled to define more than one requester on the same responder in one Application instance.
 * Removed zmq.hpp as it should be installed.
+* Corrected some memory leaks by changing the return type of tryRequestWithOnePartReply.
 
 0.1.0
 -----

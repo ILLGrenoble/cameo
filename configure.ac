@@ -4,7 +4,7 @@
 #
 # -----------------------------------------------------------------------------
 
-AC_INIT(cameo-api-cpp, 0.1.2-dev)
+AC_INIT(cameo-api-cpp, 0.1.2)
 LIBRARY_VERSION=0:1:2
 
 AC_CONFIG_AUX_DIR(config)

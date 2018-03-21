@@ -82,7 +82,7 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	return strRequestStart;
 }
 
-zmq::message_t* ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
+std::auto_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
 
 	zmq::socket_t socket(m_context, ZMQ_REQ);
 	try {
@@ -127,8 +127,8 @@ zmq::message_t* ServicesImpl::tryRequestWithOnePartReply(const std::string& strR
 		}
 	}
 
-	zmq::message_t *reply = new zmq::message_t;
-	socket.recv(reply, 0);
+	auto_ptr<zmq::message_t> reply(new zmq::message_t());
+	socket.recv(reply.get(), 0);
 
 	return reply;
 }
@@ -331,10 +331,9 @@ std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
 bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout) {
 
 	try {
-		zmq::message_t *reply = 0;
-		reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
+		auto_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
 
-		if (reply != 0) {
+		if (reply.get() != 0) {
 			return true;
 		}
 
@@ -367,12 +366,13 @@ void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, const std::stri
 }
 
 void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
+
 	string strRequestType = createRequest(PROTO_SUBSCRIBEPUBLISHER);
 	string strRequestData = createSubscribePublisherRequest();
-	zmq::message_t* reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
+
+	auto_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 }
 
 /**

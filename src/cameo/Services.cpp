@@ -99,11 +99,10 @@ void Services::initStatus() {
 	// get the status port
 	string strRequestType = m_impl->createRequest(PROTO_STATUS);
 	string strRequestData = m_impl->createShowStatusRequest();
-	zmq::message_t* reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 
 	// reply ok
 	if (requestResponse.value() == -1) {
