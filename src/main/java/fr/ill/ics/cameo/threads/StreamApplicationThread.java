@@ -83,7 +83,7 @@ public class StreamApplicationThread extends Thread {
 	
 	public void run() {
 		
-		// the process is now accessible
+		// The process is now accessible and cannot be null.
 		InputStreamReader is = new InputStreamReader(application.getProcess().getInputStream());
 		reader = new BufferedReader(is);
 		if (application.isWriteStream()) {

@@ -31,6 +31,7 @@ import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
+import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationConfig;
 import fr.ill.ics.cameo.manager.ApplicationInfo;
@@ -384,7 +385,14 @@ public class ProcessRequest {
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
+			
+		} catch (UnmanagedApplicationException e) {
+			ZMsg reply = new ZMsg();
+			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
+			reply.add(response.toByteArray());
+			return reply;
 		}
+		
 		ZMsg reply = new ZMsg();
 		RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
 		reply.add(response.toByteArray());
@@ -724,7 +732,11 @@ public class ProcessRequest {
 		int applicationId = 0;
 		
 		try {
-			applicationId = manager.newStartedUnmanagedApplication(message.getName());
+			if (message.hasPid()) {
+				applicationId = manager.newStartedUnmanagedApplication(message.getName(), message.getPid());
+			} else {
+				applicationId = manager.newStartedUnmanagedApplication(message.getName());	
+			}
 			
 		} catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
 			ZMsg reply = new ZMsg();

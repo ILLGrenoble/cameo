@@ -33,6 +33,7 @@ public abstract class Application extends ApplicationConfig {
 
 	protected String endpoint;
 	protected int id;
+	protected ProcessHandle processHandle;
 	
 	protected int applicationState = ApplicationState.UNKNOWN;
 	protected int pastApplicationStates = ApplicationState.UNKNOWN;
@@ -76,6 +77,12 @@ public abstract class Application extends ApplicationConfig {
 	
 	abstract public boolean isManaged();
 	abstract public Process getProcess();
+	
+	public ProcessHandle getProcessHandle() {
+		return processHandle;
+	}
+	
+	
 	abstract public boolean isAlive();
 	
 	/**
@@ -199,8 +206,8 @@ public abstract class Application extends ApplicationConfig {
 		}
 
 		// Add the special error arguments
-		commandList.add(new Integer(this.getId()).toString());
-		commandList.add(new Integer(errorCode).toString());
+		commandList.add(this.getId() + "");
+		commandList.add(errorCode + "");
 		commandList.add(Converter.toString(currentState));
 		
 		// Prepare the command
@@ -235,7 +242,7 @@ public abstract class Application extends ApplicationConfig {
 		LogInfo.getInstance().getLogger().info("Finished processing error for application " + this.getNameId());
 	}
 	
-	abstract public void executeStop(String PID);
+	abstract public void executeStop();
 	abstract public void kill();
 	abstract public void reset();
 	

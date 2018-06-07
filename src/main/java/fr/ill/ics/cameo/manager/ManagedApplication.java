@@ -54,7 +54,7 @@ public class ManagedApplication extends Application {
 	synchronized public Process getProcess() {
 		return process;
 	}
-
+	
 	@Override
 	synchronized public boolean isAlive() {
 		if (process != null) {
@@ -115,6 +115,9 @@ public class ManagedApplication extends Application {
 			
 			// Start the process
 			this.process = builder.start();
+			
+			// Get the process handle.
+			this.processHandle = process.toHandle();
 															
 		} catch (IOException e) {
 			LogInfo.getInstance().getLogger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
@@ -122,13 +125,17 @@ public class ManagedApplication extends Application {
 	}
 	
 	@Override
-	public void executeStop(String PID) {
+	public void executeStop() {
 		
 		if (stopExecutable == null) {
+			LogInfo.getInstance().getLogger().fine("No stop executable for " + getNameId());
 			return;
 		}
 		
 		LogInfo.getInstance().getLogger().fine("Launching stop executable for application " + this.getNameId());
+		
+		// Get the pid.
+		String pid = process.pid() + "";
 		
 		// Build the command arguments
 		ArrayList<String> commandList = new ArrayList<String>();
@@ -136,7 +143,7 @@ public class ManagedApplication extends Application {
 		
 		if (stopArgs != null) {
 			for (int i = 0; i < stopArgs.length; i++) {
-				String arg = stopArgs[i].replace("$PID", PID);
+				String arg = stopArgs[i].replace("$PID", pid);
 				commandList.add(arg);
 			}
 		}

@@ -37,6 +37,7 @@ import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
+import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.proto.Messages.PortEvent;
 import fr.ill.ics.cameo.proto.Messages.PublisherEvent;
 import fr.ill.ics.cameo.proto.Messages.ResultEvent;
@@ -473,11 +474,19 @@ public class Manager extends ConfigLoader {
 	 * @param id
 	 * @param parametersToSend
 	 * @throws IdNotFoundException
+	 * @throws UnmanagedApplicationException 
 	 */
-	public synchronized void writeToInputStream(int id, String[] parametersToSend) throws IdNotFoundException {
+	public synchronized void writeToInputStream(int id, String[] parametersToSend) throws IdNotFoundException, UnmanagedApplicationException {
 		
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
+			
+			// The process can be null in case it is an unmanaged application.
+			if (application.getProcess() == null) {
+				// We should throw a specific exception.
+				throw new UnmanagedApplicationException();
+			}
+			
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(application.getProcess().getOutputStream()));
 			
 			// build simple string from parameters
@@ -792,7 +801,7 @@ public class Manager extends ConfigLoader {
 		return result;
 	}
 
-	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+	public int newStartedUnmanagedApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
 		
 		// Verify if the application is already running
 		verifyNumberOfInstances(name, false);
@@ -801,7 +810,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create application
-		Application application = new UnmanagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, name);
+		Application application = new UnmanagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
 		// Threads
@@ -813,6 +822,10 @@ public class Manager extends ConfigLoader {
 		
 		// No stream thread.
 		return id;
+	}
+	
+	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+		return newStartedUnmanagedApplication(name, 0);
 	}
 
 	public String setUnmanagedApplicationTerminated(int id) throws IdNotFoundException {

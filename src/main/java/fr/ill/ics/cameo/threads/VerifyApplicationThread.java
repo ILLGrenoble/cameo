@@ -16,15 +16,15 @@
 
 package fr.ill.ics.cameo.threads;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import fr.ill.ics.cameo.exception.GetPidErrorException;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationState;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.manager.ProcessPID;
 import fr.ill.ics.cameo.manager.ProcessState;
 
 public class VerifyApplicationThread extends Thread {
@@ -56,10 +56,26 @@ public class VerifyApplicationThread extends Thread {
 		manager.resetApplicationStreamThread(application);
 	}
 
-	private boolean launchErrorIfNeeded() {
+	private boolean onTermination() {
 		
-		// do nothing if the application is unmanaged
+		// if the application is unmanaged
 		if (!application.isManaged()) {
+			
+			// wait for the termination.
+			if (application.getProcessHandle() != null) {
+				CompletableFuture<ProcessHandle> onProcessExit = application.getProcessHandle().onExit();
+				
+				try {
+					onProcessExit.get();
+				} catch (InterruptedException e) {
+				} catch (ExecutionException e) {
+				}
+				
+				// no error because we do not have the exit code.
+				return false;
+			}
+			
+			// no error.
 			return false;
 		}
 		
@@ -113,7 +129,7 @@ public class VerifyApplicationThread extends Thread {
 				logger.warning("Application " + application.getNameId() + " stopped running while starting time");
 
 				// application stopped unexpectedly
-				launchErrorIfNeeded();
+				onTermination();
 
 				// test number of retries
 				if (i == application.getRetries()) {
@@ -199,23 +215,7 @@ public class VerifyApplicationThread extends Thread {
 				manager.setApplicationState(application, ApplicationState.STOPPING);
 				
 				// execute stop if it exists
-				if (application.getStopExecutable() != null) {
-				
-					// get process PID
-					ProcessPID processPid = new ProcessPID();
-					int pid = 0;
-					try {
-						pid = processPid.getProcessPid(application.getProcess());
-						String PID = Integer.toString(pid);
-						application.executeStop(PID);
-	
-					} catch (GetPidErrorException e) {
-						logger.severe("Unable to find the pid of the application " + application.getNameId());
-					}
-					
-				} else {
-					LogInfo.getInstance().getLogger().fine("No stop executable for " + application.getNameId());
-				}
+				application.executeStop();
 					
 				// wait until process is dead or timeout is over
 				double time = System.currentTimeMillis();
@@ -247,7 +247,7 @@ public class VerifyApplicationThread extends Thread {
 				application.kill();
 				manager.setApplicationState(application, ApplicationState.KILLED);
 				
-			} else if (launchErrorIfNeeded()) {
+			} else if (onTermination()) {
 				manager.setApplicationState(application, ApplicationState.ERROR);
 				
 			} else {
@@ -262,7 +262,7 @@ public class VerifyApplicationThread extends Thread {
 
 			logger.warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
 			
-			launchErrorIfNeeded();
+			onTermination();
 			
 			// only terminate the stream thread so that the application is not removed from the list
 			terminateStreamThread();
@@ -274,7 +274,7 @@ public class VerifyApplicationThread extends Thread {
 		} else {
 			logger.info("Application " + application.getNameId() + " has terminated");
 			
-			if (launchErrorIfNeeded()) {
+			if (onTermination()) {
 				manager.setApplicationState(application, ApplicationState.ERROR);
 				
 			} else {
