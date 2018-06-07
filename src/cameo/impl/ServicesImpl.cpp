@@ -21,6 +21,15 @@
 #include "../SocketException.h"
 #include "../ConnectionTimeout.h"
 
+#ifdef WIN32
+	#define GET_PROCESS_PID() 0
+#else
+	#include <unistd.h>
+
+	#define GET_PROCESS_PID() ::getpid()
+#endif
+
+
 using namespace std;
 
 namespace cameo {
@@ -311,8 +320,13 @@ std::string ServicesImpl::createRemovePortRequest(int id, const std::string& nam
 }
 
 std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
+
+	// Get the pid.
+	long pid = GET_PROCESS_PID();
+
 	proto::StartedUnmanagedCommand command;
 	command.set_name(name);
+	command.set_pid(pid);
 	std::string result;
 	command.SerializeToString(&result);
 

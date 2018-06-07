@@ -219,6 +219,7 @@ message Request {
 
 message StartedUnmanagedCommand {
 	required string name = 1;
+	optional int32 pid = 2;
 }
 
 message TerminatedUnmanagedCommand {
