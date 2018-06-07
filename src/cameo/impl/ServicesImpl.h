@@ -18,9 +18,10 @@
 #define CAMEO_SERVICESIMPL_H_
 
 #include "../../proto/Messages.pb.h"
-#include <vector>
-#include "zmq.hpp"
 #include "../ProtoType.h"
+#include <vector>
+#include <memory>
+#include "zmq.hpp"
 
 namespace cameo {
 
@@ -63,7 +64,7 @@ public:
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 
-	zmq::message_t * tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
+	std::auto_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
 	std::string createShowStreamRequest(int id) const;
 
 	proto::MessageType_Type convertToProtoType(ProtoType type) const;

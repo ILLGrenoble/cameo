@@ -147,11 +147,10 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	proto::CancelPublisherSyncCommand cancelPublisherSyncCommand;
 	cancelPublisherSyncCommand.SerializeToString(&strRequestData);
 
-	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
+	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 }
 
 WaitingImpl * PublisherImpl::waiting() {

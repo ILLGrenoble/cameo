@@ -88,11 +88,10 @@ void RequesterImpl::sendBinary(const std::string& request) {
 	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
-	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 }
 
 void RequesterImpl::send(const std::string& request) {
@@ -118,11 +117,10 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::s
 	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
-	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 }
 
 bool RequesterImpl::receiveBinary(std::string& response) {
@@ -184,11 +182,10 @@ void RequesterImpl::cancel() {
 	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
 	string strRequestData = "cancel";
 
-	zmq::message_t* reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());
+	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-	delete reply;
 }
 
 void RequesterImpl::terminate() {
