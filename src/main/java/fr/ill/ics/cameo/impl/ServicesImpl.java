@@ -339,14 +339,18 @@ public class ServicesImpl {
 	
 	/**
 	 * create startedUnmanaged request
+	 * @param pid 
 	 * 
 	 * @param text
 	 * @return
 	 */
-	protected ZMsg createStartedUnmanagedRequest(String name) {
+	protected ZMsg createStartedUnmanagedRequest(String name, long pid) {
 		
 		ZMsg request = createRequest(Type.STARTEDUNMANAGED);
-		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder().setName(name).build();
+		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder()
+												.setName(name)
+												.setPid(pid)
+												.build();
 		request.add(command.toByteArray());
 		
 		return request;

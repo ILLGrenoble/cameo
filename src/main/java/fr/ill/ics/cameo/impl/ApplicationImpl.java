@@ -243,7 +243,10 @@ public class ApplicationImpl extends ServicesImpl {
 
 	private int initUnmanagedApplication() {
 		
-		ZMsg request = createStartedUnmanagedRequest(name);
+		// Get the pid.
+		long pid = ProcessHandle.current().pid();
+		
+		ZMsg request = createStartedUnmanagedRequest(name, pid);
 		
 		try {
 			ZMsg reply = tryRequest(request);
