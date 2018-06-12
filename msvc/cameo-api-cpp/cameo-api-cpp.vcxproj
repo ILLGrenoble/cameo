@@ -32,7 +32,6 @@
     <ClCompile Include="..\..\src\cameo\impl\RequesterImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\RequestImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\ResponderImpl.cpp" />
-    <ClCompile Include="..\..\src\cameo\impl\Serializer.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\ServicesImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\SocketImpl.cpp" />
     <ClCompile Include="..\..\src\cameo\impl\SocketWaitingImpl.cpp" />
@@ -47,6 +46,7 @@
     <ClCompile Include="..\..\src\cameo\ResponderCreationException.cpp" />
     <ClCompile Include="..\..\src\cameo\Response.cpp" />
     <ClCompile Include="..\..\src\cameo\ResultEvent.cpp" />
+    <ClCompile Include="..\..\src\cameo\Serializer.cpp" />
     <ClCompile Include="..\..\src\cameo\Server.cpp" />
     <ClCompile Include="..\..\src\cameo\Services.cpp" />
     <ClCompile Include="..\..\src\cameo\SocketException.cpp" />
@@ -54,6 +54,7 @@
     <ClCompile Include="..\..\src\cameo\StatusEvent.cpp" />
     <ClCompile Include="..\..\src\cameo\SubscriberCreationException.cpp" />
     <ClCompile Include="..\..\src\cameo\TimeCondition.cpp" />
+    <ClCompile Include="..\..\src\cameo\UnmanagedApplicationException.cpp" />
     <ClCompile Include="..\..\src\proto\Messages.pb.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -158,7 +159,7 @@
     <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;C:\Program Files\ZeroMQ 3.2.4\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;$(ZEROMQ_HOME)\include;C:\local\boost_1_59_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\legoc\Documents\protobuf-2.6.1\src;$(ZEROMQ_HOME)\include;C:\local\boost_1_59_0;C:\Users\legoc\Documents;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

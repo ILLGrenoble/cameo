@@ -21,8 +21,10 @@
 #include "../SocketException.h"
 #include "../ConnectionTimeout.h"
 
-#ifdef WIN32
-	#define GET_PROCESS_PID() 0
+// Using Visual Studio preprocessor.
+// It must be improved in case of other compilers.
+#ifdef _WIN32
+	#define GET_PROCESS_PID() GetCurrentProcessId()
 #else
 	#include <unistd.h>
 
