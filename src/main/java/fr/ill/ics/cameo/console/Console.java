@@ -42,6 +42,19 @@ public class Console {
 	private int applicationId = -1;
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
+	public static String column(String name, int length) {
+		String result = name;
+		
+		if (name.length() > 16) {
+			return result.substring(0, 16) + "... ";
+		}
+		
+		for (int i = 0; i < length - name.length(); ++i) {
+			result += " ";
+		}
+		return result;
+	}
+		
 	public Console(String[] args) {
 		super();
 		
@@ -150,8 +163,6 @@ public class Console {
 				processConnect(true);
 			} else if (commandName.equals("listen")) {
 				processConnect(false);
-			} else if (commandName.equals("id")) {
-				processID();
 			} else {
 				System.out.println("Unknown command " + commandName + ".");
 			}
@@ -208,14 +219,12 @@ public class Console {
 	
 	private void processShowAll() {
 
+		System.out.println(column("Name", 20) + column("Id", 10) + column("Status", 10));
+		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
-
-		if (applicationInstances.isEmpty()) {
-			System.out.println("No application is running.");
-		}
 		
 		for (Application.Info info : applicationInstances) {
-			System.out.println(info.getName() + "." + info.getId() + " is " + Application.State.toString(info.getApplicationState()));
+			System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10));
 		}
 	}
 
@@ -236,7 +245,7 @@ public class Console {
 		
 		for (Application.Info info : applicationInstances) {
 			if (applicationIDs.contains(info.getId())) {
-				System.out.println(info.getName() + "." + info.getId() + " is " + Application.State.toString(info.getApplicationState()));
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10));
 			}	
 		}
 	}
@@ -259,7 +268,7 @@ public class Console {
 		}
 		
 	}
-	
+		
 	private void processStop() {
 
 		if (applicationName == null) {
@@ -267,17 +276,22 @@ public class Console {
 			System.exit(1);
 		}
 		
-		if (applicationArgs.length > 0) {
-			try {
-				applicationId = Integer.parseInt(applicationArgs[0]);
+		try {
+			applicationId = Integer.parseInt(applicationName);
+			
+			List<Application.Info> applicationInstances = server.getApplicationInfos();
+			for (Application.Info info : applicationInstances) {
 				
-			} catch (NumberFormatException e) {
-				System.out.println("Cannot get the application id.");
+				if (info.getId() == applicationId) {
+					applicationName = info.getName();
+				}
 			}
+				
+		} catch (NumberFormatException e) {
+			// Do nothing.
 		}
-		
+				
 		List<Application.Instance> applications = server.connectAll(applicationName);
-		
 		for (Application.Instance application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
@@ -297,18 +311,22 @@ public class Console {
 			System.out.println("Application name is missing.");
 			System.exit(1);
 		}
-		
-		if (applicationArgs.length > 0) {
-			try {
-				applicationId = Integer.parseInt(applicationArgs[0]);
+		try {
+			applicationId = Integer.parseInt(applicationName);
+			
+			List<Application.Info> applicationInstances = server.getApplicationInfos();
+			for (Application.Info info : applicationInstances) {
 				
-			} catch (NumberFormatException e) {
-				System.out.println("Cannot get the application id.");
+				if (info.getId() == applicationId) {
+					applicationName = info.getName();
+				}
 			}
+				
+		} catch (NumberFormatException e) {
+			// Do nothing.
 		}
 		
 		List<Application.Instance> applications = server.connectAll(applicationName);
-				
 		for (Application.Instance application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
@@ -493,14 +511,15 @@ public class Console {
 		System.out.println("[commands]");
 		System.out.println("  list                  Lists the available applications.");
 		System.out.println("  apps <name>           Shows all the started applications.");
-		System.out.println("  start [name]   <args> Starts the application with name.");
-		System.out.println("  exec [name]    <args> Starts the application with name and blocks until its termination. Output streams are displayed.");
-		System.out.println("  test [name]    <args> Same than exec.");
-		System.out.println("  stop [name]    [id]   Stops the application with name. Kills the application if the stop timeout is reached.");
-		System.out.println("  kill [name]    [id]   Kills the application with name.");
+		System.out.println("  start [name] <args>   Starts the application with name.");
+		System.out.println("  exec [name] <args>    Starts the application with name and blocks until its termination. Output streams are displayed.");
+		System.out.println("  test [name] <args>    Same than exec.");
+		System.out.println("  stop [name]           Stops the application with name. Kills the application if the stop timeout is reached.");
+		System.out.println("  stop [id]             Stops the application with id. Kills the application if the stop timeout is reached.");
+		System.out.println("  kill [name]           Kills the application with name.");
+		System.out.println("  kill [id]             Kills the application with id.");
 		System.out.println("  connect [name]        Connects the application with name.");
 		System.out.println("  listen [name]         Listens to the application with name.");
-		System.out.println("  id [name]             Prints the ids of the application with name.");
 		System.out.println("");
 		System.out.println("Examples:");
 		System.out.println("exec subpubjava pubjava");
