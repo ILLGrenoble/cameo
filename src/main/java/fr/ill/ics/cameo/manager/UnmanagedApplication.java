@@ -56,12 +56,16 @@ public class UnmanagedApplication extends Application {
 	
 	@Override
 	public void executeStop() {
-		// Should never be called.
+		// Nothing to do because there cannot exist a stop executable.
 	}
 	
 	@Override
 	public synchronized void kill() {
-		// Should never be called.	
+		
+		// Kill the application using the process handle.
+		if (processHandle != null) {
+			processHandle.destroyForcibly();
+		}
 	}
 	
 	@Override
