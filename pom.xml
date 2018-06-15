@@ -46,8 +46,8 @@
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>10</maven.compiler.source>
-		<maven.compiler.target>10</maven.compiler.target>
+		<maven.compiler.source>9</maven.compiler.source>
+		<maven.compiler.target>9</maven.compiler.target>
 	</properties>
 
 	<dependencies>
