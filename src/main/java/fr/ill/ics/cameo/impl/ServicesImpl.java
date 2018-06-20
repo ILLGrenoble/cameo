@@ -174,21 +174,19 @@ public class ServicesImpl {
 		// polling to wait for connection
 		PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
 		
-		// the server returns a STATUS message that is used to synchronize the subscriber
-		sendInit();
+		while (true) {
+		
+			// the server returns a STATUS message that is used to synchronize the subscriber
+			sendInit();
 
-		if (timeout > 0) {
-			ZMQ.poll(items, timeout);
+			ZMQ.poll(items, 100);
 			
-			if (!items[0].isReadable()) {
-				return null;
+			// return at the first response.
+			if (items[0].isReadable()) {
+				break;
 			}
-					
-		} else {
-			// direct receive
-			ZMsg reply = ZMsg.recvMsg(subscriber);
 		}
-
+		
 		return new EventStreamSocket(context, subscriber);
 	}
 
