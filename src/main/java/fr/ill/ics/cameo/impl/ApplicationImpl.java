@@ -29,6 +29,7 @@ import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.InvalidArgumentException;
+import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.PublisherCreationException;
 import fr.ill.ics.cameo.PublisherDestructionException;
 import fr.ill.ics.cameo.RequesterCreationException;
@@ -244,7 +245,7 @@ public class ApplicationImpl extends ServicesImpl {
 	private int initUnmanagedApplication() {
 		
 		// Get the pid.
-		long pid = ProcessHandle.current().pid();
+		long pid = ProcessHandlerImpl.pid();
 		
 		ZMsg request = createStartedUnmanagedRequest(name, pid);
 		
