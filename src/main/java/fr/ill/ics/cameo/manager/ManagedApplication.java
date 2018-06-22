@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import fr.ill.ics.cameo.ProcessHandlerImpl;
+
 public class ManagedApplication extends Application {
 
 	private java.lang.Process process;
@@ -117,7 +119,7 @@ public class ManagedApplication extends Application {
 			this.process = builder.start();
 			
 			// Get the process handle.
-			this.processHandle = process.toHandle();
+			this.processHandle = new ProcessHandlerImpl(process);
 															
 		} catch (IOException e) {
 			LogInfo.getInstance().getLogger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());

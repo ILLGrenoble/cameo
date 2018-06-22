@@ -25,6 +25,7 @@ import java.util.HashSet;
 
 import fr.ill.ics.cameo.server.Converter;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
+import fr.ill.ics.cameo.ProcessHandlerImpl;
 
 /**
  * describe an application
@@ -33,7 +34,7 @@ public abstract class Application extends ApplicationConfig {
 
 	protected String endpoint;
 	protected int id;
-	protected ProcessHandle processHandle;
+	protected ProcessHandlerImpl processHandle;
 	
 	protected int applicationState = ApplicationState.UNKNOWN;
 	protected int pastApplicationStates = ApplicationState.UNKNOWN;
@@ -77,12 +78,6 @@ public abstract class Application extends ApplicationConfig {
 	
 	abstract public boolean isManaged();
 	abstract public Process getProcess();
-	
-	public ProcessHandle getProcessHandle() {
-		return processHandle;
-	}
-	
-	
 	abstract public boolean isAlive();
 	
 	/**
@@ -245,6 +240,10 @@ public abstract class Application extends ApplicationConfig {
 	abstract public void executeStop();
 	abstract public void kill();
 	abstract public void reset();
+
+	public void waitFor() {
+		processHandle.waitFor();
+	}
 	
 	/**
 	 * @override
@@ -252,5 +251,6 @@ public abstract class Application extends ApplicationConfig {
 	public String toString() {
 		return super.toString() + "\napplicationState=" + Converter.toString(this.applicationState) + "\nprocessState=" + this.processState + "\nhasToStop=" + this.hasToStop() + "\nshowStream=" + this.hasStream() + "\nstreamPort=" + this.getStreamPort() + "\nwriteStream=" + this.isWriteStream() + "\nid=" + this.getId();
 	}
+
 
 }

@@ -13,6 +13,11 @@
 			<artifactId>jzmq</artifactId>
 			<version>3.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-process-handle-default</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -56,6 +56,7 @@ import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
 import fr.ill.ics.cameo.proto.Messages.StopCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
+import fr.ill.ics.cameo.ProcessHandlerImpl;
 
 public class Server {
 
@@ -72,6 +73,7 @@ public class Server {
 	}
 
 	public void run() {
+		
 		// start manager
 		final Manager manager;
 		

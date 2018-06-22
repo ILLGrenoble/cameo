@@ -1,5 +1,7 @@
 package fr.ill.ics.cameo.manager;
 
+import fr.ill.ics.cameo.ProcessHandlerImpl;
+
 public class UnmanagedApplication extends Application {
 
 	private boolean alive = true;
@@ -13,7 +15,7 @@ public class UnmanagedApplication extends Application {
 		// Get the process handle from the pid.
 		if (pid != 0) {
 			try {
-				processHandle = ProcessHandle.of(pid).get();
+				processHandle = ProcessHandlerImpl.ofPid(pid);
 				
 				LogInfo.getInstance().getLogger().info("Unmanaged application " + this.getNameId() + " has a process handle");
 				

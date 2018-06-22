@@ -13,6 +13,11 @@
 			<artifactId>jeromq</artifactId>
 			<version>0.3.6</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-process-handle-default</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

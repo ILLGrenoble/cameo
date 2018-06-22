@@ -62,18 +62,7 @@ public class VerifyApplicationThread extends Thread {
 		if (!application.isManaged()) {
 			
 			// wait for the termination.
-			if (application.getProcessHandle() != null) {
-				CompletableFuture<ProcessHandle> onProcessExit = application.getProcessHandle().onExit();
-				
-				try {
-					onProcessExit.get();
-				} catch (InterruptedException e) {
-				} catch (ExecutionException e) {
-				}
-				
-				// no error because we do not have the exit code.
-				return false;
-			}
+			application.waitFor();
 			
 			// no error.
 			return false;
