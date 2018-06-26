@@ -57,9 +57,9 @@
 			<version>2.0.6</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-lite-java</artifactId>
-			<version>2.6.1</version>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-messages-java</artifactId>
+			<version>0.1.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	
