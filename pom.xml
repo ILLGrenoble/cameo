@@ -3,7 +3,6 @@
 	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-messages-java</artifactId>
 	<version>0.1.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
 	<name>CameoMessages</name>
 	<description>Cameo Messages</description>
 	<url>https://code.ill.fr/cameo/cameo-server</url>
