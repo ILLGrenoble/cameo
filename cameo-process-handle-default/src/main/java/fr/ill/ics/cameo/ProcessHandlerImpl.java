@@ -23,6 +23,10 @@ public class ProcessHandlerImpl {
 		return ProcessHandle.current().pid();
 	}
 	
+	public long getPid() {
+		return processHandle.pid();
+	}
+	
 	public boolean hasProcessHandle() {
 		return true;
 	}

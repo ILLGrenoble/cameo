@@ -10,7 +10,11 @@ public class ProcessHandlerImpl {
 	}
 	
 	static public long pid() {
-		return -1;
+		return 0;
+	}
+	
+	public long getPid() {
+		return 0;
 	}
 	
 	public boolean hasProcessHandle() {
