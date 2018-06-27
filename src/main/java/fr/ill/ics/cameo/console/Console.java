@@ -219,12 +219,19 @@ public class Console {
 	
 	private void processShowAll() {
 
-		System.out.println(column("Name", 20) + column("Id", 10) + column("Status", 10));
+		System.out.println(column("Name", 20) + column("Id", 10) + column("Status", 10) + column("Pid", 10));
 		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
 		
 		for (Application.Info info : applicationInstances) {
-			System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10));
+			
+			long pid = info.getPid();
+			if (pid == 0) {
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10) + column("-", 10));
+			}
+			else {
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10) + column(info.getPid() + "", 10));
+			}
 		}
 	}
 
@@ -236,10 +243,6 @@ public class Console {
 		}
 		
 		LinkedList<Integer> applicationIDs = getIDs(applicationName);
-		
-		if (applicationIDs.isEmpty()) {
-			System.out.println("No application is running.");
-		}
 		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
 		
