@@ -506,10 +506,12 @@ public class Application {
 		private int pastApplicationStates;
 		private String args;
 		private String name;
+		private long pid;
 
-		public Info(String name, int id, int applicationState, int pastApplicationStates, String args) {
+		public Info(String name, int id, long pid, int applicationState, int pastApplicationStates, String args) {
 			super();
 			this.id = id;
+			this.pid = pid;
 			this.applicationState = applicationState;
 			this.pastApplicationStates = pastApplicationStates;
 			this.args = args;
@@ -531,9 +533,13 @@ public class Application {
 		public String getArgs() {
 			return args;
 		}
-
+		
 		public String getName() {
 			return name;
+		}
+		
+		public long getPid() {
+			return pid;
 		}
 
 		@Override

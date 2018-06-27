@@ -466,7 +466,7 @@ public class ServerImpl extends ServicesImpl {
 			Iterator<Messages.ApplicationInfo> it = protoList.iterator();
 			while (it.hasNext()) {
 				Messages.ApplicationInfo applicationInfo = (Messages.ApplicationInfo) it.next();
-				applications.add(new Application.Info(applicationInfo.getName(), applicationInfo.getId(), applicationInfo.getApplicationState(), applicationInfo.getPastApplicationStates(), applicationInfo.getArgs()));
+				applications.add(new Application.Info(applicationInfo.getName(), applicationInfo.getId(), applicationInfo.getPid(), applicationInfo.getApplicationState(), applicationInfo.getPastApplicationStates(), applicationInfo.getArgs()));
 			}
 
 		} catch (InvalidProtocolBufferException e) {
