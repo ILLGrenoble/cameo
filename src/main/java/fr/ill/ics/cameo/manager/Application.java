@@ -69,6 +69,10 @@ public abstract class Application extends ApplicationConfig {
 
 	abstract public String[] getArgs();
 	
+	public long getPid() {
+		return processHandle.getPid();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Synchronized get methods
 	

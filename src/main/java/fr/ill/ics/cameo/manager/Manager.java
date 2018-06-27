@@ -368,7 +368,25 @@ public class Manager extends ConfigLoader {
 				args = String.join(" ", application.getArgs());
 			}
 			
-			ApplicationInfo applicationInfo = new ApplicationInfo(application.getId(), application.getApplicationState(), application.getPastApplicationStates(), application.getProcessState(), args, application.hasToStop(), application.hasStream(), application.isWriteStream(), application.runsSingle(), application.isRestart(), application.isPassInfo(), application.getName(), application.getStartExecutable(), application.getStartingTime(), application.getRetries(), application.getLogPath(), application.getStoppingTime(), application.getStopExecutable());
+			ApplicationInfo applicationInfo = new ApplicationInfo(application.getId(),
+												application.getPid(),
+												application.getApplicationState(), 
+												application.getPastApplicationStates(), 
+												application.getProcessState(), 
+												args, 
+												application.hasToStop(), 
+												application.hasStream(), 
+												application.isWriteStream(), 
+												application.runsSingle(), 
+												application.isRestart(), 
+												application.isPassInfo(), 
+												application.getName(), 
+												application.getStartExecutable(), 
+												application.getStartingTime(), 
+												application.getRetries(), 
+												application.getLogPath(), 
+												application.getStoppingTime(), 
+												application.getStopExecutable());
 			list.add(applicationInfo);
 		}
 		return list;

@@ -182,6 +182,7 @@ public class ProcessRequest {
 														.setName(application.getName())
 														.setApplicationState(application.getApplicationState())
 														.setPastApplicationStates(application.getPastApplicationStates())
+														.setPid(application.getPid())
 														.build();
 				protoList.add(applicationList);
 
@@ -278,6 +279,7 @@ public class ProcessRequest {
 															.setName(application.getName())
 															.setApplicationState(application.getApplicationState())
 															.setPastApplicationStates(application.getPastApplicationStates())
+															.setPid(application.getPid())
 															.build();
 					protoList.add(applicationList);
 				}

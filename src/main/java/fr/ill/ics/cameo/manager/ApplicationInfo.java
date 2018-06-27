@@ -23,6 +23,7 @@ public class ApplicationInfo {
 	private int applicationState;
 	private int pastApplicationStates;
 	private ProcessState processState;
+	private long pid;
 	private String args;
 	private boolean hasToStop = false;
 	private boolean showStream = false;
@@ -38,7 +39,7 @@ public class ApplicationInfo {
 	private int stopTimeout;
 	private String stopCommand;
 
-	public ApplicationInfo(int id, int applicationState, int pastApplicationStates,
+	public ApplicationInfo(int id, long pid, int applicationState, int pastApplicationStates,
 			ProcessState processState, String args, boolean hasToStop,
 			boolean showStream, boolean writeStream, boolean single,
 			boolean restart, boolean passInfo,
@@ -46,6 +47,7 @@ public class ApplicationInfo {
 			String outputPath, int stopTimeout, String stopCommand) {
 		super();
 		this.id = id;
+		this.pid = pid;
 		this.applicationState = applicationState;
 		this.pastApplicationStates = pastApplicationStates;
 		this.processState = processState;
@@ -81,6 +83,10 @@ public class ApplicationInfo {
 		return processState;
 	}
 
+	public long getPid() {
+		return pid;
+	}
+	
 	public String getArgs() {
 		return args;
 	}
