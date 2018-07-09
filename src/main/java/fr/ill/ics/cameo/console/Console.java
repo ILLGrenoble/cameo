@@ -219,7 +219,7 @@ public class Console {
 	
 	private void processShowAll() {
 
-		System.out.println(column("Name", 20) + column("Id", 10) + column("Status", 10) + column("Pid", 10));
+		System.out.println(column("Name", 20) + column("ID", 10) + column("Status", 10) + column("PID", 10));
 		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
 		
