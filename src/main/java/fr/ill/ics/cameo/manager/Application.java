@@ -70,6 +70,10 @@ public abstract class Application extends ApplicationConfig {
 	abstract public String[] getArgs();
 	
 	public long getPid() {
+		// In case the application does not provide a pid.
+		if (processHandle == null) {
+			return 0;
+		}
 		return processHandle.getPid();
 	}
 	
@@ -246,7 +250,10 @@ public abstract class Application extends ApplicationConfig {
 	abstract public void reset();
 
 	public void waitFor() {
-		processHandle.waitFor();
+		// The process handle can be null if the application does not provide a pid.
+		if (processHandle != null) {
+			processHandle.waitFor();
+		}
 	}
 	
 	/**
