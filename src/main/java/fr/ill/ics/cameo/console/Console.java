@@ -194,6 +194,9 @@ public class Console {
 	}
 	
 	private void processAllAvailable() {
+		
+		System.out.println(column("Name", 20) + column("Description", 80));
+		
 		List<Application.Configuration> applicationConfigs = server.getApplicationConfigurations();
 
 		if (applicationConfigs == null) {
@@ -205,15 +208,8 @@ public class Console {
 			System.out.println("No available application in server " + endpoint + ".");
 		}
 		
-		System.out.println("Available applications in " + endpoint);
 		for (Application.Configuration config : applicationConfigs) {
-			
-			String description = "<no description>";
-			if (!config.getDescription().isEmpty()) {
-				description = config.getDescription();
-			}
-			
-			System.out.println(config.getName() + ": " + description);
+			System.out.println(column(config.getName(), 20) + column(config.getDescription(), 80));
 		}		
 	}
 	
@@ -251,25 +247,6 @@ public class Console {
 				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10));
 			}	
 		}
-	}
-	
-	private void processID() {
-
-		if (applicationName == null) {
-			System.out.println("Application name is missing.");
-			System.exit(1);
-		}
-		
-		LinkedList<Integer> applicationIDs = getIDs(applicationName);
-		
-		if (applicationIDs.isEmpty()) {
-			System.out.println("No application is running.");
-		}
-		
-		for (int i : applicationIDs) {
-			System.out.println(i);
-		}
-		
 	}
 		
 	private void processStop() {
