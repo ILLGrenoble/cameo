@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.manager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +32,7 @@ import fr.ill.ics.cameo.exception.UnknownApplicationException;
 
 public abstract class ConfigLoader {
 
-	protected Set<ApplicationConfig> applicationSet;
+	protected List<ApplicationConfig> applicationList;
 
 	public ConfigLoader(String path) {
 		loadXml(buildXml(path));
@@ -136,7 +136,7 @@ public abstract class ConfigLoader {
 		
 		// Get applications
 		List<Element> listApplication = root.getChild("applications").getChildren("application");
-		applicationSet = new HashSet<ApplicationConfig>();
+		applicationList = new LinkedList<ApplicationConfig>();
 
 		for (Element item : listApplication) {
 			
@@ -195,7 +195,7 @@ public abstract class ConfigLoader {
 				application.setErrorArgs(errorArgs);
 			}
 			
-			applicationSet.add(application);
+			applicationList.add(application);
 		}
 		
 	}
@@ -209,8 +209,8 @@ public abstract class ConfigLoader {
 	 * Resturns the list of available applications.
 	 * @return
 	 */
-	public Set<ApplicationConfig> getAvailableApplications() {
-		return applicationSet;
+	public List<ApplicationConfig> getAvailableApplications() {
+		return applicationList;
 	}
 	
 	/**
@@ -225,7 +225,7 @@ public abstract class ConfigLoader {
 
 		ApplicationConfig ApplicationConfig = null;
 		boolean isPresent = false;
-		Iterator<ApplicationConfig> it = applicationSet.iterator();
+		Iterator<ApplicationConfig> it = applicationList.iterator();
 
 		LogInfo.getInstance().getLogger().fine("Application " + name + " has no argument");
 		while (it.hasNext()) {
@@ -250,7 +250,7 @@ public abstract class ConfigLoader {
 	protected void showApplicationConfigs() {
 		LogInfo.getInstance().getLogger().fine("*********************************");
 		LogInfo.getInstance().getLogger().fine("List of applications            *");
-		Iterator<ApplicationConfig> it = applicationSet.iterator();
+		Iterator<ApplicationConfig> it = applicationList.iterator();
 		while (it.hasNext()) {
 			LogInfo.getInstance().getLogger().fine("*********************************");
 			LogInfo.getInstance().getLogger().fine(((ApplicationConfig)it.next()).toString());
@@ -259,7 +259,7 @@ public abstract class ConfigLoader {
 	}
 	
 	public int getApplicationStreamPort(String name) {
-		Iterator<ApplicationConfig> it = applicationSet.iterator();
+		Iterator<ApplicationConfig> it = applicationList.iterator();
 		while (it.hasNext()) {
 			ApplicationConfig config = it.next();
 			if (config.getName().equals(name)) {

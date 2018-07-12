@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.threads;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import fr.ill.ics.cameo.manager.Application;

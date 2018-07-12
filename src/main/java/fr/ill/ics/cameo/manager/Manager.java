@@ -102,7 +102,7 @@ public class Manager extends ConfigLoader {
 		LogInfo.getInstance().getLogger().info("Status socket on port " + port);
 		
 		// iterate the application configurations
-		for (ApplicationConfig c : applicationSet) {
+		for (ApplicationConfig c : applicationList) {
 			Socket streamPublisher = context.createSocket(ZMQ.PUB);
 			if (c.hasStream()) {
 				port = c.getStreamPort();

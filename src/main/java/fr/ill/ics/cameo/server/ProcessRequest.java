@@ -405,7 +405,7 @@ public class ProcessRequest {
 		LogInfo.getInstance().getLogger().fine("Received AllAvailableCommand message");
 		ZMsg reply = new ZMsg();
 		
-		Set<ApplicationConfig> list = manager.getAvailableApplications();
+		List<ApplicationConfig> list = manager.getAvailableApplications();
 		if (list.isEmpty()) {
 			AllAvailableResponse response = AllAvailableResponse.newBuilder().build();
 			reply.add(response.toByteArray());

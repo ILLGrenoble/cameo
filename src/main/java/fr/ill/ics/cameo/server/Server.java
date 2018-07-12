@@ -211,15 +211,13 @@ public class Server {
 
 			} catch (InvalidProtocolBufferException e) {
 				System.err.println("problem in parsing of message");
-
+				
 			} finally {
 
-				if (message != null) {
-					message.destroy();
-				}
-
-				if (reply != null) {
-					reply.destroy();
+				// reply bad request if no reply was sent
+				if (reply == null) {
+					reply = new ZMsg();
+					reply.add("Bad request");
 				}
 
 				// requesting gc
