@@ -194,8 +194,8 @@ public class Console {
 	}
 	
 	private void processAllAvailable() {
-		
-		System.out.println(column("Name", 20) + column("Description", 80));
+
+		System.out.println(column("Name", 20) + column("Description", 20));
 		
 		List<Application.Configuration> applicationConfigs = server.getApplicationConfigurations();
 
@@ -209,7 +209,7 @@ public class Console {
 		}
 		
 		for (Application.Configuration config : applicationConfigs) {
-			System.out.println(column(config.getName(), 20) + column(config.getDescription(), 80));
+			System.out.println(column(config.getName(), 20) + config.getDescription());
 		}		
 	}
 	
