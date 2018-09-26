@@ -123,6 +123,18 @@ public abstract class ConfigLoader {
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
 		ConfigManager.getInstance().setDebugMode(root.getAttributeValue("debug"));
 		
+		// Sleep time.
+		int sleepTime = 5;
+		String sleepTimeString = root.getAttributeValue("sleep_time");
+		try {
+			sleepTime = Integer.parseInt(sleepTimeString);
+		} catch (NumberFormatException e) {
+			// Set default value
+		}
+					
+		ConfigManager.getInstance().setSleepTime(sleepTime);
+		
+		// Polling time.
 		int pollingTime = 100;
 		String pollingTimeString = root.getAttributeValue("polling_time");
 		try {

@@ -31,6 +31,7 @@ public final class ConfigManager {
 	private int port;
 	private int streamPort;
 	private TreeSet<Integer> openPorts = new TreeSet<Integer>();
+	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
 	
@@ -62,6 +63,14 @@ public final class ConfigManager {
 		}	
 	}
 
+	public int getSleepTime() {
+		return sleepTime;		
+	}
+
+	public void setSleepTime(int sleepTime) {
+		this.sleepTime = sleepTime;
+	}
+	
 	public int getPollingTime() {
 		return pollingTime;		
 	}

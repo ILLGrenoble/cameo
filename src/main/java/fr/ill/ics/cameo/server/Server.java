@@ -218,10 +218,15 @@ public class Server {
 				if (reply == null) {
 					reply = new ZMsg();
 					reply.add("Bad request");
+					reply.send(server);
 				}
 
-				// requesting gc
-				System.gc();
+				// Do not use the garbage collector since Java 9 because it is causing a memory leak.
+				// A sleep is used to avoid to have too many requests that "block" the zeromq queue.
+				try {
+					Thread.sleep(ConfigManager.getInstance().getSleepTime());
+				} catch (InterruptedException e) {
+				}
 			}
 
 		}
