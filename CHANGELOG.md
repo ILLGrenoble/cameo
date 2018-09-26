@@ -1,3 +1,8 @@
+0.1.3
+-----
+
+* Replaced call to System.gc() by a sleep to correct the memory leak since Java 9.
+
 0.1.2
 -----
 
