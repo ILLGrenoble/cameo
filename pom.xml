@@ -50,10 +50,22 @@
 		<maven.compiler.target>9</maven.compiler.target>
 	</properties>
 
-	<!-- The profile is used into Eclipse to compile the code. It must not be used with mvn in command line. -->
+	<!-- The profiles are used into Eclipse to compile the code. -->
 	<profiles>
+		<!-- In case the cameo-api-java is not present in the workspace. -->
 		<profile>
 			<id>dependencies-for-compilation</id>
+			<dependencies>
+				<dependency>
+					<groupId>fr.ill.ics</groupId>
+					<artifactId>cameo-api-java-jzmq</artifactId>
+					<version>0.1.2</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<!-- In case the cameo-api-java is present in the workspace. -->
+		<profile>
+			<id>dependencies-for-compilation-with-sources</id>
 			<dependencies>
 				<dependency>
 					<groupId>fr.ill.ics</groupId>
