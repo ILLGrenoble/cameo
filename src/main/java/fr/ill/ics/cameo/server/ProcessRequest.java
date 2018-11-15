@@ -19,12 +19,11 @@ package fr.ill.ics.cameo.server;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import org.zeromq.ZMsg;
 
 import com.google.protobuf.ByteString;
 
+import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.exception.ApplicationAlreadyRunning;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
@@ -77,9 +76,9 @@ public class ProcessRequest {
 	 * @param manager 
 	 * 
 	 */
-	public ZMsg processInit(Manager manager) {
+	public Msg processInit(Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received Init message");
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add("Connection OK");
 		
 		// send sync message for synchronizing subscribers
@@ -94,7 +93,7 @@ public class ProcessRequest {
 	 * @param message
 	 * @return
 	 */
-	public ZMsg processStartCommand(StartCommand message, Manager manager) {
+	public Msg processStartCommand(StartCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received StartCommand message");
 		
 		Application application = null;		
@@ -118,7 +117,7 @@ public class ProcessRequest {
 			application = manager.startApplication(message.getName(), args, message.getInstanceReference());
 			
 		} catch (UnknownApplicationException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder()
 												.setValue(-1)
 												.setMessage(e.getMessage())
@@ -127,7 +126,7 @@ public class ProcessRequest {
 			return reply;
 			
 		} catch (MaxNumberOfApplicationsReached e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder()
 												.setValue(-1)
 												.setMessage(e.getMessage())
@@ -136,7 +135,7 @@ public class ProcessRequest {
 			return reply;
 			
 		} catch (ApplicationAlreadyRunning e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder()
 												.setValue(-1)
 												.setMessage(e.getMessage())
@@ -145,7 +144,7 @@ public class ProcessRequest {
 			return reply;
 		}
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		RequestResponse response = RequestResponse.newBuilder()
 												.setValue(application.getId())
 												.setMessage("OK")
@@ -162,9 +161,9 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public org.zeromq.ZMsg processShowAllCommand(ShowAllCommand message, Manager manager) {
+	public Msg processShowAllCommand(ShowAllCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received ShowAllCommand message");
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
 		if (list.isEmpty()) {
 			ApplicationInfoListResponse response = ApplicationInfoListResponse.newBuilder().build();
@@ -200,20 +199,20 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processStopCommand(StopCommand message, Manager manager) {
+	public Msg processStopCommand(StopCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received StopCommand message");
 		
 		try {
 			String applicationName = manager.stopApplication(message.getId());
 
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage(applicationName).build();
 			reply.add(response.toByteArray());
 			
 			return reply;
 			
 		} catch (IdNotFoundException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			
@@ -228,20 +227,20 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processKillCommand(KillCommand message, Manager manager) {
+	public Msg processKillCommand(KillCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received KillCommand message");
 		
 		try {
 			String applicationName = manager.killApplication(message.getId());
 			
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage(applicationName).build();
 			reply.add(response.toByteArray());
 			
 			return reply;
 			
 		} catch (IdNotFoundException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			
@@ -256,9 +255,9 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processConnectCommand(ConnectCommand message, Manager manager) {
+	public Msg processConnectCommand(ConnectCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received ConnectCommand message");
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
 		if (list.isEmpty()) {
 			ApplicationInfoListResponse response = ApplicationInfoListResponse.newBuilder().build();
@@ -298,31 +297,31 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processShowStreamCommand(ShowStreamCommand message, Manager manager) {
+	public Msg processShowStreamCommand(ShowStreamCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received ShowStreamCommand message");
 		try {
 			int port = manager.showStream(message.getId());
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(port).setMessage("OK").build();
 			reply.add(response.toByteArray());
 			return reply;
 		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
 		} catch (IdNotFoundException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
 		} catch (UnknownApplicationException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
 		} catch (StreamNotPublishedException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
@@ -335,10 +334,10 @@ public class ProcessRequest {
 	 * 
 	 * @return
 	 */
-	public ZMsg processStatusCommand() {
+	public Msg processStatusCommand() {
 		LogInfo.getInstance().getLogger().fine("Received StatusCommand message");
 		int port = ConfigManager.getInstance().getStreamPort();
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		RequestResponse response = RequestResponse.newBuilder().setValue(port).setMessage("OK").build();
 		reply.add(response.toByteArray());
 		return reply;
@@ -351,11 +350,11 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processIsAliveCommand(IsAliveCommand message, Manager manager) {
+	public Msg processIsAliveCommand(IsAliveCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received IsAliveCommand message");
 		boolean isAlive = manager.isAlive(message.getId());
 		IsAliveResponse response = IsAliveResponse.newBuilder().setIsAlive(isAlive).build();
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		return reply;
 	}
@@ -367,7 +366,7 @@ public class ProcessRequest {
 	 * @param manager
 	 * @return
 	 */
-	public ZMsg processSendParametersCommand(SendParametersCommand message, Manager manager) {
+	public Msg processSendParametersCommand(SendParametersCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received SendParametersCommand message");
 
 		List<String> list = message.getParametersList();
@@ -383,27 +382,27 @@ public class ProcessRequest {
 			manager.writeToInputStream(message.getId(), parametersArray);
 			
 		} catch (IdNotFoundException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
 			
 		} catch (UnmanagedApplicationException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			return reply;
 		}
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
 		reply.add(response.toByteArray());
 		return reply;
 	}
 
-	public ZMsg processAllAvailableCommand(AllAvailableCommand message, Manager manager) {
+	public Msg processAllAvailableCommand(AllAvailableCommand message, Manager manager) {
 		LogInfo.getInstance().getLogger().fine("Received AllAvailableCommand message");
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		
 		List<ApplicationConfig> list = manager.getAvailableApplications();
 		if (list.isEmpty()) {
@@ -439,20 +438,20 @@ public class ProcessRequest {
 	 * 
 	 * @return
 	 */
-	public ZMsg processOutputCommand(OutputCommand command, Manager manager) {
+	public Msg processOutputCommand(OutputCommand command, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received OuputCommand message");
 		
 		int port = manager.getApplicationStreamPort(command.getName());
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		RequestResponse response = RequestResponse.newBuilder().setValue(port).setMessage("OK").build();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 
-	public ZMsg processSetStatusCommand(SetStatusCommand command, Manager manager) {
+	public Msg processSetStatusCommand(SetStatusCommand command, Manager manager) {
 
 		LogInfo.getInstance().getLogger().fine("Received SetStatusCommand message");
 		
@@ -474,13 +473,13 @@ public class ProcessRequest {
 			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 		}
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		
 		reply.add(response.toByteArray());
 		return reply;
 	}
 	
-	public ZMsg processGetStatusCommand(GetStatusCommand command, Manager manager) {
+	public Msg processGetStatusCommand(GetStatusCommand command, Manager manager) {
 
 		LogInfo.getInstance().getLogger().fine("Received GetStatusCommand message");
 		
@@ -495,14 +494,14 @@ public class ProcessRequest {
 			// do nothing
 		}
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		
 		reply.add(protoStatus.toByteArray());
 		return reply;
 	}
 	
 
-	public ZMsg processSetResultCommand(SetResultCommand command, Manager manager) {
+	public Msg processSetResultCommand(SetResultCommand command, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received SetResultCommand message");
 		
@@ -519,14 +518,14 @@ public class ProcessRequest {
 			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 		}
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		
 		reply.add(response.toByteArray());
 		return reply;
 	}
 
 
-	public ZMsg processRequestPortCommand(RequestPortCommand message, Manager manager) {
+	public Msg processRequestPortCommand(RequestPortCommand message, Manager manager) {
 
 		LogInfo.getInstance().getLogger().fine("Received RequestPortCommand message");
 		
@@ -552,13 +551,13 @@ public class ProcessRequest {
 								.setMessage(e.getMessage()).build();
 		}
 			
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 
-	public ZMsg processConnectPortCommand(ConnectPortCommand message, Manager manager) {
+	public Msg processConnectPortCommand(ConnectPortCommand message, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received ConnectPortCommand message");
 		
@@ -584,13 +583,13 @@ public class ProcessRequest {
 								.setMessage(e.getMessage()).build();
 		}
 			
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 
-	public ZMsg processRemovePortCommand(RemovePortCommand message, Manager manager) {
+	public Msg processRemovePortCommand(RemovePortCommand message, Manager manager) {
 
 		LogInfo.getInstance().getLogger().fine("Received RemovePortCommand message");
 		
@@ -611,13 +610,13 @@ public class ProcessRequest {
 			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 		}	
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 	
-	public ZMsg processCreatePublisherCommand(CreatePublisherCommand message, Manager manager) {
+	public Msg processCreatePublisherCommand(CreatePublisherCommand message, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received CreatePublisherCommand message");
 		
@@ -647,13 +646,13 @@ public class ProcessRequest {
 								.setMessage(e.getMessage()).build();
 		}	
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 
-	public ZMsg processTerminatePublisherCommand(TerminatePublisherCommand message, Manager manager) {
+	public Msg processTerminatePublisherCommand(TerminatePublisherCommand message, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received TerminatePublisherCommand message");
 		
@@ -674,13 +673,13 @@ public class ProcessRequest {
 			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 		}	
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;
 	}
 
-	public ZMsg processConnectPublisherCommand(ConnectPublisherCommand message, Manager manager) {
+	public Msg processConnectPublisherCommand(ConnectPublisherCommand message, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received ConnectPublisherCommand message");
 		
@@ -721,13 +720,13 @@ public class ProcessRequest {
 								.build();
 		}
 				
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 		
 		return reply;		
 	}
 
-	public ZMsg processStartedUnmanagedCommand(StartedUnmanagedCommand message, Manager manager) {
+	public Msg processStartedUnmanagedCommand(StartedUnmanagedCommand message, Manager manager) {
 
 		LogInfo.getInstance().getLogger().fine("Received StartedUnmanagedCommand message");
 		
@@ -741,7 +740,7 @@ public class ProcessRequest {
 			}
 			
 		} catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder()
 												.setValue(-1)
 												.setMessage(e.getMessage())
@@ -750,7 +749,7 @@ public class ProcessRequest {
 			return reply;
 		} 
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		RequestResponse response = RequestResponse.newBuilder()
 												.setValue(applicationId)
 												.setMessage("OK")
@@ -760,21 +759,21 @@ public class ProcessRequest {
 		return reply;
 	}
 
-	public ZMsg processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand message, Manager manager) {
+	public Msg processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand message, Manager manager) {
 		
 		LogInfo.getInstance().getLogger().fine("Received TerminatedUnmanagedCommand message");
 		
 		try {
 			String applicationName = manager.setUnmanagedApplicationTerminated(message.getId());
 
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage(applicationName).build();
 			reply.add(response.toByteArray());
 			
 			return reply;
 			
 		} catch (IdNotFoundException e) {
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
 			reply.add(response.toByteArray());
 			

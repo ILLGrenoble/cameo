@@ -75,6 +75,11 @@
 				</dependency>
 				<dependency>
 					<groupId>fr.ill.ics</groupId>
+					<artifactId>cameo-com-jzmq</artifactId>
+					<version>0.0.1-SNAPSHOT</version>
+				</dependency>
+				<dependency>
+					<groupId>fr.ill.ics</groupId>
 					<artifactId>cameo-process-handle-default</artifactId>
 					<version>0.0.1</version>
 				</dependency>

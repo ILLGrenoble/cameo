@@ -23,11 +23,6 @@ import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.manager.ConfigManager;
@@ -57,10 +52,11 @@ import fr.ill.ics.cameo.proto.Messages.StopCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.Zmq;
 
 public class Server {
 
-	private static ZContext context;
+	private static Zmq.Context context;
 	private String configFileName;
 	private InputStream configStream;
 
@@ -84,8 +80,8 @@ public class Server {
 			manager = new Manager(configStream);
 		}
 
-		context = new ZContext();
-		Socket server = context.createSocket(ZMQ.REP);
+		context = new Zmq.Context();
+		Zmq.Socket server = context.createSocket(Zmq.REP);
 		server.bind(ConfigManager.getInstance().getEndpoint());
 
 		// wait command (listen)
@@ -103,11 +99,11 @@ public class Server {
 
 		while (true) {
 
-			ZMsg message = null;
-			ZMsg reply = null;
+			Zmq.Msg message = null;
+			Zmq.Msg reply = null;
 
 			try {
-				message = ZMsg.recvMsg(server);
+				message = Zmq.Msg.recvMsg(server);
 
 				if (message == null) {
 					break;
@@ -119,9 +115,9 @@ public class Server {
 					continue;
 				}
 				// 2 frames, get first frame (type)
-				byte[] typeData = message.getFirst().getData();
+				byte[] typeData = message.getFirstData();
 				// get last frame
-				byte[] messageData = message.getLast().getData();
+				byte[] messageData = message.getLastData();
 				ProcessRequest process = new ProcessRequest();
 
 				// dispatch message
@@ -216,7 +212,7 @@ public class Server {
 
 				// reply bad request if no reply was sent
 				if (reply == null) {
-					reply = new ZMsg();
+					reply = new Zmq.Msg();
 					reply.add("Bad request");
 					reply.send(server);
 				}

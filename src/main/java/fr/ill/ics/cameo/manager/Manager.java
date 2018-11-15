@@ -25,12 +25,10 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-
 import com.google.protobuf.ByteString;
 
+import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.exception.ApplicationAlreadyRunning;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
@@ -50,8 +48,8 @@ public class Manager extends ConfigLoader {
 	private ConcurrentHashMap<Integer, Application> applicationMap;
 	private static int MAX_ID = 65536; 
 	private int maxId = 0;
-	private Socket eventPublisher;
-	private HashMap<String, Socket> streamPublishers = new HashMap<String, Socket>();
+	private Zmq.Socket eventPublisher;
+	private HashMap<String, Zmq.Socket> streamPublishers = new HashMap<String, Zmq.Socket>();
 
 	private final static String PUBLISHER_PREFIX = "pub.";
 	private final static String SYNCHRONIZER_PREFIX = "sync.";
@@ -92,9 +90,9 @@ public class Manager extends ConfigLoader {
 		LogInfo.getInstance().getLogger().fine("Max Id is " + MAX_ID);
 	}
 
-	public synchronized void initStreamSockets(ZContext context) {
+	public synchronized void initStreamSockets(Context context) {
 		
-		eventPublisher = context.createSocket(ZMQ.PUB);
+		eventPublisher = context.createSocket(Zmq.PUB);
 		
 		int port = ConfigManager.getInstance().getStreamPort();
 		eventPublisher.bind("tcp://*:" + port);
@@ -103,7 +101,7 @@ public class Manager extends ConfigLoader {
 		
 		// iterate the application configurations
 		for (ApplicationConfig c : applicationList) {
-			Socket streamPublisher = context.createSocket(ZMQ.PUB);
+			Zmq.Socket streamPublisher = context.createSocket(Zmq.PUB);
 			if (c.hasStream()) {
 				port = c.getStreamPort();
 				streamPublisher.bind("tcp://*:" + port);
@@ -115,7 +113,7 @@ public class Manager extends ConfigLoader {
 		}
 	}
 
-	public Socket getStreamPublisher(String name) {
+	public Zmq.Socket getStreamPublisher(String name) {
 		return streamPublishers.get(name);
 	}
 

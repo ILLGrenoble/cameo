@@ -9,9 +9,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.zeromq</groupId>
-			<artifactId>jzmq</artifactId>
-			<version>3.1.0</version>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-com-jzmq</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.ill.ics</groupId>

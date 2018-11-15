@@ -22,8 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.zeromq.ZMQ.Socket;
-
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
@@ -34,7 +33,7 @@ public class StreamApplicationThread extends Thread {
 
 	private Application application;
 	private BufferedReader reader;
-	private Socket publisher;
+	private Zmq.Socket publisher;
 	private FileOutputStream fileOutputStream;
 	
 	/**
