@@ -2,11 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>fr.ill.ics</groupId>
-		<artifactId>cameo-zmq</artifactId>
+		<artifactId>cameo-com</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<groupId>fr.ill.ics</groupId>
-	<artifactId>cameo-zmq-jzmq</artifactId>
+	<artifactId>cameo-com-jzmq</artifactId>
 
 	<distributionManagement>
 		<repository>
