@@ -3,6 +3,7 @@ package fr.ill.ics.cameo;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
+import org.zeromq.ZMQ.PollItem;
 
 
 public class Zmq {
@@ -51,6 +52,14 @@ public class Zmq {
 		public void add(byte[] data) {
 			message.add(data);
 		}
+
+		public Msg duplicate() {
+			return new Msg(message.duplicate());
+		}
+
+		public void destroy() {
+			message.destroy();
+		}
 	}
 	
 	public static class Socket {
@@ -71,6 +80,26 @@ public class Zmq {
 
 		public void send(byte[] data, int flags) {
 			socket.send(data, flags);
+		}
+
+		public void connect(String address) {
+			socket.connect(address);
+		}
+
+		public void subscribe(String topic) {
+			socket.subscribe(topic.getBytes());
+		}
+
+		public void send(String data) {
+			socket.send(data);
+		}
+
+		public String recvStr() {
+			return socket.recvStr();
+		}
+
+		public byte[] recv() {
+			return socket.recv();
 		}
 	}
 	
@@ -101,6 +130,30 @@ public class Zmq {
 		public void close() {
 			context.close();
 		}
+
+		public void destroy() {
+			context.destroy();
+		}
+
+		public void destroySocket(Socket socket) {
+			context.destroySocket(socket.socket);
+		}
 		
+	}
+	
+	public static class Poller {
+		
+		private PollItem[] items = new PollItem[1];
+
+		public Poller(Socket socket) {
+			items[0] = new PollItem(socket.socket, ZMQ.Poller.POLLIN);
+		}
+		
+		public boolean poll(long timeout) {
+
+			ZMQ.poll(items, timeout);
+			
+			return (items[0].isReadable());
+		}
 	}
 }
