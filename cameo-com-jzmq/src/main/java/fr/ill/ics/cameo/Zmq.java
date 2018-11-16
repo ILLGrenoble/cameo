@@ -2,11 +2,8 @@ package fr.ill.ics.cameo;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-import org.zeromq.ZMsg;
 import org.zeromq.ZMQ.PollItem;
-
-import fr.ill.ics.cameo.Zmq.Poller;
-import fr.ill.ics.cameo.Zmq.Socket;
+import org.zeromq.ZMsg;
 
 
 public class Zmq {
