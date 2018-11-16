@@ -1,10 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.ill.ics</groupId>
-	<artifactId>cameo-com</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
+	<parent>
+		<groupId>fr.ill.ics</groupId>
+		<artifactId>cameo-com</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>cameo-com-jeromq-0.3</artifactId>
+	
 	<distributionManagement>
 		<repository>
 			<id>ill-repo</id>
@@ -33,9 +35,24 @@
 		</repository>
 	</repositories>
 
-	<modules>
-		<module>cameo-com-jzmq</module>
-		<module>cameo-com-jeromq-0.3</module>
-	</modules>
+	<properties>
+		<project.scm.id>ill-code</project.scm.id>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<maven.compiler.source>8</maven.compiler.source>
+		<maven.compiler.target>8</maven.compiler.target>
+	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.zeromq</groupId>
+			<artifactId>jeromq</artifactId>
+			<version>0.3.6</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<sourceDirectory>../cameo-com-jzmq/src/main/java</sourceDirectory>
+	</build>	
 </project>
