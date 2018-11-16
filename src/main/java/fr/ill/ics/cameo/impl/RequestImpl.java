@@ -16,17 +16,15 @@
 
 package fr.ill.ics.cameo.impl;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.ByteString;
 
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 
 public class RequestImpl {
 
 	private ApplicationImpl application;
-	ZContext context;
+	Zmq.Context context;
 	private String requesterEndpoint;
 	private ByteString message;
 	private ByteString message2;
@@ -34,7 +32,7 @@ public class RequestImpl {
 	private int requesterApplicationId;
 	private String requesterServerEndpoint;
 	
-	public RequestImpl(ApplicationImpl application, ZContext context, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
+	public RequestImpl(ApplicationImpl application, Zmq.Context context, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
 		
 		this.application = application;
 		this.context = context;
@@ -61,7 +59,7 @@ public class RequestImpl {
 
 	public void reply(byte[] response) {
 		
-		ZMsg responseMessage = application.createRequest(Type.RESPONSE);
+		Zmq.Msg responseMessage = application.createRequest(Type.RESPONSE);
 		responseMessage.add(response);
 		
 		application.tryRequest(responseMessage, requesterEndpoint);

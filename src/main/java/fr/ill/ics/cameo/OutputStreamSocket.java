@@ -17,26 +17,24 @@ package fr.ill.ics.cameo;
 
 
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ.Socket;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 
 public class OutputStreamSocket {
 	
 	private String streamString;
 	private String endOfStreamString;
-	private ZContext context;
-	private Socket socket;
+	private Zmq.Context context;
+	private Zmq.Socket socket;
 	
-	public OutputStreamSocket(String streamString, String endOfStreamString, ZContext context, Socket socket) {
+	public OutputStreamSocket(String streamString, String endOfStreamString, Zmq.Context context, fr.ill.ics.cameo.Zmq.Socket subscriber) {
 		super();
 		this.streamString = streamString;
 		this.endOfStreamString = endOfStreamString;
 		this.context = context;
-		this.socket = socket;
+		this.socket = subscriber;
 	}
 	
 	public Application.Output receive()	{

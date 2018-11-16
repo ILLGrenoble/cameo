@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.impl;
 
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -38,6 +36,7 @@ import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.UnmanagedApplicationException;
 import fr.ill.ics.cameo.WaitingSet;
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
 import fr.ill.ics.cameo.proto.Messages.CreatePublisherCommand;
@@ -181,11 +180,11 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	public void setResult(byte[] data) {
 		
-		ZMsg request = createSetResultRequest(id, data);
+		Zmq.Msg request = createSetResultRequest(id, data);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
 			if (requestResponse.getValue() == -1) {
@@ -224,11 +223,11 @@ public class ApplicationImpl extends ServicesImpl {
 	 */
 	public boolean setRunning() {
 		
-		ZMsg request = createSetStatusRequest(id, Application.State.RUNNING);
+		Zmq.Msg request = createSetStatusRequest(id, Application.State.RUNNING);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
 			if (requestResponse.getValue() == -1) {
@@ -247,11 +246,11 @@ public class ApplicationImpl extends ServicesImpl {
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		ZMsg request = createStartedUnmanagedRequest(name, pid);
+		Zmq.Msg request = createStartedUnmanagedRequest(name, pid);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
 			return requestResponse.getValue();
@@ -263,11 +262,11 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	private void terminateUnmanagedApplication() {
 		
-		ZMsg request = createTerminatedUnmanagedRequest(id);
+		Zmq.Msg request = createTerminatedUnmanagedRequest(id);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 						
 		} catch (InvalidProtocolBufferException e) {
@@ -282,11 +281,11 @@ public class ApplicationImpl extends ServicesImpl {
 	 */
 	private int getState(int id) {
 		
-		ZMsg request = createGetStatusRequest(id);
+		Zmq.Msg request = createGetStatusRequest(id);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			
 			if (messageData == null) {
 				return Application.State.UNKNOWN;
@@ -374,11 +373,11 @@ public class ApplicationImpl extends ServicesImpl {
 	 */
 	public PublisherImpl publish(String name, int numberOfSubscribers) throws PublisherCreationException {
 		
-		ZMsg request = createCreatePublisherRequest(id, name, numberOfSubscribers);
+		Zmq.Msg request = createCreatePublisherRequest(id, name, numberOfSubscribers);
 
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			PublisherResponse requestResponse = null;
 				
 			requestResponse = PublisherResponse.parseFrom(messageData);
@@ -413,11 +412,11 @@ public class ApplicationImpl extends ServicesImpl {
 	 */
 	void destroyPublisher(String name) throws PublisherDestructionException {
 		
-		ZMsg request = createTerminatePublisherRequest(id, name);
+		Zmq.Msg request = createTerminatePublisherRequest(id, name);
 		
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 
 			requestResponse = RequestResponse.parseFrom(messageData);
@@ -442,11 +441,11 @@ public class ApplicationImpl extends ServicesImpl {
 	public ResponderImpl respond(String name) throws ResponderCreationException {
 		
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
-		ZMsg request = createRequestPortRequest(id, portName);
+		Zmq.Msg request = createRequestPortRequest(id, portName);
 
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 				
 			requestResponse = RequestResponse.parseFrom(messageData);
@@ -476,10 +475,10 @@ public class ApplicationImpl extends ServicesImpl {
 		
 		try {
 			// First connect to the responder
-			ZMsg request = createConnectPortRequest(responderId, responderPortName);
+			Zmq.Msg request = createConnectPortRequest(responderId, responderPortName);
 					
-			ZMsg reply = tryRequest(request, responderEndpoint);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request, responderEndpoint);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
 			int responderPort = requestResponse.getValue();
@@ -492,7 +491,7 @@ public class ApplicationImpl extends ServicesImpl {
 				request = createConnectPortRequest(responderId, responderPortName);
 				
 				reply = tryRequest(request, responderEndpoint);
-				messageData = reply.getFirst().getData();
+				messageData = reply.getFirstData();
 				requestResponse = RequestResponse.parseFrom(messageData);
 								
 				responderPort = requestResponse.getValue();
@@ -505,7 +504,7 @@ public class ApplicationImpl extends ServicesImpl {
 			request = createRequestPortRequest(id, requesterPortName);
 			
 			reply = tryRequest(request);
-			messageData = reply.getFirst().getData();
+			messageData = reply.getFirstData();
 			requestResponse = RequestResponse.parseFrom(messageData);
 			
 			int requesterPort = requestResponse.getValue();
@@ -522,11 +521,11 @@ public class ApplicationImpl extends ServicesImpl {
 	
 	public void removePort(String name) {
 		
-		ZMsg request = createRemovePortRequest(id, name);
+		Zmq.Msg request = createRemovePortRequest(id, name);
 
 		try {
-			ZMsg reply = tryRequest(request);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = tryRequest(request);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 				
 			requestResponse = RequestResponse.parseFrom(messageData);
@@ -541,18 +540,18 @@ public class ApplicationImpl extends ServicesImpl {
 		}
 	}
 
-	private ZMsg createSetStatusRequest(int id, int state) {
+	private Zmq.Msg createSetStatusRequest(int id, int state) {
 		
-		ZMsg request = createRequest(Type.SETSTATUS);
+		Zmq.Msg request = createRequest(Type.SETSTATUS);
 		SetStatusCommand command = SetStatusCommand.newBuilder().setId(id).setApplicationState(state).build();
 		request.add(command.toByteArray());
 		
 		return request;
 	}
 	
-	private ZMsg createRequestPortRequest(int id, String name) {
+	private Zmq.Msg createRequestPortRequest(int id, String name) {
 		
-		ZMsg request = createRequest(Type.REQUESTPORT);
+		Zmq.Msg request = createRequest(Type.REQUESTPORT);
 		RequestPortCommand command = RequestPortCommand.newBuilder()
 																.setId(id)
 																.setName(name)
@@ -562,9 +561,9 @@ public class ApplicationImpl extends ServicesImpl {
 		return request;
 	}
 
-	private ZMsg createConnectPortRequest(int id, String name) {
+	private Zmq.Msg createConnectPortRequest(int id, String name) {
 		
-		ZMsg request = createRequest(Type.CONNECTPORT);
+		Zmq.Msg request = createRequest(Type.CONNECTPORT);
 		ConnectPortCommand command = ConnectPortCommand.newBuilder()
 																.setId(id)
 																.setName(name)
@@ -574,9 +573,9 @@ public class ApplicationImpl extends ServicesImpl {
 		return request;
 	}
 
-	private ZMsg createRemovePortRequest(int id, String name) {
+	private Zmq.Msg createRemovePortRequest(int id, String name) {
 		
-		ZMsg request = createRequest(Type.REMOVEPORT);
+		Zmq.Msg request = createRequest(Type.REMOVEPORT);
 		RemovePortCommand command = RemovePortCommand.newBuilder()
 																.setId(id)
 																.setName(name)
@@ -588,9 +587,9 @@ public class ApplicationImpl extends ServicesImpl {
 
 	
 	
-	private ZMsg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
+	private Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
 		
-		ZMsg request = createRequest(Type.CREATEPUBLISHER);
+		Zmq.Msg request = createRequest(Type.CREATEPUBLISHER);
 		CreatePublisherCommand command = CreatePublisherCommand.newBuilder()
 																.setId(id)
 																.setName(name)
@@ -601,29 +600,29 @@ public class ApplicationImpl extends ServicesImpl {
 		return request;
 	}
 	
-	private ZMsg createSetResultRequest(int id, byte[] result) {
+	private Zmq.Msg createSetResultRequest(int id, byte[] result) {
 
 		ByteString data = ByteString.copyFrom(result);
 		
-		ZMsg request = createRequest(Type.SETRESULT);
+		Zmq.Msg request = createRequest(Type.SETRESULT);
 		SetResultCommand command = SetResultCommand.newBuilder().setId(id).setData(data).build();
 		request.add(command.toByteArray());
 		
 		return request;
 	}
 	
-	private ZMsg createTerminatePublisherRequest(int id, String name) {
+	private Zmq.Msg createTerminatePublisherRequest(int id, String name) {
 		
-		ZMsg request = createRequest(Type.TERMINATEPUBLISHER);
+		Zmq.Msg request = createRequest(Type.TERMINATEPUBLISHER);
 		TerminatePublisherCommand command = TerminatePublisherCommand.newBuilder().setId(id).setName(name).build();
 		request.add(command.toByteArray());
 		
 		return request;
 	}
 		
-	private ZMsg createStopRequest(int id) {
+	private Zmq.Msg createStopRequest(int id) {
 		
-		ZMsg request = createRequest(Type.STOP);
+		Zmq.Msg request = createRequest(Type.STOP);
 		StopCommand command = StopCommand.newBuilder().setId(id).build();
 		request.add(command.toByteArray());
 		

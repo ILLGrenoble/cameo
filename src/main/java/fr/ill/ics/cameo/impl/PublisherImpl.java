@@ -16,14 +16,10 @@
 
 package fr.ill.ics.cameo.impl;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages.CancelPublisherSyncCommand;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
 import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
@@ -36,16 +32,16 @@ public class PublisherImpl {
 	private static final String ENDSTREAM = "ENDSTREAM";
 	
 	private ApplicationImpl application;
-	ZContext context;
+	Zmq.Context context;
 	private int publisherPort;
 	private int synchronizerPort;
 	private String name;
 	private int numberOfSubscribers;
-	private Socket publisher = null;
+	private Zmq.Socket publisher = null;
 	private boolean ended = false;
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
 	
-	public PublisherImpl(ApplicationImpl application, ZContext context, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
+	public PublisherImpl(ApplicationImpl application, Zmq.Context context, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
 		this.application = application;
 		this.context = context;
 		this.publisherPort = publisherPort;
@@ -54,7 +50,7 @@ public class PublisherImpl {
 		this.numberOfSubscribers = numberOfSubscribers;
 
 		// create a socket for publishing
-		publisher = context.createSocket(ZMQ.PUB);
+		publisher = context.createSocket(Zmq.PUB);
 		publisher.bind("tcp://*:" + publisherPort);
 		
 		waiting.add();
@@ -70,12 +66,12 @@ public class PublisherImpl {
 			return true;
 		}
 		
-		Socket synchronizer = null;
+		Zmq.Socket synchronizer = null;
 		boolean canceled = false;
 		
 		try {
 			// create a socket to receive the messages from the subscribers
-			synchronizer = context.createSocket(ZMQ.REP);
+			synchronizer = context.createSocket(Zmq.REP);
 			String endpoint = "tcp://*:" + synchronizerPort;
 			
 			synchronizer.bind(endpoint);
@@ -85,11 +81,11 @@ public class PublisherImpl {
 			
 			while (counter < numberOfSubscribers) {
 
-				ZMsg message = null;
-				ZMsg reply = null;
+				Zmq.Msg message = null;
+				Zmq.Msg reply = null;
 				
 				try {
-					message = ZMsg.recvMsg(synchronizer);
+					message = Zmq.Msg.recvMsg(synchronizer);
 					
 					if (message == null) {
 						break;
@@ -101,9 +97,9 @@ public class PublisherImpl {
 						continue;
 					}
 					// 2 frames, get first frame (type)
-					byte[] typeData = message.getFirst().getData();
+					byte[] typeData = message.getFirstData();
 					// get last frame
-					byte[] messageData = message.getLast().getData();
+					byte[] messageData = message.getLastData();
 					
 					// dispatch message
 					MessageType type = MessageType.parseFrom(typeData);
@@ -157,13 +153,13 @@ public class PublisherImpl {
 	
 	public void cancelWaitForSubscribers() {
 		String endpoint = application.getUrl() + ":" + (publisherPort + 1);
-		ZMsg request = application.createRequest(Type.CANCEL);
+		Zmq.Msg request = application.createRequest(Type.CANCEL);
 		CancelPublisherSyncCommand command = CancelPublisherSyncCommand.newBuilder().build();
 		request.add(command.toByteArray());
 		
 		try {
-			ZMsg reply = application.tryRequest(request, endpoint);
-			byte[] messageData = reply.getFirst().getData();
+			Zmq.Msg reply = application.tryRequest(request, endpoint);
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 
 			requestResponse = RequestResponse.parseFrom(messageData);
@@ -256,22 +252,22 @@ public class PublisherImpl {
 		}
 	}
 	
-	private ZMsg processInitCommand() {
+	private Zmq.Msg processInitCommand() {
 		// send a dummy SYNC message by the publisher socket
 		publisher.sendMore(SYNC);
 		publisher.send("sync");
 		
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add("Connection OK");
 				
 		return reply;
 	}
 	
-	private ZMsg processSubscribePublisherCommand() {
+	private Zmq.Msg processSubscribePublisherCommand() {
 	
 		RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
 				
-		ZMsg reply = new ZMsg();
+		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(response.toByteArray());
 			
 		return reply;

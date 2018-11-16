@@ -18,14 +18,10 @@ package fr.ill.ics.cameo.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
 import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 import fr.ill.ics.cameo.proto.Messages.Request;
@@ -35,7 +31,7 @@ public class RequesterImpl {
 	public static final String REQUESTER_PREFIX = "req.";
 
 	private ApplicationImpl application;
-	ZContext context;
+	Zmq.Context context;
 	private String responderEndpoint;
 	private int requesterPort;
 	private String name;
@@ -45,10 +41,10 @@ public class RequesterImpl {
 	private int requesterId;
 	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
-	private Socket requester = null;
+	private Zmq.Socket requester = null;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
-	public RequesterImpl(ApplicationImpl application, ZContext context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
+	public RequesterImpl(ApplicationImpl application, Zmq.Context context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.application = application;
 		this.context = context;
 		this.requesterPort = requesterPort;
@@ -58,7 +54,7 @@ public class RequesterImpl {
 		this.requesterId = requesterId;
 
 		// create a socket REP
-		requester = context.createSocket(ZMQ.REP);
+		requester = context.createSocket(Zmq.REP);
 		requester.bind("tcp://*:" + requesterPort);
 		
 		waiting.add();
@@ -77,7 +73,7 @@ public class RequesterImpl {
 	}
 	
 	private void send(ByteString request) {
-		ZMsg requestMessage = application.createRequest(Type.REQUEST);
+		Zmq.Msg requestMessage = application.createRequest(Type.REQUEST);
 		
 		Request command = Request.newBuilder()
 										.setApplicationName(application.getName())
@@ -93,7 +89,7 @@ public class RequesterImpl {
 	}
 	
 	private void send(ByteString request1, ByteString request2) {
-		ZMsg requestMessage = application.createRequest(Type.REQUEST);
+		Zmq.Msg requestMessage = application.createRequest(Type.REQUEST);
 		
 		Request command = Request.newBuilder()
 										.setApplicationName(application.getName())						
@@ -123,19 +119,19 @@ public class RequesterImpl {
 
 	public byte[] receive() {
 		
-		ZMsg message = null;
+		Zmq.Msg message = null;
 		
 		try {
-			message = ZMsg.recvMsg(requester);
+			message = Zmq.Msg.recvMsg(requester);
 
 			if (message == null) {
 				return null;
 			}
 			
 			// 2 frames, get first frame (type)
-			byte[] typeData = message.getFirst().getData();
+			byte[] typeData = message.getFirstData();
 			// Get last frame
-			byte[] messageData = message.getLast().getData();
+			byte[] messageData = message.getLastData();
 						
 			// dispatch message
 			MessageType type = MessageType.parseFrom(typeData);
@@ -161,7 +157,7 @@ public class RequesterImpl {
 			}
 			
 			// Send to the responder
-			ZMsg reply = new ZMsg();
+			Zmq.Msg reply = new Zmq.Msg();
 			reply.add("OK");
 			reply.send(requester);
 		}
@@ -175,7 +171,7 @@ public class RequesterImpl {
 		
 		String endpoint = application.getUrl() + ":" + requesterPort;
 
-		ZMsg requestMessage = application.createRequest(Type.CANCEL);
+		Zmq.Msg requestMessage = application.createRequest(Type.CANCEL);
 		String content = "cancel";
 		requestMessage.add(content);
 		

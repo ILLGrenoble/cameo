@@ -17,17 +17,15 @@ package fr.ill.ics.cameo;
 
 
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ.Socket;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 
 public class EventStreamSocket {
 		
-	private ZContext context;
-	private Socket socket;
+	private Zmq.Context context;
+	private Zmq.Socket socket;
 	
 	private static final String STATUS = "STATUS";
 	private static final String RESULT = "RESULT";
@@ -35,10 +33,10 @@ public class EventStreamSocket {
 	private static final String PORT = "PORT";
 	private static final String CANCEL = "CANCEL";
 	
-	public EventStreamSocket(ZContext context, Socket socket) {
+	public EventStreamSocket(Zmq.Context context, Zmq.Socket subscriber) {
 		super();
 		this.context = context;
-		this.socket = socket;
+		this.socket = subscriber;
 	}
 	
 	public Event recvStr() throws EndOfStream {

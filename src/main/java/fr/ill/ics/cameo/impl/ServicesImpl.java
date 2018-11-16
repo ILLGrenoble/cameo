@@ -16,20 +16,13 @@
 
 package fr.ill.ics.cameo.impl;
 
-import java.net.UnknownHostException;
-
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.PollItem;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.Init;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
@@ -44,7 +37,7 @@ public class ServicesImpl {
 	protected String url;
 	protected int port;
 	protected int statusPort;
-	protected ZContext context;
+	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
 	protected String cancelEndpoint;
 	
@@ -61,7 +54,7 @@ public class ServicesImpl {
 	}
 	
 	final protected void init() {
-		this.context = new ZContext();
+		this.context = new Zmq.Context();
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 	}
 	
@@ -101,8 +94,8 @@ public class ServicesImpl {
 	 */
 	public boolean isAvailable(int overrideTimeout) {
 
-		ZMsg request = createInitRequest();
-		ZMsg reply = null;
+		Zmq.Msg request = createInitRequest();
+		Zmq.Msg reply = null;
 		try {
 			reply = tryRequest(request, overrideTimeout);
 			reply.destroy();
@@ -120,8 +113,8 @@ public class ServicesImpl {
 	
 	protected void sendInit(String endpoint) {
 		
-		ZMsg request = createInitRequest();
-		ZMsg reply = null;
+		Zmq.Msg request = createInitRequest();
+		Zmq.Msg reply = null;
 		try {
 			reply = tryRequest(request, endpoint);
 			reply.destroy();
@@ -142,13 +135,13 @@ public class ServicesImpl {
 	 */
 	protected EventStreamSocket openEventStream() {
 
-		ZMsg request = createShowStatusRequest();
+		Zmq.Msg request = createShowStatusRequest();
 		RequestResponse requestResponse = null;
 		
 		try {
-			ZMsg reply = tryRequest(request);
+			Zmq.Msg reply = tryRequest(request);
 	
-			byte[] messageData = reply.getFirst().getData();
+			byte[] messageData = reply.getFirstData();
 			requestResponse = RequestResponse.parseFrom(messageData);
 			
 		} catch (InvalidProtocolBufferException e) {
@@ -158,31 +151,29 @@ public class ServicesImpl {
 		}
 		
 		// Prepare our context and subscriber
-		Socket subscriber = context.createSocket(ZMQ.SUB);
+		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
 		statusPort = requestResponse.getValue();
 		
 		subscriber.connect(url + ":" + statusPort);
-		subscriber.subscribe(STATUS.getBytes());
-		subscriber.subscribe(RESULT.getBytes());
-		subscriber.subscribe(PUBLISHER.getBytes());
-		subscriber.subscribe(PORT.getBytes());
+		subscriber.subscribe(STATUS);
+		subscriber.subscribe(RESULT);
+		subscriber.subscribe(PUBLISHER);
+		subscriber.subscribe(PORT);
 		
 		subscriber.connect(getCancelEndpoint());
-		subscriber.subscribe(CANCEL.getBytes());
+		subscriber.subscribe(CANCEL);
 		
 		// polling to wait for connection
-		PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
+		Zmq.Poller poller = new Zmq.Poller(subscriber);
 		
 		while (true) {
-		
+			
 			// the server returns a STATUS message that is used to synchronize the subscriber
 			sendInit();
 
-			ZMQ.poll(items, 100);
-			
 			// return at the first response.
-			if (items[0].isReadable()) {
+			if (poller.poll(100)) {
 				break;
 			}
 		}
@@ -198,9 +189,9 @@ public class ServicesImpl {
 	 * @throws ConnectionTimeout 
 	 * @throws SocketException 
 	 */
-	protected ZMsg tryRequest(ZMsg request, String endpoint, int overrideTimeout) throws ConnectionTimeout, SocketException {
+	protected Zmq.Msg tryRequest(Zmq.Msg request, String endpoint, int overrideTimeout) throws ConnectionTimeout, SocketException {
 		
-		Socket socket = context.createSocket(ZMQ.REQ);
+		Zmq.Socket socket = context.createSocket(Zmq.REQ);
 		
 		try {
 			try {
@@ -211,7 +202,7 @@ public class ServicesImpl {
 			}
 			
 			// send request, wait safely for reply
-			ZMsg msg = request.duplicate();
+			Zmq.Msg msg = request.duplicate();
 			msg.send(socket);
 			
 			int usedTimeout = timeout;
@@ -221,15 +212,24 @@ public class ServicesImpl {
 			
 			if (usedTimeout > 0) {
 			
-				PollItem[] items = { new PollItem(socket, ZMQ.Poller.POLLIN) };
-				ZMQ.poll(items, usedTimeout);
-				ZMsg reply = null;
+//				PollItem[] items = { new PollItem(socket, ZMQ.Poller.POLLIN) };
+//				ZMQ.poll(items, usedTimeout);
+//				Zmq.Msg reply = null;
+//				
+//				// in case a response is returned before timeout
+//				if (items[0].isReadable()) {
+//					reply = Zmq.Msg.recvMsg(socket);
+//	
+//				} else {
+//					throw new ConnectionTimeout();
+//				}
 				
-				// in case a response is returned before timeout
-				if (items[0].isReadable()) {
-					reply = ZMsg.recvMsg(socket);
-	
-				} else {
+				Zmq.Poller poller = new Zmq.Poller(socket);
+				Zmq.Msg reply = null;
+				if (poller.poll(usedTimeout)) {
+					reply = Zmq.Msg.recvMsg(socket);
+				}
+				else {
 					throw new ConnectionTimeout();
 				}
 		
@@ -237,7 +237,7 @@ public class ServicesImpl {
 				
 			} else {
 				// direct receive
-				ZMsg reply = ZMsg.recvMsg(socket);
+				Zmq.Msg reply = Zmq.Msg.recvMsg(socket);
 				
 				return reply;
 			}
@@ -250,21 +250,21 @@ public class ServicesImpl {
 		}
 	}
 	
-	protected ZMsg tryRequest(ZMsg request, String endpoint) throws ConnectionTimeout {
+	protected Zmq.Msg tryRequest(Zmq.Msg request, String endpoint) throws ConnectionTimeout {
 		return tryRequest(request, endpoint, -1);
 	}
 	
-	protected ZMsg tryRequest(ZMsg request, int overrideTimeout) throws ConnectionTimeout {
+	protected Zmq.Msg tryRequest(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 		return tryRequest(request, serverEndpoint, overrideTimeout); 
 	}
 	
-	protected ZMsg tryRequest(ZMsg request) throws ConnectionTimeout {
+	protected Zmq.Msg tryRequest(Zmq.Msg request) throws ConnectionTimeout {
 		return tryRequest(request, serverEndpoint, -1); 
 	}
 	
 	protected RequestSocket createSocket(String endpoint) throws SocketException {
 	
-		Socket socket = context.createSocket(ZMQ.REQ);
+		Zmq.Socket socket = context.createSocket(Zmq.REQ);
 		
 		try {
 			socket.connect(endpoint);
@@ -281,9 +281,9 @@ public class ServicesImpl {
 	 * @param type
 	 * @return
 	 */
-	protected ZMsg createRequest(Type type) {
+	protected Zmq.Msg createRequest(Type type) {
 		
-		ZMsg request = new ZMsg();
+		Zmq.Msg request = new Zmq.Msg();
 		// add the message type on the first frame
 		MessageType messageType = MessageType.newBuilder().setType(type).build();
 		request.add(messageType.toByteArray());
@@ -297,9 +297,9 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected ZMsg createInitRequest() {
+	protected Zmq.Msg createInitRequest() {
 		
-		ZMsg request = createRequest(Type.INIT);
+		Zmq.Msg request = createRequest(Type.INIT);
 		Init start = Init.newBuilder().build();
 		request.add(start.toByteArray());
 		
@@ -311,9 +311,9 @@ public class ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	protected ZMsg createShowStatusRequest() {
+	protected Zmq.Msg createShowStatusRequest() {
 		
-		ZMsg request = createRequest(Type.STATUS);
+		Zmq.Msg request = createRequest(Type.STATUS);
 		String content = "status";
 		request.add(content);
 		
@@ -326,9 +326,9 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected ZMsg createGetStatusRequest(int id) {
+	protected Zmq.Msg createGetStatusRequest(int id) {
 		
-		ZMsg request = createRequest(Type.GETSTATUS);
+		Zmq.Msg request = createRequest(Type.GETSTATUS);
 		GetStatusCommand command = GetStatusCommand.newBuilder().setId(id).build();
 		request.add(command.toByteArray());
 		
@@ -342,9 +342,9 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected ZMsg createStartedUnmanagedRequest(String name, long pid) {
+	protected Zmq.Msg createStartedUnmanagedRequest(String name, long pid) {
 		
-		ZMsg request = createRequest(Type.STARTEDUNMANAGED);
+		Zmq.Msg request = createRequest(Type.STARTEDUNMANAGED);
 		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder()
 												.setName(name)
 												.setPid(pid)
@@ -360,9 +360,9 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected ZMsg createTerminatedUnmanagedRequest(int id) {
+	protected Zmq.Msg createTerminatedUnmanagedRequest(int id) {
 		
-		ZMsg request = createRequest(Type.TERMINATEDUNMANAGED);
+		Zmq.Msg request = createRequest(Type.TERMINATEDUNMANAGED);
 		TerminatedUnmanagedCommand command = TerminatedUnmanagedCommand.newBuilder().setId(id).build();
 		request.add(command.toByteArray());
 		

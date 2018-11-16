@@ -16,17 +16,13 @@
 
 package fr.ill.ics.cameo.impl;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.PollItem;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.proto.Messages;
 import fr.ill.ics.cameo.proto.Messages.RequestResponse;
 
@@ -39,20 +35,20 @@ public class SubscriberImpl {
 	private static final String STATUS = "STATUS";
 	
 	private ServerImpl server;
-	private ZContext context;
+	private Zmq.Context context;
 	private String url;
 	private int publisherPort;
 	private int synchronizerPort;
-	private Socket subscriber;
+	private Zmq.Socket subscriber;
 	private String cancelEndpoint;
-	private Socket cancelPublisher;
+	private Zmq.Socket cancelPublisher;
 	private String publisherName;
 	private int numberOfSubscribers;
 	private InstanceImpl instance;
 	private boolean endOfStream = false;
 	private SubscriberWaitingImpl waiting = new SubscriberWaitingImpl(this);
 	
-	SubscriberImpl(ServerImpl server, ZContext context, String url, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
+	SubscriberImpl(ServerImpl server, Zmq.Context context, String url, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
 		this.server = server;
 		this.context = context;
 		this.url = url;
@@ -68,27 +64,27 @@ public class SubscriberImpl {
 	void init() throws ConnectionTimeout {
 		
 		// Create the subscriber
-		subscriber = context.createSocket(ZMQ.SUB);
+		subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(url + ":" + publisherPort);
-		subscriber.subscribe(SYNC.getBytes());
-		subscriber.subscribe(STREAM.getBytes());
-		subscriber.subscribe(ENDSTREAM.getBytes());
+		subscriber.subscribe(SYNC);
+		subscriber.subscribe(STREAM);
+		subscriber.subscribe(ENDSTREAM);
 		
 		// Create an endpoint that should be unique
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		// Create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
-		cancelPublisher = context.createSocket(ZMQ.PUB);
+		cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 
 		// Subscribe to CANCEL
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(CANCEL.getBytes());
+		subscriber.subscribe(CANCEL);
 
 		// Subscribe to STATUS
 		subscriber.connect(instance.getStatusEndpoint());
-		subscriber.subscribe(STATUS.getBytes());
+		subscriber.subscribe(STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
@@ -98,14 +94,43 @@ public class SubscriberImpl {
 			// Create a socket that will be used for several requests.
 			RequestSocket requestSocket = server.createSocket(endpoint);
 						
-			// Polling to wait for connection
-			PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
+			
+			
+//			// Polling to wait for connection
+//			PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
+//			
+//			boolean ready = false;
+//			while (!ready) {
+//				// The subscriber sends init messages to the publisher that returns SYNC message
+//				Zmq.Msg request = server.createInitRequest();
+//				Zmq.Msg reply = null;
+//				try {
+//					reply = requestSocket.request(request);
+//					reply.destroy();
+//					request.destroy();
+//
+//				} catch (ConnectionTimeout e) {
+//					// do nothing
+//				}
+//	
+//				// Polling until the first SYNC message is received
+//				ZMQ.poll(items, 100);
+//				
+//				if (items[0].isReadable()) {
+//					ready = true;
+//				}
+//			}
+			
+			
+			// polling to wait for connection
+			Zmq.Poller poller = new Zmq.Poller(subscriber);
 			
 			boolean ready = false;
 			while (!ready) {
+				
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				ZMsg request = server.createInitRequest();
-				ZMsg reply = null;
+				Zmq.Msg request = server.createInitRequest();
+				Zmq.Msg reply = null;
 				try {
 					reply = requestSocket.request(request);
 					reply.destroy();
@@ -114,21 +139,19 @@ public class SubscriberImpl {
 				} catch (ConnectionTimeout e) {
 					// do nothing
 				}
-	
-				// Polling until the first SYNC message is received
-				ZMQ.poll(items, 100);
-				
-				if (items[0].isReadable()) {
+
+				// return at the first response.
+				if (poller.poll(100)) {
 					ready = true;
 				}
 			}
 			
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
-			ZMsg request = server.createSubscribePublisherRequest();
-			ZMsg reply = requestSocket.request(request);
+			Zmq.Msg request = server.createSubscribePublisherRequest();
+			Zmq.Msg reply = requestSocket.request(request);
 			
-			byte[] messageData = reply.getFirst().getData();
+			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 			
 			try {

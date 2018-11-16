@@ -16,13 +16,10 @@
 
 package fr.ill.ics.cameo.impl;
 
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
 import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 
@@ -31,21 +28,21 @@ public class ResponderImpl {
 	public static final String RESPONDER_PREFIX = "rep.";
 
 	private ApplicationImpl application;
-	ZContext context;
+	Zmq.Context context;
 	private int responderPort;
 	private String name;
-	private Socket responder = null;
+	private Zmq.Socket responder = null;
 	private boolean ended = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
 	
-	public ResponderImpl(ApplicationImpl application, ZContext context, int responderPort, String name) {
+	public ResponderImpl(ApplicationImpl application, Zmq.Context context, int responderPort, String name) {
 		this.application = application;
 		this.context = context;
 		this.responderPort = responderPort;
 		this.name = name;
 
 		// create a socket REP
-		responder = context.createSocket(ZMQ.REP);
+		responder = context.createSocket(Zmq.REP);
 		responder.bind("tcp://*:" + responderPort);
 		
 		waiting.add();
@@ -57,11 +54,11 @@ public class ResponderImpl {
 
 	public RequestImpl receive() {
 		
-		ZMsg message = null;
-		ZMsg reply = null;
+		Zmq.Msg message = null;
+		Zmq.Msg reply = null;
 		
 		try {
-			message = ZMsg.recvMsg(responder);
+			message = Zmq.Msg.recvMsg(responder);
 
 			if (message == null) {
 				ended = true;
@@ -77,9 +74,9 @@ public class ResponderImpl {
 				return null;
 			}
 			// 2 frames, get first frame (type)
-			byte[] typeData = message.getFirst().getData();
+			byte[] typeData = message.getFirstData();
 			// Get last frame
-			byte[] messageData = message.getLast().getData();
+			byte[] messageData = message.getLastData();
 			
 			// dispatch message
 			MessageType type = MessageType.parseFrom(typeData);
@@ -120,7 +117,7 @@ public class ResponderImpl {
 			}	
 
 			// Send to the requester
-			reply = new ZMsg();
+			reply = new Zmq.Msg();
 			reply.add("OK");
 			reply.send(responder);
 			
@@ -135,7 +132,7 @@ public class ResponderImpl {
 	public void cancel() {
 		String endpoint = application.getUrl() + ":" + responderPort;
 
-		ZMsg requestMessage = application.createRequest(Type.CANCEL);
+		Zmq.Msg requestMessage = application.createRequest(Type.CANCEL);
 		String content = "cancel";
 		requestMessage.add(content);
 		

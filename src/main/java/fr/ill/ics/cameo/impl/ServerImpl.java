@@ -22,10 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQ.Socket;
-import org.zeromq.ZMsg;
-
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.Application;
@@ -39,6 +35,7 @@ import fr.ill.ics.cameo.OutputStreamSocket;
 import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.WriteException;
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 import fr.ill.ics.cameo.proto.Messages.AllAvailableCommand;
 import fr.ill.ics.cameo.proto.Messages.AllAvailableResponse;
@@ -69,7 +66,7 @@ public class ServerImpl extends ServicesImpl {
 
 	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
 	private EventThread eventThread;
-	private Socket cancelPublisher;
+	private Zmq.Socket cancelPublisher;
 		
 	/**
 	 * Constructor with endpoint.
@@ -96,7 +93,7 @@ public class ServerImpl extends ServicesImpl {
 		init();
 		
 		// create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
-		cancelPublisher = context.createSocket(ZMQ.PUB);
+		cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(getCancelEndpoint());
 		
 		// start the status thread if it is possible.
@@ -172,9 +169,9 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private fr.ill.ics.cameo.impl.Response startApplication(String name, String[] args, String instanceReference) throws ConnectionTimeout {
 		
-		ZMsg request = createStartRequest(name, args, instanceReference);
-		ZMsg reply = tryRequest(request);
-		byte[] messageData = reply.getFirst().getData();
+		Zmq.Msg request = createStartRequest(name, args, instanceReference);
+		Zmq.Msg reply = tryRequest(request);
+		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
 		try {
@@ -188,9 +185,9 @@ public class ServerImpl extends ServicesImpl {
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
-		ZMsg request = createOutputRequest(name);
-		ZMsg reply = tryRequest(request);
-		byte[] messageData = reply.getFirst().getData();
+		Zmq.Msg request = createOutputRequest(name);
+		Zmq.Msg reply = tryRequest(request);
+		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
 		try {
@@ -297,7 +294,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	fr.ill.ics.cameo.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
 		// create msg
-		ZMsg request;
+		Zmq.Msg request;
 		
 		if (immediately) {
 			request = createKillRequest(id);
@@ -305,9 +302,9 @@ public class ServerImpl extends ServicesImpl {
 			request = createStopRequest(id);
 		}
 		
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg reply = tryRequest(request);
 		
-		byte[] messageData = reply.getFirst().getData();
+		byte[] messageData = reply.getFirstData();
 		RequestResponse response = null;
 		
 		try {
@@ -341,11 +338,11 @@ public class ServerImpl extends ServicesImpl {
 		
 		List<InstanceImpl> instances = new ArrayList<InstanceImpl>();
 		
-		ZMsg request = createConnectRequest(name);
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg request = createConnectRequest(name);
+		Zmq.Msg reply = tryRequest(request);
 
 		try {
-			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirst().getData());
+			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirstData());
 			LinkedList<Messages.ApplicationInfo> protoList = new LinkedList<Messages.ApplicationInfo>();
 			for (int i = 0; i < response.getApplicationInfoCount(); i++) {
 				protoList.add(response.getApplicationInfo(i));
@@ -423,12 +420,12 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Configuration> getApplicationConfigurations() {
 
-		ZMsg request = createAllAvailableRequest();
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg request = createAllAvailableRequest();
+		Zmq.Msg reply = tryRequest(request);
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
 
 		try {
-			AllAvailableResponse response = AllAvailableResponse.parseFrom(reply.getFirst().getData());
+			AllAvailableResponse response = AllAvailableResponse.parseFrom(reply.getFirstData());
 			LinkedList<Messages.ApplicationConfig> protoList = new LinkedList<Messages.ApplicationConfig>();
 			for (int i = 0; i < response.getApplicationConfigCount(); i++) {
 				protoList.add(response.getApplicationConfig(i));
@@ -453,12 +450,12 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Info> getApplicationInfos() {
 
-		ZMsg request = createShowAllRequest();
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg request = createShowAllRequest();
+		Zmq.Msg reply = tryRequest(request);
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
 
 		try {
-			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirst().getData());
+			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirstData());
 			LinkedList<Messages.ApplicationInfo> protoList = new LinkedList<Messages.ApplicationInfo>();
 			for (int i = 0; i < response.getApplicationInfoCount(); i++) {
 				protoList.add(response.getApplicationInfo(i));
@@ -503,11 +500,11 @@ public class ServerImpl extends ServicesImpl {
 		}
 		
 		// Prepare our context and subscriber
-		Socket subscriber = context.createSocket(ZMQ.SUB);
+		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(url + ":" + port);
-		subscriber.subscribe(STREAM.getBytes());
-		subscriber.subscribe(ENDSTREAM.getBytes());
+		subscriber.subscribe(STREAM);
+		subscriber.subscribe(ENDSTREAM);
 		
 		return new OutputStreamSocket(STREAM, ENDSTREAM, context, subscriber);
 	}
@@ -523,10 +520,10 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
 
-		ZMsg request = createShowStreamRequest(id);
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg request = createShowStreamRequest(id);
+		Zmq.Msg reply = tryRequest(request);
 		
-		byte[] messageData = reply.getFirst().getData();
+		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		try {
 			requestResponse = RequestResponse.parseFrom(messageData);
@@ -554,10 +551,10 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private boolean isAlive(int id) {
 
-		ZMsg request = createIsAliveRequest(id);
-		ZMsg reply = tryRequest(request);
+		Zmq.Msg request = createIsAliveRequest(id);
+		Zmq.Msg reply = tryRequest(request);
 		IsAliveResponse requestResponse = null;
-		byte[] messageData = reply.getFirst().getData();
+		byte[] messageData = reply.getFirstData();
 		
 		try {
 			requestResponse = IsAliveResponse.parseFrom(messageData);
@@ -580,9 +577,9 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void writeToInputStream(int id, String[] parametersArray) throws WriteException {
 
-		ZMsg request = createSendParametersRequest(id, parametersArray);
-		ZMsg reply = tryRequest(request);
-		byte[] messageData = reply.getFirst().getData();
+		Zmq.Msg request = createSendParametersRequest(id, parametersArray);
+		Zmq.Msg reply = tryRequest(request);
+		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
 		try {
@@ -624,9 +621,9 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public SubscriberImpl createSubscriber(int applicationId, String publisherName, InstanceImpl instance) throws SubscriberCreationException {
 		
-		ZMsg request = createConnectPublisherRequest(applicationId, publisherName);
-		ZMsg reply = tryRequest(request);
-		byte[] messageData = reply.getFirst().getData();
+		Zmq.Msg request = createConnectPublisherRequest(applicationId, publisherName);
+		Zmq.Msg reply = tryRequest(request);
+		byte[] messageData = reply.getFirstData();
 		PublisherResponse requestResponse = null;
 		
 		try {
@@ -652,10 +649,10 @@ public class ServerImpl extends ServicesImpl {
 	
 	void subscribeToPublisher(String endpoint) throws ConnectionTimeout {
 		
-		ZMsg request = createSubscribePublisherRequest();
-		ZMsg reply = tryRequest(request, endpoint);
+		Zmq.Msg request = createSubscribePublisherRequest();
+		Zmq.Msg reply = tryRequest(request, endpoint);
 		
-		byte[] messageData = reply.getFirst().getData();
+		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
 		try {
@@ -672,9 +669,9 @@ public class ServerImpl extends ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	private ZMsg createIsAliveRequest(int id) {
+	private Zmq.Msg createIsAliveRequest(int id) {
 		
-		ZMsg request = createRequest(Type.ISALIVE);
+		Zmq.Msg request = createRequest(Type.ISALIVE);
 		IsAliveCommand isAlive = IsAliveCommand.newBuilder().setId(id).build();
 		request.add(isAlive.toByteArray());
 		
@@ -690,9 +687,9 @@ public class ServerImpl extends ServicesImpl {
 	 * @param returnResult 
 	 * @return request
 	 */
-	private ZMsg createStartRequest(String name, String[] args, String instanceReference) {
+	private Zmq.Msg createStartRequest(String name, String[] args, String instanceReference) {
 		
-		ZMsg request = createRequest(Type.START);
+		Zmq.Msg request = createRequest(Type.START);
 		StartCommand command = null;
 		
 		if (args == null) {
@@ -724,9 +721,9 @@ public class ServerImpl extends ServicesImpl {
 	 * @param id
 	 * @return request
 	 */
-	private ZMsg createStopRequest(int id) {
+	private Zmq.Msg createStopRequest(int id) {
 
-		ZMsg request = createRequest(Type.STOP);
+		Zmq.Msg request = createRequest(Type.STOP);
 		StopCommand stop = StopCommand.newBuilder().setId(id).build();
 		request.add(stop.toByteArray());
 		
@@ -739,9 +736,9 @@ public class ServerImpl extends ServicesImpl {
 	 * @param id
 	 * @return request
 	 */
-	private ZMsg createKillRequest(int id) {
+	private Zmq.Msg createKillRequest(int id) {
 
-		ZMsg request = createRequest(Type.KILL);
+		Zmq.Msg request = createRequest(Type.KILL);
 		KillCommand kill = KillCommand.newBuilder().setId(id).build();
 		request.add(kill.toByteArray());
 
@@ -755,8 +752,8 @@ public class ServerImpl extends ServicesImpl {
 	 * @param argsOfApplication
 	 * @return request
 	 */
-	private ZMsg createConnectRequest(String name) {
-		ZMsg request = createRequest(Type.CONNECT);
+	private Zmq.Msg createConnectRequest(String name) {
+		Zmq.Msg request = createRequest(Type.CONNECT);
 		ConnectCommand connect = ConnectCommand.newBuilder().setName(name).build();
 		request.add(connect.toByteArray());
 		
@@ -768,9 +765,9 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private ZMsg createAllAvailableRequest() {
+	private Zmq.Msg createAllAvailableRequest() {
 
-		ZMsg request = createRequest(Type.ALLAVAILABLE);
+		Zmq.Msg request = createRequest(Type.ALLAVAILABLE);
 		AllAvailableCommand allAvailable = AllAvailableCommand.newBuilder().build();
 		request.add(allAvailable.toByteArray());
 		
@@ -782,9 +779,9 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private ZMsg createShowAllRequest() {
+	private Zmq.Msg createShowAllRequest() {
 
-		ZMsg request = createRequest(Type.SHOWALL);
+		Zmq.Msg request = createRequest(Type.SHOWALL);
 		ShowAllCommand showAll = ShowAllCommand.newBuilder().build();
 		request.add(showAll.toByteArray());
 		
@@ -796,9 +793,9 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private ZMsg createShowStreamRequest(int id) {
+	private Zmq.Msg createShowStreamRequest(int id) {
 		
-		ZMsg request = createRequest(Type.SHOW);
+		Zmq.Msg request = createRequest(Type.SHOW);
 		ShowStreamCommand command = ShowStreamCommand.newBuilder().setId(id).build();
 		request.add(command.toByteArray());
 		
@@ -812,9 +809,9 @@ public class ServerImpl extends ServicesImpl {
 	 * @param parametersArray
 	 * @return
 	 */
-	private ZMsg createSendParametersRequest(int id, String[] parametersArray) {
+	private Zmq.Msg createSendParametersRequest(int id, String[] parametersArray) {
 		
-		ZMsg request = createRequest(Type.SENDPARAMETERS);
+		Zmq.Msg request = createRequest(Type.SENDPARAMETERS);
 
 		LinkedList<String> list = new LinkedList<String>();
 		for (int i = 0; i < parametersArray.length; i++) {
@@ -832,27 +829,27 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @param name
 	 */
-	private ZMsg createOutputRequest(String name) {
+	private Zmq.Msg createOutputRequest(String name) {
 		
-		ZMsg request = createRequest(Type.OUTPUT);
+		Zmq.Msg request = createRequest(Type.OUTPUT);
 		OutputCommand command = OutputCommand.newBuilder().setName(name).build();
 		request.add(command.toByteArray());
 		
 		return request;
 	}
 	
-	private ZMsg createConnectPublisherRequest(int applicationId, String publisherName) {
+	private Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
 		
-		ZMsg request = createRequest(Type.CONNECTPUBLISHER);
+		Zmq.Msg request = createRequest(Type.CONNECTPUBLISHER);
 		ConnectPublisherCommand command = ConnectPublisherCommand.newBuilder().setApplicationId(applicationId).setPublisherName(publisherName).build();
 		request.add(command.toByteArray());
 		
 		return request;
 	}
 	
-	protected ZMsg createSubscribePublisherRequest() {
+	protected Zmq.Msg createSubscribePublisherRequest() {
 		
-		ZMsg request = createRequest(Type.SUBSCRIBEPUBLISHER);
+		Zmq.Msg request = createRequest(Type.SUBSCRIBEPUBLISHER);
 		SubscribePublisherCommand command = SubscribePublisherCommand.newBuilder().build();
 		request.add(command.toByteArray());
 		
