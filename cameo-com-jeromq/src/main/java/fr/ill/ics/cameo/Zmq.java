@@ -5,9 +5,6 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
 import org.zeromq.ZMQ.PollItem;
 
-import fr.ill.ics.cameo.Zmq.Poller;
-import fr.ill.ics.cameo.Zmq.Socket;
-
 
 public class Zmq {
 
@@ -105,20 +102,22 @@ public class Zmq {
 			return socket.recv();
 		}
 	}
-	
+
 	public static class Poller {
 		
-		private PollItem[] items = new PollItem[1];
+		private ZMQ.Poller poller;
 
 		Poller(ZContext context, ZMQ.Socket socket) {
-			items[0] = new PollItem(socket, ZMQ.Poller.POLLIN);
+			
+			poller = context.createPoller(1);
+			poller.register(socket, ZMQ.Poller.POLLIN);
 		}
 		
 		public boolean poll(long timeout) {
 
-			ZMQ.poll(items, timeout);
+			poller.poll(timeout);
 			
-			return (items[0].isReadable());
+			return (poller.pollin(0));
 		}
 	}
 	
@@ -163,5 +162,4 @@ public class Zmq {
 		}
 		
 	}
-	
 }
