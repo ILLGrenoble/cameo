@@ -3,7 +3,6 @@ package fr.ill.ics.cameo;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
-import org.zeromq.ZMQ.PollItem;
 
 
 public class Zmq {
