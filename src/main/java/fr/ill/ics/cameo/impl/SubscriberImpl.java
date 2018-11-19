@@ -93,37 +93,9 @@ public class SubscriberImpl {
 			
 			// Create a socket that will be used for several requests.
 			RequestSocket requestSocket = server.createSocket(endpoint);
-						
-			
-			
-//			// Polling to wait for connection
-//			PollItem[] items = { new PollItem(subscriber, ZMQ.Poller.POLLIN) };
-//			
-//			boolean ready = false;
-//			while (!ready) {
-//				// The subscriber sends init messages to the publisher that returns SYNC message
-//				Zmq.Msg request = server.createInitRequest();
-//				Zmq.Msg reply = null;
-//				try {
-//					reply = requestSocket.request(request);
-//					reply.destroy();
-//					request.destroy();
-//
-//				} catch (ConnectionTimeout e) {
-//					// do nothing
-//				}
-//	
-//				// Polling until the first SYNC message is received
-//				ZMQ.poll(items, 100);
-//				
-//				if (items[0].isReadable()) {
-//					ready = true;
-//				}
-//			}
-			
 			
 			// polling to wait for connection
-			Zmq.Poller poller = new Zmq.Poller(subscriber);
+			Zmq.Poller poller = context.createPoller(subscriber);
 			
 			boolean ready = false;
 			while (!ready) {

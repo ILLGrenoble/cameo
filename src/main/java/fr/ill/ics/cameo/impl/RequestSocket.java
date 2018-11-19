@@ -40,7 +40,7 @@ public class RequestSocket {
 //				throw new ConnectionTimeout();
 //			}
 			
-			Zmq.Poller poller = new Zmq.Poller(socket);
+			Zmq.Poller poller = context.createPoller(socket);
 			Zmq.Msg reply = null;
 			if (poller.poll(usedTimeout)) {
 				reply = Zmq.Msg.recvMsg(socket);

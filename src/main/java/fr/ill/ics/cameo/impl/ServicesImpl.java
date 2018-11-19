@@ -165,7 +165,7 @@ public class ServicesImpl {
 		subscriber.subscribe(CANCEL);
 		
 		// polling to wait for connection
-		Zmq.Poller poller = new Zmq.Poller(subscriber);
+		Zmq.Poller poller = context.createPoller(subscriber);
 		
 		while (true) {
 			
@@ -224,7 +224,7 @@ public class ServicesImpl {
 //					throw new ConnectionTimeout();
 //				}
 				
-				Zmq.Poller poller = new Zmq.Poller(socket);
+				Zmq.Poller poller = context.createPoller(socket);
 				Zmq.Msg reply = null;
 				if (poller.poll(usedTimeout)) {
 					reply = Zmq.Msg.recvMsg(socket);
