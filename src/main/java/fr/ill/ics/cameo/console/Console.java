@@ -215,7 +215,7 @@ public class Console {
 	
 	private void processShowAll() {
 
-		System.out.println(column("Name", 20) + column("ID", 10) + column("Status", 10) + column("PID", 10));
+		System.out.println(column("Name", 20) + column("ID", 10) + column("PID", 10) + column("Status", 30));
 		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
 		
@@ -223,10 +223,10 @@ public class Console {
 			
 			long pid = info.getPid();
 			if (pid == 0) {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10) + column("-", 10));
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column("-", 10) + column(Application.State.toString(info.getApplicationState()), 30));
 			}
 			else {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10) + column(info.getPid() + "", 10));
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(info.getPid() + "", 10) + column(Application.State.toString(info.getApplicationState()), 30));
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public class Console {
 		
 		for (Application.Info info : applicationInstances) {
 			if (applicationIDs.contains(info.getId())) {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(Application.State.toString(info.getApplicationState()), 10));
+				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(info.getPid() + "", 10) + column(Application.State.toString(info.getApplicationState()), 30));
 			}	
 		}
 	}
