@@ -125,7 +125,7 @@ std::auto_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std
 	if (timeout > 0) {
 		// polling
 		zmq_pollitem_t items[1];
-		items[0].socket = socket;
+		items[0].socket = static_cast<void *>(socket);
 		items[0].fd = 0;
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
@@ -364,7 +364,7 @@ void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, const std::stri
 
 	// polling subscriber
 	zmq_pollitem_t items[1];
-	items[0].socket = *subscriber;
+	items[0].socket = static_cast<void *>(*subscriber);
 	items[0].fd = 0;
 	items[0].events = ZMQ_POLLIN;
 	items[0].revents = 0;

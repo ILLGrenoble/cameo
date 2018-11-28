@@ -88,7 +88,7 @@ void SubscriberImpl::init() {
 
 		// polling subscriber
 		zmq_pollitem_t items[1];
-		items[0].socket = *m_subscriber;
+		items[0].socket = static_cast<void *>(*m_subscriber);
 		items[0].fd = 0;
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
