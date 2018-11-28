@@ -35,5 +35,6 @@
 	
 	<modules>
 		<module>cameo-process-handle</module>
+		<module>cameo-messages</module>
 	</modules>
 </project>
