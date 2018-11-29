@@ -3,38 +3,10 @@
 	<parent>
 		<groupId>fr.ill.ics</groupId>
 		<artifactId>cameo-com</artifactId>
-		<version>0.0.1</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>fr.ill.ics</groupId>
 	<artifactId>cameo-com-jzmq</artifactId>
-
-	<distributionManagement>
-		<repository>
-			<id>ill-repo</id>
-			<name>The ILL Maven Repository</name>
-			<url>https://maven.ill.fr/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>ill-repo</id>
-			<name>The ILL Maven Repository</name>
-			<url>https://maven.ill.fr/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>ill-repo-thirdparty</id>
-			<url>https://maven.ill.fr/content/repositories/thirdparty</url>
-		</repository>
-		<repository>
-			<id>ill-repo-releases</id>
-			<url>https://maven.ill.fr/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>ill-repo-snapshots</id>
-			<url>https://maven.ill.fr/content/repositories/snapshots</url>
-		</repository>
-	</repositories>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
