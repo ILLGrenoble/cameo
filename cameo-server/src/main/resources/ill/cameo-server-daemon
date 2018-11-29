@@ -1,0 +1,75 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: cameo-server-daemon
+# Required-Start: 
+# Required-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: Start cameo server daemon
+### END INIT INFO
+
+# we can set the user (group if necessary)
+USER=`hostname`
+HOME=/users/$USER
+NOMAD_HOME=$HOME/nomad/NomadServer
+PATH=$NOMAD_HOME/bin:/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/bin/java
+INSTALL_PATH=/usr/bin/cameo-server
+CONFIG_FILE=/users/$USER/.cameo/config.xml
+EXEC_DIR=/users/$USER/.cameo
+DAEMON_ARGS="-jar /usr/share/java/cameo-server-0.0.1-full.jar $CONFIG_FILE"
+NAME=cameo-server
+DESC="cameo server"
+
+# path of the pidfile
+PIDFILE=$EXEC_DIR/$NAME.pid
+
+test -f $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+ulimit -c unlimited
+
+do_start() {
+	# chdir sets the directory where the daemon is executed
+	# it must be a directory which the USER has the right to write
+	start-stop-daemon --start --quiet --background --pidfile $PIDFILE --make-pidfile --chdir $EXEC_DIR --exec $DAEMON -c $USER -- $DAEMON_ARGS
+}
+
+do_stop() {
+	start-stop-daemon --oknodo --stop --quiet --pidfile $PIDFILE --exec $DAEMON
+}
+
+
+case "$1" in
+  start)
+	log_daemon_msg "$DESC" "start"
+	do_start
+	log_end_msg $?
+	;;
+  stop)
+	log_daemon_msg "$DESC" "stop"
+	do_stop
+	log_end_msg $?
+	;;
+  restart|force-reload)
+	log_daemon_msg "$DESC" "restart"
+	do_stop
+	sleep 1
+	do_start
+        log_end_msg $?
+	;;
+  try-restart|status)
+        log_failure_msg "Unimplemented feature"
+        exit 3
+        ;;
+  *)
+	echo "Usage: cameo-server-daemon {start|stop|restart|force-reload}" >&2
+	exit 2
+	;;
+esac
+
+exit 0
+
+
+
+:

@@ -1,0 +1,7 @@
+How to produce the logo png:
+- Edit the logo with Libre Office Draw.
+- Export the selection to pdf with lossless compression.
+- Open the pdf with Gimp at resolution 200, change the canvas size 
+so that it is square and large enough ton contain a disc 
+which contains the logo.
+- Export to png.

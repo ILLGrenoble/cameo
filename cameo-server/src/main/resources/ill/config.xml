@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config port="7000" max_applications="20" debug="ON" polling_time="100">
+
+	<applications>
+		<application name="ns" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes" log_directory="default">
+			<start executable="nomad" args="-ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
+			<stop executable="kill" args="-2 $PID"/>
+			<error executable="nomadservererror.sh"/>
+		</application>
+
+		<application name="nsd" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes">
+			<start executable="nomad" args="-ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
+			<stop executable="kill" args="-2 $PID"/>
+		</application>
+
+		<application name="nsg" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" pass_info="yes">
+			<start executable="gdb" args="--args nomad -ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
+			<stop executable="kill" args="-2 $PID"/>
+		</application>
+
+		<application name="nsv" starting_time="inf" retries="0" stopping_time="1" multiple="no" restart="no" pass_info="yes">
+			<start executable="valgrind" args="--error-limit=no --log-file=nomadvalgrind.log nomad -ORBInitRef NameService=corbaloc:iiop:localhost/NameService -ORBclientCallTimeOutPeriod 10000 -ics test"/>
+		</application>
+	</applications>
+	
+</config>

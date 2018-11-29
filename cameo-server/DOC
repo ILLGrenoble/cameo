@@ -1,0 +1,94 @@
+Introduction
+
+Main features:
+- lifecycle of apps (start/stop) (reuse of existing app is ok)
+- synchronization (states, etc.)
+- communication patterns (includes PUB/SUB sync)
+
+Configuration
+
+starting_time : integer
+Number of seconds for the application to switch from STARTING to RUNNING.
+> 0 : not immediate
+  0 : immediate (default)
+< 0 : never, the application is responsible to send the RUNNING state by a call to setRunning.
+
+retries : positive integer
+Number of times the server tries to launch the application. If the application dies during the starting_time it is relaunched until the number of retries is reached.
+> 0 : number of retries
+  0 : no retry
+
+stop_command : string
+The command to execute when a stop is requested. In UNIX systems the $PID is a variable that represents the PID of the process.
+not empty : a valid command to be executed by the system
+empty : the application is killed immediately except if it called waitForStop
+
+stopping_time : integer
+The number of seconds the server is waiting before killing the application when a stop is requested.
+> 0 : not immediate
+  0 : immediate (default)
+< 0 : never
+
+The server is responsible for managing:
+- the state of the applications
+- the communication including publishers, ports, etc.
+
+For managing the life of an application, 2 possibilities:
+- if the application already polls, use Application.isStopping
+- if not, a handler can be defined with Application.setStopHandler that will be called when the STOPPING event arrives.
+
+
+Remarks:
+- script applications can be used but the stop won't work (only kill)
+- pass_id adds as last argument the id of the application after the additional arguments
+- arguments of result exec : id, filename
+- arguments of error exec : id, error code
+
+Main classes:
+- Manager (singleton)
+- Application (N)
+- VerifyApplicationThread (one per Application, not managed i.e. is started but not synchronized, no join)
+- StreamApplicationThread (one per Application (or zero), synchronized)
+
+Parallel execution model:
+- main thread
+- VerifyApplicationThread: one per application
+- StreamApplicationThread: zero or one per application
+
+Manager:
+- creates new Application, new VerifyApplicationThread (only link with VerifyApplicationThread)
+- changes the state of the Application (e.g. stop the application), of which state is shared with VerifyApplicationThread
+- can start a StreamApplicationThread when requested
+- manages all the state changes of the applications (ensures that they are synchronized)
+
+Application:
+- sends status to manager but no sync with that call
+
+VerifyApplicationThread
+- asks the manager for any application state change
+
+StreamApplicationThread
+- asks for states of Application
+
+
+Synchronization
+- synchronize the publisher and subscribers is not easy.
+- indeed, when the subscriber connect call finishes, we do not know when the "real" connection will be made
+- we need to poll the server to ensure the connection:
+	- test connection : sends an Init message, the server returns a status message with -1 as application id
+	- we use the zmq poll function to wait
+	- when the subscriber begins to receive data, it is connected
+- for a common status subscriber as implemented in the Java client
+	- to stop correctly the subscriber socket, we define a local publisher (inproc) that sends a Close message to the subscriber
+
+Garbage collector
+- a System.gc() is called after each task to try to force the JVM to clean up
+- the garbage collector can be tuned:
+http://www.cubrid.org/blog/dev-platform/how-to-monitor-java-garbage-collection/
+
+Java implementation
+- the StatusThread exists to link the C world and the Java world, without destructors that can call destroySocket for Future objects
+- the StatusListener filters first on application name : because when registering, we do not have the id
+
+Check the open ports:
+netstat -a | egrep 'Proto|LISTEN'
