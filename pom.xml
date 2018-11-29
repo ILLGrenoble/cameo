@@ -41,5 +41,6 @@
 		<module>cameo-server-jzmq</module>
 		<module>cameo-api</module>
 		<module>cameo-console</module>
+		<module>cameo-console-jzmq</module>
 	</modules>
 </project>
