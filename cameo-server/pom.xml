@@ -1,44 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.ill.ics</groupId>
+	<parent>
+		<groupId>fr.ill.ics</groupId>
+		<artifactId>cameo</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<artifactId>cameo-server</artifactId>
 	<version>0.1.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<description>Cameo Server</description>
-	<url>https://code.ill.fr/cameo/cameo-server</url>
-
-	<!-- Connection to git repository -->
-	<scm>
-		<connection>scm:git:https://code.ill.fr/cameo/cameo-server.git</connection>
-	</scm>
-
-	<distributionManagement>
-		<repository>
-			<id>ill-repo</id>
-			<name>The ILL Maven Repository</name>
-			<url>https://maven.ill.fr/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>ill-repo</id>
-			<name>The ILL Maven Repository</name>
-			<url>https://maven.ill.fr/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>ill-repo-thirdparty</id>
-			<url>https://maven.ill.fr/content/repositories/thirdparty</url>
-		</repository>
-		<repository>
-			<id>ill-repo-releases</id>
-			<url>https://maven.ill.fr/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>ill-repo-snapshots</id>
-			<url>https://maven.ill.fr/content/repositories/snapshots</url>
-		</repository>
-	</repositories>
 
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
@@ -57,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
-			<artifactId>cameo-messages-java</artifactId>
+			<artifactId>cameo-messages</artifactId>
 			<version>0.1.3</version>
 		</dependency>
 		<dependency>
