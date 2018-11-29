@@ -38,5 +38,6 @@
 		<module>cameo-messages</module>
 		<module>cameo-com</module>
 		<module>cameo-server</module>
+		<module>cameo-server-jzmq</module>
 	</modules>
 </project>
