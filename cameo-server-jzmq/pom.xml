@@ -7,6 +7,7 @@
 	</parent>
 	<artifactId>cameo-server-jzmq</artifactId>
 	<version>0.1.5-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

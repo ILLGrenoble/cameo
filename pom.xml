@@ -39,5 +39,6 @@
 		<module>cameo-com</module>
 		<module>cameo-server</module>
 		<module>cameo-server-jzmq</module>
+		<module>cameo-api</module>
 	</modules>
 </project>
