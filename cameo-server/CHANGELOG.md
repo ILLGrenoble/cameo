@@ -1,3 +1,14 @@
+0.1.5
+-----
+
+* Part of a maven multimodule project.
+* Updated all cameo dependencies.
+
+0.1.4
+-----
+
+* Depends on cameo-com.
+
 0.1.3
 -----
 

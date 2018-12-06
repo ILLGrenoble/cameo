@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>fr.ill.ics</groupId>
 		<artifactId>cameo</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-console</artifactId>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.4</version>
 	<packaging>jar</packaging>
 	
 	<properties>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-api</artifactId>
-			<version>0.1.4-SNAPSHOT</version>
+			<version>0.1.4</version>
 		</dependency>
 	</dependencies>
 
