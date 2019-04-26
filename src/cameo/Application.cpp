@@ -111,7 +111,7 @@ void This::terminate() {
 
 This::This() :
 	Services(),
-	m_impl(0),
+	m_impl(nullptr),
 	m_id(-1),
 	m_managed(false),
 	m_starterId(0) {
@@ -185,14 +185,14 @@ void This::initApplication(int argc, char *argv[]) {
 	initStatus();
 
 	// Create the local server
-	m_server = auto_ptr<Server>(new Server(m_serverEndpoint));
+	m_server = unique_ptr<Server>(new Server(m_serverEndpoint));
 
 	// Create the starter server
 	if (m_starterEndpoint != "") {
-		m_starterServer = auto_ptr<Server>(new Server(m_starterEndpoint));
+		m_starterServer = unique_ptr<Server>(new Server(m_starterEndpoint));
 	}
 
-	m_waitingSet = auto_ptr<WaitingImplSet>(new WaitingImplSet());
+	m_waitingSet = unique_ptr<WaitingImplSet>(new WaitingImplSet());
 }
 
 This::~This() {
@@ -261,7 +261,7 @@ int This::initUnmanagedApplication() {
 
 	string strRequestType = m_impl->createRequest(PROTO_STARTEDUNMANAGED);
 	string strRequestData = m_impl->createStartedUnmanagedRequest(m_name);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -273,7 +273,7 @@ void This::terminateUnmanagedApplication() {
 
 	string strRequestType = m_impl->createRequest(PROTO_TERMINATEDUNMANAGED);
 	string strRequestData = m_impl->createTerminatedUnmanagedRequest(m_id);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -283,7 +283,7 @@ bool This::setRunning() {
 
 	string strRequestType = m_instance.m_impl->createRequest(PROTO_SETSTATUS);
 	string strRequestData = m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING);
-	auto_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -300,7 +300,7 @@ void This::setBinaryResult(const std::string& data) {
 	string strRequestType = m_instance.m_impl->createRequest(PROTO_SETRESULT);
 	string strRequestData = m_instance.m_impl->createSetResultRequest(m_instance.m_id, data);
 
-	auto_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -349,7 +349,7 @@ State This::getState(int id) const {
 
 	string strRequestType = m_impl->createRequest(PROTO_GETSTATUS);
 	string strRequestData = m_impl->createGetStatusRequest(id);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::StatusEvent protoStatus;
 	protoStatus.ParseFromArray((*reply).data(), (*reply).size());
@@ -361,7 +361,7 @@ bool This::destroyPublisher(const std::string& name) const {
 
 	string strRequestType = m_impl->createRequest(PROTO_TERMINATEPUBLISHER);
 	string strRequestData = m_impl->createTerminatePublisherRequest(m_id, name);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -374,7 +374,7 @@ bool This::removePort(const std::string& name) const {
 
 	string strRequestType = m_impl->createRequest(PROTO_REMOVEPORT);
 	string strRequestData = m_impl->createRemovePortRequest(m_id, name);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -386,7 +386,7 @@ bool This::removePort(const std::string& name) const {
 State This::waitForStop() {
 
 	// open the event stream
-	auto_ptr<EventStreamSocket> socket = openEventStream();
+	unique_ptr<EventStreamSocket> socket = openEventStream();
 	m_impl->setEventSocket(socket);
 
 	// test if stop was requested elsewhere
@@ -398,7 +398,7 @@ State This::waitForStop() {
 
 	while (true) {
 		// waits for a new incoming status
-		auto_ptr<Event> event = m_impl->m_eventSocket->receive();
+		unique_ptr<Event> event = m_impl->m_eventSocket->receive();
 
 		// The socket is canceled.
 		if (event.get() == 0) {
@@ -422,10 +422,10 @@ State This::waitForStop() {
 	return UNKNOWN;
 }
 
-std::auto_ptr<Instance> This::connectToStarter() {
+std::unique_ptr<Instance> This::connectToStarter() {
 
-	if (m_instance.m_starterServer.get() == 0) {
-		return auto_ptr<Instance>(0);
+	if (m_instance.m_starterServer.get() == nullptr) {
+		return unique_ptr<Instance>(nullptr);
 	}
 
 	// Iterate the instances to find the id
@@ -433,11 +433,11 @@ std::auto_ptr<Instance> This::connectToStarter() {
 
 	for (int i = 0; i < instances.size(); i++) {
 		if (instances[i]->getId() == m_instance.m_starterId) {
-			return auto_ptr<Instance>(instances[i]);
+			return unique_ptr<Instance>(std::move(instances[i]));
 		}
 	}
 
-	return auto_ptr<Instance>(0);
+	return unique_ptr<Instance>(nullptr);
 }
 
 void This::handleStopImpl(StopFunctionType function) {
@@ -447,9 +447,9 @@ void This::handleStopImpl(StopFunctionType function) {
 ///////////////////////////////////////////////////////////////////////////////
 // Instance
 
-Instance::Instance(const Server * server, std::auto_ptr<EventStreamSocket>& socket) :
+Instance::Instance(const Server * server, std::unique_ptr<EventStreamSocket>& socket) :
 	m_server(server),
-	m_eventSocket(socket),
+	m_eventSocket(std::move(socket)),
 	m_id(-1),
 	m_pastStates(0),
 	m_initialState(UNKNOWN),
@@ -570,7 +570,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 
 	while (true) {
 		// Waits for a new incoming status
-		auto_ptr<Event> event = m_eventSocket->receive(blocking);
+		unique_ptr<Event> event = m_eventSocket->receive(blocking);
 
 		// The socket is canceled or the non-blocking call returns a null message.
 		if (event.get() == 0) {
@@ -710,11 +710,11 @@ InstanceArray::InstanceArray() :
 
 InstanceArray::InstanceArray(const InstanceArray& array) :
 	m_size(array.m_size),
-	m_array(new auto_ptr<Instance>[m_size]) {
+	m_array(new unique_ptr<Instance>[m_size]) {
 
 	// transferring pointers
 	for (size_t i = 0; i < m_size; i++) {
-		m_array[i] = array.m_array[i];
+		m_array[i] = std::move(array.m_array[i]);
 	}
 }
 
@@ -724,14 +724,14 @@ InstanceArray::~InstanceArray() {
 
 void InstanceArray::allocate(std::size_t size) {
 	m_size = size;
-	m_array = new auto_ptr<Instance>[size];
+	m_array = new unique_ptr<Instance>[size];
 }
 
 std::size_t InstanceArray::size() const {
 	return m_size;
 }
 
-std::auto_ptr<Instance>& InstanceArray::operator[](std::size_t index) {
+std::unique_ptr<Instance>& InstanceArray::operator[](std::size_t index) {
 	return m_array[index];
 }
 
@@ -748,12 +748,12 @@ Publisher::Publisher(const This * application, int publisherPort, int synchroniz
 Publisher::~Publisher() {
 }
 
-std::auto_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
+std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
 	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CREATEPUBLISHER);
 	string strRequestData = This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers);
 
-	auto_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
 	proto::PublisherResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -763,7 +763,7 @@ std::auto_ptr<Publisher> Publisher::create(const std::string& name, int numberOf
 	}
 	int synchronizerPort = requestResponse.synchronizerport();
 
-	return auto_ptr<Publisher>(new Publisher(&This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
+	return unique_ptr<Publisher>(new Publisher(&This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
 }
 
 
@@ -837,7 +837,7 @@ Subscriber::Subscriber(const Server * server, const std::string & url, int publi
 Subscriber::~Subscriber() {
 }
 
-std::auto_ptr<Subscriber> Subscriber::create(Instance & instance, const std::string& publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(Instance & instance, const std::string& publisherName) {
 	try {
 		return instance.m_server->createSubscriber(instance.m_id, publisherName, instance.m_name);
 
@@ -853,7 +853,7 @@ std::auto_ptr<Subscriber> Subscriber::create(Instance & instance, const std::str
 		|| lastState == STOPPED
 		|| lastState == KILLED
 		|| lastState == FAILURE) {
-		return auto_ptr<Subscriber>(0);
+		return unique_ptr<Subscriber>(nullptr);
 	}
 
 	try {
@@ -863,7 +863,7 @@ std::auto_ptr<Subscriber> Subscriber::create(Instance & instance, const std::str
 		// that should not happen
 	}
 
-	return auto_ptr<Subscriber>(0);
+	return unique_ptr<Subscriber>(nullptr);
 }
 
 void Subscriber::init() {
@@ -928,8 +928,8 @@ void Subscriber::cancel() {
 ///////////////////////////////////////////////////////////////////////////
 // Request
 
-Request::Request(std::auto_ptr<RequestImpl> & impl) :
-	m_impl(impl) {
+Request::Request(std::unique_ptr<RequestImpl> & impl) :
+	m_impl(std::move(impl)) {
 }
 
 Request::~Request() {
@@ -959,7 +959,7 @@ void Request::reply(const std::string& response) {
 	m_impl->reply(response);
 }
 
-std::auto_ptr<Instance> Request::connectToRequester() {
+std::unique_ptr<Instance> Request::connectToRequester() {
 
 	// Instantiate the requester server if it does not exist.
 	if (m_requesterServer.get() == 0) {
@@ -971,16 +971,16 @@ std::auto_ptr<Instance> Request::connectToRequester() {
 
 	for (int i = 0; i < instances.size(); i++) {
 		if (instances[i]->getId() == m_impl->m_requesterApplicationId) {
-			return auto_ptr<Instance>(instances[i]);
+			return unique_ptr<Instance>(std::move(instances[i]));
 		}
 	}
 
 	// Not found.
-	return auto_ptr<Instance>(0);
+	return unique_ptr<Instance>(nullptr);
 }
 
-std::auto_ptr<Server> Request::getServer() {
-	return m_requesterServer;
+std::unique_ptr<Server> Request::getServer() {
+	return std::move(m_requesterServer);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -996,14 +996,14 @@ Responder::Responder(const application::This * application, int responderPort, c
 Responder::~Responder() {
 }
 
-std::auto_ptr<Responder> Responder::create(const std::string& name) {
+std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
 	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_REQUESTPORT);
 	string strRequestData = This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName);
 
-	auto_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -1012,7 +1012,7 @@ std::auto_ptr<Responder> Responder::create(const std::string& name) {
 		throw ResponderCreationException(requestResponse.message());
 	}
 
-	return auto_ptr<Responder>(new Responder(&This::m_instance, responderPort, name));
+	return unique_ptr<Responder>(new Responder(&This::m_instance, responderPort, name));
 }
 
 const std::string& Responder::getName() const {
@@ -1023,13 +1023,13 @@ void Responder::cancel() {
 	m_impl->cancel();
 }
 
-std::auto_ptr<Request> Responder::receive() {
+std::unique_ptr<Request> Responder::receive() {
 
-	auto_ptr<RequestImpl> requestImpl = m_impl->receive();
-	if (requestImpl.get() == 0) {
-		return auto_ptr<Request>(0);
+	unique_ptr<RequestImpl> requestImpl = m_impl->receive();
+	if (requestImpl.get() == nullptr) {
+		return unique_ptr<Request>(nullptr);
 	}
-	return auto_ptr<Request>(new Request(requestImpl));
+	return unique_ptr<Request>(new Request(requestImpl));
 }
 
 bool Responder::hasEnded() const {
@@ -1049,7 +1049,7 @@ Requester::Requester(const application::This * application, const std::string& u
 Requester::~Requester() {
 }
 
-std::auto_ptr<Requester> Requester::create(Instance & instance, const std::string& name) {
+std::unique_ptr<Requester> Requester::create(Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
 	string responderUrl = instance.getUrl();
@@ -1062,7 +1062,7 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CONNECTPORT);
 	string strRequestData = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
 
-	auto_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 	reply.reset();
@@ -1096,7 +1096,7 @@ std::auto_ptr<Requester> Requester::create(Instance & instance, const std::strin
 		throw RequesterCreationException(requestResponse.message());
 	}
 
-	return auto_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
+	return unique_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
 }
 
 const std::string& Requester::getName() const {

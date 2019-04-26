@@ -99,7 +99,7 @@ void Services::initStatus() {
 	// get the status port
 	string strRequestType = m_impl->createRequest(PROTO_STATUS);
 	string strRequestData = m_impl->createShowStatusRequest();
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -116,7 +116,7 @@ void Services::initStatus() {
 	m_serverStatusEndpoint = ss.str();
 }
 
-std::auto_ptr<EventStreamSocket> Services::openEventStream() {
+std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 
 	// init the status if needed
 	if (m_statusPort == 0) {
@@ -137,7 +137,7 @@ std::auto_ptr<EventStreamSocket> Services::openEventStream() {
 	string strRequestData = m_impl->createInitRequest();
 	m_impl->waitForSubscriber(subscriber, strRequestType, strRequestData, m_serverEndpoint);
 
-	return auto_ptr<EventStreamSocket>(new EventStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
+	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
 }
 
 }

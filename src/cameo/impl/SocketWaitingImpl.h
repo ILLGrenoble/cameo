@@ -27,12 +27,12 @@ namespace cameo {
 class SocketWaitingImpl : public WaitingImpl {
 
 public:
-	SocketWaitingImpl(std::auto_ptr<zmq::socket_t>& socket, const std::string& message);
+	SocketWaitingImpl(zmq::socket_t* socket, const std::string& message);
 	virtual ~SocketWaitingImpl();
 
 	virtual void cancel();
 
-	std::auto_ptr<zmq::socket_t> m_socket;
+	zmq::socket_t* m_socket;
 	std::string m_message;
 };
 

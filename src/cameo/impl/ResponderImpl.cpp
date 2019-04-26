@@ -56,7 +56,7 @@ void ResponderImpl::cancel() {
 	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
 	string strRequestData = "cancel";
 
-	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
+	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -66,7 +66,7 @@ WaitingImpl * ResponderImpl::waiting() {
 	return new GenericWaitingImpl(bind(&ResponderImpl::cancel, this));
 }
 
-std::auto_ptr<RequestImpl> ResponderImpl::receive() {
+std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 
 	zmq::message_t * message = new zmq::message_t;
 	m_responder->recv(message, 0);
@@ -84,7 +84,7 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 		cerr << "unexpected number of frames, should be 2" << endl;
 		m_ended = true;
 
-		return auto_ptr<RequestImpl>(0);
+		return unique_ptr<RequestImpl>(nullptr);
 	}
 
 	// Create the reply
@@ -93,7 +93,7 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 	zmq::message_t * reply = new zmq::message_t(size);
 	memcpy((void *) reply->data(), data.c_str(), size);
 
-	auto_ptr<RequestImpl> result;
+	unique_ptr<RequestImpl> result;
 
 	if (messageType.type() == proto::MessageType_Type_REQUEST) {
 
@@ -102,7 +102,7 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 		messageRequest.ParseFromArray((*message).data(), (*message).size());
 
 		// Create the request
-		result = auto_ptr<RequestImpl>(new RequestImpl(m_application,
+		result = unique_ptr<RequestImpl>(new RequestImpl(m_application,
 				messageRequest.applicationname(),
 				messageRequest.applicationid(),
 				messageRequest.message(),
@@ -136,8 +136,8 @@ std::auto_ptr<RequestImpl> ResponderImpl::receive() {
 
 void ResponderImpl::terminate() {
 
-	if (m_responder.get() != 0) {
-		m_responder.reset(0);
+	if (m_responder.get() != nullptr) {
+		m_responder.reset(nullptr);
 
 		bool success = m_application->removePort(RESPONDER_PREFIX + m_name);
 		if (!success) {

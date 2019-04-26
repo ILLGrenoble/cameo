@@ -64,7 +64,7 @@ public:
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 
-	std::auto_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
+	std::unique_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
 	std::string createShowStreamRequest(int id) const;
 
 	proto::MessageType_Type convertToProtoType(ProtoType type) const;

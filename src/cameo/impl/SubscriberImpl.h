@@ -56,9 +56,9 @@ public:
 	int m_instanceId;
 	std::string m_instanceEndpoint;
 	std::string m_statusEndpoint;
-	std::auto_ptr<zmq::socket_t> m_subscriber;
+	std::unique_ptr<zmq::socket_t> m_subscriber;
 	std::string m_cancelEndpoint;
-	std::auto_ptr<zmq::socket_t> m_cancelPublisher;
+	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
 	bool m_endOfStream;
 
 	static const std::string SYNC;

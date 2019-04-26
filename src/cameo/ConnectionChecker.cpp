@@ -53,7 +53,7 @@ void ConnectionChecker::startThread(int timeoutMs, int pollingTimeMs) {
 	stopThread();
 
 	// Start the thread.
-	m_thread = auto_ptr<boost::thread>(new boost::thread(boost::bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs)));
+	m_thread = unique_ptr<boost::thread>(new boost::thread(boost::bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs)));
 }
 
 void ConnectionChecker::stopThread() {

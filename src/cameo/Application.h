@@ -145,7 +145,7 @@ public:
 	/**
 	 * Connects to the starter application, i.e. the application which started this application.
 	 */
-	static std::auto_ptr<Instance> connectToStarter();
+	static std::unique_ptr<Instance> connectToStarter();
 
 private:
 	void initApplication(int argc, char *argv[]);
@@ -171,10 +171,10 @@ private:
 	std::string m_starterName;
 	int m_starterId;
 
-	std::auto_ptr<Server> m_server;
-	std::auto_ptr<Server> m_starterServer;
+	std::unique_ptr<Server> m_server;
+	std::unique_ptr<Server> m_starterServer;
 
-	std::auto_ptr<WaitingImplSet> m_waitingSet;
+	std::unique_ptr<WaitingImplSet> m_waitingSet;
 
 	static This m_instance;
 	static const std::string RUNNING_STATE;
@@ -219,7 +219,7 @@ public:
 	bool getResult(std::vector<double>& result);
 
 private:
-	Instance(const Server * server, std::auto_ptr<EventStreamSocket>& socket);
+	Instance(const Server * server, std::unique_ptr<EventStreamSocket>& socket);
 
 	void setId(int id);
 	void setName(const std::string& name);
@@ -229,8 +229,8 @@ private:
 	State waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking);
 
 	const Server * m_server;
-	std::auto_ptr<EventStreamSocket> m_eventSocket;
-	std::auto_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<EventStreamSocket> m_eventSocket;
+	std::unique_ptr<WaitingImpl> m_waiting;
 	std::string m_name;
 	int m_id;
 	std::string m_errorMessage;
@@ -253,14 +253,14 @@ public:
 	~InstanceArray();
 
 	std::size_t size() const;
-	std::auto_ptr<Instance>& operator[](std::size_t index);
+	std::unique_ptr<Instance>& operator[](std::size_t index);
 
 private:
 	InstanceArray();
 	void allocate(std::size_t size);
 
 	std::size_t m_size;
-	std::auto_ptr<Instance>* m_array;
+	std::unique_ptr<Instance>* m_array;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -278,7 +278,7 @@ public:
 	 * Returns the publisher with name.
 	 * throws PublisherCreationException.
 	 */
-	static std::auto_ptr<Publisher> create(const std::string& name, int numberOfSubscribers = 0);
+	static std::unique_ptr<Publisher> create(const std::string& name, int numberOfSubscribers = 0);
 
 	const std::string& getName() const;
 	const std::string& getApplicationName() const;
@@ -304,8 +304,8 @@ public:
 private:
 	Publisher(const application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
 
-	std::auto_ptr<PublisherImpl> m_impl;
-	std::auto_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<PublisherImpl> m_impl;
+	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -320,7 +320,7 @@ class Subscriber {
 public:
 	~Subscriber();
 
-	static std::auto_ptr<Subscriber> create(Instance & instance, const std::string& publisherName);
+	static std::unique_ptr<Subscriber> create(Instance & instance, const std::string& publisherName);
 
 	const std::string& getPublisherName() const;
 	const std::string& getInstanceName() const;
@@ -346,8 +346,8 @@ private:
 	Subscriber(const Server * server, const std::string& url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	void init();
 
-	std::auto_ptr<SubscriberImpl> m_impl;
-	std::auto_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<SubscriberImpl> m_impl;
+	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -368,18 +368,18 @@ public:
 	void replyBinary(const std::string& response);
 	void reply(const std::string& response);
 
-	std::auto_ptr<Instance> connectToRequester();
+	std::unique_ptr<Instance> connectToRequester();
 
 	/**
 	 * Transfers the ownership of the requester server.
 	 */
-	std::auto_ptr<Server> getServer();
+	std::unique_ptr<Server> getServer();
 
 private:
-	Request(std::auto_ptr<RequestImpl> & impl);
+	Request(std::unique_ptr<RequestImpl> & impl);
 
-	std::auto_ptr<RequestImpl> m_impl;
-	std::auto_ptr<Server> m_requesterServer;
+	std::unique_ptr<RequestImpl> m_impl;
+	std::unique_ptr<Server> m_requesterServer;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -396,19 +396,19 @@ public:
 	 * Returns the responder with name.
 	 * throws ResponderCreationException.
 	 */
-	static std::auto_ptr<Responder> create(const std::string& name);
+	static std::unique_ptr<Responder> create(const std::string& name);
 
 	const std::string& getName() const;
 
 	void cancel();
-	std::auto_ptr<Request> receive();
+	std::unique_ptr<Request> receive();
 	bool hasEnded() const;
 
 private:
 	Responder(const application::This * application, int responderPort, const std::string& name);
 
-	std::auto_ptr<ResponderImpl> m_impl;
-	std::auto_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<ResponderImpl> m_impl;
+	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::auto_ptr<Requester> create(Instance & instance, const std::string& name);
+	static std::unique_ptr<Requester> create(Instance & instance, const std::string& name);
 
 	const std::string& getName() const;
 
@@ -441,8 +441,8 @@ public:
 private:
 	Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 
-	std::auto_ptr<RequesterImpl> m_impl;
-	std::auto_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<RequesterImpl> m_impl;
+	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////

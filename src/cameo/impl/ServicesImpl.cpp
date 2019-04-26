@@ -93,7 +93,7 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	return strRequestStart;
 }
 
-std::auto_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
+std::unique_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
 
 	zmq::socket_t socket(m_context, ZMQ_REQ);
 	try {
@@ -138,7 +138,7 @@ std::auto_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std
 		}
 	}
 
-	auto_ptr<zmq::message_t> reply(new zmq::message_t());
+	unique_ptr<zmq::message_t> reply(new zmq::message_t());
 	socket.recv(reply.get(), 0);
 
 	return reply;
@@ -347,7 +347,7 @@ std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
 bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout) {
 
 	try {
-		auto_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
+		unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
 
 		if (reply.get() != 0) {
 			return true;
@@ -386,7 +386,7 @@ void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
 	string strRequestType = createRequest(PROTO_SUBSCRIBEPUBLISHER);
 	string strRequestData = createSubscribePublisherRequest();
 
-	auto_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
+	unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 }
