@@ -39,7 +39,7 @@ class EventStreamSocket {
 public:
 	~EventStreamSocket();
 
-	std::auto_ptr<Event> receive(bool blocking = true);
+	std::unique_ptr<Event> receive(bool blocking = true);
 	void cancel();
 
 private:
@@ -47,7 +47,7 @@ private:
 
 	WaitingImpl * waiting();
 
-	std::auto_ptr<SocketImpl> m_impl;
+	std::unique_ptr<SocketImpl> m_impl;
 };
 
 }

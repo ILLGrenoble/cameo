@@ -88,7 +88,7 @@ void RequesterImpl::sendBinary(const std::string& request) {
 	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
-	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -117,7 +117,7 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::s
 	requestCommand.set_requesterport(m_requesterPort);
 	requestCommand.SerializeToString(&strRequestData);
 
-	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -182,7 +182,7 @@ void RequesterImpl::cancel() {
 	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
 	string strRequestData = "cancel";
 
-	auto_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());
+	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -190,8 +190,8 @@ void RequesterImpl::cancel() {
 
 void RequesterImpl::terminate() {
 
-	if (m_requester.get() != 0) {
-		m_requester.reset(0);
+	if (m_requester.get() != nullptr) {
+		m_requester.reset(nullptr);
 
 		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 		if (!success) {

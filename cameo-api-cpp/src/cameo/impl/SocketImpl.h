@@ -34,8 +34,8 @@ public:
 	void cancel();
 	void close();
 
-	std::auto_ptr<zmq::socket_t> m_socket;
-	std::auto_ptr<zmq::socket_t> m_cancelSocket;
+	std::unique_ptr<zmq::socket_t> m_socket;
+	std::unique_ptr<zmq::socket_t> m_cancelSocket;
 
 	static const std::string CANCEL;
 };

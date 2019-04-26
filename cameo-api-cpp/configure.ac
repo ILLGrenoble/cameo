@@ -4,8 +4,8 @@
 #
 # -----------------------------------------------------------------------------
 
-AC_INIT(cameo-api-cpp, 0.1.4)
-LIBRARY_VERSION=0:1:4
+AC_INIT(cameo-api-cpp, 0.2.0)
+LIBRARY_VERSION=0:2:0
 
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(src/cameo/Application.cpp)
@@ -23,8 +23,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_SUBST(LIBRARY_VERSION)
 
-# temporarily disabled
-#AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_11
+
 AX_PTHREAD(,[AC_MSG_ERROR([Posix threads required])])
 AX_BOOST_BASE([1.41],, [AC_MSG_ERROR([Boost 1.41 required])])
 AX_BOOST_DATE_TIME

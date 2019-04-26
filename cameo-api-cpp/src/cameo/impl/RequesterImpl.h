@@ -57,7 +57,7 @@ public:
 	std::string m_name;
 	int m_responderId;
 	int m_requesterId;
-	std::auto_ptr<zmq::socket_t> m_requester;
+	std::unique_ptr<zmq::socket_t> m_requester;
 
 	static const std::string REQUESTER_PREFIX;
 

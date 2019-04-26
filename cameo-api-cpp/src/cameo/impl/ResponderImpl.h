@@ -41,13 +41,13 @@ public:
 	void cancel();
 	WaitingImpl * waiting();
 
-	std::auto_ptr<RequestImpl> receive();
+	std::unique_ptr<RequestImpl> receive();
 	void terminate();
 
 	const application::This * m_application;
 	int m_responderPort;
 	std::string m_name;
-	std::auto_ptr<zmq::socket_t> m_responder;
+	std::unique_ptr<zmq::socket_t> m_responder;
 	bool m_ended;
 
 	static const std::string RESPONDER_PREFIX;

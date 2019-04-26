@@ -88,25 +88,25 @@ int Server::getAvailableTimeout() const {
 	}
 }
 
-std::auto_ptr<application::Instance> Server::makeInstance() {
-	auto_ptr<EventStreamSocket> socket = Services::openEventStream();
-	return auto_ptr<application::Instance>(new application::Instance(this, socket));
+std::unique_ptr<application::Instance> Server::makeInstance() {
+	unique_ptr<EventStreamSocket> socket = Services::openEventStream();
+	return unique_ptr<application::Instance>(new application::Instance(this, socket));
 }
 
-std::auto_ptr<application::Instance> Server::start(const std::string& name, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, Option options) {
 	return start(name, vector<string>(), options);
 }
 
-std::auto_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
 
-	auto_ptr<application::Instance> instance = makeInstance();
+	unique_ptr<application::Instance> instance = makeInstance();
 
 	instance->setName(name);
 	string strRequestType = m_impl->createRequest(PROTO_START);
 	string strRequestData = m_impl->createStartRequest(name, args, application::This::getReference());
 
 	try {
-		auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+		unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 		proto::RequestResponse requestResponse;
 		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -137,7 +137,7 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 		strRequestData = m_impl->createStopRequest(id);
 	}
 
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -145,9 +145,9 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	return Response(requestResponse.value(), requestResponse.message());
 }
 
-std::auto_ptr<application::Instance> Server::stop(int id, bool immediately) {
+std::unique_ptr<application::Instance> Server::stop(int id, bool immediately) {
 
-	auto_ptr<application::Instance> instance = makeInstance();
+	unique_ptr<application::Instance> instance = makeInstance();
 
 	try {
 		Response response = stopApplicationAsynchronously(id, immediately);
@@ -174,7 +174,7 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 
 	string strRequestType = m_impl->createRequest(PROTO_CONNECT);
 	string strRequestData = m_impl->createConnectRequest(name);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::ApplicationInfoListResponse response;
 	response.ParseFromArray((*reply).data(), (*reply).size());
@@ -187,7 +187,7 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 	for (int i = 0; i < response.applicationinfo_size(); ++i) {
 		proto::ApplicationInfo info = response.applicationinfo(i);
 
-		auto_ptr<application::Instance> instance = makeInstance();
+		unique_ptr<application::Instance> instance = makeInstance();
 
 		instance->setName(info.name());
 		int applicationId = info.id();
@@ -200,7 +200,7 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 			instance->setInitialState(info.applicationstate());
 			instance->setPastStates(info.pastapplicationstates());
 
-			instances.m_array[i] = instance;
+			instances.m_array[i] = std::move(instance);
 		}
 	}
 
@@ -212,7 +212,7 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 	for (int i = 0; i < response.applicationinfo_size(); ++i) {
 
 		if (instances.m_array[i].get() != 0) {
-			aliveInstances[j] = instances.m_array[i];
+			aliveInstances[j] = std::move(instances.m_array[i]);
 			j++;
 		}
 	}
@@ -220,16 +220,16 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 	return aliveInstances;
 }
 
-std::auto_ptr<application::Instance> Server::connect(const std::string& name) {
+std::unique_ptr<application::Instance> Server::connect(const std::string& name) {
 
 	application::InstanceArray instances = connectAll(name);
 
 	if (instances.size() == 0) {
-		auto_ptr<application::Instance> instance = makeInstance();
+		unique_ptr<application::Instance> instance = makeInstance();
 		return instance;
 	}
 
-	return instances[0];
+	return std::move(instances[0]);
 }
 
 void Server::killAllAndWaitFor(const std::string& name) {
@@ -246,7 +246,7 @@ bool Server::isAlive(int id) const {
 
 	string strRequestType = m_impl->createRequest(PROTO_ISALIVE);
 	string strRequestData = m_impl->createIsAliveRequest(id);
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::IsAliveResponse isAliveResponse;
 	isAliveResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -260,7 +260,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	string strRequestType = m_impl->createRequest(PROTO_ALLAVAILABLE);
 	string strRequestData = m_impl->createAllAvailableRequest();
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::AllAvailableResponse allAvailableResponse;
 	allAvailableResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -288,7 +288,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	string strRequestType = m_impl->createRequest(PROTO_SHOWALL);
 	string strRequestData = m_impl->createShowAllRequest();
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 	proto::ApplicationInfoListResponse response;
 	response.ParseFromArray((*reply).data(), (*reply).size());
@@ -323,16 +323,16 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	return infoVector;
 }
 
-std::auto_ptr<EventStreamSocket> Server::openEventStream() {
+std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 	return Services::openEventStream();
 }
 
-std::auto_ptr<application::Subscriber> Server::createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const {
+std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const {
 
 	string strRequestType = m_impl->createRequest(PROTO_CONNECTPUBLISHER);
 	string strRequestData = m_impl->createConnectPublisherRequest(id, publisherName);
 
-	auto_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 	proto::PublisherResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -344,15 +344,15 @@ std::auto_ptr<application::Subscriber> Server::createSubscriber(int id, const st
 	int synchronizerPort = requestResponse.synchronizerport();
 	int numberOfSubscribers = requestResponse.numberofsubscribers();
 
-	auto_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint, m_serverStatusEndpoint));
+	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint, m_serverStatusEndpoint));
 	subscriber->init();
 
 	return subscriber;
 }
 
-std::auto_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
+std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
 
-	auto_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
+	unique_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
 	connectionChecker->startThread(getAvailableTimeout(), pollingTimeMs);
 
 	return connectionChecker;

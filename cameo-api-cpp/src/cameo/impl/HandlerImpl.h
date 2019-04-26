@@ -33,7 +33,7 @@ public:
 	~HandlerImpl();
 
 private:
-	std::auto_ptr<boost::thread> m_thread;
+	std::unique_ptr<boost::thread> m_thread;
 };
 
 }

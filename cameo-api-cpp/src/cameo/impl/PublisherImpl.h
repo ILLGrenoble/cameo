@@ -68,7 +68,7 @@ public:
 	int m_synchronizerPort;
 	std::string m_name;
 	int m_numberOfSubscribers;
-	std::auto_ptr<zmq::socket_t> m_publisher;
+	std::unique_ptr<zmq::socket_t> m_publisher;
 	bool m_ended;
 
 	static const std::string SYNC;

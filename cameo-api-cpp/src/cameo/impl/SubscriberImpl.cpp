@@ -72,7 +72,7 @@ void SubscriberImpl::init() {
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 	m_cancelEndpoint = cancelEndpoint.str();
 
-	m_cancelPublisher = auto_ptr<zmq::socket_t>(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_PUB));
+	m_cancelPublisher = unique_ptr<zmq::socket_t>(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_PUB));
 	m_cancelPublisher->bind(m_cancelEndpoint.c_str());
 
 	m_subscriber->connect(m_cancelEndpoint.c_str());
@@ -294,7 +294,7 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 WaitingImpl * SubscriberImpl::waiting() {
 
 	// Waiting gets the cancel publisher.
-	return new SocketWaitingImpl(m_cancelPublisher, CANCEL);
+	return new SocketWaitingImpl(m_cancelPublisher.get(), CANCEL);
 }
 
 }

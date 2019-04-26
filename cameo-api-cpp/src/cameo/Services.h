@@ -45,7 +45,7 @@ public:
 
 	bool isAvailable(int timeout) const;
 	void initStatus();
-	std::auto_ptr<EventStreamSocket> openEventStream();
+	std::unique_ptr<EventStreamSocket> openEventStream();
 
 	std::string m_serverEndpoint;
 	std::string m_url;

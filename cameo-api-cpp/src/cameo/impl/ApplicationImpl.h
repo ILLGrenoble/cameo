@@ -34,13 +34,13 @@ public:
 	ApplicationImpl();
 	virtual ~ApplicationImpl();
 
-	void setEventSocket(std::auto_ptr<EventStreamSocket>& eventSocket);
+	void setEventSocket(std::unique_ptr<EventStreamSocket>& eventSocket);
 
 	void handleStop(application::This * application, HandlerImpl::FunctionType stop);
 	static void stoppingFunction(application::This * application, HandlerImpl::FunctionType stop);
 
-	std::auto_ptr<EventStreamSocket> m_eventSocket;
-	std::auto_ptr<HandlerImpl> m_stopHandler;
+	std::unique_ptr<EventStreamSocket> m_eventSocket;
+	std::unique_ptr<HandlerImpl> m_stopHandler;
 };
 
 }

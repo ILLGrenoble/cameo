@@ -34,13 +34,13 @@ EventStreamSocket::EventStreamSocket(SocketImpl * impl) : m_impl(impl) {
 EventStreamSocket::~EventStreamSocket() {
 }
 
-std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
+std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 	zmq::message_t * message = m_impl->receive(blocking);
 
 	// In case of non-blocking call, the message can be null.
 	if (message == 0) {
-		return auto_ptr<Event>(0);
+		return unique_ptr<Event>(nullptr);
 	}
 
 	string response(static_cast<char*>(message->data()), message->size());
@@ -54,7 +54,7 @@ std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		protoStatus.ParseFromArray(message->data(), message->size());
 		delete message;
 
-		return auto_ptr<Event>(new StatusEvent(protoStatus.id(), protoStatus.name(), protoStatus.applicationstate(), protoStatus.pastapplicationstates()));
+		return unique_ptr<Event>(new StatusEvent(protoStatus.id(), protoStatus.name(), protoStatus.applicationstate(), protoStatus.pastapplicationstates()));
 
 	} else if (response == "RESULT") {
 
@@ -64,7 +64,7 @@ std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		protoResult.ParseFromArray(message->data(), message->size());
 		delete message;
 
-		return auto_ptr<Event>(new ResultEvent(protoResult.id(), protoResult.name(), protoResult.data()));
+		return unique_ptr<Event>(new ResultEvent(protoResult.id(), protoResult.name(), protoResult.data()));
 
 
 	} else if (response == "PUBLISHER") {
@@ -75,7 +75,7 @@ std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		protoPublisher.ParseFromArray(message->data(), message->size());
 		delete message;
 
-		return auto_ptr<Event>(new PublisherEvent(protoPublisher.id(), protoPublisher.name(), protoPublisher.publishername()));
+		return unique_ptr<Event>(new PublisherEvent(protoPublisher.id(), protoPublisher.name(), protoPublisher.publishername()));
 
 	} else if (response == "PORT") {
 
@@ -85,7 +85,7 @@ std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		protoPort.ParseFromArray(message->data(), message->size());
 		delete message;
 
-		return auto_ptr<Event>(new PortEvent(protoPort.id(), protoPort.name(), protoPort.portname()));
+		return unique_ptr<Event>(new PortEvent(protoPort.id(), protoPort.name(), protoPort.portname()));
 
 	} else if (response == "CANCEL") {
 
@@ -93,11 +93,11 @@ std::auto_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		delete message;
 
 		// Exit with a null event.
-		return auto_ptr<Event>(0);
+		return unique_ptr<Event>(nullptr);
 	}
 
 	cerr << "Cannot process '" << response << "' event" << endl;
-	return auto_ptr<Event>(0);
+	return unique_ptr<Event>(nullptr);
 }
 
 void EventStreamSocket::cancel() {
@@ -106,7 +106,7 @@ void EventStreamSocket::cancel() {
 
 WaitingImpl * EventStreamSocket::waiting() {
 	// We transfer the ownership of cancel socket to WaitingImpl
-	return new SocketWaitingImpl(m_impl->m_cancelSocket, "CANCEL");
+	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), "CANCEL");
 }
 
 }

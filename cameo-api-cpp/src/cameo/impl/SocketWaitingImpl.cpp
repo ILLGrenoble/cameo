@@ -24,7 +24,7 @@ using namespace std;
 
 namespace cameo {
 
-SocketWaitingImpl::SocketWaitingImpl(std::auto_ptr<zmq::socket_t>& socket, const std::string& message) :
+SocketWaitingImpl::SocketWaitingImpl(zmq::socket_t* socket, const std::string& message) :
 	m_socket(socket), m_message(message) {
 
 	// Add the object in the waiting set if This exists.

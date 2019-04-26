@@ -39,12 +39,12 @@ ApplicationImpl::~ApplicationImpl() {
 	}
 }
 
-void ApplicationImpl::setEventSocket(std::auto_ptr<EventStreamSocket>& eventSocket) {
-	m_eventSocket = eventSocket;
+void ApplicationImpl::setEventSocket(std::unique_ptr<EventStreamSocket>& eventSocket) {
+	m_eventSocket = std::move(eventSocket);
 }
 
 void ApplicationImpl::handleStop(application::This * application, HandlerImpl::FunctionType stop) {
-	m_stopHandler = auto_ptr<HandlerImpl>(new HandlerImpl(boost::bind(&ApplicationImpl::stoppingFunction, application, stop)));
+	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(boost::bind(&ApplicationImpl::stoppingFunction, application, stop)));
 }
 
 void ApplicationImpl::stoppingFunction(application::This * application, HandlerImpl::FunctionType stop) {

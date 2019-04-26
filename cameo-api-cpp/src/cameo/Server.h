@@ -60,10 +60,10 @@ public:
 	 */
 	bool isAvailable() const;
 
-	std::auto_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
-	std::auto_ptr<application::Instance> start(const std::string& name, Option options = NONE);
+	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
+	std::unique_ptr<application::Instance> start(const std::string& name, Option options = NONE);
 	application::InstanceArray connectAll(const std::string& name);
-	std::auto_ptr<application::Instance> connect(const std::string& name);
+	std::unique_ptr<application::Instance> connect(const std::string& name);
 
 	/**
 	 * throws ConnectionTimeout
@@ -88,19 +88,19 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::auto_ptr<EventStreamSocket> openEventStream();
+	std::unique_ptr<EventStreamSocket> openEventStream();
 
 	/**
 	 * Creates a connection handler with polling time.
 	 */
-	std::auto_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
+	std::unique_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
 
 private:
-	std::auto_ptr<application::Instance> makeInstance();
+	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
-	std::auto_ptr<application::Instance> stop(int id, bool immediately);
-	std::auto_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
+	std::unique_ptr<application::Instance> stop(int id, bool immediately);
+	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
 	int getAvailableTimeout() const;
 
 	ServicesImpl * m_impl;
