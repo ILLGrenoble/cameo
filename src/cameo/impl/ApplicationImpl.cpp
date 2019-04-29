@@ -15,12 +15,9 @@
  */
 
 #include "ApplicationImpl.h"
-
-#include "../EventStreamSocket.h"
 #include <memory>
-#include <boost/bind.hpp>
-
 #include <iostream>
+#include "../EventStreamSocket.h"
 #include "../Application.h"
 
 using namespace std;
@@ -34,7 +31,7 @@ ApplicationImpl::ApplicationImpl() :
 ApplicationImpl::~ApplicationImpl() {
 
 	// Cancel the event socket in case it was started with a stop handler.
-	if (m_eventSocket.get() != 0) {
+	if (m_eventSocket.get() != nullptr) {
 		m_eventSocket->cancel();
 	}
 }
@@ -44,7 +41,7 @@ void ApplicationImpl::setEventSocket(std::unique_ptr<EventStreamSocket>& eventSo
 }
 
 void ApplicationImpl::handleStop(application::This * application, HandlerImpl::FunctionType stop) {
-	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(boost::bind(&ApplicationImpl::stoppingFunction, application, stop)));
+	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(bind(&ApplicationImpl::stoppingFunction, application, stop)));
 }
 
 void ApplicationImpl::stoppingFunction(application::This * application, HandlerImpl::FunctionType stop) {

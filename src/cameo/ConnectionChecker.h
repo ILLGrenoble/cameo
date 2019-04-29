@@ -17,9 +17,8 @@
 #ifndef CAMEO_CONNECTIONCHECKER_H_
 #define CAMEO_CONNECTIONCHECKER_H_
 
-#include <boost/function.hpp>
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include <functional>
+#include <thread>
 #include <memory>
 #include <string>
 #include <map>
@@ -37,7 +36,7 @@ class ConnectionChecker {
 	friend class Server;
 
 public:
-	typedef boost::function<void (bool)> FunctionType;
+	typedef std::function<void (bool)> FunctionType;
 
 	ConnectionChecker(Server * server, FunctionType handler);
 	~ConnectionChecker();
@@ -51,7 +50,7 @@ private:
 	Server * m_server;
 	std::unique_ptr<TimeCondition> m_waitCondition;
 	FunctionType m_function;
-	std::unique_ptr<boost::thread> m_thread;
+	std::unique_ptr<std::thread> m_thread;
 };
 
 }

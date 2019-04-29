@@ -51,11 +51,11 @@ zmq::message_t * SocketImpl::receive(bool blocking) {
 	// No message.
 	delete message;
 
-	return 0;
+	return nullptr;
 }
 
 void SocketImpl::cancel() {
-	if (m_cancelSocket.get() != 0) {
+	if (m_cancelSocket.get() != nullptr) {
 		zmq::message_t requestType(CANCEL.length());
 		string data("cancel");
 		zmq::message_t requestData(data.length());

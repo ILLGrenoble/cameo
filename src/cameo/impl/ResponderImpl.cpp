@@ -15,16 +15,13 @@
  */
 
 #include "ResponderImpl.h"
-
-#include <boost/bind.hpp>
-#include <sstream>
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ApplicationImpl.h"
 #include "RequestImpl.h"
+#include <sstream>
 
 using namespace std;
-using namespace boost;
 
 namespace cameo {
 
@@ -124,7 +121,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	}
 
 	// send to the client
-	if (reply != 0) {
+	if (reply != nullptr) {
 		m_responder->send(*reply);
 	}
 

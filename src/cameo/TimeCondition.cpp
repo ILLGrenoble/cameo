@@ -15,7 +15,7 @@
  */
 
 #include "TimeCondition.h"
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 #include <iostream>
 
 using namespace std;
@@ -31,21 +31,20 @@ TimeCondition::~TimeCondition() {
 	
 bool TimeCondition::wait(long timeMs) {
 
-	boost::mutex::scoped_lock lock(m_conditionMutex);
-	
-	if (!m_notified) {
-		boost::posix_time::time_duration duration = boost::posix_time::millisec(timeMs);
+	std::unique_lock<std::mutex> lock(m_conditionMutex);
 
-		return m_condition.timed_wait(lock, duration);
+	if (!m_notified) {
+		// Return true if the notification is occurring before the timeout.
+		return (m_condition.wait_for(lock, chrono::milliseconds(timeMs)) == cv_status::no_timeout);
 	}
 	
-	// sure that notify occurred
+	// The notification has occurred.
 	return true;
 }
 
 void TimeCondition::notify() {
 
-	boost::mutex::scoped_lock lock(m_conditionMutex);
+	std::unique_lock<std::mutex> lock(m_conditionMutex);
 
 	m_notified = true;	
 	m_condition.notify_one();

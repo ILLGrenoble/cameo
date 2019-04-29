@@ -39,7 +39,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 	zmq::message_t * message = m_impl->receive(blocking);
 
 	// In case of non-blocking call, the message can be null.
-	if (message == 0) {
+	if (message == nullptr) {
 		return unique_ptr<Event>(nullptr);
 	}
 

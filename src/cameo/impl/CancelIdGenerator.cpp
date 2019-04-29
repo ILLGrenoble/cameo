@@ -20,12 +20,12 @@ using namespace std;
 
 namespace cameo {
 
-boost::mutex CancelIdGenerator::m_mutex;
+std::mutex CancelIdGenerator::m_mutex;
 int CancelIdGenerator::m_currentId = 0;
 
 int CancelIdGenerator::newId() {
 
-	boost::mutex::scoped_lock lock(m_mutex);
+	lock_guard<mutex> lock(m_mutex);
 	m_currentId++;
 
 	return m_currentId;

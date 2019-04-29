@@ -15,20 +15,17 @@
  */
 
 #include "RequesterImpl.h"
-
-#include <boost/bind.hpp>
-#include <sstream>
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ApplicationImpl.h"
+#include <sstream>
 
 using namespace std;
-using namespace boost;
 
 namespace cameo {
 
 const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
-boost::mutex RequesterImpl::m_mutex;
+std::mutex RequesterImpl::m_mutex;
 int RequesterImpl::m_requesterCounter = 0;
 
 RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
@@ -56,7 +53,7 @@ RequesterImpl::~RequesterImpl() {
 
 int RequesterImpl::newRequesterId() {
 
-	boost::mutex::scoped_lock lock(m_mutex);
+	lock_guard<mutex> lock(m_mutex);
 	m_requesterCounter++;
 
 	return m_requesterCounter;

@@ -28,14 +28,14 @@ WaitingImplSet::WaitingImplSet() {
 
 void WaitingImplSet::add(WaitingImpl * waiting) {
 
-	boost::mutex::scoped_lock lock(m_mutex);
+	lock_guard<mutex> lock(m_mutex);
 
 	m_set.insert(waiting);
 }
 
 void WaitingImplSet::remove(WaitingImpl * waiting) {
 
-	boost::mutex::scoped_lock lock(m_mutex);
+	lock_guard<mutex> lock(m_mutex);
 
 	set<WaitingImpl *>::iterator it = m_set.find(waiting);
 
@@ -46,7 +46,7 @@ void WaitingImplSet::remove(WaitingImpl * waiting) {
 
 void WaitingImplSet::cancelAll() {
 
-	boost::mutex::scoped_lock lock(m_mutex);
+	lock_guard<mutex> lock(m_mutex);
 
 	for (set<WaitingImpl *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
 		(*it)->cancel();

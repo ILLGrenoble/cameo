@@ -19,8 +19,7 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
-
+#include <memory>
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"
 

@@ -19,7 +19,6 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "zmq.hpp"
 
 namespace cameo {

@@ -31,7 +31,7 @@ namespace cameo {
 Services::Services() :
 	m_port(0),
 	m_statusPort(0),
-	m_impl(0) {
+	m_impl(nullptr) {
 }
 
 Services::~Services() {
@@ -41,7 +41,7 @@ Services::~Services() {
 
 void Services::terminate() {
 	delete m_impl;
-	m_impl = 0;
+	m_impl = nullptr;
 }
 
 void Services::setImpl(ServicesImpl * impl) {

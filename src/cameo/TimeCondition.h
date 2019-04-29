@@ -17,8 +17,8 @@
 #ifndef CAMEO_TIMECONDITION_H_
 #define CAMEO_TIMECONDITION_H_
 
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition.hpp>
+#include <mutex>
+#include <condition_variable>
 
 namespace cameo {
 
@@ -44,14 +44,14 @@ public:
 	 */
 	bool wait(long timeMs);
 
-		/**
+	/**
 	 * Notifies the condition.
 	 */
 	void notify();
 
 private:
-	boost::mutex m_conditionMutex;
-	boost::condition m_condition;
+	std::mutex m_conditionMutex;
+	std::condition_variable m_condition;
 	bool m_notified;
 };
 

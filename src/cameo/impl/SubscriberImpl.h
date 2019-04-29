@@ -19,8 +19,6 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
-
 #include "SocketWaitingImpl.h"
 #include "zmq.hpp"
 

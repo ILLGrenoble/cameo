@@ -18,7 +18,8 @@
 #define CAMEO_WAITINGIMPLSET_H_
 
 #include <set>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
 
 namespace cameo {
 
@@ -39,7 +40,7 @@ public:
 	void cancelAll();
 
 private:
-	boost::mutex m_mutex;
+	std::mutex m_mutex;
 	std::set<WaitingImpl *> m_set;
 };
 

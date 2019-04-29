@@ -16,9 +16,11 @@
 
 #include "HandlerImpl.h"
 
+using namespace std;
+
 namespace cameo {
 
-HandlerImpl::HandlerImpl(FunctionType function) : m_thread(new boost::thread(function)) {
+HandlerImpl::HandlerImpl(FunctionType function) : m_thread(new thread(function)) {
 }
 
 HandlerImpl::~HandlerImpl() {

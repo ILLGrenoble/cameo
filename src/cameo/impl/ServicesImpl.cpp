@@ -349,7 +349,7 @@ bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::str
 	try {
 		unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
 
-		if (reply.get() != 0) {
+		if (reply.get() != nullptr) {
 			return true;
 		}
 
