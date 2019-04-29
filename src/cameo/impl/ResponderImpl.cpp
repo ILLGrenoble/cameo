@@ -65,17 +65,16 @@ WaitingImpl * ResponderImpl::waiting() {
 
 std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 
-	zmq::message_t * message = new zmq::message_t;
-	m_responder->recv(message, 0);
+	unique_ptr<zmq::message_t> message(new zmq::message_t);
+	m_responder->recv(message.get(), 0);
 
 	// multi-part message, first part is the type
 	proto::MessageType messageType;
 	messageType.ParseFromArray((*message).data(), (*message).size());
 
 	if (message->more()) {
-		delete message;
-		message = new zmq::message_t;
-		m_responder->recv(message, 0);
+		message.reset(new zmq::message_t);
+		m_responder->recv(message.get(), 0);
 
 	} else {
 		cerr << "unexpected number of frames, should be 2" << endl;
@@ -87,7 +86,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	// Create the reply
 	string data = "OK";
 	size_t size = data.length();
-	zmq::message_t * reply = new zmq::message_t(size);
+	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy((void *) reply->data(), data.c_str(), size);
 
 	unique_ptr<RequestImpl> result;
@@ -124,9 +123,6 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	if (reply != nullptr) {
 		m_responder->send(*reply);
 	}
-
-	delete reply;
-	delete message;
 
 	return result;
 }

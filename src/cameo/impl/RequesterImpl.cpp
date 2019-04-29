@@ -122,8 +122,8 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::s
 
 bool RequesterImpl::receiveBinary(std::string& response) {
 
-	zmq::message_t * message = new zmq::message_t;
-	m_requester->recv(message, 0);
+	unique_ptr<zmq::message_t> message(new zmq::message_t);
+	m_requester->recv(message.get(), 0);
 
 	// multi-part message, first part is the type
 	proto::MessageType messageType;
@@ -132,9 +132,8 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 	bool canceled = false;
 
 	if (message->more()) {
-		delete message;
-		message = new zmq::message_t;
-		m_requester->recv(message, 0);
+		message.reset(new zmq::message_t);
+		m_requester->recv(message.get(), 0);
 
 	} else {
 		cerr << "unexpected number of frames, should be 2" << endl;
@@ -151,12 +150,10 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 	// Create the reply
 	string data = "OK";
 	size_t size = data.length();
-	zmq::message_t * reply = new zmq::message_t(size);
+	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy((void *) reply->data(), data.c_str(), size);
 
 	m_requester->send(*reply);
-
-	delete reply;
 
 	return !canceled;
 }

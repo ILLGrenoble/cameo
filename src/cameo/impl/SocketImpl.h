@@ -30,7 +30,7 @@ public:
 	virtual ~SocketImpl();
 
 	void send(const std::string& data);
-	zmq::message_t * receive(bool blocking = true);
+	std::unique_ptr<zmq::message_t> receive(bool blocking = true);
 	void cancel();
 	void close();
 

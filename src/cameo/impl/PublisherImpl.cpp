@@ -85,36 +85,35 @@ bool PublisherImpl::waitForSubscribers() {
 
 	while (counter < m_numberOfSubscribers) {
 
-		zmq::message_t * message = new zmq::message_t;
-		synchronizer.recv(message, 0);
+		unique_ptr<zmq::message_t> message(new zmq::message_t);
+		synchronizer.recv(message.get(), 0);
 
 		// multi-part message, first part is the type
 		proto::MessageType messageType;
 		messageType.ParseFromArray((*message).data(), (*message).size());
 
 		if (message->more()) {
-			delete message;
-			message = new zmq::message_t;
-			synchronizer.recv(message, 0);
+			message.reset(new zmq::message_t);
+			synchronizer.recv(message.get(), 0);
 
 		} else {
 			cerr << "unexpected number of frames, should be 2" << endl;
 			continue;
 		}
 
-		zmq::message_t * reply = nullptr;
+		unique_ptr<zmq::message_t> reply;
 
 		if (messageType.type() == proto::MessageType_Type_INIT) {
-			reply = processInitCommand();
+			reply.reset(processInitCommand());
 
 		} else if (messageType.type() == proto::MessageType_Type_SUBSCRIBEPUBLISHER) {
 			counter++;
-			reply = processSubscribePublisherCommand();
+			reply.reset(processSubscribePublisherCommand());
 
 		} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
 			canceled = true;
 			counter = m_numberOfSubscribers;
-			reply = processCancelPublisherSyncCommand();
+			reply.reset(processCancelPublisherSyncCommand());
 
 		} else {
 			cerr << "unknown message type " << messageType.type() << endl;
@@ -125,9 +124,6 @@ bool PublisherImpl::waitForSubscribers() {
 		if (reply != nullptr) {
 			synchronizer.send(*reply);
 		}
-
-		delete reply;
-		delete message;
 	}
 
 	return !canceled;
