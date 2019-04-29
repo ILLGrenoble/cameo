@@ -1172,8 +1172,9 @@ int Configuration::getStoppingTime() const {
 ///////////////////////////////////////////////////////////////////////////
 // Info
 
-Info::Info(const std::string& name, int id, State applicationState, State pastApplicationStates, const std::string& args) :
+Info::Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates, const std::string& args) :
 	m_id(id),
+	m_pid(pid),
 	m_applicationState(applicationState),
 	m_pastApplicationStates(pastApplicationStates),
 	m_args(args),
@@ -1200,6 +1201,9 @@ const std::string& Info::getName() const {
 	return m_name;
 }
 
+int Info::getPid() const {
+	return m_pid;
+}
 
 std::string toString(cameo::application::State applicationStates) {
 
