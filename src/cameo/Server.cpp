@@ -297,6 +297,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 		application::Info applicationInfo(info.name(),
 						info.id(),
+						info.pid(),
 						info.applicationstate(),
 						info.pastapplicationstates(),
 						info.args());

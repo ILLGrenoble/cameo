@@ -479,16 +479,18 @@ class Info {
 	friend std::ostream& operator<<(std::ostream&, const Info&);
 
 public:
-	Info(const std::string& name, int id, State applicationState, State pastApplicationStates, const std::string& args);
+	Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates, const std::string& args);
 
 	int getId() const;
 	State getState() const;
 	State getPastStates() const;
 	const std::string& getArgs() const;
 	const std::string& getName() const;
+	int getPid() const;
 
 private:
 	int m_id;
+	int m_pid;
 	State m_applicationState;
 	State m_pastApplicationStates;
 	std::string m_processState;
