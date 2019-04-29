@@ -39,19 +39,16 @@ void SocketImpl::send(const std::string& data) {
 	m_socket->send(messageData);
 }
 
-zmq::message_t * SocketImpl::receive(bool blocking) {
+std::unique_ptr<zmq::message_t> SocketImpl::receive(bool blocking) {
 
 	// Use the message interface.
-	zmq::message_t * message = new zmq::message_t();
-	if (m_socket->recv(message, (blocking ? 0 : ZMQ_DONTWAIT))) {
+	unique_ptr<zmq::message_t> message(new zmq::message_t());
+	if (m_socket->recv(message.get(), (blocking ? 0 : ZMQ_DONTWAIT))) {
 		// The message exists.
 		return message;
 	}
 
-	// No message.
-	delete message;
-
-	return nullptr;
+	return unique_ptr<zmq::message_t>(nullptr);
 }
 
 void SocketImpl::cancel() {

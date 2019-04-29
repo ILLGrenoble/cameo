@@ -119,17 +119,15 @@ bool SubscriberImpl::hasEnded() const {
 bool SubscriberImpl::receiveBinary(std::string& data) {
 
 	while (true) {
-		zmq::message_t * message = new zmq::message_t();
-		m_subscriber->recv(message);
+		unique_ptr<zmq::message_t> message(new zmq::message_t());
+		m_subscriber->recv(message.get());
 
 		string response(static_cast<char*>(message->data()), message->size());
-		delete message;
 
 		if (response == STREAM) {
-			message = new zmq::message_t();
-			m_subscriber->recv(message);
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
 			data = string(static_cast<char*>(message->data()), message->size());
-			delete message;
 
 			return true;
 
@@ -141,12 +139,11 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 			return false;
 
 		} else if (response == STATUS) {
-			message = new zmq::message_t();
-			m_subscriber->recv(message);
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
 
 			proto::StatusEvent protoStatus;
 			protoStatus.ParseFromArray(message->data(), message->size());
-			delete message;
 
 			if (protoStatus.id() == m_instanceId) {
 				application::State state = protoStatus.applicationstate();
@@ -239,22 +236,19 @@ bool SubscriberImpl::receive(std::vector<double>& data) {
 bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data2) {
 
 	while (true) {
-		zmq::message_t * message = new zmq::message_t();
-		m_subscriber->recv(message);
+		unique_ptr<zmq::message_t> message(new zmq::message_t());
+		m_subscriber->recv(message.get());
 
 		string response(static_cast<char*>(message->data()), message->size());
-		delete message;
 
 		if (response == STREAM) {
-			message = new zmq::message_t();
-			m_subscriber->recv(message);
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
 			data1 = string(static_cast<char*>(message->data()), message->size());
-			delete message;
 
-			message = new zmq::message_t();
-			m_subscriber->recv(message);
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
 			data2 = string(static_cast<char*>(message->data()), message->size());
-			delete message;
 
 			return true;
 
@@ -266,12 +260,11 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 			return false;
 
 		} else if (response == STATUS) {
-			message = new zmq::message_t();
-			m_subscriber->recv(message);
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
 
 			proto::StatusEvent protoStatus;
 			protoStatus.ParseFromArray(message->data(), message->size());
-			delete message;
 
 			if (protoStatus.id() == m_instanceId) {
 				application::State state = protoStatus.applicationstate();

@@ -36,7 +36,7 @@ EventStreamSocket::~EventStreamSocket() {
 
 std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
-	zmq::message_t * message = m_impl->receive(blocking);
+	unique_ptr<zmq::message_t> message(m_impl->receive(blocking));
 
 	// In case of non-blocking call, the message can be null.
 	if (message == nullptr) {
@@ -44,7 +44,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 	}
 
 	string response(static_cast<char*>(message->data()), message->size());
-	delete message;
 
 	if (response == "STATUS") {
 
@@ -52,7 +51,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		proto::StatusEvent protoStatus;
 		protoStatus.ParseFromArray(message->data(), message->size());
-		delete message;
 
 		return unique_ptr<Event>(new StatusEvent(protoStatus.id(), protoStatus.name(), protoStatus.applicationstate(), protoStatus.pastapplicationstates()));
 
@@ -62,10 +60,8 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		proto::ResultEvent protoResult;
 		protoResult.ParseFromArray(message->data(), message->size());
-		delete message;
 
 		return unique_ptr<Event>(new ResultEvent(protoResult.id(), protoResult.name(), protoResult.data()));
-
 
 	} else if (response == "PUBLISHER") {
 
@@ -73,7 +69,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		proto::PublisherEvent protoPublisher;
 		protoPublisher.ParseFromArray(message->data(), message->size());
-		delete message;
 
 		return unique_ptr<Event>(new PublisherEvent(protoPublisher.id(), protoPublisher.name(), protoPublisher.publishername()));
 
@@ -83,14 +78,12 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		proto::PortEvent protoPort;
 		protoPort.ParseFromArray(message->data(), message->size());
-		delete message;
 
 		return unique_ptr<Event>(new PortEvent(protoPort.id(), protoPort.name(), protoPort.portname()));
 
 	} else if (response == "CANCEL") {
 
 		message = m_impl->receive();
-		delete message;
 
 		// Exit with a null event.
 		return unique_ptr<Event>(nullptr);
