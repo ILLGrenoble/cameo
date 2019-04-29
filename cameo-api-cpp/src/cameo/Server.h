@@ -102,8 +102,6 @@ private:
 	std::unique_ptr<application::Instance> stop(int id, bool immediately);
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
 	int getAvailableTimeout() const;
-
-	ServicesImpl * m_impl;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

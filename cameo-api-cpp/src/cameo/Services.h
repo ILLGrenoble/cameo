@@ -52,7 +52,7 @@ public:
 	int m_port;
 	int m_statusPort;
 	std::string m_serverStatusEndpoint;
-	ServicesImpl * m_impl;
+	std::unique_ptr<ServicesImpl> m_impl;
 };
 
 }

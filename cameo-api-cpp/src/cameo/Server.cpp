@@ -31,8 +31,7 @@ namespace cameo {
 Server::Server(const std::string& endpoint) :
 	Services() {
 
-	m_impl = new ServicesImpl();
-	Services::setImpl(m_impl);
+	Services::setImpl(new ServicesImpl());
 
 	vector<string> tokens = split(endpoint);
 
