@@ -19,8 +19,8 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"
 
@@ -61,7 +61,7 @@ public:
 
 	static const std::string REQUESTER_PREFIX;
 
-	static boost::mutex m_mutex;
+	static std::mutex m_mutex;
 	static int m_requesterCounter;
 };
 

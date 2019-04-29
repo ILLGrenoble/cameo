@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 18/05/2017
+# Version 29/04/2019
 # defines CAMEO_CFLAGS, CAMEO_LDFLAGS, CAMEO_LIBS
 #
 AC_DEFUN([AC_CAMEO],
@@ -11,9 +11,6 @@ AC_DEFUN([AC_CAMEO],
 
     AC_LIBZMQ
     AC_LIBPROTOBUF_LITE
-    AX_BOOST_DATE_TIME
-	AX_BOOST_THREAD
-	AX_BOOST_SYSTEM
     
     CAMEO_CFLAGS=
     CAMEO_LIBS=
@@ -47,7 +44,7 @@ AC_DEFUN([AC_CAMEO],
             CXXFLAGS="$CXXFLAGS $CAMEO_CFLAGS"
 
             # search for library
-            LIBS="$LIBS $CAMEO_LIBS $LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $BOOST_LDFLAGS $LIBZMQ_LIB $LIBPROTOBUF_LIB $BOOST_THREAD_LIB -lcameo"
+            LIBS="$LIBS $CAMEO_LIBS $LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $LIBZMQ_LIB $LIBPROTOBUF_LIB -lcameo"
 
             AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
                                      [[]])],
@@ -60,7 +57,7 @@ AC_DEFUN([AC_CAMEO],
                 HAVE_CAMEO=1
                 LIBS="$cameo_save_LIBS"
                 CAMEO_LDFLAGS="$LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $CAMEO_LIBS"
-                CAMEO_LIBS="-lcameo $LIBZMQ_LIB $LIBPROTOBUF_LIB $BOOST_THREAD_LIB"
+                CAMEO_LIBS="-lcameo $LIBZMQ_LIB $LIBPROTOBUF_LIB -pthread"
             fi
 
             if test $cameo_found = yes; then

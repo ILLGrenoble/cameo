@@ -19,7 +19,6 @@
 
 #include <memory>
 #include <string>
-#include <stdint.h>
 
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"

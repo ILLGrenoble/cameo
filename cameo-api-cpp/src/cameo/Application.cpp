@@ -75,13 +75,13 @@ State This::parseState(const std::string& value) {
 }
 
 void This::init(int argc, char *argv[]) {
-	if (m_instance.m_impl == 0) {
+	if (m_instance.m_impl == nullptr) {
 		m_instance.initApplication(argc, argv);
 	}
 }
 
 std::string This::getReference() {
-	if (m_instance.m_impl != 0) {
+	if (m_instance.m_impl != nullptr) {
 		ostringstream os;
 		os << getName() << "." << getId() << "@" << getEndpoint();
 		return os.str();
@@ -92,7 +92,7 @@ std::string This::getReference() {
 void This::terminate() {
 
 	// Test if termination is already done.
-	if (m_instance.m_impl == 0) {
+	if (m_instance.m_impl == nullptr) {
 		return;
 	}
 
@@ -105,7 +105,7 @@ void This::terminate() {
 	m_instance.Services::terminate();
 
 	// Ensure that it won't be done twice.
-	m_instance.m_impl = 0;
+	m_instance.m_impl = nullptr;
 }
 
 
@@ -199,7 +199,7 @@ This::~This() {
 	// Do not delete the impl here because there will be order trouble.
 
 	// Terminate the unmanaged application.
-	if (m_impl != 0 && !m_managed) {
+	if (m_impl != nullptr && !m_managed) {
 		terminateUnmanagedApplication();
 	}
 }
@@ -221,7 +221,7 @@ int This::getTimeout() {
 }
 
 const std::string& This::getEndpoint() {
-	if (m_instance.m_impl != 0) {
+	if (m_instance.m_impl != nullptr) {
 		return m_instance.m_serverEndpoint;
 	}
 	static string result;
@@ -234,7 +234,7 @@ Server& This::getServer() {
 
 Server& This::getStarterServer() {
 
-	if (m_instance.m_starterServer.get() == 0) {
+	if (m_instance.m_starterServer.get() == nullptr) {
 		throw StarterServerException();
 	}
 
@@ -401,14 +401,14 @@ State This::waitForStop() {
 		unique_ptr<Event> event = m_impl->m_eventSocket->receive();
 
 		// The socket is canceled.
-		if (event.get() == 0) {
+		if (event.get() == nullptr) {
 			return UNKNOWN;
 		}
 
 		if (event->getId() == m_id) {
 			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
 
-			if (status != 0) {
+			if (status != nullptr) {
 				state = status->getState();
 
 				if (state == STOPPING
@@ -573,20 +573,20 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 		unique_ptr<Event> event = m_eventSocket->receive(blocking);
 
 		// The socket is canceled or the non-blocking call returns a null message.
-		if (event.get() == 0) {
+		if (event.get() == nullptr) {
 			return m_lastState;
 		}
 
 		if (event->getId() == m_id) {
 			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
 
-			if (status != 0) {
+			if (status != nullptr) {
 				State state = status->getState();
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
 				// Call the state handler.
-				if (!handler.empty()) {
+				if (handler != nullptr) {
 					handler(state);
 				}
 
@@ -644,7 +644,7 @@ void Instance::cancelWaitFor() {
 }
 
 State Instance::now() {
-	return waitFor(0, "", 0, false);
+	return waitFor(0, "", nullptr, false);
 }
 
 bool Instance::getBinaryResult(std::string& result) {
@@ -962,7 +962,7 @@ void Request::reply(const std::string& response) {
 std::unique_ptr<Instance> Request::connectToRequester() {
 
 	// Instantiate the requester server if it does not exist.
-	if (m_requesterServer.get() == 0) {
+	if (m_requesterServer.get() == nullptr) {
 		m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint));
 	}
 

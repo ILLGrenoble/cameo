@@ -42,7 +42,7 @@ class Server : private Services {
 	friend std::ostream& operator<<(std::ostream&, const Server&);
 
 public:
-	typedef boost::function<void (bool)> ConnectionCheckerType;
+	typedef std::function<void (bool)> ConnectionCheckerType;
 
 	Server(const std::string& endpoint);
 	~Server();

@@ -17,7 +17,7 @@
 #ifndef CAMEO_CANCELIDGENERATOR_H_
 #define CAMEO_CANCELIDGENERATOR_H_
 
-#include <boost/thread.hpp>
+#include <mutex>
 
 namespace cameo {
 
@@ -30,7 +30,7 @@ public:
 	static int newId();
 
 private:
-	static boost::mutex m_mutex;
+	static std::mutex m_mutex;
 	static int m_currentId;
 };
 

@@ -15,15 +15,12 @@
  */
 
 #include "PublisherImpl.h"
-
-#include <boost/bind.hpp>
-#include <sstream>
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ApplicationImpl.h"
+#include <sstream>
 
 using namespace std;
-using namespace boost;
 
 namespace cameo {
 
@@ -105,7 +102,7 @@ bool PublisherImpl::waitForSubscribers() {
 			continue;
 		}
 
-		zmq::message_t * reply = 0;
+		zmq::message_t * reply = nullptr;
 
 		if (messageType.type() == proto::MessageType_Type_INIT) {
 			reply = processInitCommand();
@@ -125,7 +122,7 @@ bool PublisherImpl::waitForSubscribers() {
 		}
 
 		// send to the client
-		if (reply != 0) {
+		if (reply != nullptr) {
 			synchronizer.send(*reply);
 		}
 
@@ -222,7 +219,7 @@ void PublisherImpl::sendTwoBinaryParts(const std::string& data1, const std::stri
 
 void PublisherImpl::setEnd() {
 
-	if (!m_ended && m_publisher.get() != 0) {
+	if (!m_ended && m_publisher.get() != nullptr) {
 		// send a dummy ENDSTREAM message by the publisher socket
 		string data = "endstream";
 		publish(ENDSTREAM, data.c_str(), data.length());

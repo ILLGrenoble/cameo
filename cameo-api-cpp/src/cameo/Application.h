@@ -17,12 +17,10 @@
 #ifndef CAMEO_APPLICATION_H_
 #define CAMEO_APPLICATION_H_
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <functional>
 #include <vector>
 #include <set>
 #include <memory>
-#include <stdint.h>
 #include "InvalidArgumentException.h"
 #include "UnmanagedApplicationException.h"
 #include "SocketException.h"
@@ -95,7 +93,7 @@ class This : private Services {
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 
-	typedef boost::function<void ()> StopFunctionType;
+	typedef std::function<void ()> StopFunctionType;
 
 public:
 	This();
@@ -188,7 +186,7 @@ class Instance {
 	friend std::ostream& operator<<(std::ostream&, const Instance&);
 
 public:
-	typedef boost::function<void (State)> StateHandlerType;
+	typedef std::function<void (State)> StateHandlerType;
 
 	~Instance();
 
@@ -203,9 +201,9 @@ public:
 	bool stop();
 	bool kill();
 
-	State waitFor(StateHandlerType handler = 0);
-	State waitFor(int states, StateHandlerType handler = 0);
-	State waitFor(int states, const std::string& eventName, StateHandlerType handler = 0);
+	State waitFor(StateHandlerType handler = nullptr);
+	State waitFor(int states, StateHandlerType handler = nullptr);
+	State waitFor(int states, const std::string& eventName, StateHandlerType handler = nullptr);
 
 	void cancelWaitFor();
 

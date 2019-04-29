@@ -17,7 +17,7 @@
 #ifndef CAMEO_GENERICWAITINGIMPL_H_
 #define CAMEO_GENERICWAITINGIMPL_H_
 
-#include <boost/function.hpp>
+#include <functional>
 #include "WaitingImpl.h"
 
 namespace cameo {
@@ -25,7 +25,7 @@ namespace cameo {
 class GenericWaitingImpl : public WaitingImpl {
 
 public:
-	typedef boost::function<void ()> Function;
+	typedef std::function<void ()> Function;
 
 	GenericWaitingImpl(Function function);
 	virtual ~GenericWaitingImpl();

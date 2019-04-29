@@ -17,9 +17,8 @@
 #ifndef CAMEO_HANDLERIMPL_H_
 #define CAMEO_HANDLERIMPL_H_
 
-#include <boost/thread.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <thread>
+#include <functional>
 #include <memory>
 
 namespace cameo {
@@ -27,13 +26,13 @@ namespace cameo {
 class HandlerImpl {
 
 public:
-	typedef boost::function<void ()> FunctionType;
+	typedef std::function<void ()> FunctionType;
 
 	HandlerImpl(FunctionType function);
 	~HandlerImpl();
 
 private:
-	std::unique_ptr<boost::thread> m_thread;
+	std::unique_ptr<std::thread> m_thread;
 };
 
 }
