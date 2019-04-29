@@ -40,12 +40,11 @@ Services::~Services() {
 }
 
 void Services::terminate() {
-	delete m_impl;
-	m_impl = nullptr;
+	m_impl.reset();
 }
 
 void Services::setImpl(ServicesImpl * impl) {
-	m_impl = impl;
+	m_impl.reset(impl);
 }
 
 std::vector<std::string> Services::split(const std::string& info) {
