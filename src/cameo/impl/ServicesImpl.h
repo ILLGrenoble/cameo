@@ -60,12 +60,15 @@ public:
 	std::string createRemovePortRequest(int id, const std::string& name) const;
 	std::string createStartedUnmanagedRequest(const std::string& name) const;
 	std::string createTerminatedUnmanagedRequest(int id) const;
+	std::string createOutputRequest(const std::string& name) const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
+	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 
 	std::unique_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
 	std::string createShowStreamRequest(int id) const;
+
 
 	proto::MessageType_Type convertToProtoType(ProtoType type) const;
 
@@ -77,6 +80,8 @@ public:
 	static const std::string PUBLISHER;
 	static const std::string PORT;
 	static const std::string CANCEL;
+	static const std::string STREAM;
+	static const std::string ENDSTREAM;
 };
 
 }

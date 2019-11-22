@@ -30,6 +30,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/CancelIdGenerator.cpp \
 	cameo/ConnectionChecker.cpp \
 	cameo/EventStreamSocket.cpp \
+	cameo/OutputStreamSocket.cpp \
 	cameo/Response.cpp \
 	cameo/impl/PublisherImpl.cpp \
 	cameo/impl/SubscriberImpl.cpp \
@@ -68,6 +69,7 @@ nobase_include_HEADERS = \
 	cameo/ConnectionTimeout.h \
 	cameo/Event.h \
 	cameo/EventStreamSocket.h \
+	cameo/OutputStreamSocket.h \
 	cameo/PublisherCreationException.h \
 	cameo/ResponderCreationException.h \
 	cameo/RequesterCreationException.h \

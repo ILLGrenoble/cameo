@@ -41,6 +41,8 @@ const std::string ServicesImpl::RESULT = "RESULT";
 const std::string ServicesImpl::PUBLISHER = "PUBLISHER";
 const std::string ServicesImpl::PORT = "PORT";
 const std::string ServicesImpl::CANCEL = "CANCEL";
+const std::string ServicesImpl::STREAM = "STREAM";
+const std::string ServicesImpl::ENDSTREAM = "ENDSTREAM";
 
 ServicesImpl::ServicesImpl() :
 	m_context(1), m_timeout(0) {
@@ -207,6 +209,24 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	return subscriber;
 }
 
+zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& endpoint) {
+
+	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
+
+	vector<string> streamList;
+	streamList.push_back(STREAM);
+	streamList.push_back(ENDSTREAM);
+
+	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
+		subscriber->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
+	}
+
+	subscriber->connect(endpoint.c_str());
+
+	return subscriber;
+}
+
+
 zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint) {
 
 	zmq::socket_t * publisher = new zmq::socket_t(m_context, ZMQ_PUB);
@@ -344,6 +364,15 @@ std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
 	return result;
 }
 
+std::string ServicesImpl::createOutputRequest(const std::string& name) const {
+	proto::OutputCommand command;
+	command.set_name(name);
+	std::string result;
+	command.SerializeToString(&result);
+
+	return result;
+}
+
 bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout) {
 
 	try {
@@ -447,6 +476,8 @@ proto::MessageType_Type ServicesImpl::convertToProtoType(ProtoType type) const {
 		return proto::MessageType_Type_STARTEDUNMANAGED;
 	} else if (type == PROTO_TERMINATEDUNMANAGED) {
 		return proto::MessageType_Type_TERMINATEDUNMANAGED;
+	} else if (type == PROTO_OUTPUT) {
+		return proto::MessageType_Type_OUTPUT;
 	} else {
 		cerr << "unsupported proto type" << endl;
 		return proto::MessageType_Type(0);

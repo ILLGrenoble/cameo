@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include "EventStreamSocket.h"
+#include "OutputStreamSocket.h"
 
 namespace cameo {
 
@@ -46,6 +47,7 @@ public:
 	bool isAvailable(int timeout) const;
 	void initStatus();
 	std::unique_ptr<EventStreamSocket> openEventStream();
+	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(int port);
 
 	std::string m_serverEndpoint;
 	std::string m_url;

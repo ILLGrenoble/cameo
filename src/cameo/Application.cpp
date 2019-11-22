@@ -476,6 +476,10 @@ void Instance::setErrorMessage(const std::string& message) {
 	m_errorMessage = message;
 }
 
+void Instance::setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket) {
+	m_outputStreamSocket = std::move(socket);
+}
+
 void Instance::setPastStates(State pastStates) {
 	m_pastStates = pastStates;
 }
@@ -698,6 +702,10 @@ bool Instance::getResult(std::vector<double>& result) {
 	parse(bytes, result);
 
 	return m_hasResult;
+}
+
+std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
+	return m_outputStreamSocket;
 }
 
 ///////////////////////////////////////////////////////////////////////////

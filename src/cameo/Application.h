@@ -36,11 +36,13 @@
 namespace cameo {
 
 enum Option {
-	NONE = 0
+	NONE = 0,
+	OUTPUTSTREAM = 1
 };
 
 class Server;
 class EventStreamSocket;
+class OutputStreamSocket;
 class ApplicationImpl;
 class PublisherImpl;
 class SubscriberImpl;
@@ -216,18 +218,22 @@ public:
 	bool getResult(std::vector<float>& result);
 	bool getResult(std::vector<double>& result);
 
+	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
+
 private:
 	Instance(const Server * server, std::unique_ptr<EventStreamSocket>& socket);
 
 	void setId(int id);
 	void setName(const std::string& name);
 	void setErrorMessage(const std::string& message);
+	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
 	State waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking);
 
 	const Server * m_server;
 	std::unique_ptr<EventStreamSocket> m_eventSocket;
+	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
 	std::unique_ptr<WaitingImpl> m_waiting;
 	std::string m_name;
 	int m_id;
