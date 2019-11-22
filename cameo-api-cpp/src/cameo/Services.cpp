@@ -139,4 +139,17 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
 }
 
+std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port) {
+
+	if (port == -1) {
+		return nullptr;
+	}
+
+	// Prepare our context and subscriber
+	string streamEndpoint = m_url + ":" + to_string(port);
+	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint);
+
+	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(ServicesImpl::STREAM, ServicesImpl::ENDSTREAM, new SocketImpl(subscriber)));
+}
+
 }

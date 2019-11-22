@@ -62,8 +62,8 @@ public:
 
 	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
 	std::unique_ptr<application::Instance> start(const std::string& name, Option options = NONE);
-	application::InstanceArray connectAll(const std::string& name);
-	std::unique_ptr<application::Instance> connect(const std::string& name);
+	application::InstanceArray connectAll(const std::string& name, Option options = NONE);
+	std::unique_ptr<application::Instance> connect(const std::string& name, Option options = NONE);
 
 	/**
 	 * throws ConnectionTimeout
@@ -102,6 +102,7 @@ private:
 	std::unique_ptr<application::Instance> stop(int id, bool immediately);
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
 	int getAvailableTimeout() const;
+	int getStreamPort(const std::string& name);
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

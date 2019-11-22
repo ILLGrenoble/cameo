@@ -96,15 +96,38 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, Op
 	return start(name, vector<string>(), options);
 }
 
+int Server::getStreamPort(const std::string& name) {
+
+	string strRequestType = m_impl->createRequest(PROTO_OUTPUT);
+	string strRequestData = m_impl->createOutputRequest(name);
+
+	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+
+	proto::RequestResponse requestResponse;
+	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+
+	return requestResponse.value();
+}
+
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
+
+	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
 	unique_ptr<application::Instance> instance = makeInstance();
 
 	instance->setName(name);
-	string strRequestType = m_impl->createRequest(PROTO_START);
-	string strRequestData = m_impl->createStartRequest(name, args, application::This::getReference());
 
 	try {
+		if (outputStream) {
+			// we connect to the stream port before starting the application
+			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
+			unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
+			instance->setOutputStreamSocket(socket);
+		}
+
+		string strRequestType = m_impl->createRequest(PROTO_START);
+		string strRequestData = m_impl->createStartRequest(name, args, application::This::getReference());
+
 		unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
 		proto::RequestResponse requestResponse;
@@ -167,7 +190,9 @@ std::unique_ptr<application::Instance> Server::stop(int id, bool immediately) {
 	return instance;
 }
 
-application::InstanceArray Server::connectAll(const std::string& name) {
+application::InstanceArray Server::connectAll(const std::string& name, Option options) {
+
+	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
 	application::InstanceArray instances;
 
@@ -195,6 +220,13 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 		if (isAlive(applicationId)) {
 			aliveInstancesCount++;
 
+			// we connect to the stream port before starting the application
+			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
+			if (outputStream) {
+				unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(info.name()));
+				instance->setOutputStreamSocket(socket);
+			}
+
 			instance->setId(applicationId);
 			instance->setInitialState(info.applicationstate());
 			instance->setPastStates(info.pastapplicationstates());
@@ -219,9 +251,9 @@ application::InstanceArray Server::connectAll(const std::string& name) {
 	return aliveInstances;
 }
 
-std::unique_ptr<application::Instance> Server::connect(const std::string& name) {
+std::unique_ptr<application::Instance> Server::connect(const std::string& name, Option options) {
 
-	application::InstanceArray instances = connectAll(name);
+	application::InstanceArray instances = connectAll(name, options);
 
 	if (instances.size() == 0) {
 		unique_ptr<application::Instance> instance = makeInstance();

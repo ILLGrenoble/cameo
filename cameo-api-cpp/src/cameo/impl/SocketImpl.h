@@ -26,7 +26,7 @@ namespace cameo {
 class SocketImpl {
 
 public:
-	SocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket);
+	SocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket = nullptr);
 	virtual ~SocketImpl();
 
 	void send(const std::string& data);
