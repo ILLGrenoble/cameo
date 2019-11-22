@@ -828,7 +828,11 @@ void Publisher::sendTwoBinaryParts(const std::string& data1, const std::string& 
 }
 
 bool Publisher::hasEnded() const {
-	return m_impl->hasEnded();
+	return m_impl->isEnded();
+}
+
+bool Publisher::isEnded() const {
+	return m_impl->isEnded();
 }
 
 void Publisher::sendEnd() const {
@@ -898,7 +902,15 @@ const std::string& Subscriber::getInstanceEndpoint() const {
 }
 
 bool Subscriber::hasEnded() const {
-	return m_impl->hasEnded();
+	return m_impl->isEnded();
+}
+
+bool Subscriber::isEnded() const {
+	return m_impl->isEnded();
+}
+
+bool Subscriber::isCanceled() const {
+	return m_impl->isCanceled();
 }
 
 bool Subscriber::receiveBinary(std::string& data) const {
@@ -1040,8 +1052,8 @@ std::unique_ptr<Request> Responder::receive() {
 	return unique_ptr<Request>(new Request(requestImpl));
 }
 
-bool Responder::hasEnded() const {
-	return m_impl->m_ended;
+bool Responder::isCanceled() const {
+	return m_impl->m_canceled;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1133,6 +1145,10 @@ bool Requester::receive(std::string& response) {
 
 void Requester::cancel() {
 	m_impl->cancel();
+}
+
+bool Requester::isCanceled() const {
+	return m_impl->m_canceled;
 }
 
 ///////////////////////////////////////////////////////////////////////////

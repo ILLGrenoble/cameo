@@ -33,7 +33,8 @@ RequesterImpl::RequesterImpl(const application::This * application, const std::s
 	m_requesterPort(requesterPort),
 	m_name(name),
 	m_responderId(responderId),
-	m_requesterId(requesterId) {
+	m_requesterId(requesterId),
+	m_canceled(false) {
 
 	stringstream repEndpoint;
 	repEndpoint << url << ":" << responderPort;
@@ -129,22 +130,20 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 	proto::MessageType messageType;
 	messageType.ParseFromArray((*message).data(), (*message).size());
 
-	bool canceled = false;
-
 	if (message->more()) {
 		message.reset(new zmq::message_t);
 		m_requester->recv(message.get(), 0);
 
 	} else {
 		cerr << "unexpected number of frames, should be 2" << endl;
-		canceled = true;
+		m_canceled = true;
 	}
 
 	if (messageType.type() == proto::MessageType_Type_RESPONSE) {
 		response = string(static_cast<char*>(message->data()), message->size());
 
 	} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
-		canceled = true;
+		m_canceled = true;
 	}
 
 	// Create the reply
@@ -155,7 +154,7 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	m_requester->send(*reply);
 
-	return !canceled;
+	return !m_canceled;
 }
 
 bool RequesterImpl::receive(std::string& data) {

@@ -224,7 +224,7 @@ void PublisherImpl::setEnd() {
 	}
 }
 
-bool PublisherImpl::hasEnded() {
+bool PublisherImpl::isEnded() {
 	return m_ended;
 }
 

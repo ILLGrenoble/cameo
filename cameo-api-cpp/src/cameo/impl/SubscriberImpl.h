@@ -33,7 +33,10 @@ public:
 	~SubscriberImpl();
 
 	void init();
-	bool hasEnded() const;
+
+	bool isEnded() const;
+	bool isCanceled() const;
+
 	bool receiveBinary(std::string& data);
 	bool receive(std::string& data);
 	bool receive(std::vector<int32_t>& data);
@@ -57,7 +60,8 @@ public:
 	std::unique_ptr<zmq::socket_t> m_subscriber;
 	std::string m_cancelEndpoint;
 	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
-	bool m_endOfStream;
+	bool m_ended;
+	bool m_canceled;
 
 	static const std::string SYNC;
 	static const std::string STREAM;
