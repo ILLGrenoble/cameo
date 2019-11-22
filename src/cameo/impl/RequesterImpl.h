@@ -58,6 +58,7 @@ public:
 	int m_responderId;
 	int m_requesterId;
 	std::unique_ptr<zmq::socket_t> m_requester;
+	bool m_canceled;
 
 	static const std::string REQUESTER_PREFIX;
 

@@ -31,7 +31,7 @@ ResponderImpl::ResponderImpl(const application::This * application, int responde
 	m_application(application),
 	m_responderPort(responderPort),
 	m_name(name),
-	m_ended(false) {
+	m_canceled(false) {
 
 	// create a socket REP
 	m_responder.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
@@ -78,8 +78,6 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 
 	} else {
 		cerr << "unexpected number of frames, should be 2" << endl;
-		m_ended = true;
-
 		return unique_ptr<RequestImpl>(nullptr);
 	}
 
@@ -112,7 +110,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 		}
 
 	} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
-		m_ended = true;
+		m_canceled = true;
 
 	} else {
 		cerr << "unknown message type " << messageType.type() << endl;

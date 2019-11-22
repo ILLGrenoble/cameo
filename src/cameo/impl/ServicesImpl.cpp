@@ -209,23 +209,24 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	return subscriber;
 }
 
-zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& endpoint) {
+zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
 	vector<string> streamList;
 	streamList.push_back(STREAM);
 	streamList.push_back(ENDSTREAM);
+	streamList.push_back(CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
 		subscriber->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
 	subscriber->connect(endpoint.c_str());
+	subscriber->connect(cancelEndpoint.c_str());
 
 	return subscriber;
 }
-
 
 zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint) {
 

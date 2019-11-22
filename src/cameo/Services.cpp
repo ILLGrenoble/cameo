@@ -147,9 +147,14 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port)
 
 	// Prepare our context and subscriber
 	string streamEndpoint = m_url + ":" + to_string(port);
-	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint);
 
-	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(ServicesImpl::STREAM, ServicesImpl::ENDSTREAM, new SocketImpl(subscriber)));
+	// We define a unique name that depends on the event stream socket object because there can be many (instances).
+	string cancelEndpoint = "inproc://cancel." + to_string(CancelIdGenerator::newId());
+
+	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
+	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint, cancelEndpoint);
+
+	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
 }
 
 }

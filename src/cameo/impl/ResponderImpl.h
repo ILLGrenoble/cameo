@@ -47,7 +47,7 @@ public:
 	int m_responderPort;
 	std::string m_name;
 	std::unique_ptr<zmq::socket_t> m_responder;
-	bool m_ended;
+	bool m_canceled;
 
 	static const std::string RESPONDER_PREFIX;
 };

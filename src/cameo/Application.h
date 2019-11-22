@@ -303,7 +303,14 @@ public:
 	void send(const double* data, std::size_t size) const;
 	void sendTwoBinaryParts(const std::string& data1, const std::string& data2) const;
 	void sendEnd() const;
+
+	/**
+	 * Deprecated.
+	 * TODO remove in next version.
+	 */
 	bool hasEnded() const;
+
+	bool isEnded() const;
 
 private:
 	Publisher(const application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
@@ -331,7 +338,14 @@ public:
 	int getInstanceId() const;
 	const std::string& getInstanceEndpoint() const;
 
+	/**
+	 * Deprecated.
+	 * TODO remove in next version.
+	 */
 	bool hasEnded() const;
+
+	bool isEnded() const;
+	bool isCanceled() const;
 
 	/**
 	 * Returns false if the stream finishes.
@@ -406,7 +420,8 @@ public:
 
 	void cancel();
 	std::unique_ptr<Request> receive();
-	bool hasEnded() const;
+
+	bool isCanceled() const;
 
 private:
 	Responder(const application::This * application, int responderPort, const std::string& name);
@@ -441,6 +456,8 @@ public:
 	bool receive(std::string& response);
 
 	void cancel();
+
+	bool isCanceled() const;
 
 private:
 	Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);

@@ -33,19 +33,17 @@ class Instance;
 
 class Output {
 
+	friend class OutputStreamSocket;
+
 public:
-	Output(int id, const std::string& message, bool end);
+	Output();
 
 	int getId() const;
-
 	const std::string& getMessage() const;
-
-	bool isEnd() const;
 
 private:
 	int m_id;
 	std::string m_message;
-	bool m_end;
 };
 
 
@@ -57,16 +55,18 @@ class OutputStreamSocket {
 public:
 	~OutputStreamSocket();
 
-	std::unique_ptr<Output> receive();
+	bool receive(Output& ouput);
 	void cancel();
+	bool isEnded() const;
+	bool isCanceled() const;
 
 private:
-	OutputStreamSocket(const std::string& streamString, const std::string& endOfStreamString, SocketImpl * impl);
+	OutputStreamSocket(SocketImpl * impl);
 
 	WaitingImpl * waiting();
 
-	std::string m_streamString;
-	std::string m_endOfStreamString;
+	bool m_ended;
+	bool m_canceled;
 
 	std::unique_ptr<SocketImpl> m_impl;
 };

@@ -44,7 +44,8 @@ SubscriberImpl::SubscriberImpl(const Server * server, const std::string & url, i
 	m_instanceId(instanceId),
 	m_instanceEndpoint(instanceEndpoint),
 	m_statusEndpoint(statusEndpoint),
-	m_endOfStream(false) {
+	m_ended(false),
+	m_canceled(false) {
 }
 
 SubscriberImpl::~SubscriberImpl() {
@@ -112,8 +113,12 @@ void SubscriberImpl::init() {
 	}
 }
 
-bool SubscriberImpl::hasEnded() const {
-	return m_endOfStream;
+bool SubscriberImpl::isEnded() const {
+	return m_ended;
+}
+
+bool SubscriberImpl::isCanceled() const {
+	return m_canceled;
 }
 
 bool SubscriberImpl::receiveBinary(std::string& data) {
@@ -132,10 +137,11 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 			return true;
 
 		} else if (response == ENDSTREAM) {
-			m_endOfStream = true;
+			m_ended = true;
 			return false;
 
 		} else if (response == CANCEL) {
+			m_canceled = true;
 			return false;
 
 		} else if (response == STATUS) {
@@ -253,7 +259,7 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 			return true;
 
 		} else if (response == ENDSTREAM) {
-			m_endOfStream = true;
+			m_ended = true;
 			return false;
 
 		} else if (response == CANCEL) {

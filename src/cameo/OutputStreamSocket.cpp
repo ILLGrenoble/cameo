@@ -18,16 +18,16 @@
 
 #include "impl/SocketImpl.h"
 #include "impl/SocketWaitingImpl.h"
+#include "impl/ServicesImpl.h"
 #include "../proto/Messages.pb.h"
+#include <iostream>
 
 using namespace std;
 
 namespace cameo {
 
-Output::Output(int id, const std::string& message, bool end) {
-	m_id = id;
-	m_message = message;
-	m_end = end;
+Output::Output() :
+	m_id(0) {
 }
 
 int Output::getId() const {
@@ -38,38 +38,30 @@ const std::string& Output::getMessage() const {
 	return m_message;
 }
 
-bool Output::isEnd() const {
-	return m_end;
-}
-
-OutputStreamSocket::OutputStreamSocket(const std::string& streamString, const std::string& endOfStreamString, SocketImpl * impl) :
-	m_streamString(streamString),
-	m_endOfStreamString(endOfStreamString),
+OutputStreamSocket::OutputStreamSocket(SocketImpl * impl) :
+	m_ended(false),
+	m_canceled(false),
 	m_impl(impl) {
 }
 
 OutputStreamSocket::~OutputStreamSocket() {
 }
 
-
-std::unique_ptr<Output> OutputStreamSocket::receive() {
+bool OutputStreamSocket::receive(Output& output) {
 
 	unique_ptr<zmq::message_t> message(m_impl->receive());
 
-	// In case of non-blocking call, the message can be null.
-	if (message == nullptr) {
-		return unique_ptr<Output>(nullptr);
-	}
-
 	string response(static_cast<char*>(message->data()), message->size());
 
-	bool end = false;
-
-	if (response == m_streamString) {
-		end = false;
+	if (response == ServicesImpl::STREAM) {
 	}
-	else if (response == m_endOfStreamString) {
-		end = true;
+	else if (response == ServicesImpl::ENDSTREAM) {
+		m_ended = true;
+		return false;
+	}
+	else if (response == ServicesImpl::CANCEL) {
+		m_canceled = true;
+		return false;
 	}
 
 	message = m_impl->receive();
@@ -77,11 +69,22 @@ std::unique_ptr<Output> OutputStreamSocket::receive() {
 	proto::ApplicationStream protoStream;
 	protoStream.ParseFromArray(message->data(), message->size());
 
-	return unique_ptr<Output>(new Output(protoStream.id(), protoStream.message(), end));
+	output.m_id = protoStream.id();
+	output.m_message = protoStream.message();
+
+	return true;
 }
 
 void OutputStreamSocket::cancel() {
 	m_impl->cancel();
+}
+
+bool OutputStreamSocket::isEnded() const {
+	return m_ended;
+}
+
+bool OutputStreamSocket::isCanceled() const {
+	return m_canceled;
 }
 
 WaitingImpl * OutputStreamSocket::waiting() {

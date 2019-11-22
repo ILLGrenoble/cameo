@@ -52,7 +52,7 @@ public:
 	void send(const double* data, std::size_t size);
 	void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
 	void setEnd();
-	bool hasEnded();
+	bool isEnded();
 	void terminate();
 
 	void publish(const std::string& header, const char* data, std::size_t size);
