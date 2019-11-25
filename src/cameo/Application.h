@@ -209,7 +209,21 @@ public:
 
 	void cancelWaitFor();
 
+	/**
+	 * Deprecated.
+	 * TODO remove in next version.
+	 */
 	State now();
+
+	/**
+	 * Gets the last state.
+	 */
+	State getLastState();
+
+	/**
+	 * Returns the actual state and UNKNOWN if the instance does not exist anymore.
+	 */
+	State getActualState() const;
 
 	bool getBinaryResult(std::string& result);
 	bool getResult(std::string& result);

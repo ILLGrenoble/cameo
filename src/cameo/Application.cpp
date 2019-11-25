@@ -648,7 +648,28 @@ void Instance::cancelWaitFor() {
 }
 
 State Instance::now() {
+
+	// First implementation used getLastState().
+	return getActualState();
+}
+
+State Instance::getLastState() {
+
 	return waitFor(0, "", nullptr, false);
+}
+
+State Instance::getActualState() const {
+
+	vector<application::Info> infos = m_server->getApplicationInfos();
+
+	for (vector<application::Info>::const_iterator i = infos.begin(); i != infos.end(); ++i) {
+		application::Info const & info = *i;
+		if (info.getId() == m_id) {
+			return info.getState();
+		}
+	}
+
+	return UNKNOWN;
 }
 
 bool Instance::getBinaryResult(std::string& result) {
