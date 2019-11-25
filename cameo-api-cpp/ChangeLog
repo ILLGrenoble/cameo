@@ -1,12 +1,17 @@
+0.2.1
+-----
+
+* Added access to the output stream of an application.
+
 0.2.0
 -----
 
-* Migration to C++11
+* Migration to C++11.
 
 0.1.4
 -----
 
-* Adapted to gcc 6.3.0
+* Adapted to gcc 6.3.0.
 
 0.1.3
 -----
