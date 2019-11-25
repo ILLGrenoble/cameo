@@ -234,7 +234,7 @@ public class PublisherImpl {
 		}
 	}
 
-	public boolean hasEnded() {
+	public boolean isEnded() {
 		return ended;
 	}
 	

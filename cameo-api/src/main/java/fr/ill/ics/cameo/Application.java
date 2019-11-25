@@ -664,8 +664,8 @@ public class Application {
 			impl.sendEnd();
 		}
 		
-		public boolean hasEnded() {
-			return impl.hasEnded();
+		public boolean isEnded() {
+			return impl.isEnded();
 		}
 		
 		public void terminate() {
@@ -716,8 +716,12 @@ public class Application {
 			return impl.getInstanceEndpoint();
 		}
 		
-		public boolean hasEnded() {
-			return impl.hasEnded();
+		public boolean isEnded() {
+			return impl.isEnded();
+		}
+		
+		public boolean isCanceled() {
+			return impl.isCanceled();
 		}
 				
 		/**
@@ -913,6 +917,14 @@ public class Application {
 			impl.cancel();			
 		}
 		
+		public boolean isEnded() {
+			return impl.isEnded();
+		}
+		
+		public boolean isCanceled() {
+			return impl.isCanceled();
+		}
+				
 		public void terminate() {
 			impl.terminate();
 		}
@@ -968,6 +980,14 @@ public class Application {
 		
 		public String receiveString() {
 			return impl.receiveString();
+		}
+		
+		public void cancel() {
+			impl.cancel();			
+		}
+		
+		public boolean isCanceled() {
+			return impl.isCanceled();
 		}
 		
 		public void terminate() {

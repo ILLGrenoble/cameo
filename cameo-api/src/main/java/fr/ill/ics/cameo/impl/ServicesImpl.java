@@ -39,7 +39,6 @@ public class ServicesImpl {
 	protected int statusPort;
 	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
-	protected String cancelEndpoint;
 	
 	protected static final String STREAM = "STREAM";
 	protected static final String ENDSTREAM = "ENDSTREAM";
@@ -49,13 +48,8 @@ public class ServicesImpl {
 	protected static final String PORT = "PORT";
 	protected static final String CANCEL = "CANCEL";
 	
-	protected String getCancelEndpoint() {
-		return cancelEndpoint;
-	}
-	
 	final protected void init() {
 		this.context = new Zmq.Context();
-		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 	}
 	
 	public int getTimeout() {
@@ -161,7 +155,9 @@ public class ServicesImpl {
 		subscriber.subscribe(PUBLISHER);
 		subscriber.subscribe(PORT);
 		
-		subscriber.connect(getCancelEndpoint());
+		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
+		
+		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(CANCEL);
 		
 		// polling to wait for connection
@@ -178,7 +174,10 @@ public class ServicesImpl {
 			}
 		}
 		
-		return new EventStreamSocket(context, subscriber);
+		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
+		cancelPublisher.bind(cancelEndpoint);
+		
+		return new EventStreamSocket(context, subscriber, cancelPublisher);
 	}
 
 	/**

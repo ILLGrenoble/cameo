@@ -26,6 +26,7 @@ public class EventStreamSocket {
 		
 	private Zmq.Context context;
 	private Zmq.Socket socket;
+	private Zmq.Socket cancelSocket;
 	
 	private static final String STATUS = "STATUS";
 	private static final String RESULT = "RESULT";
@@ -33,10 +34,11 @@ public class EventStreamSocket {
 	private static final String PORT = "PORT";
 	private static final String CANCEL = "CANCEL";
 	
-	public EventStreamSocket(Zmq.Context context, Zmq.Socket subscriber) {
+	public EventStreamSocket(Zmq.Context context, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
 		this.context = context;
 		this.socket = subscriber;
+		this.cancelSocket = cancelPublisher;
 	}
 	
 	public Event recvStr() throws EndOfStream {
@@ -99,6 +101,11 @@ public class EventStreamSocket {
 		}
 	
 		return event;
+	}
+	
+	public void cancel() {
+		cancelSocket.sendMore(CANCEL);
+		cancelSocket.send("cancel");
 	}
 
 	public void destroy() {

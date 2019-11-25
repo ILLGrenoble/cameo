@@ -147,5 +147,9 @@ class EventThread extends Thread {
 			socket.destroy();	
 		}
 	}
+	
+	public void cancel() {
+		socket.cancel();
+	}
 		
 }

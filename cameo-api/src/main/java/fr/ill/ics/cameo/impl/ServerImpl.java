@@ -66,7 +66,6 @@ public class ServerImpl extends ServicesImpl {
 
 	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
 	private EventThread eventThread;
-	private Zmq.Socket cancelPublisher;
 		
 	/**
 	 * Constructor with endpoint.
@@ -91,11 +90,7 @@ public class ServerImpl extends ServicesImpl {
 		serverEndpoint = url + ":" + port;
 		
 		init();
-		
-		// create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
-		cancelPublisher = context.createSocket(Zmq.PUB);
-		cancelPublisher.bind(getCancelEndpoint());
-		
+				
 		// start the status thread if it is possible.
 		EventStreamSocket streamSocket = openEventStream();
 		
@@ -127,11 +122,8 @@ public class ServerImpl extends ServicesImpl {
 		// the thread must terminate after the socket receives the CANCEL message
 		if (eventThread != null) {
 		
-			// sending the CANCEL message to the status socket to stop it
-			cancelPublisher.sendMore(CANCEL);
-			cancelPublisher.send("cancel");
-			
 			try {
+				eventThread.cancel();
 				eventThread.join();
 				
 			} catch (InterruptedException e) {
@@ -506,7 +498,15 @@ public class ServerImpl extends ServicesImpl {
 		subscriber.subscribe(STREAM);
 		subscriber.subscribe(ENDSTREAM);
 		
-		return new OutputStreamSocket(STREAM, ENDSTREAM, context, subscriber);
+		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
+		
+		subscriber.connect(cancelEndpoint);
+		subscriber.subscribe(CANCEL);
+		
+		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
+		cancelPublisher.bind(cancelEndpoint);
+		
+		return new OutputStreamSocket(context, subscriber, cancelPublisher);
 	}
 		
 	/**

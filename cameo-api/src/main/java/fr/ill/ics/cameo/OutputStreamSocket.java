@@ -19,22 +19,24 @@ package fr.ill.ics.cameo;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 
 public class OutputStreamSocket {
 	
-	private String streamString;
-	private String endOfStreamString;
 	private Zmq.Context context;
 	private Zmq.Socket socket;
+	private Zmq.Socket cancelSocket;
+
+	protected static final String STREAM = "STREAM";
+	protected static final String ENDSTREAM = "ENDSTREAM";
+	protected static final String CANCEL = "CANCEL";
+
 	
-	public OutputStreamSocket(String streamString, String endOfStreamString, Zmq.Context context, fr.ill.ics.cameo.Zmq.Socket subscriber) {
+	public OutputStreamSocket(Zmq.Context context, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
-		this.streamString = streamString;
-		this.endOfStreamString = endOfStreamString;
 		this.context = context;
 		this.socket = subscriber;
+		this.cancelSocket = cancelPublisher;		
 	}
 	
 	public Application.Output receive()	{
@@ -43,9 +45,9 @@ public class OutputStreamSocket {
 				
 		boolean end = false;
 		
-		if (response.equals(streamString)) {
+		if (response.equals(STREAM)) {
 			end = false;
-		} else if (response.equals(endOfStreamString)) {
+		} else if (response.equals(ENDSTREAM)) {
 			end = true;
 		} else {
 			System.err.println("bad stream message header " + response);
@@ -61,6 +63,11 @@ public class OutputStreamSocket {
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
+	}
+
+	public void cancel() {
+		cancelSocket.sendMore(CANCEL);
+		cancelSocket.send("cancel");
 	}
 	
 	public void destroy() {

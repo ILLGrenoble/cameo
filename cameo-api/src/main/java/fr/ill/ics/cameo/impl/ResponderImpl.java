@@ -33,6 +33,7 @@ public class ResponderImpl {
 	private String name;
 	private Zmq.Socket responder = null;
 	private boolean ended = false;
+	private boolean canceled = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
 	
 	public ResponderImpl(ApplicationImpl application, Zmq.Context context, int responderPort, String name) {
@@ -102,7 +103,7 @@ public class ResponderImpl {
 				return impl;
 			}
 			else if (type.getType() == Type.CANCEL) {
-				ended = true;
+				canceled = true;
 				
 				return null;
 			}
@@ -139,8 +140,12 @@ public class ResponderImpl {
 		application.tryRequest(requestMessage, endpoint);
 	}
 
-	public boolean hasEnded() {
+	public boolean isEnded() {
 		return ended;
+	}
+	
+	public boolean isCanceled() {
+		return canceled;
 	}
 	
 	public void terminate() {

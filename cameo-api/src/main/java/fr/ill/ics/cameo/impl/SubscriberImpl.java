@@ -45,7 +45,8 @@ public class SubscriberImpl {
 	private String publisherName;
 	private int numberOfSubscribers;
 	private InstanceImpl instance;
-	private boolean endOfStream = false;
+	private boolean ended = false;
+	private boolean canceled = false;
 	private SubscriberWaitingImpl waiting = new SubscriberWaitingImpl(this);
 	
 	SubscriberImpl(ServerImpl server, Zmq.Context context, String url, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
@@ -154,8 +155,12 @@ public class SubscriberImpl {
 		return instance.getEndpoint();
 	}
 	
-	public boolean hasEnded() {
-		return endOfStream;
+	public boolean isEnded() {
+		return ended;
+	}
+	
+	public boolean isCanceled() {
+		return canceled;
 	}
 	
 	/**
@@ -171,10 +176,11 @@ public class SubscriberImpl {
 				return subscriber.recv();
 				
 			} else if (response.equals(ENDSTREAM)) {
-				endOfStream = true;
+				ended = true;
 				return null;
 				
 			} else if (response.equals(CANCEL)) {
+				canceled = true;
 				return null;
 				
 			} else if (response.equals(STATUS)) {
@@ -222,10 +228,11 @@ public class SubscriberImpl {
 				return result;
 				
 			} else if (response.equals(ENDSTREAM)) {
-				endOfStream = true;
+				ended = true;
 				return null;
 				
 			} else if (response.equals(CANCEL)) {
+				canceled = true;
 				return null;
 				
 			} else if (response.equals(STATUS)) {

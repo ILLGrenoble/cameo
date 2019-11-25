@@ -42,6 +42,7 @@ public class RequesterImpl {
 	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
 	private Zmq.Socket requester = null;
+	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
 	public RequesterImpl(ApplicationImpl application, Zmq.Context context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
@@ -140,6 +141,7 @@ public class RequesterImpl {
 				return messageData;
 			
 			} else if (type.getType() == Type.CANCEL) {
+				canceled = true;
 				return null;
 				
 			} else {
@@ -178,6 +180,10 @@ public class RequesterImpl {
 		application.tryRequest(requestMessage, endpoint);
 	}
 
+	public boolean isCanceled() {
+		return canceled;
+	}
+	
 	public void terminate() {
 		
 		waiting.remove();
