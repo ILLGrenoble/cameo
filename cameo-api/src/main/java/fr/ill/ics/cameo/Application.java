@@ -383,11 +383,13 @@ public class Application {
 			impl.cancelWaitFor();
 		}
 		
-		/**
-		 * The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
-		 */
-		public int now() {
-			return impl.now();
+		public int getLastState() {
+			// The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
+			return impl.waitFor(0, null, false);
+		}
+		
+		public int getActualState() {
+			return impl.getActualState();
 		}
 		
 		/**

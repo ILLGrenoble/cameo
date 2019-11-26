@@ -16,7 +16,11 @@
 
 package fr.ill.ics.cameo.impl;
 
+import java.util.List;
+
 import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.Application.Info;
+import fr.ill.ics.cameo.Application.State;
 import fr.ill.ics.cameo.CancelEvent;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.Event;
@@ -183,7 +187,7 @@ public class InstanceImpl extends EventListener {
 	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
 	 * The method is not thread-safe and must not be called concurrently.
 	 */
-	private int waitFor(int states, String eventName, boolean blocking) {
+	public int waitFor(int states, String eventName, boolean blocking) {
 
 		if (!exists()) {
 			return lastState;
@@ -280,17 +284,22 @@ public class InstanceImpl extends EventListener {
 		return waitFor(0);
 	}
 	
-	/**
-	 * The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
-	 */
-	public int now() {
-		return waitFor(0, null, false);
-	}
-	
 	public void cancelWaitFor() {
 		cancel(id);
 	}
 
+	public int getActualState() {
+		List<Info> infos = server.getApplicationInfos(name);
+		
+		for (Info info : infos) {
+			if (info.getId() == id) {
+				return info.getApplicationState();
+			}
+		}
+
+		return State.UNKNOWN;
+	}
+	
 	public void terminate() {
 		// Unregister the status.
 		server.unregisterStatusListener(this);
@@ -374,4 +383,5 @@ public class InstanceImpl extends EventListener {
 	public String toString() {
 		return name + "." + id + "@" + server.getEndpoint();
 	}
+
 }

@@ -1,3 +1,10 @@
+0.1.5
+-----
+
+* Added cancel(), isCanceled(), isEnded() methods to classes with blocking methods.
+* Reviewed cancel strategy for EventStreamSocket and OutputStreamSocket.
+* Removed Instance.now() method and added Instance.getActualState() and Instance.getLastState(). 
+
 0.1.4
 -----
 
