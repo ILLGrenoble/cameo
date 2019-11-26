@@ -19,7 +19,6 @@ package fr.ill.ics.cameo.impl;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import fr.ill.ics.cameo.Application;
-import fr.ill.ics.cameo.EndOfStream;
 import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.EventStreamSocket;
@@ -125,7 +124,12 @@ class EventThread extends Thread {
 		
 		try {
 			while (true) {
-				Event event = socket.recvStr();
+				Event event = socket.receive();
+				
+				if (event == null) {
+					// The stream is canceled.
+					return;
+				}
 				
 				if (event instanceof StatusEvent) {
 					processStatusEvent((StatusEvent)event);
@@ -140,8 +144,6 @@ class EventThread extends Thread {
 					processPortEvent((PortEvent)event);
 				}
 			}
-			
-		} catch (EndOfStream e) {
 			
 		} finally {
 			socket.destroy();	

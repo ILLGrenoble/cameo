@@ -553,13 +553,11 @@ public class Application {
 		
 		private int id;
 		private String message;
-		private boolean end;
 			
-		public Output(int id, String message, boolean end) {
+		public Output(int id, String message) {
 			super();
 			this.id = id;
 			this.message = message;
-			this.end = end;
 		}
 
 		public int getId() {
@@ -568,10 +566,6 @@ public class Application {
 
 		public String getMessage() {
 			return message;
-		}
-		
-		public boolean isEnd() {
-			return end;
 		}
 
 		@Override

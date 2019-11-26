@@ -26,6 +26,8 @@ public class OutputStreamSocket {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
+	private boolean ended = false;
+	private boolean canceled = false;
 
 	protected static final String STREAM = "STREAM";
 	protected static final String ENDSTREAM = "ENDSTREAM";
@@ -43,14 +45,14 @@ public class OutputStreamSocket {
 		
 		String response = this.socket.recvStr();
 				
-		boolean end = false;
-		
 		if (response.equals(STREAM)) {
-			end = false;
-		} else if (response.equals(ENDSTREAM)) {
-			end = true;
-		} else {
-			System.err.println("bad stream message header " + response);
+		}
+		else if (response.equals(ENDSTREAM)) {
+			ended = true;
+			return null;
+		}
+		else if (response.equals(CANCEL)) {
+			canceled = true;
 			return null;
 		}
 				
@@ -58,13 +60,22 @@ public class OutputStreamSocket {
 		
 		try {
 			Messages.ApplicationStream protoStream = Messages.ApplicationStream.parseFrom(messageResponse);
-			return new Application.Output(protoStream.getId(), protoStream.getMessage(), end);
+			return new Application.Output(protoStream.getId(), protoStream.getMessage());
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	}
 
+	
+	public boolean isEnded() {
+		return ended;
+	}
+	
+	public boolean isCanceled() {
+		return canceled;
+	}
+	
 	public void cancel() {
 		cancelSocket.sendMore(CANCEL);
 		cancelSocket.send("cancel");

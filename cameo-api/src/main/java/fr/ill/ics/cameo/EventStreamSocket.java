@@ -27,6 +27,7 @@ public class EventStreamSocket {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
+	private boolean canceled = false;
 	
 	private static final String STATUS = "STATUS";
 	private static final String RESULT = "RESULT";
@@ -41,7 +42,7 @@ public class EventStreamSocket {
 		this.cancelSocket = cancelPublisher;
 	}
 	
-	public Event recvStr() throws EndOfStream {
+	public Event receive() {
 		
 		String response = this.socket.recvStr();
 		Event event = null;
@@ -97,10 +98,15 @@ public class EventStreamSocket {
 			}
 			
 		} else if (response.equals(CANCEL)) {
-			throw new EndOfStream();
+			canceled = true;
+			return null;
 		}
 	
 		return event;
+	}
+	
+	public boolean isCanceled() {
+		return canceled;
 	}
 	
 	public void cancel() {

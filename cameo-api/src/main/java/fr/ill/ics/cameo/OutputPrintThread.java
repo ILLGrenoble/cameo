@@ -32,14 +32,14 @@ public class OutputPrintThread extends Thread {
 			while (true) {
 				Application.Output stream = socket.receive();
 				
-				if (stream != null) {
-					if (stream.isEnd()) {
-						break;
-					}
-									
-					System.out.println(stream.getMessage());
-				}	
+				if (stream == null) {
+					// The stream is finished.
+					return;
+				}
+				
+				System.out.println(stream.getMessage());
 			}
+			
 		} catch (Exception e) {
 			System.out.println("error: " + e.getMessage());
 			
