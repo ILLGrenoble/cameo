@@ -1,4 +1,4 @@
-0.1.5 not deployed
+0.1.5
 -----
 
 * Added cancel(), isCanceled(), isEnded() methods to classes with blocking methods.
