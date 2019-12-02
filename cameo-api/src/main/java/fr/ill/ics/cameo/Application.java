@@ -809,7 +809,7 @@ public class Application {
 		}
 		
 		public String get() {
-			return impl.get().toStringUtf8();
+			return impl.getString();
 		}
 		
 		public byte[][] getTwoBinaryParts() {

@@ -111,7 +111,7 @@ public class RequesterImpl {
 	}
 	
 	public void send(String request) {
-		send(ByteString.copyFromUtf8(request));
+		send(Buffer.serialize(request));
 	}
 	
 	public void sendTwoParts(byte[] request1, byte[] request2) {

@@ -1,3 +1,8 @@
+0.1.6
+-----
+
+* Corrected implementation of Request.get() and Requester.send() to be coherent with C++ using protobuf encoding of strings.
+
 0.1.5
 -----
 

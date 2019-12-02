@@ -57,6 +57,17 @@ public class RequestImpl {
 		return message2;
 	}
 
+	public String getString() {
+		
+		byte[] data = message.toByteArray();
+		
+		if (data == null) {
+			return null;
+		}
+		
+		return Buffer.parseString(data);
+	}
+	
 	public void reply(byte[] response) {
 		
 		Zmq.Msg responseMessage = application.createRequest(Type.RESPONSE);
@@ -85,4 +96,5 @@ public class RequestImpl {
 	public String toString() {
 		return "Request [endpoint=" + requesterEndpoint + ", id=" + requesterApplicationId + "]";
 	}
+
 }
