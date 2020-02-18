@@ -41,7 +41,9 @@ public class RequesterImpl {
 	private int requesterId;
 	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
-	private Zmq.Socket requester = null;
+	private Zmq.Socket requester;
+	private RequestSocket requestSocket;
+	
 	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
@@ -54,7 +56,10 @@ public class RequesterImpl {
 		this.responderId = responderId;
 		this.requesterId = requesterId;
 
-		// create a socket REP
+		// Create the REQ socket.
+		requestSocket = application.createRequestSocket(responderEndpoint);
+		
+		// Create the REP socket.
 		requester = context.createSocket(Zmq.REP);
 		requester.bind("tcp://*:" + requesterPort);
 		
@@ -86,7 +91,7 @@ public class RequesterImpl {
 										.build();
 		requestMessage.add(command.toByteArray());
 		
-		application.tryRequest(requestMessage, responderEndpoint);
+		requestSocket.request(requestMessage);
 	}
 	
 	private void send(ByteString request1, ByteString request2) {
@@ -103,7 +108,7 @@ public class RequesterImpl {
 										.build();
 		requestMessage.add(command.toByteArray());
 		
-		application.tryRequest(requestMessage, responderEndpoint);
+		requestSocket.request(requestMessage);
 	}
 	
 	public void send(byte[] request) {
@@ -193,6 +198,10 @@ public class RequesterImpl {
 	public void terminate() {
 		
 		waiting.remove();
+		
+		// Terminate the request socket.
+		requestSocket.terminate();
+		
 		context.destroySocket(requester);
 		
 		try {
