@@ -10,7 +10,6 @@
 
 	<modules>
 		<module>cameo-com-jzmq</module>
-		<module>cameo-com-jeromq-0.3</module>
 		<module>cameo-com-jeromq</module>
 	</modules>
 
