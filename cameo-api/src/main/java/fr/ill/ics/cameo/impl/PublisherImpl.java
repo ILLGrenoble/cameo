@@ -157,16 +157,13 @@ public class PublisherImpl {
 		CancelPublisherSyncCommand command = CancelPublisherSyncCommand.newBuilder().build();
 		request.add(command.toByteArray());
 		
-		try {
-			Zmq.Msg reply = application.tryRequest(request, endpoint);
-			byte[] messageData = reply.getFirstData();
-			RequestResponse requestResponse = null;
-
-			requestResponse = RequestResponse.parseFrom(messageData);
-		
-		} catch (InvalidProtocolBufferException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		// Create the request socket. We can create it here because it should be called only once.
+		RequestSocket requestSocket = application.createRequestSocket(endpoint);
+			
+		requestSocket.request(request);
+			
+		// Terminate the socket.
+		requestSocket.terminate();
 	}
 
 	public void send(byte[] data) {
