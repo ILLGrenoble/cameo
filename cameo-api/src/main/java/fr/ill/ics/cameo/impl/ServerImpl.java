@@ -649,22 +649,6 @@ public class ServerImpl extends ServicesImpl {
 		return subscriber;
 	}
 	
-	void subscribeToPublisher(String endpoint) throws ConnectionTimeout {
-		
-		Zmq.Msg request = createSubscribePublisherRequest();
-		Zmq.Msg reply = tryRequest(request, endpoint);
-		
-		byte[] messageData = reply.getFirstData();
-		RequestResponse requestResponse = null;
-		
-		try {
-			requestResponse = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-	}
-
 	/**
 	 * create isAlive request
 	 * 

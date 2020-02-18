@@ -114,22 +114,18 @@ public class ServicesImpl {
 		return false;
 	}
 	
-	protected void sendInit(String endpoint) {
+	protected void sendInit() {
 		
 		Zmq.Msg request = createInitRequest();
 		Zmq.Msg reply = null;
 		try {
-			reply = tryRequest(request, endpoint);
+			reply = requestSocket.request(request);
 			reply.destroy();
 			request.destroy();
 
 		} catch (ConnectionTimeout e) {
 			// do nothing
 		}
-	}
-	
-	protected void sendInit() {
-		sendInit(serverEndpoint);
 	}
 	
 	/**

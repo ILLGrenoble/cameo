@@ -472,12 +472,15 @@ public class ApplicationImpl extends ServicesImpl {
 		
 		int requesterId = RequesterImpl.newRequesterId();
 		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
+
+		// Create the responder socket that will be called twice.
+		RequestSocket responderSocket = createRequestSocket(responderEndpoint);
 		
 		try {
 			// First connect to the responder
 			Zmq.Msg request = createConnectPortRequest(responderId, responderPortName);
-					
-			Zmq.Msg reply = tryRequest(request, responderEndpoint);
+			
+			Zmq.Msg reply = responderSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -490,7 +493,7 @@ public class ApplicationImpl extends ServicesImpl {
 				// Retry to connect
 				request = createConnectPortRequest(responderId, responderPortName);
 				
-				reply = tryRequest(request, responderEndpoint);
+				reply = responderSocket.request(request);
 				messageData = reply.getFirstData();
 				requestResponse = RequestResponse.parseFrom(messageData);
 								
@@ -516,6 +519,9 @@ public class ApplicationImpl extends ServicesImpl {
 			
 		} catch (InvalidProtocolBufferException e) {
 			throw new UnexpectedException("Cannot parse response");
+			
+		} finally {
+			responderSocket.terminate();
 		}
 	}
 	
