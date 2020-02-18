@@ -89,6 +89,7 @@ public class ServerImpl extends ServicesImpl {
 		port = Integer.parseInt(tokens[2]);
 		serverEndpoint = url + ":" + port;
 		
+		// Init the context and socket.
 		init();
 				
 		// start the status thread if it is possible.
@@ -162,7 +163,8 @@ public class ServerImpl extends ServicesImpl {
 	private fr.ill.ics.cameo.impl.Response startApplication(String name, String[] args, String instanceReference) throws ConnectionTimeout {
 		
 		Zmq.Msg request = createStartRequest(name, args, instanceReference);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
+				
 		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
@@ -178,7 +180,7 @@ public class ServerImpl extends ServicesImpl {
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
 		Zmq.Msg request = createOutputRequest(name);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
@@ -294,7 +296,7 @@ public class ServerImpl extends ServicesImpl {
 			request = createStopRequest(id);
 		}
 		
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		
 		byte[] messageData = reply.getFirstData();
 		RequestResponse response = null;
@@ -331,7 +333,7 @@ public class ServerImpl extends ServicesImpl {
 		List<InstanceImpl> instances = new ArrayList<InstanceImpl>();
 		
 		Zmq.Msg request = createConnectRequest(name);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 
 		try {
 			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirstData());
@@ -413,7 +415,7 @@ public class ServerImpl extends ServicesImpl {
 	public List<Application.Configuration> getApplicationConfigurations() {
 
 		Zmq.Msg request = createAllAvailableRequest();
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
 
 		try {
@@ -443,7 +445,7 @@ public class ServerImpl extends ServicesImpl {
 	public List<Application.Info> getApplicationInfos() {
 
 		Zmq.Msg request = createShowAllRequest();
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
 
 		try {
@@ -521,7 +523,7 @@ public class ServerImpl extends ServicesImpl {
 	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
 
 		Zmq.Msg request = createShowStreamRequest(id);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		
 		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
@@ -552,7 +554,7 @@ public class ServerImpl extends ServicesImpl {
 	private boolean isAlive(int id) {
 
 		Zmq.Msg request = createIsAliveRequest(id);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		IsAliveResponse requestResponse = null;
 		byte[] messageData = reply.getFirstData();
 		
@@ -578,7 +580,7 @@ public class ServerImpl extends ServicesImpl {
 	public void writeToInputStream(int id, String[] parametersArray) throws WriteException {
 
 		Zmq.Msg request = createSendParametersRequest(id, parametersArray);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		byte[] messageData = reply.getFirstData();
 		RequestResponse requestResponse = null;
 		
@@ -622,7 +624,7 @@ public class ServerImpl extends ServicesImpl {
 	public SubscriberImpl createSubscriber(int applicationId, String publisherName, InstanceImpl instance) throws SubscriberCreationException {
 		
 		Zmq.Msg request = createConnectPublisherRequest(applicationId, publisherName);
-		Zmq.Msg reply = tryRequest(request);
+		Zmq.Msg reply = requestSocket.request(request);
 		byte[] messageData = reply.getFirstData();
 		PublisherResponse requestResponse = null;
 		

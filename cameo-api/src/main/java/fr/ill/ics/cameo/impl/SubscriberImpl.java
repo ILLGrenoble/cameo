@@ -93,7 +93,7 @@ public class SubscriberImpl {
 			String endpoint = url + ":" + synchronizerPort;
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = server.createSocket(endpoint);
+			RequestSocket requestSocket = server.createRequestSocket(endpoint);
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);

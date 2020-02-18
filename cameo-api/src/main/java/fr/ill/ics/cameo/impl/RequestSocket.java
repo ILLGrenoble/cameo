@@ -7,11 +7,20 @@ public class RequestSocket {
 
 	private Zmq.Context context;
 	private Zmq.Socket socket;
-	private int timeout;
+	private int timeout = 0;
 
 	public RequestSocket(Zmq.Context context, Zmq.Socket socket, int timeout) {
 		this.context = context;
 		this.socket = socket;
+		this.timeout = timeout;
+	}
+	
+	public RequestSocket(Zmq.Context context, Zmq.Socket socket) {
+		this.context = context;
+		this.socket = socket;
+	}
+	
+	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 
@@ -28,18 +37,6 @@ public class RequestSocket {
 
 		if (usedTimeout > 0) {
 
-//			PollItem[] items = { new PollItem(socket, ZMQ.Poller.POLLIN) };
-//			ZMQ.poll(items, usedTimeout);
-//			Zmq.Msg reply = null;
-//
-//			// in case a response is returned before timeout
-//			if (items[0].isReadable()) {
-//				reply = Zmq.Msg.recvMsg(socket);
-//
-//			} else {
-//				throw new ConnectionTimeout();
-//			}
-			
 			Zmq.Poller poller = context.createPoller(socket);
 			Zmq.Msg reply = null;
 			if (poller.poll(usedTimeout)) {

@@ -39,6 +39,7 @@ public class ServicesImpl {
 	protected int statusPort;
 	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
+	protected RequestSocket requestSocket;
 	
 	protected static final String STREAM = "STREAM";
 	protected static final String ENDSTREAM = "ENDSTREAM";
@@ -48,8 +49,12 @@ public class ServicesImpl {
 	protected static final String PORT = "PORT";
 	protected static final String CANCEL = "CANCEL";
 	
+	/**
+	 * Initializes the context and the request socket. The serverEndpoint must have been set.
+	 */
 	final protected void init() {
 		this.context = new Zmq.Context();
+		this.requestSocket = this.createRequestSocket(serverEndpoint);
 	}
 	
 	public int getTimeout() {
@@ -77,6 +82,10 @@ public class ServicesImpl {
 	}
 	
 	public void terminate() {
+		
+		// Terminate the request socket.
+		requestSocket.terminate();
+		
 		// destroying the context
 		context.destroy();
 	}
@@ -91,7 +100,7 @@ public class ServicesImpl {
 		Zmq.Msg request = createInitRequest();
 		Zmq.Msg reply = null;
 		try {
-			reply = tryRequest(request, overrideTimeout);
+			reply = requestSocket.request(request, overrideTimeout);
 			reply.destroy();
 			request.destroy();
 			return true;
@@ -133,8 +142,7 @@ public class ServicesImpl {
 		RequestResponse requestResponse = null;
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
-	
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -211,18 +219,6 @@ public class ServicesImpl {
 			
 			if (usedTimeout > 0) {
 			
-//				PollItem[] items = { new PollItem(socket, ZMQ.Poller.POLLIN) };
-//				ZMQ.poll(items, usedTimeout);
-//				Zmq.Msg reply = null;
-//				
-//				// in case a response is returned before timeout
-//				if (items[0].isReadable()) {
-//					reply = Zmq.Msg.recvMsg(socket);
-//	
-//				} else {
-//					throw new ConnectionTimeout();
-//				}
-				
 				Zmq.Poller poller = context.createPoller(socket);
 				Zmq.Msg reply = null;
 				if (poller.poll(usedTimeout)) {
@@ -261,7 +257,7 @@ public class ServicesImpl {
 		return tryRequest(request, serverEndpoint, -1); 
 	}
 	
-	protected RequestSocket createSocket(String endpoint) throws SocketException {
+	protected RequestSocket createRequestSocket(String endpoint) throws SocketException {
 	
 		Zmq.Socket socket = context.createSocket(Zmq.REQ);
 		

@@ -90,9 +90,6 @@ public class ApplicationImpl extends ServicesImpl {
 			throw new InvalidArgumentException(info + " is not a valid argument");
 		}
 
-		// Init the services part.
-		init();
-		
 		url = tokens[0] + ":" + tokens[1];
 		port = Integer.parseInt(tokens[2]);
 		
@@ -100,6 +97,9 @@ public class ApplicationImpl extends ServicesImpl {
 		// but that generates troubles when two applications communicate remotely.
 		// However leave the same value seems to be ok.
 		serverEndpoint = url + ":" + port;
+
+		// Init the context and socket.
+		init();
 		
 		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
 		String nameId = tokens[3];
@@ -183,7 +183,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createSetResultRequest(id, data);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -226,7 +226,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createSetStatusRequest(id, Application.State.RUNNING);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -249,7 +249,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createStartedUnmanagedRequest(name, pid);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -265,7 +265,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createTerminatedUnmanagedRequest(id);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = RequestResponse.parseFrom(messageData);
 						
@@ -284,7 +284,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createGetStatusRequest(id);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			
 			if (messageData == null) {
@@ -376,7 +376,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createCreatePublisherRequest(id, name, numberOfSubscribers);
 
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			PublisherResponse requestResponse = null;
 				
@@ -415,7 +415,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createTerminatePublisherRequest(id, name);
 		
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 
@@ -444,7 +444,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createRequestPortRequest(id, portName);
 
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 				
@@ -503,7 +503,7 @@ public class ApplicationImpl extends ServicesImpl {
 			// Request a requester port
 			request = createRequestPortRequest(id, requesterPortName);
 			
-			reply = tryRequest(request);
+			reply = requestSocket.request(request);
 			messageData = reply.getFirstData();
 			requestResponse = RequestResponse.parseFrom(messageData);
 			
@@ -524,7 +524,7 @@ public class ApplicationImpl extends ServicesImpl {
 		Zmq.Msg request = createRemovePortRequest(id, name);
 
 		try {
-			Zmq.Msg reply = tryRequest(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			byte[] messageData = reply.getFirstData();
 			RequestResponse requestResponse = null;
 				
