@@ -177,7 +177,13 @@ public class RequesterImpl {
 		String content = "cancel";
 		requestMessage.add(content);
 		
-		application.tryRequest(requestMessage, endpoint);
+		// Create the request socket. We can create it here because it should be called only once.
+		RequestSocket requestSocket = application.createRequestSocket(endpoint);
+		
+		requestSocket.request(requestMessage);
+		
+		// Terminate the socket.
+		requestSocket.terminate();
 	}
 
 	public boolean isCanceled() {
