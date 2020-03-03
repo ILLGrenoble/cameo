@@ -72,6 +72,7 @@ public class RequestImpl {
 		responseMessage.add(response);
 
 		// Create a new socket.
+		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
 		RequestSocket requestSocket = application.createRequestSocket(requesterEndpoint);
 		requestSocket.request(responseMessage);
 		requestSocket.terminate();
