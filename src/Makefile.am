@@ -13,6 +13,8 @@ libcameo_la_SOURCES = \
 	cameo/ResultEvent.cpp \
 	cameo/PublisherEvent.cpp \
 	cameo/PortEvent.cpp \
+	cameo/CancelEvent.cpp \
+	cameo/EventListener.cpp \
 	cameo/RemoteException.cpp \
 	cameo/InvalidArgumentException.cpp \
 	cameo/UnmanagedApplicationException.cpp \
@@ -37,6 +39,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/RequestImpl.cpp \
 	cameo/impl/ResponderImpl.cpp \
 	cameo/impl/RequesterImpl.cpp \
+	cameo/EventThread.cpp \
 	cameo/Services.cpp \
 	cameo/impl/ServicesImpl.cpp \
 	cameo/Server.cpp \

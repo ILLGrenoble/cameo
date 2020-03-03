@@ -390,6 +390,28 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 	return connectionChecker;
 }
 
+std::vector<EventListener *> Server::getEventListeners() {
+	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
+	return m_eventListeners;
+}
+
+void Server::registerEventListener(EventListener * listener) {
+	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
+	m_eventListeners.push_back(listener);
+}
+
+void Server::unregisterEventListener(EventListener * listener) {
+	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
+
+	// Iterate to find the listener.
+	for (auto it = m_eventListeners.begin(); it != m_eventListeners.end(); ++it) {
+		if (*it == listener) {
+			m_eventListeners.erase(it);
+			break;
+		}
+	}
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 
 	os << "server@" << server.m_serverEndpoint;
