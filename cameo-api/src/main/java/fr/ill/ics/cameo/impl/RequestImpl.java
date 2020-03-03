@@ -24,7 +24,6 @@ import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
 public class RequestImpl {
 
 	private ApplicationImpl application;
-	Zmq.Context context;
 	private String requesterEndpoint;
 	private ByteString message;
 	private ByteString message2;
@@ -32,10 +31,9 @@ public class RequestImpl {
 	private int requesterApplicationId;
 	private String requesterServerEndpoint;
 	
-	public RequestImpl(ApplicationImpl application, Zmq.Context context, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
+	public RequestImpl(ApplicationImpl application, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
 		
 		this.application = application;
-		this.context = context;
 		this.requesterEndpoint = serverUrl + ":" + requesterPort;
 		this.message = message;
 		
@@ -72,8 +70,11 @@ public class RequestImpl {
 		
 		Zmq.Msg responseMessage = application.createRequest(Type.RESPONSE);
 		responseMessage.add(response);
-		
-		application.tryRequest(responseMessage, requesterEndpoint);
+
+		// Create a new socket.
+		RequestSocket requestSocket = application.createRequestSocket(requesterEndpoint);
+		requestSocket.request(responseMessage);
+		requestSocket.terminate();
 	}
 	
 	public void reply(String response) {

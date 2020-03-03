@@ -1,6 +1,7 @@
 package fr.ill.ics.cameo.impl;
 
 import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.Zmq;
 
 public class RequestSocket {
@@ -9,21 +10,34 @@ public class RequestSocket {
 	private Zmq.Socket socket;
 	private int timeout = 0;
 
-	public RequestSocket(Zmq.Context context, Zmq.Socket socket, int timeout) {
+	public RequestSocket(Zmq.Context context, int timeout) {
 		this.context = context;
-		this.socket = socket;
+		this.socket = context.createSocket(Zmq.REQ);
 		this.timeout = timeout;
 	}
 	
-	public RequestSocket(Zmq.Context context, Zmq.Socket socket) {
+	public RequestSocket(Zmq.Context context) {
 		this.context = context;
-		this.socket = socket;
+		this.socket = context.createSocket(Zmq.REQ);
 	}
 	
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 
+	public void connect(String endpoint) {
+		
+		try {
+			boolean result = socket.connect(endpoint);
+			if (!result) {
+				throw new SocketException("Cannot connect socket to " + endpoint);
+			}
+		}
+		catch (Exception e) {
+			throw new SocketException(e.getMessage());
+		}
+	}
+	
 	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
 		// send request, wait safely for reply

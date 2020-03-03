@@ -31,7 +31,8 @@ public class ResponderImpl {
 	Zmq.Context context;
 	private int responderPort;
 	private String name;
-	private Zmq.Socket responder = null;
+	private Zmq.Socket responder;
+	
 	private boolean ended = false;
 	private boolean canceled = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
@@ -87,7 +88,7 @@ public class ResponderImpl {
 				fr.ill.ics.cameo.proto.Messages.Request request = fr.ill.ics.cameo.proto.Messages.Request.parseFrom(messageData);
 				
 				// Create the request
-				RequestImpl impl = new RequestImpl(application, context, 
+				RequestImpl impl = new RequestImpl(application, 
 						request.getApplicationName(), 
 						request.getApplicationId(), 
 						request.getMessage(), 

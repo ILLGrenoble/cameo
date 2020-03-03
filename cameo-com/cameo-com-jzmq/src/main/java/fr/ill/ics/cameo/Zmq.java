@@ -82,8 +82,9 @@ public class Zmq {
 			socket.send(data, flags);
 		}
 
-		public void connect(String address) {
+		public boolean connect(String address) {
 			socket.connect(address);
+			return true;
 		}
 
 		public void subscribe(String topic) {

@@ -183,90 +183,15 @@ public class ServicesImpl {
 		
 		return new EventStreamSocket(context, subscriber, cancelPublisher);
 	}
-
-	/**
-	 * send request
-	 * 
-	 * @param request
-	 * @return reply
-	 * @throws ConnectionTimeout 
-	 * @throws SocketException 
-	 */
-	protected Zmq.Msg tryRequest(Zmq.Msg request, String endpoint, int overrideTimeout) throws ConnectionTimeout, SocketException {
-		
-		Zmq.Socket socket = context.createSocket(Zmq.REQ);
-		
-		try {
-			try {
-				socket.connect(endpoint);
-			}
-			catch (Exception e) {
-				throw new SocketException(e.getMessage());
-			}
-			
-			// send request, wait safely for reply
-			Zmq.Msg msg = request.duplicate();
-			msg.send(socket);
-			
-			int usedTimeout = timeout;
-			if (overrideTimeout > -1) {
-				usedTimeout = overrideTimeout;
-			}
-			
-			if (usedTimeout > 0) {
-			
-				Zmq.Poller poller = context.createPoller(socket);
-				Zmq.Msg reply = null;
-				if (poller.poll(usedTimeout)) {
-					reply = Zmq.Msg.recvMsg(socket);
-				}
-				else {
-					throw new ConnectionTimeout();
-				}
-		
-				return reply;
-				
-			} else {
-				// direct receive
-				Zmq.Msg reply = Zmq.Msg.recvMsg(socket);
-				
-				return reply;
-			}
-			
-		} finally {
-			// it is better to call destroySocket rather than socket.close()
-			// it is really important to destroy the socket because Java will do it later
-			// with the garbage collector
-			context.destroySocket(socket);
-		}
-	}
-	
-	protected Zmq.Msg tryRequest(Zmq.Msg request, String endpoint) throws ConnectionTimeout {
-		return tryRequest(request, endpoint, -1);
-	}
-	
-	protected Zmq.Msg tryRequest(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
-		return tryRequest(request, serverEndpoint, overrideTimeout); 
-	}
-	
-	protected Zmq.Msg tryRequest(Zmq.Msg request) throws ConnectionTimeout {
-		return tryRequest(request, serverEndpoint, -1); 
-	}
 	
 	protected RequestSocket createRequestSocket(String endpoint) throws SocketException {
-	
-		Zmq.Socket socket = context.createSocket(Zmq.REQ);
 		
-		try {
-			socket.connect(endpoint);
-		}
-		catch (Exception e) {
-			throw new SocketException(e.getMessage());
-		}
+		RequestSocket requestSocket = new RequestSocket(context, timeout);
+		requestSocket.connect(endpoint);
 		
-		return new RequestSocket(context, socket, timeout);
+		return requestSocket;
 	}
-	
+		
 	/**
 	 * 
 	 * @param type

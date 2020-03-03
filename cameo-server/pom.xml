@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server</artifactId>
-	<version>0.1.5</version>
+	<version>0.1.6</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-com-jeromq</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3</version>
 		</dependency>
  		<dependency>
 			<groupId>fr.ill.ics</groupId>
