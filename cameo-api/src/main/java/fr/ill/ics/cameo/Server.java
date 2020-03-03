@@ -106,12 +106,12 @@ public class Server {
 		impl.terminate();
 	}
 	
-	public void registerStatusListener(EventListener listener) {
-		impl.registerStatusListener(listener);
+	public void registerEventListener(EventListener listener) {
+		impl.registerEventListener(listener);
 	}
 	
-	public void unregisterStatusListener(EventListener listener) {
-		impl.unregisterStatusListener(listener);
+	public void unregisterEventListener(EventListener listener) {
+		impl.unregisterEventListener(listener);
 	}
 		
 	/**

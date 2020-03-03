@@ -52,8 +52,8 @@ class EventThread extends Thread {
 		// Send event to listeners.
 		// The EventListener contains the name attribute but not the application id because 
 		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> statusListeners = server.getEventListeners();
-		for (EventListener listener : statusListeners) {
+		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
+		for (EventListener listener : eventListeners) {
 			
 			// If the application name is null, all the status are pushed
 			// otherwise, filter on the name
@@ -76,8 +76,8 @@ class EventThread extends Thread {
 		// Send event to listeners.
 		// The EventListener contains the name attribute but not the application id because 
 		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> resultListeners = server.getEventListeners();
-		for (EventListener listener : resultListeners) {
+		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
+		for (EventListener listener : eventListeners) {
 			
 			// Filter on the name
 			if (listener.getName() != null && listener.getName().equals(result.getName())) {
@@ -91,8 +91,8 @@ class EventThread extends Thread {
 		// Send event to listeners.
 		// The EventListener contains the name attribute but not the application id because 
 		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> statusListeners = server.getEventListeners();
-		for (EventListener listener : statusListeners) {
+		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
+		for (EventListener listener : eventListeners) {
 			
 			// If the application name is null, all the status are pushed
 			// otherwise, filter on the name
@@ -108,8 +108,8 @@ class EventThread extends Thread {
 		// Send event to listeners.
 		// The EventListener contains the name attribute but not the application id because 
 		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> statusListeners = server.getEventListeners();
-		for (EventListener listener : statusListeners) {
+		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
+		for (EventListener listener : eventListeners) {
 			
 			// If the application name is null, all the status are pushed
 			// otherwise, filter on the name

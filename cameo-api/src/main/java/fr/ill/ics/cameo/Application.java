@@ -45,7 +45,7 @@ public class Application {
 			impl = new ApplicationImpl(args);
 			server = new Server(impl.getEndpoint());
 			
-			server.registerStatusListener(impl.getEventListener());
+			server.registerEventListener(impl.getEventListener());
 			
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());

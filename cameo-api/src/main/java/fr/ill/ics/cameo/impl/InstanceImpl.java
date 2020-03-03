@@ -83,10 +83,6 @@ public class InstanceImpl extends EventListener {
 		lastState = state;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
 	public int getId() {
 		return id;
 	}
@@ -104,7 +100,7 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	public String getNameId() {
-		return name + "." + id;
+		return getName() + "." + id;
 	}
 	
 	public boolean hasResult() {
@@ -289,7 +285,7 @@ public class InstanceImpl extends EventListener {
 	}
 
 	public int getActualState() {
-		List<Info> infos = server.getApplicationInfos(name);
+		List<Info> infos = server.getApplicationInfos(getName());
 		
 		for (Info info : infos) {
 			if (info.getId() == id) {
@@ -302,7 +298,7 @@ public class InstanceImpl extends EventListener {
 	
 	public void terminate() {
 		// Unregister the status.
-		server.unregisterStatusListener(this);
+		server.unregisterEventListener(this);
 		
 		// Unregister the waiting.
 		waiting.remove();
@@ -381,7 +377,7 @@ public class InstanceImpl extends EventListener {
 	
 	@Override
 	public String toString() {
-		return name + "." + id + "@" + server.getEndpoint();
+		return getName() + "." + id + "@" + server.getEndpoint();
 	}
 
 }

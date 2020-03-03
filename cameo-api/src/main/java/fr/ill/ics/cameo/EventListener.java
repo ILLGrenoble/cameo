@@ -27,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class EventListener {
 
-	protected String name = null;
+	private String name = null;
 	private LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	
 	/**
@@ -47,7 +47,7 @@ public class EventListener {
 			eventQueue.put(event);
 			
 		} catch (InterruptedException e) {
-			System.out.println("interrupted StatusListener while putting");
+			System.out.println("interrupted EventListener while putting");
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class EventListener {
 			return eventQueue.poll();
 			
 		} catch (InterruptedException e) {
-			System.out.println("interrupted StatusListener while popping");
+			System.out.println("interrupted EventListener while popping");
 			return null;
 		}
 	}
@@ -73,7 +73,7 @@ public class EventListener {
 			eventQueue.put(new CancelEvent(id, name));
 			
 		} catch (InterruptedException e) {
-			System.out.println("interrupted StatusListener while putting");
+			System.out.println("interrupted EventListener while putting");
 		}
 	}
 	

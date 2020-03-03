@@ -138,11 +138,11 @@ public class ServerImpl extends ServicesImpl {
 		super.terminate();
 	}
 	
-	public void registerStatusListener(EventListener listener) {
+	public void registerEventListener(EventListener listener) {
 		eventListeners.add(listener);
 	}
 	
-	public void unregisterStatusListener(EventListener listener) {
+	public void unregisterEventListener(EventListener listener) {
 		eventListeners.remove(listener);
 	}
 	
@@ -208,7 +208,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		// we set the name of the application and register before starting because the id is not available
 		instance.setName(name);
-		registerStatusListener(instance);
+		registerEventListener(instance);
 		
 		try {
 			// we connect to the stream port before starting the application
@@ -251,7 +251,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		// we set the name of the application and register before starting because the id is not available
 		instance.setName(name);
-		registerStatusListener(instance);
+		registerEventListener(instance);
 		
 		try {
 			// we connect to the stream port before starting the application
@@ -349,7 +349,7 @@ public class ServerImpl extends ServicesImpl {
 				
 				// we set the name of the application and register before starting because the id is not available
 				instance.setName(name);
-				registerStatusListener(instance);
+				registerEventListener(instance);
 				
 				int applicationId = applicationInfo.getId();
 				
@@ -369,7 +369,7 @@ public class ServerImpl extends ServicesImpl {
 					
 				} else {
 					// it is important not to forget to unregister the result, otherwise a memory leak will occur
-					unregisterStatusListener(instance);
+					unregisterEventListener(instance);
 				}
 			}
 
