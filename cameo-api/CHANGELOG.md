@@ -1,3 +1,8 @@
+0.1.7
+-----
+
+* Optimized socket creation by keeping alive all the sockets. 
+
 0.1.6
 -----
 

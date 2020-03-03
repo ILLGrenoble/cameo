@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <memory>
+#include <mutex>
 #include "Application.h"
 #include "ConnectionChecker.h"
 #include "ConnectionTimeout.h"
@@ -31,6 +32,8 @@ namespace cameo {
 namespace application {
 	class This;
 }
+
+class EventListener;
 
 class Server : private Services {
 
@@ -95,6 +98,21 @@ public:
 	 */
 	std::unique_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
 
+	/**
+	 * Gets the event listeners. Copies the list.
+	 */
+	std::vector<EventListener *> getEventListeners();
+
+	/**
+	 * Registers an event listener.
+	 */
+	void registerEventListener(EventListener * listener);
+
+	/**
+	 * Unregisters an event listener.
+	 */
+	void unregisterEventListener(EventListener * listener);
+
 private:
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
@@ -103,6 +121,9 @@ private:
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
 	int getAvailableTimeout() const;
 	int getStreamPort(const std::string& name);
+
+	std::mutex m_eventListenersMutex;
+	std::vector<EventListener *> m_eventListeners;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);
