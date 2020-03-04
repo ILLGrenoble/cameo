@@ -244,35 +244,7 @@ public class ServerImpl extends ServicesImpl {
 	 * @throws ConnectionTimeout 
 	 */
 	public InstanceImpl start(String name, int options, String instanceReference) {
-		
-		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
-		
-		InstanceImpl instance = new InstanceImpl(this);
-		
-		// we set the name of the application and register before starting because the id is not available
-		instance.setName(name);
-		registerEventListener(instance);
-		
-		try {
-			// we connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
-			if (outputStream) {
-				instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
-			}
-			
-			Response response = startApplication(name, null, instanceReference);
-			
-			if (response.getValue() == -1) {
-				instance.setErrorMessage(response.getMessage());
-			} else {
-				instance.setId(response.getValue());
-			}
-			
-		} catch (ConnectionTimeout e) {
-			instance.setErrorMessage(e.getMessage());
-		}	
-		
-		return instance;
+		return start(name, null, options, instanceReference);
 	}
 	
 	public InstanceImpl start(String name, String serverEndpoint) {
