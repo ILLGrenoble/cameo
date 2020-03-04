@@ -1,7 +1,7 @@
 0.2.2
 -----
 
-* Only one EventStreamSocket is created for a Server.
+* Only one EventStreamSocket is created for a Server. An EventThread is forwarding the Event objects to the EventListener objects.
 
 0.2.1
 -----
