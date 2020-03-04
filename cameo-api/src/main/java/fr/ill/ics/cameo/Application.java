@@ -20,7 +20,6 @@ package fr.ill.ics.cameo;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.impl.ApplicationImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;

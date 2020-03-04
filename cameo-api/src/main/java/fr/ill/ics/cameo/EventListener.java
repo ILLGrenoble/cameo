@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,6 +14,7 @@ package fr.ill.ics.cameo;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo;
 
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -75,9 +75,5 @@ public class EventListener {
 		} catch (InterruptedException e) {
 			System.out.println("interrupted EventListener while putting");
 		}
-	}
-	
-	public void notifyTerminalState(int applicationId) {
-		// do nothing here
 	}
 }

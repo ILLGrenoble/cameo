@@ -171,11 +171,26 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	@Override
-	public void notifyTerminalState(int applicationId) {
+	public void pushEvent(Event event) {
+		super.pushEvent(event);
 		
-		// Unregister here.
-		if (applicationId == this.id) {
-			terminate();
+		// In case of status event, we need to terminate the instance to ensure to release the zeromq resources.
+		if (event instanceof StatusEvent) {
+		
+			StatusEvent status = (StatusEvent)event;
+			int state = status.getState();
+
+			// Test if the state is terminal.
+			if (state == Application.State.SUCCESS 
+					|| state == Application.State.STOPPED
+					|| state == Application.State.KILLED
+					|| state == Application.State.ERROR) {
+				
+				// Unregister here.
+				if (status.getId() == this.id) {
+					terminate();
+				}
+			}
 		}
 	}
 		

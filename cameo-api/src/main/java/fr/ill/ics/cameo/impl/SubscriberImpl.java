@@ -22,7 +22,6 @@ import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.proto.Messages;
 import fr.ill.ics.cameo.proto.Messages.RequestResponse;
 

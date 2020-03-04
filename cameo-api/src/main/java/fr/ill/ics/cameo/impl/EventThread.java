@@ -18,15 +18,13 @@ package fr.ill.ics.cameo.impl;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.EventStreamSocket;
-import fr.ill.ics.cameo.PortEvent;
-import fr.ill.ics.cameo.PublisherEvent;
-import fr.ill.ics.cameo.ResultEvent;
-import fr.ill.ics.cameo.StatusEvent;
 
+/**
+ * The EventThread class forwards the events from the EventStreamSocket socket to the registered listeners.
+ */
 class EventThread extends Thread {
 
 	private ServerImpl server;
@@ -37,89 +35,6 @@ class EventThread extends Thread {
 		this.socket = socket;
 	}
 	
-	private void processStatusEvent(StatusEvent status) {
-		// Test the terminal state
-		int state = status.getState();
-		boolean terminal = false;
-		
-		if (state == Application.State.SUCCESS 
-				|| state == Application.State.STOPPED
-				|| state == Application.State.KILLED
-				|| state == Application.State.ERROR) {
-			terminal = true;
-		}
-						
-		// Send event to listeners.
-		// The EventListener contains the name attribute but not the application id because 
-		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
-		for (EventListener listener : eventListeners) {
-			
-			// If the application name is null, all the status are pushed
-			// otherwise, filter on the name
-			if (listener.getName() == null 
-				|| listener.getName().equals(status.getName())) {
-				listener.pushEvent(status);
-				
-				// In case of terminal state, unregister the listener
-				// otherwise a memory leak occurs with Instance classes
-				if (terminal) {
-					listener.notifyTerminalState(status.getId());
-				}
-			}
-		}
-	}
-	
-
-	private void processResultEvent(ResultEvent result) {
-		
-		// Send event to listeners.
-		// The EventListener contains the name attribute but not the application id because 
-		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
-		for (EventListener listener : eventListeners) {
-			
-			// Filter on the name
-			if (listener.getName() != null && listener.getName().equals(result.getName())) {
-				listener.pushEvent(result);
-			}
-		}
-	}
-	
-	private void processPublisherEvent(PublisherEvent publisher) {
-						
-		// Send event to listeners.
-		// The EventListener contains the name attribute but not the application id because 
-		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
-		for (EventListener listener : eventListeners) {
-			
-			// If the application name is null, all the status are pushed
-			// otherwise, filter on the name
-			if (listener.getName() == null 
-				|| listener.getName().equals(publisher.getName())) {
-				listener.pushEvent(publisher);
-			}
-		}
-	}
-	
-	private void processPortEvent(PortEvent port) {
-		
-		// Send event to listeners.
-		// The EventListener contains the name attribute but not the application id because 
-		// the id is not available at the registration.
-		ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
-		for (EventListener listener : eventListeners) {
-			
-			// If the application name is null, all the status are pushed
-			// otherwise, filter on the name
-			if (listener.getName() == null 
-				|| listener.getName().equals(port.getName())) {
-				listener.pushEvent(port);
-			}
-		}
-	}
-		
 	public void run() {
 		
 		try {
@@ -131,17 +46,15 @@ class EventThread extends Thread {
 					return;
 				}
 				
-				if (event instanceof StatusEvent) {
-					processStatusEvent((StatusEvent)event);
+				// Forward the event to the listeners.
+				ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
+				for (EventListener listener : eventListeners) {
 					
-				} else if (event instanceof ResultEvent) {
-					processResultEvent((ResultEvent)event);
-					
-				} else if (event instanceof PublisherEvent) {
-					processPublisherEvent((PublisherEvent)event);
-					
-				} else if (event instanceof PortEvent) {
-					processPortEvent((PortEvent)event);
+					// If the application name is null, all the status are pushed, otherwise, filter on the name.
+					if (listener.getName() == null
+						|| listener.getName().equals(event.getName())) {
+						listener.pushEvent(event);
+					}
 				}
 			}
 			

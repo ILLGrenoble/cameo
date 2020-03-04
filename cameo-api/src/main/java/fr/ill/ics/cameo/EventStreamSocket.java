@@ -19,7 +19,6 @@ package fr.ill.ics.cameo;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.proto.Messages;
 
 public class EventStreamSocket {
