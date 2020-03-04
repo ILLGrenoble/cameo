@@ -28,6 +28,9 @@ class PublisherEvent : public Event {
 
 public:
 	PublisherEvent(int id, const std::string& name, const std::string& publisherName);
+	PublisherEvent(const PublisherEvent& event);
+
+	virtual PublisherEvent* clone();
 
 	const std::string& getPublisherName() const;
 

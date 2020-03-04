@@ -44,7 +44,6 @@ enum Option {
 class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
-class ApplicationImpl;
 class PublisherImpl;
 class SubscriberImpl;
 class RequestImpl;
@@ -54,6 +53,7 @@ class WaitingImpl;
 class SocketWaitingImpl;
 class GenericWaitingImpl;
 class WaitingImplSet;
+class HandlerImpl;
 
 namespace application {
 
@@ -81,7 +81,7 @@ const State STOPPED = 128;
 const State KILLED = 256;
 
 
-class This : private Services {
+class This : private Services, private EventListener {
 
 	friend class cameo::application::Publisher;
 	friend class cameo::application::Responder;
@@ -90,7 +90,6 @@ class This : private Services {
 	friend class cameo::RequestImpl;
 	friend class cameo::ResponderImpl;
 	friend class cameo::RequesterImpl;
-	friend class cameo::ApplicationImpl;
 	friend class cameo::SocketWaitingImpl;
 	friend class cameo::GenericWaitingImpl;
 	friend class cameo::Server;
@@ -161,9 +160,11 @@ private:
 	bool destroyPublisher(const std::string& name) const;
 	bool removePort(const std::string& name) const;
 	State waitForStop();
+
+	void stoppingFunction(StopFunctionType stop);
 	void handleStopImpl(StopFunctionType function);
 
-	ApplicationImpl * m_impl;
+	ServicesImpl * m_impl;
 	std::string m_name;
 	int m_id;
 	bool m_managed;
@@ -176,13 +177,14 @@ private:
 	std::unique_ptr<Server> m_starterServer;
 
 	std::unique_ptr<WaitingImplSet> m_waitingSet;
+	std::unique_ptr<HandlerImpl> m_stopHandler;
 
 	static This m_instance;
 	static const std::string RUNNING_STATE;
 };
 
 
-class Instance : public EventListener {
+class Instance : private EventListener {
 
 	friend class cameo::Server;
 	friend class cameo::application::Subscriber;

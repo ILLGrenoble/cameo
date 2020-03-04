@@ -44,7 +44,6 @@ libcameo_la_SOURCES = \
 	cameo/impl/ServicesImpl.cpp \
 	cameo/Server.cpp \
 	cameo/impl/HandlerImpl.cpp \
-	cameo/impl/ApplicationImpl.cpp \
 	cameo/Application.cpp \
 	cameo/impl/SocketImpl.h \
 	cameo/impl/WaitingImpl.h \

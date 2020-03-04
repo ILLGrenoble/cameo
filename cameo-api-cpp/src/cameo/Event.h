@@ -25,7 +25,10 @@ class Event {
 
 public:
 	Event(int id, const std::string& name);
+	Event(const Event& event);
 	virtual ~Event();
+
+	virtual Event* clone() = 0;
 
 	int getId() const;
 	const std::string& getName() const;

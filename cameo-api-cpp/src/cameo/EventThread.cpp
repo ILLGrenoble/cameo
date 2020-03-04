@@ -54,7 +54,12 @@ void EventThread::start() {
 				// If the application name is null, all the status are pushed, otherwise, filter on the name.
 				if (listener->getName() == ""
 					|| listener->getName() == event->getName()) {
-					listener->pushEvent(event);
+
+					// Clone the event is necessary because the event is passed to different listeners working in different threads.
+					unique_ptr<Event> clonedEvent(event->clone());
+
+					// Push the cloned event.
+					listener->pushEvent(clonedEvent);
 				}
 			}
 		}

@@ -25,6 +25,14 @@ PublisherEvent::PublisherEvent(int id, const std::string& name, const std::strin
 	m_publisherName(publisherName) {
 }
 
+PublisherEvent::PublisherEvent(const PublisherEvent& event) :
+	Event(event), m_publisherName(event.m_publisherName) {
+}
+
+PublisherEvent* PublisherEvent::clone() {
+	return new PublisherEvent(*this);
+}
+
 const std::string& PublisherEvent::getPublisherName() const {
 	return m_publisherName;
 }

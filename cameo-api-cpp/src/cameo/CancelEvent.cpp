@@ -24,6 +24,14 @@ CancelEvent::CancelEvent(int id, const std::string& name) :
 	Event(id, name) {
 }
 
+CancelEvent::CancelEvent(const CancelEvent& event) :
+	Event(event) {
+}
+
+CancelEvent* CancelEvent::clone() {
+	return new CancelEvent(*this);
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::CancelEvent& event) {
 	os << "name=" << event.m_name
 		<< "\nid=" << event.m_id;

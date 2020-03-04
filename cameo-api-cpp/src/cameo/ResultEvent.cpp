@@ -25,6 +25,14 @@ ResultEvent::ResultEvent(int id, const std::string& name, const std::string& dat
 	m_data(data) {
 }
 
+ResultEvent::ResultEvent(const ResultEvent& event) :
+	Event(event), m_data(event.m_data) {
+}
+
+ResultEvent* ResultEvent::clone() {
+	return new ResultEvent(*this);
+}
+
 const std::string& ResultEvent::getData() const {
 	return m_data;
 }

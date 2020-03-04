@@ -25,6 +25,11 @@ Event::Event(int id, const std::string& name) :
 	m_name(name) {
 }
 
+Event::Event(const Event& event) :
+	m_id(event.m_id),
+	m_name(event.m_name) {
+}
+
 Event::~Event() {
 }
 

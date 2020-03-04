@@ -22,7 +22,7 @@
 #include <stdexcept>
 #include <vector>
 #include "EventStreamSocket.h"
-#include "impl/ApplicationImpl.h"
+#include "impl/ServicesImpl.h"
 #include "impl/PublisherImpl.h"
 #include "impl/RequesterImpl.h"
 #include "impl/RequestImpl.h"
@@ -31,6 +31,7 @@
 #include "impl/SubscriberImpl.h"
 #include "impl/WaitingImpl.h"
 #include "impl/WaitingImplSet.h"
+#include "impl/HandlerImpl.h"
 #include "PortEvent.h"
 #include "ProtoType.h"
 #include "PublisherEvent.h"
@@ -119,7 +120,7 @@ This::This() :
 
 void This::initApplication(int argc, char *argv[]) {
 
-	m_impl = new ApplicationImpl();
+	m_impl = new ServicesImpl();
 	Services::setImpl(m_impl);
 
 	if (argc == 0) {
@@ -193,6 +194,10 @@ void This::initApplication(int argc, char *argv[]) {
 	}
 
 	m_waitingSet = unique_ptr<WaitingImplSet>(new WaitingImplSet());
+
+	// Init listener.
+	setName(m_name);
+	m_server->registerEventListener(this);
 }
 
 This::~This() {
@@ -385,10 +390,6 @@ bool This::removePort(const std::string& name) const {
 
 State This::waitForStop() {
 
-	// open the event stream
-	unique_ptr<EventStreamSocket> socket = openEventStream();
-	m_impl->setEventSocket(socket);
-
 	// test if stop was requested elsewhere
 	State state = getState(m_id);
 	if (state == STOPPING
@@ -398,7 +399,7 @@ State This::waitForStop() {
 
 	while (true) {
 		// waits for a new incoming status
-		unique_ptr<Event> event = m_impl->m_eventSocket->receive();
+		unique_ptr<Event> event = popEvent();
 
 		// The socket is canceled.
 		if (event.get() == nullptr) {
@@ -440,8 +441,18 @@ std::unique_ptr<Instance> This::connectToStarter() {
 	return unique_ptr<Instance>(nullptr);
 }
 
+void This::stoppingFunction(StopFunctionType stop) {
+
+	application::State state = waitForStop();
+
+	// Only stop in case of STOPPING.
+	if (state == application::STOPPING) {
+		stop();
+	}
+}
+
 void This::handleStopImpl(StopFunctionType function) {
-	m_impl->handleStop(&m_instance, function);
+	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(bind(&This::stoppingFunction, this, function)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

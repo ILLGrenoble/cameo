@@ -28,6 +28,9 @@ class CancelEvent : public Event {
 
 public:
 	CancelEvent(int id, const std::string& name);
+	CancelEvent(const CancelEvent& event);
+
+	virtual CancelEvent* clone();
 };
 
 std::ostream& operator<<(std::ostream&, const CancelEvent&);
