@@ -21,6 +21,7 @@
 #include <vector>
 #include "EventStreamSocket.h"
 #include "OutputStreamSocket.h"
+#include "impl/RequestSocketImpl.h"
 
 namespace cameo {
 
@@ -48,6 +49,7 @@ public:
 	void initStatus();
 	std::unique_ptr<EventStreamSocket> openEventStream();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(int port);
+	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint);
 
 	std::string m_serverEndpoint;
 	std::string m_url;
