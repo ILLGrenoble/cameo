@@ -1,3 +1,9 @@
+0.1.8
+-----
+
+* Simplified EventThread by only forwarding events. 
+
+
 0.1.7
 -----
 
