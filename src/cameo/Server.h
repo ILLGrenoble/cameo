@@ -34,6 +34,7 @@ namespace application {
 }
 
 class EventListener;
+class EventThread;
 
 class Server : private Services {
 
@@ -117,13 +118,13 @@ private:
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
-	std::unique_ptr<application::Instance> stop(int id, bool immediately);
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
 	int getAvailableTimeout() const;
 	int getStreamPort(const std::string& name);
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;
+	std::unique_ptr<EventThread> m_eventThread;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

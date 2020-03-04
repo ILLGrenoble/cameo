@@ -71,6 +71,8 @@ nobase_include_HEADERS = \
 	cameo/ProtoType.h \
 	cameo/ConnectionTimeout.h \
 	cameo/Event.h \
+	cameo/ConcurrentQueue.h \
+	cameo/EventListener.h \
 	cameo/EventStreamSocket.h \
 	cameo/OutputStreamSocket.h \
 	cameo/PublisherCreationException.h \
