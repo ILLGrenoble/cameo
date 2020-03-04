@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include "impl/CancelIdGenerator.h"
 #include "impl/ServicesImpl.h"
-#include "impl/SocketImpl.h"
+#include "impl/StreamSocketImpl.h"
 #include "ProtoType.h"
 
 using namespace std;
@@ -136,7 +136,7 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	string strRequestData = m_impl->createInitRequest();
 	m_impl->waitForSubscriber(subscriber, strRequestType, strRequestData, m_serverEndpoint);
 
-	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
+	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
 std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port) {
@@ -154,7 +154,7 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port)
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
 	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint, cancelEndpoint);
 
-	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new SocketImpl(subscriber, cancelPublisher)));
+	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
 }

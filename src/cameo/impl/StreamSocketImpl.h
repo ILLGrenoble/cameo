@@ -14,8 +14,8 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_SOCKETIMPL_H_
-#define CAMEO_SOCKETIMPL_H_
+#ifndef CAMEO_STREAMSOCKETIMPL_H_
+#define CAMEO_STREAMSOCKETIMPL_H_
 
 #include <string>
 #include <memory>
@@ -23,11 +23,11 @@
 
 namespace cameo {
 
-class SocketImpl {
+class StreamSocketImpl {
 
 public:
-	SocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket = nullptr);
-	virtual ~SocketImpl();
+	StreamSocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket = nullptr);
+	virtual ~StreamSocketImpl();
 
 	void send(const std::string& data);
 	std::unique_ptr<zmq::message_t> receive(bool blocking = true);
