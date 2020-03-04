@@ -39,6 +39,7 @@ void EventListener::pushEvent(std::unique_ptr<Event>& event) {
 }
 
 std::unique_ptr<Event> EventListener::popEvent(bool blocking) {
+
 	if (blocking) {
 		return m_eventQueue.pop();
 	}

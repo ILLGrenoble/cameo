@@ -17,10 +17,9 @@
 #include "EventThread.h"
 #include "Server.h"
 #include "EventStreamSocket.h"
-#include "StatusEvent.h"
-#include "ResultEvent.h"
-#include "PublisherEvent.h"
-#include "PortEvent.h"
+#include "EventListener.h"
+
+using namespace std;
 
 namespace cameo {
 
@@ -30,29 +29,40 @@ EventThread::EventThread(Server * server, std::unique_ptr<EventStreamSocket>& so
 }
 
 EventThread::~EventThread() {
+
+	if (m_thread != nullptr) {
+		m_thread->join();
+	}
 }
 
 void EventThread::start() {
+
+	m_thread.reset(new thread([this] {
+
+		while (true) {
+			unique_ptr<Event> event = m_socket->receive();
+
+			if (event.get() == nullptr) {
+				// The stream is canceled.
+				return;
+			}
+
+			// Forward the event to the listeners.
+			auto eventListeners = m_server->getEventListeners();
+			for (EventListener * listener : eventListeners) {
+
+				// If the application name is null, all the status are pushed, otherwise, filter on the name.
+				if (listener->getName() == ""
+					|| listener->getName() == event->getName()) {
+					listener->pushEvent(event);
+				}
+			}
+		}
+	}));
 }
 
 void EventThread::cancel() {
 	m_socket->cancel();
-}
-
-void EventThread::processStatusEvent(StatusEvent * status) {
-
-}
-
-void EventThread::processResultEvent(ResultEvent * result) {
-
-}
-
-void EventThread::processPublisherEvent(PublisherEvent * publisher) {
-
-}
-
-void EventThread::processPortEvent(PortEvent * port) {
-
 }
 
 }

@@ -447,29 +447,24 @@ void This::handleStopImpl(StopFunctionType function) {
 ///////////////////////////////////////////////////////////////////////////////
 // Instance
 
-Instance::Instance(const Server * server, std::unique_ptr<EventStreamSocket>& socket) :
+Instance::Instance(Server * server) :
 	m_server(server),
-	m_eventSocket(std::move(socket)),
 	m_id(-1),
 	m_pastStates(0),
 	m_initialState(UNKNOWN),
 	m_lastState(UNKNOWN),
 	m_hasResult(false) {
-
-	// Create the waiting.
-	m_waiting.reset(m_eventSocket->waiting());
 }
 
 Instance::~Instance() {
-	// the destructor has been added to avoid blocking ZeroMQ, because the inner objects destructors were not called.
+	// Unregister the instance.
+	m_server->unregisterEventListener(this);
+
+	// The destructor has been added to avoid blocking ZeroMQ, because the inner objects destructors were not called.
 }
 
 void Instance::setId(int id) {
 	m_id = id;
-}
-
-void Instance::setName(const std::string& name) {
-	m_name = name;
 }
 
 void Instance::setErrorMessage(const std::string& message) {
@@ -489,10 +484,6 @@ void Instance::setInitialState(State state) {
 
 	// It is important to set the last state, because in case of a call to the function now without any incoming state.
 	m_lastState = state;
-}
-
-const std::string& Instance::getName() const {
-	return m_name;
 }
 
 int Instance::getId() const {
@@ -574,7 +565,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 
 	while (true) {
 		// Waits for a new incoming status
-		unique_ptr<Event> event = m_eventSocket->receive(blocking);
+		unique_ptr<Event> event = popEvent(blocking);
 
 		// The socket is canceled or the non-blocking call returns a null message.
 		if (event.get() == nullptr) {
@@ -644,7 +635,7 @@ State Instance::waitFor(StateHandlerType handler) {
 }
 
 void Instance::cancelWaitFor() {
-	m_waiting->cancel();
+	cancel(m_id);
 }
 
 State Instance::now() {

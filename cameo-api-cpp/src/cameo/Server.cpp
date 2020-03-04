@@ -23,6 +23,7 @@
 #include "impl/ServicesImpl.h"
 #include "impl/SocketImpl.h"
 #include "ProtoType.h"
+#include "EventThread.h"
 
 using namespace std;
 
@@ -44,9 +45,18 @@ Server::Server(const std::string& endpoint) :
 	istringstream is(port);
 	is >> m_port;
 	m_serverEndpoint = m_url + ":" + port;
+
+	// Start the event thread.
+	unique_ptr<EventStreamSocket> socket = openEventStream();
+	m_eventThread.reset(new EventThread(this, socket));
+	m_eventThread->start();
 }
 
 Server::~Server() {
+	// Stop the event thread.
+	if (m_eventThread.get() != nullptr) {
+		m_eventThread->cancel();
+	}
 }
 
 void Server::setTimeout(int timeoutMs) {
@@ -88,8 +98,7 @@ int Server::getAvailableTimeout() const {
 }
 
 std::unique_ptr<application::Instance> Server::makeInstance() {
-	unique_ptr<EventStreamSocket> socket = Services::openEventStream();
-	return unique_ptr<application::Instance>(new application::Instance(this, socket));
+	return unique_ptr<application::Instance>(new application::Instance(this));
 }
 
 std::unique_ptr<application::Instance> Server::start(const std::string& name, Option options) {
@@ -115,7 +124,9 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 
 	unique_ptr<application::Instance> instance = makeInstance();
 
+	// Set the name and register the instance as event listener.
 	instance->setName(name);
+	registerEventListener(instance.get());
 
 	try {
 		if (outputStream) {
@@ -167,29 +178,6 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	return Response(requestResponse.value(), requestResponse.message());
 }
 
-std::unique_ptr<application::Instance> Server::stop(int id, bool immediately) {
-
-	unique_ptr<application::Instance> instance = makeInstance();
-
-	try {
-		Response response = stopApplicationAsynchronously(id, immediately);
-
-		if (response.getValue() != -1) {
-			// we get the name in the message attribute
-			instance->setName(response.getMessage());
-			instance->setId(id);
-
-		} else {
-			instance->setErrorMessage(response.getMessage());
-		}
-
-	} catch (const ConnectionTimeout& e) {
-		instance->setErrorMessage(e.what());
-	}
-
-	return instance;
-}
-
 application::InstanceArray Server::connectAll(const std::string& name, Option options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
@@ -213,7 +201,10 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 
 		unique_ptr<application::Instance> instance = makeInstance();
 
+		// Set the name and register the instance as event listener.
 		instance->setName(info.name());
+		registerEventListener(instance.get());
+
 		int applicationId = info.id();
 
 		// test if the application is still alive otherwise we could have missed a status message

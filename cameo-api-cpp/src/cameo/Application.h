@@ -32,6 +32,7 @@
 #include "Serializer.h"
 #include "Services.h"
 #include "TimeCondition.h"
+#include "EventListener.h"
 
 namespace cameo {
 
@@ -181,7 +182,7 @@ private:
 };
 
 
-class Instance {
+class Instance : public EventListener {
 
 	friend class cameo::Server;
 	friend class cameo::application::Subscriber;
@@ -192,7 +193,6 @@ public:
 
 	~Instance();
 
-	const std::string& getName() const;
 	int getId() const;
 	const std::string& getUrl() const;
 	const std::string& getEndpoint() const;
@@ -235,21 +235,17 @@ public:
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
 
 private:
-	Instance(const Server * server, std::unique_ptr<EventStreamSocket>& socket);
+	Instance(Server * server);
 
 	void setId(int id);
-	void setName(const std::string& name);
 	void setErrorMessage(const std::string& message);
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
 	State waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking);
 
-	const Server * m_server;
-	std::unique_ptr<EventStreamSocket> m_eventSocket;
+	Server * m_server;
 	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
-	std::unique_ptr<WaitingImpl> m_waiting;
-	std::string m_name;
 	int m_id;
 	std::string m_errorMessage;
 	int m_pastStates;

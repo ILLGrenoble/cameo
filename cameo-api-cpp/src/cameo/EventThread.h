@@ -25,10 +25,6 @@ namespace cameo {
 
 class Server;
 class EventStreamSocket;
-class StatusEvent;
-class ResultEvent;
-class PublisherEvent;
-class PortEvent;
 
 class EventThread {
 
@@ -40,15 +36,9 @@ public:
 	void cancel();
 
 private:
-	void processStatusEvent(StatusEvent * status);
-	void processResultEvent(ResultEvent * result);
-	void processPublisherEvent(PublisherEvent * publisher);
-	void processPortEvent(PortEvent * port);
-
 	Server * m_server;
 	std::unique_ptr<EventStreamSocket> m_socket;
 	std::unique_ptr<std::thread> m_thread;
-
 };
 
 }
