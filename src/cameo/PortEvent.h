@@ -28,6 +28,9 @@ class PortEvent : public Event {
 
 public:
 	PortEvent(int id, const std::string& name, const std::string& portName);
+	PortEvent(const PortEvent& event);
+
+	virtual PortEvent* clone();
 
 	const std::string& getPortName() const;
 

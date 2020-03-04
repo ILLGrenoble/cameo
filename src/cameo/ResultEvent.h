@@ -29,6 +29,9 @@ class ResultEvent : public Event {
 
 public:
 	ResultEvent(int id, const std::string& name, const std::string& data);
+	ResultEvent(const ResultEvent& event);
+
+	virtual ResultEvent* clone();
 
 	const std::string& getData() const;
 

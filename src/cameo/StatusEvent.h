@@ -29,6 +29,9 @@ class StatusEvent : public Event {
 
 public:
 	StatusEvent(int id, const std::string& name, application::State state, application::State pastStates);
+	StatusEvent(const StatusEvent& event);
+
+	virtual StatusEvent* clone();
 
 	application::State getState() const;
 	application::State getPastStates() const;

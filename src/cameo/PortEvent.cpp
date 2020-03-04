@@ -25,6 +25,14 @@ PortEvent::PortEvent(int id, const std::string& name, const std::string& portNam
 	m_portName(portName) {
 }
 
+PortEvent::PortEvent(const PortEvent& event) :
+	Event(event), m_portName(event.m_portName) {
+}
+
+PortEvent* PortEvent::clone() {
+	return new PortEvent(*this);
+}
+
 const std::string& PortEvent::getPortName() const {
 	return m_portName;
 }

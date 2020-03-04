@@ -26,6 +26,14 @@ StatusEvent::StatusEvent(int id, const std::string& name, application::State sta
 	m_pastStates(pastStates) {
 }
 
+StatusEvent::StatusEvent(const StatusEvent& event) :
+	Event(event), m_state(event.m_state), m_pastStates(event.m_pastStates) {
+}
+
+StatusEvent* StatusEvent::clone() {
+	return new StatusEvent(*this);
+}
+
 application::State StatusEvent::getState() const {
 	return m_state;
 }
