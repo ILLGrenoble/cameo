@@ -16,19 +16,19 @@
 
 #include "EventStreamSocket.h"
 
-#include "impl/SocketImpl.h"
 #include "impl/SocketWaitingImpl.h"
 #include "PortEvent.h"
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
 #include "../proto/Messages.pb.h"
+#include "impl/StreamSocketImpl.h"
 
 using namespace std;
 
 namespace cameo {
 
-EventStreamSocket::EventStreamSocket(SocketImpl * impl) : m_impl(impl) {
+EventStreamSocket::EventStreamSocket(StreamSocketImpl * impl) : m_impl(impl) {
 }
 
 EventStreamSocket::~EventStreamSocket() {

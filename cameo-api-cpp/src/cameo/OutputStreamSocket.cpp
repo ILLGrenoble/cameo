@@ -16,11 +16,11 @@
 
 #include "OutputStreamSocket.h"
 
-#include "impl/SocketImpl.h"
 #include "impl/SocketWaitingImpl.h"
 #include "impl/ServicesImpl.h"
 #include "../proto/Messages.pb.h"
 #include <iostream>
+#include "impl/StreamSocketImpl.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ const std::string& Output::getMessage() const {
 	return m_message;
 }
 
-OutputStreamSocket::OutputStreamSocket(SocketImpl * impl) :
+OutputStreamSocket::OutputStreamSocket(StreamSocketImpl * impl) :
 	m_ended(false),
 	m_canceled(false),
 	m_impl(impl) {

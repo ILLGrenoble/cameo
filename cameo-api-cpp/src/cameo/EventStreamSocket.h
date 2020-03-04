@@ -22,7 +22,7 @@
 
 namespace cameo {
 
-class SocketImpl;
+class StreamSocketImpl;
 class WaitingImpl;
 
 namespace application {
@@ -43,11 +43,11 @@ public:
 	void cancel();
 
 private:
-	EventStreamSocket(SocketImpl * impl);
+	EventStreamSocket(StreamSocketImpl * impl);
 
 	WaitingImpl * waiting();
 
-	std::unique_ptr<SocketImpl> m_impl;
+	std::unique_ptr<StreamSocketImpl> m_impl;
 };
 
 }

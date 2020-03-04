@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "SocketImpl.h"
+#include "StreamSocketImpl.h"
 
 #include <iostream>
 
@@ -22,24 +22,24 @@ using namespace std;
 
 namespace cameo {
 
-const std::string SocketImpl::CANCEL = "CANCEL";
+const std::string StreamSocketImpl::CANCEL = "CANCEL";
 
-SocketImpl::SocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket) :
+StreamSocketImpl::StreamSocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket) :
 	m_socket(socket), m_cancelSocket(cancelSocket) {
 }
 
-SocketImpl::~SocketImpl() {
+StreamSocketImpl::~StreamSocketImpl() {
 	close();
 }
 
-void SocketImpl::send(const std::string& data) {
+void StreamSocketImpl::send(const std::string& data) {
 
 	zmq::message_t messageData(data.size());
 	memcpy((void *) messageData.data(), data.c_str(), data.size());
 	m_socket->send(messageData);
 }
 
-std::unique_ptr<zmq::message_t> SocketImpl::receive(bool blocking) {
+std::unique_ptr<zmq::message_t> StreamSocketImpl::receive(bool blocking) {
 
 	// Use the message interface.
 	unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -51,7 +51,7 @@ std::unique_ptr<zmq::message_t> SocketImpl::receive(bool blocking) {
 	return unique_ptr<zmq::message_t>(nullptr);
 }
 
-void SocketImpl::cancel() {
+void StreamSocketImpl::cancel() {
 	if (m_cancelSocket.get() != nullptr) {
 		zmq::message_t requestType(CANCEL.length());
 		string data("cancel");
@@ -63,7 +63,7 @@ void SocketImpl::cancel() {
 	}
 }
 
-void SocketImpl::close() {
+void StreamSocketImpl::close() {
 	m_socket->close();
 }
 

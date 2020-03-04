@@ -21,9 +21,9 @@
 #include "Application.h"
 #include "ConnectionChecker.h"
 #include "impl/ServicesImpl.h"
-#include "impl/SocketImpl.h"
 #include "ProtoType.h"
 #include "EventThread.h"
+#include "impl/StreamSocketImpl.h"
 
 using namespace std;
 
