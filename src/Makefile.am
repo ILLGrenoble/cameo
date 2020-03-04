@@ -26,6 +26,7 @@ libcameo_la_SOURCES = \
 	cameo/ResponderCreationException.cpp \
 	cameo/RequesterCreationException.cpp \
 	cameo/impl/StreamSocketImpl.cpp \
+	cameo/impl/RequestSocketImpl.cpp \
 	cameo/impl/SocketWaitingImpl.cpp \
 	cameo/impl/GenericWaitingImpl.cpp \
 	cameo/impl/WaitingImplSet.cpp \
@@ -46,6 +47,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/HandlerImpl.cpp \
 	cameo/Application.cpp \
 	cameo/impl/StreamSocketImpl.h \
+	cameo/impl/RequestSocketImpl.h \
 	cameo/impl/WaitingImpl.h \
 	cameo/impl/SocketWaitingImpl.h \
 	cameo/impl/GenericWaitingImpl.h \

@@ -236,6 +236,25 @@ zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint)
 	return publisher;
 }
 
+zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
+
+	zmq::socket_t* socket = new zmq::socket_t(m_context, ZMQ_REQ);
+
+	try {
+		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
+		int value = 0;
+		socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
+
+		// Connect to the endpoint.
+		socket->connect(endpoint.c_str());
+	}
+	catch (exception const & e) {
+		throw SocketException(e.what());
+	}
+
+	return socket;
+}
+
 std::string ServicesImpl::createShowStreamRequest(int id) const {
 	proto::ShowStreamCommand showStreamCommand;
 	showStreamCommand.set_id(id);
