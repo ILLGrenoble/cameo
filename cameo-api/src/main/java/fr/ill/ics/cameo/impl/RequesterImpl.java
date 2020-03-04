@@ -30,7 +30,7 @@ public class RequesterImpl {
 
 	public static final String REQUESTER_PREFIX = "req.";
 
-	private ApplicationImpl application;
+	private ThisImpl application;
 	Zmq.Context context;
 	private String responderEndpoint;
 	private int requesterPort;
@@ -47,7 +47,7 @@ public class RequesterImpl {
 	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
-	public RequesterImpl(ApplicationImpl application, Zmq.Context context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
+	public RequesterImpl(ThisImpl application, Zmq.Context context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.application = application;
 		this.context = context;
 		this.requesterPort = requesterPort;

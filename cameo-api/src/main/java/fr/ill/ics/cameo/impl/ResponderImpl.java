@@ -26,7 +26,7 @@ public class ResponderImpl {
 
 	public static final String RESPONDER_PREFIX = "rep.";
 
-	private ApplicationImpl application;
+	private ThisImpl application;
 	Zmq.Context context;
 	private int responderPort;
 	private String name;
@@ -36,7 +36,7 @@ public class ResponderImpl {
 	private boolean canceled = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
 	
-	public ResponderImpl(ApplicationImpl application, Zmq.Context context, int responderPort, String name) {
+	public ResponderImpl(ThisImpl application, Zmq.Context context, int responderPort, String name) {
 		this.application = application;
 		this.context = context;
 		this.responderPort = responderPort;

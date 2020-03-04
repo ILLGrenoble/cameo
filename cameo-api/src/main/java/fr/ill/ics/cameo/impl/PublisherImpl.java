@@ -31,7 +31,7 @@ public class PublisherImpl {
 	private static final String STREAM = "STREAM";
 	private static final String ENDSTREAM = "ENDSTREAM";
 	
-	private ApplicationImpl application;
+	private ThisImpl application;
 	Zmq.Context context;
 	private int publisherPort;
 	private int synchronizerPort;
@@ -41,7 +41,7 @@ public class PublisherImpl {
 	private boolean ended = false;
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
 	
-	public PublisherImpl(ApplicationImpl application, Zmq.Context context, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
+	public PublisherImpl(ThisImpl application, Zmq.Context context, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
 		this.application = application;
 		this.context = context;
 		this.publisherPort = publisherPort;

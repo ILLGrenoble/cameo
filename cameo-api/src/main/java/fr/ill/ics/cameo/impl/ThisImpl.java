@@ -50,7 +50,7 @@ import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.StopCommand;
 import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
 
-public class ApplicationImpl extends ServicesImpl {
+public class ThisImpl extends ServicesImpl {
 	
 	private String name;
 	private int id;
@@ -72,7 +72,7 @@ public class ApplicationImpl extends ServicesImpl {
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set.
 	 * @param args
 	 */
-	public ApplicationImpl(String[] args) {
+	public ThisImpl(String[] args) {
 		
 		id = -1;
 		

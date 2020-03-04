@@ -20,7 +20,7 @@ package fr.ill.ics.cameo;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ill.ics.cameo.impl.ApplicationImpl;
+import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;
 import fr.ill.ics.cameo.impl.RequestImpl;
@@ -35,13 +35,13 @@ public class Application {
 	}
 	
 	public static class This {
-			
-		static ApplicationImpl impl;
+		
+		static ThisImpl impl;
 		private static Server server;
 		private static Server starterServer;
 		
 		static public void init(String[] args) {
-			impl = new ApplicationImpl(args);
+			impl = new ThisImpl(args);
 			server = new Server(impl.getEndpoint());
 			
 			server.registerEventListener(impl.getEventListener());

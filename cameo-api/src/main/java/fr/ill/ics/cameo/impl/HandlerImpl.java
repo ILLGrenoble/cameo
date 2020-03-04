@@ -21,11 +21,11 @@ import fr.ill.ics.cameo.Application.State;
 
 public class HandlerImpl {
 
-	private ApplicationImpl application;
+	private ThisImpl application;
 	private Handler handler;
 	private Thread thread = null;
 		
-	public HandlerImpl(ApplicationImpl application, Handler handler) {
+	public HandlerImpl(ThisImpl application, Handler handler) {
 		this.application = application;
 		this.handler = handler;
 	}
