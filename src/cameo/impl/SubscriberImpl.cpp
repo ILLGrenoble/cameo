@@ -21,6 +21,7 @@
 #include "../Serializer.h"
 #include "CancelIdGenerator.h"
 #include "ServicesImpl.h"
+#include "RequestSocketImpl.h"
 #include "../Server.h"
 
 using namespace std;
@@ -33,10 +34,10 @@ const std::string SubscriberImpl::ENDSTREAM = "ENDSTREAM";
 const std::string SubscriberImpl::CANCEL = "CANCEL";
 const std::string SubscriberImpl::STATUS = "STATUS";
 
-SubscriberImpl::SubscriberImpl(const Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
+SubscriberImpl::SubscriberImpl(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
 	m_server(server),
-	m_publisherName(publisherName),
 	m_url(url),
+	m_publisherName(publisherName),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
 	m_numberOfSubscribers(numberOfSubscribers),
@@ -53,7 +54,7 @@ SubscriberImpl::~SubscriberImpl() {
 
 void SubscriberImpl::init() {
 
-	// create a socket for publishing
+	// Create a socket for publishing.
 	m_subscriber.reset(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_SUB));
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, SYNC.c_str(), SYNC.length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, STREAM.c_str(), STREAM.length());
@@ -69,7 +70,7 @@ void SubscriberImpl::init() {
 	// We must first bind the cancel publisher before connecting the subscriber.
 	stringstream cancelEndpoint;
 
-	// We define a unique name
+	// We define a unique name.
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 	m_cancelEndpoint = cancelEndpoint.str();
 
@@ -79,7 +80,7 @@ void SubscriberImpl::init() {
 	m_subscriber->connect(m_cancelEndpoint.c_str());
 	m_subscriber->connect(m_statusEndpoint.c_str());
 
-	// synchronize the subscriber only if the number of subscribers > 0
+	// Synchronize the subscriber only if the number of subscribers > 0.
 	if (m_numberOfSubscribers > 0) {
 
 		stringstream syncEndpoint;
@@ -87,29 +88,29 @@ void SubscriberImpl::init() {
 
 		string endpoint = syncEndpoint.str();
 
-		// polling subscriber
+		// Create a request socket.
+		unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(endpoint);
+
+		// Poll subscriber.
 		zmq_pollitem_t items[1];
 		items[0].socket = static_cast<void *>(*m_subscriber);
 		items[0].fd = 0;
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
 
-		bool ready = false;
+		while (true) {
+			m_server->m_impl->isAvailable(requestSocket.get(), 100);
 
-		while (!ready) {
-
-			string strRequestType = m_server->m_impl->createRequestType(PROTO_INIT);
-			string strRequestData = m_server->m_impl->createInitRequest();
-			m_server->m_impl->isAvailable(strRequestType, strRequestData, endpoint, 100);
-	
-			// wait for 100ms
+			// Wait for 100ms.
 			int rc = zmq::poll(items, 1, 100);
 			if (rc != 0) {
-				ready = true;
+				break;
 			}
 		}
 
-		m_server->m_impl->subscribeToPublisher(endpoint);
+		unique_ptr<zmq::message_t> reply = requestSocket->request(m_server->m_impl->createRequestType(PROTO_SUBSCRIBEPUBLISHER), m_server->m_impl->createSubscribePublisherRequest());
+		proto::RequestResponse requestResponse;
+		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 	}
 }
 

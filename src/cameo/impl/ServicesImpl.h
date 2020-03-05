@@ -67,11 +67,7 @@ public:
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
-	std::unique_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
 	std::string createShowStreamRequest(int id) const;
-
-	bool isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout);
-	void subscribeToPublisher(const std::string& endpoint);
 
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);
