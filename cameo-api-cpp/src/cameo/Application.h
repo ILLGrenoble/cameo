@@ -164,7 +164,6 @@ private:
 	void stoppingFunction(StopFunctionType stop);
 	void handleStopImpl(StopFunctionType function);
 
-	ServicesImpl * m_impl;
 	std::string m_name;
 	int m_id;
 	bool m_managed;
