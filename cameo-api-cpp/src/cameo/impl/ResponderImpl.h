@@ -34,7 +34,7 @@ class RequestImpl;
 class ResponderImpl {
 
 public:
-	ResponderImpl(const application::This * application, int responderPort, const std::string& name);
+	ResponderImpl(application::This * application, int responderPort, const std::string& name);
 	~ResponderImpl();
 
 	void cancel();
@@ -43,7 +43,7 @@ public:
 	std::unique_ptr<RequestImpl> receive();
 	void terminate();
 
-	const application::This * m_application;
+	application::This * m_application;
 	int m_responderPort;
 	std::string m_name;
 	std::unique_ptr<zmq::socket_t> m_responder;

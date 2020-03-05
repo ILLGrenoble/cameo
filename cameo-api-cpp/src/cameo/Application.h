@@ -435,7 +435,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Responder(const application::This * application, int responderPort, const std::string& name);
+	Responder(application::This * application, int responderPort, const std::string& name);
 
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;

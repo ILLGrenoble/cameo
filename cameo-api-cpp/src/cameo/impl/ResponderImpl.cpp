@@ -19,6 +19,7 @@
 #include "../Serializer.h"
 #include "ServicesImpl.h"
 #include "RequestImpl.h"
+#include "RequestSocketImpl.h"
 #include <sstream>
 
 using namespace std;
@@ -27,7 +28,7 @@ namespace cameo {
 
 const std::string ResponderImpl::RESPONDER_PREFIX = "rep.";
 
-ResponderImpl::ResponderImpl(const application::This * application, int responderPort, const std::string& name) :
+ResponderImpl::ResponderImpl(application::This * application, int responderPort, const std::string& name) :
 	m_application(application),
 	m_responderPort(responderPort),
 	m_name(name),
@@ -50,10 +51,9 @@ void ResponderImpl::cancel() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << m_responderPort;
 
-	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
-	string strRequestData = "cancel";
-
-	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
+	// Create a request socket.
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
+	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), "cancel");
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
