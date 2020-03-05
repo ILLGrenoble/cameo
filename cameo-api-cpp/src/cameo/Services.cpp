@@ -126,7 +126,7 @@ void Services::initStatus() {
 
 std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 
-	// init the status if needed
+	// Init the status port if necessary.
 	if (m_statusPort == 0) {
 		initStatus();
 	}
@@ -136,15 +136,14 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 
-	// create sockets
+	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint.str());
 	zmq::socket_t * subscriber = m_impl->createEventSubscriber(m_serverStatusEndpoint, cancelEndpoint.str());
 
-	// wait for the connection
-	string strRequestType = m_impl->createRequestType(PROTO_INIT);
-	string strRequestData = m_impl->createInitRequest();
-	m_impl->waitForSubscriber(subscriber, strRequestType, strRequestData, m_serverEndpoint);
+	// Wait for the connection to be ready.
+	m_impl->waitForSubscriber(subscriber, m_requestSocket.get());
 
+	// Create the event stream socket.
 	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
@@ -154,15 +153,17 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port)
 		return nullptr;
 	}
 
-	// Prepare our context and subscriber
+	// Prepare our context and subscriber.
 	string streamEndpoint = m_url + ":" + to_string(port);
 
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
 	string cancelEndpoint = "inproc://cancel." + to_string(CancelIdGenerator::newId());
 
+	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
 	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint, cancelEndpoint);
 
+	// Create the output stream socket.
 	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
