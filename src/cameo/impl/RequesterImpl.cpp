@@ -18,6 +18,7 @@
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ServicesImpl.h"
+#include "RequestSocketImpl.h"
 #include <sstream>
 
 using namespace std;
@@ -28,7 +29,7 @@ const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
 std::mutex RequesterImpl::m_mutex;
 int RequesterImpl::m_requesterCounter = 0;
 
-RequesterImpl::RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+RequesterImpl::RequesterImpl(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
 	m_application(application),
 	m_requesterPort(requesterPort),
 	m_name(name),
@@ -40,12 +41,15 @@ RequesterImpl::RequesterImpl(const application::This * application, const std::s
 	repEndpoint << url << ":" << responderPort;
 	m_responderEndpoint = repEndpoint.str();
 
-	// create a socket REP
-	m_requester.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
+	// Create the request socket.
+	m_requestSocket = m_application->createRequestSocket(m_responderEndpoint);
+
+	// Create a socket REP.
+	m_repSocket.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
 	stringstream reqEndpoint;
 	reqEndpoint << "tcp://*:" << m_requesterPort;
 
-	m_requester->bind(reqEndpoint.str().c_str());
+	m_repSocket->bind(reqEndpoint.str().c_str());
 }
 
 RequesterImpl::~RequesterImpl() {
@@ -74,8 +78,8 @@ WaitingImpl * RequesterImpl::waiting() {
 
 void RequesterImpl::sendBinary(const std::string& request) {
 
-	string strRequestType = m_application->m_impl->createRequestType(PROTO_REQUEST);
-	string strRequestData;
+	string requestTypePart = m_application->m_impl->createRequestType(PROTO_REQUEST);
+	string requestDataPart;
 
 	proto::Request requestCommand;
 	requestCommand.set_applicationname(m_application->getName());
@@ -84,9 +88,9 @@ void RequesterImpl::sendBinary(const std::string& request) {
 	requestCommand.set_serverurl(m_application->getUrl());
 	requestCommand.set_serverport(m_application->getPort());
 	requestCommand.set_requesterport(m_requesterPort);
-	requestCommand.SerializeToString(&strRequestData);
+	requestCommand.SerializeToString(&requestDataPart);
 
-	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -102,8 +106,8 @@ void RequesterImpl::send(const std::string& request) {
 
 void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
 
-	string strRequestType = m_application->m_impl->createRequestType(PROTO_REQUEST);
-	string strRequestData;
+	string requestTypePart = m_application->m_impl->createRequestType(PROTO_REQUEST);
+	string requestDataPart;
 
 	proto::Request requestCommand;
 	requestCommand.set_applicationname(m_application->getName());
@@ -113,9 +117,9 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::s
 	requestCommand.set_serverurl(m_application->getUrl());
 	requestCommand.set_serverport(m_application->getPort());
 	requestCommand.set_requesterport(m_requesterPort);
-	requestCommand.SerializeToString(&strRequestData);
+	requestCommand.SerializeToString(&requestDataPart);
 
-	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_responderEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -124,7 +128,7 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::s
 bool RequesterImpl::receiveBinary(std::string& response) {
 
 	unique_ptr<zmq::message_t> message(new zmq::message_t);
-	m_requester->recv(message.get(), 0);
+	m_repSocket->recv(message.get(), 0);
 
 	// multi-part message, first part is the type
 	proto::MessageType messageType;
@@ -132,7 +136,7 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	if (message->more()) {
 		message.reset(new zmq::message_t);
-		m_requester->recv(message.get(), 0);
+		m_repSocket->recv(message.get(), 0);
 
 	} else {
 		cerr << "unexpected number of frames, should be 2" << endl;
@@ -152,7 +156,7 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy((void *) reply->data(), data.c_str(), size);
 
-	m_requester->send(*reply);
+	m_repSocket->send(*reply);
 
 	return !m_canceled;
 }
@@ -172,10 +176,9 @@ void RequesterImpl::cancel() {
 	stringstream requesterEndpoint;
 	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
 
-	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
-	string strRequestData = "cancel";
-
-	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());
+	// Create a request socket only for the request.
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(requesterEndpoint.str());
+	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), "cancel");
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -183,14 +186,16 @@ void RequesterImpl::cancel() {
 
 void RequesterImpl::terminate() {
 
-	if (m_requester.get() != nullptr) {
-		m_requester.reset(nullptr);
+	if (m_repSocket.get() != nullptr) {
+		m_repSocket.reset(nullptr);
 
 		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 		if (!success) {
 			cerr << "server cannot destroy requester " << m_name << endl;
 		}
 	}
+
+	m_requestSocket.reset();
 }
 
 }

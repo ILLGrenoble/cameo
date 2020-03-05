@@ -30,10 +30,12 @@ namespace application {
 	class This;
 }
 
+class RequestSocketImpl;
+
 class RequesterImpl {
 
 public:
-	RequesterImpl(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
+	RequesterImpl(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 	~RequesterImpl();
 
 	static int newRequesterId();
@@ -51,13 +53,14 @@ public:
 	void cancel();
 	void terminate();
 
-	const application::This * m_application;
+	application::This * m_application;
 	int m_requesterPort;
-	std::string m_responderEndpoint;
 	std::string m_name;
 	int m_responderId;
 	int m_requesterId;
-	std::unique_ptr<zmq::socket_t> m_requester;
+	std::string m_responderEndpoint;
+	std::unique_ptr<RequestSocketImpl> m_requestSocket;
+	std::unique_ptr<zmq::socket_t> m_repSocket;
 	bool m_canceled;
 
 	static const std::string REQUESTER_PREFIX;

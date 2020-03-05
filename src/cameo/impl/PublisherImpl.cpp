@@ -18,6 +18,7 @@
 #include "../Application.h"
 #include "../Serializer.h"
 #include "ServicesImpl.h"
+#include "RequestSocketImpl.h"
 #include <sstream>
 
 using namespace std;
@@ -28,7 +29,7 @@ const std::string PublisherImpl::SYNC = "SYNC";
 const std::string PublisherImpl::STREAM = "STREAM";
 const std::string PublisherImpl::ENDSTREAM = "ENDSTREAM";
 
-PublisherImpl::PublisherImpl(const application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
+PublisherImpl::PublisherImpl(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
 	m_application(application),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
@@ -134,13 +135,14 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << (m_publisherPort + 1);
 
-	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
-	string strRequestData;
+	string requestDataPart;
 
 	proto::CancelPublisherSyncCommand cancelPublisherSyncCommand;
-	cancelPublisherSyncCommand.SerializeToString(&strRequestData);
+	cancelPublisherSyncCommand.SerializeToString(&requestDataPart);
 
-	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());
+	// Create a request socket only for the request.
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
+	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), requestDataPart);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
