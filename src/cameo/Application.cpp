@@ -764,10 +764,8 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_CREATEPUBLISHER);
-	string strRequestData = This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers);
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_CREATEPUBLISHER), This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
 	proto::PublisherResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -1026,10 +1024,8 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT);
-	string strRequestData = This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName);
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT), This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName));
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
@@ -1110,11 +1106,9 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 		reply.reset();
 	}
 
-	// Request a requester port
-	strRequestType = This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT);
-	strRequestData = This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName);
+	// Request a requester port.
+	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT), This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName));
 
-	reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
 	int requesterPort = requestResponse.value();
