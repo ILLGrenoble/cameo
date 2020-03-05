@@ -752,7 +752,7 @@ std::unique_ptr<Instance>& InstanceArray::operator[](std::size_t index) {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-Publisher::Publisher(const This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
+Publisher::Publisher(This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
 	m_impl(new PublisherImpl(application, publisherPort, synchronizerPort, name, numberOfSubscribers)) {
 
 	// Create the waiting here.
@@ -1061,7 +1061,7 @@ bool Responder::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+Requester::Requester(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
 	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name, responderId, requesterId)) {
 
 	// Create the waiting here.
@@ -1077,14 +1077,18 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	string responderUrl = instance.getUrl();
 	string responderEndpoint = instance.getEndpoint();
 
+	// Create a request socket to the server of the instance.
+	unique_ptr<RequestSocketImpl> instanceRequestSocket = This::m_instance.createRequestSocket(responderEndpoint);
+
 	string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_CONNECTPORT);
-	string strRequestData = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
+	string requestTypePart = This::m_instance.m_impl->createRequestType(PROTO_CONNECTPORT);
+	string requestDataPart = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
+	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(requestTypePart, requestDataPart);
+
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 	reply.reset();
@@ -1095,7 +1099,8 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 		instance.waitFor(0, responderPortName);
 
 		// Retry to connect.
-		reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
+		reply = instanceRequestSocket->request(requestTypePart, requestDataPart);
+
 		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
 		responderPort = requestResponse.value();

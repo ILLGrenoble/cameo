@@ -32,7 +32,7 @@ namespace application {
 class PublisherImpl {
 
 public:
-	PublisherImpl(const application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
+	PublisherImpl(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
 	~PublisherImpl();
 
 	const std::string& getName() const;
@@ -62,7 +62,7 @@ public:
 	zmq::message_t * processSubscribePublisherCommand();
 	zmq::message_t * processCancelPublisherSyncCommand();
 
-	const application::This * m_application;
+	application::This * m_application;
 	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_name;

@@ -324,7 +324,7 @@ public:
 	bool isEnded() const;
 
 private:
-	Publisher(const application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
+	Publisher(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
 
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -471,7 +471,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Requester(const application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
+	Requester(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
