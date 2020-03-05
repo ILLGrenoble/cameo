@@ -32,6 +32,7 @@
 #include "impl/WaitingImplSet.h"
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/RequestSocketImpl.h"
 #include "PortEvent.h"
 #include "ProtoType.h"
 #include "PublisherEvent.h"
@@ -265,9 +266,7 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	string strRequestType = m_impl->createRequestType(PROTO_STARTEDUNMANAGED);
-	string strRequestData = m_impl->createStartedUnmanagedRequest(m_name);
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_STARTEDUNMANAGED), m_impl->createStartedUnmanagedRequest(m_name));
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -277,9 +276,7 @@ int This::initUnmanagedApplication() {
 
 void This::terminateUnmanagedApplication() {
 
-	string strRequestType = m_impl->createRequestType(PROTO_TERMINATEDUNMANAGED);
-	string strRequestData = m_impl->createTerminatedUnmanagedRequest(m_id);
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_TERMINATEDUNMANAGED), m_impl->createTerminatedUnmanagedRequest(m_id));
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -287,9 +284,7 @@ void This::terminateUnmanagedApplication() {
 
 bool This::setRunning() {
 
-	string strRequestType = m_instance.m_impl->createRequestType(PROTO_SETSTATUS);
-	string strRequestData = m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING);
-	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createRequestType(PROTO_SETSTATUS), m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING));
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -303,17 +298,10 @@ bool This::setRunning() {
 
 void This::setBinaryResult(const std::string& data) {
 
-	string strRequestType = m_instance.m_impl->createRequestType(PROTO_SETRESULT);
-	string strRequestData = m_instance.m_impl->createSetResultRequest(m_instance.m_id, data);
+	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createRequestType(PROTO_SETRESULT), m_instance.m_impl->createSetResultRequest(m_instance.m_id, data));
 
-	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-
-	if (requestResponse.value() == -1) {
-		//throw ?;
-		// Unexpected exception
-	}
 }
 
 void This::setResult(const std::string& data) {
@@ -353,9 +341,7 @@ void This::setResult(const double* data, std::size_t size) {
 
 State This::getState(int id) const {
 
-	string strRequestType = m_impl->createRequestType(PROTO_GETSTATUS);
-	string strRequestData = m_impl->createGetStatusRequest(id);
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_GETSTATUS), m_impl->createGetStatusRequest(id));
 
 	proto::StatusEvent protoStatus;
 	protoStatus.ParseFromArray((*reply).data(), (*reply).size());
@@ -365,9 +351,7 @@ State This::getState(int id) const {
 
 bool This::destroyPublisher(const std::string& name) const {
 
-	string strRequestType = m_impl->createRequestType(PROTO_TERMINATEPUBLISHER);
-	string strRequestData = m_impl->createTerminatePublisherRequest(m_id, name);
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_TERMINATEPUBLISHER), m_impl->createTerminatePublisherRequest(m_id, name));
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
@@ -378,9 +362,7 @@ bool This::destroyPublisher(const std::string& name) const {
 
 bool This::removePort(const std::string& name) const {
 
-	string strRequestType = m_impl->createRequestType(PROTO_REMOVEPORT);
-	string strRequestData = m_impl->createRemovePortRequest(m_id, name);
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_REMOVEPORT), m_impl->createRemovePortRequest(m_id, name));
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
