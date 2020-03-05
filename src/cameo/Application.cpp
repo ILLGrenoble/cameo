@@ -461,6 +461,10 @@ void Instance::setId(int id) {
 	m_id = id;
 }
 
+const std::string& Instance::getName() const {
+	return EventListener::m_name;
+}
+
 void Instance::setErrorMessage(const std::string& message) {
 	m_errorMessage = message;
 }

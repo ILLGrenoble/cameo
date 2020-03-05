@@ -194,6 +194,7 @@ public:
 
 	~Instance();
 
+	const std::string& getName() const;
 	int getId() const;
 	const std::string& getUrl() const;
 	const std::string& getEndpoint() const;
