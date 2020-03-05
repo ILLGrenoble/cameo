@@ -100,27 +100,23 @@ const std::string& Services::getStatusEndpoint() const {
 }
 
 bool Services::isAvailable(int timeout) const {
-	string strRequestType = m_impl->createRequestType(PROTO_INIT);
-	string strRequestData = m_impl->createInitRequest();
-	return m_impl->isAvailable(strRequestType, strRequestData, m_serverEndpoint, timeout);
+	return m_impl->isAvailable(m_requestSocket.get(), timeout);
 }
 
 void Services::initStatus() {
 
 	// Get the status port.
-	string requestTypePart = m_impl->createRequestType(PROTO_STATUS);
-	string requestDataPart = m_impl->createShowStatusRequest();
-
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_STATUS), m_impl->createShowStatusRequest());
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 
-	// reply ok
+	// Check response.
 	if (requestResponse.value() == -1) {
 		return;
 	}
 
+	// Get the status port.
 	m_statusPort = requestResponse.value();
 
 	stringstream ss;
