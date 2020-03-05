@@ -46,6 +46,9 @@ Server::Server(const std::string& endpoint) :
 	is >> m_port;
 	m_serverEndpoint = m_url + ":" + port;
 
+	// Create the request socket. The server endpoint has been defined.
+	Services::initRequestSocket();
+
 	// Start the event thread.
 	unique_ptr<EventStreamSocket> socket = openEventStream();
 	m_eventThread.reset(new EventThread(this, socket));

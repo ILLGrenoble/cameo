@@ -34,9 +34,7 @@ public:
 	void setTimeout(int timeout);
 	int getTimeout() const;
 
-	bool isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout);
-	void waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint);
-	void subscribeToPublisher(const std::string& endpoint);
+	proto::MessageType_Type convertToProtoType(ProtoType type) const;
 
 	std::string createRequestType(ProtoType type) const;
 	std::string createInitRequest() const;
@@ -70,11 +68,12 @@ public:
 	std::unique_ptr<zmq::message_t> tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout = -1);
 	std::string createShowStreamRequest(int id) const;
 
+	bool isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout);
+	void waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint);
+	void subscribeToPublisher(const std::string& endpoint);
 
-	proto::MessageType_Type convertToProtoType(ProtoType type) const;
-
-	int m_timeout;
 	zmq::context_t m_context;
+	int m_timeout;
 
 	static const std::string STATUS;
 	static const std::string RESULT;

@@ -180,6 +180,9 @@ void This::initApplication(int argc, char *argv[]) {
 		}
 	}
 
+	// Create the request socket. The server endpoint has been defined.
+	Services::initRequestSocket();
+
 	// Must be here because the server endpoint is required.
 	initStatus();
 
