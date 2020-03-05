@@ -20,6 +20,7 @@
 #include <sstream>
 #include "../SocketException.h"
 #include "../ConnectionTimeout.h"
+#include "RequestSocketImpl.h"
 
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
@@ -503,6 +504,25 @@ void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
 	unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+}
+
+bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
+
+	string requestTypePart = createRequestType(PROTO_INIT);
+	string requestDataPart = createInitRequest();
+
+	try {
+		unique_ptr<zmq::message_t> reply = socket->request(requestTypePart, requestDataPart, timeout);
+
+		if (reply.get() != nullptr) {
+			return true;
+		}
+
+	} catch (const ConnectionTimeout&) {
+		// The server is not accessible.
+	}
+
+	return false;
 }
 
 }

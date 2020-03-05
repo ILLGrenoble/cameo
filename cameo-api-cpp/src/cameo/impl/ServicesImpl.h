@@ -25,6 +25,8 @@
 
 namespace cameo {
 
+class RequestSocketImpl;
+
 class ServicesImpl {
 
 public:
@@ -71,6 +73,8 @@ public:
 	bool isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout);
 	void waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint);
 	void subscribeToPublisher(const std::string& endpoint);
+
+	bool isAvailable(RequestSocketImpl * socket, int timeout);
 
 	zmq::context_t m_context;
 	int m_timeout;

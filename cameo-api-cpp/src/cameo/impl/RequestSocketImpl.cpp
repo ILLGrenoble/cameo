@@ -51,7 +51,7 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	if (timeout > 0) {
 		// Polling.
 		zmq_pollitem_t items[1];
-		items[0].socket = static_cast<void *>(m_socket.get());
+		items[0].socket = static_cast<void *>(*m_socket.get());
 		items[0].fd = 0;
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
