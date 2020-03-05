@@ -35,7 +35,7 @@ public:
 
 	void terminate();
 
-	void setImpl(ServicesImpl * impl);
+	void init();
 	std::vector<std::string> split(const std::string& info);
 
 	void setTimeout(int timeout);
@@ -57,6 +57,7 @@ public:
 	int m_statusPort;
 	std::string m_serverStatusEndpoint;
 	std::unique_ptr<ServicesImpl> m_impl;
+	std::unique_ptr<RequestSocketImpl> m_requestSocket;
 };
 
 }

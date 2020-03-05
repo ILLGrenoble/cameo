@@ -112,7 +112,6 @@ void This::terminate() {
 
 This::This() :
 	Services(),
-	m_impl(nullptr),
 	m_id(-1),
 	m_managed(false),
 	m_starterId(0) {
@@ -120,8 +119,7 @@ This::This() :
 
 void This::initApplication(int argc, char *argv[]) {
 
-	m_impl = new ServicesImpl();
-	Services::setImpl(m_impl);
+	Services::init();
 
 	if (argc == 0) {
 		throw InvalidArgumentException("missing info argument");

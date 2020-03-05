@@ -44,8 +44,9 @@ void Services::terminate() {
 	m_impl.reset();
 }
 
-void Services::setImpl(ServicesImpl * impl) {
-	m_impl.reset(impl);
+void Services::init() {
+	// Set the impl.
+	m_impl.reset(new ServicesImpl());
 }
 
 std::vector<std::string> Services::split(const std::string& info) {
