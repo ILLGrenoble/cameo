@@ -161,57 +161,6 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	return strRequestStart;
 }
 
-std::unique_ptr<zmq::message_t> ServicesImpl::tryRequestWithOnePartReply(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int overrideTimeout) {
-
-	zmq::socket_t socket(m_context, ZMQ_REQ);
-	try {
-		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
-		int value = 0;
-		socket.setsockopt(ZMQ_LINGER, &value, sizeof(int));
-
-		// Connect to the endpoint.
-		socket.connect(endpoint.c_str());
-	}
-	catch (exception const & e) {
-		throw SocketException(e.what());
-	}
-
-	int requestTypeSize = strRequestType.length();
-	int requestDataSize = strRequestData.length();
-	zmq::message_t requestType(requestTypeSize);
-	zmq::message_t requestData(requestDataSize);
-	memcpy((void *) requestType.data(), strRequestType.c_str(), requestTypeSize);
-	memcpy((void *) requestData.data(), strRequestData.c_str(), requestDataSize);
-	socket.send(requestType, ZMQ_SNDMORE);
-	socket.send(requestData);
-
-	int timeout = m_timeout;
-	if (overrideTimeout > -1) {
-		timeout = overrideTimeout;
-	}
-
-	if (timeout > 0) {
-		// polling
-		zmq_pollitem_t items[1];
-		items[0].socket = static_cast<void *>(socket);
-		items[0].fd = 0;
-		items[0].events = ZMQ_POLLIN;
-		items[0].revents = 0;
-
-		int rc = zmq::poll(items, 1, timeout);
-		if (rc == 0) {
-			// timeout
-			socket.close();
-			throw ConnectionTimeout();
-		}
-	}
-
-	unique_ptr<zmq::message_t> reply(new zmq::message_t());
-	socket.recv(reply.get(), 0);
-
-	return reply;
-}
-
 std::string ServicesImpl::createStopRequest(int id) const {
 	proto::StopCommand stopCommand;
 	stopCommand.set_id(id);
@@ -457,32 +406,6 @@ std::string ServicesImpl::createOutputRequest(const std::string& name) const {
 	command.SerializeToString(&result);
 
 	return result;
-}
-
-bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout) {
-
-	try {
-		unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.c_str(), timeout);
-
-		if (reply.get() != nullptr) {
-			return true;
-		}
-
-	} catch (const ConnectionTimeout&) {
-		// do nothing, timeout
-	}
-
-	return false;
-}
-
-void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
-
-	string strRequestType = createRequestType(PROTO_SUBSCRIBEPUBLISHER);
-	string strRequestData = createSubscribePublisherRequest();
-
-	unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
 }
 
 bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {

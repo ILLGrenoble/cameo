@@ -118,7 +118,7 @@ private:
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
-	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const;
+	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName);
 	int getAvailableTimeout() const;
 	int getStreamPort(const std::string& name);
 
