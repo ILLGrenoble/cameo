@@ -264,7 +264,7 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	string strRequestType = m_impl->createRequest(PROTO_STARTEDUNMANAGED);
+	string strRequestType = m_impl->createRequestType(PROTO_STARTEDUNMANAGED);
 	string strRequestData = m_impl->createStartedUnmanagedRequest(m_name);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -276,7 +276,7 @@ int This::initUnmanagedApplication() {
 
 void This::terminateUnmanagedApplication() {
 
-	string strRequestType = m_impl->createRequest(PROTO_TERMINATEDUNMANAGED);
+	string strRequestType = m_impl->createRequestType(PROTO_TERMINATEDUNMANAGED);
 	string strRequestData = m_impl->createTerminatedUnmanagedRequest(m_id);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -286,7 +286,7 @@ void This::terminateUnmanagedApplication() {
 
 bool This::setRunning() {
 
-	string strRequestType = m_instance.m_impl->createRequest(PROTO_SETSTATUS);
+	string strRequestType = m_instance.m_impl->createRequestType(PROTO_SETSTATUS);
 	string strRequestData = m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING);
 	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
 
@@ -302,7 +302,7 @@ bool This::setRunning() {
 
 void This::setBinaryResult(const std::string& data) {
 
-	string strRequestType = m_instance.m_impl->createRequest(PROTO_SETRESULT);
+	string strRequestType = m_instance.m_impl->createRequestType(PROTO_SETRESULT);
 	string strRequestData = m_instance.m_impl->createSetResultRequest(m_instance.m_id, data);
 
 	unique_ptr<zmq::message_t> reply = m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_instance.m_serverEndpoint);
@@ -352,7 +352,7 @@ void This::setResult(const double* data, std::size_t size) {
 
 State This::getState(int id) const {
 
-	string strRequestType = m_impl->createRequest(PROTO_GETSTATUS);
+	string strRequestType = m_impl->createRequestType(PROTO_GETSTATUS);
 	string strRequestData = m_impl->createGetStatusRequest(id);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -364,7 +364,7 @@ State This::getState(int id) const {
 
 bool This::destroyPublisher(const std::string& name) const {
 
-	string strRequestType = m_impl->createRequest(PROTO_TERMINATEPUBLISHER);
+	string strRequestType = m_impl->createRequestType(PROTO_TERMINATEPUBLISHER);
 	string strRequestData = m_impl->createTerminatePublisherRequest(m_id, name);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -377,7 +377,7 @@ bool This::destroyPublisher(const std::string& name) const {
 
 bool This::removePort(const std::string& name) const {
 
-	string strRequestType = m_impl->createRequest(PROTO_REMOVEPORT);
+	string strRequestType = m_impl->createRequestType(PROTO_REMOVEPORT);
 	string strRequestData = m_impl->createRemovePortRequest(m_id, name);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -781,7 +781,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CREATEPUBLISHER);
+	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_CREATEPUBLISHER);
 	string strRequestData = This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers);
 
 	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
@@ -1043,7 +1043,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_REQUESTPORT);
+	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT);
 	string strRequestData = This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName);
 
 	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);
@@ -1102,7 +1102,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string strRequestType = This::m_instance.m_impl->createRequest(PROTO_CONNECTPORT);
+	string strRequestType = This::m_instance.m_impl->createRequestType(PROTO_CONNECTPORT);
 	string strRequestData = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
 
 	unique_ptr<zmq::message_t> reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, responderEndpoint);
@@ -1128,7 +1128,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	}
 
 	// Request a requester port
-	strRequestType = This::m_instance.m_impl->createRequest(PROTO_REQUESTPORT);
+	strRequestType = This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT);
 	strRequestData = This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName);
 
 	reply = This::m_instance.m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, This::m_instance.m_serverEndpoint);

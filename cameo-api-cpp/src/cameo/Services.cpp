@@ -22,6 +22,7 @@
 #include "impl/CancelIdGenerator.h"
 #include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/RequestSocketImpl.h"
 #include "ProtoType.h"
 
 using namespace std;
@@ -88,7 +89,7 @@ const std::string& Services::getStatusEndpoint() const {
 }
 
 bool Services::isAvailable(int timeout) const {
-	string strRequestType = m_impl->createRequest(PROTO_INIT);
+	string strRequestType = m_impl->createRequestType(PROTO_INIT);
 	string strRequestData = m_impl->createInitRequest();
 	return m_impl->isAvailable(strRequestType, strRequestData, m_serverEndpoint, timeout);
 }
@@ -96,7 +97,7 @@ bool Services::isAvailable(int timeout) const {
 void Services::initStatus() {
 
 	// get the status port
-	string strRequestType = m_impl->createRequest(PROTO_STATUS);
+	string strRequestType = m_impl->createRequestType(PROTO_STATUS);
 	string strRequestData = m_impl->createShowStatusRequest();
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -132,7 +133,7 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	zmq::socket_t * subscriber = m_impl->createEventSubscriber(m_serverStatusEndpoint, cancelEndpoint.str());
 
 	// wait for the connection
-	string strRequestType = m_impl->createRequest(PROTO_INIT);
+	string strRequestType = m_impl->createRequestType(PROTO_INIT);
 	string strRequestData = m_impl->createInitRequest();
 	m_impl->waitForSubscriber(subscriber, strRequestType, strRequestData, m_serverEndpoint);
 

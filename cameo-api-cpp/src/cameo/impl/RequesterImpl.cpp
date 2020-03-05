@@ -74,7 +74,7 @@ WaitingImpl * RequesterImpl::waiting() {
 
 void RequesterImpl::sendBinary(const std::string& request) {
 
-	string strRequestType = m_application->m_impl->createRequest(PROTO_REQUEST);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_REQUEST);
 	string strRequestData;
 
 	proto::Request requestCommand;
@@ -102,7 +102,7 @@ void RequesterImpl::send(const std::string& request) {
 
 void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
 
-	string strRequestType = m_application->m_impl->createRequest(PROTO_REQUEST);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_REQUEST);
 	string strRequestData;
 
 	proto::Request requestCommand;
@@ -172,7 +172,7 @@ void RequesterImpl::cancel() {
 	stringstream requesterEndpoint;
 	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
 
-	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
 	string strRequestData = "cancel";
 
 	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, requesterEndpoint.str());

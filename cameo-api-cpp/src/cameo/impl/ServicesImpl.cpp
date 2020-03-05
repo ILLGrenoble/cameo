@@ -74,7 +74,7 @@ std::string ServicesImpl::createInitRequest() const {
 	return strRequestData;
 }
 
-std::string ServicesImpl::createRequest(ProtoType type) const {
+std::string ServicesImpl::createRequestType(ProtoType type) const {
 	proto::MessageType messageType;
 	messageType.set_type(convertToProtoType(type));
 	std::string strRequestType;
@@ -432,7 +432,7 @@ void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, const std::stri
 
 void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
 
-	string strRequestType = createRequest(PROTO_SUBSCRIBEPUBLISHER);
+	string strRequestType = createRequestType(PROTO_SUBSCRIBEPUBLISHER);
 	string strRequestData = createSubscribePublisherRequest();
 
 	unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
