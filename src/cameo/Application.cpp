@@ -1010,7 +1010,7 @@ std::unique_ptr<Server> Request::getServer() {
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
-Responder::Responder(const application::This * application, int responderPort, const std::string& name) :
+Responder::Responder(application::This * application, int responderPort, const std::string& name) :
 	m_impl(new ResponderImpl(application, responderPort, name)) {
 
 	// Create the waiting here.
