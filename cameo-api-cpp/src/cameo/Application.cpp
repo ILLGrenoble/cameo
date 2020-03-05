@@ -33,13 +33,14 @@
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "PortEvent.h"
 #include "ProtoType.h"
-#include "PublisherEvent.h"
-#include "ResultEvent.h"
 #include "Server.h"
 #include "StarterServerException.h"
 #include "StatusEvent.h"
+#include "PublisherEvent.h"
+#include "ResultEvent.h"
+#include "PortEvent.h"
+#include "CancelEvent.h"
 
 using namespace std;
 
@@ -448,6 +449,8 @@ Instance::Instance(Server * server) :
 	m_initialState(UNKNOWN),
 	m_lastState(UNKNOWN),
 	m_hasResult(false) {
+
+	m_waiting.reset(new GenericWaitingImpl(bind(&Instance::cancelWaitFor, this)));
 }
 
 Instance::~Instance() {
@@ -565,7 +568,7 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 		// Waits for a new incoming status
 		unique_ptr<Event> event = popEvent(blocking);
 
-		// The socket is canceled or the non-blocking call returns a null message.
+		// The non-blocking call returns a null message.
 		if (event.get() == nullptr) {
 			return m_lastState;
 		}
@@ -595,25 +598,27 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 				if ((states & m_pastStates) != 0) {
 					return m_lastState;
 				}
-
-			} else {
+			}
+			else {
 
 				if (ResultEvent * result = dynamic_cast<ResultEvent *>(event.get())) {
 					m_hasResult = true;
 					m_resultData = result->getData();
-
-				} else if (PublisherEvent * publisher = dynamic_cast<PublisherEvent *>(event.get())) {
+				}
+				else if (PublisherEvent * publisher = dynamic_cast<PublisherEvent *>(event.get())) {
 					if (publisher->getPublisherName() == eventName) {
 						break;
 					}
-
-				} else if (PortEvent * port = dynamic_cast<PortEvent *>(event.get())) {
+				}
+				else if (PortEvent * port = dynamic_cast<PortEvent *>(event.get())) {
 					if (port->getPortName() == eventName) {
 						break;
 					}
 				}
+				else if (CancelEvent * cancel = dynamic_cast<CancelEvent *>(event.get())) {
+					break;
+				}
 			}
-
 		}
 	}
 

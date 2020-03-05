@@ -255,6 +255,7 @@ private:
 	State m_lastState;
 	bool m_hasResult;
 	std::string m_resultData;
+	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
