@@ -44,7 +44,7 @@ RequestImpl::~RequestImpl() {
 }
 
 void RequestImpl::replyBinary(const std::string& response) {
-	string strRequestType = m_application->m_impl->createRequest(PROTO_RESPONSE);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_RESPONSE);
 	m_application->m_impl->tryRequestWithOnePartReply(strRequestType, response, m_requesterEndpoint);
 }
 

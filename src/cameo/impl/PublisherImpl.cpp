@@ -134,7 +134,7 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << (m_publisherPort + 1);
 
-	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
 	string strRequestData;
 
 	proto::CancelPublisherSyncCommand cancelPublisherSyncCommand;

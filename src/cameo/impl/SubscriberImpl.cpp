@@ -98,7 +98,7 @@ void SubscriberImpl::init() {
 
 		while (!ready) {
 
-			string strRequestType = m_server->m_impl->createRequest(PROTO_INIT);
+			string strRequestType = m_server->m_impl->createRequestType(PROTO_INIT);
 			string strRequestData = m_server->m_impl->createInitRequest();
 			m_server->m_impl->isAvailable(strRequestType, strRequestData, endpoint, 100);
 	

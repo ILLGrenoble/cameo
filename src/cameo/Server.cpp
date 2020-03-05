@@ -107,7 +107,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, Op
 
 int Server::getStreamPort(const std::string& name) {
 
-	string strRequestType = m_impl->createRequest(PROTO_OUTPUT);
+	string strRequestType = m_impl->createRequestType(PROTO_OUTPUT);
 	string strRequestData = m_impl->createOutputRequest(name);
 
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
@@ -136,7 +136,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			instance->setOutputStreamSocket(socket);
 		}
 
-		string strRequestType = m_impl->createRequest(PROTO_START);
+		string strRequestType = m_impl->createRequestType(PROTO_START);
 		string strRequestData = m_impl->createStartRequest(name, args, application::This::getReference());
 
 		unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
@@ -163,10 +163,10 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	string strRequestData;
 
 	if (immediately) {
-		strRequestType = m_impl->createRequest(PROTO_KILL);
+		strRequestType = m_impl->createRequestType(PROTO_KILL);
 		strRequestData = m_impl->createKillRequest(id);
 	} else {
-		strRequestType = m_impl->createRequest(PROTO_STOP);
+		strRequestType = m_impl->createRequestType(PROTO_STOP);
 		strRequestData = m_impl->createStopRequest(id);
 	}
 
@@ -184,7 +184,7 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 
 	application::InstanceArray instances;
 
-	string strRequestType = m_impl->createRequest(PROTO_CONNECT);
+	string strRequestType = m_impl->createRequestType(PROTO_CONNECT);
 	string strRequestData = m_impl->createConnectRequest(name);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -266,7 +266,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	string strRequestType = m_impl->createRequest(PROTO_ISALIVE);
+	string strRequestType = m_impl->createRequestType(PROTO_ISALIVE);
 	string strRequestData = m_impl->createIsAliveRequest(id);
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -280,7 +280,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	vector<application::Configuration> configVector;
 
-	string strRequestType = m_impl->createRequest(PROTO_ALLAVAILABLE);
+	string strRequestType = m_impl->createRequestType(PROTO_ALLAVAILABLE);
 	string strRequestData = m_impl->createAllAvailableRequest();
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -308,7 +308,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	vector<application::Info> infoVector;
 
-	string strRequestType = m_impl->createRequest(PROTO_SHOWALL);
+	string strRequestType = m_impl->createRequestType(PROTO_SHOWALL);
 	string strRequestData = m_impl->createShowAllRequest();
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
 
@@ -352,7 +352,7 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) const {
 
-	string strRequestType = m_impl->createRequest(PROTO_CONNECTPUBLISHER);
+	string strRequestType = m_impl->createRequestType(PROTO_CONNECTPUBLISHER);
 	string strRequestData = m_impl->createConnectPublisherRequest(id, publisherName);
 
 	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);

@@ -50,7 +50,7 @@ void ResponderImpl::cancel() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << m_responderPort;
 
-	string strRequestType = m_application->m_impl->createRequest(PROTO_CANCEL);
+	string strRequestType = m_application->m_impl->createRequestType(PROTO_CANCEL);
 	string strRequestData = "cancel";
 
 	unique_ptr<zmq::message_t> reply = m_application->m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint.str());

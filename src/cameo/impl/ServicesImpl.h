@@ -38,7 +38,7 @@ public:
 	void waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint);
 	void subscribeToPublisher(const std::string& endpoint);
 
-	std::string createRequest(ProtoType type) const;
+	std::string createRequestType(ProtoType type) const;
 	std::string createInitRequest() const;
 	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const;
 	std::string createStopRequest(int id) const;

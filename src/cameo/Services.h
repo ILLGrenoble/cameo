@@ -21,11 +21,11 @@
 #include <vector>
 #include "EventStreamSocket.h"
 #include "OutputStreamSocket.h"
-#include "impl/RequestSocketImpl.h"
 
 namespace cameo {
 
 class ServicesImpl;
+class RequestSocketImpl;
 
 class Services {
 
