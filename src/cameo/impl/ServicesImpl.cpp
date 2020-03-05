@@ -475,27 +475,6 @@ bool ServicesImpl::isAvailable(const std::string& strRequestType, const std::str
 	return false;
 }
 
-void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint) {
-
-	// polling subscriber
-	zmq_pollitem_t items[1];
-	items[0].socket = static_cast<void *>(*subscriber);
-	items[0].fd = 0;
-	items[0].events = ZMQ_POLLIN;
-	items[0].revents = 0;
-
-	bool ready = false;
-	while (!ready) {
-		isAvailable(strRequestType, strRequestData, endpoint, 100);
-
-		// wait for 100ms ?
-		int rc = zmq::poll(items, 1, 100);
-		if (rc != 0) {
-			ready = true;
-		}
-	}
-}
-
 void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
 
 	string strRequestType = createRequestType(PROTO_SUBSCRIBEPUBLISHER);
@@ -523,6 +502,26 @@ bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 	}
 
 	return false;
+}
+
+void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {
+
+	// Poll subscriber.
+	zmq_pollitem_t items[1];
+	items[0].socket = static_cast<void *>(*subscriber);
+	items[0].fd = 0;
+	items[0].events = ZMQ_POLLIN;
+	items[0].revents = 0;
+
+	while (true) {
+		isAvailable(socket, 100);
+
+		// Wait for 100ms.
+		int rc = zmq::poll(items, 1, 100);
+		if (rc != 0) {
+			break;
+		}
+	}
 }
 
 }

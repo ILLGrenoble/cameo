@@ -71,10 +71,10 @@ public:
 	std::string createShowStreamRequest(int id) const;
 
 	bool isAvailable(const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint, int timeout);
-	void waitForSubscriber(zmq::socket_t * subscriber, const std::string& strRequestType, const std::string& strRequestData, const std::string& endpoint);
 	void subscribeToPublisher(const std::string& endpoint);
 
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
+	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);
 
 	zmq::context_t m_context;
 	int m_timeout;
