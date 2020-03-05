@@ -41,12 +41,22 @@ Services::~Services() {
 }
 
 void Services::terminate() {
+
+	// Reset the request socket before the impl, otherwise reset impl will block.
+	m_requestSocket.reset();
+
+	// Reset the impl.
 	m_impl.reset();
 }
 
 void Services::init() {
 	// Set the impl.
 	m_impl.reset(new ServicesImpl());
+}
+
+void Services::initRequestSocket() {
+	// Create the request socket. The server endpoint must have been initialized.
+	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint));
 }
 
 std::vector<std::string> Services::split(const std::string& info) {
@@ -97,10 +107,11 @@ bool Services::isAvailable(int timeout) const {
 
 void Services::initStatus() {
 
-	// get the status port
-	string strRequestType = m_impl->createRequestType(PROTO_STATUS);
-	string strRequestData = m_impl->createShowStatusRequest();
-	unique_ptr<zmq::message_t> reply = m_impl->tryRequestWithOnePartReply(strRequestType, strRequestData, m_serverEndpoint);
+	// Get the status port.
+	string requestTypePart = m_impl->createRequestType(PROTO_STATUS);
+	string requestDataPart = m_impl->createShowStatusRequest();
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
 
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());

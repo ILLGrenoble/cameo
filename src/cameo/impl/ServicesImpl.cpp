@@ -59,6 +59,71 @@ int ServicesImpl::getTimeout() const {
 	return m_timeout;
 }
 
+/**
+ * convert enum type into Proto type
+ */
+proto::MessageType_Type ServicesImpl::convertToProtoType(ProtoType type) const {
+	if (type == PROTO_INIT) {
+		return proto::MessageType_Type_INIT;
+	} else if (type == PROTO_ISALIVE) {
+		return proto::MessageType_Type_ISALIVE;
+	} else if (type == PROTO_SENDPARAMETERS) {
+		return proto::MessageType_Type_SENDPARAMETERS;
+	} else if (type == PROTO_SHOW) {
+		return proto::MessageType_Type_SHOW;
+	} else if (type == PROTO_STATUS) {
+		return proto::MessageType_Type_STATUS;
+	} else if (type == PROTO_SHOWALL) {
+		return proto::MessageType_Type_SHOWALL;
+	} else if (type == PROTO_START) {
+		return proto::MessageType_Type_START;
+	} else if (type == PROTO_STOP) {
+		return proto::MessageType_Type_STOP;
+	} else if (type == PROTO_KILL) {
+		return proto::MessageType_Type_KILL;
+	} else if (type == PROTO_CONNECT) {
+		return proto::MessageType_Type_CONNECT;
+	} else if (type == PROTO_ALLAVAILABLE) {
+		return proto::MessageType_Type_ALLAVAILABLE;
+	} else if (type == PROTO_SETSTATUS) {
+		return proto::MessageType_Type_SETSTATUS;
+	} else if (type == PROTO_GETSTATUS) {
+		return proto::MessageType_Type_GETSTATUS;
+	} else if (type == PROTO_SETRESULT) {
+		return proto::MessageType_Type_SETRESULT;
+	} else if (type == PROTO_CREATEPUBLISHER) {
+		return proto::MessageType_Type_CREATEPUBLISHER;
+	} else if (type == PROTO_CONNECTPUBLISHER) {
+		return proto::MessageType_Type_CONNECTPUBLISHER;
+	} else if (type == PROTO_SUBSCRIBEPUBLISHER) {
+		return proto::MessageType_Type_SUBSCRIBEPUBLISHER;
+	} else if (type == PROTO_TERMINATEPUBLISHER) {
+		return proto::MessageType_Type_TERMINATEPUBLISHER;
+	} else if (type == PROTO_REQUESTPORT) {
+		return proto::MessageType_Type_REQUESTPORT;
+	} else if (type == PROTO_CONNECTPORT) {
+		return proto::MessageType_Type_CONNECTPORT;
+	} else if (type == PROTO_REMOVEPORT) {
+		return proto::MessageType_Type_REMOVEPORT;
+	} else if (type == PROTO_REQUEST) {
+		return proto::MessageType_Type_REQUEST;
+	} else if (type == PROTO_RESPONSE) {
+		return proto::MessageType_Type_RESPONSE;
+	} else if (type == PROTO_CANCEL) {
+		return proto::MessageType_Type_CANCEL;
+	} else if (type == PROTO_STARTEDUNMANAGED) {
+		return proto::MessageType_Type_STARTEDUNMANAGED;
+	} else if (type == PROTO_TERMINATEDUNMANAGED) {
+		return proto::MessageType_Type_TERMINATEDUNMANAGED;
+	} else if (type == PROTO_OUTPUT) {
+		return proto::MessageType_Type_OUTPUT;
+	} else {
+		cerr << "unsupported proto type" << endl;
+		return proto::MessageType_Type(0);
+	}
+
+}
+
 std::string ServicesImpl::createIsAliveRequest(int id) const {
 	proto::IsAliveCommand isAliveCommand;
 	isAliveCommand.set_id(id);
@@ -438,71 +503,6 @@ void ServicesImpl::subscribeToPublisher(const std::string& endpoint) {
 	unique_ptr<zmq::message_t> reply = tryRequestWithOnePartReply(strRequestType, strRequestData, endpoint);
 	proto::RequestResponse requestResponse;
 	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-}
-
-/**
- * convert enum type into Proto type
- */
-proto::MessageType_Type ServicesImpl::convertToProtoType(ProtoType type) const {
-	if (type == PROTO_INIT) {
-		return proto::MessageType_Type_INIT;
-	} else if (type == PROTO_ISALIVE) {
-		return proto::MessageType_Type_ISALIVE;
-	} else if (type == PROTO_SENDPARAMETERS) {
-		return proto::MessageType_Type_SENDPARAMETERS;
-	} else if (type == PROTO_SHOW) {
-		return proto::MessageType_Type_SHOW;
-	} else if (type == PROTO_STATUS) {
-		return proto::MessageType_Type_STATUS;
-	} else if (type == PROTO_SHOWALL) {
-		return proto::MessageType_Type_SHOWALL;
-	} else if (type == PROTO_START) {
-		return proto::MessageType_Type_START;
-	} else if (type == PROTO_STOP) {
-		return proto::MessageType_Type_STOP;
-	} else if (type == PROTO_KILL) {
-		return proto::MessageType_Type_KILL;
-	} else if (type == PROTO_CONNECT) {
-		return proto::MessageType_Type_CONNECT;
-	} else if (type == PROTO_ALLAVAILABLE) {
-		return proto::MessageType_Type_ALLAVAILABLE;
-	} else if (type == PROTO_SETSTATUS) {
-		return proto::MessageType_Type_SETSTATUS;
-	} else if (type == PROTO_GETSTATUS) {
-		return proto::MessageType_Type_GETSTATUS;
-	} else if (type == PROTO_SETRESULT) {
-		return proto::MessageType_Type_SETRESULT;
-	} else if (type == PROTO_CREATEPUBLISHER) {
-		return proto::MessageType_Type_CREATEPUBLISHER;
-	} else if (type == PROTO_CONNECTPUBLISHER) {
-		return proto::MessageType_Type_CONNECTPUBLISHER;
-	} else if (type == PROTO_SUBSCRIBEPUBLISHER) {
-		return proto::MessageType_Type_SUBSCRIBEPUBLISHER;
-	} else if (type == PROTO_TERMINATEPUBLISHER) {
-		return proto::MessageType_Type_TERMINATEPUBLISHER;
-	} else if (type == PROTO_REQUESTPORT) {
-		return proto::MessageType_Type_REQUESTPORT;
-	} else if (type == PROTO_CONNECTPORT) {
-		return proto::MessageType_Type_CONNECTPORT;
-	} else if (type == PROTO_REMOVEPORT) {
-		return proto::MessageType_Type_REMOVEPORT;
-	} else if (type == PROTO_REQUEST) {
-		return proto::MessageType_Type_REQUEST;
-	} else if (type == PROTO_RESPONSE) {
-		return proto::MessageType_Type_RESPONSE;
-	} else if (type == PROTO_CANCEL) {
-		return proto::MessageType_Type_CANCEL;
-	} else if (type == PROTO_STARTEDUNMANAGED) {
-		return proto::MessageType_Type_STARTEDUNMANAGED;
-	} else if (type == PROTO_TERMINATEDUNMANAGED) {
-		return proto::MessageType_Type_TERMINATEDUNMANAGED;
-	} else if (type == PROTO_OUTPUT) {
-		return proto::MessageType_Type_OUTPUT;
-	} else {
-		cerr << "unsupported proto type" << endl;
-		return proto::MessageType_Type(0);
-	}
-
 }
 
 }

@@ -36,6 +36,7 @@ public:
 	void terminate();
 
 	void init();
+	void initRequestSocket();
 	std::vector<std::string> split(const std::string& info);
 
 	void setTimeout(int timeout);
