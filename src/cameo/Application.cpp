@@ -144,6 +144,9 @@ void This::initApplication(int argc, char *argv[]) {
 	// However leave the same value seems to be ok.
 	m_serverEndpoint = m_url + ":" + port;
 
+	// Create the request socket. The server endpoint has been defined.
+	Services::initRequestSocket();
+
 	string nameId = tokens[3];
 
 	int index = nameId.find_last_of('.');
@@ -180,9 +183,6 @@ void This::initApplication(int argc, char *argv[]) {
 			is >> m_starterId;
 		}
 	}
-
-	// Create the request socket. The server endpoint has been defined.
-	Services::initRequestSocket();
 
 	// Must be here because the server endpoint is required.
 	initStatus();
