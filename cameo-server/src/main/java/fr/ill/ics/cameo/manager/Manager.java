@@ -606,28 +606,22 @@ public class Manager extends ConfigLoader {
 		return true;
 	}
 	
-	public synchronized StatusEvent getApplicationState(int id) throws IdNotFoundException {
+	public synchronized StatusInfo getApplicationState(int id) {
+		
+		StatusInfo status = new StatusInfo();
+		status.setId(id);
 		
 		if (!applicationMap.containsKey(id)) {
-			StatusEvent status = StatusEvent.newBuilder()
-					.setId(id)
-					.setName("?")
-					.setApplicationState(ApplicationState.UNKNOWN)
-					.setPastApplicationStates(0)
-					.setPastApplicationStates(0)
-					.build();
-			
-			return status;
+			status.setName("?");
+			status.setApplicationState(ApplicationState.UNKNOWN);
+			status.setPastApplicationStates(0);
 		}
-		
-		Application application = applicationMap.get(id);
-		StatusEvent status = StatusEvent.newBuilder()
-				.setId(id)
-				.setName(application.getName())
-				.setApplicationState(application.getApplicationState())
-				.setPastApplicationStates(application.getPastApplicationStates())
-				.setPastApplicationStates(0)
-				.build();
+		else {
+			Application application = applicationMap.get(id);
+			status.setName(application.getName());
+			status.setApplicationState(application.getApplicationState());
+			status.setPastApplicationStates(application.getPastApplicationStates());
+		}
 		
 		return status;
 	}
