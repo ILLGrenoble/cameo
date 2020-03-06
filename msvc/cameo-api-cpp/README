@@ -1,0 +1,2 @@
+Generate the proto files in src/proto
+protoc -I=. --cpp_out=. Messages.proto
