@@ -2,6 +2,7 @@
 -----
 
 * Only one EventStreamSocket is created for a Server. An EventThread is forwarding the Event objects to the EventListener objects.
+* The zmq sockets are kept alive and not created for each request.
 
 0.2.1
 -----
