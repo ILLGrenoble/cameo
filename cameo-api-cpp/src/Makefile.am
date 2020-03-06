@@ -55,7 +55,6 @@ libcameo_la_SOURCES = \
 	cameo/impl/CancelIdGenerator.h \
 	cameo/impl/PublisherImpl.h \
 	cameo/impl/HandlerImpl.h \
-	cameo/impl/ApplicationImpl.h \
 	cameo/impl/ServicesImpl.h \
 	cameo/impl/SubscriberImpl.h \
 	cameo/impl/RequestImpl.h \
@@ -72,6 +71,7 @@ nobase_include_HEADERS = \
 	cameo/ProtoType.h \
 	cameo/ConnectionTimeout.h \
 	cameo/Event.h \
+	cameo/EventThread.h \
 	cameo/ConcurrentQueue.h \
 	cameo/EventListener.h \
 	cameo/EventStreamSocket.h \
@@ -81,6 +81,7 @@ nobase_include_HEADERS = \
 	cameo/RequesterCreationException.h \
 	cameo/PublisherEvent.h \
 	cameo/PortEvent.h \
+	cameo/CancelEvent.h \
 	cameo/RemoteException.h \
 	cameo/Response.h \
 	cameo/ConnectionChecker.h \
