@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 
 AC_INIT(cameo-api-cpp, 0.2.2)
-LIBRARY_VERSION=0:2:1
+LIBRARY_VERSION=0:2:2
 
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_SRCDIR(src/cameo/Application.cpp)
