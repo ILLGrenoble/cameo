@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.impl;
 
+import org.json.simple.JSONObject;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import fr.ill.ics.cameo.ConnectionTimeout;
@@ -23,6 +25,7 @@ import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
 import fr.ill.ics.cameo.proto.Messages.Init;
 import fr.ill.ics.cameo.proto.Messages.MessageType;
@@ -97,7 +100,7 @@ public class ServicesImpl {
 	 */
 	public boolean isAvailable(int overrideTimeout) {
 
-		Zmq.Msg request = createInitRequest();
+		Zmq.Msg request = createSyncRequest();
 		Zmq.Msg reply = null;
 		try {
 			reply = requestSocket.request(request, overrideTimeout);
@@ -116,7 +119,7 @@ public class ServicesImpl {
 	
 	protected void sendInit() {
 		
-		Zmq.Msg request = createInitRequest();
+		Zmq.Msg request = createSyncRequest();
 		Zmq.Msg reply = null;
 		try {
 			reply = requestSocket.request(request);
@@ -213,13 +216,15 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createInitRequest() {
+	protected Zmq.Msg createSyncRequest() {
 		
-		Zmq.Msg request = createRequest(Type.INIT);
-		Init start = Init.newBuilder().build();
-		request.add(start.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SYNC);
 		
-		return request;
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(request.toJSONString().getBytes(Message.CHARSET));
+
+		return message;
 	}
 	
 	/**
@@ -229,11 +234,13 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createShowStatusRequest() {
 		
-		Zmq.Msg request = createRequest(Type.STATUS);
-		String content = "status";
-		request.add(content);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STATUS);
+
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(request.toJSONString().getBytes(Message.CHARSET));
 		
-		return request;
+		return message;
 	}
 	
 	/**
@@ -244,11 +251,14 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createGetStatusRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.GETSTATUS);
-		GetStatusCommand command = GetStatusCommand.newBuilder().setId(id).build();
-		request.add(command.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.GET_STATUS);
+		request.put(Message.GetStatusRequest.ID, id);
+
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(request.toJSONString().getBytes(Message.CHARSET));
 		
-		return request;
+		return message;	
 	}
 	
 	/**
@@ -260,14 +270,15 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createStartedUnmanagedRequest(String name, long pid) {
 		
-		Zmq.Msg request = createRequest(Type.STARTEDUNMANAGED);
-		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder()
-												.setName(name)
-												.setPid(pid)
-												.build();
-		request.add(command.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STARTED_UNMANAGED);
+		request.put(Message.StartedUnmanagedRequest.NAME, name);
+		request.put(Message.StartedUnmanagedRequest.PID, pid);
 		
-		return request;
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(request.toJSONString().getBytes(Message.CHARSET));
+		
+		return message;
 	}
 	
 	/**
@@ -278,11 +289,14 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createTerminatedUnmanagedRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.TERMINATEDUNMANAGED);
-		TerminatedUnmanagedCommand command = TerminatedUnmanagedCommand.newBuilder().setId(id).build();
-		request.add(command.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.TERMINATED_UNMANAGED);
+		request.put(Message.TerminatedUnmanagedRequest.ID, id);
 		
-		return request;
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(request.toJSONString().getBytes(Message.CHARSET));
+		
+		return message;
 	}
 	
 }

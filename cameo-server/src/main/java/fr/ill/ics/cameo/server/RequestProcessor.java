@@ -23,8 +23,6 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.google.protobuf.ByteString;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.exception.ApplicationAlreadyRunning;
@@ -43,29 +41,11 @@ import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.StatusInfo;
 import fr.ill.ics.cameo.messages.Message;
-import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.CreatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.PublisherResponse;
-import fr.ill.ics.cameo.proto.Messages.RemovePortCommand;
-import fr.ill.ics.cameo.proto.Messages.RequestPortCommand;
-import fr.ill.ics.cameo.proto.Messages.RequestResponse;
-import fr.ill.ics.cameo.proto.Messages.SetResultCommand;
-import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 
 /**
  * 
  */
 public class RequestProcessor {
-
-	public Msg reply(JSONObject response) {
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toJSONString().getBytes(Message.CHARSET));
-		
-		return reply;
-	}
 	
 	/**
 	 * verify connection
@@ -114,7 +94,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, application.getId());
 			response.put(Message.RequestResponse.MESSAGE, "OK");
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
 			
@@ -122,7 +102,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, Long.valueOf(-1));
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 
-			return reply(response);
+			return Converter.reply(response);
 		}
 	}
 
@@ -158,7 +138,7 @@ public class RequestProcessor {
 		}
 		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
-		return reply(response);
+		return Converter.reply(response);
 	}
 
 	/**
@@ -180,7 +160,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, 0);
 			response.put(Message.RequestResponse.MESSAGE, applicationName);
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -188,7 +168,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, -1);
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 	}
 
@@ -211,7 +191,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, 0);
 			response.put(Message.RequestResponse.MESSAGE, applicationName);
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -219,7 +199,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, -1);
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 	}
 
@@ -261,7 +241,7 @@ public class RequestProcessor {
 		}
 		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
-		return reply(response);
+		return Converter.reply(response);
 	}
 	
 	/**
@@ -283,7 +263,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, port);
 			response.put(Message.RequestResponse.MESSAGE, "OK");
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 		catch (java.lang.ArrayIndexOutOfBoundsException | IdNotFoundException | UnknownApplicationException | StreamNotPublishedException e) {
 			// Return the reply.
@@ -291,7 +271,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, -1);
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 	}
 	
@@ -312,7 +292,7 @@ public class RequestProcessor {
 		JSONObject response = new JSONObject();
 		response.put(Message.IsAliveResponse.IS_ALIVE, isAlive);
 		
-		return reply(response);
+		return Converter.reply(response);
 	}
 
 	/**
@@ -343,15 +323,15 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.VALUE, 0);
 			response.put(Message.RequestResponse.MESSAGE, "OK");
 			
-			return reply(response);
-			
-		} catch (IdNotFoundException | UnmanagedApplicationException e) {
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException | UnmanagedApplicationException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
 			response.put(Message.RequestResponse.VALUE, -1);
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-			return reply(response);
+			return Converter.reply(response);
 		}
 	}
 
@@ -371,7 +351,7 @@ public class RequestProcessor {
 		response.put(Message.RequestResponse.VALUE, port);
 		response.put(Message.RequestResponse.MESSAGE, "OK");
 		
-		return reply(response);
+		return Converter.reply(response);
 	}
 	
 	public Msg processAllAvailableRequest(JSONObject request, Manager manager) {
@@ -401,7 +381,7 @@ public class RequestProcessor {
 		
 		response.put(Message.AllAvailableResponse.APPLICATION_CONFIG, array);
 		
-		return reply(response);
+		return Converter.reply(response);
 	}
 	
 	/**
@@ -420,7 +400,7 @@ public class RequestProcessor {
 		response.put(Message.RequestResponse.VALUE, port);
 		response.put(Message.RequestResponse.MESSAGE, "OK");
 		
-		return reply(response);
+		return Converter.reply(response);
 	}
 
 	public Msg processSetStatusRequest(JSONObject request, Manager manager) {
@@ -450,7 +430,7 @@ public class RequestProcessor {
 			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 		}
 				
-		return reply(response);
+		return Converter.reply(response);
 	}
 	
 	public Msg processGetStatusRequest(JSONObject request, Manager manager) {
@@ -468,288 +448,323 @@ public class RequestProcessor {
 		response.put(Message.StatusEvent.APPLICATION_STATE, status.getApplicationState());
 		response.put(Message.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
 		
-		return reply(response);
+		return Converter.reply(response);
 	}
 	
 
-	public Msg processSetResultRequest(JSONObject request, Manager manager) {
+	public Msg processSetResultRequest(JSONObject request, byte[] data, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received SetResult request TO IMPLEMENT");
+		LogInfo.getInstance().getLogger().fine("Received SetResult request");
 		
 		int applicationId = ((Long)request.get(Message.SetResultRequest.ID)).intValue();
-		
-//		ByteString data = command.getData();
-//		
-		RequestResponse response = null;
-//		
-//		try {
-//			manager.setApplicationResult(applicationId, data);
-//			response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
-//			
-//		} catch (IdNotFoundException e) {
-//			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
-//		}
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		
-		reply.add(response.toByteArray());
-		return reply;
+
+		try {
+			manager.setApplicationResult(applicationId, data);
+			
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
 	}
 
 
-	public Msg processRequestPortCommand(RequestPortCommand message, Manager manager) {
+	public Msg processRequestPortRequest(JSONObject request, Manager manager) {
 
-		LogInfo.getInstance().getLogger().fine("Received RequestPortCommand message");
+		LogInfo.getInstance().getLogger().fine("Received RequestPort request");
 		
-		int applicationId = message.getId();
-		String portName = message.getName();
+		int applicationId = ((Long)request.get(Message.RequestPortRequest.ID)).intValue();
+		String portName = (String)request.get(Message.RequestPortRequest.NAME);
 		
-		RequestResponse response = null;
 		try {
 			int port = manager.requestPortForApplication(applicationId, portName);
 			if (port != -1) {
-				response = RequestResponse.newBuilder()
-								.setValue(port)
-								.setMessage("OK").build();
-			} else {
-				response = RequestResponse.newBuilder()
-								.setValue(-1)
-								.setMessage("The port already exists").build();
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, port);
+				response.put(Message.RequestResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
 			}
-			
-		} catch (IdNotFoundException e) {
-			response = RequestResponse.newBuilder()
-								.setValue(-1)
-								.setMessage(e.getMessage()).build();
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -1);
+				response.put(Message.RequestResponse.MESSAGE, "The port already exists");
+				
+				return Converter.reply(response);
+			}
 		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;
+			return Converter.reply(response);
+		}
 	}
 
-	public Msg processConnectPortCommand(ConnectPortCommand message, Manager manager) {
+	public Msg processConnectPortRequest(JSONObject request, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received ConnectPortCommand message");
+		LogInfo.getInstance().getLogger().fine("Received ConnectPort request");
 		
-		int applicationId = message.getId();
-		String portName = message.getName();
+		int applicationId = ((Long)request.get(Message.ConnectPortRequest.ID)).intValue();
+		String portName = (String)request.get(Message.ConnectPortRequest.NAME);
 		
-		RequestResponse response = null;
 		try {
 			int port = manager.connectPortForApplication(applicationId, portName);
 			if (port != -1) {
-				response = RequestResponse.newBuilder()
-								.setValue(port)
-								.setMessage("OK").build();
-			} else {
-				response = RequestResponse.newBuilder()
-								.setValue(-1)
-								.setMessage("The port does not exist").build();
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, port);
+				response.put(Message.RequestResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -1);
+				response.put(Message.RequestResponse.MESSAGE, "The port does not exist");
+				
+				return Converter.reply(response);
 			}
 			
 		} catch (IdNotFoundException e) {
-			response = RequestResponse.newBuilder()
-								.setValue(-1)
-								.setMessage(e.getMessage()).build();
-		}
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;
+			return Converter.reply(response);
+		}
 	}
 
-	public Msg processRemovePortCommand(RemovePortCommand message, Manager manager) {
+	public Msg processRemovePortRequest(JSONObject request, Manager manager) {
 
-		LogInfo.getInstance().getLogger().fine("Received RemovePortCommand message");
+		LogInfo.getInstance().getLogger().fine("Received RemovePort request");
 		
-		int applicationId = message.getId();
-		String portName = message.getName();
-		
-		RequestResponse response = null;
+		int applicationId = ((Long)request.get(Message.RemovePortRequest.ID)).intValue();
+		String portName = (String)request.get(Message.RemovePortRequest.NAME);
 		
 		try {
 			boolean done = manager.removePortForApplication(applicationId, portName);
 			if (done) {
-				response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
-			} else {
-				response = RequestResponse.newBuilder().setValue(-1).setMessage("Cannot remove the port").build();
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, 0);
+				response.put(Message.RequestResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
 			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -1);
+				response.put(Message.RequestResponse.MESSAGE, "Cannot remove the port");
+				
+				return Converter.reply(response);
+			}
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-		} catch (IdNotFoundException e) {
-			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
+			return Converter.reply(response);
 		}	
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;
 	}
 	
-	public Msg processCreatePublisherCommand(CreatePublisherCommand message, Manager manager) {
+	public Msg processCreatePublisherRequest(JSONObject request, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received CreatePublisherCommand message");
+		LogInfo.getInstance().getLogger().fine("Received CreatePublisher request");
 		
-		int applicationId = message.getId();
-		String publisherName = message.getName();
-		
-		PublisherResponse response = null;
+		int applicationId = ((Long)request.get(Message.CreatePublisherRequest.ID)).intValue();
+		String publisherName = (String)request.get(Message.CreatePublisherRequest.NAME);
 		
 		try {
-			int[] ports = manager.createPublisherForApplication(applicationId, publisherName, message.getNumberOfSubscribers());
-			if (ports[0] != -1) {
-				response = PublisherResponse.newBuilder()
-								.setPublisherPort(ports[0])
-								.setSynchronizerPort(ports[1])
-								.setMessage("OK").build();
-			} else {
-				response = PublisherResponse.newBuilder()
-								.setPublisherPort(-1)
-								.setSynchronizerPort(-1)
-								.setMessage("The publisher already exists").build();
-			}
+			int numberOfSubscribers = ((Long)request.get(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS)).intValue();
+			int[] ports = manager.createPublisherForApplication(applicationId, publisherName, numberOfSubscribers);
 			
-		} catch (IdNotFoundException e) {
-			response = PublisherResponse.newBuilder()
-								.setPublisherPort(-1)
-								.setSynchronizerPort(-1)
-								.setMessage(e.getMessage()).build();
+			if (ports[0] != -1) {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.PublisherResponse.PUBLISHER_PORT, ports[0]);
+				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
+				response.put(Message.PublisherResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
+				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
+				response.put(Message.PublisherResponse.MESSAGE, "The publisher already exists");
+				
+				return Converter.reply(response);
+			}
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
+			response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
+			response.put(Message.PublisherResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
 		}	
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;
 	}
 
-	public Msg processTerminatePublisherCommand(TerminatePublisherCommand message, Manager manager) {
+	public Msg processTerminatePublisherRequest(JSONObject request, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received TerminatePublisherCommand message");
+		LogInfo.getInstance().getLogger().fine("Received TerminatePublisher request");
 		
-		int applicationId = message.getId();
-		String publisherName = message.getName();
-		
-		RequestResponse response = null;
+		int applicationId = ((Long)request.get(Message.TerminatePublisherRequest.ID)).intValue();
+		String publisherName = (String)request.get(Message.TerminatePublisherRequest.NAME);
 		
 		try {
 			boolean done = manager.terminatePublisherForApplication(applicationId, publisherName);
 			if (done) {
-				response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
-			} else {
-				response = RequestResponse.newBuilder().setValue(-1).setMessage("Cannot terminate the publisher").build();
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, 0);
+				response.put(Message.RequestResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -1);
+				response.put(Message.RequestResponse.MESSAGE, "Cannot terminate the publisher");
+				
+				return Converter.reply(response);
 			}
 			
 		} catch (IdNotFoundException e) {
-			response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
 		}	
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;
 	}
 
-	public Msg processConnectPublisherCommand(ConnectPublisherCommand message, Manager manager) {
+	public Msg processConnectPublisherRequest(JSONObject request, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received ConnectPublisherCommand message");
+		LogInfo.getInstance().getLogger().fine("Received ConnectPublisher request");
 		
-		PublisherResponse response = null;
+		int applicationId = ((Long)request.get(Message.ConnectPublisherRequest.APPLICATION_ID)).intValue();
+		String publisherName = (String)request.get(Message.ConnectPublisherRequest.PUBLISHER_NAME);
 		
 		try {
-			 Application.Publisher publisher = manager.getPublisherForApplication(message.getApplicationId(), message.getPublisherName());
-			 int[] ports = manager.getPublisherPortsForApplication(message.getApplicationId(), message.getPublisherName());
-			 
+			 Application.Publisher publisher = manager.getPublisherForApplication(applicationId, publisherName);
+			 int[] ports = manager.getPublisherPortsForApplication(applicationId, publisherName);
 			 
 			 if (ports[0] != -1) {
-				response = PublisherResponse.newBuilder().setMessage("OK")
-														.setPublisherPort(ports[0])
-														.setSynchronizerPort(ports[1])
-														.setNumberOfSubscribers(publisher.numberOfSubscribers)
-														.build();
-			} else {
-				response = PublisherResponse.newBuilder()
-								.setPublisherPort(-1)
-								.setSynchronizerPort(-1)
-								.setNumberOfSubscribers(-1)
-								.setMessage("The publisher does not exist").build();
-			}
-		} catch (IdNotFoundException e) {
-			response = PublisherResponse.newBuilder()
-								.setMessage(e.getMessage())
-								.setPublisherPort(-1)
-								.setSynchronizerPort(-1)
-								.setNumberOfSubscribers(-1)
-								.build();
-			
-		} catch (UnknownPublisherException e) {
-			response = PublisherResponse.newBuilder()
-								.setMessage(e.getMessage())
-								.setPublisherPort(-1)
-								.setSynchronizerPort(-1)
-								.setNumberOfSubscribers(-1)
-								.build();
-		}
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.PublisherResponse.PUBLISHER_PORT, ports[0]);
+				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
+				response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, publisher.numberOfSubscribers);
+				response.put(Message.PublisherResponse.MESSAGE, "OK");
 				
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-		
-		return reply;		
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
+				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
+				response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
+				response.put(Message.PublisherResponse.MESSAGE, "The publisher does not exist");
+				
+				return Converter.reply(response);
+			}
+		}
+		catch (IdNotFoundException | UnknownPublisherException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
+			response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
+			response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
+			response.put(Message.PublisherResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
 	}
 
-	public Msg processStartedUnmanagedCommand(StartedUnmanagedCommand message, Manager manager) {
+	public Msg processStartedUnmanagedRequest(JSONObject request, Manager manager) {
 
-		LogInfo.getInstance().getLogger().fine("Received StartedUnmanagedCommand message");
+		LogInfo.getInstance().getLogger().fine("Received StartedUnmanaged request");
 		
 		int applicationId = 0;
+		String name = (String)request.get(Message.StartedUnmanagedRequest.NAME);
 		
 		try {
-			if (message.hasPid()) {
-				applicationId = manager.newStartedUnmanagedApplication(message.getName(), message.getPid());
-			} else {
-				applicationId = manager.newStartedUnmanagedApplication(message.getName());	
+			// Set the PID if it is passed.
+			if (request.containsKey(Message.StartedUnmanagedRequest.PID)) {
+				int pid = ((Long)request.get(Message.StartedUnmanagedRequest.PID)).intValue();
+				applicationId = manager.newStartedUnmanagedApplication(name, pid);
+			}
+			else {
+				applicationId = manager.newStartedUnmanagedApplication(name);
 			}
 			
-		} catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
-			Zmq.Msg reply = new Zmq.Msg();
-			RequestResponse response = RequestResponse.newBuilder()
-												.setValue(-1)
-												.setMessage(e.getMessage())
-												.build();
-			reply.add(response.toByteArray());
-			return reply;
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, applicationId);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);			
 		} 
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		RequestResponse response = RequestResponse.newBuilder()
-												.setValue(applicationId)
-												.setMessage("OK")
-												.build();
-		reply.add(response.toByteArray());
-		
-		return reply;
 	}
 
-	public Msg processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand message, Manager manager) {
+	public Msg processTerminatedUnmanagedRequest(JSONObject request, Manager manager) {
 		
-		LogInfo.getInstance().getLogger().fine("Received TerminatedUnmanagedCommand message");
+		LogInfo.getInstance().getLogger().fine("Received TerminatedUnmanaged request");
+		
+		int applicationId = ((Long)request.get(Message.TerminatedUnmanagedRequest.ID)).intValue();
 		
 		try {
-			String applicationName = manager.setUnmanagedApplicationTerminated(message.getId());
-
-			Zmq.Msg reply = new Zmq.Msg();
-			RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage(applicationName).build();
-			reply.add(response.toByteArray());
+			String applicationName = manager.setUnmanagedApplicationTerminated(applicationId);
 			
-			return reply;
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, applicationName);
 			
-		} catch (IdNotFoundException e) {
-			Zmq.Msg reply = new Zmq.Msg();
-			RequestResponse response = RequestResponse.newBuilder().setValue(-1).setMessage(e.getMessage()).build();
-			reply.add(response.toByteArray());
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
 			
-			return reply;
+			return Converter.reply(response);
 		}		
 	}
 	

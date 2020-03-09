@@ -16,7 +16,12 @@
 
 package fr.ill.ics.cameo.server;
 
+import org.json.simple.JSONObject;
+
+import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.manager.ApplicationState;
+import fr.ill.ics.cameo.messages.Message;
 
 public class Converter {
 
@@ -45,5 +50,13 @@ public class Converter {
 		}
 		
 		return "UNKNOWN";		
+	}
+	
+	public static Msg reply(JSONObject response) {
+		
+		Zmq.Msg reply = new Zmq.Msg();
+		reply.add(response.toJSONString().getBytes(Message.CHARSET));
+		
+		return reply;
 	}
 }

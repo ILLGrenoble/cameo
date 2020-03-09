@@ -19,7 +19,6 @@ package fr.ill.ics.cameo.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -28,35 +27,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Message;
-import fr.ill.ics.cameo.proto.Messages.AllAvailableCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.CreatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
-import fr.ill.ics.cameo.proto.Messages.IsAliveCommand;
-import fr.ill.ics.cameo.proto.Messages.KillCommand;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.OutputCommand;
-import fr.ill.ics.cameo.proto.Messages.RemovePortCommand;
-import fr.ill.ics.cameo.proto.Messages.RequestPortCommand;
-import fr.ill.ics.cameo.proto.Messages.SendParametersCommand;
-import fr.ill.ics.cameo.proto.Messages.SetResultCommand;
-import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
-import fr.ill.ics.cameo.proto.Messages.StartCommand;
-import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
-import fr.ill.ics.cameo.proto.Messages.StopCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
 
 public class Server {
 
@@ -179,36 +154,36 @@ public class Server {
 				else if (type == Message.GET_STATUS) {
 					reply = process.processGetStatusRequest(request, manager);
 				}
-/*				else if (type == Message.SET_RESULT) {
-					reply = process.processSetResultRequest(request, manager);
-					
-				} else if (type == Message.REQUEST_PORT) {
-					reply = process.processRequestPortCommand(RequestPortCommand.parseFrom(messageData), manager);
-
-				} else if (type == Message.CONNECT_PORT) {
-					reply = process.processConnectPortCommand(ConnectPortCommand.parseFrom(messageData), manager);
-
-				} else if (type == Message.REMOVE_PORT) {
-					reply = process.processRemovePortCommand(RemovePortCommand.parseFrom(messageData), manager);
-
-					// Publisher/Subscriber
-				} else if (type == Message.CREATE_PUBLISHER) {
-					reply = process.processCreatePublisherCommand(CreatePublisherCommand.parseFrom(messageData), manager);
-
-				} else if (type == Message.TERMINATE_PUBLISHER) {
-					reply = process.processTerminatePublisherCommand(TerminatePublisherCommand.parseFrom(messageData), manager);
-
-				} else if (type == Message.CONNECT_PUBLISHER) {
-					reply = process.processConnectPublisherCommand(ConnectPublisherCommand.parseFrom(messageData), manager);
-
-					// Unmanaged app.
-				} else if (type == Message.STARTED_UNMANAGED) {
-					reply = process.processStartedUnmanagedCommand(StartedUnmanagedCommand.parseFrom(messageData), manager);
-
-				} else if (type == Message.TERMINATED_UNMANAGED) {
-					reply = process.processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand.parseFrom(messageData), manager);
+				else if (type == Message.SET_RESULT) {
+					// The result data is in the second frame.
+					byte[] resultData = message.getLastData();
+					reply = process.processSetResultRequest(request, resultData, manager);
+				}
+				else if (type == Message.REQUEST_PORT) {
+					reply = process.processRequestPortRequest(request, manager);
+				}
+				else if (type == Message.CONNECT_PORT) {
+					reply = process.processConnectPortRequest(request, manager);
+				}
+				else if (type == Message.REMOVE_PORT) {
+					reply = process.processRemovePortRequest(request, manager);
+				}
+				else if (type == Message.CREATE_PUBLISHER) {
+					reply = process.processCreatePublisherRequest(request, manager);
+				}
+				else if (type == Message.TERMINATE_PUBLISHER) {
+					reply = process.processTerminatePublisherRequest(request, manager);
+				}
+				else if (type == Message.CONNECT_PUBLISHER) {
+					reply = process.processConnectPublisherRequest(request, manager);
+				}
+				else if (type == Message.STARTED_UNMANAGED) {
+					reply = process.processStartedUnmanagedRequest(request, manager);
+				}
+				else if (type == Message.TERMINATED_UNMANAGED) {
+					reply = process.processTerminatedUnmanagedRequest(request, manager);
 			
-				}*/
+				}
 				else {
 					System.err.println("Unknown request type " + type);
 					message.send(server);

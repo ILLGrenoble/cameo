@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.jdom2.Element;
 import org.jdom2.JDOMException;

@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.protobuf.ByteString;
+import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Context;
@@ -36,10 +36,7 @@ import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
-import fr.ill.ics.cameo.proto.Messages.PortEvent;
-import fr.ill.ics.cameo.proto.Messages.PublisherEvent;
-import fr.ill.ics.cameo.proto.Messages.ResultEvent;
-import fr.ill.ics.cameo.proto.Messages.StatusEvent;
+import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 import fr.ill.ics.cameo.threads.VerifyApplicationThread;
 
@@ -119,51 +116,54 @@ public class Manager extends ConfigLoader {
 
 	public synchronized void sendStatus(int id, String name, int state, int pastStates) {
 		
-		StatusEvent event = StatusEvent.newBuilder()
-										.setId(id)
-										.setName(name)
-										.setApplicationState(state)
-										.setPastApplicationStates(pastStates)
-										.build();
-			
+		// Send the status.
+		JSONObject event = new JSONObject();
+		event.put(Message.StatusEvent.ID, id);
+		event.put(Message.StatusEvent.NAME, name);
+		event.put(Message.StatusEvent.APPLICATION_STATE, state);
+		event.put(Message.StatusEvent.PAST_APPLICATION_STATES, pastStates);
+		
 		eventPublisher.sendMore("STATUS");
-		eventPublisher.send(event.toByteArray(), 0);
+		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
 	}
 
-	public synchronized void sendResult(int id, String name, ByteString data) {
+	public synchronized void sendResult(int id, String name, byte[] data) {
 		
-		ResultEvent event = ResultEvent.newBuilder()
-				.setId(id)
-				.setName(name)
-				.setData(data)
-				.build();
-
+		// Send the result.
+		JSONObject event = new JSONObject();
+		event.put(Message.ResultEvent.ID, id);
+		event.put(Message.ResultEvent.NAME, name);
+		
 		eventPublisher.sendMore("RESULT");
-		eventPublisher.send(event.toByteArray(), 0);
+		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+		
+		// Send the binary data as extra part.
+		eventPublisher.send(data, 0);
 	}
 	
 	public synchronized void sendPublisher(int id, String name, String publisherName) {
 		
-		PublisherEvent event = PublisherEvent.newBuilder()
-										.setId(id)
-										.setName(name)
-										.setPublisherName(publisherName)
-										.build();
-				
+		// Send the publisher.
+		JSONObject event = new JSONObject();
+		event.put(Message.PublisherEvent.ID, id);
+		event.put(Message.PublisherEvent.NAME, name);
+		event.put(Message.PublisherEvent.PUBLISHER_NAME, publisherName);
+		
 		eventPublisher.sendMore("PUBLISHER");
-		eventPublisher.send(event.toByteArray(), 0);
+		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
 	}
 	
 	public synchronized void sendPort(int id, String name, String portName) {
 		
-		PortEvent event = PortEvent.newBuilder()
-										.setId(id)
-										.setName(name)
-										.setPortName(portName)
-										.build();
-				
+		// Send the port.
+		JSONObject event = new JSONObject();
+		event.put(Message.PortEvent.ID, id);
+		event.put(Message.PortEvent.NAME, name);
+		event.put(Message.PortEvent.PORT_NAME, portName);
+		
 		eventPublisher.sendMore("PORT");
-		eventPublisher.send(event.toByteArray(), 0);
+		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+		
 	}
 	
 	private int findFreeId(int begin, int end) {
@@ -592,7 +592,7 @@ public class Manager extends ConfigLoader {
 	}
 	
 
-	public synchronized boolean setApplicationResult(int id, ByteString data) throws IdNotFoundException {
+	public synchronized boolean setApplicationResult(int id, byte[] data) throws IdNotFoundException {
 	
 		if (!applicationMap.containsKey(id)) {
 			throw new IdNotFoundException();

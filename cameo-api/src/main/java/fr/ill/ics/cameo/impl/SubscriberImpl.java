@@ -101,7 +101,7 @@ public class SubscriberImpl {
 			while (!ready) {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				Zmq.Msg request = server.createInitRequest();
+				Zmq.Msg request = server.createSyncRequest();
 				Zmq.Msg reply = null;
 				try {
 					reply = requestSocket.request(request);
