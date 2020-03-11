@@ -109,23 +109,7 @@ public class Application {
 		static public void setResult(String data) {
 			impl.setResult(data);
 		}
-		
-		static public void setResult(int[] data) {
-			impl.setResult(data);
-		}
-
-		static public void setResult(long[] data) {
-			impl.setResult(data);
-		}
-		
-		static public void setResult(float[] data) {
-			impl.setResult(data);
-		}
-		
-		static public void setResult(double[] data) {
-			impl.setResult(data);
-		}
-		
+				
 		/**
 		 * Sets the owner application RUNNING.
 		 * @return
@@ -416,23 +400,7 @@ public class Application {
 		public String getStringResult() {
 			return impl.getStringResult();
 		}
-		
-		public int[] getInt32Result() {
-			return impl.getInt32Result();
-		}
-		
-		public long[] getInt64Result() {
-			return impl.getInt64Result();
-		}
-		
-		public float[] getFloatResult() {
-			return impl.getFloatResult();
-		}
-
-		public double[] getDoubleResult() {
-			return impl.getDoubleResult();
-		}
-		
+				
 		public OutputStreamSocket getOutputStreamSocket() {
 			return impl.getOutputStreamSocket();
 		}
@@ -634,23 +602,7 @@ public class Application {
 		public void send(String data) {
 			impl.send(data);
 		}
-		
-		public void send(int[] data) {
-			impl.send(data);
-		}
-
-		public void send(long[] data) {
-			impl.send(data);
-		}
-		
-		public void send(float[] data) {
-			impl.send(data);
-		}
-		
-		public void send(double[] data) {
-			impl.send(data);
-		}
-		
+				
 		public void sendTwoParts(byte[] data1, byte[] data2) {
 			impl.sendTwoParts(data1, data2);
 		}
@@ -734,38 +686,6 @@ public class Application {
 		public String receiveString() {
 			return impl.receiveString();
 		}
-				
-		/**
-		 * 
-		 * @return the int[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-		 */
-		public int[] receiveInt32() {
-			return impl.receiveInt32();
-		}
-		
-		/**
-		 * 
-		 * @return the long[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-		 */
-		public long[] receiveInt64() {
-			return impl.receiveInt64();
-		}
-		
-		/**
-		 * 
-		 * @return the float[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-		 */
-		public float[] receiveFloat() {
-			return impl.receiveFloat();
-		}
-
-		/**
-		 * 
-		 * @return the float[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-		 */
-		public double[] receiveDouble() {
-			return impl.receiveDouble();
-		}
 		
 		/**
 		 * 
@@ -804,7 +724,7 @@ public class Application {
 		}
 		
 		public byte[] getBinary() {
-			return impl.get().toByteArray();
+			return impl.get();
 		}
 		
 		public String get() {
@@ -814,8 +734,8 @@ public class Application {
 		public byte[][] getTwoBinaryParts() {
 			
 			byte[][] result = new byte[2][];
-			result[0] = impl.get().toByteArray();
-			result[1] = impl.get2().toByteArray();
+			result[0] = impl.get();
+			result[1] = impl.get2();
 			
 			return result;
 		}

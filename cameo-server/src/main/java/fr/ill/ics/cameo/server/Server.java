@@ -31,6 +31,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
+import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 
 public class Server {
@@ -97,20 +98,14 @@ public class Server {
 					break;
 				}
 
-				// Check there is one frame.
-				if (message.size() != 1) {
-					System.err.println("Unexpected number of frames, should be 1");
-					continue;
-				}
-				
 				// Get the first frame.
 				byte[] data = message.getFirstData();
 				
 				// Get the JSON request object.
-				JSONObject request = (JSONObject)parser.parse(new String(data, Message.CHARSET));
-
+				JSONObject request = (JSONObject)parser.parse(Message.parseString(data));
+				
 				// Get the type.
-				long type = (Long)request.get(Message.TYPE);
+				long type = JSON.getLong(request, Message.TYPE);
 				
 				if (type == Message.SYNC) {
 					reply = process.processSync(manager);
@@ -118,7 +113,7 @@ public class Server {
 				else if (type == Message.START) {
 					reply = process.processStartRequest(request, manager);
 				}
-				else if (type == Message.SHOWALL) {
+				else if (type == Message.SHOW_ALL) {
 					reply = process.processShowAllRequest(request, manager);
 				}
 				else if (type == Message.STOP) {

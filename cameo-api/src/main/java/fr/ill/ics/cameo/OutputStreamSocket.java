@@ -17,13 +17,16 @@ package fr.ill.ics.cameo;
 
 
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.proto.Messages;
+import fr.ill.ics.cameo.impl.ServicesImpl;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class OutputStreamSocket {
 	
-	private Zmq.Context context;
+	private ServicesImpl services;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
 	private boolean ended = false;
@@ -34,35 +37,40 @@ public class OutputStreamSocket {
 	protected static final String CANCEL = "CANCEL";
 
 	
-	public OutputStreamSocket(Zmq.Context context, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public OutputStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
-		this.context = context;
+		this.services = services;
 		this.socket = subscriber;
 		this.cancelSocket = cancelPublisher;		
 	}
 	
 	public Application.Output receive()	{
 		
-		String response = this.socket.recvStr();
+		String message = this.socket.recvStr();
 				
-		if (response.equals(STREAM)) {
+		if (message.equals(STREAM)) {
 		}
-		else if (response.equals(ENDSTREAM)) {
+		else if (message.equals(ENDSTREAM)) {
 			ended = true;
 			return null;
 		}
-		else if (response.equals(CANCEL)) {
+		else if (message.equals(CANCEL)) {
 			canceled = true;
 			return null;
 		}
 				
-		byte[] messageResponse = this.socket.recv();
+		byte[] streamMessage = this.socket.recv();
 		
 		try {
-			Messages.ApplicationStream protoStream = Messages.ApplicationStream.parseFrom(messageResponse);
-			return new Application.Output(protoStream.getId(), protoStream.getMessage());
+			// Get the JSON object.
+			JSONObject stream = services.parse(streamMessage);
 			
-		} catch (InvalidProtocolBufferException e) {
+			int id = JSON.getInt(stream, Message.ApplicationStream.ID);
+			String line = JSON.getString(stream, Message.ApplicationStream.MESSAGE);
+			
+			return new Application.Output(id, line);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	}
@@ -82,6 +90,6 @@ public class OutputStreamSocket {
 	}
 	
 	public void destroy() {
-		context.destroySocket(socket);
+		services.destroySocket(socket);
 	}
 }

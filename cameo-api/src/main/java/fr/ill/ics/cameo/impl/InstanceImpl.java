@@ -31,6 +31,7 @@ import fr.ill.ics.cameo.PublisherEvent;
 import fr.ill.ics.cameo.ResultEvent;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.SubscriberCreationException;
+import fr.ill.ics.cameo.messages.Message;
 
 
 /**
@@ -361,31 +362,14 @@ public class InstanceImpl extends EventListener {
 	 * @return
 	 */
 	public byte[] getResult() {
-		
 		waitFor();
 		return resultData;
 	}
 	
 	public String getStringResult() {
-		return Buffer.parseString(getResult());
+		return Message.parseString(getResult());
 	}
-	
-	public int[] getInt32Result() {
-		return Buffer.parseInt32(getResult());
-	}
-	
-	public long[] getInt64Result() {
-		return Buffer.parseInt64(getResult());
-	}
-	
-	public float[] getFloatResult() {
-		return Buffer.parseFloat(getResult());
-	}
-
-	public double[] getDoubleResult() {
-		return Buffer.parseDouble(getResult());
-	}
-	
+		
 	public OutputStreamSocket getOutputStreamSocket() {
 		return outputSocket;
 	}

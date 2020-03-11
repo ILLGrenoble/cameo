@@ -124,7 +124,7 @@ public class Manager extends ConfigLoader {
 		event.put(Message.StatusEvent.PAST_APPLICATION_STATES, pastStates);
 		
 		eventPublisher.sendMore("STATUS");
-		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+		eventPublisher.send(Message.serialize(event), 0);
 	}
 
 	public synchronized void sendResult(int id, String name, byte[] data) {
@@ -133,11 +133,10 @@ public class Manager extends ConfigLoader {
 		JSONObject event = new JSONObject();
 		event.put(Message.ResultEvent.ID, id);
 		event.put(Message.ResultEvent.NAME, name);
-		
+
+		// The result has 3 parts.
 		eventPublisher.sendMore("RESULT");
-		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
-		
-		// Send the binary data as extra part.
+		eventPublisher.sendMore(Message.serialize(event));
 		eventPublisher.send(data, 0);
 	}
 	
@@ -150,7 +149,7 @@ public class Manager extends ConfigLoader {
 		event.put(Message.PublisherEvent.PUBLISHER_NAME, publisherName);
 		
 		eventPublisher.sendMore("PUBLISHER");
-		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
 	public synchronized void sendPort(int id, String name, String portName) {
@@ -162,7 +161,7 @@ public class Manager extends ConfigLoader {
 		event.put(Message.PortEvent.PORT_NAME, portName);
 		
 		eventPublisher.sendMore("PORT");
-		eventPublisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+		eventPublisher.send(Message.serialize(event), 0);
 		
 	}
 	

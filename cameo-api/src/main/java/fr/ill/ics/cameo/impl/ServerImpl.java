@@ -17,12 +17,13 @@
 package fr.ill.ics.cameo.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
@@ -36,25 +37,8 @@ import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.WriteException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages;
-import fr.ill.ics.cameo.proto.Messages.AllAvailableCommand;
-import fr.ill.ics.cameo.proto.Messages.AllAvailableResponse;
-import fr.ill.ics.cameo.proto.Messages.ApplicationInfoListResponse;
-import fr.ill.ics.cameo.proto.Messages.ConnectCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.IsAliveCommand;
-import fr.ill.ics.cameo.proto.Messages.IsAliveResponse;
-import fr.ill.ics.cameo.proto.Messages.KillCommand;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.OutputCommand;
-import fr.ill.ics.cameo.proto.Messages.PublisherResponse;
-import fr.ill.ics.cameo.proto.Messages.RequestResponse;
-import fr.ill.ics.cameo.proto.Messages.SendParametersCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
-import fr.ill.ics.cameo.proto.Messages.StartCommand;
-import fr.ill.ics.cameo.proto.Messages.StopCommand;
-import fr.ill.ics.cameo.proto.Messages.SubscribePublisherCommand;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -126,8 +110,8 @@ public class ServerImpl extends ServicesImpl {
 			try {
 				eventThread.cancel();
 				eventThread.join();
-				
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 			}
 		}
 	}
@@ -164,33 +148,32 @@ public class ServerImpl extends ServicesImpl {
 		
 		Zmq.Msg request = createStartRequest(name, args, instanceReference);
 		Zmq.Msg reply = requestSocket.request(request);
-				
-		byte[] messageData = reply.getFirstData();
-		RequestResponse requestResponse = null;
 		
 		try {
-			requestResponse = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			return new fr.ill.ics.cameo.impl.Response(JSON.getInt(response, Message.RequestResponse.VALUE), JSON.getString(response, Message.RequestResponse.MESSAGE));
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
-		return new fr.ill.ics.cameo.impl.Response(requestResponse.getValue(), requestResponse.getMessage());
 	}
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
 		Zmq.Msg request = createOutputRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
-		byte[] messageData = reply.getFirstData();
-		RequestResponse requestResponse = null;
 		
 		try {
-			requestResponse = RequestResponse.parseFrom(messageData);
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			return JSON.getInt(response, Message.RequestResponse.VALUE);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
-		
-		return requestResponse.getValue();
 	}
 	
 	/**
@@ -206,13 +189,13 @@ public class ServerImpl extends ServicesImpl {
 				
 		InstanceImpl instance = new InstanceImpl(this);
 		
-		// we set the name of the application and register before starting because the id is not available
+		// We set the name of the application and register before starting because the id is not available.
 		instance.setName(name);
 		registerEventListener(instance);
 		
 		try {
-			// we connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
+			// We connect to the stream port before starting the application
+			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
 			if (outputStream) {
 				instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
 			}
@@ -221,11 +204,12 @@ public class ServerImpl extends ServicesImpl {
 			
 			if (response.getValue() == -1) {
 				instance.setErrorMessage(response.getMessage());
-			} else {
+			}
+			else {
 				instance.setId(response.getValue());
 			}
-
-		} catch (ConnectionTimeout e) {
+		}
+		catch (ConnectionTimeout e) {
 			instance.setErrorMessage(e.getMessage());
 		}
 				
@@ -259,28 +243,27 @@ public class ServerImpl extends ServicesImpl {
 	 * @throws ConnectionTimeout 
 	 */
 	fr.ill.ics.cameo.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
-		// create msg
+
 		Zmq.Msg request;
 		
 		if (immediately) {
 			request = createKillRequest(id);
-		} else {
+		}
+		else {
 			request = createStopRequest(id);
 		}
 		
 		Zmq.Msg reply = requestSocket.request(request);
 		
-		byte[] messageData = reply.getFirstData();
-		RequestResponse response = null;
-		
 		try {
-			response = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			return new fr.ill.ics.cameo.impl.Response(id, JSON.getString(response, Message.RequestResponse.MESSAGE));
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
-		
-		return new fr.ill.ics.cameo.impl.Response(id, response.getMessage());
 	}
 		
 	public void killAllAndWaitFor(String name) {
@@ -308,47 +291,48 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Msg reply = requestSocket.request(request);
 
 		try {
-			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirstData());
-			LinkedList<Messages.ApplicationInfo> protoList = new LinkedList<Messages.ApplicationInfo>();
-			for (int i = 0; i < response.getApplicationInfoCount(); i++) {
-				protoList.add(response.getApplicationInfo(i));
-			}
-			Iterator<Messages.ApplicationInfo> it = protoList.iterator();
-			while (it.hasNext()) {
-				Messages.ApplicationInfo applicationInfo = (Messages.ApplicationInfo) it.next();
-				
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+
+			// Get the list of application info.
+			JSONArray list = JSON.getArray(response, Message.ApplicationInfoListResponse.APPLICATION_INFO);
+			
+			for (int i = 0; i < list.size(); ++i) {
+				JSONObject applicationInfo = (JSONObject)list.get(i);
+
+				// Create a new instance.
 				InstanceImpl instance = new InstanceImpl(this);
 				
-				// we set the name of the application and register before starting because the id is not available
+				// We set the name of the application and register before starting because the id is not available.
 				instance.setName(name);
 				registerEventListener(instance);
 				
-				int applicationId = applicationInfo.getId();
+				int applicationId = JSON.getInt(applicationInfo, Message.ApplicationInfo.ID);
 				
-				// test if the application is still alive otherwise we could have missed a status message
+				// Test if the application is still alive otherwise we could have missed a status message.
 				if (isAlive(applicationId)) {
-					// we connect to the stream port before starting the application
-					// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
+					// We connect to the stream port before starting the application
+					// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
 					if (outputStream) {
 						instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
 					}
 										
 					instance.setId(applicationId);
-					instance.setInitialState(applicationInfo.getApplicationState());
-					instance.setPastStates(applicationInfo.getPastApplicationStates());
+					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.APPLICATION_STATE));
+					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
 					
 					instances.add(instance);
-					
-				} else {
-					// it is important not to forget to unregister the result, otherwise a memory leak will occur
+				}
+				else {
+					// It is important not to forget to unregister the result, otherwise a memory leak will occur.
 					unregisterEventListener(instance);
 				}
 			}
-
-		} catch (InvalidProtocolBufferException e) {
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
-			
-		} catch (ConnectionTimeout e) {
+		}
+		catch (ConnectionTimeout e) {
 			return null;
 		}
 	
@@ -388,21 +372,31 @@ public class ServerImpl extends ServicesImpl {
 
 		Zmq.Msg request = createAllAvailableRequest();
 		Zmq.Msg reply = requestSocket.request(request);
+		
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
 
 		try {
-			AllAvailableResponse response = AllAvailableResponse.parseFrom(reply.getFirstData());
-			LinkedList<Messages.ApplicationConfig> protoList = new LinkedList<Messages.ApplicationConfig>();
-			for (int i = 0; i < response.getApplicationConfigCount(); i++) {
-				protoList.add(response.getApplicationConfig(i));
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+						
+			// Get the list of application info.
+			JSONArray list = JSON.getArray(response, Message.AllAvailableResponse.APPLICATION_CONFIG);
+			
+			for (int i = 0; i < list.size(); ++i) {
+				JSONObject config = (JSONObject)list.get(i);
+				
+				String name = JSON.getString(config, Message.ApplicationConfig.NAME);
+				String description = JSON.getString(config, Message.ApplicationConfig.DESCRIPTION);
+				boolean runsSingle = JSON.getBoolean(config, Message.ApplicationConfig.RUNS_SINGLE);
+				boolean restart = JSON.getBoolean(config, Message.ApplicationConfig.RESTART);
+				int startingTime = JSON.getInt(config, Message.ApplicationConfig.STARTING_TIME);
+				int retries = JSON.getInt(config, Message.ApplicationConfig.RETRIES);
+				int stoppingTime = JSON.getInt(config, Message.ApplicationConfig.STOPPING_TIME);
+			
+				applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, retries, stoppingTime));
 			}
-			Iterator<Messages.ApplicationConfig> it = protoList.iterator();
-			while (it.hasNext()) {
-				Messages.ApplicationConfig config = (Messages.ApplicationConfig) it.next();
-				applications.add(new Application.Configuration(config.getName(), config.getDescription(), config.getRunsSingle(), config.getRestart(), config.getStartingTime(), config.getRetries(), config.getStoppingTime()));
-			}
-
-		} catch (InvalidProtocolBufferException e) {
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	
@@ -418,21 +412,30 @@ public class ServerImpl extends ServicesImpl {
 
 		Zmq.Msg request = createShowAllRequest();
 		Zmq.Msg reply = requestSocket.request(request);
+		
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
-
+		
 		try {
-			ApplicationInfoListResponse response = ApplicationInfoListResponse.parseFrom(reply.getFirstData());
-			LinkedList<Messages.ApplicationInfo> protoList = new LinkedList<Messages.ApplicationInfo>();
-			for (int i = 0; i < response.getApplicationInfoCount(); i++) {
-				protoList.add(response.getApplicationInfo(i));
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+						
+			// Get the list of application info.
+			JSONArray list = JSON.getArray(response, Message.ApplicationInfoListResponse.APPLICATION_INFO);
+			
+			for (int i = 0; i < list.size(); ++i) {
+				JSONObject info = (JSONObject)list.get(i);
+				
+				String name = JSON.getString(info, Message.ApplicationInfo.NAME);
+				int id = JSON.getInt(info, Message.ApplicationInfo.ID);
+				int pid = JSON.getInt(info, Message.ApplicationInfo.PID);
+				int state = JSON.getInt(info, Message.ApplicationInfo.APPLICATION_STATE);
+				int pastStates = JSON.getInt(info, Message.ApplicationInfo.PAST_APPLICATION_STATES);
+				String args = JSON.getString(info, Message.ApplicationInfo.ARGS);
+			
+				applications.add(new Application.Info(name, id, pid, state, pastStates, args));
 			}
-			Iterator<Messages.ApplicationInfo> it = protoList.iterator();
-			while (it.hasNext()) {
-				Messages.ApplicationInfo applicationInfo = (Messages.ApplicationInfo) it.next();
-				applications.add(new Application.Info(applicationInfo.getName(), applicationInfo.getId(), applicationInfo.getPid(), applicationInfo.getApplicationState(), applicationInfo.getPastApplicationStates(), applicationInfo.getArgs()));
-			}
-
-		} catch (InvalidProtocolBufferException e) {
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	
@@ -480,7 +483,7 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 		
-		return new OutputStreamSocket(context, subscriber, cancelPublisher);
+		return new OutputStreamSocket(this, subscriber, cancelPublisher);
 	}
 		
 	/**
@@ -497,20 +500,21 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Msg request = createShowStreamRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
-		byte[] messageData = reply.getFirstData();
-		RequestResponse requestResponse = null;
+		JSONObject response;
+		
 		try {
-			requestResponse = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 		
-		int port = requestResponse.getValue();
+		int port = JSON.getInt(response, Message.RequestResponse.VALUE);
 		
-		// in case of error, the returned value is -1
+		// In case of error, the returned value is -1.
 		if (port == -1) {
-			throw new OutputStreamException(requestResponse.getMessage());
+			throw new OutputStreamException(JSON.getString(response, Message.RequestResponse.MESSAGE));
 		}
 		
 		return createOutputStreamSocket(port);
@@ -527,17 +531,16 @@ public class ServerImpl extends ServicesImpl {
 
 		Zmq.Msg request = createIsAliveRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
-		IsAliveResponse requestResponse = null;
-		byte[] messageData = reply.getFirstData();
 		
 		try {
-			requestResponse = IsAliveResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			return JSON.getBoolean(response, Message.IsAliveResponse.IS_ALIVE);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
-		
-		return requestResponse.getIsAlive();
 	}
 	
 	/**
@@ -553,18 +556,21 @@ public class ServerImpl extends ServicesImpl {
 
 		Zmq.Msg request = createSendParametersRequest(id, parametersArray);
 		Zmq.Msg reply = requestSocket.request(request);
-		byte[] messageData = reply.getFirstData();
-		RequestResponse requestResponse = null;
+		
+		JSONObject response;
 		
 		try {
-			requestResponse = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 		
-		if (requestResponse.getValue() == -1) {
-			throw new WriteException(requestResponse.getMessage());
+		int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+		
+		if (value == -1) {
+			throw new WriteException(JSON.getString(response, Message.RequestResponse.MESSAGE));
 		}
 	}
 	
@@ -597,23 +603,25 @@ public class ServerImpl extends ServicesImpl {
 		
 		Zmq.Msg request = createConnectPublisherRequest(applicationId, publisherName);
 		Zmq.Msg reply = requestSocket.request(request);
-		byte[] messageData = reply.getFirstData();
-		PublisherResponse requestResponse = null;
+		
+		JSONObject response;
 		
 		try {
-			requestResponse = PublisherResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
 		}
 		
-		int publisherPort = requestResponse.getPublisherPort();
+		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
+		
 		if (publisherPort == -1) {
-			throw new SubscriberCreationException(requestResponse.getMessage());
+			throw new SubscriberCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
 		}
-			
-		int synchronizerPort = requestResponse.getSynchronizerPort();
-		int numberOfSubscribers = requestResponse.getNumberOfSubscribers();
+		
+		int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
+		int numberOfSubscribers = JSON.getInt(response, Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
 		SubscriberImpl subscriber = new SubscriberImpl(this, context, url, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
 		subscriber.init();
@@ -629,11 +637,11 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createIsAliveRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.ISALIVE);
-		IsAliveCommand isAlive = IsAliveCommand.newBuilder().setId(id).build();
-		request.add(isAlive.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.IS_ALIVE);
+		request.put(Message.IsAliveRequest.ID, id);
+
+		return message(request);
 	}
 	
 	/**
@@ -647,30 +655,20 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createStartRequest(String name, String[] args, String instanceReference) {
 		
-		Zmq.Msg request = createRequest(Type.START);
-		StartCommand command = null;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.START);
+		request.put(Message.StartRequest.NAME, name);
+		request.put(Message.StartRequest.INSTANCE_REFERENCE, instanceReference);
 		
-		if (args == null) {
-			command = StartCommand.newBuilder()
-									.setName(name)
-									.setInstanceReference(instanceReference)
-									.build();
-		} else {
-			
-			LinkedList<String> list = new LinkedList<String>();
-
+		if (args != null) {
+			JSONArray list = new JSONArray();
 			for (int i = 0; i < args.length; i++) {
 				list.add(args[i]);
 			}
-			command = StartCommand.newBuilder()
-									.setName(name)
-									.addAllArgs(list)
-									.setInstanceReference(instanceReference)
-									.build();
+			request.put(Message.StartRequest.ARGS, list);
 		}
-		request.add(command.toByteArray());
-		
-		return request;
+
+		return message(request);
 	}
 
 	/**
@@ -681,11 +679,11 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createStopRequest(int id) {
 
-		Zmq.Msg request = createRequest(Type.STOP);
-		StopCommand stop = StopCommand.newBuilder().setId(id).build();
-		request.add(stop.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STOP);
+		request.put(Message.StopRequest.ID, id);
+
+		return message(request);
 	}
 	
 	/**
@@ -696,11 +694,11 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createKillRequest(int id) {
 
-		Zmq.Msg request = createRequest(Type.KILL);
-		KillCommand kill = KillCommand.newBuilder().setId(id).build();
-		request.add(kill.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.KILL);
+		request.put(Message.KillRequest.ID, id);
 
-		return request;
+		return message(request);
 	}
 
 	/**
@@ -711,11 +709,12 @@ public class ServerImpl extends ServicesImpl {
 	 * @return request
 	 */
 	private Zmq.Msg createConnectRequest(String name) {
-		Zmq.Msg request = createRequest(Type.CONNECT);
-		ConnectCommand connect = ConnectCommand.newBuilder().setName(name).build();
-		request.add(connect.toByteArray());
 		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CONNECT);
+		request.put(Message.ConnectRequest.NAME, name);
+
+		return message(request);
 	}
 	
 	/**
@@ -725,11 +724,10 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createAllAvailableRequest() {
 
-		Zmq.Msg request = createRequest(Type.ALLAVAILABLE);
-		AllAvailableCommand allAvailable = AllAvailableCommand.newBuilder().build();
-		request.add(allAvailable.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.ALL_AVAILABLE);
+
+		return message(request);
 	}
 	
 	/**
@@ -739,11 +737,10 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createShowAllRequest() {
 
-		Zmq.Msg request = createRequest(Type.SHOWALL);
-		ShowAllCommand showAll = ShowAllCommand.newBuilder().build();
-		request.add(showAll.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SHOW_ALL);
+
+		return message(request);
 	}
 
 	/**
@@ -753,33 +750,33 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createShowStreamRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.SHOW);
-		ShowStreamCommand command = ShowStreamCommand.newBuilder().setId(id).build();
-		request.add(command.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SHOW);
+		request.put(Message.ShowStreamRequest.ID, id);
+
+		return message(request);
 	}
 	
 	/**
 	 * create SendParameters request
 	 * 
 	 * @param id
-	 * @param parametersArray
+	 * @param parameters
 	 * @return
 	 */
-	private Zmq.Msg createSendParametersRequest(int id, String[] parametersArray) {
+	private Zmq.Msg createSendParametersRequest(int id, String[] parameters) {
 		
-		Zmq.Msg request = createRequest(Type.SENDPARAMETERS);
-
-		LinkedList<String> list = new LinkedList<String>();
-		for (int i = 0; i < parametersArray.length; i++) {
-			list.add(parametersArray[i]);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SEND_PARAMETERS);
+		request.put(Message.SendParametersRequest.ID, id);
+		
+		JSONArray list = new JSONArray();
+		for (int i = 0; i < parameters.length; i++) {
+			list.add(parameters[i]);
 		}
+		request.put(Message.SendParametersRequest.PARAMETERS, list);
 
-		SendParametersCommand command = SendParametersCommand.newBuilder().setId(id).addAllParameters(list).build();
-		request.add(command.toByteArray());
-		
-		return request;
+		return message(request);
 	}
 	
 	/**
@@ -789,29 +786,29 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private Zmq.Msg createOutputRequest(String name) {
 		
-		Zmq.Msg request = createRequest(Type.OUTPUT);
-		OutputCommand command = OutputCommand.newBuilder().setName(name).build();
-		request.add(command.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.OUTPUT);
+		request.put(Message.OutputRequest.NAME, name);
+
+		return message(request);
 	}
 	
 	private Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
 		
-		Zmq.Msg request = createRequest(Type.CONNECTPUBLISHER);
-		ConnectPublisherCommand command = ConnectPublisherCommand.newBuilder().setApplicationId(applicationId).setPublisherName(publisherName).build();
-		request.add(command.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CONNECT_PUBLISHER);
+		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
+		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
+
+		return message(request);
 	}
 	
 	protected Zmq.Msg createSubscribePublisherRequest() {
 		
-		Zmq.Msg request = createRequest(Type.SUBSCRIBEPUBLISHER);
-		SubscribePublisherCommand command = SubscribePublisherCommand.newBuilder().build();
-		request.add(command.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER);
+
+		return message(request);
 	}
 
 	@Override

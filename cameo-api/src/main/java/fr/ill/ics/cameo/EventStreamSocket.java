@@ -17,13 +17,16 @@ package fr.ill.ics.cameo;
 
 
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.proto.Messages;
+import fr.ill.ics.cameo.impl.ServicesImpl;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class EventStreamSocket {
 		
-	private Zmq.Context context;
+	private ServicesImpl services;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
 	private boolean canceled = false;
@@ -34,69 +37,97 @@ public class EventStreamSocket {
 	private static final String PORT = "PORT";
 	private static final String CANCEL = "CANCEL";
 	
-	public EventStreamSocket(Zmq.Context context, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public EventStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
-		this.context = context;
+		this.services = services;
 		this.socket = subscriber;
 		this.cancelSocket = cancelPublisher;
 	}
 	
 	public Event receive() {
 		
-		String response = this.socket.recvStr();
+		String message = this.socket.recvStr();
 		Event event = null;
 		
 		// We can receive messages from the status publisher located in the server
 		// as well as messages from the cancel publisher located in the same process.
-		if (response.equals(STATUS)) {
+		if (message.equals(STATUS)) {
 			
-			byte[] statusResponse = this.socket.recv();
-			
-			try {
-				Messages.StatusEvent protoStatus = Messages.StatusEvent.parseFrom(statusResponse);
-				event = new StatusEvent(protoStatus.getId(), protoStatus.getName(), protoStatus.getApplicationState(), protoStatus.getPastApplicationStates());
-				
-			} catch (InvalidProtocolBufferException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-			
-		} else if (response.equals(RESULT)) {
-				
-				byte[] resultResponse = this.socket.recv();
-				
-				try {
-					Messages.ResultEvent protoResult = Messages.ResultEvent.parseFrom(resultResponse);
-					event = new ResultEvent(protoResult.getId(), protoResult.getName(), protoResult.getData().toByteArray());
-					
-				} catch (InvalidProtocolBufferException e) {
-					throw new UnexpectedException("Cannot parse response");
-				}
-			
-		} else if (response.equals(PUBLISHER)) {
-			
-			byte[] publisherResponse = this.socket.recv();
+			byte[] statusMessage = this.socket.recv();
 			
 			try {
-				Messages.PublisherEvent protoPublisher = Messages.PublisherEvent.parseFrom(publisherResponse);
-				event = new PublisherEvent(protoPublisher.getId(), protoPublisher.getName(), protoPublisher.getPublisherName());
+				// Get the JSON object.
+				JSONObject status = services.parse(statusMessage);
 				
-			} catch (InvalidProtocolBufferException e) {
+				int id = JSON.getInt(status, Message.StatusEvent.ID);
+				String name = JSON.getString(status, Message.StatusEvent.NAME);
+				int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
+				int pastStates = JSON.getInt(status, Message.StatusEvent.PAST_APPLICATION_STATES);
+				
+				event = new StatusEvent(id, name, state, pastStates);
+			
+			}
+			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");
 			}
-		
-		} else if (response.equals(PORT)) {
-			
-			byte[] portResponse = this.socket.recv();
+		}
+		else if (message.equals(RESULT)) {
+				
+			byte[] resultMessage = this.socket.recv();
 			
 			try {
-				Messages.PortEvent protoPort = Messages.PortEvent.parseFrom(portResponse);
-				event = new PortEvent(protoPort.getId(), protoPort.getName(), protoPort.getPortName());
+				// Get the JSON object.
+				JSONObject result = services.parse(resultMessage);
 				
-			} catch (InvalidProtocolBufferException e) {
+				int id = JSON.getInt(result, Message.ResultEvent.ID);
+				String name = JSON.getString(result, Message.ResultEvent.NAME);
+				
+				// Get the next message to get the data.
+				byte[] data = this.socket.recv();
+				
+				event = new ResultEvent(id, name, data);
+			}
+			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");
 			}
+		}
+		else if (message.equals(PUBLISHER)) {
 			
-		} else if (response.equals(CANCEL)) {
+			byte[] publisherMessage = this.socket.recv();
+			
+			try {
+				// Get the JSON object.
+				JSONObject publisher = services.parse(publisherMessage);
+				
+				int id = JSON.getInt(publisher, Message.PublisherEvent.ID);
+				String name = JSON.getString(publisher, Message.PublisherEvent.NAME);
+				String publisherName = JSON.getString(publisher, Message.PublisherEvent.PUBLISHER_NAME);
+				
+				event = new PublisherEvent(id, name, publisherName);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse response");
+			}
+		}
+		else if (message.equals(PORT)) {
+			
+			byte[] portMessage = this.socket.recv();
+			
+			try {
+				// Get the JSON object.
+				JSONObject publisher = services.parse(portMessage);
+				
+				int id = JSON.getInt(publisher, Message.PortEvent.ID);
+				String name = JSON.getString(publisher, Message.PortEvent.NAME);
+				String portName = JSON.getString(publisher, Message.PortEvent.PORT_NAME);
+				
+				event = new PortEvent(id, name, portName);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse response");
+			}
+		}
+		else if (message.equals(CANCEL)) {
 			canceled = true;
 			return null;
 		}
@@ -114,6 +145,6 @@ public class EventStreamSocket {
 	}
 
 	public void destroy() {
-		context.destroySocket(socket);
+		services.destroySocket(socket);
 	}
 }

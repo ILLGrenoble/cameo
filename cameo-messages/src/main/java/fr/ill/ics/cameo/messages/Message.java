@@ -2,6 +2,8 @@ package fr.ill.ics.cameo.messages;
 
 import java.nio.charset.Charset;
 
+import org.json.simple.JSONObject;
+
 /**
  * Definitions for the JSON objects. 
  */
@@ -15,7 +17,7 @@ public class Message {
 	public static final long START = 2;
 	public static final long STOP = 3;
 	public static final long CONNECT = 4;
-	public static final long SHOWALL = 5;
+	public static final long SHOW_ALL = 5;
 	public static final long SHOW = 6;
 	public static final long ENABLE_STREAM = 7;
 	public static final long IS_ALIVE = 8;
@@ -196,8 +198,6 @@ public class Message {
 	public static class Request {
 		public static final String APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
 		public static final String APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		public static final String MESSAGE = "message"; // required bytes message = 3;
-		public static final String MESSAGE2 = "message2"; // optional bytes message2 = 4;
 		public static final String SERVER_URL = "serverUrl"; // required string serverUrl = 5;
 		public static final String SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
 		public static final String REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
@@ -210,5 +210,17 @@ public class Message {
 
 	public static class TerminatedUnmanagedRequest {
 		public static final String ID = "id"; // required int32 id = 1;
+	}
+	
+	public static String parseString(byte[] data) {
+		return new String(data, CHARSET);
+	}
+	
+	public static byte[] serialize(String string) {
+		return string.getBytes(CHARSET);
+	}
+	
+	public static byte[] serialize(JSONObject object) {
+		return serialize(object.toJSONString());
 	}
 }

@@ -16,11 +16,14 @@
 
 package fr.ill.ics.cameo.impl;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import java.util.List;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages.MessageType;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class ResponderImpl {
 
@@ -66,53 +69,51 @@ public class ResponderImpl {
 				
 				return null;
 			}
+			
+			// Get the JSON request object.
+			JSONObject request = application.parse(message);
+			
+			// Get the type.
+			long type = JSON.getLong(request, Message.TYPE);
+			
+			if (type == Message.REQUEST) {
 
-			// Check there are not 2 frames
-			if (message.size() != 2) {
-				System.err.println("Unexpected number of frames, should be 2");
-				ended = true;
+				String name = JSON.getString(request, Message.Request.APPLICATION_NAME);
+				int id = JSON.getInt(request, Message.Request.APPLICATION_ID);
+				String serverUrl = JSON.getString(request, Message.Request.SERVER_URL);
+				int serverPort = JSON.getInt(request, Message.Request.SERVER_PORT);
+				int requesterPort = JSON.getInt(request, Message.Request.REQUESTER_PORT);
 				
-				return null;
-			}
-			// 2 frames, get first frame (type)
-			byte[] typeData = message.getFirstData();
-			// Get last frame
-			byte[] messageData = message.getLastData();
-			
-			// dispatch message
-			MessageType type = MessageType.parseFrom(typeData);
-			
-			if (type.getType() == Type.REQUEST) {
-				// Parse the message
-				fr.ill.ics.cameo.proto.Messages.Request request = fr.ill.ics.cameo.proto.Messages.Request.parseFrom(messageData);
+				List<byte[]> data = message.getAllData();
 				
-				// Create the request
+				byte[] message1 = data.get(1);
+				
+				// Create the request implementation.
 				RequestImpl impl = new RequestImpl(application, 
-						request.getApplicationName(), 
-						request.getApplicationId(), 
-						request.getMessage(), 
-						request.getServerUrl(),
-						request.getServerPort(),
-						request.getRequesterPort());
+						name, 
+						id, 
+						message1, 
+						serverUrl,
+						serverPort,
+						requesterPort);
 				
 				// Set the optional message 2.
-				if (request.hasMessage2()) {
-					impl.setMessage2(request.getMessage2());
+				if (data.size() > 2) {
+					impl.setMessage2(data.get(2));
 				}
 				
 				return impl;
 			}
-			else if (type.getType() == Type.CANCEL) {
+			else if (type == Message.CANCEL) {
 				canceled = true;
 				
 				return null;
 			}
-			
-		} catch (InvalidProtocolBufferException e) {
-			System.err.println("problem in parsing of message");
-			
-		} finally {
-			
+		}
+		catch (ParseException e) {
+			System.err.println("Cannot parse message");
+		}
+		finally {
 			if (message != null) {
 				message.destroy();
 			}	
@@ -133,14 +134,13 @@ public class ResponderImpl {
 	public void cancel() {
 		String endpoint = application.getUrl() + ":" + responderPort;
 
-		Zmq.Msg requestMessage = application.createRequest(Type.CANCEL);
-		String content = "cancel";
-		requestMessage.add(content);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint);
 		
-		requestSocket.request(requestMessage);
+		requestSocket.request(application.message(request));
 		
 		// Terminate the socket.
 		requestSocket.terminate();

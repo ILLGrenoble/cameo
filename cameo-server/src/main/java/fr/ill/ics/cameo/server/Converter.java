@@ -55,7 +55,7 @@ public class Converter {
 	public static Msg reply(JSONObject response) {
 		
 		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toJSONString().getBytes(Message.CHARSET));
+		reply.add(Message.serialize(response));
 		
 		return reply;
 	}

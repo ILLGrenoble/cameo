@@ -16,14 +16,13 @@
 
 package fr.ill.ics.cameo.impl;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages.CancelPublisherSyncCommand;
-import fr.ill.ics.cameo.proto.Messages.MessageType;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class PublisherImpl {
 
@@ -90,34 +89,27 @@ public class PublisherImpl {
 					if (message == null) {
 						break;
 					}
-		
-					// check there are not 2 frames
-					if (message.size() != 2) {
-						System.err.println("unexpected number of frames, should be 2");
-						continue;
+							
+					// Get the JSON request object.
+					JSONObject request = application.parse(message);
+					
+					// Get the type.
+					long type = JSON.getLong(request, Message.TYPE);
+					
+					if (type == Message.SYNC) {
+						reply = processSyncRequest();						
 					}
-					// 2 frames, get first frame (type)
-					byte[] typeData = message.getFirstData();
-					// get last frame
-					byte[] messageData = message.getLastData();
-					
-					// dispatch message
-					MessageType type = MessageType.parseFrom(typeData);
-					
-					if (type.getType() == Type.INIT) {
-						reply = processInitCommand();						
-						
-					} else if (type.getType() == Type.SUBSCRIBEPUBLISHER) {
+					else if (type == Message.SUBSCRIBE_PUBLISHER) {
 						counter++;
-						reply = processSubscribePublisherCommand();
-						
-					} else if (type.getType() == Type.CANCEL) {
+						reply = processSubscribePublisherRequest();
+					}
+					else if (type == Message.CANCEL) {
 						canceled = true;
 						counter = numberOfSubscribers;
 						message.send(synchronizer);
-						
-					} else {
-						System.err.println("unknown message type " + type.getType());
+					}
+					else {
+						System.err.println("Unknown message type " + type);
 						message.send(synchronizer);
 					}
 					
@@ -125,11 +117,11 @@ public class PublisherImpl {
 					if (reply != null) {
 						reply.send(synchronizer);
 					}
-					
-				} catch (InvalidProtocolBufferException e) {
+				}
+				catch (ParseException e) {
 					throw new UnexpectedException("Cannot parse response");
-					
-				} finally {
+				}
+				finally {
 					
 					if (message != null) {
 						message.destroy();
@@ -153,14 +145,13 @@ public class PublisherImpl {
 	
 	public void cancelWaitForSubscribers() {
 		String endpoint = application.getUrl() + ":" + (publisherPort + 1);
-		Zmq.Msg request = application.createRequest(Type.CANCEL);
-		CancelPublisherSyncCommand command = CancelPublisherSyncCommand.newBuilder().build();
-		request.add(command.toByteArray());
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint);
-			
-		requestSocket.request(request);
+		requestSocket.request(application.message(request));
 			
 		// Terminate the socket.
 		requestSocket.terminate();
@@ -174,50 +165,17 @@ public class PublisherImpl {
 	
 	public void send(String data) {
 		
-		byte[] result = Buffer.serialize(data);
+		byte[] result = Message.serialize(data);
 		
 		publisher.sendMore(STREAM);
 		publisher.send(result, 0);
 	}
 	
-	public void send(int[] data) {
-		
-		byte[] result = Buffer.serialize(data);
-		
-		publisher.sendMore(STREAM);
-		publisher.send(result, 0);
-	}
-
-	public void send(long[] data) {
-
-		byte[] result = Buffer.serialize(data);
-		
-		publisher.sendMore(STREAM);
-		publisher.send(result, 0);
-	}
-	
-	public void send(float[] data) {
-
-		byte[] result = Buffer.serialize(data);
-		
-		publisher.sendMore(STREAM);
-		publisher.send(result, 0);
-	}
-	
-	public void send(double[] data) {
-
-		byte[] result = Buffer.serialize(data);
-		
-		publisher.sendMore(STREAM);
-		publisher.send(result, 0);
-	}
 	
 	public void sendTwoParts(byte[] data1, byte[] data2) {
 		
 		publisher.sendMore(STREAM);
-		
-		// Send with the flag '2' which is the value for more - same in jzmq and jeromq.
-		publisher.send(data1, 2);
+		publisher.sendMore(data1);
 		publisher.send(data2, 0);
 	}
 	
@@ -249,7 +207,7 @@ public class PublisherImpl {
 		}
 	}
 	
-	private Zmq.Msg processInitCommand() {
+	private Zmq.Msg processSyncRequest() {
 		// send a dummy SYNC message by the publisher socket
 		publisher.sendMore(SYNC);
 		publisher.send("sync");
@@ -260,14 +218,14 @@ public class PublisherImpl {
 		return reply;
 	}
 	
-	private Zmq.Msg processSubscribePublisherCommand() {
+	private Zmq.Msg processSubscribePublisherRequest() {
 	
-		RequestResponse response = RequestResponse.newBuilder().setValue(0).setMessage("OK").build();
-				
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(response.toByteArray());
-			
-		return reply;
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Message.RequestResponse.VALUE, 0);
+		response.put(Message.RequestResponse.MESSAGE, "OK");
+		
+		return application.message(response);
 	}
 	
 	@Override

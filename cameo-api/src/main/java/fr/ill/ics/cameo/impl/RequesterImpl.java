@@ -18,13 +18,12 @@ package fr.ill.ics.cameo.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages.MessageType;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.Request;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class RequesterImpl {
 
@@ -77,50 +76,46 @@ public class RequesterImpl {
 	public static String getRequesterPortName(String name, int responderId, int requesterId) {
 		return REQUESTER_PREFIX + name + "." + responderId + "." + requesterId;
 	}
-	
-	private void send(ByteString request) {
-		Zmq.Msg requestMessage = application.createRequest(Type.REQUEST);
 		
-		Request command = Request.newBuilder()
-										.setApplicationName(application.getName())
-										.setApplicationId(application.getId())
-										.setMessage(request)
-										.setServerUrl(application.getUrl())
-										.setServerPort(application.getPort())
-										.setRequesterPort(requesterPort)
-										.build();
-		requestMessage.add(command.toByteArray());
+	public void send(byte[] requestData) {
 		
-		requestSocket.request(requestMessage);
-	}
-	
-	private void send(ByteString request1, ByteString request2) {
-		Zmq.Msg requestMessage = application.createRequest(Type.REQUEST);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.REQUEST);
+		request.put(Message.Request.APPLICATION_NAME, application.getName());
+		request.put(Message.Request.APPLICATION_ID, application.getId());
+		request.put(Message.Request.SERVER_URL, application.getUrl());
+		request.put(Message.Request.SERVER_PORT, application.getPort());
+		request.put(Message.Request.REQUESTER_PORT, requesterPort);
 		
-		Request command = Request.newBuilder()
-										.setApplicationName(application.getName())						
-										.setApplicationId(application.getId())
-										.setMessage(request1)
-										.setMessage2(request2)
-										.setServerUrl(application.getUrl())
-										.setServerPort(application.getPort())
-										.setRequesterPort(requesterPort)
-										.build();
-		requestMessage.add(command.toByteArray());
+		Zmq.Msg message = application.message(request);
 		
-		requestSocket.request(requestMessage);
-	}
-	
-	public void send(byte[] request) {
-		send(ByteString.copyFrom(request));
+		// Set request in the next frame.
+		message.add(requestData);
+		
+		requestSocket.request(message);
 	}
 	
 	public void send(String request) {
-		send(Buffer.serialize(request));
+		send(Message.serialize(request));
 	}
 	
-	public void sendTwoParts(byte[] request1, byte[] request2) {
-		send(ByteString.copyFrom(request1), ByteString.copyFrom(request2));
+	public void sendTwoParts(byte[] requestData1, byte[] requestData2) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.REQUEST);
+		request.put(Message.Request.APPLICATION_NAME, application.getName());
+		request.put(Message.Request.APPLICATION_ID, application.getId());
+		request.put(Message.Request.SERVER_URL, application.getUrl());
+		request.put(Message.Request.SERVER_PORT, application.getPort());
+		request.put(Message.Request.REQUESTER_PORT, requesterPort);
+		
+		Zmq.Msg message = application.message(request);
+		
+		// Set request1 and request2 in the next frames.
+		message.add(requestData1);
+		message.add(requestData2);
+		
+		requestSocket.request(message);
 	}
 
 	public byte[] receive() {
@@ -134,31 +129,28 @@ public class RequesterImpl {
 				return null;
 			}
 			
-			// 2 frames, get first frame (type)
-			byte[] typeData = message.getFirstData();
-			// Get last frame
-			byte[] messageData = message.getLastData();
-						
-			// dispatch message
-			MessageType type = MessageType.parseFrom(typeData);
-						
-			if (type.getType() == Type.RESPONSE) {
-				return messageData;
+			// Get the JSON request object.
+			JSONObject request = application.parse(message);
 			
-			} else if (type.getType() == Type.CANCEL) {
+			// Get the type.
+			long type = JSON.getLong(request, Message.TYPE);
+						
+			if (type == Message.RESPONSE) {
+				return message.getLastData();
+			}
+			else if (type == Message.CANCEL) {
 				canceled = true;
 				return null;
-				
-			} else {
+			}
+			else {
 				return null;
 			}
-			
-		} catch (InvalidProtocolBufferException e) {
-			System.err.println("problem in parsing of message");
+		}
+		catch (ParseException e) {
+			System.err.println("Cannot parse message");
 			return null;
-			
-		} finally {
-			
+		}
+		finally {
 			if (message != null) {
 				message.destroy();
 			}
@@ -171,21 +163,19 @@ public class RequesterImpl {
 	}
 
 	public String receiveString() {
-		return Buffer.parseString(receive());
+		return Message.parseString(receive());
 	}
 	
 	public void cancel() {
 		
 		String endpoint = application.getUrl() + ":" + requesterPort;
 
-		Zmq.Msg requestMessage = application.createRequest(Type.CANCEL);
-		String content = "cancel";
-		requestMessage.add(content);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint);
-		
-		requestSocket.request(requestMessage);
+		requestSocket.request(application.message(request));
 		
 		// Terminate the socket.
 		requestSocket.terminate();

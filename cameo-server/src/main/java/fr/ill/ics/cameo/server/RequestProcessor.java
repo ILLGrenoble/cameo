@@ -40,6 +40,7 @@ import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.StatusInfo;
+import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 
 /**
@@ -78,7 +79,7 @@ public class RequestProcessor {
 		try {
 			// Convert the args.
 			String[] args = null;
-			JSONArray list = (JSONArray)request.get(Message.StartRequest.ARGS);
+			JSONArray list = JSON.getArray(request, Message.StartRequest.ARGS);
 			if (list != null) {
 				args = new String[list.size()];
 				for (int i = 0; i < list.size(); i++) {
@@ -87,7 +88,9 @@ public class RequestProcessor {
 			}
 			
 			// Start the application.
-			Application application = manager.startApplication((String)request.get(Message.StartRequest.NAME), args, (String)request.get(Message.StartRequest.INSTANCE_REFERENCE));
+			Application application = manager.startApplication(JSON.getString(request, Message.StartRequest.NAME), 
+																args, 
+																JSON.getString(request, Message.StartRequest.INSTANCE_REFERENCE));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -153,7 +156,7 @@ public class RequestProcessor {
 		LogInfo.getInstance().getLogger().fine("Received Stop request");
 		
 		try {
-			String applicationName = manager.stopApplication(((Long)request.get(Message.StopRequest.ID)).intValue());
+			String applicationName = manager.stopApplication(JSON.getInt(request, Message.StopRequest.ID));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -184,7 +187,7 @@ public class RequestProcessor {
 		LogInfo.getInstance().getLogger().fine("Received Kill request");
 		
 		try {
-			String applicationName = manager.killApplication(((Long)request.get(Message.StopRequest.ID)).intValue());
+			String applicationName = manager.killApplication(JSON.getInt(request, Message.StopRequest.ID));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -214,7 +217,7 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received Connect request");
 		
-		String applicationName = (String)request.get(Message.ConnectRequest.NAME);
+		String applicationName = JSON.getString(request, Message.ConnectRequest.NAME);
 		
 		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
 		
@@ -256,7 +259,7 @@ public class RequestProcessor {
 		LogInfo.getInstance().getLogger().fine("Received ShowStream request");
 				
 		try {
-			int port = manager.showStream(((Long)request.get(Message.ShowStreamRequest.ID)).intValue());
+			int port = manager.showStream(JSON.getInt(request, Message.ShowStreamRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -286,7 +289,7 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received IsAlive request");
 		
-		boolean isAlive = manager.isAlive(((Long)request.get(Message.IsAliveRequest.ID)).intValue());
+		boolean isAlive = manager.isAlive(JSON.getInt(request, Message.IsAliveRequest.ID));
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
@@ -307,7 +310,7 @@ public class RequestProcessor {
 		LogInfo.getInstance().getLogger().fine("Received SendParameters request");
 		
 		// Convert the parameters.
-		JSONArray list = (JSONArray)request.get(Message.SendParametersRequest.PARAMETERS);
+		JSONArray list = JSON.getArray(request, Message.SendParametersRequest.PARAMETERS);
 		
 		String[] parametersArray = new String[list.size()];
 		
@@ -316,7 +319,7 @@ public class RequestProcessor {
 		}
 		
 		try {
-			manager.writeToInputStream(((Long)request.get(Message.SendParametersRequest.ID)).intValue(), parametersArray);
+			manager.writeToInputStream((JSON.getInt(request, Message.SendParametersRequest.ID)), parametersArray);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -393,7 +396,7 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received Ouput request");
 		
-		int port = manager.getApplicationStreamPort((String)request.get(Message.OutputRequest.NAME));
+		int port = manager.getApplicationStreamPort(JSON.getString(request, Message.OutputRequest.NAME));
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
@@ -407,8 +410,8 @@ public class RequestProcessor {
 
 		LogInfo.getInstance().getLogger().fine("Received SetStatus request");
 		
-		int applicationId = ((Long)request.get(Message.SetStatusRequest.ID)).intValue();
-		int state = ((Long)request.get(Message.SetStatusRequest.APPLICATION_STATE)).intValue();
+		int applicationId = JSON.getInt(request, Message.SetStatusRequest.ID);
+		int state = JSON.getInt(request, Message.SetStatusRequest.APPLICATION_STATE);
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
@@ -437,7 +440,7 @@ public class RequestProcessor {
 
 		LogInfo.getInstance().getLogger().fine("Received GetStatus request");
 		
-		int applicationId = ((Long)request.get(Message.GetStatusRequest.ID)).intValue();
+		int applicationId = JSON.getInt(request, Message.GetStatusRequest.ID);
 		
 		StatusInfo status = manager.getApplicationState(applicationId);
 	
@@ -456,7 +459,7 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received SetResult request");
 		
-		int applicationId = ((Long)request.get(Message.SetResultRequest.ID)).intValue();
+		int applicationId = JSON.getInt(request, Message.SetResultRequest.ID);
 
 		try {
 			manager.setApplicationResult(applicationId, data);
@@ -483,8 +486,8 @@ public class RequestProcessor {
 
 		LogInfo.getInstance().getLogger().fine("Received RequestPort request");
 		
-		int applicationId = ((Long)request.get(Message.RequestPortRequest.ID)).intValue();
-		String portName = (String)request.get(Message.RequestPortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.RequestPortRequest.ID);
+		String portName = JSON.getString(request, Message.RequestPortRequest.NAME);
 		
 		try {
 			int port = manager.requestPortForApplication(applicationId, portName);
@@ -519,8 +522,8 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received ConnectPort request");
 		
-		int applicationId = ((Long)request.get(Message.ConnectPortRequest.ID)).intValue();
-		String portName = (String)request.get(Message.ConnectPortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.ConnectPortRequest.ID);
+		String portName = JSON.getString(request, Message.ConnectPortRequest.NAME);
 		
 		try {
 			int port = manager.connectPortForApplication(applicationId, portName);
@@ -555,8 +558,8 @@ public class RequestProcessor {
 
 		LogInfo.getInstance().getLogger().fine("Received RemovePort request");
 		
-		int applicationId = ((Long)request.get(Message.RemovePortRequest.ID)).intValue();
-		String portName = (String)request.get(Message.RemovePortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.RemovePortRequest.ID);
+		String portName = JSON.getString(request, Message.RemovePortRequest.NAME);
 		
 		try {
 			boolean done = manager.removePortForApplication(applicationId, portName);
@@ -591,11 +594,11 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received CreatePublisher request");
 		
-		int applicationId = ((Long)request.get(Message.CreatePublisherRequest.ID)).intValue();
-		String publisherName = (String)request.get(Message.CreatePublisherRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.CreatePublisherRequest.ID);
+		String publisherName = JSON.getString(request, Message.CreatePublisherRequest.NAME);
 		
 		try {
-			int numberOfSubscribers = ((Long)request.get(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS)).intValue();
+			int numberOfSubscribers = JSON.getInt(request, Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS);
 			int[] ports = manager.createPublisherForApplication(applicationId, publisherName, numberOfSubscribers);
 			
 			if (ports[0] != -1) {
@@ -632,8 +635,8 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received TerminatePublisher request");
 		
-		int applicationId = ((Long)request.get(Message.TerminatePublisherRequest.ID)).intValue();
-		String publisherName = (String)request.get(Message.TerminatePublisherRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.TerminatePublisherRequest.ID);
+		String publisherName = JSON.getString(request, Message.TerminatePublisherRequest.NAME);
 		
 		try {
 			boolean done = manager.terminatePublisherForApplication(applicationId, publisherName);
@@ -668,8 +671,8 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received ConnectPublisher request");
 		
-		int applicationId = ((Long)request.get(Message.ConnectPublisherRequest.APPLICATION_ID)).intValue();
-		String publisherName = (String)request.get(Message.ConnectPublisherRequest.PUBLISHER_NAME);
+		int applicationId = JSON.getInt(request, Message.ConnectPublisherRequest.APPLICATION_ID);
+		String publisherName = JSON.getString(request, Message.ConnectPublisherRequest.PUBLISHER_NAME);
 		
 		try {
 			 Application.Publisher publisher = manager.getPublisherForApplication(applicationId, publisherName);
@@ -713,12 +716,12 @@ public class RequestProcessor {
 		LogInfo.getInstance().getLogger().fine("Received StartedUnmanaged request");
 		
 		int applicationId = 0;
-		String name = (String)request.get(Message.StartedUnmanagedRequest.NAME);
+		String name = JSON.getString(request, Message.StartedUnmanagedRequest.NAME);
 		
 		try {
 			// Set the PID if it is passed.
 			if (request.containsKey(Message.StartedUnmanagedRequest.PID)) {
-				int pid = ((Long)request.get(Message.StartedUnmanagedRequest.PID)).intValue();
+				int pid = JSON.getInt(request, Message.StartedUnmanagedRequest.PID);
 				applicationId = manager.newStartedUnmanagedApplication(name, pid);
 			}
 			else {
@@ -746,7 +749,7 @@ public class RequestProcessor {
 		
 		LogInfo.getInstance().getLogger().fine("Received TerminatedUnmanaged request");
 		
-		int applicationId = ((Long)request.get(Message.TerminatedUnmanagedRequest.ID)).intValue();
+		int applicationId = JSON.getInt(request, Message.TerminatedUnmanagedRequest.ID);
 		
 		try {
 			String applicationName = manager.setUnmanagedApplicationTerminated(applicationId);

@@ -78,7 +78,7 @@ public class StreamApplicationThread extends Thread {
 			event.put(Message.ApplicationStream.MESSAGE, line);
 			
 			publisher.sendMore("STREAM");
-			publisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+			publisher.send(Message.serialize(event), 0);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class StreamApplicationThread extends Thread {
 			event.put(Message.ApplicationStream.MESSAGE, "endstream");
 			
 			publisher.sendMore("ENDSTREAM");
-			publisher.send(event.toJSONString().getBytes(Message.CHARSET), 0);
+			publisher.send(Message.serialize(event), 0);
 		}
 	}
 	
