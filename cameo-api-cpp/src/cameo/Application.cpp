@@ -33,7 +33,8 @@
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "ProtoType.h"
+#include "message/JSON.h"
+#include "message/Message.h"
 #include "Server.h"
 #include "StarterServerException.h"
 #include "StatusEvent.h"
@@ -267,30 +268,30 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_STARTEDUNMANAGED), m_impl->createStartedUnmanagedRequest(m_name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartedUnmanagedRequest(m_name));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	return requestResponse.value();
+	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 void This::terminateUnmanagedApplication() {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_TERMINATEDUNMANAGED), m_impl->createTerminatedUnmanagedRequest(m_id));
-
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	m_requestSocket->request(m_impl->createTerminatedUnmanagedRequest(m_id));
 }
 
 bool This::setRunning() {
 
-	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createRequestType(PROTO_SETSTATUS), m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING));
+	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	if (requestResponse.value() == -1) {
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
 		return false;
 	}
 
@@ -299,10 +300,7 @@ bool This::setRunning() {
 
 void This::setBinaryResult(const std::string& data) {
 
-	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createRequestType(PROTO_SETRESULT), m_instance.m_impl->createSetResultRequest(m_instance.m_id, data));
-
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	m_instance.m_requestSocket->request(m_instance.m_impl->createSetResultRequest(m_instance.m_id), data);
 }
 
 void This::setResult(const std::string& data) {
@@ -312,63 +310,40 @@ void This::setResult(const std::string& data) {
 	setBinaryResult(resultData);
 }
 
-void This::setResult(const int32_t* data, std::size_t size) {
-
-	string resultData;
-	serialize(data, size, resultData);
-	setBinaryResult(resultData);
-}
-
-void This::setResult(const int64_t* data, std::size_t size) {
-
-	string resultData;
-	serialize(data, size, resultData);
-	setBinaryResult(resultData);
-}
-
-void This::setResult(const float* data, std::size_t size) {
-
-	string resultData;
-	serialize(data, size, resultData);
-	setBinaryResult(resultData);
-}
-
-void This::setResult(const double* data, std::size_t size) {
-
-	string resultData;
-	serialize(data, size, resultData);
-	setBinaryResult(resultData);
-}
-
 State This::getState(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_GETSTATUS), m_impl->createGetStatusRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
 
-	proto::StatusEvent protoStatus;
-	protoStatus.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object event;
+	json::parse(event, reply.get());
 
-	return protoStatus.applicationstate();
+	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
 bool This::destroyPublisher(const std::string& name) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_TERMINATEPUBLISHER), m_impl->createTerminatePublisherRequest(m_id, name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createTerminatePublisherRequest(m_id, name));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	int value = requestResponse.value();
+	int value = response[message::RequestResponse::VALUE].GetInt();
+
 	return (value != -1);
 }
 
 bool This::removePort(const std::string& name) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_REMOVEPORT), m_impl->createRemovePortRequest(m_id, name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemovePortRequest(m_id, name));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	int value = requestResponse.value();
+	int value = response[message::RequestResponse::VALUE].GetInt();
+
 	return (value != -1);
 }
 
@@ -683,42 +658,6 @@ bool Instance::getResult(std::string& result) {
 	return m_hasResult;
 }
 
-bool Instance::getResult(std::vector<int32_t>& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
-}
-
-bool Instance::getResult(std::vector<int64_t>& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
-}
-
-bool Instance::getResult(std::vector<float>& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
-}
-
-bool Instance::getResult(std::vector<double>& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
-}
-
 std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
 	return m_outputStreamSocket;
 }
@@ -773,16 +712,17 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_CREATEPUBLISHER), This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
 
-	proto::PublisherResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	int publisherPort = requestResponse.publisherport();
+	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {
-		throw PublisherCreationException(requestResponse.message());
+		throw PublisherCreationException(response[message::PublisherResponse::MESSAGE].GetString());
 	}
-	int synchronizerPort = requestResponse.synchronizerport();
+	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();;
 
 	return unique_ptr<Publisher>(new Publisher(&This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
 }
@@ -818,22 +758,6 @@ void Publisher::sendBinary(const std::string& data) const {
 
 void Publisher::send(const std::string& data) const {
 	m_impl->send(data);
-}
-
-void Publisher::send(const int32_t* data, std::size_t size) const {
-	m_impl->send(data, size);
-}
-
-void Publisher::send(const int64_t* data, std::size_t size) const {
-	m_impl->send(data, size);
-}
-
-void Publisher::send(const float* data, std::size_t size) const {
-	m_impl->send(data, size);
-}
-
-void Publisher::send(const double* data, std::size_t size) const {
-	m_impl->send(data, size);
 }
 
 void Publisher::sendTwoBinaryParts(const std::string& data1, const std::string& data2) const {
@@ -934,22 +858,6 @@ bool Subscriber::receive(std::string& data) const {
 	return m_impl->receive(data);
 }
 
-bool Subscriber::receive(std::vector<int32_t>& data) const {
-	return m_impl->receive(data);
-}
-
-bool Subscriber::receive(std::vector<int64_t>& data) const {
-	return m_impl->receive(data);
-}
-
-bool Subscriber::receive(std::vector<float>& data) const {
-	return m_impl->receive(data);
-}
-
-bool Subscriber::receive(std::vector<double>& data) const {
-	return m_impl->receive(data);
-}
-
 bool Subscriber::receiveTwoBinaryParts(std::string& data1, std::string& data2) const {
 	return m_impl->receiveTwoBinaryParts(data1, data2);
 }
@@ -1033,14 +941,15 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT), This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName));
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	int responderPort = requestResponse.value();
+	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
-		throw ResponderCreationException(requestResponse.message());
+		throw ResponderCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
 	return unique_ptr<Responder>(new Responder(&This::m_instance, responderPort, name));
@@ -1093,41 +1002,40 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string requestTypePart = This::m_instance.m_impl->createRequestType(PROTO_CONNECTPORT);
-	string requestDataPart = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
+	string request = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
 
-	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(requestTypePart, requestDataPart);
+	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(request);
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
 	reply.reset();
 
-	int responderPort = requestResponse.value();
+	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
 		// Wait for the responder port.
 		instance.waitFor(0, responderPortName);
 
 		// Retry to connect.
-		reply = instanceRequestSocket->request(requestTypePart, requestDataPart);
+		reply = instanceRequestSocket->request(request);
+		json::parse(response, reply.get());
 
-		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-
-		responderPort = requestResponse.value();
+		responderPort = response[message::RequestResponse::VALUE].GetInt();
 		if (responderPort == -1) {
-			throw RequesterCreationException(requestResponse.message());
+			throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
 		}
 
 		reply.reset();
 	}
 
 	// Request a requester port.
-	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestType(PROTO_REQUESTPORT), This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName));
+	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName));
+	json::parse(response, reply.get());
 
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
-
-	int requesterPort = requestResponse.value();
+	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
 	if (requesterPort == -1) {
-		throw RequesterCreationException(requestResponse.message());
+		throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
 	return unique_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));

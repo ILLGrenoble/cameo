@@ -17,11 +17,10 @@
 #ifndef CAMEO_PUBLISHERIMPL_H_
 #define CAMEO_PUBLISHERIMPL_H_
 
-#include <memory>
-#include <string>
-
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"
+#include <memory>
+#include <string>
 
 namespace cameo {
 
@@ -46,10 +45,6 @@ public:
 
 	void sendBinary(const std::string& data);
 	void send(const std::string& data);
-	void send(const int32_t* data, std::size_t size);
-	void send(const int64_t* data, std::size_t size);
-	void send(const float* data, std::size_t size);
-	void send(const double* data, std::size_t size);
 	void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
 	void setEnd();
 	bool isEnded();

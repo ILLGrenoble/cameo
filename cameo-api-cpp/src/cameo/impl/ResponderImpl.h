@@ -17,11 +17,11 @@
 #ifndef CAMEO_RESPONDERIMPL_H_
 #define CAMEO_RESPONDERIMPL_H_
 
+#include "GenericWaitingImpl.h"
+#include "zmq.hpp"
 #include <string>
 #include <vector>
 #include <memory>
-#include "GenericWaitingImpl.h"
-#include "zmq.hpp"
 
 namespace cameo {
 

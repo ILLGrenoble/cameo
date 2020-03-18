@@ -175,16 +175,16 @@ public class SubscriberImpl {
 				byte[] statusMessage = subscriber.recv();
 				
 				try {
-					// Get the JSON request object.
-					JSONObject request = server.parse(statusMessage);
+					// Get the JSON object.
+					JSONObject status = server.parse(statusMessage);
 					
 					// Get the id.
-					int id = JSON.getInt(request, Message.StatusEvent.ID);
+					int id = JSON.getInt(status, Message.StatusEvent.ID);
 										
 					if (instance.getId() == id) {
 						
 						// Get the state.
-						int state = JSON.getInt(request, Message.StatusEvent.APPLICATION_STATE);
+						int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
 						
 						// Test if the state is terminal
 						if (state == Application.State.SUCCESS 
