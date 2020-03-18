@@ -23,7 +23,7 @@ namespace cameo {
 
 namespace message {
 
-	const std::string TYPE = "type";
+	constexpr const char* TYPE = "type";
 
 	const int SYNC = 1;
 	const int START = 2;
@@ -55,173 +55,173 @@ namespace message {
 	const int TERMINATED_UNMANAGED = 28;
 
 	namespace StartRequest {
-		const std::string NAME = "name"; // required string name = 1;
-		const std::string ARGS = "args"; // repeated string args = 2;
-		const std::string INSTANCE_REFERENCE = "instanceReference"; // required string instanceReference = 3;
+		constexpr const char* NAME = "name"; // required string name = 1;
+		constexpr const char* ARGS = "args"; // repeated string args = 2;
+		constexpr const char* INSTANCE_REFERENCE = "instanceReference"; // required string instanceReference = 3;
 	}
 
 	namespace RequestResponse {
-		const std::string VALUE = "value"; // required int32 value = 1;
-		const std::string MESSAGE = "message"; // optional string message = 2;
+		constexpr const char* VALUE = "value"; // required int32 value = 1;
+		constexpr const char* MESSAGE = "message"; // optional string message = 2;
 	}
 
 	namespace StopRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
 	namespace ConnectRequest {
-		const std::string NAME = "name"; // required string name = 1;
+		constexpr const char* NAME = "name"; // required string name = 1;
 	}
 
 	namespace ApplicationConfig {
-		const std::string NAME = "name"; // required string name = 1;
-		const std::string DESCRIPTION = "description"; // optional string description = 2;
-		const std::string RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
-		const std::string RESTART = "restart"; // required bool restart = 4;
-		const std::string STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
-		const std::string RETRIES = "retries"; // required int32 retries = 6;
-		const std::string STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
+		constexpr const char* NAME = "name"; // required string name = 1;
+		constexpr const char* DESCRIPTION = "description"; // optional string description = 2;
+		constexpr const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
+		constexpr const char* RESTART = "restart"; // required bool restart = 4;
+		constexpr const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
+		constexpr const char* RETRIES = "retries"; // required int32 retries = 6;
+		constexpr const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 
 	namespace AllAvailableResponse {
-		const std::string APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
+		constexpr const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
 	}
 
 	namespace StatusEvent {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		const std::string PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
 	}
 
 	namespace PublisherEvent {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string PUBLISHER_NAME = "publisherName"; // required string publisherName = 3;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* PUBLISHER_NAME = "publisherName"; // required string publisherName = 3;
 	}
 
 	namespace ResultEvent {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string DATA = "data"; // required bytes data = 3;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* DATA = "data"; // required bytes data = 3;
 	}
 
 	namespace PortEvent {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string PORT_NAME = "portName"; // required string portName = 3;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* PORT_NAME = "portName"; // required string portName = 3;
 	}
 
 	namespace ApplicationInfo {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		const std::string PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
-		const std::string ARGS = "args"; // required string args = 5;
-		const std::string PID = "pid"; // optional int64 pid = 6;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr const char* ARGS = "args"; // required string args = 5;
+		constexpr const char* PID = "pid"; // optional int64 pid = 6;
 	}
 
 	namespace ApplicationInfoListResponse {
-		const std::string APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
+		constexpr const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
 	}
 
 	namespace ShowStreamRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
 	namespace IsAliveRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
 	namespace IsAliveResponse {
-		const std::string IS_ALIVE = "isAlive"; // required bool isAlive = 1;
+		constexpr const char* IS_ALIVE = "isAlive"; // required bool isAlive = 1;
 	}
 
 	namespace ApplicationStream {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string MESSAGE = "message"; // required string message = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* MESSAGE = "message"; // required string message = 2;
 	}
 
 	namespace SendParametersRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string PARAMETERS = "parameters"; // repeated string parameters = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* PARAMETERS = "parameters"; // repeated string parameters = 2;
 	}
 
 	namespace KillRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
 	namespace OutputRequest {
-		const std::string NAME = "name"; // required string name = 1;
+		constexpr const char* NAME = "name"; // required string name = 1;
 	}
 
 	namespace SetStatusRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
 	}
 
 	namespace GetStatusRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
 	namespace SetResultRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string DATA = "data"; // required bytes data = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* DATA = "data"; // required bytes data = 2;
 	}
 
 	namespace RequestPortRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
 	namespace ConnectPortRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
 	namespace RemovePortRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
 	namespace CreatePublisherRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
-		const std::string NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // required int32 numberOfSubscribers = 3;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
+		constexpr const char* NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // required int32 numberOfSubscribers = 3;
 	}
 
 	namespace TerminatePublisherRequest {
-		const std::string ID = "id"; // required int32 id = 1;
-		const std::string NAME = "name"; // required string name = 2;
+		constexpr const char* ID = "id"; // required int32 id = 1;
+		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
 	namespace ConnectPublisherRequest {
-		const std::string APPLICATION_ID = "applicationId"; // required int32 applicationId = 1;
-		const std::string PUBLISHER_NAME = "publisherName"; // required string publisherName = 2;
+		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 1;
+		constexpr const char* PUBLISHER_NAME = "publisherName"; // required string publisherName = 2;
 	}
 
 	namespace PublisherResponse {
-		const std::string MESSAGE = "message"; // optional string message = 1;
-		const std::string PUBLISHER_PORT = "publisherPort"; // required int32 publisherPort = 2;
-		const std::string SYNCHRONIZER_PORT = "synchronizerPort"; // required int32 synchronizerPort = 3;
-		const std::string NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // optional int32 numberOfSubscribers = 4;
+		constexpr const char* MESSAGE = "message"; // optional string message = 1;
+		constexpr const char* PUBLISHER_PORT = "publisherPort"; // required int32 publisherPort = 2;
+		constexpr const char* SYNCHRONIZER_PORT = "synchronizerPort"; // required int32 synchronizerPort = 3;
+		constexpr const char* NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // optional int32 numberOfSubscribers = 4;
 	}
 
 	namespace Request {
-		const std::string APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
-		const std::string APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		const std::string SERVER_URL = "serverUrl"; // required string serverUrl = 5;
-		const std::string SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
-		const std::string REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
+		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
+		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
+		constexpr const char* SERVER_URL = "serverUrl"; // required string serverUrl = 5;
+		constexpr const char* SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
+		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
 	namespace StartedUnmanagedRequest {
-		const std::string NAME = "name"; // required string name = 1;
-		const std::string PID = "pid"; // optional int64 pid = 2;
+		constexpr const char* NAME = "name"; // required string name = 1;
+		constexpr const char* PID = "pid"; // optional int64 pid = 2;
 	}
 
 	namespace TerminatedUnmanagedRequest {
-		const std::string ID = "id"; // required int32 id = 1;
+		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 }
 

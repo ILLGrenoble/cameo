@@ -17,10 +17,10 @@
 #ifndef CAMEO_SUBSCRIBERIMPL_H_
 #define CAMEO_SUBSCRIBERIMPL_H_
 
-#include <string>
-#include <vector>
 #include "SocketWaitingImpl.h"
 #include "zmq.hpp"
+#include <string>
+#include <vector>
 
 namespace cameo {
 
@@ -39,10 +39,6 @@ public:
 
 	bool receiveBinary(std::string& data);
 	bool receive(std::string& data);
-	bool receive(std::vector<int32_t>& data);
-	bool receive(std::vector<int64_t>& data);
-	bool receive(std::vector<float>& data);
-	bool receive(std::vector<double>& data);
 	bool receiveTwoBinaryParts(std::string& data1, std::string& data2);
 
 	WaitingImpl * waiting();

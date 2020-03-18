@@ -17,22 +17,31 @@
 #ifndef CAMEO_JSON_H_
 #define CAMEO_JSON_H_
 
-#include <string>
 #include <rapidjson/stringbuffer.h>
-#include <rapidjson/prettywriter.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/document.h>
+#include "zmq.hpp"
+#include <string>
 #include <stdint.h>
-//#include <rapidjson/writer.h>
 
 namespace cameo {
+namespace json {
 
-class JSONObject {
+/**
+ * Helper class wrapping the rapidjson writer.
+ */
+class StringObject {
 
-	JSONObject();
+public:
+	StringObject();
 
-	void push(const std::string& key, int64_t value);
-	void push(const std::string& key, bool value);
-	void push(const std::string& key, double value);
-	void push(const std::string& key, const std::string& value);
+	void pushKey(const char* key);
+
+	void pushInt(int value);
+	void pushInt64(int64_t value);
+	void pushBool(bool value);
+	void pushDouble(double value);
+	void pushString(const std::string& value);
 
 	void startObject();
 	void endObject();
@@ -44,9 +53,15 @@ class JSONObject {
 
 private:
 	rapidjson::StringBuffer m_buffer;
-	rapidjson::PrettyWriter<rapidjson::StringBuffer> m_writer;
+	rapidjson::Writer<rapidjson::StringBuffer> m_writer;
 };
 
+typedef rapidjson::Document Object;
+typedef rapidjson::Value Value;
+
+void parse(Object & object, zmq::message_t * message);
+
+}
 }
 
 #endif

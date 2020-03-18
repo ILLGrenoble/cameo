@@ -26,26 +26,26 @@ libcameo_la_SOURCES = \
 	cameo/StarterServerException.cpp \
 	cameo/ResponderCreationException.cpp \
 	cameo/RequesterCreationException.cpp \
+	cameo/Response.cpp \
 	cameo/impl/StreamSocketImpl.cpp \
 	cameo/impl/RequestSocketImpl.cpp \
 	cameo/impl/SocketWaitingImpl.cpp \
 	cameo/impl/GenericWaitingImpl.cpp \
 	cameo/impl/WaitingImplSet.cpp \
 	cameo/impl/CancelIdGenerator.cpp \
-	cameo/ConnectionChecker.cpp \
-	cameo/EventStreamSocket.cpp \
-	cameo/OutputStreamSocket.cpp \
-	cameo/Response.cpp \
+	cameo/impl/HandlerImpl.cpp \
+	cameo/impl/ServicesImpl.cpp \
 	cameo/impl/PublisherImpl.cpp \
 	cameo/impl/SubscriberImpl.cpp \
 	cameo/impl/RequestImpl.cpp \
 	cameo/impl/ResponderImpl.cpp \
 	cameo/impl/RequesterImpl.cpp \
+	cameo/ConnectionChecker.cpp \
+	cameo/EventStreamSocket.cpp \
+	cameo/OutputStreamSocket.cpp \
 	cameo/EventThread.cpp \
 	cameo/Services.cpp \
-	cameo/impl/ServicesImpl.cpp \
 	cameo/Server.cpp \
-	cameo/impl/HandlerImpl.cpp \
 	cameo/Application.cpp \
 	cameo/impl/StreamSocketImpl.h \
 	cameo/impl/RequestSocketImpl.h \
@@ -60,9 +60,7 @@ libcameo_la_SOURCES = \
 	cameo/impl/SubscriberImpl.h \
 	cameo/impl/RequestImpl.h \
 	cameo/impl/ResponderImpl.h \
-	cameo/impl/RequesterImpl.h \
-	proto/Messages.pb.cc \
-	proto/Messages.proto
+	cameo/impl/RequesterImpl.h
 		
 # header files that are installed
 nobase_include_HEADERS = \
@@ -70,7 +68,6 @@ nobase_include_HEADERS = \
 	cameo/Serializer.h \
 	cameo/TimeCondition.h \
 	cameo/Application.h \
-	cameo/ProtoType.h \
 	cameo/ConnectionTimeout.h \
 	cameo/Event.h \
 	cameo/EventThread.h \

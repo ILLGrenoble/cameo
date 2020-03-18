@@ -18,9 +18,10 @@
 
 #include "impl/SocketWaitingImpl.h"
 #include "impl/ServicesImpl.h"
-#include "../proto/Messages.pb.h"
-#include <iostream>
 #include "impl/StreamSocketImpl.h"
+#include "message/JSON.h"
+#include "message/Message.h"
+#include <iostream>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ bool OutputStreamSocket::receive(Output& output) {
 
 	unique_ptr<zmq::message_t> message(m_impl->receive());
 
-	string response(static_cast<char*>(message->data()), message->size());
+	string response(message->data<char>(), message->size());
 
 	if (response == ServicesImpl::STREAM) {
 	}
@@ -66,11 +67,15 @@ bool OutputStreamSocket::receive(Output& output) {
 
 	message = m_impl->receive();
 
-	proto::ApplicationStream protoStream;
-	protoStream.ParseFromArray(message->data(), message->size());
+	// Get the JSON event.
+	json::Object event;
+	json::parse(event, message.get());
 
-	output.m_id = protoStream.id();
-	output.m_message = protoStream.message();
+	int id = event[message::ApplicationStream::ID].GetInt();
+	string line = event[message::ApplicationStream::MESSAGE].GetString();
+
+	output.m_id = id;
+	output.m_message = line;
 
 	return true;
 }
