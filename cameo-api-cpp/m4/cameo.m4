@@ -17,7 +17,7 @@ AC_DEFUN([AC_CAMEO],
         if test $with_cameo != yes; then
             cameo_possible_path="$with_cameo"
         else
-            cameo_possible_path="/usr/local /usr /opt /var"
+            cameo_possible_path="/usr /opt /var /usr/local"
         fi
         AC_MSG_CHECKING([for cameo headers])
         cameo_save_CXXFLAGS="$CXXFLAGS"
