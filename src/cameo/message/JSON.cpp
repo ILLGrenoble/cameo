@@ -15,53 +15,70 @@
  */
 
 #include "JSON.h"
+#include <iostream>
+
+using namespace std;
 
 namespace cameo {
+namespace json {
 
-JSONObject::JSONObject() :
+StringObject::StringObject() :
 	m_writer(m_buffer) {
 	m_writer.StartObject();
 }
 
-void JSONObject::push(const std::string& key, int64_t value) {
-	m_writer.Key(key.c_str());
+void StringObject::pushKey(const char* key) {
+	m_writer.Key(key);
+}
+
+void StringObject::pushInt(int value) {
+	m_writer.Int(value);
+}
+
+void StringObject::pushInt64(int64_t value) {
 	m_writer.Int64(value);
 }
 
-void JSONObject::push(const std::string& key, bool value) {
-	m_writer.Key(key.c_str());
+void StringObject::pushBool(bool value) {
 	m_writer.Bool(value);
 }
 
-void JSONObject::push(const std::string& key, double value) {
-	m_writer.Key(key.c_str());
+void StringObject::pushDouble(double value) {
 	m_writer.Double(value);
 }
 
-void JSONObject::push(const std::string& key, const std::string& value) {
-	m_writer.Key(key.c_str());
+void StringObject::pushString(const std::string& value) {
 	m_writer.String(value.c_str());
 }
 
-void JSONObject::startObject() {
+void StringObject::startObject() {
 	m_writer.StartObject();
 }
 
-void JSONObject::endObject() {
+void StringObject::endObject() {
 	m_writer.EndObject();
 }
 
-void JSONObject::startArray() {
+void StringObject::startArray() {
 	m_writer.StartArray();
 }
 
-void JSONObject::endArray() {
+void StringObject::endArray() {
 	m_writer.EndArray();
 }
 
-std::string JSONObject::toString() {
+std::string StringObject::toString() {
 	m_writer.EndObject();
 	return m_buffer.GetString();
 }
 
+void parse(Object & object, zmq::message_t * message) {
+
+	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
+	if (!ok) {
+		cerr << "Cannot parse message" << endl;
+	}
+}
+
+}
 }

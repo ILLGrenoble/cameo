@@ -17,11 +17,9 @@
 #ifndef CAMEO_SERVICESIMPL_H_
 #define CAMEO_SERVICESIMPL_H_
 
-#include "../../proto/Messages.pb.h"
-#include "../ProtoType.h"
+#include "zmq.hpp"
 #include <vector>
 #include <memory>
-#include "zmq.hpp"
 
 namespace cameo {
 
@@ -36,10 +34,7 @@ public:
 	void setTimeout(int timeout);
 	int getTimeout() const;
 
-	proto::MessageType_Type convertToProtoType(ProtoType type) const;
-
-	std::string createRequestType(ProtoType type) const;
-	std::string createInitRequest() const;
+	std::string createSyncRequest() const;
 	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const;
 	std::string createStopRequest(int id) const;
 	std::string createKillRequest(int id) const;
@@ -47,10 +42,10 @@ public:
 	std::string createIsAliveRequest(int id) const;
 	std::string createAllAvailableRequest() const;
 	std::string createShowAllRequest() const;
-	std::string createShowStatusRequest() const;
+	std::string createStreamStatusRequest() const;
 	std::string createSetStatusRequest(int id, int32_t state) const;
 	std::string createGetStatusRequest(int id) const;
-	std::string createSetResultRequest(int id, const std::string& data) const;
+	std::string createSetResultRequest(int id) const;
 	std::string createSubscribePublisherRequest() const;
 	std::string createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const;
 	std::string createConnectPublisherRequest(int id, const std::string& publisherName) const;
@@ -61,6 +56,8 @@ public:
 	std::string createStartedUnmanagedRequest(const std::string& name) const;
 	std::string createTerminatedUnmanagedRequest(int id) const;
 	std::string createOutputRequest(const std::string& name) const;
+	std::string createRequestResponse(int64_t value) const;
+	std::string createRequestResponse(int64_t value, const std::string& message) const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);

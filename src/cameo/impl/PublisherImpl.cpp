@@ -19,6 +19,8 @@
 #include "../Serializer.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
 #include <sstream>
 
 using namespace std;
@@ -71,7 +73,7 @@ bool PublisherImpl::waitForSubscribers() {
 		return true;
 	}
 
-	// create a socket to receive the messages from the subscribers
+	// Create a socket to receive the messages from the subscribers.
 	zmq::socket_t synchronizer(m_application->m_impl->m_context, ZMQ_REP);
 
 	stringstream syncEndpoint;
@@ -80,7 +82,7 @@ bool PublisherImpl::waitForSubscribers() {
 	syncEndpoint << url << ":" << m_synchronizerPort;
 	synchronizer.bind(syncEndpoint.str().c_str());
 
-	// loop until the number of subscribers is reached
+	// Loop until the number of subscribers is reached.
 	int counter = 0;
 	bool canceled = false;
 
@@ -89,35 +91,28 @@ bool PublisherImpl::waitForSubscribers() {
 		unique_ptr<zmq::message_t> message(new zmq::message_t);
 		synchronizer.recv(message.get(), 0);
 
-		// multi-part message, first part is the type
-		proto::MessageType messageType;
-		messageType.ParseFromArray((*message).data(), (*message).size());
+		// Get the JSON request.
+		json::Object request;
+		json::parse(request, message.get());
 
-		if (message->more()) {
-			message.reset(new zmq::message_t);
-			synchronizer.recv(message.get(), 0);
-
-		} else {
-			cerr << "unexpected number of frames, should be 2" << endl;
-			continue;
-		}
+		int type = request[message::TYPE].GetInt();
 
 		unique_ptr<zmq::message_t> reply;
 
-		if (messageType.type() == proto::MessageType_Type_INIT) {
+		if (type == message::SYNC) {
 			reply.reset(processInitCommand());
-
-		} else if (messageType.type() == proto::MessageType_Type_SUBSCRIBEPUBLISHER) {
+		}
+		else if (type == message::SUBSCRIBE_PUBLISHER) {
 			counter++;
 			reply.reset(processSubscribePublisherCommand());
-
-		} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
+		}
+		else if (type == message::CANCEL) {
 			canceled = true;
 			counter = m_numberOfSubscribers;
 			reply.reset(processCancelPublisherSyncCommand());
-
-		} else {
-			cerr << "unknown message type " << messageType.type() << endl;
+		}
+		else {
+			cerr << "Unknown message type " << type << endl;
 			synchronizer.send(*message);
 		}
 
@@ -135,17 +130,13 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << (m_publisherPort + 1);
 
-	string requestDataPart;
-
-	proto::CancelPublisherSyncCommand cancelPublisherSyncCommand;
-	cancelPublisherSyncCommand.SerializeToString(&requestDataPart);
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
 	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
-	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), requestDataPart);
-
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	requestSocket->request(request.toString());
 }
 
 WaitingImpl * PublisherImpl::waiting() {
@@ -164,46 +155,6 @@ void PublisherImpl::send(const std::string& data) {
 	// encode the data
 	string result;
 	serialize(data, result);
-
-	// send a STREAM message by the publisher socket
-	publish(STREAM, result.c_str(), result.length());
-}
-
-void PublisherImpl::send(const int32_t* data, std::size_t size) {
-
-	// encode the data
-	string result;
-	serialize(data, size, result);
-
-	// send a STREAM message by the publisher socket
-	publish(STREAM, result.c_str(), result.length());
-}
-
-void PublisherImpl::send(const int64_t* data, std::size_t size) {
-
-	// encode the data
-	string result;
-	serialize(data, size, result);
-
-	// send a STREAM message by the publisher socket
-	publish(STREAM, result.c_str(), result.length());
-}
-
-void PublisherImpl::send(const float* data, std::size_t size) {
-
-	// encode the data
-	string result;
-	serialize(data, size, result);
-
-	// send a STREAM message by the publisher socket
-	publish(STREAM, result.c_str(), result.length());
-}
-
-void PublisherImpl::send(const double* data, std::size_t size) {
-
-	// encode the data
-	string result;
-	serialize(data, size, result);
 
 	// send a STREAM message by the publisher socket
 	publish(STREAM, result.c_str(), result.length());
@@ -287,11 +238,7 @@ zmq::message_t * PublisherImpl::processInitCommand() {
 
 zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
-	proto::RequestResponse requestResponse;
-	requestResponse.set_value(0);
-	requestResponse.set_message("OK");
-
-	string result = requestResponse.SerializeAsString();
+	string result = m_application->m_impl->createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy((void *) reply->data(), result.c_str(), result.length());
@@ -301,11 +248,7 @@ zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
 zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 
-	proto::RequestResponse requestResponse;
-	requestResponse.set_value(0);
-	requestResponse.set_message("OK");
-
-	string result = requestResponse.SerializeAsString();
+	string result = m_application->m_impl->createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy((void *) reply->data(), result.c_str(), result.length());

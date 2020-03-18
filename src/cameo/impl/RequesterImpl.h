@@ -43,9 +43,9 @@ public:
 
 	WaitingImpl * waiting();
 
-	void sendBinary(const std::string& request);
-	void send(const std::string& request);
-	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
+	void sendBinary(const std::string& requestData);
+	void send(const std::string& requestData);
+	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
 
 	bool receiveBinary(std::string& response);
 	bool receive(std::string& response);
