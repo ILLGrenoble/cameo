@@ -968,6 +968,10 @@ Request::Request(std::unique_ptr<RequestImpl> & impl) :
 Request::~Request() {
 }
 
+void Request::setTimeout(int value) {
+	m_impl->setTimeout(value);
+}
+
 const std::string& Request::getBinary() const {
 	return m_impl->m_message;
 }

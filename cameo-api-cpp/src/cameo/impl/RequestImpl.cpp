@@ -30,7 +30,8 @@ RequestImpl::RequestImpl(application::This * application, const std::string & re
 	m_application(application),
 	m_message(message),
 	m_requesterApplicationName(requesterApplicationName),
-	m_requesterApplicationId(requesterApplicationId) {
+	m_requesterApplicationId(requesterApplicationId),
+	m_timeout(0) {
 
 	stringstream requesterEndpoint;
 	requesterEndpoint << serverUrl << ":" << requesterPort;
@@ -44,11 +45,22 @@ RequestImpl::RequestImpl(application::This * application, const std::string & re
 RequestImpl::~RequestImpl() {
 }
 
+void RequestImpl::setTimeout(int value) {
+	m_timeout = value;
+}
+
 void RequestImpl::replyBinary(const std::string& response) {
 
 	// Create a request socket. It is created for each request that could be optimized.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint);
-	requestSocket->request(m_application->m_impl->createRequestType(PROTO_RESPONSE), response);
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint, m_timeout);
+	//requestSocket->requestAsync(m_application->m_impl->createRequestType(PROTO_RESPONSE), response);
+
+	try {
+		requestSocket->request(m_application->m_impl->createRequestType(PROTO_RESPONSE), response);
+	}
+	catch (const ConnectionTimeout&) {
+		cout << "timeout while replying" << endl;
+	}
 }
 
 void RequestImpl::reply(const std::string& response) {

@@ -396,6 +396,8 @@ public:
 	std::string get() const;
 	const std::string& getSecondBinaryPart() const;
 
+	void setTimeout(int value);
+
 	void replyBinary(const std::string& response);
 	void reply(const std::string& response);
 

@@ -51,6 +51,7 @@ public:
 	std::unique_ptr<EventStreamSocket> openEventStream();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(int port);
 	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint);
+	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
 
 	std::string m_serverEndpoint;
 	std::string m_url;
