@@ -30,6 +30,7 @@ public:
 	virtual ~RequestSocketImpl();
 
 	std::unique_ptr<zmq::message_t> request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout = -1);
+	void requestAsync(const std::string& requestTypePart, const std::string& requestDataPart);
 
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;

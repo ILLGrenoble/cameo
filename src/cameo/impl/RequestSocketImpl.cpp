@@ -18,6 +18,9 @@
 #include "../ConnectionTimeout.h"
 #include <iostream>
 
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 namespace cameo {
@@ -59,7 +62,6 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
 			// Timeout occurred.
-			m_socket->close();
 			throw ConnectionTimeout();
 		}
 	}
@@ -69,6 +71,26 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->recv(reply.get(), 0);
 
 	return reply;
+}
+
+void RequestSocketImpl::requestAsync(const std::string& requestTypePart, const std::string& requestDataPart) {
+
+	// Prepare the request parts.
+	int requestTypeSize = requestTypePart.length();
+	int requestDataSize = requestDataPart.length();
+	zmq::message_t requestType(requestTypeSize);
+	zmq::message_t requestData(requestDataSize);
+	memcpy(static_cast<void *>(requestType.data()), requestTypePart.c_str(), requestTypeSize);
+	memcpy(static_cast<void *>(requestData.data()), requestDataPart.c_str(), requestDataSize);
+
+	// Send the request in two parts.
+	m_socket->send(requestType, ZMQ_SNDMORE);
+	m_socket->send(requestData);
+
+	// ...
+
+	// Close the socket as we do not need to wait for the reply.
+	m_socket->close();
 }
 
 }
