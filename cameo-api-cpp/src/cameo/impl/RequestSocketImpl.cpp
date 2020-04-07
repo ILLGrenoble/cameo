@@ -32,6 +32,15 @@ RequestSocketImpl::RequestSocketImpl(zmq::socket_t * socket, int timeout) :
 RequestSocketImpl::~RequestSocketImpl() {
 }
 
+void RequestSocketImpl::setLinger(bool linger) {
+	// Set the value only in the case linger=false.
+	// This value has effect when terminating the context.
+	if (!linger) {
+		int lingerValue = 0;
+		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
+	}
+}
+
 std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout) {
 
 	// Prepare the request parts.
@@ -51,6 +60,10 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 		timeout = overrideTimeout;
 	}
 
+	if (timeout == -2) {
+		return unique_ptr<zmq::message_t>(nullptr);
+	}
+
 	if (timeout > 0) {
 		// Polling.
 		zmq_pollitem_t items[1];
@@ -61,6 +74,11 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
+
+			int lingerValue = 0;
+			m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
+			cout << "linger 0" << endl;
+
 			// Timeout occurred.
 			throw ConnectionTimeout();
 		}
@@ -71,26 +89,6 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->recv(reply.get(), 0);
 
 	return reply;
-}
-
-void RequestSocketImpl::requestAsync(const std::string& requestTypePart, const std::string& requestDataPart) {
-
-	// Prepare the request parts.
-	int requestTypeSize = requestTypePart.length();
-	int requestDataSize = requestDataPart.length();
-	zmq::message_t requestType(requestTypeSize);
-	zmq::message_t requestData(requestDataSize);
-	memcpy(static_cast<void *>(requestType.data()), requestTypePart.c_str(), requestTypeSize);
-	memcpy(static_cast<void *>(requestData.data()), requestDataPart.c_str(), requestDataSize);
-
-	// Send the request in two parts.
-	m_socket->send(requestType, ZMQ_SNDMORE);
-	m_socket->send(requestData);
-
-	// ...
-
-	// Close the socket as we do not need to wait for the reply.
-	m_socket->close();
 }
 
 }

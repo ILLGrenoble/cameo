@@ -968,8 +968,8 @@ Request::Request(std::unique_ptr<RequestImpl> & impl) :
 Request::~Request() {
 }
 
-void Request::setTimeout(int value) {
-	m_impl->setTimeout(value);
+void Request::setTimeout(int value, bool linger) {
+	m_impl->setTimeout(value, linger);
 }
 
 const std::string& Request::getBinary() const {
