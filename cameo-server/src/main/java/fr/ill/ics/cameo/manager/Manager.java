@@ -59,7 +59,7 @@ public class Manager extends ConfigLoader {
 	public Manager(String xmlPath) {
 		super(xmlPath);
 		LogInfo.getInstance().init();
-		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		LogInfo.getInstance().getLogger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
 		showApplicationConfigs();
 		
@@ -76,7 +76,7 @@ public class Manager extends ConfigLoader {
 	public Manager(InputStream configStream) {
 		super(configStream);
 		LogInfo.getInstance().init();
-		LogInfo.getInstance().getLogger().fine("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		LogInfo.getInstance().getLogger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
 		showApplicationConfigs();
 		

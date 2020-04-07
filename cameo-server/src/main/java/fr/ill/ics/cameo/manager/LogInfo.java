@@ -62,10 +62,10 @@ public final class LogInfo {
 			if (!logDirectory.exists()) {
 				logDirectory.mkdir();
 			}
-			
+						
 			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/cameo.log", false);
 			fileHandler.setFormatter(new LogFormatter());
-			fileHandler.setLevel(Level.FINE);
+			fileHandler.setLevel(Level.INFO);
 			logger.addHandler(fileHandler);
 			
 			if (ConfigManager.getInstance().isDebugMode()) {

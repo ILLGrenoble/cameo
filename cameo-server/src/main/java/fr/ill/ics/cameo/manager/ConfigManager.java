@@ -162,11 +162,19 @@ public final class ConfigManager {
 	}
 	
 	public void setHost(String host) {
+		// If host is provided, set it.
 		if (host == null) {
 			try {
+				// Otherwise try to get the hostname.
 				this.host = InetAddress.getLocalHost().getHostName();
 			} catch (UnknownHostException e) {
-				this.host = "localhost";
+				try {
+					// Otherwise try to get the IP address.
+					this.host = InetAddress.getLocalHost().getHostAddress();
+				} catch (UnknownHostException e2) {
+					// Otherwise set localhost.
+					this.host = "localhost";
+				}
 			}
 		} else {
 			this.host = host;
