@@ -968,8 +968,19 @@ Request::Request(std::unique_ptr<RequestImpl> & impl) :
 Request::~Request() {
 }
 
-void Request::setTimeout(int value, bool linger) {
-	m_impl->setTimeout(value, linger);
+std::string Request::getObjectId() const {
+
+	// Local id is missing.
+	return "request:"
+		+ m_impl->m_requesterApplicationName
+		+ "."
+		+ to_string(m_impl->m_requesterApplicationId)
+		+ "@"
+		+ m_impl->m_requesterServerEndpoint;
+}
+
+void Request::setTimeout(int value) {
+	m_impl->setTimeout(value);
 }
 
 const std::string& Request::getBinary() const {
@@ -988,12 +999,12 @@ const std::string& Request::getSecondBinaryPart() const {
 	return m_impl->m_message2;
 }
 
-void Request::replyBinary(const std::string& response) {
-	m_impl->replyBinary(response);
+bool Request::replyBinary(const std::string& response) {
+	return m_impl->replyBinary(response);
 }
 
-void Request::reply(const std::string& response) {
-	m_impl->reply(response);
+bool Request::reply(const std::string& response) {
+	return m_impl->reply(response);
 }
 
 std::unique_ptr<Instance> Request::connectToRequester() {
