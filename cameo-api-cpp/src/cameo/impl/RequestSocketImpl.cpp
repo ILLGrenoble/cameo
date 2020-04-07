@@ -74,11 +74,6 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
-
-			int lingerValue = 0;
-			m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
-			cout << "linger 0" << endl;
-
 			// Timeout occurred.
 			throw ConnectionTimeout();
 		}

@@ -392,14 +392,16 @@ class Request {
 public:
 	~Request();
 
+	std::string getObjectId() const;
+
 	const std::string& getBinary() const;
 	std::string get() const;
 	const std::string& getSecondBinaryPart() const;
 
-	void setTimeout(int value, bool linger = true);
+	void setTimeout(int value);
 
-	void replyBinary(const std::string& response);
-	void reply(const std::string& response);
+	bool replyBinary(const std::string& response);
+	bool reply(const std::string& response);
 
 	std::unique_ptr<Instance> connectToRequester();
 
