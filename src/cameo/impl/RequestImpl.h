@@ -33,7 +33,7 @@ public:
 	RequestImpl(application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort);
 	~RequestImpl();
 
-	void setTimeout(int value);
+	void setTimeout(int value, bool linger);
 
 	void replyBinary(const std::string& response);
 	void reply(const std::string& response);
@@ -46,6 +46,7 @@ public:
 	int m_requesterApplicationId;
 	std::string m_requesterServerEndpoint;
 	int m_timeout;
+	bool m_linger;
 };
 
 }
