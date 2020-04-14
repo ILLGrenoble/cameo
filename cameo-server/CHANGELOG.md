@@ -1,3 +1,9 @@
+0.1.6
+-----
+
+* Refined endpoint definition: if hostname is not available, try the IP address.
+* Reviewed the log in cameo.log: do not log FINE messages.
+
 0.1.5
 -----
 

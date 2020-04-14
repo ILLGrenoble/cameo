@@ -1,3 +1,8 @@
+0.3.0
+-----
+
+* Implemented timeout in Request. Refined the timeout possibilities in RequestSocketImpl.
+
 0.2.2
 -----
 
