@@ -6,14 +6,14 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server-jzmq</artifactId>
-	<version>0.1.6</version>
+	<version>0.1.7</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-server</artifactId>
-			<version>0.1.6</version>
+			<version>0.1.7</version>
 			<exclusions>
 				<exclusion>
 					<groupId>fr.ill.ics</groupId>

@@ -1,3 +1,8 @@
+0.1.7
+-----
+
+* If host="IP" the IP address is used for the endpoint.
+
 0.1.6
 -----
 

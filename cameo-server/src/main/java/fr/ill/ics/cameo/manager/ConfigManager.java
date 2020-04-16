@@ -176,6 +176,15 @@ public final class ConfigManager {
 					this.host = "localhost";
 				}
 			}
+		// If host is IP
+		} else if (host.equals("IP")){
+			try {
+				// Try to get the IP address.
+				this.host = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e) {
+				// Otherwise set localhost.
+				this.host = "localhost";
+			}
 		} else {
 			this.host = host;
 		}
