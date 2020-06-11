@@ -1,0 +1,52 @@
+0.3.0
+-----
+
+* Implemented timeout in Request. Refined the timeout possibilities in RequestSocketImpl.
+
+0.2.2
+-----
+
+* Only one EventStreamSocket is created for a Server. An EventThread is forwarding the Event objects to the EventListener objects.
+* The zmq sockets are kept alive and not created for each request.
+
+0.2.1
+-----
+
+* Added access to the output stream of an application.
+* Added Instance.getLastState() and Instance.getActualState() functions.
+
+0.2.0
+-----
+
+* Migration to C++11.
+
+0.1.4
+-----
+
+* Adapted to gcc 6.3.0.
+
+0.1.3
+-----
+
+0.1.2
+-----
+
+* Enabled to define more than one requester on the same responder in one Application instance.
+* Removed zmq.hpp as it should be installed.
+* Corrected some memory leaks by changing the return type of tryRequestWithOnePartReply.
+* Better follow the unmanaged applications.
+
+0.1.0
+-----
+
+* Corrected Server::isAvailable implementation when timeout is set.
+* Implemented connection checker by creating a ConnectionChecker class.
+* Removed StateException, setRunning now returns a boolean.
+* Added InvalidArgumentException to replace invalid_argument exception.
+* Added SocketException thrown when the Server connect fails.
+* Renamed ERROR into FAILURE.
+* Implementation of unmanaged applications.
+* Implemented This static instance without pointer so that it is not necessary to call This::terminate() except if the destruction of the static instance is not automatic.
+* Added two binary parts message for publisher/subscriber and requester/responder.
+* Refined internal requester port name by adding the responder id.
+* Added connectToRequester function to Request.
