@@ -17,3 +17,14 @@ yum install -y $pkgs
 
 
 ### Ubuntu XXX
+
+
+
+## Compilation instructions
+
+```
+mkdir build/
+cd build/
+cmake ..
+cmake --build .
+```
