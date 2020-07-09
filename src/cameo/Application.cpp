@@ -1012,6 +1012,9 @@ std::unique_ptr<Instance> Request::connectToRequester() {
 	// Instantiate the requester server if it does not exist.
 	if (m_requesterServer.get() == nullptr) {
 		m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint));
+
+		// The server inherits the timeout.
+		m_requesterServer->setTimeout(m_impl->m_timeout);
 	}
 
 	// Connect and find the instance.

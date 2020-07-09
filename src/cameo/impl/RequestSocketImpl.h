@@ -29,7 +29,7 @@ public:
 	RequestSocketImpl(zmq::socket_t * socket, int timeout = 0);
 	virtual ~RequestSocketImpl();
 
-	void setLinger(bool linger);
+	void setTimeout(int timeout);
 
 	std::unique_ptr<zmq::message_t> request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout = -1);
 

@@ -26,17 +26,24 @@ using namespace std;
 namespace cameo {
 
 RequestSocketImpl::RequestSocketImpl(zmq::socket_t * socket, int timeout) :
-	m_socket(socket), m_timeout(timeout) {
+	m_socket(socket) {
+
+	setTimeout(timeout);
 }
 
 RequestSocketImpl::~RequestSocketImpl() {
 }
 
-void RequestSocketImpl::setLinger(bool linger) {
-	// Set the value only in the case linger=false.
-	// This value has effect when terminating the context.
-	if (!linger) {
-		int lingerValue = 0;
+void RequestSocketImpl::setTimeout(int timeout) {
+	m_timeout = timeout;
+
+	// Set the linger in case of timeout.
+	// If not, the context can block indefinitely.
+	// Does the value 100 can lead to a side-effect? A too small value like 1 has some side-effect.
+	// After some tests, the value seems reasonable.
+	// If a Server instance is not reachable, the context that contains the message in timeout will block during this linger period.
+	if (m_timeout > 0) {
+		int lingerValue = 100;
 		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
 	}
 }
