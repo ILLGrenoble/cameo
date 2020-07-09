@@ -56,7 +56,7 @@ void Services::init() {
 
 void Services::initRequestSocket() {
 	// Create the request socket. The server endpoint must have been initialized.
-	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint));
+	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint, m_impl->m_timeout));
 }
 
 std::vector<std::string> Services::split(const std::string& info) {
@@ -77,6 +77,10 @@ std::vector<std::string> Services::split(const std::string& info) {
 
 void Services::setTimeout(int timeout) {
 	m_impl->setTimeout(timeout);
+
+	if (m_requestSocket.get() != nullptr) {
+		m_requestSocket->setTimeout(timeout);
+	}
 }
 
 int Services::getTimeout() const {
