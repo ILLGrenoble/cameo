@@ -29,9 +29,9 @@ namespace cameo {
 RequestSocketImpl::RequestSocketImpl(ServicesImpl * services, const std::string& endpoint, int timeout) :
 	m_services(services), m_endpoint(endpoint) {
 
-	setTimeout(timeout);
-
 	init();
+
+	setTimeout(timeout);
 }
 
 RequestSocketImpl::~RequestSocketImpl() {
@@ -40,6 +40,11 @@ RequestSocketImpl::~RequestSocketImpl() {
 void RequestSocketImpl::setTimeout(int timeout) {
 	m_timeout = timeout;
 
+	// Apply the linger to the socket.
+	setSocketLinger();
+}
+
+void RequestSocketImpl::setSocketLinger() {
 	// Set the linger in case of timeout.
 	// If not, the context can block indefinitely.
 	// Does the value 100 can lead to a side-effect? A too small value like 1 has some side-effect.
@@ -53,8 +58,12 @@ void RequestSocketImpl::setTimeout(int timeout) {
 
 void RequestSocketImpl::init() {
 
+	// Reset if the socket is null.
 	if (m_socket.get() == nullptr) {
 		m_socket.reset(m_services->createRequestSocket(m_endpoint));
+
+		// Apply the linger to the socket.
+		setSocketLinger();
 	}
 }
 
@@ -98,7 +107,7 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
-			// Reset the socket.
+			// Reset the socket. It is necessary if a new request is done.
 			reset();
 
 			// Timeout occurred.
