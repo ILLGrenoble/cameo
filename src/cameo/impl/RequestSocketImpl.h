@@ -23,16 +23,23 @@
 
 namespace cameo {
 
+class ServicesImpl;
+
 class RequestSocketImpl {
 
 public:
-	RequestSocketImpl(zmq::socket_t * socket, int timeout = 0);
+	RequestSocketImpl(ServicesImpl * services, const std::string& endpoint, int timeout = 0);
 	virtual ~RequestSocketImpl();
 
 	void setTimeout(int timeout);
 
+	void init();
+	void reset();
+
 	std::unique_ptr<zmq::message_t> request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout = -1);
 
+	ServicesImpl * m_services;
+	std::string m_endpoint;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;
 };
