@@ -172,11 +172,11 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port)
 }
 
 std::unique_ptr<RequestSocketImpl> Services::createRequestSocket(const std::string& endpoint) {
-	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl->createRequestSocket(endpoint), m_impl->m_timeout));
+	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, m_impl->m_timeout));
 }
 
 std::unique_ptr<RequestSocketImpl> Services::createRequestSocket(const std::string& endpoint, int timeout) {
-	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl->createRequestSocket(endpoint), timeout));
+	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, timeout));
 }
 
 }
