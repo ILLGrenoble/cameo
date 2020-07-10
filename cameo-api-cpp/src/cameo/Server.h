@@ -48,7 +48,7 @@ class Server : private Services {
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
-	Server(const std::string& endpoint);
+	Server(const std::string& endpoint, int timeoutMs = 0);
 	~Server();
 
 	void setTimeout(int timeoutMs);
