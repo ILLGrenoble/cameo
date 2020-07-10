@@ -30,7 +30,7 @@ using namespace std;
 
 namespace cameo {
 
-Server::Server(const std::string& endpoint) :
+Server::Server(const std::string& endpoint, int timeoutMs) :
 	Services() {
 
 	Services::init();
@@ -47,13 +47,26 @@ Server::Server(const std::string& endpoint) :
 	is >> m_port;
 	m_serverEndpoint = m_url + ":" + port;
 
+	// Set the timeout.
+	Services::setTimeout(timeoutMs);
+
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
-	// Start the event thread.
-	unique_ptr<EventStreamSocket> socket = openEventStream();
-	m_eventThread.reset(new EventThread(this, socket));
-	m_eventThread->start();
+	// Manage the ConnectionTimeout exception that can occur.
+	try {
+		// Start the event thread.
+		unique_ptr<EventStreamSocket> socket = openEventStream();
+		m_eventThread.reset(new EventThread(this, socket));
+		m_eventThread->start();
+	}
+	catch (const std::exception& e) {
+		cout << "event error " << e.what() << endl;
+	}
+	catch (...) {
+		// ...
+	}
+
 }
 
 Server::~Server() {
