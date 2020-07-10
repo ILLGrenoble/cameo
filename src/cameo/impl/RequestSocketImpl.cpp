@@ -15,6 +15,7 @@
  */
 
 #include "RequestSocketImpl.h"
+#include "ServicesImpl.h"
 #include "../ConnectionTimeout.h"
 #include <iostream>
 
@@ -25,10 +26,12 @@ using namespace std;
 
 namespace cameo {
 
-RequestSocketImpl::RequestSocketImpl(zmq::socket_t * socket, int timeout) :
-	m_socket(socket) {
+RequestSocketImpl::RequestSocketImpl(ServicesImpl * services, const std::string& endpoint, int timeout) :
+	m_services(services), m_endpoint(endpoint) {
 
 	setTimeout(timeout);
+
+	init();
 }
 
 RequestSocketImpl::~RequestSocketImpl() {
@@ -48,7 +51,21 @@ void RequestSocketImpl::setTimeout(int timeout) {
 	}
 }
 
+void RequestSocketImpl::init() {
+
+	if (m_socket.get() == nullptr) {
+		m_socket.reset(m_services->createRequestSocket(m_endpoint));
+	}
+}
+
+void RequestSocketImpl::reset() {
+	m_socket.reset();
+}
+
 std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout) {
+
+	// Init if not already done or if a timeout occurred.
+	init();
 
 	// Prepare the request parts.
 	int requestTypeSize = requestTypePart.length();
@@ -81,6 +98,9 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
+			// Reset the socket.
+			//reset();
+
 			// Timeout occurred.
 			throw ConnectionTimeout();
 		}
