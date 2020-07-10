@@ -406,27 +406,21 @@ std::string ServicesImpl::createOutputRequest(const std::string& name) const {
 
 bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 
-	cout << 1 << endl;
-
 	string requestTypePart = createRequestType(PROTO_INIT);
 	string requestDataPart = createInitRequest();
-
-	cout << 2 << endl;
 
 	try {
 		unique_ptr<zmq::message_t> reply = socket->request(requestTypePart, requestDataPart, timeout);
 
-		cout << 3 << endl;
-
 		if (reply.get() != nullptr) {
 			return true;
 		}
-
-	} catch (const ConnectionTimeout&) {
+	}
+	catch (const ConnectionTimeout&) {
 		// The server is not accessible.
-		cout << 4 << endl;
-	} catch (const std::exception& e) {
-		cout << "error " << e.what() << endl;
+	}
+	catch (...) {
+		// Should not happen.
 	}
 
 	return false;

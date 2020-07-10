@@ -32,6 +32,7 @@ public:
 	virtual ~RequestSocketImpl();
 
 	void setTimeout(int timeout);
+	void setSocketLinger();
 
 	void init();
 	void reset();
