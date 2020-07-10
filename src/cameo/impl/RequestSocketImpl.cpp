@@ -99,7 +99,7 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
 			// Reset the socket.
-			//reset();
+			reset();
 
 			// Timeout occurred.
 			throw ConnectionTimeout();
