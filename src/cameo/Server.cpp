@@ -60,13 +60,9 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 		m_eventThread.reset(new EventThread(this, socket));
 		m_eventThread->start();
 	}
-	catch (const std::exception& e) {
-		cout << "event error " << e.what() << endl;
-	}
 	catch (...) {
 		// ...
 	}
-
 }
 
 Server::~Server() {
