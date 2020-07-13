@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-messages</artifactId>
-	<version>0.1.4</version>
+	<version>0.1.5</version>
 
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
@@ -20,8 +20,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-lite</artifactId>
-			<version>3.0.1</version>
+			<artifactId>protobuf-javalite</artifactId>
+			<version>3.12.1</version>
 		</dependency>
 	</dependencies>
 
@@ -39,7 +39,7 @@
 							<target>
 								<echo message="Generating Messages.java" />
 								<exec executable="protoc">
-									<arg line="-Isrc/main/proto --java_out=src/main/java src/main/proto/Messages.proto" />
+									<arg line="-Isrc/main/proto --java_out=lite:src/main/java src/main/proto/Messages.proto" />
 								</exec>
 							</target>
 						</configuration>
