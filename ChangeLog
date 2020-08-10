@@ -1,3 +1,8 @@
+0.3.2
+-----
+
+* Added Request::getRequesterEndpoint() function.
+
 0.3.1
 -----
 
