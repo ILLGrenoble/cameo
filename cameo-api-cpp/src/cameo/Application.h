@@ -393,6 +393,7 @@ public:
 	~Request();
 
 	std::string getObjectId() const;
+	std::string getRequesterEndpoint() const;
 
 	const std::string& getBinary() const;
 	std::string get() const;
