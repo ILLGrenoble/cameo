@@ -979,6 +979,10 @@ std::string Request::getObjectId() const {
 		+ m_impl->m_requesterServerEndpoint;
 }
 
+std::string Request::getRequesterEndpoint() const {
+	return m_impl->m_requesterServerEndpoint;
+}
+
 void Request::setTimeout(int value) {
 	m_impl->setTimeout(value);
 }
