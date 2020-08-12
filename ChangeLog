@@ -1,3 +1,8 @@
+0.3.3
+-----
+
+* In Request::connectToRequester(), create Server with inherited timeout.
+
 0.3.2
 -----
 
