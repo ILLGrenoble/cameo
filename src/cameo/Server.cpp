@@ -15,16 +15,16 @@
  */
 
 #include "Server.h"
-
-#include <iostream>
-#include <sstream>
 #include "Application.h"
 #include "ConnectionChecker.h"
 #include "impl/ServicesImpl.h"
-#include "ProtoType.h"
 #include "EventThread.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
+#include "message/JSON.h"
+#include "message/Message.h"
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -120,12 +120,13 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, Op
 
 int Server::getStreamPort(const std::string& name) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_OUTPUT), m_impl->createOutputRequest(name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputRequest(name));
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	return requestResponse.value();
+	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
@@ -146,18 +147,21 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			instance->setOutputStreamSocket(socket);
 		}
 
-		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_START), m_impl->createStartRequest(name, args, application::This::getReference()));
+		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getReference()));
 
-		proto::RequestResponse requestResponse;
-		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+		// Get the JSON response.
+		json::Object response;
+		json::parse(response, reply.get());
 
-		if (requestResponse.value() == -1) {
-			instance->setErrorMessage(requestResponse.message());
-		} else {
-			instance->setId(requestResponse.value());
+		int value = response[message::RequestResponse::VALUE].GetInt();
+		if (value == -1) {
+			instance->setErrorMessage(response[message::RequestResponse::MESSAGE].GetString());
 		}
-
-	} catch (const ConnectionTimeout& e) {
+		else {
+			instance->setId(value);
+		}
+	}
+	catch (const ConnectionTimeout& e) {
 		instance->setErrorMessage(e.what());
 	}
 
@@ -166,23 +170,25 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 
 Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 
-	string requestTypePart;
-	string requestDataPart;
+	string request;
 
 	if (immediately) {
-		requestTypePart = m_impl->createRequestType(PROTO_KILL);
-		requestDataPart = m_impl->createKillRequest(id);
-	} else {
-		requestTypePart = m_impl->createRequestType(PROTO_STOP);
-		requestDataPart = m_impl->createStopRequest(id);
+		request = m_impl->createKillRequest(id);
+	}
+	else {
+		request = m_impl->createStopRequest(id);
 	}
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(request);
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	return Response(requestResponse.value(), requestResponse.message());
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	string message = response[message::RequestResponse::MESSAGE].GetString();
+
+	return Response(value, message);
 }
 
 application::InstanceArray Server::connectAll(const std::string& name, Option options) {
@@ -191,52 +197,58 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 
 	application::InstanceArray instances;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_CONNECT), m_impl->createConnectRequest(name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectRequest(name));
 
-	proto::ApplicationInfoListResponse response;
-	response.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	// allocate the array
-	instances.allocate(response.applicationinfo_size());
+	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfo.GetArray();
+	size_t size = array.Size();
+
+	// Allocate the array.
+	instances.allocate(size);
 
 	int aliveInstancesCount = 0;
 
-	for (int i = 0; i < response.applicationinfo_size(); ++i) {
-		proto::ApplicationInfo info = response.applicationinfo(i);
+	for (int i = 0; i < size; ++i) {
+		json::Value::Object info = array[i].GetObject();
 
 		unique_ptr<application::Instance> instance = makeInstance();
 
 		// Set the name and register the instance as event listener.
-		instance->setName(info.name());
+		string name = info[message::ApplicationInfo::NAME].GetString();
+		instance->setName(name);
 		registerEventListener(instance.get());
 
-		int applicationId = info.id();
+		int applicationId = info[message::ApplicationInfo::ID].GetInt();
 
 		// test if the application is still alive otherwise we could have missed a status message
 		if (isAlive(applicationId)) {
 			aliveInstancesCount++;
 
-			// we connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly
+			// We connect to the stream port before starting the application
+			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
 			if (outputStream) {
-				unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(info.name()));
+				unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
 				instance->setOutputStreamSocket(socket);
 			}
 
 			instance->setId(applicationId);
-			instance->setInitialState(info.applicationstate());
-			instance->setPastStates(info.pastapplicationstates());
+			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
+			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
 			instances.m_array[i] = std::move(instance);
 		}
 	}
 
-	// Copy the instances alive
+	// Copy the alive instances.
 	application::InstanceArray aliveInstances;
 	aliveInstances.allocate(aliveInstancesCount);
 
 	int j = 0;
-	for (int i = 0; i < response.applicationinfo_size(); ++i) {
+	for (int i = 0; i < size; ++i) {
 
 		if (instances.m_array[i].get() != 0) {
 			aliveInstances[j] = std::move(instances.m_array[i]);
@@ -271,58 +283,84 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_ISALIVE), m_impl->createIsAliveRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createIsAliveRequest(id));
 
-	proto::IsAliveResponse isAliveResponse;
-	isAliveResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	return isAliveResponse.isalive();
+	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
 
 std::vector<application::Configuration> Server::getApplicationConfigurations() const {
 
-	vector<application::Configuration> configVector;
+	vector<application::Configuration> configs;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_ALLAVAILABLE), m_impl->createAllAvailableRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAllAvailableRequest());
 
-	proto::AllAvailableResponse allAvailableResponse;
-	allAvailableResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	for (int i = 0; i < allAvailableResponse.applicationconfig_size(); ++i) {
-		proto::ApplicationConfig config = allAvailableResponse.applicationconfig(i);
+	json::Value& applicationConfigs = response[message::AllAvailableResponse::APPLICATION_CONFIG];
+	json::Value::Array array = applicationConfigs.GetArray();
+	size_t size = array.Size();
 
-		application::Configuration applicationConfig(config.name(),
-				config.description(),
-				config.runssingle(),
-				config.restart(),
-				config.startingtime(),
-				config.retries(),
-				config.stoppingtime());
+	for (int i = 0; i < size; ++i) {
+		json::Value::Object config = array[i].GetObject();
 
-		configVector.push_back(applicationConfig);
+		string name = config[message::ApplicationConfig::NAME].GetString();
+		string description = config[message::ApplicationConfig::DESCRIPTION].GetString();
+		bool runsSingle = config[message::ApplicationConfig::RUNS_SINGLE].GetBool();
+		bool restart = config[message::ApplicationConfig::RESTART].GetBool();
+		int startingTime = config[message::ApplicationConfig::STARTING_TIME].GetInt();
+		int retries = config[message::ApplicationConfig::RETRIES].GetInt();
+		int stoppingTime = config[message::ApplicationConfig::STOPPING_TIME].GetInt();
+
+		application::Configuration applicationConfig(name,
+				description,
+				runsSingle,
+				restart,
+				startingTime,
+				retries,
+				stoppingTime);
+
+		configs.push_back(applicationConfig);
 	}
 
-	return configVector;
+	return configs;
 }
 
 std::vector<application::Info> Server::getApplicationInfos() const {
 
 	vector<application::Info> infos;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_SHOWALL), m_impl->createShowAllRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createShowAllRequest());
 
-	proto::ApplicationInfoListResponse response;
-	response.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	for (int i = 0; i < response.applicationinfo_size(); ++i) {
-		proto::ApplicationInfo info = response.applicationinfo(i);
+	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfo.GetArray();
+	size_t size = array.Size();
 
-		application::Info applicationInfo(info.name(),
-						info.id(),
-						info.pid(),
-						info.applicationstate(),
-						info.pastapplicationstates(),
-						info.args());
+	for (int i = 0; i < size; ++i) {
+		json::Value::Object info = array[i].GetObject();
+
+		string name = info[message::ApplicationInfo::NAME].GetString();
+		int id = info[message::ApplicationInfo::ID].GetInt();
+		int pid = info[message::ApplicationInfo::PID].GetInt();
+		application::State state = info[message::ApplicationInfo::APPLICATION_STATE].GetInt();
+		application::State pastStates = info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt();
+		string args = info[message::ApplicationInfo::ARGS].GetString();
+
+		application::Info applicationInfo(name,
+						id,
+						pid,
+						state,
+						pastStates,
+						args);
 
 		infos.push_back(applicationInfo);
 	}
@@ -332,17 +370,17 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 std::vector<application::Info> Server::getApplicationInfos(const std::string& name) const {
 
-	vector<application::Info> allInfoVector = getApplicationInfos();
-	vector<application::Info> infoVector;
+	vector<application::Info> allInfos = getApplicationInfos();
+	vector<application::Info> infos;
 
-	for (vector<application::Info>::const_iterator i = allInfoVector.begin(); i != allInfoVector.end(); ++i) {
+	for (vector<application::Info>::const_iterator i = allInfos.begin(); i != allInfos.end(); ++i) {
 		application::Info const & info = *i;
 		if (info.getName() == name) {
-			infoVector.push_back(info);
+			infos.push_back(info);
 		}
 	}
 
-	return infoVector;
+	return infos;
 }
 
 std::unique_ptr<EventStreamSocket> Server::openEventStream() {
@@ -351,18 +389,19 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_CONNECTPUBLISHER), m_impl->createConnectPublisherRequest(id, publisherName));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectPublisherRequest(id, publisherName));
 
-	proto::PublisherResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
 
-	int publisherPort = requestResponse.publisherport();
+	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {
-		throw SubscriberCreationException(requestResponse.message());
+		throw SubscriberCreationException(response[message::PublisherResponse::MESSAGE].GetString());
 	}
 
-	int synchronizerPort = requestResponse.synchronizerport();
-	int numberOfSubscribers = requestResponse.numberofsubscribers();
+	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
+	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
 	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint, m_serverStatusEndpoint));
 	subscriber->init();

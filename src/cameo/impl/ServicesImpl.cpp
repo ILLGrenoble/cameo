@@ -15,12 +15,13 @@
  */
 
 #include "ServicesImpl.h"
-
-#include <iostream>
-#include <sstream>
 #include "../SocketException.h"
 #include "../ConnectionTimeout.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
 #include "RequestSocketImpl.h"
+#include <iostream>
+#include <sstream>
 
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
@@ -60,147 +61,335 @@ int ServicesImpl::getTimeout() const {
 	return m_timeout;
 }
 
-/**
- * convert enum type into Proto type
- */
-proto::MessageType_Type ServicesImpl::convertToProtoType(ProtoType type) const {
-	if (type == PROTO_INIT) {
-		return proto::MessageType_Type_INIT;
-	} else if (type == PROTO_ISALIVE) {
-		return proto::MessageType_Type_ISALIVE;
-	} else if (type == PROTO_SENDPARAMETERS) {
-		return proto::MessageType_Type_SENDPARAMETERS;
-	} else if (type == PROTO_SHOW) {
-		return proto::MessageType_Type_SHOW;
-	} else if (type == PROTO_STATUS) {
-		return proto::MessageType_Type_STATUS;
-	} else if (type == PROTO_SHOWALL) {
-		return proto::MessageType_Type_SHOWALL;
-	} else if (type == PROTO_START) {
-		return proto::MessageType_Type_START;
-	} else if (type == PROTO_STOP) {
-		return proto::MessageType_Type_STOP;
-	} else if (type == PROTO_KILL) {
-		return proto::MessageType_Type_KILL;
-	} else if (type == PROTO_CONNECT) {
-		return proto::MessageType_Type_CONNECT;
-	} else if (type == PROTO_ALLAVAILABLE) {
-		return proto::MessageType_Type_ALLAVAILABLE;
-	} else if (type == PROTO_SETSTATUS) {
-		return proto::MessageType_Type_SETSTATUS;
-	} else if (type == PROTO_GETSTATUS) {
-		return proto::MessageType_Type_GETSTATUS;
-	} else if (type == PROTO_SETRESULT) {
-		return proto::MessageType_Type_SETRESULT;
-	} else if (type == PROTO_CREATEPUBLISHER) {
-		return proto::MessageType_Type_CREATEPUBLISHER;
-	} else if (type == PROTO_CONNECTPUBLISHER) {
-		return proto::MessageType_Type_CONNECTPUBLISHER;
-	} else if (type == PROTO_SUBSCRIBEPUBLISHER) {
-		return proto::MessageType_Type_SUBSCRIBEPUBLISHER;
-	} else if (type == PROTO_TERMINATEPUBLISHER) {
-		return proto::MessageType_Type_TERMINATEPUBLISHER;
-	} else if (type == PROTO_REQUESTPORT) {
-		return proto::MessageType_Type_REQUESTPORT;
-	} else if (type == PROTO_CONNECTPORT) {
-		return proto::MessageType_Type_CONNECTPORT;
-	} else if (type == PROTO_REMOVEPORT) {
-		return proto::MessageType_Type_REMOVEPORT;
-	} else if (type == PROTO_REQUEST) {
-		return proto::MessageType_Type_REQUEST;
-	} else if (type == PROTO_RESPONSE) {
-		return proto::MessageType_Type_RESPONSE;
-	} else if (type == PROTO_CANCEL) {
-		return proto::MessageType_Type_CANCEL;
-	} else if (type == PROTO_STARTEDUNMANAGED) {
-		return proto::MessageType_Type_STARTEDUNMANAGED;
-	} else if (type == PROTO_TERMINATEDUNMANAGED) {
-		return proto::MessageType_Type_TERMINATEDUNMANAGED;
-	} else if (type == PROTO_OUTPUT) {
-		return proto::MessageType_Type_OUTPUT;
-	} else {
-		cerr << "unsupported proto type" << endl;
-		return proto::MessageType_Type(0);
-	}
+std::string ServicesImpl::createSyncRequest() const {
 
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SYNC);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createIsAliveRequest(int id) const {
-	proto::IsAliveCommand isAliveCommand;
-	isAliveCommand.set_id(id);
-	std::string strRequestoIsAlive;
-	isAliveCommand.SerializeToString(&strRequestoIsAlive);
-	return strRequestoIsAlive;
-}
 
-std::string ServicesImpl::createInitRequest() const {
-	std::string strRequestData;
-	proto::Init initType;
-	initType.SerializeToString(&strRequestData);
-	return strRequestData;
-}
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::IS_ALIVE);
 
-std::string ServicesImpl::createRequestType(ProtoType type) const {
-	proto::MessageType messageType;
-	messageType.set_type(convertToProtoType(type));
-	std::string strRequestType;
-	messageType.SerializeToString(&strRequestType);
-	return strRequestType;
+	request.pushKey(message::IsAliveRequest::ID);
+	request.pushInt(id);
 
+	return request.toString();
 }
 
 std::string ServicesImpl::createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const {
-	proto::StartCommand startCommand;
-	startCommand.set_name(name);
-	for (unsigned int j = 0; j < args.size(); j++) {
-		startCommand.add_args(args[j]);
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::START);
+
+	request.pushKey(message::StartRequest::NAME);
+	request.pushString(name);
+
+	request.pushKey(message::StartRequest::ARGS);
+	request.startArray();
+	for (auto& a : args) {
+		request.pushString(a);
 	}
-	startCommand.set_instancereference(instanceReference);
-	std::string strRequestStart;
-	startCommand.SerializeToString(&strRequestStart);
-	return strRequestStart;
+	request.endArray();
+
+	request.pushKey(message::StartRequest::INSTANCE_REFERENCE);
+	request.pushString(instanceReference);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createStopRequest(int id) const {
-	proto::StopCommand stopCommand;
-	stopCommand.set_id(id);
-	std::string strRequestStop;
-	stopCommand.SerializeToString(&strRequestStop);
-	return strRequestStop;
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::STOP);
+
+	request.pushKey(message::StopRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createKillRequest(int id) const {
-	proto::KillCommand killCommand;
-	killCommand.set_id(id);
-	std::string strRequestKill;
-	killCommand.SerializeToString(&strRequestKill);
-	return strRequestKill;
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::KILL);
+
+	request.pushKey(message::KillRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createConnectRequest(const std::string& name) const {
-	proto::ConnectCommand connectCommand;
-	connectCommand.set_name(name);
-	std::string strConnect;
-	connectCommand.SerializeToString(&strConnect);
-	return strConnect;
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CONNECT);
+
+	request.pushKey(message::ConnectRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createAllAvailableRequest() const {
-	proto::AllAvailableCommand allAvailableCommand;
-	std::string strRequestAllAvailable;
-	allAvailableCommand.SerializeToString(&strRequestAllAvailable);
-	return strRequestAllAvailable;
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::ALL_AVAILABLE);
+
+	return request.toString();
 }
 
 std::string ServicesImpl::createShowAllRequest() const {
-	proto::ShowAllCommand showAllCommand;
-	std::string strRequestShowAll;
-	showAllCommand.SerializeToString(&strRequestShowAll);
-	return strRequestShowAll;
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SHOW_ALL);
+
+	return request.toString();
 }
 
-std::string ServicesImpl::createShowStatusRequest() const {
-	return "status";
+std::string ServicesImpl::createStreamStatusRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::STATUS);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createShowStreamRequest(int id) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SHOW);
+
+	request.pushKey(message::ShowStreamRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createSetStatusRequest(int id, int32_t state) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SET_STATUS);
+
+	request.pushKey(message::SetStatusRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::SetStatusRequest::APPLICATION_STATE);
+	request.pushInt(state);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createGetStatusRequest(int id) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::GET_STATUS);
+
+	request.pushKey(message::GetStatusRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createSetResultRequest(int id) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SET_RESULT);
+
+	request.pushKey(message::SetResultRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createSubscribePublisherRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SUBSCRIBE_PUBLISHER);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CREATE_PUBLISHER);
+
+	request.pushKey(message::CreatePublisherRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::CreatePublisherRequest::NAME);
+	request.pushString(name);
+
+	request.pushKey(message::CreatePublisherRequest::NUMBER_OF_SUBSCRIBERS);
+	request.pushInt(numberOfSubscribers);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createConnectPublisherRequest(int id, const std::string& publisherName) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CONNECT_PUBLISHER);
+
+	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
+	request.pushInt(id);
+
+	request.pushKey(message::ConnectPublisherRequest::PUBLISHER_NAME);
+	request.pushString(publisherName);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::TERMINATE_PUBLISHER);
+
+	request.pushKey(message::TerminatePublisherRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::TerminatePublisherRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createRequestPortRequest(int id, const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REQUEST_PORT);
+
+	request.pushKey(message::RequestPortRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::RequestPortRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createConnectPortRequest(int id, const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CONNECT_PORT);
+
+	request.pushKey(message::ConnectPortRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::ConnectPortRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createRemovePortRequest(int id, const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REMOVE_PORT);
+
+	request.pushKey(message::RemovePortRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::RemovePortRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
+
+	// Get the pid.
+	long pid = GET_PROCESS_PID();
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::STARTED_UNMANAGED);
+
+	request.pushKey(message::StartedUnmanagedRequest::NAME);
+	request.pushString(name);
+
+	request.pushKey(message::StartedUnmanagedRequest::PID);
+	request.pushInt64(pid);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::TERMINATED_UNMANAGED);
+
+	request.pushKey(message::TerminatedUnmanagedRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createOutputRequest(const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::OUTPUT);
+
+	request.pushKey(message::OutputRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createRequestResponse(int64_t value) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RESPONSE);
+
+	request.pushKey(message::RequestResponse::VALUE);
+	request.pushInt64(value);
+
+	request.pushKey(message::RequestResponse::MESSAGE);
+	request.pushString("");
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createRequestResponse(int64_t value, const std::string& message) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RESPONSE);
+
+	request.pushKey(message::RequestResponse::VALUE);
+	request.pushInt64(value);
+
+	request.pushKey(message::RequestResponse::MESSAGE);
+	request.pushString(message);
+
+	return request.toString();
 }
 
 zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
@@ -256,6 +445,10 @@ zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
 	zmq::socket_t* socket = new zmq::socket_t(m_context, ZMQ_REQ);
 
 	try {
+		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
+		int value = 0;
+		socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
+
 		// Connect to the endpoint.
 		socket->connect(endpoint.c_str());
 	}
@@ -266,151 +459,12 @@ zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
 	return socket;
 }
 
-std::string ServicesImpl::createShowStreamRequest(int id) const {
-	proto::ShowStreamCommand showStreamCommand;
-	showStreamCommand.set_id(id);
-	std::string strRequestShowStream;
-	showStreamCommand.SerializeToString(&strRequestShowStream);
-	return strRequestShowStream;
-}
-
-std::string ServicesImpl::createSetStatusRequest(int id, int32_t state) const {
-	proto::SetStatusCommand setStatusCommand;
-	setStatusCommand.set_id(id);
-	setStatusCommand.set_applicationstate(state);
-	std::string strSetStatus;
-	setStatusCommand.SerializeToString(&strSetStatus);
-
-	return strSetStatus;
-}
-
-std::string ServicesImpl::createGetStatusRequest(int id) const {
-	proto::GetStatusCommand getStatusCommand;
-	getStatusCommand.set_id(id);
-	std::string strGetStatus;
-	getStatusCommand.SerializeToString(&strGetStatus);
-
-	return strGetStatus;
-}
-
-std::string ServicesImpl::createSetResultRequest(int id, const std::string& data) const {
-	proto::SetResultCommand setResultCommand;
-	setResultCommand.set_id(id);
-	setResultCommand.set_data(data);
-	std::string strSetResult;
-	setResultCommand.SerializeToString(&strSetResult);
-
-	return strSetResult;
-}
-
-std::string ServicesImpl::createSubscribePublisherRequest() const {
-	proto::SubscribePublisherCommand subscribePublisherCommand;
-	std::string result;
-	subscribePublisherCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const {
-	proto::CreatePublisherCommand createPublisherCommand;
-	createPublisherCommand.set_id(id);
-	createPublisherCommand.set_name(name);
-	createPublisherCommand.set_numberofsubscribers(numberOfSubscribers);
-	std::string result;
-	createPublisherCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createConnectPublisherRequest(int id, const std::string& publisherName) const {
-	proto::ConnectPublisherCommand connectPublisherCommand;
-	connectPublisherCommand.set_applicationid(id);
-	connectPublisherCommand.set_publishername(publisherName);
-	std::string result;
-	connectPublisherCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::string& name) const {
-	proto::TerminatePublisherCommand terminatePublisherCommand;
-	terminatePublisherCommand.set_id(id);
-	terminatePublisherCommand.set_name(name);
-	std::string result;
-	terminatePublisherCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createRequestPortRequest(int id, const std::string& name) const {
-	proto::RequestPortCommand requestPortCommand;
-	requestPortCommand.set_id(id);
-	requestPortCommand.set_name(name);
-	std::string result;
-	requestPortCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createConnectPortRequest(int id, const std::string& name) const {
-	proto::ConnectPortCommand connectPortCommand;
-	connectPortCommand.set_id(id);
-	connectPortCommand.set_name(name);
-	std::string result;
-	connectPortCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createRemovePortRequest(int id, const std::string& name) const {
-	proto::RemovePortCommand removePortCommand;
-	removePortCommand.set_id(id);
-	removePortCommand.set_name(name);
-	std::string result;
-	removePortCommand.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
-
-	// Get the pid.
-	long pid = GET_PROCESS_PID();
-
-	proto::StartedUnmanagedCommand command;
-	command.set_name(name);
-	command.set_pid(pid);
-	std::string result;
-	command.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
-	proto::TerminatedUnmanagedCommand command;
-	command.set_id(id);
-	std::string result;
-	command.SerializeToString(&result);
-
-	return result;
-}
-
-std::string ServicesImpl::createOutputRequest(const std::string& name) const {
-	proto::OutputCommand command;
-	command.set_name(name);
-	std::string result;
-	command.SerializeToString(&result);
-
-	return result;
-}
-
 bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 
-	string requestTypePart = createRequestType(PROTO_INIT);
-	string requestDataPart = createInitRequest();
+	string request = createSyncRequest();
 
 	try {
-		unique_ptr<zmq::message_t> reply = socket->request(requestTypePart, requestDataPart, timeout);
+		unique_ptr<zmq::message_t> reply = socket->request(request, timeout);
 
 		if (reply.get() != nullptr) {
 			return true;
