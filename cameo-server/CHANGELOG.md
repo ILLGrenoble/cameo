@@ -1,3 +1,8 @@
+0.1.8
+-----
+
+* Cameo messages updated for protobuf.
+
 0.1.7
 -----
 
