@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 18/03/2020
+# Version 29/09/2020
 # defines CAMEO_CFLAGS, CAMEO_LDFLAGS, CAMEO_LIBS
 #
 AC_DEFUN([AC_CAMEO],
@@ -55,7 +55,7 @@ AC_DEFUN([AC_CAMEO],
                     
                 HAVE_CAMEO=1
                 LIBS="$cameo_save_LIBS"
-                CAMEO_LDFLAGS="$LIBZMQ_LDFLAGS $CAMEO_LIBS"
+                CAMEO_LDFLAGS="$CAMEO_LIBS $LIBZMQ_LDFLAGS"
                 CAMEO_LIBS="-lcameo $LIBZMQ_LIB -pthread"
             fi
 
