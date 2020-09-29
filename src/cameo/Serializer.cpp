@@ -15,125 +15,16 @@
  */
 
 #include "Serializer.h"
-#include "../proto/Messages.pb.h"
+#include <iostream>
 
 namespace cameo {
 
 void serialize(const std::string& data, std::string& result) {
-
-	// encode the data
-	proto::StringValue value;
-	value.set_value(data);
-
-	value.SerializeToString(&result);
-}
-
-void serialize(const int32_t* data, std::size_t size, std::string& result) {
-
-	// encode the data
-	proto::Int32Array array;
-
-	for (int i = 0; i < size; i++) {
-		array.add_value(data[i]);
-	}
-
-	array.SerializeToString(&result);
-}
-
-void serialize(const int64_t* data, std::size_t size, std::string& result) {
-
-	// encode the data
-	proto::Int64Array array;
-
-	for (int i = 0; i < size; i++) {
-		array.add_value(data[i]);
-	}
-
-	array.SerializeToString(&result);
-}
-
-void serialize(const float* data, std::size_t size, std::string& result) {
-
-	// encode the data
-	proto::Float32Array array;
-
-	for (int i = 0; i < size; i++) {
-		array.add_value(data[i]);
-	}
-
-	array.SerializeToString(&result);
-}
-
-void serialize(const double* data, std::size_t size, std::string& result) {
-
-	// encode the data
-	proto::Float64Array array;
-
-	for (int i = 0; i < size; i++) {
-		array.add_value(data[i]);
-	}
-
-	array.SerializeToString(&result);
+	result = data;
 }
 
 void parse(const std::string& data, std::string& result) {
-
-	proto::StringValue value;
-	value.ParseFromArray(data.c_str(), data.size());
-
-	result = value.value();
-}
-
-void parse(const std::string& data, std::vector<int32_t>& result) {
-
-	proto::Int32Array array;
-	array.ParseFromArray(data.c_str(), data.size());
-
-	size_t size = array.value_size();
-	result.resize(size);
-
-	for (int i = 0; i < size; i++) {
-		result[i] = array.value(i);
-	}
-}
-
-void parse(const std::string& data, std::vector<int64_t>& result) {
-
-	proto::Int64Array array;
-	array.ParseFromArray(data.c_str(), data.size());
-
-	size_t size = array.value_size();
-	result.resize(size);
-
-	for (int i = 0; i < size; i++) {
-		result[i] = array.value(i);
-	}
-}
-
-void parse(const std::string& data, std::vector<float>& result) {
-
-	proto::Float32Array array;
-	array.ParseFromArray(data.c_str(), data.size());
-
-	size_t size = array.value_size();
-	result.resize(size);
-
-	for (int i = 0; i < size; i++) {
-		result[i] = array.value(i);
-	}
-}
-
-void parse(const std::string& data, std::vector<double>& result) {
-
-	proto::Float64Array array;
-	array.ParseFromArray(data.c_str(), data.size());
-
-	size_t size = array.value_size();
-	result.resize(size);
-
-	for (int i = 0; i < size; i++) {
-		result[i] = array.value(i);
-	}
+	result = data;
 }
 
 }

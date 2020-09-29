@@ -20,6 +20,8 @@
 #include "ServicesImpl.h"
 #include "RequestImpl.h"
 #include "RequestSocketImpl.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
 #include <sstream>
 
 using namespace std;
@@ -51,12 +53,13 @@ void ResponderImpl::cancel() {
 	stringstream endpoint;
 	endpoint << m_application->getUrl() << ":" << m_responderPort;
 
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CANCEL);
+
 	// Create a request socket.
 	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
-	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), "cancel");
-
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	requestSocket->request(request.toString());
 }
 
 WaitingImpl * ResponderImpl::waiting() {
@@ -68,52 +71,54 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_responder->recv(message.get(), 0);
 
-	// multi-part message, first part is the type
-	proto::MessageType messageType;
-	messageType.ParseFromArray((*message).data(), (*message).size());
+	// Get the JSON request.
+	json::Object request;
+	json::parse(request, message.get());
 
-	if (message->more()) {
-		message.reset(new zmq::message_t);
-		m_responder->recv(message.get(), 0);
-
-	} else {
-		cerr << "unexpected number of frames, should be 2" << endl;
-		return unique_ptr<RequestImpl>(nullptr);
-	}
+	int type = request[message::TYPE].GetInt();
 
 	// Create the reply
 	string data = "OK";
 	size_t size = data.length();
 	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
-	memcpy((void *) reply->data(), data.c_str(), size);
+	memcpy(reply->data(), data.c_str(), size);
 
 	unique_ptr<RequestImpl> result;
 
-	if (messageType.type() == proto::MessageType_Type_REQUEST) {
+	if (type == message::REQUEST) {
 
-		// Parse the message
-		proto::Request messageRequest;
-		messageRequest.ParseFromArray((*message).data(), (*message).size());
+		string name = request[message::Request::APPLICATION_NAME].GetString();
+		int id = request[message::Request::APPLICATION_ID].GetInt();
+		string serverUrl = request[message::Request::SERVER_URL].GetString();
+		int serverPort = request[message::Request::SERVER_PORT].GetInt();
+		int requesterPort = request[message::Request::REQUESTER_PORT].GetInt();
 
-		// Create the request
+		// Get the second part for the message.
+		message.reset(new zmq::message_t);
+		m_responder->recv(message.get(), 0);
+		string message1(message->data<char>(), message->size());
+
+		// Create the request.
 		result = unique_ptr<RequestImpl>(new RequestImpl(m_application,
-				messageRequest.applicationname(),
-				messageRequest.applicationid(),
-				messageRequest.message(),
-				messageRequest.serverurl(),
-				messageRequest.serverport(),
-				messageRequest.requesterport()));
+				name,
+				id,
+				message1,
+				serverUrl,
+				serverPort,
+				requesterPort));
 
 		// Set message 2 if it exists.
-		if (messageRequest.has_message2()) {
-			result->m_message2 = messageRequest.message2();
+		if (message->more()) {
+			message.reset(new zmq::message_t);
+			m_responder->recv(message.get(), 0);
+			result->m_message2 = string(message->data<char>(), message->size());
 		}
-
-	} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
+	}
+	else if (type == message::CANCEL) {
 		m_canceled = true;
-
-	} else {
-		cerr << "unknown message type " << messageType.type() << endl;
+	}
+	else {
+		cerr << "Unknown message type " << type << endl;
 		m_responder->send(*message);
 	}
 

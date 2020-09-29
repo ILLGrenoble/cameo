@@ -137,10 +137,6 @@ public:
 	 */
 	static void setBinaryResult(const std::string& data);
 	static void setResult(const std::string& data);
-	static void setResult(const int32_t* data, std::size_t size);
-	static void setResult(const int64_t* data, std::size_t size);
-	static void setResult(const float* data, std::size_t size);
-	static void setResult(const double* data, std::size_t size);
 
 	/**
 	 * Connects to the starter application, i.e. the application which started this application.
@@ -229,10 +225,6 @@ public:
 
 	bool getBinaryResult(std::string& result);
 	bool getResult(std::string& result);
-	bool getResult(std::vector<int32_t>& result);
-	bool getResult(std::vector<int64_t>& result);
-	bool getResult(std::vector<float>& result);
-	bool getResult(std::vector<double>& result);
 
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
 
@@ -310,10 +302,6 @@ public:
 
 	void sendBinary(const std::string& data) const;
 	void send(const std::string& data) const;
-	void send(const int32_t* data, std::size_t size) const;
-	void send(const int64_t* data, std::size_t size) const;
-	void send(const float* data, std::size_t size) const;
-	void send(const double* data, std::size_t size) const;
 	void sendTwoBinaryParts(const std::string& data1, const std::string& data2) const;
 	void sendEnd() const;
 
@@ -365,10 +353,6 @@ public:
 	 */
 	bool receiveBinary(std::string& data) const;
 	bool receive(std::string& data) const;
-	bool receive(std::vector<int32_t>& data) const;
-	bool receive(std::vector<int64_t>& data) const;
-	bool receive(std::vector<float>& data) const;
-	bool receive(std::vector<double>& data) const;
 	bool receiveTwoBinaryParts(std::string& data1, std::string& data2) const;
 
 	void cancel();

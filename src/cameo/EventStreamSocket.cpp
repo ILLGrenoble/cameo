@@ -21,8 +21,9 @@
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
-#include "../proto/Messages.pb.h"
 #include "impl/StreamSocketImpl.h"
+#include "message/JSON.h"
+#include "message/Message.h"
 
 using namespace std;
 
@@ -49,39 +50,63 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		message = m_impl->receive();
 
-		proto::StatusEvent protoStatus;
-		protoStatus.ParseFromArray(message->data(), message->size());
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
 
-		return unique_ptr<Event>(new StatusEvent(protoStatus.id(), protoStatus.name(), protoStatus.applicationstate(), protoStatus.pastapplicationstates()));
+		int id = event[message::StatusEvent::ID].GetInt();
+		string name = event[message::StatusEvent::NAME].GetString();
+		application::State state = event[message::StatusEvent::APPLICATION_STATE].GetInt();
+		application::State pastStates = event[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
-	} else if (response == "RESULT") {
-
-		message = m_impl->receive();
-
-		proto::ResultEvent protoResult;
-		protoResult.ParseFromArray(message->data(), message->size());
-
-		return unique_ptr<Event>(new ResultEvent(protoResult.id(), protoResult.name(), protoResult.data()));
-
-	} else if (response == "PUBLISHER") {
+		return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates));
+	}
+	else if (response == "RESULT") {
 
 		message = m_impl->receive();
 
-		proto::PublisherEvent protoPublisher;
-		protoPublisher.ParseFromArray(message->data(), message->size());
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
 
-		return unique_ptr<Event>(new PublisherEvent(protoPublisher.id(), protoPublisher.name(), protoPublisher.publishername()));
+		int id = event[message::ResultEvent::ID].GetInt();
+		string name = event[message::ResultEvent::NAME].GetString();
 
-	} else if (response == "PORT") {
+		// Get the data in the next part.
+		message = m_impl->receive();
+		string data(message->data<char>(), message->size());
+
+		return unique_ptr<Event>(new ResultEvent(id, name, data));
+	}
+	else if (response == "PUBLISHER") {
 
 		message = m_impl->receive();
 
-		proto::PortEvent protoPort;
-		protoPort.ParseFromArray(message->data(), message->size());
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
 
-		return unique_ptr<Event>(new PortEvent(protoPort.id(), protoPort.name(), protoPort.portname()));
+		int id = event[message::PublisherEvent::ID].GetInt();
+		string name = event[message::PublisherEvent::NAME].GetString();
+		string publisherName = event[message::PublisherEvent::PUBLISHER_NAME].GetString();
 
-	} else if (response == "CANCEL") {
+		return unique_ptr<Event>(new PublisherEvent(id, name, publisherName));
+	}
+	else if (response == "PORT") {
+
+		message = m_impl->receive();
+
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
+
+		int id = event[message::PortEvent::ID].GetInt();
+		string name = event[message::PortEvent::NAME].GetString();
+		string portName = event[message::PortEvent::PORT_NAME].GetString();
+
+		return unique_ptr<Event>(new PortEvent(id, name, portName));
+	}
+	else if (response == "CANCEL") {
 
 		message = m_impl->receive();
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 01/07/2015
+# Version 18/03/2020
 # defines LIBZMQ_LDFLAGS, LIBZMQ_LIB
 #
 AC_DEFUN([AC_LIBZMQ],
@@ -15,7 +15,7 @@ AC_DEFUN([AC_LIBZMQ],
         if test $with_zmq != yes; then
             zeromq_possible_path="$with_zmq"
         else
-            zeromq_possible_path="/usr/local /usr /opt /var"
+            zeromq_possible_path="/usr /opt /var /usr/local"
         fi
         AC_MSG_CHECKING([for zeromq -lzmq])
         zeromq_found=no

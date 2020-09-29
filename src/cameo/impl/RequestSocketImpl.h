@@ -37,12 +37,17 @@ public:
 	void init();
 	void reset();
 
-	std::unique_ptr<zmq::message_t> request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout = -1);
+	std::unique_ptr<zmq::message_t> request(const std::string& request, int overrideTimeout = -1);
+	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 	ServicesImpl * m_services;
 	std::string m_endpoint;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;
+
+private:
+	std::unique_ptr<zmq::message_t> receive(int overrideTimeout);
 };
 
 }

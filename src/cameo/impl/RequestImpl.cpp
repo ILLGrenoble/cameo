@@ -20,6 +20,8 @@
 #include "../Serializer.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
 #include <sstream>
 
 using namespace std;
@@ -51,11 +53,15 @@ void RequestImpl::setTimeout(int value) {
 
 bool RequestImpl::replyBinary(const std::string& response) {
 
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RESPONSE);
+
 	// Create a request socket. It is created for each request that could be optimized.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint, m_timeout);
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint);
 
 	try {
-		requestSocket->request(m_application->m_impl->createRequestType(PROTO_RESPONSE), response);
+		requestSocket->request(request.toString(), response);
 	}
 	catch (const ConnectionTimeout&) {
 		return false;
