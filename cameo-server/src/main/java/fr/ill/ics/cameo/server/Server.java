@@ -23,40 +23,20 @@ import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.proto.Messages.AllAvailableCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPortCommand;
-import fr.ill.ics.cameo.proto.Messages.ConnectPublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.CreatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
-import fr.ill.ics.cameo.proto.Messages.IsAliveCommand;
-import fr.ill.ics.cameo.proto.Messages.KillCommand;
-import fr.ill.ics.cameo.proto.Messages.MessageType;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.OutputCommand;
-import fr.ill.ics.cameo.proto.Messages.RemovePortCommand;
-import fr.ill.ics.cameo.proto.Messages.RequestPortCommand;
-import fr.ill.ics.cameo.proto.Messages.SendParametersCommand;
-import fr.ill.ics.cameo.proto.Messages.SetResultCommand;
-import fr.ill.ics.cameo.proto.Messages.SetStatusCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowAllCommand;
-import fr.ill.ics.cameo.proto.Messages.ShowStreamCommand;
-import fr.ill.ics.cameo.proto.Messages.StartCommand;
-import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
-import fr.ill.ics.cameo.proto.Messages.StopCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatePublisherCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
-import fr.ill.ics.cameo.ProcessHandlerImpl;
-import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class Server {
 
-	private static Zmq.Context context;
+	private Zmq.Context context;
 	private String configFileName;
 	private InputStream configStream;
 
@@ -70,7 +50,7 @@ public class Server {
 
 	public void run() {
 		
-		// start manager
+		// Start the manager.
 		final Manager manager;
 		
 		if (configFileName != null) {
@@ -80,15 +60,17 @@ public class Server {
 			manager = new Manager(configStream);
 		}
 
+		// Create the context.
 		context = new Zmq.Context();
 		Zmq.Socket server = context.createSocket(Zmq.REP);
 		server.bind(ConfigManager.getInstance().getEndpoint());
 
-		// wait command (listen)
 		LogInfo.getInstance().getLogger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
 
+		// Init the stream sockets.
 		manager.initStreamSockets(context);
 
+		// Create a shutdown hook.
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
 
@@ -97,6 +79,13 @@ public class Server {
 			}
 		}));
 
+		// Create the JSON parser.
+		JSONParser parser = new JSONParser();
+		
+		// Create the request processor.
+		RequestProcessor process = new RequestProcessor();
+		
+		// Wait for the requests.
 		while (true) {
 
 			Zmq.Msg message = null;
@@ -109,107 +98,101 @@ public class Server {
 					break;
 				}
 
-				// check there are not 2 frames
-				if (message.size() != 2) {
-					System.err.println("Unexpected number of frames, should be 2");
-					continue;
+				// Get the first frame.
+				byte[] data = message.getFirstData();
+				
+				// Get the JSON request object.
+				JSONObject request = (JSONObject)parser.parse(Message.parseString(data));
+				
+				// Get the type.
+				long type = JSON.getLong(request, Message.TYPE);
+				
+				if (type == Message.SYNC) {
+					reply = process.processSync(manager);
 				}
-				// 2 frames, get first frame (type)
-				byte[] typeData = message.getFirstData();
-				// get last frame
-				byte[] messageData = message.getLastData();
-				ProcessRequest process = new ProcessRequest();
-
-				// dispatch message
-				MessageType type = MessageType.parseFrom(typeData);
-
-				if (type.getType() == Type.INIT) {
-					reply = process.processInit(manager);
-
-				} else if (type.getType() == Type.START) {
-					reply = process.processStartCommand(StartCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.SHOWALL) {
-					reply = process.processShowAllCommand(ShowAllCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.STOP) {
-					reply = process.processStopCommand(StopCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.KILL) {
-					reply = process.processKillCommand(KillCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.CONNECT) {
-					reply = process.processConnectCommand(ConnectCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.SHOW) {
-					reply = process.processShowStreamCommand(ShowStreamCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.ISALIVE) {
-					reply = process.processIsAliveCommand(IsAliveCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.SENDPARAMETERS) {
-					reply = process.processSendParametersCommand(SendParametersCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.STATUS) {
-					reply = process.processStatusCommand();
-
-				} else if (type.getType() == Type.ALLAVAILABLE) {
-					reply = process.processAllAvailableCommand(AllAvailableCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.OUTPUT) {
-					reply = process.processOutputCommand(OutputCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.SETSTATUS) {
-					reply = process.processSetStatusCommand(SetStatusCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.GETSTATUS) {
-					reply = process.processGetStatusCommand(GetStatusCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.SETRESULT) {
-					reply = process.processSetResultCommand(SetResultCommand.parseFrom(messageData), manager);
-
-					// Port
-				} else if (type.getType() == Type.REQUESTPORT) {
-					reply = process.processRequestPortCommand(RequestPortCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.CONNECTPORT) {
-					reply = process.processConnectPortCommand(ConnectPortCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.REMOVEPORT) {
-					reply = process.processRemovePortCommand(RemovePortCommand.parseFrom(messageData), manager);
-
-					// Publisher/Subscriber
-				} else if (type.getType() == Type.CREATEPUBLISHER) {
-					reply = process.processCreatePublisherCommand(CreatePublisherCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.TERMINATEPUBLISHER) {
-					reply = process.processTerminatePublisherCommand(TerminatePublisherCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.CONNECTPUBLISHER) {
-					reply = process.processConnectPublisherCommand(ConnectPublisherCommand.parseFrom(messageData), manager);
-
-					// Unmanaged app.
-				} else if (type.getType() == Type.STARTEDUNMANAGED) {
-					reply = process.processStartedUnmanagedCommand(StartedUnmanagedCommand.parseFrom(messageData), manager);
-
-				} else if (type.getType() == Type.TERMINATEDUNMANAGED) {
-					reply = process.processTerminatedUnmanagedCommand(TerminatedUnmanagedCommand.parseFrom(messageData), manager);
-					
-				} else {
-					System.err.println("unknown message type " + type.getType());
+				else if (type == Message.START) {
+					reply = process.processStartRequest(request, manager);
+				}
+				else if (type == Message.SHOW_ALL) {
+					reply = process.processShowAllRequest(request, manager);
+				}
+				else if (type == Message.STOP) {
+					reply = process.processStopRequest(request, manager);
+				}
+				else if (type == Message.KILL) {
+					reply = process.processKillRequest(request, manager);
+				}
+				else if (type == Message.CONNECT) {
+					reply = process.processConnectRequest(request, manager);
+				}
+				else if (type == Message.SHOW) {
+					reply = process.processShowStreamRequest(request, manager);
+				}
+				else if (type == Message.IS_ALIVE) {
+					reply = process.processIsAliveRequest(request, manager);
+				}
+				else if (type == Message.SEND_PARAMETERS) {
+					reply = process.processSendParametersRequest(request, manager);
+				}
+				else if (type == Message.STATUS) {
+					reply = process.processStatusRequest();
+				}
+				else if (type == Message.ALL_AVAILABLE) {
+					reply = process.processAllAvailableRequest(request, manager);
+				}
+				else if (type == Message.OUTPUT) {
+					reply = process.processOutputRequest(request, manager);
+				}
+				else if (type == Message.SET_STATUS) {
+					reply = process.processSetStatusRequest(request, manager);
+				}
+				else if (type == Message.GET_STATUS) {
+					reply = process.processGetStatusRequest(request, manager);
+				}
+				else if (type == Message.SET_RESULT) {
+					// The result data is in the second frame.
+					byte[] resultData = message.getLastData();
+					reply = process.processSetResultRequest(request, resultData, manager);
+				}
+				else if (type == Message.REQUEST_PORT) {
+					reply = process.processRequestPortRequest(request, manager);
+				}
+				else if (type == Message.CONNECT_PORT) {
+					reply = process.processConnectPortRequest(request, manager);
+				}
+				else if (type == Message.REMOVE_PORT) {
+					reply = process.processRemovePortRequest(request, manager);
+				}
+				else if (type == Message.CREATE_PUBLISHER) {
+					reply = process.processCreatePublisherRequest(request, manager);
+				}
+				else if (type == Message.TERMINATE_PUBLISHER) {
+					reply = process.processTerminatePublisherRequest(request, manager);
+				}
+				else if (type == Message.CONNECT_PUBLISHER) {
+					reply = process.processConnectPublisherRequest(request, manager);
+				}
+				else if (type == Message.STARTED_UNMANAGED) {
+					reply = process.processStartedUnmanagedRequest(request, manager);
+				}
+				else if (type == Message.TERMINATED_UNMANAGED) {
+					reply = process.processTerminatedUnmanagedRequest(request, manager);
+			
+				}
+				else {
+					System.err.println("Unknown request type " + type);
 					message.send(server);
 				}
 
-				// send to the client
+				// Send reply to the client.
 				if (reply != null) {
 					reply.send(server);
 				}
-
-			} catch (InvalidProtocolBufferException e) {
-				System.err.println("problem in parsing of message");
-				
-			} finally {
-
+			}
+			catch (ParseException e) {
+				System.err.println("Cannot parse request");
+			}
+			finally {
 				// reply bad request if no reply was sent
 				if (reply == null) {
 					reply = new Zmq.Msg();

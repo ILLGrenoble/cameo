@@ -22,17 +22,15 @@
 
 namespace cameo {
 
+/**
+ * Serializes the string data into a string. The current implementation only copies the data.
+ */
 void serialize(const std::string& data, std::string& result);
-void serialize(const int32_t* data, std::size_t size, std::string& result);
-void serialize(const int64_t* data, std::size_t size, std::string& result);
-void serialize(const float* data, std::size_t size, std::string& result);
-void serialize(const double* data, std::size_t size, std::string& result);
 
+/**
+ * Parses the string data into a string. The current implementation only copies the data.
+ */
 void parse(const std::string& data, std::string& result);
-void parse(const std::string& data, std::vector<int32_t>& result);
-void parse(const std::string& data, std::vector<int64_t>& result);
-void parse(const std::string& data, std::vector<float>& result);
-void parse(const std::string& data, std::vector<double>& result);
 
 }
 

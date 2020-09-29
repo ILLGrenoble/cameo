@@ -16,14 +16,15 @@
 
 package fr.ill.ics.cameo.impl;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages;
-import fr.ill.ics.cameo.proto.Messages.RequestResponse;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class SubscriberImpl {
 
@@ -101,7 +102,7 @@ public class SubscriberImpl {
 			while (!ready) {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				Zmq.Msg request = server.createInitRequest();
+				Zmq.Msg request = server.createSyncRequest();
 				Zmq.Msg reply = null;
 				try {
 					reply = requestSocket.request(request);
@@ -121,19 +122,7 @@ public class SubscriberImpl {
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
 			Zmq.Msg request = server.createSubscribePublisherRequest();
-			Zmq.Msg reply = requestSocket.request(request);
-			
-			byte[] messageData = reply.getFirstData();
-			RequestResponse requestResponse = null;
-			
-			try {
-				requestResponse = RequestResponse.parseFrom(messageData);
-				
-			} catch (InvalidProtocolBufferException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-
-			
+			requestSocket.request(request);
 			requestSocket.terminate();
 		}
 	}
@@ -169,29 +158,33 @@ public class SubscriberImpl {
 	public byte[] receive() {
 
 		while (true) {
-			String response = subscriber.recvStr();
+			String message = subscriber.recvStr();
 			
-			if (response.equals(STREAM)) {
+			if (message.equals(STREAM)) {
 				return subscriber.recv();
 				
-			} else if (response.equals(ENDSTREAM)) {
+			} else if (message.equals(ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (response.equals(CANCEL)) {
+			} else if (message.equals(CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (response.equals(STATUS)) {
-				byte[] statusResponse = subscriber.recv();
+			} else if (message.equals(STATUS)) {
+				byte[] statusMessage = subscriber.recv();
 				
 				try {
-					Messages.StatusEvent protoStatus = Messages.StatusEvent.parseFrom(statusResponse);
+					// Get the JSON object.
+					JSONObject status = server.parse(statusMessage);
 					
-					if (instance.getId() == protoStatus.getId()) {
+					// Get the id.
+					int id = JSON.getInt(status, Message.StatusEvent.ID);
+										
+					if (instance.getId() == id) {
 						
-						// Get the state
-						int state = protoStatus.getApplicationState();
+						// Get the state.
+						int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
 						
 						// Test if the state is terminal
 						if (state == Application.State.SUCCESS 
@@ -202,8 +195,8 @@ public class SubscriberImpl {
 							return null;
 						}
 					}
-					
-				} catch (InvalidProtocolBufferException e) {
+				}
+				catch (ParseException e) {
 					throw new UnexpectedException("Cannot parse response");
 				}
 			}
@@ -217,33 +210,37 @@ public class SubscriberImpl {
 	public byte[][] receiveTwoParts() {
 
 		while (true) {
-			String response = subscriber.recvStr();
+			String message = subscriber.recvStr();
 			
-			if (response.equals(STREAM)) {
+			if (message.equals(STREAM)) {
 				byte[][] result = new byte[2][];
 				result[0] = subscriber.recv();
 				result[1] = subscriber.recv();
 				
 				return result;
 				
-			} else if (response.equals(ENDSTREAM)) {
+			} else if (message.equals(ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (response.equals(CANCEL)) {
+			} else if (message.equals(CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (response.equals(STATUS)) {
-				byte[] statusResponse = subscriber.recv();
+			} else if (message.equals(STATUS)) {
+				byte[] statusMessage = subscriber.recv();
 				
 				try {
-					Messages.StatusEvent protoStatus = Messages.StatusEvent.parseFrom(statusResponse);
+					// Get the JSON request object.
+					JSONObject request = server.parse(statusMessage);
 					
-					if (instance.getId() == protoStatus.getId()) {
+					// Get the id.
+					int id = JSON.getInt(request, Message.StatusEvent.ID);
+					
+					if (instance.getId() == id) {
 						
-						// Get the state
-						int state = protoStatus.getApplicationState();
+						// Get the state.
+						int state = JSON.getInt(request, Message.StatusEvent.APPLICATION_STATE);
 						
 						// Test if the state is terminal
 						if (state == Application.State.SUCCESS 
@@ -254,8 +251,8 @@ public class SubscriberImpl {
 							return null;
 						}
 					}
-					
-				} catch (InvalidProtocolBufferException e) {
+				}
+				catch (ParseException e) {
 					throw new UnexpectedException("Cannot parse response");
 				}
 			}
@@ -274,67 +271,7 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Buffer.parseString(data);
-	}
-	
-	/**
-	 * 
-	 * @return the int[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-	 */
-	public int[] receiveInt32() {
-
-		byte[] data = receive();
-		
-		if (data == null) {
-			return null;
-		}
-		
-		return Buffer.parseInt32(data);
-	}
-	
-	/**
-	 * 
-	 * @return the long[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-	 */
-	public long[] receiveInt64() {
-
-		byte[] data = receive();
-		
-		if (data == null) {
-			return null;
-		}
-		
-		return Buffer.parseInt64(data);
-	}
-	
-	/**
-	 * 
-	 * @return the float[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-	 */
-	public float[] receiveFloat() {
-
-		byte[] data = receive();
-		
-		if (data == null) {
-			return null;
-		}
-		
-		return Buffer.parseFloat(data);
-	}
-
-	/**
-	 * 
-	 * @return the double[] data. If the return value is null, then the stream is finished or the data are corrupted. 
-	 */
-	public double[] receiveDouble() {
-
-		byte[] data = receive();
-		
-		if (data == null) {
-			return null;
-		}
-		
-		return Buffer.parseDouble(data);
+		return Message.parseString(data);
 	}
 	
 	public void cancel() {

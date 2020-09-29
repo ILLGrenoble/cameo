@@ -16,20 +16,17 @@
 
 package fr.ill.ics.cameo.impl;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages.GetStatusCommand;
-import fr.ill.ics.cameo.proto.Messages.Init;
-import fr.ill.ics.cameo.proto.Messages.MessageType;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
-import fr.ill.ics.cameo.proto.Messages.RequestResponse;
-import fr.ill.ics.cameo.proto.Messages.StartedUnmanagedCommand;
-import fr.ill.ics.cameo.proto.Messages.TerminatedUnmanagedCommand;
+import fr.ill.ics.cameo.Zmq.Socket;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Message;
 
 public class ServicesImpl {
 
@@ -40,6 +37,7 @@ public class ServicesImpl {
 	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
 	protected RequestSocket requestSocket;
+	protected JSON.ConcurrentParser parser = new JSON.ConcurrentParser();
 	
 	protected static final String STREAM = "STREAM";
 	protected static final String ENDSTREAM = "ENDSTREAM";
@@ -81,6 +79,10 @@ public class ServicesImpl {
 		return url + ":" + statusPort;
 	}
 	
+	public void destroySocket(Socket socket) {
+		context.destroySocket(socket);
+	}
+	
 	public void terminate() {
 		
 		// Terminate the request socket.
@@ -97,7 +99,7 @@ public class ServicesImpl {
 	 */
 	public boolean isAvailable(int overrideTimeout) {
 
-		Zmq.Msg request = createInitRequest();
+		Zmq.Msg request = createSyncRequest();
 		Zmq.Msg reply = null;
 		try {
 			reply = requestSocket.request(request, overrideTimeout);
@@ -114,12 +116,11 @@ public class ServicesImpl {
 		return false;
 	}
 	
-	protected void sendInit() {
+	protected void sendSync() {
 		
-		Zmq.Msg request = createInitRequest();
-		Zmq.Msg reply = null;
+		Zmq.Msg request = createSyncRequest();
 		try {
-			reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(request);
 			reply.destroy();
 			request.destroy();
 
@@ -128,30 +129,37 @@ public class ServicesImpl {
 		}
 	}
 	
+	public JSONObject parse(Zmq.Msg reply) throws ParseException {
+		return (JSONObject)parser.parse(Message.parseString(reply.getFirstData()));
+	}
+	
+	public JSONObject parse(byte[] data) throws ParseException {
+		return (JSONObject)parser.parse(Message.parseString(data));
+	}
+	
 	/**
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
 	protected EventStreamSocket openEventStream() {
 
-		Zmq.Msg request = createShowStatusRequest();
-		RequestResponse requestResponse = null;
+		Zmq.Msg request = createStreamStatusRequest();
+		
+		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response;
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
-			byte[] messageData = reply.getFirstData();
-			requestResponse = RequestResponse.parseFrom(messageData);
-			
-		} catch (InvalidProtocolBufferException e) {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
-		} catch (Exception e) {
-			return null;
 		}
 		
-		// Prepare our context and subscriber
+		// Prepare our subscriber.
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
-		statusPort = requestResponse.getValue();
+		statusPort = JSON.getInt(response, Message.RequestResponse.VALUE);
 		
 		subscriber.connect(url + ":" + statusPort);
 		subscriber.subscribe(STATUS);
@@ -170,7 +178,7 @@ public class ServicesImpl {
 		while (true) {
 			
 			// the server returns a STATUS message that is used to synchronize the subscriber
-			sendInit();
+			sendSync();
 
 			// return at the first response.
 			if (poller.poll(100)) {
@@ -181,7 +189,7 @@ public class ServicesImpl {
 		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 		
-		return new EventStreamSocket(context, subscriber, cancelPublisher);
+		return new EventStreamSocket(this, subscriber, cancelPublisher);
 	}
 	
 	protected RequestSocket createRequestSocket(String endpoint) throws SocketException {
@@ -191,20 +199,13 @@ public class ServicesImpl {
 		
 		return requestSocket;
 	}
+	
+	protected Zmq.Msg message(JSONObject object) {
 		
-	/**
-	 * 
-	 * @param type
-	 * @return
-	 */
-	protected Zmq.Msg createRequest(Type type) {
-		
-		Zmq.Msg request = new Zmq.Msg();
-		// add the message type on the first frame
-		MessageType messageType = MessageType.newBuilder().setType(type).build();
-		request.add(messageType.toByteArray());
-		
-		return request;
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Message.serialize(object));
+
+		return message;
 	}
 	
 	/**
@@ -213,13 +214,12 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createInitRequest() {
+	protected Zmq.Msg createSyncRequest() {
 		
-		Zmq.Msg request = createRequest(Type.INIT);
-		Init start = Init.newBuilder().build();
-		request.add(start.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SYNC);
 		
-		return request;
+		return message(request);
 	}
 	
 	/**
@@ -227,13 +227,12 @@ public class ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	protected Zmq.Msg createShowStatusRequest() {
+	protected Zmq.Msg createStreamStatusRequest() {
 		
-		Zmq.Msg request = createRequest(Type.STATUS);
-		String content = "status";
-		request.add(content);
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STATUS);
+
+		return message(request);
 	}
 	
 	/**
@@ -244,11 +243,11 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createGetStatusRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.GETSTATUS);
-		GetStatusCommand command = GetStatusCommand.newBuilder().setId(id).build();
-		request.add(command.toByteArray());
-		
-		return request;
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.GET_STATUS);
+		request.put(Message.GetStatusRequest.ID, id);
+
+		return message(request);	
 	}
 	
 	/**
@@ -260,14 +259,12 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createStartedUnmanagedRequest(String name, long pid) {
 		
-		Zmq.Msg request = createRequest(Type.STARTEDUNMANAGED);
-		StartedUnmanagedCommand command = StartedUnmanagedCommand.newBuilder()
-												.setName(name)
-												.setPid(pid)
-												.build();
-		request.add(command.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STARTED_UNMANAGED);
+		request.put(Message.StartedUnmanagedRequest.NAME, name);
+		request.put(Message.StartedUnmanagedRequest.PID, pid);
 		
-		return request;
+		return message(request);
 	}
 	
 	/**
@@ -278,11 +275,11 @@ public class ServicesImpl {
 	 */
 	protected Zmq.Msg createTerminatedUnmanagedRequest(int id) {
 		
-		Zmq.Msg request = createRequest(Type.TERMINATEDUNMANAGED);
-		TerminatedUnmanagedCommand command = TerminatedUnmanagedCommand.newBuilder().setId(id).build();
-		request.add(command.toByteArray());
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.TERMINATED_UNMANAGED);
+		request.put(Message.TerminatedUnmanagedRequest.ID, id);
 		
-		return request;
+		return message(request);
 	}
 	
 }

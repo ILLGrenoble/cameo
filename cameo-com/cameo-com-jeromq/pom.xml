@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-com-jeromq</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>

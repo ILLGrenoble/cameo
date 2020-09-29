@@ -1,6 +1,11 @@
 package fr.ill.ics.cameo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.zeromq.ZContext;
+import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
 
@@ -39,6 +44,19 @@ public class Zmq {
 		public byte[] getLastData() {
 			return message.getLast().getData();
 		}
+		
+		public List<byte[]> getAllData() {
+			
+			ArrayList<byte[]> result = new ArrayList<byte[]>();
+			
+			Iterator<ZFrame> iterator = message.iterator();
+			while (iterator.hasNext()) {
+				ZFrame frame = iterator.next();
+				result.add(frame.getData());
+			}
+			
+			return result;
+		}
 
 		public void send(Socket socket) {
 			message.send(socket.socket);			
@@ -74,7 +92,11 @@ public class Zmq {
 		}
 
 		public void sendMore(String data) {
-			socket.sendMore(data);
+			socket.send(data, 2);
+		}
+		
+		public void sendMore(byte[] data) {
+			socket.send(data, 2);
 		}
 
 		public void send(byte[] data, int flags) {

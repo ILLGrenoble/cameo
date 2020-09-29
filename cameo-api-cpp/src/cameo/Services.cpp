@@ -15,15 +15,15 @@
  */
 
 #include "Services.h"
-
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include "impl/CancelIdGenerator.h"
 #include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "ProtoType.h"
+#include "message/JSON.h"
+#include "message/Message.h"
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -110,18 +110,21 @@ bool Services::isAvailable(int timeout) const {
 void Services::initStatus() {
 
 	// Get the status port.
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestType(PROTO_STATUS), m_impl->createShowStatusRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStreamStatusRequest());
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
 
 	// Check response.
-	if (requestResponse.value() == -1) {
+	if (value == -1) {
 		return;
 	}
 
 	// Get the status port.
-	m_statusPort = requestResponse.value();
+	m_statusPort = value;
 
 	stringstream ss;
 	ss << m_url << ":" << m_statusPort;

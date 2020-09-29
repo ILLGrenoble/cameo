@@ -22,12 +22,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.json.simple.JSONObject;
+
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.proto.Messages.ApplicationStream;
+import fr.ill.ics.cameo.messages.Message;
 
 public class StreamApplicationThread extends Thread {
 
@@ -68,15 +70,15 @@ public class StreamApplicationThread extends Thread {
 				System.err.println("error writing stream");
 			}
 		}
+
 		if (application.hasStream()) {
-
-			ApplicationStream stream = ApplicationStream.newBuilder()
-					.setId(application.getId())
-					.setMessage(line)
-					.build();
-
+			// Send the stream.
+			JSONObject event = new JSONObject();
+			event.put(Message.ApplicationStream.ID, application.getId());
+			event.put(Message.ApplicationStream.MESSAGE, line);
+			
 			publisher.sendMore("STREAM");
-			publisher.send(stream.toByteArray(), 0);
+			publisher.send(Message.serialize(event), 0);
 		}
 	}
 	
@@ -155,14 +157,13 @@ public class StreamApplicationThread extends Thread {
 		// the message was originally done in manager when the application was terminated
 		// but not the stream thread because they are not synchronized
 		if (application.hasStream()) {
-
-			ApplicationStream stream = ApplicationStream.newBuilder()
-				.setId(application.getId())
-				.setMessage("endstream")
-				.build();
-		
+			// Send the stream.
+			JSONObject event = new JSONObject();
+			event.put(Message.ApplicationStream.ID, application.getId());
+			event.put(Message.ApplicationStream.MESSAGE, "endstream");
+			
 			publisher.sendMore("ENDSTREAM");
-			publisher.send(stream.toByteArray(), 0);
+			publisher.send(Message.serialize(event), 0);
 		}
 	}
 	

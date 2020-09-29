@@ -19,6 +19,8 @@
 #include "../Serializer.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
 #include <sstream>
 
 using namespace std;
@@ -76,53 +78,60 @@ WaitingImpl * RequesterImpl::waiting() {
 	return new GenericWaitingImpl(bind(&RequesterImpl::cancel, this));
 }
 
-void RequesterImpl::sendBinary(const std::string& request) {
+void RequesterImpl::sendBinary(const std::string& requestData) {
 
-	string requestTypePart = m_application->m_impl->createRequestType(PROTO_REQUEST);
-	string requestDataPart;
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REQUEST);
 
-	proto::Request requestCommand;
-	requestCommand.set_applicationname(m_application->getName());
-	requestCommand.set_applicationid(m_application->getId());
-	requestCommand.set_message(request);
-	requestCommand.set_serverurl(m_application->getUrl());
-	requestCommand.set_serverport(m_application->getPort());
-	requestCommand.set_requesterport(m_requesterPort);
-	requestCommand.SerializeToString(&requestDataPart);
+	request.pushKey(message::Request::APPLICATION_NAME);
+	request.pushString(m_application->getName());
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
+	request.pushKey(message::Request::APPLICATION_ID);
+	request.pushInt(m_application->getId());
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	request.pushKey(message::Request::SERVER_URL);
+	request.pushString(m_application->getUrl());
+
+	request.pushKey(message::Request::SERVER_PORT);
+	request.pushInt(m_application->getPort());
+
+	request.pushKey(message::Request::REQUESTER_PORT);
+	request.pushInt(m_requesterPort);
+
+	m_requestSocket->request(request.toString(), requestData);
 }
 
-void RequesterImpl::send(const std::string& request) {
+void RequesterImpl::send(const std::string& requestData) {
 
 	// encode the data
 	string result;
-	serialize(request, result);
+	serialize(requestData, result);
 	sendBinary(result);
 }
 
-void RequesterImpl::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
+void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) {
 
-	string requestTypePart = m_application->m_impl->createRequestType(PROTO_REQUEST);
-	string requestDataPart;
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REQUEST);
 
-	proto::Request requestCommand;
-	requestCommand.set_applicationname(m_application->getName());
-	requestCommand.set_applicationid(m_application->getId());
-	requestCommand.set_message(request1);
-	requestCommand.set_message2(request2);
-	requestCommand.set_serverurl(m_application->getUrl());
-	requestCommand.set_serverport(m_application->getPort());
-	requestCommand.set_requesterport(m_requesterPort);
-	requestCommand.SerializeToString(&requestDataPart);
+	request.pushKey(message::Request::APPLICATION_NAME);
+	request.pushString(m_application->getName());
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestTypePart, requestDataPart);
+	request.pushKey(message::Request::APPLICATION_ID);
+	request.pushInt(m_application->getId());
 
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	request.pushKey(message::Request::SERVER_URL);
+	request.pushString(m_application->getUrl());
+
+	request.pushKey(message::Request::SERVER_PORT);
+	request.pushInt(m_application->getPort());
+
+	request.pushKey(message::Request::REQUESTER_PORT);
+	request.pushInt(m_requesterPort);
+
+	m_requestSocket->request(request.toString(), requestData1, requestData2);
 }
 
 bool RequesterImpl::receiveBinary(std::string& response) {
@@ -130,31 +139,27 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 	unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_repSocket->recv(message.get(), 0);
 
-	// multi-part message, first part is the type
-	proto::MessageType messageType;
-	messageType.ParseFromArray((*message).data(), (*message).size());
+	// Get the JSON request.
+	json::Object request;
+	json::parse(request, message.get());
 
-	if (message->more()) {
+	int type = request[message::TYPE].GetInt();
+
+	if (type == message::RESPONSE) {
+		// Get the second part for the message.
 		message.reset(new zmq::message_t);
 		m_repSocket->recv(message.get(), 0);
-
-	} else {
-		cerr << "unexpected number of frames, should be 2" << endl;
+		response = string(message->data<char>(), message->size());
+	}
+	else if (type == message::CANCEL) {
 		m_canceled = true;
 	}
 
-	if (messageType.type() == proto::MessageType_Type_RESPONSE) {
-		response = string(static_cast<char*>(message->data()), message->size());
-
-	} else if (messageType.type() == proto::MessageType_Type_CANCEL) {
-		m_canceled = true;
-	}
-
-	// Create the reply
+	// Create the reply.
 	string data = "OK";
 	size_t size = data.length();
 	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
-	memcpy((void *) reply->data(), data.c_str(), size);
+	memcpy(reply->data(), data.c_str(), size);
 
 	m_repSocket->send(*reply);
 
@@ -176,12 +181,13 @@ void RequesterImpl::cancel() {
 	stringstream requesterEndpoint;
 	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
 
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CANCEL);
+
 	// Create a request socket only for the request.
 	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(requesterEndpoint.str());
-	unique_ptr<zmq::message_t> reply = requestSocket->request(m_application->m_impl->createRequestType(PROTO_CANCEL), "cancel");
-
-	proto::RequestResponse requestResponse;
-	requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+	requestSocket->request(request.toString());
 }
 
 void RequesterImpl::terminate() {
@@ -191,7 +197,7 @@ void RequesterImpl::terminate() {
 
 		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 		if (!success) {
-			cerr << "server cannot destroy requester " << m_name << endl;
+			cerr << "Server cannot destroy requester " << m_name << endl;
 		}
 	}
 

@@ -71,22 +71,7 @@ void RequestSocketImpl::reset() {
 	m_socket.reset();
 }
 
-std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestTypePart, const std::string& requestDataPart, int overrideTimeout) {
-
-	// Init if not already done or if a timeout occurred.
-	init();
-
-	// Prepare the request parts.
-	int requestTypeSize = requestTypePart.length();
-	int requestDataSize = requestDataPart.length();
-	zmq::message_t requestType(requestTypeSize);
-	zmq::message_t requestData(requestDataSize);
-	memcpy(static_cast<void *>(requestType.data()), requestTypePart.c_str(), requestTypeSize);
-	memcpy(static_cast<void *>(requestData.data()), requestDataPart.c_str(), requestDataSize);
-
-	// Send the request in two parts.
-	m_socket->send(requestType, ZMQ_SNDMORE);
-	m_socket->send(requestData);
+std::unique_ptr<zmq::message_t> RequestSocketImpl::receive(int overrideTimeout) {
 
 	int timeout = m_timeout;
 	if (overrideTimeout > -1) {
@@ -120,6 +105,69 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->recv(reply.get(), 0);
 
 	return reply;
+}
+
+std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& request, int overrideTimeout) {
+
+	// Init if not already done or if a timeout occurred.
+	init();
+
+	// Prepare the request parts.
+	int requestSize = request.length();
+	zmq::message_t requestMessage(requestSize);
+	memcpy(static_cast<void *>(requestMessage.data()), request.c_str(), requestSize);
+
+	// Send the request in one part.
+	m_socket->send(requestMessage);
+
+	// Receive and return the response.
+	return receive(overrideTimeout);
+}
+
+std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+
+	// Init if not already done or if a timeout occurred.
+	init();
+
+	// Prepare the request parts.
+	int requestPart1Size = requestPart1.length();
+	int requestPart2Size = requestPart2.length();
+	zmq::message_t requestPart1Message(requestPart1Size);
+	zmq::message_t requestPart2Message(requestPart2Size);
+	memcpy(static_cast<void *>(requestPart1Message.data()), requestPart1.c_str(), requestPart1Size);
+	memcpy(static_cast<void *>(requestPart2Message.data()), requestPart2.c_str(), requestPart2Size);
+
+	// Send the request in two parts.
+	m_socket->send(requestPart1Message, ZMQ_SNDMORE);
+	m_socket->send(requestPart2Message);
+
+	// Receive and return the response.
+	return receive(overrideTimeout);
+}
+
+std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+
+	// Init if not already done or if a timeout occurred.
+	init();
+
+	// Prepare the request parts.
+	int requestPart1Size = requestPart1.length();
+	int requestPart2Size = requestPart2.length();
+	int requestPart3Size = requestPart3.length();
+	zmq::message_t requestPart1Message(requestPart1Size);
+	zmq::message_t requestPart2Message(requestPart2Size);
+	zmq::message_t requestPart3Message(requestPart3Size);
+	memcpy(static_cast<void *>(requestPart1Message.data()), requestPart1.c_str(), requestPart1Size);
+	memcpy(static_cast<void *>(requestPart2Message.data()), requestPart2.c_str(), requestPart2Size);
+	memcpy(static_cast<void *>(requestPart3Message.data()), requestPart3.c_str(), requestPart3Size);
+
+	// Send the request in three parts.
+	m_socket->send(requestPart1Message, ZMQ_SNDMORE);
+	m_socket->send(requestPart2Message, ZMQ_SNDMORE);
+	m_socket->send(requestPart3Message);
+
+	// Receive and return the response.
+	return receive(overrideTimeout);
 }
 
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Version 29/04/2019
+# Version 18/03/2020
 # defines CAMEO_CFLAGS, CAMEO_LDFLAGS, CAMEO_LIBS
 #
 AC_DEFUN([AC_CAMEO],
@@ -10,7 +10,6 @@ AC_DEFUN([AC_CAMEO],
               [with_cameo=yes])
 
     AC_LIBZMQ
-    AC_LIBPROTOBUF_LITE
     
     CAMEO_CFLAGS=
     CAMEO_LIBS=
@@ -18,7 +17,7 @@ AC_DEFUN([AC_CAMEO],
         if test $with_cameo != yes; then
             cameo_possible_path="$with_cameo"
         else
-            cameo_possible_path="/usr/local /usr /opt /var"
+            cameo_possible_path="/usr /opt /var /usr/local"
         fi
         AC_MSG_CHECKING([for cameo headers])
         cameo_save_CXXFLAGS="$CXXFLAGS"
@@ -44,7 +43,7 @@ AC_DEFUN([AC_CAMEO],
             CXXFLAGS="$CXXFLAGS $CAMEO_CFLAGS"
 
             # search for library
-            LIBS="$LIBS $CAMEO_LIBS $LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $LIBZMQ_LIB $LIBPROTOBUF_LIB -lcameo"
+            LIBS="$LIBS $CAMEO_LIBS $LIBZMQ_LDFLAGS $LIBZMQ_LIB -lcameo"
 
             AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],
                                      [[]])],
@@ -56,8 +55,8 @@ AC_DEFUN([AC_CAMEO],
                     
                 HAVE_CAMEO=1
                 LIBS="$cameo_save_LIBS"
-                CAMEO_LDFLAGS="$LIBZMQ_LDFLAGS $LIBPROTOBUF_LDFLAGS $CAMEO_LIBS"
-                CAMEO_LIBS="-lcameo $LIBZMQ_LIB $LIBPROTOBUF_LIB -pthread"
+                CAMEO_LDFLAGS="$LIBZMQ_LDFLAGS $CAMEO_LIBS"
+                CAMEO_LIBS="-lcameo $LIBZMQ_LIB -pthread"
             fi
 
             if test $cameo_found = yes; then

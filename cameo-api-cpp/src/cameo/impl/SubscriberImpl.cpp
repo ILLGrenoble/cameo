@@ -15,14 +15,14 @@
  */
 
 #include "SubscriberImpl.h"
-
-#include <sstream>
-
 #include "../Serializer.h"
 #include "CancelIdGenerator.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
 #include "../Server.h"
+#include "../message/JSON.h"
+#include "../message/Message.h"
+#include <sstream>
 
 using namespace std;
 
@@ -108,9 +108,7 @@ void SubscriberImpl::init() {
 			}
 		}
 
-		unique_ptr<zmq::message_t> reply = requestSocket->request(m_server->m_impl->createRequestType(PROTO_SUBSCRIBEPUBLISHER), m_server->m_impl->createSubscribePublisherRequest());
-		proto::RequestResponse requestResponse;
-		requestResponse.ParseFromArray((*reply).data(), (*reply).size());
+		requestSocket->request(m_server->m_impl->createSubscribePublisherRequest());
 	}
 }
 
@@ -149,11 +147,14 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 
-			proto::StatusEvent protoStatus;
-			protoStatus.ParseFromArray(message->data(), message->size());
+			// Get the JSON object.
+			json::Object status;
+			json::parse(status, message.get());
 
-			if (protoStatus.id() == m_instanceId) {
-				application::State state = protoStatus.applicationstate();
+			int id = status[message::StatusEvent::ID].GetInt();
+
+			if (id == m_instanceId) {
+				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
 
 				// test the terminal state
 				if (state == application::SUCCESS
@@ -171,62 +172,6 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 }
 
 bool SubscriberImpl::receive(std::string& data) {
-
-	string bytes;
-	bool stream = receiveBinary(bytes);
-
-	if (!stream) {
-		return false;
-	}
-
-	parse(bytes, data);
-
-	return true;
-}
-
-bool SubscriberImpl::receive(std::vector<int32_t>& data) {
-
-	string bytes;
-	bool stream = receiveBinary(bytes);
-
-	if (!stream) {
-		return false;
-	}
-
-	parse(bytes, data);
-
-	return true;
-}
-
-bool SubscriberImpl::receive(std::vector<int64_t>& data) {
-
-	string bytes;
-	bool stream = receiveBinary(bytes);
-
-	if (!stream) {
-		return false;
-	}
-
-	parse(bytes, data);
-
-	return true;
-}
-
-bool SubscriberImpl::receive(std::vector<float>& data) {
-
-	string bytes;
-	bool stream = receiveBinary(bytes);
-
-	if (!stream) {
-		return false;
-	}
-
-	parse(bytes, data);
-
-	return true;
-}
-
-bool SubscriberImpl::receive(std::vector<double>& data) {
 
 	string bytes;
 	bool stream = receiveBinary(bytes);
@@ -270,11 +215,14 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 
-			proto::StatusEvent protoStatus;
-			protoStatus.ParseFromArray(message->data(), message->size());
+			// Get the JSON object.
+			json::Object status;
+			json::parse(status, message.get());
 
-			if (protoStatus.id() == m_instanceId) {
-				application::State state = protoStatus.applicationstate();
+			int id = status[message::StatusEvent::ID].GetInt();
+
+			if (id == m_instanceId) {
+				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
 
 				// test the terminal state
 				if (state == application::SUCCESS

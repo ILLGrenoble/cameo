@@ -16,22 +16,22 @@
 
 package fr.ill.ics.cameo.impl;
 
-import com.google.protobuf.ByteString;
+import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.proto.Messages.MessageType.Type;
+import fr.ill.ics.cameo.messages.Message;
 
 public class RequestImpl {
 
 	private ThisImpl application;
 	private String requesterEndpoint;
-	private ByteString message;
-	private ByteString message2;
+	private byte[] message;
+	private byte[] message2;
 	private String requesterApplicationName;
 	private int requesterApplicationId;
 	private String requesterServerEndpoint;
 	
-	public RequestImpl(ThisImpl application, String requesterApplicationName, int requesterApplicationId, ByteString message, String serverUrl, int serverPort, int requesterPort) {
+	public RequestImpl(ThisImpl application, String requesterApplicationName, int requesterApplicationId, byte[] message, String serverUrl, int serverPort, int requesterPort) {
 		
 		this.application = application;
 		this.requesterEndpoint = serverUrl + ":" + requesterPort;
@@ -43,43 +43,41 @@ public class RequestImpl {
 		this.requesterServerEndpoint = serverUrl + ":" + serverPort;
 	}
 	
-	public void setMessage2(ByteString message2) {
+	public void setMessage2(byte[] message2) {
 		this.message2 = message2;
 	}
 	
-	public ByteString get() {
+	public byte[] get() {
 		return message;
 	}
 	
-	public ByteString get2() {
+	public byte[] get2() {
 		return message2;
 	}
 
 	public String getString() {
-		
-		byte[] data = message.toByteArray();
-		
-		if (data == null) {
-			return null;
-		}
-		
-		return Buffer.parseString(data);
+		return Message.parseString(message);
 	}
 	
 	public void reply(byte[] response) {
 		
-		Zmq.Msg responseMessage = application.createRequest(Type.RESPONSE);
-		responseMessage.add(response);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.RESPONSE);
+		
+		Zmq.Msg message = application.message(request);
+		
+		// Set request in the next frame.
+		message.add(response);
 
 		// Create a new socket.
 		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
 		RequestSocket requestSocket = application.createRequestSocket(requesterEndpoint);
-		requestSocket.request(responseMessage);
+		requestSocket.request(message);
 		requestSocket.terminate();
 	}
 	
 	public void reply(String response) {
-		reply(Buffer.serialize(response));
+		reply(Message.serialize(response));
 	}
 	
 	public String getRequesterApplicationName() {
