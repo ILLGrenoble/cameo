@@ -28,7 +28,7 @@ using namespace std;
 namespace cameo {
 
 Output::Output() :
-	m_id(0) {
+	m_id(0), m_endOfLine(false) {
 }
 
 int Output::getId() const {
@@ -37,6 +37,10 @@ int Output::getId() const {
 
 const std::string& Output::getMessage() const {
 	return m_message;
+}
+
+bool Output::isEndOfLine() const {
+	return m_endOfLine;
 }
 
 OutputStreamSocket::OutputStreamSocket(StreamSocketImpl * impl) :
@@ -73,9 +77,11 @@ bool OutputStreamSocket::receive(Output& output) {
 
 	int id = event[message::ApplicationStream::ID].GetInt();
 	string line = event[message::ApplicationStream::MESSAGE].GetString();
+	bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
 
 	output.m_id = id;
 	output.m_message = line;
+	output.m_endOfLine = endOfLine;
 
 	return true;
 }
