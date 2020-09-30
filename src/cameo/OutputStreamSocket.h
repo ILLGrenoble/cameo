@@ -40,10 +40,12 @@ public:
 
 	int getId() const;
 	const std::string& getMessage() const;
+	bool isEndOfLine() const;
 
 private:
 	int m_id;
 	std::string m_message;
+	bool m_endOfLine;
 };
 
 

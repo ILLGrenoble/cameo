@@ -140,6 +140,7 @@ namespace message {
 	namespace ApplicationStream {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* MESSAGE = "message"; // required string message = 2;
+		constexpr const char* EOL = "eol"; // boolean
 	}
 
 	namespace SendParametersRequest {
