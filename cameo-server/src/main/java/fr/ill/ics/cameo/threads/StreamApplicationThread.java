@@ -90,6 +90,7 @@ public class StreamApplicationThread extends Thread {
 	/**
 	 * Reads characters from the buffered reader.
 	 * We implement our read method since the reader.readLine() is not able to manage the sequences when an input is requested.
+	 * The implementation takes more CPU than with the reader.readLine() call.
 	 * @return
 	 */
 	private void readCharacters() {
@@ -103,6 +104,7 @@ public class StreamApplicationThread extends Thread {
 		
 		try {
 			while (reader.ready()) {
+				
 				int c = reader.read();
 				if (c == -1) {
 					return;
