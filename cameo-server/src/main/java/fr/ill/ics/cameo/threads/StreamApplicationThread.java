@@ -35,6 +35,10 @@ public class StreamApplicationThread extends Thread {
 
 	private Application application;
 	private BufferedReader reader;
+	private char lastChar = ' ';
+	private StringBuffer characters = new StringBuffer(1024);
+	private boolean send = false;
+	private boolean eol;
 	private Zmq.Socket publisher;
 	private FileOutputStream fileOutputStream;
 	
@@ -82,6 +86,54 @@ public class StreamApplicationThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Reads characters from the buffered reader.
+	 * We implement our read method since the reader.readLine() is not able to manage the sequences when an input is requested.
+	 * @return
+	 */
+	private void readCharacters() {
+
+		// A line is considered to be terminated by any one of a line feed ('\n') [1], a carriage return ('\r') [2], a carriage return followed immediately by a line feed [3].
+		
+		characters.setLength(0);
+		send = false;
+		eol = false;
+		// Do not reset lastChar because it is used for case [3].
+		
+		try {
+			while (reader.ready()) {
+				int c = reader.read();
+				if (c == -1) {
+					return;
+				}
+				else {
+					// Converting back to char (in fact the implementation of reader.read() in the current JRE converts a char to int).
+					// TODO Is it always true? Use Character.toChars​(int) ?
+					char cc = (char)c;
+
+					if (lastChar == '\r' && cc == '\n') {
+						// Case [3], the line has already been finished by '\r'
+						lastChar = ' ';
+						return;
+					}
+					
+					lastChar = cc;
+					
+					if (cc == '\n' || cc == '\r') {
+						// Cases [1] and [2].
+						send = true;
+						eol = true;
+						return;
+					}
+														
+					characters.append(cc);
+					send = true;
+				}
+			}
+		} catch (IOException e) {
+		}
+	}
+	
 	public void run() {
 		
 		// The process is now accessible and cannot be null.
@@ -100,12 +152,14 @@ public class StreamApplicationThread extends Thread {
 			try {
 				while (application.isAlive() && (application.isWriteStream() || application.hasStream())) {
 					
-					// polling because the standard Java API does not allow to do it differently
-					// problematic:
-					// when the process is killed, it is impossible to unblock the reader.readLine call (and any other underlying calls) 
+					// Polling because the standard Java API does not allow to do it differently. 
+					// Indeed when the process is killed, it is impossible to unblock the reader.readLine() call (and any other underlying calls). 
 					if (reader.ready()) {
-						String line = reader.readLine();
-						sendLine(line);
+						readCharacters();
+						if (send) {
+							// TODO use eol
+							sendLine(characters.toString());
+						}
 												
 					} else {
 						try {
@@ -116,10 +170,12 @@ public class StreamApplicationThread extends Thread {
 					}
 				}
 				
-				// test here
 				while (reader.ready()) {
-					String line = reader.readLine();
-					sendLine(line);
+					readCharacters();
+					if (send) {
+						// TODO use eol
+						sendLine(characters.toString());
+					}
 				}
 				
 			} catch (IOException e) { // if a file is not created
