@@ -37,7 +37,12 @@ public class OutputPrintThread extends Thread {
 					return;
 				}
 				
-				System.out.println(stream.getMessage());
+				if (stream.isEndOfLine()) {
+					System.out.println(stream.getMessage());
+				}
+				else {
+					System.out.print(stream.getMessage());
+				}
 			}
 			
 		} catch (Exception e) {

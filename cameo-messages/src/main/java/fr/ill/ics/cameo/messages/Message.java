@@ -128,6 +128,7 @@ public class Message {
 	public static class ApplicationStream {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String MESSAGE = "message"; // required string message = 2;
+		public static final String EOL = "eol"; // boolean
 	}
 
 	public static class SendParametersRequest {

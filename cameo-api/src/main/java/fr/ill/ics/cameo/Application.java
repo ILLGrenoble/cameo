@@ -522,11 +522,13 @@ public class Application {
 		
 		private int id;
 		private String message;
+		private boolean endOfLine;
 			
-		public Output(int id, String message) {
+		public Output(int id, String message, boolean endOfLine) {
 			super();
 			this.id = id;
 			this.message = message;
+			this.endOfLine = endOfLine;
 		}
 
 		public int getId() {
@@ -536,10 +538,14 @@ public class Application {
 		public String getMessage() {
 			return message;
 		}
+		
+		public boolean isEndOfLine() {
+			return endOfLine;
+		}
 
 		@Override
 		public String toString() {
-			return "ApplicationStream [id=" + id + ", message=" + message + "]";
+			return "ApplicationStream [id=" + id + ", message=" + message + " eol=" + endOfLine + "]";
 		}
 
 	}

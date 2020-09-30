@@ -57,7 +57,7 @@ public class StreamApplicationThread extends Thread {
 		publisher = manager.getStreamPublisher(application.getName()); 
 	}
 	
-	private void sendLine(String line) {
+	private void sendMessage(String line, boolean endOfLine) {
 		
 		// prepare our context and publisher
 		if (application.isWriteStream()) {
@@ -80,6 +80,7 @@ public class StreamApplicationThread extends Thread {
 			JSONObject event = new JSONObject();
 			event.put(Message.ApplicationStream.ID, application.getId());
 			event.put(Message.ApplicationStream.MESSAGE, line);
+			event.put(Message.ApplicationStream.EOL, endOfLine);
 			
 			publisher.sendMore("STREAM");
 			publisher.send(Message.serialize(event), 0);
@@ -139,6 +140,7 @@ public class StreamApplicationThread extends Thread {
 		// The process is now accessible and cannot be null.
 		InputStreamReader is = new InputStreamReader(application.getProcess().getInputStream());
 		reader = new BufferedReader(is);
+				
 		if (application.isWriteStream()) {
 			createFile(application.getLogPath());
 			if (fileOutputStream == null) {
@@ -157,11 +159,10 @@ public class StreamApplicationThread extends Thread {
 					if (reader.ready()) {
 						readCharacters();
 						if (send) {
-							// TODO use eol
-							sendLine(characters.toString());
+							sendMessage(characters.toString(), eol);
 						}
-												
-					} else {
+					}							
+					else {
 						try {
 							Thread.sleep(ConfigManager.getInstance().getPollingTime());
 						} catch (InterruptedException e) {
@@ -173,8 +174,7 @@ public class StreamApplicationThread extends Thread {
 				while (reader.ready()) {
 					readCharacters();
 					if (send) {
-						// TODO use eol
-						sendLine(characters.toString());
+						sendMessage(characters.toString(), eol);
 					}
 				}
 				
@@ -217,6 +217,7 @@ public class StreamApplicationThread extends Thread {
 			JSONObject event = new JSONObject();
 			event.put(Message.ApplicationStream.ID, application.getId());
 			event.put(Message.ApplicationStream.MESSAGE, "endstream");
+			event.put(Message.ApplicationStream.EOL, true);
 			
 			publisher.sendMore("ENDSTREAM");
 			publisher.send(Message.serialize(event), 0);

@@ -67,8 +67,9 @@ public class OutputStreamSocket {
 			
 			int id = JSON.getInt(stream, Message.ApplicationStream.ID);
 			String line = JSON.getString(stream, Message.ApplicationStream.MESSAGE);
+			boolean endOfLine = JSON.getBoolean(stream, Message.ApplicationStream.EOL);
 			
-			return new Application.Output(id, line);
+			return new Application.Output(id, line, endOfLine);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
