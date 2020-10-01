@@ -418,17 +418,15 @@ public class Application {
 		private boolean singleInstance;
 		private boolean restart;
 		private int startingTime;
-		private int retries;
 		private int stoppingTime;
 
-		public Configuration(String name, String description, boolean singleInstance, boolean restart, int startingTime, int retries, int stoppingTime) {
+		public Configuration(String name, String description, boolean singleInstance, boolean restart, int startingTime, int stoppingTime) {
 			super();
 			this.description = description;
 			this.singleInstance = singleInstance;
 			this.restart = restart;
 			this.name = name;
 			this.startingTime = startingTime;
-			this.retries = retries;
 			this.stoppingTime = stoppingTime;
 		}
 
@@ -452,17 +450,13 @@ public class Application {
 			return startingTime;
 		}
 
-		public int getRetries() {
-			return retries;
-		}
-
 		public int getStoppingTime() {
 			return stoppingTime;
 		}
 		
 		@Override
 		public String toString() {
-			return "[name=" + name + ", description=" + description + ", single instance=" + singleInstance + ", restart=" + restart + ", starting time=" + startingTime + ", retries=" + retries + ", stopping time=" + stoppingTime + "]";
+			return "[name=" + name + ", description=" + description + ", single instance=" + singleInstance + ", restart=" + restart + ", starting time=" + startingTime + ", stopping time=" + stoppingTime + "]";
 		}
 
 	}

@@ -67,7 +67,6 @@ public class Message {
 		public static final String RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
 		public static final String RESTART = "restart"; // required bool restart = 4;
 		public static final String STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
-		public static final String RETRIES = "retries"; // required int32 retries = 6;
 		public static final String STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 

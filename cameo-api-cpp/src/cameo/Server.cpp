@@ -314,7 +314,6 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 		bool runsSingle = config[message::ApplicationConfig::RUNS_SINGLE].GetBool();
 		bool restart = config[message::ApplicationConfig::RESTART].GetBool();
 		int startingTime = config[message::ApplicationConfig::STARTING_TIME].GetInt();
-		int retries = config[message::ApplicationConfig::RETRIES].GetInt();
 		int stoppingTime = config[message::ApplicationConfig::STOPPING_TIME].GetInt();
 
 		application::Configuration applicationConfig(name,
@@ -322,7 +321,6 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 				runsSingle,
 				restart,
 				startingTime,
-				retries,
 				stoppingTime);
 
 		configs.push_back(applicationConfig);

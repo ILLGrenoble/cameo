@@ -20,7 +20,6 @@ public class ManagedApplication extends Application {
 		this.setDescription(config.getDescription());
 		this.setDirectory(config.getDirectory());
 		this.setStartingTime(config.getStartingTime());
-		this.setRetries(config.getRetries());
 		this.setLogPath(config.getLogPath());
 		this.setStream(config.hasStream());
 		this.setStreamPort(config.getStreamPort());

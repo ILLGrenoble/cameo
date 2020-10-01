@@ -390,10 +390,9 @@ public class ServerImpl extends ServicesImpl {
 				boolean runsSingle = JSON.getBoolean(config, Message.ApplicationConfig.RUNS_SINGLE);
 				boolean restart = JSON.getBoolean(config, Message.ApplicationConfig.RESTART);
 				int startingTime = JSON.getInt(config, Message.ApplicationConfig.STARTING_TIME);
-				int retries = JSON.getInt(config, Message.ApplicationConfig.RETRIES);
 				int stoppingTime = JSON.getInt(config, Message.ApplicationConfig.STOPPING_TIME);
 			
-				applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, retries, stoppingTime));
+				applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, stoppingTime));
 			}
 		}
 		catch (ParseException e) {

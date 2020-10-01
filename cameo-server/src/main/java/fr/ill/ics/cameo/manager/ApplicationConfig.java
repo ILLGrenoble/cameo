@@ -29,7 +29,6 @@ public class ApplicationConfig {
 	protected String description = "";
 	protected String directory;
 	protected int startingTime = 0;
-	protected int retries = 0;
 	protected String logPath;
 	protected boolean stream = true;
 	protected int streamPort = -1;
@@ -166,30 +165,6 @@ public class ApplicationConfig {
 		}
 	}
 
-	public int getRetries() {
-		return retries;
-	}
-
-	public void setRetries(String retries) {
-		try {
-			if (retries == null) {
-				// default value
-				this.retries = 0;
-			} else {
-				this.retries = Integer.parseInt(retries);
-				if (this.retries < 0) {
-					this.retries = 0;
-				}
-			}
-		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'retries' in configuration file");
-			System.exit(-1);
-		} catch (NullPointerException e) {
-			System.err.println("Error with property 'retries' in configuration file, 'retries' is necessary");
-			System.exit(-1);
-		}
-	}
-
 	public String getLogPath() {
 		return logPath;
 	}
@@ -235,10 +210,6 @@ public class ApplicationConfig {
 	
 	public void setStartingTime(int startingTime) {
 		this.startingTime = startingTime;
-	}
-
-	public void setRetries(int retries) {
-		this.retries = retries;
 	}
 
 	public int getStoppingTime() {
@@ -413,7 +384,7 @@ public class ApplicationConfig {
 			stopArgsString = String.join(" ", stopArgs);
 		}	
 		
-		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorComand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", retries=" + retries + ", logDirectory=" + logPath + ", stream=" + stream + ", streamPort=" + streamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + passInfo + "]";
+		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorComand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + stream + ", streamPort=" + streamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + passInfo + "]";
 	}
 	
 }

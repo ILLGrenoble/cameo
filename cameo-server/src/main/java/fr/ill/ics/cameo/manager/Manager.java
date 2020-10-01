@@ -368,8 +368,7 @@ public class Manager extends ConfigLoader {
 			ApplicationInfo applicationInfo = new ApplicationInfo(application.getId(),
 												application.getPid(),
 												application.getApplicationState(), 
-												application.getPastApplicationStates(), 
-												application.getProcessState(), 
+												application.getPastApplicationStates(),
 												args, 
 												application.hasToStop(), 
 												application.hasStream(), 
@@ -380,7 +379,6 @@ public class Manager extends ConfigLoader {
 												application.getName(), 
 												application.getStartExecutable(), 
 												application.getStartingTime(), 
-												application.getRetries(), 
 												application.getLogPath(), 
 												application.getStoppingTime(), 
 												application.getStopExecutable());

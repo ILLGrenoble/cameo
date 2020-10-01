@@ -22,7 +22,6 @@ public class ApplicationInfo {
 	private int id;
 	private int applicationState;
 	private int pastApplicationStates;
-	private ProcessState processState;
 	private long pid;
 	private String args;
 	private boolean hasToStop = false;
@@ -34,23 +33,21 @@ public class ApplicationInfo {
 	private String name;
 	private String exec;
 	private int startingTime;
-	private int retries;
 	private String outputPath;
 	private int stopTimeout;
 	private String stopCommand;
 
 	public ApplicationInfo(int id, long pid, int applicationState, int pastApplicationStates,
-			ProcessState processState, String args, boolean hasToStop,
+			String args, boolean hasToStop,
 			boolean showStream, boolean writeStream, boolean single,
 			boolean restart, boolean passInfo,
-			String name, String exec, int startingTime, int retries,
+			String name, String exec, int startingTime,
 			String outputPath, int stopTimeout, String stopCommand) {
 		super();
 		this.id = id;
 		this.pid = pid;
 		this.applicationState = applicationState;
 		this.pastApplicationStates = pastApplicationStates;
-		this.processState = processState;
 		this.args = args;
 		this.hasToStop = hasToStop;
 		this.showStream = showStream;
@@ -61,7 +58,6 @@ public class ApplicationInfo {
 		this.name = name;
 		this.exec = exec;
 		this.startingTime = startingTime;
-		this.retries = retries;
 		this.outputPath = outputPath;
 		this.stopTimeout = stopTimeout;
 		this.stopCommand = stopCommand;
@@ -77,10 +73,6 @@ public class ApplicationInfo {
 	
 	public int getPastApplicationStates() {
 		return pastApplicationStates;
-	}
-
-	public ProcessState getProcessState() {
-		return processState;
 	}
 
 	public long getPid() {
@@ -127,10 +119,6 @@ public class ApplicationInfo {
 		return startingTime;
 	}
 
-	public int getRetries() {
-		return retries;
-	}
-
 	public String getOutputPath() {
 		return outputPath;
 	}
@@ -149,7 +137,7 @@ public class ApplicationInfo {
 
 	@Override
 	public String toString() {
-		return "ApplicationInfo [id=" + id + ", applicationState=" + applicationState + ", processState=" + processState + ", args=" + args + ", hasToStop=" + hasToStop + ", showStream=" + showStream + ", writeStream=" + writeStream + ", single=" + single + ", restart=" + restart + ", passInfo=" + passInfo + ", name=" + name + ", exec=" + exec + ", startingTime=" + startingTime + ", retries=" + retries + ", outputPath=" + outputPath + ", stopTimeout=" + stopTimeout + ", stopCommand=" + stopCommand + "]";
+		return "ApplicationInfo [id=" + id + ", applicationState=" + applicationState + ", args=" + args + ", hasToStop=" + hasToStop + ", showStream=" + showStream + ", writeStream=" + writeStream + ", single=" + single + ", restart=" + restart + ", passInfo=" + passInfo + ", name=" + name + ", exec=" + exec + ", startingTime=" + startingTime + ", outputPath=" + outputPath + ", stopTimeout=" + stopTimeout + ", stopCommand=" + stopCommand + "]";
 	}
 
 }

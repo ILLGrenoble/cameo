@@ -376,7 +376,6 @@ public class RequestProcessor {
 			applicationInfo.put(Message.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
 			applicationInfo.put(Message.ApplicationConfig.RESTART, application.isRestart());
 			applicationInfo.put(Message.ApplicationConfig.STARTING_TIME, application.getStartingTime());
-			applicationInfo.put(Message.ApplicationConfig.RETRIES, application.getRetries());
 			applicationInfo.put(Message.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
 			
 			array.add(applicationInfo);

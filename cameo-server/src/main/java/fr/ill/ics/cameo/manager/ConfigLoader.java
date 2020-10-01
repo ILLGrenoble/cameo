@@ -167,7 +167,6 @@ public abstract class ConfigLoader {
 			}
 						
 			application.setStartingTime(item.getAttributeValue("starting_time"));
-			application.setRetries(item.getAttributeValue("retries"));
 			application.setStoppingTime(item.getAttributeValue("stopping_time"));
 			application.setStopExecutable(item.getAttributeValue("stop_command"));
 			application.setRunMultiple(item.getAttributeValue("multiple"));
