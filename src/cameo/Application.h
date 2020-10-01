@@ -476,14 +476,13 @@ class Configuration {
 	friend std::ostream& operator<<(std::ostream&, const Configuration&);
 
 public:
-	Configuration(const std::string& name, const std::string& description, bool singleInfo, bool restart, int startingTime, int retries, int stoppingTime);
+	Configuration(const std::string& name, const std::string& description, bool singleInfo, bool restart, int startingTime, int stoppingTime);
 
 	const std::string& getName() const;
 	const std::string& getDescription() const;
 	bool hasSingleInstance() const;
 	bool canRestart() const;
 	int getStartingTime() const;
-	int getRetries() const;
 	int getStoppingTime() const;
 
 private:
@@ -492,7 +491,6 @@ private:
 	bool m_singleInstance;
 	bool m_restart;
 	int m_startingTime;
-	int m_retries;
 	int m_stoppingTime;
 };
 

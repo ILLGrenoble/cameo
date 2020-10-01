@@ -79,7 +79,6 @@ namespace message {
 		constexpr const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
 		constexpr const char* RESTART = "restart"; // required bool restart = 4;
 		constexpr const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
-		constexpr const char* RETRIES = "retries"; // required int32 retries = 6;
 		constexpr const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 
