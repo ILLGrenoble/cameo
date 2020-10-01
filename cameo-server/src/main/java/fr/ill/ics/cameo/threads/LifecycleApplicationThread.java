@@ -29,7 +29,7 @@ import fr.ill.ics.cameo.manager.ProcessState;
  * It is implemented as a thread that is starting before the execution of the application and stopping after it.
  *
  */
-public class VerifyApplicationThread extends ApplicationThread {
+public class LifecycleApplicationThread extends ApplicationThread {
 
 	private Manager manager;
 	private Logger logger;
@@ -40,7 +40,7 @@ public class VerifyApplicationThread extends ApplicationThread {
 	 * @param manager
 	 * @param logger
 	 */
-	public VerifyApplicationThread(Application application, Manager manager, Logger logger) {
+	public LifecycleApplicationThread(Application application, Manager manager, Logger logger) {
 		super(application);
 		this.manager = manager;
 		this.logger = logger;
@@ -225,7 +225,7 @@ public class VerifyApplicationThread extends ApplicationThread {
 			terminateStreamThread();
 			
 			// Launch a new verification thread here.
-			VerifyApplicationThread applicationThread = new VerifyApplicationThread(application, manager, logger);
+			LifecycleApplicationThread applicationThread = new LifecycleApplicationThread(application, manager, logger);
 			applicationThread.start();
 		}
 		else {

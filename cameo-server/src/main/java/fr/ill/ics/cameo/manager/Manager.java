@@ -38,7 +38,7 @@ import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
-import fr.ill.ics.cameo.threads.VerifyApplicationThread;
+import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 
 public class Manager extends ConfigLoader {
 
@@ -240,7 +240,7 @@ public class Manager extends ConfigLoader {
 		
 		// Threads
 		// Verifiy application thread
-		VerifyApplicationThread verifyThread = new VerifyApplicationThread(application, this, LogInfo.getInstance().getLogger());
+		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, LogInfo.getInstance().getLogger());
 		verifyThread.start();
 		
 		LogInfo.getInstance().getLogger().fine("Application " + application.getNameId() + " write stream = " + application.isWriteStream() + ", show stream = " + application.hasStream());
@@ -824,7 +824,7 @@ public class Manager extends ConfigLoader {
 		
 		// Threads
 		// Verifiy application thread
-		VerifyApplicationThread verifyThread = new VerifyApplicationThread(application, this, LogInfo.getInstance().getLogger());
+		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, LogInfo.getInstance().getLogger());
 		verifyThread.start();
 		
 		LogInfo.getInstance().getLogger().fine("Unmanaged application " + application.getNameId() + " is started");

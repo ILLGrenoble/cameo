@@ -30,6 +30,11 @@ import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Message;
 
+/**
+ * Class getting the stream from the process input stream.
+ * It is implemented as a thread.
+ *
+ */
 public class StreamApplicationThread extends ApplicationThread {
 
 	private BufferedReader reader;
@@ -41,8 +46,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	private FileOutputStream fileOutputStream;
 	
 	/**
-	 * used to listen stream
-	 * 
+	 * Constructor. 
 	 * @param application
 	 * @param logger
 	 * @param streamName
@@ -56,19 +60,24 @@ public class StreamApplicationThread extends ApplicationThread {
 	
 	private void sendMessage(String line, boolean endOfLine) {
 		
-		// prepare our context and publisher
+		// Prepare the file if the log is written.
 		if (application.isWriteStream()) {
-			if (fileOutputStream == null) { // if we have to write log but file is not yet created
+			if (fileOutputStream == null) { 
+				// Create the log file if it has not been created.
 				createFile(application.getLogPath());
 			}
 			try {
 				if (fileOutputStream != null) {
 					fileOutputStream.write(line.getBytes());
-					fileOutputStream.write("\n".getBytes());
+					
+					// Finish the line.
+					if (endOfLine) {
+						fileOutputStream.write("\n".getBytes());
+					}
 				}
-				
-			} catch (IOException e) {
-				System.err.println("error writing stream");
+			}
+			catch (IOException e) {
+				LogInfo.getInstance().getLogger().severe("Error while writing stream to file for " + application.getNameId() + " : " + e.getMessage());
 			}
 		}
 
@@ -130,7 +139,9 @@ public class StreamApplicationThread extends ApplicationThread {
 					send = true;
 				}
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Error while reading stream to file for " + application.getNameId() + " : " + e.getMessage());
 		}
 	}
 	
@@ -172,20 +183,16 @@ public class StreamApplicationThread extends ApplicationThread {
 						sendMessage(characters.toString(), eol);
 					}
 				}
-				
-			} catch (IOException e) { // if a file is not created
+			}
+			catch (IOException e) {
 				LogInfo.getInstance().getLogger().severe("Reader error for application " + application.getNameId());
 			}
-			
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			LogInfo.getInstance().getLogger().severe("Problem while streaming " + application.getNameId());
-			
-		} finally {
+		}
+		finally {
 
 			sendEndOfStream();
 			
-			// close the file properly
+			// Close the file properly.
 			try {
 				if (fileOutputStream != null) {
 					fileOutputStream.flush();
@@ -194,19 +201,17 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 				
 			} catch (IOException e) {
-				LogInfo.getInstance().getLogger().severe("Problem while closing log file of " + application.getNameId());
+				LogInfo.getInstance().getLogger().severe("Problem while closing log file of " + application.getNameId() + " : " + e.getMessage());
 			}
 			
 		}
 		
 		LogInfo.getInstance().getLogger().info("Finished listening stream for application " + application.getNameId());
-	
 	}
 
 	public void sendEndOfStream() {
-		// send the end of stream
-		// the message was originally done in manager when the application was terminated
-		// but not the stream thread because they are not synchronized
+		// Send the end of stream.
+		// The message was originally done in manager when the application was terminated but not the stream thread because they are not synchronized.
 		if (application.hasStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
@@ -220,26 +225,26 @@ public class StreamApplicationThread extends ApplicationThread {
 	}
 	
 	/**
-	 * create file to log
-	 * 
+	 * Create the log file.
 	 * @param path
-	 * @return
 	 */
 	private void createFile(String path) {
 		
-		// no creation if path is empty
+		// Do not create if the path is empty.
 		if (path.isEmpty()) {
 			return;
 		}
 		
 		File file = null;
-		// create file
+		
+		// Create the file.
 		try {
 			file = new java.io.File(path + "/" + application.getNameId() + ".log");
 			file.createNewFile();
 			fileOutputStream = new FileOutputStream(file);
-		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Unable to create file " + file.getAbsolutePath() +  " for application " + application.getNameId());
+		}
+		catch (IOException e) {
+			LogInfo.getInstance().getLogger().severe("Unable to create file " + file.getAbsolutePath() +  " for application " + application.getNameId() + " : " + e.getMessage());
 		}
 	}
 }
