@@ -3,6 +3,7 @@
 
 * Replaced protobuf by JSON.
 * In StreamApplicationThread, replaced reader.readLine() by a specialised readCharacters() method to manage properly the input streams (output from the cameo server, input from the process).
+* Removed the retries attribute of an application.
 
 0.1.8
 -----
