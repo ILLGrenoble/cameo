@@ -1095,14 +1095,13 @@ bool Requester::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Configuration
 
-Configuration::Configuration(const std::string& name, const std::string& description, bool singleInstance, bool restart, int startingTime, int retries, int stoppingTime) {
+Configuration::Configuration(const std::string& name, const std::string& description, bool singleInstance, bool restart, int startingTime, int stoppingTime) {
 
 	m_name = name;
 	m_description = description;
 	m_singleInstance = singleInstance;
 	m_restart = restart;
 	m_startingTime = startingTime;
-	m_retries = retries;
 	m_stoppingTime = stoppingTime;
 }
 
@@ -1124,10 +1123,6 @@ bool Configuration::canRestart() const {
 
 int Configuration::getStartingTime() const {
 	return m_startingTime;
-}
-
-int Configuration::getRetries() const {
-	return m_retries;
 }
 
 int Configuration::getStoppingTime() const {
@@ -1301,7 +1296,6 @@ std::ostream& operator<<(std::ostream& os, const application::Configuration& inf
 			<< ", single instance=" << info.m_singleInstance
 			<< ", restart=" << info.m_restart
 			<< ", starting time=" << info.m_startingTime
-			<< ", retries=" << info.m_retries
 			<< ", stopping time=" << info.m_stoppingTime << "]";
 
 	return os;
