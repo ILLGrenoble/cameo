@@ -26,14 +26,12 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
-import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Message;
 
-public class StreamApplicationThread extends Thread {
+public class StreamApplicationThread extends ApplicationThread {
 
-	private Application application;
 	private BufferedReader reader;
 	private char lastChar = ' ';
 	private StringBuffer characters = new StringBuffer(1024);
@@ -50,8 +48,7 @@ public class StreamApplicationThread extends Thread {
 	 * @param streamName
 	 */
 	public StreamApplicationThread(Application application, Manager manager) {
-		super();
-		this.application = application;
+		super(application);
 		
 		// we get the application by the name as the publisher is shared among the different instances
 		publisher = manager.getStreamPublisher(application.getName()); 
@@ -165,11 +162,7 @@ public class StreamApplicationThread extends Thread {
 						}
 					}							
 					else {
-						try {
-							Thread.sleep(ConfigManager.getInstance().getPollingTime());
-						} catch (InterruptedException e) {
-							// do nothing
-						}
+						sleep();
 					}
 				}
 				

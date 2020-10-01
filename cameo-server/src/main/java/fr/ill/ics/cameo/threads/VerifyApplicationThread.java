@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationState;
-import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.LogInfo;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.ProcessState;
@@ -30,9 +29,8 @@ import fr.ill.ics.cameo.manager.ProcessState;
  * It is implemented as a thread that is starting before the execution of the application and stopping after it.
  *
  */
-public class VerifyApplicationThread extends Thread {
+public class VerifyApplicationThread extends ApplicationThread {
 
-	private Application application;
 	private Manager manager;
 	private Logger logger;
 
@@ -43,8 +41,7 @@ public class VerifyApplicationThread extends Thread {
 	 * @param logger
 	 */
 	public VerifyApplicationThread(Application application, Manager manager, Logger logger) {
-		super();
-		this.application = application;
+		super(application);
 		this.manager = manager;
 		this.logger = logger;
 	}
@@ -92,7 +89,7 @@ public class VerifyApplicationThread extends Thread {
 
 			// Pass result to error callback.
 			if (result != 0 && !application.hasToBeKilled()) {
-				logger.info("Application " + application.getNameId() + " returned error code " + result);
+				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " returned error code " + result);
 				
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
@@ -111,7 +108,7 @@ public class VerifyApplicationThread extends Thread {
 	
 	public void run() {
 		
-		logger.info("Thread for application " + application.getNameId() + " started");
+		LogInfo.getInstance().getLogger().info("Thread for application " + application.getNameId() + " started");
 		manager.setApplicationProcessState(application, ProcessState.RUNNING);
 		manager.setApplicationState(application, ApplicationState.STARTING);
 		application.start();
@@ -119,7 +116,7 @@ public class VerifyApplicationThread extends Thread {
 		// Wait starting time if starting time > 0.
 		boolean forceRunning = false;
 		
-		logger.info("Waiting end of starting time for " + application.getNameId());
+		LogInfo.getInstance().getLogger().info("Waiting end of starting time for " + application.getNameId());
 
 		double start = System.currentTimeMillis();
 		
@@ -129,7 +126,7 @@ public class VerifyApplicationThread extends Thread {
 			if (!application.isAlive()) {
 				
 				if (application.getStartingTime() > 0) {
-					logger.warning("Application " + application.getNameId() + " stopped running while starting time");
+					LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " stopped running while starting time");
 				}
 				break;
 			}
@@ -137,11 +134,7 @@ public class VerifyApplicationThread extends Thread {
 				manager.startApplicationStreamThread(application);
 			}
 
-			try {
-				Thread.sleep(ConfigManager.getInstance().getPollingTime());
-			}
-			catch (InterruptedException e) {
-			}
+			sleep();
 
 			// The application can have change its current state.
 			int currentState = application.getApplicationState();
@@ -158,26 +151,21 @@ public class VerifyApplicationThread extends Thread {
 			manager.setApplicationState(application, ApplicationState.RUNNING);
 
 			if (forceRunning && application.getStartingTime() > 0) {
-				logger.info("Application " + application.getNameId() + " is RUNNING before starting time expired");
+				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " is RUNNING before starting time expired");
 			}
 			else {
-				logger.info("Application " + application.getNameId() + " is now RUNNING");
+				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " is now RUNNING");
 			}
 		}
 
 		// Loop while application is alive and has not to stop.
 		while (application.isAlive() && !application.hasToStop()) {
-
-			try {
-				Thread.sleep(ConfigManager.getInstance().getPollingTime());
-			}
-			catch (InterruptedException e) {
-			}
+			sleep();
 		}
 
 		// If the application has to stop.
 		if (application.hasToStop()) {
-			logger.info("Application " + application.getNameId() + " has to stop");
+			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " has to stop");
 			manager.setApplicationProcessState(application, ProcessState.ZOMBIE);
 			
 			// Test if application is stopped nicely.
@@ -194,10 +182,10 @@ public class VerifyApplicationThread extends Thread {
 				double time = System.currentTimeMillis();
 				
 				if (application.getStoppingTime() > 0) {
-					logger.info("Waiting for the application " + application.getNameId() + " to stop before " + application.getStoppingTime() + "s");
+					LogInfo.getInstance().getLogger().info("Waiting for the application " + application.getNameId() + " to stop before " + application.getStoppingTime() + "s");
 				}
 				else {
-					logger.info("Waiting for the application " + application.getNameId() + " to stop");
+					LogInfo.getInstance().getLogger().info("Waiting for the application " + application.getNameId() + " to stop");
 				}
 
 				// In case stopping time is -1, we wait indefinitely.
@@ -205,18 +193,14 @@ public class VerifyApplicationThread extends Thread {
 					&& (!application.isTimeout((System.currentTimeMillis() - time) / 1000.0))
 					&& (!application.hasToBeKilled())) {
 
-					try {
-						Thread.sleep(ConfigManager.getInstance().getPollingTime());
-					}
-					catch (InterruptedException e) {
-					}
+					sleep();
 				}
 			}
 
 			// If process is still alive (timeout is over) or stop is immediate.
 			if (application.isAlive()) {
 				if (!application.hasToBeKilled()) {
-					logger.warning("Application " + application.getNameId() + " must be killed due to stop timeout");
+					LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " must be killed due to stop timeout");
 				}	
 				application.kill();
 				manager.setApplicationState(application, ApplicationState.KILLED);
@@ -233,7 +217,7 @@ public class VerifyApplicationThread extends Thread {
 		// If application died with state RUNNING.
 		// In case the application can restart.
 		else if (application.getApplicationState() == ApplicationState.RUNNING && application.isRestart()) {
-			logger.warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
+			LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
 			
 			onTermination();
 			
@@ -245,7 +229,7 @@ public class VerifyApplicationThread extends Thread {
 			applicationThread.start();
 		}
 		else {
-			logger.info("Application " + application.getNameId() + " has terminated");
+			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " has terminated");
 			
 			if (!onTermination()) {
 				manager.setApplicationState(application, ApplicationState.ERROR);
