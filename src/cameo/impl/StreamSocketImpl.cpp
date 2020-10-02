@@ -15,14 +15,12 @@
  */
 
 #include "StreamSocketImpl.h"
-
+#include "../message/Message.h"
 #include <iostream>
 
 using namespace std;
 
 namespace cameo {
-
-const std::string StreamSocketImpl::CANCEL = "CANCEL";
 
 StreamSocketImpl::StreamSocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket) :
 	m_socket(socket), m_cancelSocket(cancelSocket) {
@@ -52,12 +50,13 @@ std::unique_ptr<zmq::message_t> StreamSocketImpl::receive(bool blocking) {
 }
 
 void StreamSocketImpl::cancel() {
+
 	if (m_cancelSocket.get() != nullptr) {
-		zmq::message_t requestType(CANCEL.length());
-		string data("cancel");
+		string data(message::Event::CANCEL);
+		zmq::message_t requestType(data.length());
 		zmq::message_t requestData(data.length());
-		memcpy((void *) requestType.data(), CANCEL.c_str(), CANCEL.length());
-		memcpy((void *) requestData.data(), data.c_str(), data.length());
+		memcpy(requestType.data(), message::Event::CANCEL, data.length());
+		memcpy(requestData.data(), data.c_str(), data.length());
 		m_cancelSocket->send(requestType, ZMQ_SNDMORE);
 		m_cancelSocket->send(requestData);
 	}

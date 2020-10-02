@@ -58,13 +58,13 @@ bool OutputStreamSocket::receive(Output& output) {
 
 	string response(message->data<char>(), message->size());
 
-	if (response == ServicesImpl::STREAM) {
+	if (response == message::Event::STREAM) {
 	}
-	else if (response == ServicesImpl::ENDSTREAM) {
+	else if (response == message::Event::ENDSTREAM) {
 		m_ended = true;
 		return false;
 	}
-	else if (response == ServicesImpl::CANCEL) {
+	else if (response == message::Event::CANCEL) {
 		m_canceled = true;
 		return false;
 	}
@@ -100,7 +100,7 @@ bool OutputStreamSocket::isCanceled() const {
 
 WaitingImpl * OutputStreamSocket::waiting() {
 	// We transfer the ownership of cancel socket to WaitingImpl
-	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), "CANCEL");
+	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), message::Event::CANCEL);
 }
 
 }
