@@ -99,6 +99,10 @@ const std::string& Services::getUrl() const {
 	return m_url;
 }
 
+std::array<int, 3> Services::getVersion() const {
+	return m_serverVersion;
+}
+
 int Services::getPort() const {
 	return m_port;
 }
