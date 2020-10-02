@@ -36,8 +36,6 @@ public:
 
 	std::unique_ptr<zmq::socket_t> m_socket;
 	std::unique_ptr<zmq::socket_t> m_cancelSocket;
-
-	static const std::string CANCEL;
 };
 
 }

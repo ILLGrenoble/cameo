@@ -58,12 +58,6 @@ public:
 	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
 	bool m_ended;
 	bool m_canceled;
-
-	static const std::string SYNC;
-	static const std::string STREAM;
-	static const std::string ENDSTREAM;
-	static const std::string CANCEL;
-	static const std::string STATUS;
 };
 
 }

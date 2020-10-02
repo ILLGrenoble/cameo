@@ -46,7 +46,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 	string response(static_cast<char*>(message->data()), message->size());
 
-	if (response == "STATUS") {
+	if (response == message::Event::STATUS) {
 
 		message = m_impl->receive();
 
@@ -61,7 +61,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates));
 	}
-	else if (response == "RESULT") {
+	else if (response == message::Event::RESULT) {
 
 		message = m_impl->receive();
 
@@ -78,7 +78,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return unique_ptr<Event>(new ResultEvent(id, name, data));
 	}
-	else if (response == "PUBLISHER") {
+	else if (response == message::Event::PUBLISHER) {
 
 		message = m_impl->receive();
 
@@ -92,7 +92,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return unique_ptr<Event>(new PublisherEvent(id, name, publisherName));
 	}
-	else if (response == "PORT") {
+	else if (response == message::Event::PORT) {
 
 		message = m_impl->receive();
 
@@ -106,7 +106,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return unique_ptr<Event>(new PortEvent(id, name, portName));
 	}
-	else if (response == "CANCEL") {
+	else if (response == message::Event::CANCEL) {
 
 		message = m_impl->receive();
 
@@ -124,7 +124,7 @@ void EventStreamSocket::cancel() {
 
 WaitingImpl * EventStreamSocket::waiting() {
 	// We transfer the ownership of cancel socket to WaitingImpl
-	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), "CANCEL");
+	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), message::Event::CANCEL);
 }
 
 }

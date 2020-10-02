@@ -15,10 +15,10 @@
  */
 
 #include "SocketWaitingImpl.h"
-
-#include <iostream>
 #include "../Application.h"
+#include "../message/Message.h"
 #include "WaitingImplSet.h"
+#include <iostream>
 
 using namespace std;
 
@@ -46,10 +46,10 @@ SocketWaitingImpl::~SocketWaitingImpl() {
 void SocketWaitingImpl::cancel() {
 
 	zmq::message_t requestType(m_message.length());
-	string data("CANCEL");
+	string data(message::Event::CANCEL);
 	zmq::message_t requestData(data.length());
-	memcpy((void *) requestType.data(), m_message.c_str(), m_message.length());
-	memcpy((void *) requestData.data(), data.c_str(), data.length());
+	memcpy(requestType.data(), m_message.c_str(), m_message.length());
+	memcpy(requestData.data(), data.c_str(), data.length());
 	m_socket->send(requestType, ZMQ_SNDMORE);
 	m_socket->send(requestData);
 }
