@@ -471,13 +471,13 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(url + ":" + port);
-		subscriber.subscribe(STREAM);
-		subscriber.subscribe(ENDSTREAM);
+		subscriber.subscribe(Message.Event.STREAM);
+		subscriber.subscribe(Message.Event.ENDSTREAM);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(CANCEL);
+		subscriber.subscribe(Message.Event.CANCEL);
 		
 		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);

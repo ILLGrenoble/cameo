@@ -32,11 +32,6 @@ public class OutputStreamSocket {
 	private boolean ended = false;
 	private boolean canceled = false;
 
-	protected static final String STREAM = "STREAM";
-	protected static final String ENDSTREAM = "ENDSTREAM";
-	protected static final String CANCEL = "CANCEL";
-
-	
 	public OutputStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
 		this.services = services;
@@ -48,13 +43,13 @@ public class OutputStreamSocket {
 		
 		String message = this.socket.recvStr();
 				
-		if (message.equals(STREAM)) {
+		if (message.equals(Message.Event.STREAM)) {
 		}
-		else if (message.equals(ENDSTREAM)) {
+		else if (message.equals(Message.Event.ENDSTREAM)) {
 			ended = true;
 			return null;
 		}
-		else if (message.equals(CANCEL)) {
+		else if (message.equals(Message.Event.CANCEL)) {
 			canceled = true;
 			return null;
 		}
@@ -86,8 +81,8 @@ public class OutputStreamSocket {
 	}
 	
 	public void cancel() {
-		cancelSocket.sendMore(CANCEL);
-		cancelSocket.send("cancel");
+		cancelSocket.sendMore(Message.Event.CANCEL);
+		cancelSocket.send(Message.Event.CANCEL);
 	}
 	
 	public void destroy() {

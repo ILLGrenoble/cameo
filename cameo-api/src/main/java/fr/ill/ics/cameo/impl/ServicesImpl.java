@@ -39,14 +39,6 @@ public class ServicesImpl {
 	protected RequestSocket requestSocket;
 	protected JSON.ConcurrentParser parser = new JSON.ConcurrentParser();
 	
-	protected static final String STREAM = "STREAM";
-	protected static final String ENDSTREAM = "ENDSTREAM";
-	protected static final String STATUS = "STATUS";
-	protected static final String RESULT = "RESULT";
-	protected static final String PUBLISHER = "PUBLISHER";
-	protected static final String PORT = "PORT";
-	protected static final String CANCEL = "CANCEL";
-	
 	/**
 	 * Initializes the context and the request socket. The serverEndpoint must have been set.
 	 */
@@ -162,15 +154,15 @@ public class ServicesImpl {
 		statusPort = JSON.getInt(response, Message.RequestResponse.VALUE);
 		
 		subscriber.connect(url + ":" + statusPort);
-		subscriber.subscribe(STATUS);
-		subscriber.subscribe(RESULT);
-		subscriber.subscribe(PUBLISHER);
-		subscriber.subscribe(PORT);
+		subscriber.subscribe(Message.Event.STATUS);
+		subscriber.subscribe(Message.Event.RESULT);
+		subscriber.subscribe(Message.Event.PUBLISHER);
+		subscriber.subscribe(Message.Event.PORT);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(CANCEL);
+		subscriber.subscribe(Message.Event.CANCEL);
 		
 		// polling to wait for connection
 		Zmq.Poller poller = context.createPoller(subscriber);

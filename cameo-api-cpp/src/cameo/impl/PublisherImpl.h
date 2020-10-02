@@ -64,10 +64,6 @@ public:
 	int m_numberOfSubscribers;
 	std::unique_ptr<zmq::socket_t> m_publisher;
 	bool m_ended;
-
-	static const std::string SYNC;
-	static const std::string STREAM;
-	static const std::string ENDSTREAM;
 };
 
 }

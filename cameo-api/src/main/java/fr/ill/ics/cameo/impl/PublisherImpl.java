@@ -26,10 +26,6 @@ import fr.ill.ics.cameo.messages.Message;
 
 public class PublisherImpl {
 
-	private static final String SYNC = "SYNC";
-	private static final String STREAM = "STREAM";
-	private static final String ENDSTREAM = "ENDSTREAM";
-	
 	private ThisImpl application;
 	Zmq.Context context;
 	private int publisherPort;
@@ -159,7 +155,7 @@ public class PublisherImpl {
 
 	public void send(byte[] data) {
 		
-		publisher.sendMore(STREAM);
+		publisher.sendMore(Message.Event.STREAM);
 		publisher.send(data, 0);
 	}
 	
@@ -167,14 +163,14 @@ public class PublisherImpl {
 		
 		byte[] result = Message.serialize(data);
 		
-		publisher.sendMore(STREAM);
+		publisher.sendMore(Message.Event.STREAM);
 		publisher.send(result, 0);
 	}
 	
 	
 	public void sendTwoParts(byte[] data1, byte[] data2) {
 		
-		publisher.sendMore(STREAM);
+		publisher.sendMore(Message.Event.STREAM);
 		publisher.sendMore(data1);
 		publisher.send(data2, 0);
 	}
@@ -182,8 +178,8 @@ public class PublisherImpl {
 	public void sendEnd() {
 		
 		if (!ended) {
-			publisher.sendMore(ENDSTREAM);
-			publisher.send("endstream");
+			publisher.sendMore(Message.Event.ENDSTREAM);
+			publisher.send(Message.Event.ENDSTREAM);
 			
 			ended = true;
 		}
@@ -209,8 +205,8 @@ public class PublisherImpl {
 	
 	private Zmq.Msg processSyncRequest() {
 		// send a dummy SYNC message by the publisher socket
-		publisher.sendMore(SYNC);
-		publisher.send("sync");
+		publisher.sendMore(Message.Event.SYNC);
+		publisher.send(Message.Event.SYNC);
 		
 		Zmq.Msg reply = new Zmq.Msg();
 		reply.add("Connection OK");

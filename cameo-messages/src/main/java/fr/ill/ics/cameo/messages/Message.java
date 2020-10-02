@@ -41,6 +41,17 @@ public class Message {
 	public static final long RESPONSE = 26;
 	public static final long STARTED_UNMANAGED = 27;
 	public static final long TERMINATED_UNMANAGED = 28;
+		
+	public static class Event {
+		public static final String CANCEL = "CANCEL";
+		public static final String STREAM = "STREAM";
+		public static final String ENDSTREAM = "ENDSTREAM";
+		public static final String SYNC = "SYNC";
+		public static final String STATUS = "STATUS";
+		public static final String RESULT = "RESULT";
+		public static final String PORT = "PORT";
+		public static final String PUBLISHER = "PUBLISHER";
+	}
 	
 	public static class StartRequest {
 		public static final String NAME = "name"; // required string name = 1;

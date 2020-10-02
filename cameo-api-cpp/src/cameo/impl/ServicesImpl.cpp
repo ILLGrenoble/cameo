@@ -38,14 +38,6 @@ using namespace std;
 
 namespace cameo {
 
-const std::string ServicesImpl::STATUS = "STATUS";
-const std::string ServicesImpl::RESULT = "RESULT";
-const std::string ServicesImpl::PUBLISHER = "PUBLISHER";
-const std::string ServicesImpl::PORT = "PORT";
-const std::string ServicesImpl::CANCEL = "CANCEL";
-const std::string ServicesImpl::STREAM = "STREAM";
-const std::string ServicesImpl::ENDSTREAM = "ENDSTREAM";
-
 ServicesImpl::ServicesImpl() :
 	m_context(1), m_timeout(0) {
 }
@@ -397,11 +389,11 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
 	vector<string> streamList;
-	streamList.push_back(STATUS);
-	streamList.push_back(RESULT);
-	streamList.push_back(PUBLISHER);
-	streamList.push_back(PORT);
-	streamList.push_back(CANCEL);
+	streamList.push_back(message::Event::STATUS);
+	streamList.push_back(message::Event::RESULT);
+	streamList.push_back(message::Event::PUBLISHER);
+	streamList.push_back(message::Event::PORT);
+	streamList.push_back(message::Event::CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
 		subscriber->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
@@ -418,9 +410,9 @@ zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& en
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
 	vector<string> streamList;
-	streamList.push_back(STREAM);
-	streamList.push_back(ENDSTREAM);
-	streamList.push_back(CANCEL);
+	streamList.push_back(message::Event::STREAM);
+	streamList.push_back(message::Event::ENDSTREAM);
+	streamList.push_back(message::Event::CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
 		subscriber->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());

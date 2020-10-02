@@ -27,12 +27,6 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 
 public class SubscriberImpl {
-
-	private static final String SYNC = "SYNC";
-	private static final String STREAM = "STREAM";
-	private static final String ENDSTREAM = "ENDSTREAM";
-	private static final String CANCEL = "CANCEL";
-	private static final String STATUS = "STATUS";
 	
 	private ServerImpl server;
 	private Zmq.Context context;
@@ -68,9 +62,9 @@ public class SubscriberImpl {
 		subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(url + ":" + publisherPort);
-		subscriber.subscribe(SYNC);
-		subscriber.subscribe(STREAM);
-		subscriber.subscribe(ENDSTREAM);
+		subscriber.subscribe(Message.Event.SYNC);
+		subscriber.subscribe(Message.Event.STREAM);
+		subscriber.subscribe(Message.Event.ENDSTREAM);
 		
 		// Create an endpoint that should be unique
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -81,11 +75,11 @@ public class SubscriberImpl {
 
 		// Subscribe to CANCEL
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(CANCEL);
+		subscriber.subscribe(Message.Event.CANCEL);
 
 		// Subscribe to STATUS
 		subscriber.connect(instance.getStatusEndpoint());
-		subscriber.subscribe(STATUS);
+		subscriber.subscribe(Message.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
@@ -160,18 +154,18 @@ public class SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(STREAM)) {
+			if (message.equals(Message.Event.STREAM)) {
 				return subscriber.recv();
 				
-			} else if (message.equals(ENDSTREAM)) {
+			} else if (message.equals(Message.Event.ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (message.equals(CANCEL)) {
+			} else if (message.equals(Message.Event.CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (message.equals(STATUS)) {
+			} else if (message.equals(Message.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				try {
@@ -212,22 +206,22 @@ public class SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(STREAM)) {
+			if (message.equals(Message.Event.STREAM)) {
 				byte[][] result = new byte[2][];
 				result[0] = subscriber.recv();
 				result[1] = subscriber.recv();
 				
 				return result;
 				
-			} else if (message.equals(ENDSTREAM)) {
+			} else if (message.equals(Message.Event.ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (message.equals(CANCEL)) {
+			} else if (message.equals(Message.Event.CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (message.equals(STATUS)) {
+			} else if (message.equals(Message.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				try {
@@ -276,8 +270,8 @@ public class SubscriberImpl {
 	
 	public void cancel() {
 	
-		cancelPublisher.sendMore(CANCEL);
-		cancelPublisher.send("cancel");
+		cancelPublisher.sendMore(Message.Event.CANCEL);
+		cancelPublisher.send(Message.Event.CANCEL);
 	}
 	
 	public void terminate() {

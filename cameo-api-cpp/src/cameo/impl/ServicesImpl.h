@@ -71,14 +71,6 @@ public:
 
 	zmq::context_t m_context;
 	int m_timeout;
-
-	static const std::string STATUS;
-	static const std::string RESULT;
-	static const std::string PUBLISHER;
-	static const std::string PORT;
-	static const std::string CANCEL;
-	static const std::string STREAM;
-	static const std::string ENDSTREAM;
 };
 
 }

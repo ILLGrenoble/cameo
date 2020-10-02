@@ -28,12 +28,6 @@ using namespace std;
 
 namespace cameo {
 
-const std::string SubscriberImpl::SYNC = "SYNC";
-const std::string SubscriberImpl::STREAM = "STREAM";
-const std::string SubscriberImpl::ENDSTREAM = "ENDSTREAM";
-const std::string SubscriberImpl::CANCEL = "CANCEL";
-const std::string SubscriberImpl::STATUS = "STATUS";
-
 SubscriberImpl::SubscriberImpl(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
 	m_server(server),
 	m_url(url),
@@ -56,11 +50,11 @@ void SubscriberImpl::init() {
 
 	// Create a socket for publishing.
 	m_subscriber.reset(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_SUB));
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, SYNC.c_str(), SYNC.length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, STREAM.c_str(), STREAM.length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, ENDSTREAM.c_str(), ENDSTREAM.length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, CANCEL.c_str(), CANCEL.length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, STATUS.c_str(), STATUS.length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, string(message::Event::SYNC).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, string(message::Event::STREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM, string(message::Event::ENDSTREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, string(message::Event::CANCEL).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, string(message::Event::STATUS).length());
 
 	stringstream pubEndpoint;
 	pubEndpoint << m_url << ":" << m_publisherPort;
@@ -128,22 +122,22 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 
 		string response(static_cast<char*>(message->data()), message->size());
 
-		if (response == STREAM) {
+		if (response == message::Event::STREAM) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 			data = string(static_cast<char*>(message->data()), message->size());
 
 			return true;
 
-		} else if (response == ENDSTREAM) {
+		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
 			return false;
 
-		} else if (response == CANCEL) {
+		} else if (response == message::Event::CANCEL) {
 			m_canceled = true;
 			return false;
 
-		} else if (response == STATUS) {
+		} else if (response == message::Event::STATUS) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 
@@ -193,7 +187,7 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 
 		string response(static_cast<char*>(message->data()), message->size());
 
-		if (response == STREAM) {
+		if (response == message::Event::STREAM) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 			data1 = string(static_cast<char*>(message->data()), message->size());
@@ -204,14 +198,14 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 
 			return true;
 
-		} else if (response == ENDSTREAM) {
+		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
 			return false;
 
-		} else if (response == CANCEL) {
+		} else if (response == message::Event::CANCEL) {
 			return false;
 
-		} else if (response == STATUS) {
+		} else if (response == message::Event::STATUS) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
 
@@ -242,7 +236,7 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 WaitingImpl * SubscriberImpl::waiting() {
 
 	// Waiting gets the cancel publisher.
-	return new SocketWaitingImpl(m_cancelPublisher.get(), CANCEL);
+	return new SocketWaitingImpl(m_cancelPublisher.get(), message::Event::CANCEL);
 }
 
 }

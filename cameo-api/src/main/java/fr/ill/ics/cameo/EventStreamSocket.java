@@ -31,12 +31,6 @@ public class EventStreamSocket {
 	private Zmq.Socket cancelSocket;
 	private boolean canceled = false;
 	
-	private static final String STATUS = "STATUS";
-	private static final String RESULT = "RESULT";
-	private static final String PUBLISHER = "PUBLISHER";
-	private static final String PORT = "PORT";
-	private static final String CANCEL = "CANCEL";
-	
 	public EventStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
 		this.services = services;
@@ -51,7 +45,7 @@ public class EventStreamSocket {
 		
 		// We can receive messages from the status publisher located in the server
 		// as well as messages from the cancel publisher located in the same process.
-		if (message.equals(STATUS)) {
+		if (message.equals(Message.Event.STATUS)) {
 			
 			byte[] statusMessage = this.socket.recv();
 			
@@ -71,7 +65,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(RESULT)) {
+		else if (message.equals(Message.Event.RESULT)) {
 				
 			byte[] resultMessage = this.socket.recv();
 			
@@ -91,7 +85,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(PUBLISHER)) {
+		else if (message.equals(Message.Event.PUBLISHER)) {
 			
 			byte[] publisherMessage = this.socket.recv();
 			
@@ -109,7 +103,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(PORT)) {
+		else if (message.equals(Message.Event.PORT)) {
 			
 			byte[] portMessage = this.socket.recv();
 			
@@ -127,7 +121,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(CANCEL)) {
+		else if (message.equals(Message.Event.CANCEL)) {
 			canceled = true;
 			return null;
 		}
@@ -140,8 +134,8 @@ public class EventStreamSocket {
 	}
 	
 	public void cancel() {
-		cancelSocket.sendMore(CANCEL);
-		cancelSocket.send("cancel");
+		cancelSocket.sendMore(Message.Event.CANCEL);
+		cancelSocket.send(Message.Event.CANCEL);
 	}
 
 	public void destroy() {

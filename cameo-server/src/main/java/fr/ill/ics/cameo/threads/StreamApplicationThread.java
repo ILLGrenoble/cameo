@@ -88,7 +88,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			event.put(Message.ApplicationStream.MESSAGE, line);
 			event.put(Message.ApplicationStream.EOL, endOfLine);
 			
-			publisher.sendMore("STREAM");
+			publisher.sendMore(Message.Event.STREAM);
 			publisher.send(Message.serialize(event), 0);
 		}
 	}
@@ -216,10 +216,10 @@ public class StreamApplicationThread extends ApplicationThread {
 			// Send the stream.
 			JSONObject event = new JSONObject();
 			event.put(Message.ApplicationStream.ID, application.getId());
-			event.put(Message.ApplicationStream.MESSAGE, "endstream");
+			event.put(Message.ApplicationStream.MESSAGE, Message.Event.ENDSTREAM);
 			event.put(Message.ApplicationStream.EOL, true);
 			
-			publisher.sendMore("ENDSTREAM");
+			publisher.sendMore(Message.Event.ENDSTREAM);
 			publisher.send(Message.serialize(event), 0);
 		}
 	}

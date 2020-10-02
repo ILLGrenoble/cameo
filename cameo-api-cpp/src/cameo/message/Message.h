@@ -54,6 +54,17 @@ namespace message {
 	const int STARTED_UNMANAGED = 27;
 	const int TERMINATED_UNMANAGED = 28;
 
+	namespace Event {
+		constexpr const char* CANCEL = "CANCEL";
+		constexpr const char* STREAM = "STREAM";
+		constexpr const char* ENDSTREAM = "ENDSTREAM";
+		constexpr const char* SYNC = "SYNC";
+		constexpr const char* STATUS = "STATUS";
+		constexpr const char* RESULT = "RESULT";
+		constexpr const char* PORT = "PORT";
+		constexpr const char* PUBLISHER = "PUBLISHER";
+	}
+
 	namespace StartRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* ARGS = "args"; // repeated string args = 2;
