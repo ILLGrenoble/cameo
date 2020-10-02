@@ -31,6 +31,7 @@ import fr.ill.ics.cameo.messages.Message;
 public class ServicesImpl {
 
 	protected String serverEndpoint;
+	protected int[] serverVersion = new int[3];
 	protected String url;
 	protected int port;
 	protected int statusPort;
@@ -67,6 +68,10 @@ public class ServicesImpl {
 		return port;
 	}
 	
+	public int[] getVersion() {
+		return serverVersion;
+	}
+	
 	public String getStatusEndpoint() {
 		return url + ":" + statusPort;
 	}
@@ -82,6 +87,14 @@ public class ServicesImpl {
 		
 		// destroying the context
 		context.destroy();
+	}
+	
+	public JSONObject parse(Zmq.Msg reply) throws ParseException {
+		return (JSONObject)parser.parse(Message.parseString(reply.getFirstData()));
+	}
+	
+	public JSONObject parse(byte[] data) throws ParseException {
+		return (JSONObject)parser.parse(Message.parseString(data));
 	}
 	
 	/**
@@ -121,12 +134,22 @@ public class ServicesImpl {
 		}
 	}
 	
-	public JSONObject parse(Zmq.Msg reply) throws ParseException {
-		return (JSONObject)parser.parse(Message.parseString(reply.getFirstData()));
-	}
-	
-	public JSONObject parse(byte[] data) throws ParseException {
-		return (JSONObject)parser.parse(Message.parseString(data));
+	protected void retrieveServerVersion() {
+		
+		Zmq.Msg request = createVersionRequest();
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		try {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			serverVersion[0] = JSON.getInt(response, Message.VersionResponse.MAJOR);
+			serverVersion[1] = JSON.getInt(response, Message.VersionResponse.MINOR);
+			serverVersion[2] = JSON.getInt(response, Message.VersionResponse.REVISION);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
 	}
 	
 	/**
@@ -203,7 +226,6 @@ public class ServicesImpl {
 	/**
 	 * create init request
 	 * 
-	 * @param text
 	 * @return
 	 */
 	protected Zmq.Msg createSyncRequest() {
@@ -211,6 +233,19 @@ public class ServicesImpl {
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SYNC);
 		
+		return message(request);
+	}
+	
+	/**
+	 * create version request
+	 * 
+	 * @return request
+	 */
+	protected Zmq.Msg createVersionRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.IMPL_VERSION);
+
 		return message(request);
 	}
 	

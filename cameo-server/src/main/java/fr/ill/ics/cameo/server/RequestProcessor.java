@@ -42,6 +42,7 @@ import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.StatusInfo;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.server.Server.Version;
 
 /**
  * 
@@ -768,6 +769,19 @@ public class RequestProcessor {
 			
 			return Converter.reply(response);
 		}		
+	}
+
+	public Msg processVersion(Version version) {
+		
+		LogInfo.getInstance().getLogger().fine("Received Version request");
+		
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Message.VersionResponse.MAJOR, version.major);
+		response.put(Message.VersionResponse.MINOR, version.minor);
+		response.put(Message.VersionResponse.REVISION, version.revision);
+		
+		return Converter.reply(response);
 	}
 	
 }

@@ -77,6 +77,10 @@ public class Server {
 		return impl.getPort();
 	}
 	
+	public int[] getVersion() {
+		return impl.getVersion();
+	}
+	
 	private int getAvailableTimeout() {
 		int timeout = getTimeout();
 		if (timeout > 0) {

@@ -41,6 +41,7 @@ public class Message {
 	public static final long RESPONSE = 26;
 	public static final long STARTED_UNMANAGED = 27;
 	public static final long TERMINATED_UNMANAGED = 28;
+	public static final long IMPL_VERSION = 29;
 		
 	public static class Event {
 		public static final String CANCEL = "CANCEL";
@@ -221,6 +222,12 @@ public class Message {
 
 	public static class TerminatedUnmanagedRequest {
 		public static final String ID = "id"; // required int32 id = 1;
+	}
+	
+	public static class VersionResponse {
+		public static final String MAJOR = "major";
+		public static final String MINOR = "minor";
+		public static final String REVISION = "revision";
 	}
 	
 	public static String parseString(byte[] data) {

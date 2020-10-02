@@ -33,6 +33,10 @@ Services::Services() :
 	m_port(0),
 	m_statusPort(0),
 	m_impl(nullptr) {
+
+	m_serverVersion[0] = 0;
+	m_serverVersion[1] = 0;
+	m_serverVersion[2] = 0;
 }
 
 Services::~Services() {
@@ -105,6 +109,20 @@ const std::string& Services::getStatusEndpoint() const {
 
 bool Services::isAvailable(int timeout) const {
 	return m_impl->isAvailable(m_requestSocket.get(), timeout);
+}
+
+void Services::retrieveServerVersion() {
+
+	// Get the version.
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createVersionRequest());
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	m_serverVersion[0] = response[message::VersionResponse::MAJOR].GetInt();
+	m_serverVersion[1] = response[message::VersionResponse::MINOR].GetInt();
+	m_serverVersion[2] = response[message::VersionResponse::REVISION].GetInt();
 }
 
 void Services::initStatus() {

@@ -75,8 +75,11 @@ public class ServerImpl extends ServicesImpl {
 		
 		// Init the context and socket.
 		init();
+		
+		// Retrieve the server version.
+		retrieveServerVersion();
 				
-		// start the status thread if it is possible.
+		// Start the status thread if it is possible.
 		EventStreamSocket streamSocket = openEventStream();
 		
 		if (streamSocket != null) {

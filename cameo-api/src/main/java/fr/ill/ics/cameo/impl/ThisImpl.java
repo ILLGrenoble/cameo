@@ -91,6 +91,9 @@ public class ThisImpl extends ServicesImpl {
 		// Init the context and socket.
 		init();
 		
+		// Retrieve the server version.
+		retrieveServerVersion();
+		
 		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
 		String nameId = tokens[3];
 		int index = nameId.lastIndexOf('.');
@@ -120,7 +123,7 @@ public class ThisImpl extends ServicesImpl {
 			starterId = Integer.parseInt(starterNameId.substring(index + 1));
 		}
 		
-		// Init listener
+		// Init listener.
 		eventListener.setName(name);
 	}
 	

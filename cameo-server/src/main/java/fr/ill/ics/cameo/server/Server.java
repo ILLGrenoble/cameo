@@ -39,6 +39,25 @@ public class Server {
 	private Zmq.Context context;
 	private String configFileName;
 	private InputStream configStream;
+	private static String implementationVersion = "?";
+	private static String buildTimestamp = "?";
+	
+	/**
+	 * Class storing the version in the major, minor, revision format.
+	 *
+	 */
+	static class Version {
+		public int major = 0;
+		public int minor = 0;
+		public int revision = 0;
+		
+		@Override
+		public String toString() {
+			return "Version [major=" + major + ", minor=" + minor + ", revision=" + revision + "]";
+		}
+	}
+	
+	private static Version version = new Version();
 
 	public Server(String configFileName) {
 		this.configFileName = configFileName;
@@ -177,7 +196,9 @@ public class Server {
 				}
 				else if (type == Message.TERMINATED_UNMANAGED) {
 					reply = process.processTerminatedUnmanagedRequest(request, manager);
-			
+				}
+				else if (type == Message.IMPL_VERSION) {
+					reply = process.processVersion(version);
 				}
 				else {
 					System.err.println("Unknown request type " + type);
@@ -216,9 +237,9 @@ public class Server {
 
 		context.close();
 	}
-
-	private static void showVersion() {
-
+	
+	private static void retrieveVersion() {
+		
 		try {
 			Enumeration<URL> resources = Server.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
 
@@ -227,9 +248,33 @@ public class Server {
 				Manifest manifest = new Manifest(resources.nextElement().openStream());
 				Attributes attributes = manifest.getMainAttributes();
 
-				if (attributes.getValue("Specification-Version") != null && attributes.getValue("Build-Timestamp") != null) {
-					System.out.println("Cameo server version " + attributes.getValue("Specification-Version") + "--" + attributes.getValue("Build-Timestamp"));
+				if (attributes.getValue("Implementation-Version") != null && attributes.getValue("Build-Timestamp") != null) {
+					implementationVersion = attributes.getValue("Implementation-Version");
+					buildTimestamp = attributes.getValue("Build-Timestamp");
 
+					// Analyse the implementation version.
+					String[] elements = implementationVersion.split("\\.");
+					
+					try {
+						if (elements.length > 0) {
+							version.major = Integer.valueOf(elements[0]);
+						}
+						if (elements.length > 1) {
+							version.minor = Integer.valueOf(elements[1]);
+						}
+						if (elements.length > 2) {
+							String[] revisionElements = elements[2].split("-");
+							if (revisionElements.length > 0) {
+								version.revision = Integer.valueOf(revisionElements[0]);
+							}
+							else {
+								version.revision = Integer.valueOf(elements[2]);
+							}
+						}
+					}
+					catch (NumberFormatException e) {
+					}
+					
 					// The manifest is found, we can return.
 					return;
 				}
@@ -239,10 +284,17 @@ public class Server {
 			// handle
 		}
 	}
+
+	public static void showVersion() {
+		System.out.println("Cameo server version " + implementationVersion + "--" + buildTimestamp);
+	}
 	
 	public static void main(String[] args) {
 
-		// verify args
+		// Retrieve the version.
+		retrieveVersion();
+		
+		// Verify arguments.
 		if (args.length < 1) {
 			showVersion();
 			System.out.printf("Usage: <XML config file>\n");
