@@ -2,6 +2,9 @@
 -----
 
 * Replaced protobuf by JSON.
+* Added Server.getVersion() which returns the server version.
+* Added Output.isEndOfLine() which returns true if the message terminates with an end of line.
+* Removed Configuration.getRetries().
 
 0.1.9
 -----
