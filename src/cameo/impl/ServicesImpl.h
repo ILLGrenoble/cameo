@@ -35,6 +35,7 @@ public:
 	int getTimeout() const;
 
 	std::string createSyncRequest() const;
+	std::string createVersionRequest() const;
 	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const;
 	std::string createStopRequest(int id) const;
 	std::string createKillRequest(int id) const;

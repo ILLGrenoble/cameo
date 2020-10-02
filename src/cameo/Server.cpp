@@ -53,6 +53,9 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
+	// Retrieve the server version.
+	Services::retrieveServerVersion();
+
 	// Manage the ConnectionTimeout exception that can occur.
 	try {
 		// Start the event thread.

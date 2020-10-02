@@ -149,6 +149,9 @@ void This::initApplication(int argc, char *argv[]) {
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
+	// Retrieve the server version.
+	Services::retrieveServerVersion();
+
 	string nameId = tokens[3];
 
 	int index = nameId.find_last_of('.');
