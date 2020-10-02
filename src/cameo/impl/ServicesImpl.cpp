@@ -62,6 +62,15 @@ std::string ServicesImpl::createSyncRequest() const {
 	return request.toString();
 }
 
+std::string ServicesImpl::createVersionRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::IMPL_VERSION);
+
+	return request.toString();
+}
+
 std::string ServicesImpl::createIsAliveRequest(int id) const {
 
 	json::StringObject request;

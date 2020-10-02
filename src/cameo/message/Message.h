@@ -53,6 +53,7 @@ namespace message {
 	const int RESPONSE = 26;
 	const int STARTED_UNMANAGED = 27;
 	const int TERMINATED_UNMANAGED = 28;
+	const int IMPL_VERSION = 29;
 
 	namespace Event {
 		constexpr const char* CANCEL = "CANCEL";
@@ -234,6 +235,13 @@ namespace message {
 	namespace TerminatedUnmanagedRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
+
+	namespace VersionResponse {
+		constexpr const char* MAJOR = "major";
+		constexpr const char* MINOR = "minor";
+		constexpr const char* REVISION = "revision";
+	}
+
 }
 
 }

@@ -47,6 +47,7 @@ public:
 	const std::string& getStatusEndpoint() const;
 
 	bool isAvailable(int timeout) const;
+	void retrieveServerVersion();
 	void initStatus();
 	std::unique_ptr<EventStreamSocket> openEventStream();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(int port);
@@ -54,6 +55,7 @@ public:
 	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
 
 	std::string m_serverEndpoint;
+	int m_serverVersion[3];
 	std::string m_url;
 	int m_port;
 	int m_statusPort;
