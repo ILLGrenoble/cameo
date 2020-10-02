@@ -43,6 +43,7 @@ public:
 	int getTimeout() const;
 	const std::string& getEndpoint() const;
 	const std::string& getUrl() const;
+	std::array<int, 3> getVersion() const;
 	int getPort() const;
 	const std::string& getStatusEndpoint() const;
 
@@ -55,7 +56,7 @@ public:
 	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
 
 	std::string m_serverEndpoint;
-	int m_serverVersion[3];
+	std::array<int, 3> m_serverVersion;
 	std::string m_url;
 	int m_port;
 	int m_statusPort;
