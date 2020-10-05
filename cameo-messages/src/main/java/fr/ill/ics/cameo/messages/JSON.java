@@ -43,4 +43,15 @@ public class JSON {
 			return (JSONObject)parser.parse(string);
 		}
 	}
+	
+	/**
+	 * Parses a string into a JSONObject.
+	 * Method provided by convenience, a parser is created for each call. Use a ConcurrentParser to obtain better performance.
+	 * @param string
+	 * @return
+	 * @throws ParseException
+	 */
+	public static JSONObject parse(String string) throws ParseException {
+		return (JSONObject)new JSONParser().parse(string);
+	}
 }
