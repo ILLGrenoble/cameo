@@ -39,8 +39,8 @@ public class JSON {
 		
 		private JSONParser parser = new JSONParser();
 		
-		public synchronized Object parse(String string) throws ParseException {
-			return parser.parse(string);
+		public synchronized JSONObject parse(String string) throws ParseException {
+			return (JSONObject)parser.parse(string);
 		}
 	}
 }

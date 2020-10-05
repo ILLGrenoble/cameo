@@ -34,9 +34,12 @@ import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputStreamException;
 import fr.ill.ics.cameo.OutputStreamSocket;
 import fr.ill.ics.cameo.SubscriberCreationException;
+import fr.ill.ics.cameo.UndefinedApplicationException;
+import fr.ill.ics.cameo.UndefinedKeyException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.WriteException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 
@@ -632,6 +635,96 @@ public class ServerImpl extends ServicesImpl {
 	}
 	
 	/**
+	 * 
+	 * @param applicationId
+	 * @param key
+	 * @param value
+	 */
+	public void storeKeyValue(int applicationId, String key, String value) {
+		
+		Zmq.Msg request = createStoreKeyValueRequest(applicationId, key, value);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param applicationId
+	 * @param key
+	 * @return
+	 * @throws UndefinedApplicationException
+	 * @throws UndefinedKeyException
+	 */
+	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+		
+		Zmq.Msg request = createGetKeyValueRequest(applicationId, key);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+			
+			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			if (value == 0) {
+				return JSON.getString(response, Message.RequestResponse.MESSAGE);
+			}
+			else if (value == -1) {
+				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+			else if (value == -2) {
+				throw new UndefinedKeyException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+			
+			return null;
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	/**
+	 * 
+	 * @param applicationId
+	 * @param key
+	 * @throws UndefinedApplicationException
+	 * @throws UndefinedKeyException
+	 */
+	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+		
+		Zmq.Msg request = createRemoveKeyRequest(applicationId, key);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+			
+			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			if (value == -1) {
+				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+			else if (value == -2) {
+				throw new UndefinedKeyException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	/**
 	 * create isAlive request
 	 * 
 	 * @param text
@@ -813,6 +906,37 @@ public class ServerImpl extends ServicesImpl {
 		return message(request);
 	}
 
+	private Msg createStoreKeyValueRequest(int applicationId, String key, String value) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.STORE_KEY_VALUE);
+		request.put(Message.StoreKeyValueRequest.ID, applicationId);
+		request.put(Message.StoreKeyValueRequest.KEY, key);
+		request.put(Message.StoreKeyValueRequest.VALUE, value);
+
+		return message(request);
+	}
+
+	private Msg createGetKeyValueRequest(int applicationId, String key) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.GET_KEY_VALUE);
+		request.put(Message.GetKeyValueRequest.ID, applicationId);
+		request.put(Message.GetKeyValueRequest.KEY, key);
+
+		return message(request);
+	}
+	
+	private Msg createRemoveKeyRequest(int applicationId, String key) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.REMOVE_KEY);
+		request.put(Message.RemoveKeyRequest.ID, applicationId);
+		request.put(Message.RemoveKeyRequest.KEY, key);
+
+		return message(request);
+	}
+	
 	@Override
 	public String toString() {
 		return "server@" + serverEndpoint;

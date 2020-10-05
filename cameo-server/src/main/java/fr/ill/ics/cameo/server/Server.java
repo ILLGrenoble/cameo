@@ -200,6 +200,15 @@ public class Server {
 				else if (type == Message.IMPL_VERSION) {
 					reply = process.processVersion(version);
 				}
+				else if (type == Message.STORE_KEY_VALUE) {
+					reply = process.processStoreKeyValue(request, manager);
+				}
+				else if (type == Message.GET_KEY_VALUE) {
+					reply = process.processGetKeyValue(request, manager);
+				}
+				else if (type == Message.REMOVE_KEY) {
+					reply = process.processRemoveKeyValue(request, manager);
+				}
 				else {
 					System.err.println("Unknown request type " + type);
 					message.send(server);

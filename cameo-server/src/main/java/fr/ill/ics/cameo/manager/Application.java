@@ -43,6 +43,7 @@ public abstract class Application extends ApplicationConfig {
 	protected boolean hasToStopImmediately = false;
 	protected StreamApplicationThread streamThread = null;
 	protected boolean streamThreadStarted = false;
+	private HashMap<String, String> keyValues = new HashMap<String, String>();
 	
 	public static class Publisher {
 		public int numberOfSubscribers;
@@ -139,6 +140,21 @@ public abstract class Application extends ApplicationConfig {
 
 	synchronized public HashMap<String, Integer> getPorts() {
 		return ports;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Storage methods
+	
+	public void storeKeyValue(String key, String value) {
+		keyValues.put(key, value);
+	}
+	
+	public String getKeyValue(String key) {
+		return keyValues.get(key);
+	}
+	
+	public boolean removeKey(String key) {
+		return (keyValues.remove(key) != null);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,6 +278,5 @@ public abstract class Application extends ApplicationConfig {
 	public String toString() {
 		return super.toString() + "\napplicationState=" + Converter.toString(this.applicationState) + "\nprocessState=" + this.processState + "\nhasToStop=" + this.hasToStop() + "\nshowStream=" + this.hasStream() + "\nstreamPort=" + this.getStreamPort() + "\nwriteStream=" + this.isWriteStream() + "\nid=" + this.getId();
 	}
-
 
 }

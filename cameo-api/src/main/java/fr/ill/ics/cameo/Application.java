@@ -169,6 +169,18 @@ public class Application {
 			}
 			return "";
 		}
+		
+		static public void storeKeyValue(String key, String value) {
+			server.storeKeyValue(impl.getId(), key, value);
+		}
+		
+		static public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
+			return server.getKeyValue(impl.getId(), key);
+		}
+		
+		static public void removeKey(String key) throws UndefinedApplicationException, UndefinedKeyException {
+			server.removeKey(impl.getId(), key);
+		}
 	}
 	
 	/**
@@ -403,6 +415,10 @@ public class Application {
 				
 		public OutputStreamSocket getOutputStreamSocket() {
 			return impl.getOutputStreamSocket();
+		}
+		
+		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
+			return impl.getKeyValue(key);
 		}
 		
 		@Override

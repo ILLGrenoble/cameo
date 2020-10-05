@@ -31,6 +31,8 @@ import fr.ill.ics.cameo.PublisherEvent;
 import fr.ill.ics.cameo.ResultEvent;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.SubscriberCreationException;
+import fr.ill.ics.cameo.UndefinedApplicationException;
+import fr.ill.ics.cameo.UndefinedKeyException;
 import fr.ill.ics.cameo.messages.Message;
 
 
@@ -372,6 +374,10 @@ public class InstanceImpl extends EventListener {
 		
 	public OutputStreamSocket getOutputStreamSocket() {
 		return outputSocket;
+	}
+
+	public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
+		return server.getKeyValue(id, key);
 	}
 	
 	@Override

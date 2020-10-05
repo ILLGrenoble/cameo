@@ -783,5 +783,107 @@ public class RequestProcessor {
 		
 		return Converter.reply(response);
 	}
+
+	public Msg processStoreKeyValue(JSONObject request, Manager manager) {
+		
+		LogInfo.getInstance().getLogger().fine("Received StoreKeyValue request");
+		
+		int applicationId = JSON.getInt(request, Message.StoreKeyValueRequest.ID);
+		String key = JSON.getString(request, Message.StoreKeyValueRequest.KEY);
+		String value = JSON.getString(request, Message.StoreKeyValueRequest.VALUE);
+		
+		try {
+			manager.storeKeyValue(applicationId, key, value);
+			
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}		
+	}
+
+	public Msg processGetKeyValue(JSONObject request, Manager manager) {
+
+		LogInfo.getInstance().getLogger().fine("Received GetKeyValue request");
+		
+		int applicationId = JSON.getInt(request, Message.GetKeyValueRequest.ID);
+		String key = JSON.getString(request, Message.GetKeyValueRequest.KEY);
+		
+		try {
+			String value = manager.getKeyValue(applicationId, key);
+			
+			if (value != null) {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, 0);
+				response.put(Message.RequestResponse.MESSAGE, value);
+				
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -2);
+				response.put(Message.RequestResponse.MESSAGE, "Key is undefined");
+				
+				return Converter.reply(response);
+			}
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
+
+	public Msg processRemoveKeyValue(JSONObject request, Manager manager) {
+		
+		LogInfo.getInstance().getLogger().fine("Received RemoveKey request");
+		
+		int applicationId = JSON.getInt(request, Message.RemoveKeyRequest.ID);
+		String key = JSON.getString(request, Message.RemoveKeyRequest.KEY);
+		
+		try {
+			boolean exists = manager.removeKey(applicationId, key);
+			
+			if (exists) {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, 0);
+				response.put(Message.RequestResponse.MESSAGE, "OK");
+				
+				return Converter.reply(response);
+			}
+			else {
+				// Return the reply.
+				JSONObject response = new JSONObject();
+				response.put(Message.RequestResponse.VALUE, -2);
+				response.put(Message.RequestResponse.MESSAGE, "Key is undefined");
+				
+				return Converter.reply(response);
+			}
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
 	
 }

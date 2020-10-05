@@ -282,6 +282,18 @@ public class Server {
 		return connectionChecker;
 	}
 	
+	public void storeKeyValue(int applicationId, String key, String value) {
+		impl.storeKeyValue(applicationId, key, value);
+	}
+	
+	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+		return impl.getKeyValue(applicationId, key);
+	}
+	
+	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+		impl.removeKey(applicationId, key);
+	}
+	
 	@Override
 	public String toString() {
 		return impl.toString();

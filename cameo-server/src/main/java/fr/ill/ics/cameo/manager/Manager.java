@@ -858,4 +858,43 @@ public class Manager extends ConfigLoader {
 			throw new IdNotFoundException();
 		}
 	}
+
+	public void storeKeyValue(int id, String key, String value) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			application.storeKeyValue(key, value);
+			
+		} else {
+			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			throw new IdNotFoundException();
+		}
+	}
+
+	public String getKeyValue(int id, String key) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			return application.getKeyValue(key);
+			
+		} else {
+			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			throw new IdNotFoundException();
+		}
+	}
+
+	public boolean removeKey(int id, String key) throws IdNotFoundException {
+
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			return application.removeKey(key);
+			
+		} else {
+			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			throw new IdNotFoundException();
+		}
+	}
 }

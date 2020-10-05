@@ -90,11 +90,11 @@ public class ServicesImpl {
 	}
 	
 	public JSONObject parse(Zmq.Msg reply) throws ParseException {
-		return (JSONObject)parser.parse(Message.parseString(reply.getFirstData()));
+		return parser.parse(Message.parseString(reply.getFirstData()));
 	}
 	
 	public JSONObject parse(byte[] data) throws ParseException {
-		return (JSONObject)parser.parse(Message.parseString(data));
+		return parser.parse(Message.parseString(data));
 	}
 	
 	/**

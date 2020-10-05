@@ -42,6 +42,9 @@ public class Message {
 	public static final long STARTED_UNMANAGED = 27;
 	public static final long TERMINATED_UNMANAGED = 28;
 	public static final long IMPL_VERSION = 29;
+	public static final long STORE_KEY_VALUE = 30;
+	public static final long GET_KEY_VALUE = 31;
+	public static final long REMOVE_KEY = 32;
 		
 	public static class Event {
 		public static final String CANCEL = "CANCEL";
@@ -228,6 +231,22 @@ public class Message {
 		public static final String MAJOR = "major";
 		public static final String MINOR = "minor";
 		public static final String REVISION = "revision";
+	}
+	
+	public static class StoreKeyValueRequest {
+		public static final String ID = "id"; // int32
+		public static final String KEY = "key"; // string
+		public static final String VALUE = "value"; // string
+	}
+	
+	public static class GetKeyValueRequest {
+		public static final String ID = "id"; // int32
+		public static final String KEY = "key"; // string
+	}
+	
+	public static class RemoveKeyRequest {
+		public static final String ID = "id"; // int32
+		public static final String KEY = "key"; // string
 	}
 	
 	public static String parseString(byte[] data) {
