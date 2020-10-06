@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "../Application.h"
+#include "Application.h"
 #include "WaitingImplSet.h"
 
 using namespace std;
