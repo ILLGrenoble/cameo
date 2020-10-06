@@ -16,7 +16,7 @@
 
 #include "RequestSocketImpl.h"
 #include "ServicesImpl.h"
-#include "../ConnectionTimeout.h"
+#include "ConnectionTimeout.h"
 #include <iostream>
 
 #include <chrono>
