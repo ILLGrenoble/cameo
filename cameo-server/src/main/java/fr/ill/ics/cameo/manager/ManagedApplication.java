@@ -98,7 +98,7 @@ public class ManagedApplication extends Application {
 			commandList.toArray(command);
 
 			String commandString = String.join(" ", command);
-			Log.logger().fine("Start " + commandString);
+			Log.logger().info("Application " + this.getNameId() + " executes " + commandString);
 			
 			// Create the builder from the command
 			ProcessBuilder builder = new ProcessBuilder(command);
@@ -121,7 +121,7 @@ public class ManagedApplication extends Application {
 			this.processHandle = new ProcessHandlerImpl(process);
 															
 		} catch (IOException e) {
-			Log.logger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " has not executed : " + e.getMessage());
 		}
 	}
 	
@@ -129,11 +129,8 @@ public class ManagedApplication extends Application {
 	public void executeStop() {
 		
 		if (stopExecutable == null) {
-			Log.logger().fine("No stop executable for " + getNameId());
 			return;
 		}
-		
-		Log.logger().fine("Launching stop executable for application " + this.getNameId());
 		
 		// Get the pid.
 		String pid = process.pid() + "";
@@ -154,7 +151,7 @@ public class ManagedApplication extends Application {
 		commandList.toArray(command);
 	
 		String commandString = String.join(" ", command);
-		Log.logger().fine("Start " + commandString);
+		Log.logger().info("Application " + this.getNameId() + " executes " + commandString);
 			
 		ProcessBuilder builder = new ProcessBuilder(command);
 		
@@ -167,10 +164,10 @@ public class ManagedApplication extends Application {
 			builder.start();
 			
 		} catch (IOException e) {
-			Log.logger().severe("Stop executable is not launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " has not executed stop process : " + e.getMessage());
 			e.printStackTrace();
 		}
-		Log.logger().info("Launched stop executable for application " + this.getNameId());
+		Log.logger().info("Application " + this.getNameId() + " has stop process finished");
 	}
 	
 	@Override

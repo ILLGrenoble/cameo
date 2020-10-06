@@ -77,7 +77,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 			}
 			catch (IOException e) {
-				Log.logger().severe("Error while writing stream to file for " + application.getNameId() + " : " + e.getMessage());
+				Log.logger().severe("Application " + application.getNameId() + " cannot write stream to file : " + e.getMessage());
 			}
 		}
 
@@ -141,7 +141,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 		catch (IOException e) {
-			Log.logger().severe("Error while reading stream to file for " + application.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Application " + application.getNameId() + " cannot read stream : " + e.getMessage());
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 		
-		Log.logger().info("Started listening stream for application " + application.getNameId());
+		Log.logger().fine("Application " + application.getNameId() + " started listening stream");
 				
 		try {
 			try {
@@ -185,7 +185,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 			}
 			catch (IOException e) {
-				Log.logger().severe("Reader error for application " + application.getNameId());
+				Log.logger().severe("Application " + application.getNameId() + " has stream reader error");
 			}
 		}
 		finally {
@@ -201,12 +201,12 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 				
 			} catch (IOException e) {
-				Log.logger().severe("Problem while closing log file of " + application.getNameId() + " : " + e.getMessage());
+				Log.logger().severe("Application " + application.getNameId() + " cannot close log file : " + e.getMessage());
 			}
 			
 		}
 		
-		Log.logger().info("Finished listening stream for application " + application.getNameId());
+		Log.logger().fine("Application " + application.getNameId() + " finished listening stream");
 	}
 
 	public void sendEndOfStream() {
@@ -244,7 +244,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			fileOutputStream = new FileOutputStream(file);
 		}
 		catch (IOException e) {
-			Log.logger().severe("Unable to create file " + file.getAbsolutePath() +  " for application " + application.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Application " + application.getNameId() + " cannot create file " + file.getAbsolutePath() + " : " + e.getMessage());
 		}
 	}
 }

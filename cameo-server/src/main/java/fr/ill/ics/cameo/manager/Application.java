@@ -162,7 +162,7 @@ public abstract class Application extends ApplicationConfig {
 	
 	synchronized void setState(int applicationState) {
 		if (applicationState != this.applicationState) {
-			Log.logger().fine("Application " + getNameId() + " sets application state " + Converter.toString(applicationState));
+			Log.logger().fine("Application " + getNameId() + " has state " + Converter.toString(applicationState));
 			this.applicationState = applicationState;
 			this.pastApplicationStates |= applicationState;
 		}	
@@ -170,7 +170,6 @@ public abstract class Application extends ApplicationConfig {
 
 	synchronized void setProcessState(ProcessState processState) {
 		if (processState != this.processState) {
-			Log.logger().fine("Application " + getNameId() + " sets process state " + processState);
 			this.processState = processState;
 		}	
 	}
@@ -211,7 +210,7 @@ public abstract class Application extends ApplicationConfig {
 			return;
 		}
 		
-		Log.logger().fine("Launching error executable for application " + this.getNameId());
+		Log.logger().fine("Application " + this.getNameId() + " is launching error executable");
 		
 		// Build the command arguments
 		ArrayList<String> commandList = new ArrayList<String>();
@@ -234,7 +233,7 @@ public abstract class Application extends ApplicationConfig {
 		commandList.toArray(command);
 	
 		String commandString = String.join(" ", command);
-		Log.logger().fine("Start " + commandString);
+		Log.logger().info("Application " + this.getNameId() + " executes error process " + commandString);
 		
 		ProcessBuilder builder = new ProcessBuilder(command);
 		
@@ -250,15 +249,15 @@ public abstract class Application extends ApplicationConfig {
 			process.waitFor();
 			
 			Date end = new Date();
-			Log.logger().fine("Processed error in " + (end.getTime() - begin.getTime()) + "ms");
+			Log.logger().fine("Application " + this.getNameId() + " has error processed executed in " + (end.getTime() - begin.getTime()) + "ms");
 			
 		} catch (IOException e) {
-			Log.logger().severe("Error process is not launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " has not executed error process : " + e.getMessage());
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			
 		}
-		Log.logger().info("Finished processing error for application " + this.getNameId());
+		Log.logger().info("Application " + this.getNameId() + " has error process finished");
 	}
 	
 	abstract public void executeStop();

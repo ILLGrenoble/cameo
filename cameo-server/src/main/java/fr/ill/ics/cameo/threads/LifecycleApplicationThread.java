@@ -108,7 +108,6 @@ public class LifecycleApplicationThread extends ApplicationThread {
 	
 	public void run() {
 		
-		Log.logger().info("Thread for application " + application.getNameId() + " started");
 		manager.setApplicationProcessState(application, ProcessState.RUNNING);
 		manager.setApplicationState(application, ApplicationState.STARTING);
 		application.start();
@@ -116,7 +115,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// Wait starting time if starting time > 0.
 		boolean forceRunning = false;
 		
-		Log.logger().info("Waiting end of starting time for " + application.getNameId());
+		Log.logger().fine("Application " + application.getNameId() + " is waiting end of starting time");
 
 		double start = System.currentTimeMillis();
 		
@@ -149,13 +148,6 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// Negative values indicate that the application is responsible to send the RUNNING state.
 		if (application.getStartingTime() >= 0) {
 			manager.setApplicationState(application, ApplicationState.RUNNING);
-
-			if (forceRunning && application.getStartingTime() > 0) {
-				Log.logger().info("Application " + application.getNameId() + " is RUNNING before starting time expired");
-			}
-			else {
-				Log.logger().info("Application " + application.getNameId() + " is now RUNNING");
-			}
 		}
 
 		// Loop while application is alive and has not to stop.
@@ -182,10 +174,10 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				double time = System.currentTimeMillis();
 				
 				if (application.getStoppingTime() > 0) {
-					Log.logger().info("Waiting for the application " + application.getNameId() + " to stop before " + application.getStoppingTime() + "s");
+					Log.logger().info("Application " + application.getNameId() + " is waited to stop before " + application.getStoppingTime() + "s");
 				}
 				else {
-					Log.logger().info("Waiting for the application " + application.getNameId() + " to stop");
+					Log.logger().info("Application " + application.getNameId() + " is waited to stop");
 				}
 
 				// In case stopping time is -1, we wait indefinitely.
@@ -217,7 +209,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// If application died with state RUNNING.
 		// In case the application can restart.
 		else if (application.getApplicationState() == ApplicationState.RUNNING && application.isRestart()) {
-			Log.logger().warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
+			Log.logger().warning("Application " + application.getNameId() + " died, trying to start it again");
 			
 			onTermination();
 			
@@ -225,8 +217,8 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			terminateStreamThread();
 			
 			// Launch a new verification thread here.
-			LifecycleApplicationThread applicationThread = new LifecycleApplicationThread(application, manager, logger);
-			applicationThread.start();
+			LifecycleApplicationThread lifecycleThread = new LifecycleApplicationThread(application, manager, logger);
+			lifecycleThread.start();
 		}
 		else {
 			Log.logger().info("Application " + application.getNameId() + " has terminated");
