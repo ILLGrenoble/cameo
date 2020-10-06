@@ -73,7 +73,7 @@ public abstract class ConfigLoader {
 		ConfigManager.getInstance().setConfigParent(configFile.getParent());
 		
 		// Load the configuration
-		LogInfo.getInstance().getLogger().fine("Loading config");
+		Log.logger().fine("Loading config");
 		org.jdom2.Document configXML = null;
 		SAXBuilder builder = new SAXBuilder();
 		
@@ -81,9 +81,9 @@ public abstract class ConfigLoader {
 			configXML = builder.build(configFile);
 						
 		} catch (JDOMException e) {
-			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+			Log.logger().severe("Loading config failed: " + e.getMessage());
 		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
 		return configXML;
@@ -92,7 +92,7 @@ public abstract class ConfigLoader {
 	private org.jdom2.Document buildXml(InputStream stream) {
 		
 		// Load the configuration
-		LogInfo.getInstance().getLogger().fine("Loading config");
+		Log.logger().fine("Loading config");
 		org.jdom2.Document configXML = null;
 		SAXBuilder builder = new SAXBuilder();
 		
@@ -100,9 +100,9 @@ public abstract class ConfigLoader {
 			configXML = builder.build(stream);
 						
 		} catch (JDOMException e) {
-			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+			Log.logger().severe("Loading config failed: " + e.getMessage());
 		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Loading config failed: " + e.getMessage());
+			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
 		return configXML;
@@ -140,7 +140,7 @@ public abstract class ConfigLoader {
 			pollingTime = Integer.parseInt(pollingTimeString);
 		} catch (NumberFormatException e) {
 			// Set default value
-			LogInfo.getInstance().getLogger().severe("Error while parsing polling time");
+			Log.logger().severe("Error while parsing polling time");
 		}
 		
 		ConfigManager.getInstance().setPollingTime(pollingTime);
@@ -182,7 +182,7 @@ public abstract class ConfigLoader {
 			// Start command
 			Element startItem = item.getChild("start");
 			if (startItem == null) {
-				LogInfo.getInstance().getLogger().severe("application node must contain a start node");
+				Log.logger().severe("application node must contain a start node");
 				continue;
 			}
 			application.setStartExecutable(startItem.getAttributeValue("executable"));
@@ -231,13 +231,13 @@ public abstract class ConfigLoader {
 	 * @return ApplicationConfig
 	 */
 	protected ApplicationConfig verifyApplicationExistence(String name) throws UnknownApplicationException {
-		LogInfo.getInstance().getLogger().fine("Verify command from user");
+		Log.logger().fine("Verify command from user");
 
 		ApplicationConfig ApplicationConfig = null;
 		boolean isPresent = false;
 		Iterator<ApplicationConfig> it = applicationList.iterator();
 
-		LogInfo.getInstance().getLogger().fine("Application " + name + " has no argument");
+		Log.logger().fine("Application " + name + " has no argument");
 		while (it.hasNext()) {
 			ApplicationConfig element = (ApplicationConfig) it.next();
 			// if name is correct
@@ -258,14 +258,14 @@ public abstract class ConfigLoader {
 	 * show config of applications, only used to debug
 	 */
 	protected void showApplicationConfigs() {
-		LogInfo.getInstance().getLogger().fine("*********************************");
-		LogInfo.getInstance().getLogger().fine("List of applications            *");
+		Log.logger().fine("*********************************");
+		Log.logger().fine("List of applications            *");
 		Iterator<ApplicationConfig> it = applicationList.iterator();
 		while (it.hasNext()) {
-			LogInfo.getInstance().getLogger().fine("*********************************");
-			LogInfo.getInstance().getLogger().fine(((ApplicationConfig)it.next()).toString());
+			Log.logger().fine("*********************************");
+			Log.logger().fine(((ApplicationConfig)it.next()).toString());
 		}
-		LogInfo.getInstance().getLogger().fine("*********************************");
+		Log.logger().fine("*********************************");
 	}
 	
 	public int getApplicationStreamPort(String name) {

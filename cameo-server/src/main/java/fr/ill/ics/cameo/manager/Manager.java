@@ -55,8 +55,8 @@ public class Manager extends ConfigLoader {
 	
 	public Manager(String xmlPath) {
 		super(xmlPath);
-		LogInfo.getInstance().init();
-		LogInfo.getInstance().getLogger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		Log.init();
+		Log.logger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
 		showApplicationConfigs();
 		
@@ -67,13 +67,13 @@ public class Manager extends ConfigLoader {
 			MAX_ID = ConfigManager.getInstance().getMaxNumberOfApplications();
 		}
 		
-		LogInfo.getInstance().getLogger().fine("Max Id is " + MAX_ID);
+		Log.logger().fine("Max Id is " + MAX_ID);
 	}
 
 	public Manager(InputStream configStream) {
 		super(configStream);
-		LogInfo.getInstance().init();
-		LogInfo.getInstance().getLogger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
+		Log.init();
+		Log.logger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
 		showApplicationConfigs();
 		
@@ -84,7 +84,7 @@ public class Manager extends ConfigLoader {
 			MAX_ID = ConfigManager.getInstance().getMaxNumberOfApplications();
 		}
 		
-		LogInfo.getInstance().getLogger().fine("Max Id is " + MAX_ID);
+		Log.logger().fine("Max Id is " + MAX_ID);
 	}
 
 	public synchronized void initStreamSockets(Context context) {
@@ -94,7 +94,7 @@ public class Manager extends ConfigLoader {
 		int port = ConfigManager.getInstance().getStreamPort();
 		eventPublisher.bind("tcp://*:" + port);
 		
-		LogInfo.getInstance().getLogger().info("Status socket on port " + port);
+		Log.logger().info("Status socket on port " + port);
 		
 		// iterate the application configurations
 		for (ApplicationConfig c : applicationList) {
@@ -105,7 +105,7 @@ public class Manager extends ConfigLoader {
 				
 				streamPublishers.put(c.getName(), streamPublisher);
 				
-				LogInfo.getInstance().getLogger().info("Application " + c.getName() + " output socket on port " + port);
+				Log.logger().info("Application " + c.getName() + " output socket on port " + port);
 			}	
 		}
 	}
@@ -193,7 +193,7 @@ public class Manager extends ConfigLoader {
 		}
 		
 		if (id == -1) {
-			LogInfo.getInstance().getLogger().info("Max number of applications reached");
+			Log.logger().info("Max number of applications reached");
 			throw new MaxNumberOfApplicationsReached();
 		}
 		
@@ -226,7 +226,7 @@ public class Manager extends ConfigLoader {
 	public synchronized Application startApplication(String name, String[] args, String starterReference) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
-		LogInfo.getInstance().getLogger().fine("Trying to start " + name);
+		Log.logger().fine("Trying to start " + name);
 
 		// Verify if the application is already running
 		verifyNumberOfInstances(config.getName(), config.runsSingle());
@@ -240,17 +240,17 @@ public class Manager extends ConfigLoader {
 		
 		// Threads
 		// Verifiy application thread
-		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, LogInfo.getInstance().getLogger());
+		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, Log.logger());
 		verifyThread.start();
 		
-		LogInfo.getInstance().getLogger().fine("Application " + application.getNameId() + " write stream = " + application.isWriteStream() + ", show stream = " + application.hasStream());
+		Log.logger().fine("Application " + application.getNameId() + " write stream = " + application.isWriteStream() + ", show stream = " + application.hasStream());
 		
 		// Stream thread
 		if (application.isWriteStream() || application.hasStream()) {
 			if (application.getLogPath() != null) {
-				LogInfo.getInstance().getLogger().info("Set up stream for application " + application.getNameId() + " with log file '" + application.getLogPath() + "'");
+				Log.logger().info("Set up stream for application " + application.getNameId() + " with log file '" + application.getLogPath() + "'");
 			} else {
-				LogInfo.getInstance().getLogger().info("Set up stream for application " + application.getNameId());
+				Log.logger().info("Set up stream for application " + application.getNameId());
 			}
 
 			// The thread is built but not started here because it requires that the process is started
@@ -282,12 +282,12 @@ public class Manager extends ConfigLoader {
 				// The following call will have no effect if it was already called.
 				application.setHasToStop(true, false);
 			}
-			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " is stopping...");
+			Log.logger().info("Application " + application.getNameId() + " is stopping...");
 			
 			return name;
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -312,12 +312,12 @@ public class Manager extends ConfigLoader {
 			} else {
 				application.setHasToStop(true, true);
 			}
-			LogInfo.getInstance().getLogger().info("Killing application " + application.getNameId());
+			Log.logger().info("Killing application " + application.getNameId());
 			
 			return name;
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -340,9 +340,9 @@ public class Manager extends ConfigLoader {
 				} else {
 					application.setHasToStop(true, true);
 				}
-				LogInfo.getInstance().getLogger().info("Killing application " + application.getNameId());
+				Log.logger().info("Killing application " + application.getNameId());
 				application.kill();
-				LogInfo.getInstance().getLogger().info("Killed application " + application.getNameId());
+				Log.logger().info("Killed application " + application.getNameId());
 			}
 		}
 	}
@@ -354,7 +354,7 @@ public class Manager extends ConfigLoader {
 	 */
 	public synchronized LinkedList<ApplicationInfo> showApplicationMap() {
 		LinkedList<ApplicationInfo> list = new LinkedList<ApplicationInfo>();
-		LogInfo.getInstance().getLogger().fine("Showing application");
+		Log.logger().fine("Showing application");
 		String args = null;
 
 		for (java.util.Map.Entry<Integer, Application> entry : applicationMap.entrySet()) {
@@ -403,12 +403,12 @@ public class Manager extends ConfigLoader {
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
 						
-			LogInfo.getInstance().getLogger().fine("Application " + application.getNameId() + " has stream port " + application.getStreamPort());
+			Log.logger().fine("Application " + application.getNameId() + " has stream port " + application.getStreamPort());
 			
 			return application.getStreamPort();
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 
@@ -442,13 +442,13 @@ public class Manager extends ConfigLoader {
 					++counter;
 					
 					if (single) {
-						LogInfo.getInstance().getLogger().fine("The application is already running");
-						LogInfo.getInstance().getLogger().info("Application with name " + application.getName() + " is already running with id " + application.getId());
+						Log.logger().fine("The application is already running");
+						Log.logger().info("Application with name " + application.getName() + " is already running with id " + application.getId());
 				
 						throw new ApplicationAlreadyRunning();
 					}
 					else if (counter >= ConfigManager.getInstance().getMaxNumberOfApplications()) {
-						LogInfo.getInstance().getLogger().info("Max number of applications reached");
+						Log.logger().info("Max number of applications reached");
 						
 						throw new MaxNumberOfApplicationsReached();
 					}
@@ -515,7 +515,7 @@ public class Manager extends ConfigLoader {
 				writer.flush();
 				
 			} catch (IOException e) {
-				LogInfo.getInstance().getLogger().severe("Enable to send parameters to application " + application.getNameId());
+				Log.logger().severe("Enable to send parameters to application " + application.getNameId());
 				try {
 					writer.close();
 				} catch (IOException ec) {
@@ -524,7 +524,7 @@ public class Manager extends ConfigLoader {
 			}
 		
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -646,7 +646,7 @@ public class Manager extends ConfigLoader {
 
 		sendPort(id, application.getName(), portName);
 		
-		LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " socket " + portName + " on port " + port);
+		Log.logger().info("Application " + application.getNameId() + " socket " + portName + " on port " + port);
 		
 		return port;
 	}
@@ -680,12 +680,12 @@ public class Manager extends ConfigLoader {
 		if (ports.containsKey(portName)) {
 			ConfigManager.getInstance().removePort(ports.get(portName));
 			ports.remove(portName);
-			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " removed socket " + portName);
+			Log.logger().info("Application " + application.getNameId() + " removed socket " + portName);
 			
 			return true;
 		}
 
-		LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " cannot remove socket " + portName);
+		Log.logger().info("Application " + application.getNameId() + " cannot remove socket " + portName);
 		
 		return false;
 	}
@@ -719,7 +719,7 @@ public class Manager extends ConfigLoader {
 		
 		publishers.put(publisherName, publisher);
 
-		LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " publisher socket on ports " + publisherPort + " and " + synchronizerPort);
+		Log.logger().info("Application " + application.getNameId() + " publisher socket on ports " + publisherPort + " and " + synchronizerPort);
 
 		// send the event
 		sendPublisher(id, application.getName(), publisherName);
@@ -753,12 +753,12 @@ public class Manager extends ConfigLoader {
 			ConfigManager.getInstance().removePort(synchronizerPort);
 			publishers.remove(publisherName);
 			
-			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " closes publisher socket " + publisherName + " on ports " + publisherPort + " and " + synchronizerPort);
+			Log.logger().info("Application " + application.getNameId() + " closes publisher socket " + publisherName + " on ports " + publisherPort + " and " + synchronizerPort);
 			
 			return true;
 		}
 		
-		LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " cannot close publisher socket " + publisherName);
+		Log.logger().info("Application " + application.getNameId() + " cannot close publisher socket " + publisherName);
 		
 		return false;
 	}
@@ -822,10 +822,10 @@ public class Manager extends ConfigLoader {
 		
 		// Threads
 		// Verifiy application thread
-		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, LogInfo.getInstance().getLogger());
+		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, Log.logger());
 		verifyThread.start();
 		
-		LogInfo.getInstance().getLogger().fine("Unmanaged application " + application.getNameId() + " is started");
+		Log.logger().fine("Unmanaged application " + application.getNameId() + " is started");
 		
 		// No stream thread.
 		return id;
@@ -849,12 +849,12 @@ public class Manager extends ConfigLoader {
 			// Remove the application.
 			removeApplication(application);
 			
-			LogInfo.getInstance().getLogger().info("Unmanaged application " + application.getNameId() + " is terminated");
+			Log.logger().info("Unmanaged application " + application.getNameId() + " is terminated");
 			
 			return name;
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Unmanaged application with id " + id + " doesn't exist");
+			Log.logger().info("Unmanaged application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -867,7 +867,7 @@ public class Manager extends ConfigLoader {
 			application.storeKeyValue(key, value);
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -880,7 +880,7 @@ public class Manager extends ConfigLoader {
 			return application.getKeyValue(key);
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}
@@ -893,7 +893,7 @@ public class Manager extends ConfigLoader {
 			return application.removeKey(key);
 			
 		} else {
-			LogInfo.getInstance().getLogger().info("Application with id " + id + " doesn't exist");
+			Log.logger().info("Application with id " + id + " doesn't exist");
 			throw new IdNotFoundException();
 		}
 	}

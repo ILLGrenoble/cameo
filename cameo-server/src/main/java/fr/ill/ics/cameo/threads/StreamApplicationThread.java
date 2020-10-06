@@ -26,7 +26,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
-import fr.ill.ics.cameo.manager.LogInfo;
+import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Message;
 
@@ -77,7 +77,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 			}
 			catch (IOException e) {
-				LogInfo.getInstance().getLogger().severe("Error while writing stream to file for " + application.getNameId() + " : " + e.getMessage());
+				Log.logger().severe("Error while writing stream to file for " + application.getNameId() + " : " + e.getMessage());
 			}
 		}
 
@@ -141,7 +141,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 		catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Error while reading stream to file for " + application.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Error while reading stream to file for " + application.getNameId() + " : " + e.getMessage());
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 		
-		LogInfo.getInstance().getLogger().info("Started listening stream for application " + application.getNameId());
+		Log.logger().info("Started listening stream for application " + application.getNameId());
 				
 		try {
 			try {
@@ -185,7 +185,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 			}
 			catch (IOException e) {
-				LogInfo.getInstance().getLogger().severe("Reader error for application " + application.getNameId());
+				Log.logger().severe("Reader error for application " + application.getNameId());
 			}
 		}
 		finally {
@@ -201,12 +201,12 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 				
 			} catch (IOException e) {
-				LogInfo.getInstance().getLogger().severe("Problem while closing log file of " + application.getNameId() + " : " + e.getMessage());
+				Log.logger().severe("Problem while closing log file of " + application.getNameId() + " : " + e.getMessage());
 			}
 			
 		}
 		
-		LogInfo.getInstance().getLogger().info("Finished listening stream for application " + application.getNameId());
+		Log.logger().info("Finished listening stream for application " + application.getNameId());
 	}
 
 	public void sendEndOfStream() {
@@ -244,7 +244,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			fileOutputStream = new FileOutputStream(file);
 		}
 		catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Unable to create file " + file.getAbsolutePath() +  " for application " + application.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Unable to create file " + file.getAbsolutePath() +  " for application " + application.getNameId() + " : " + e.getMessage());
 		}
 	}
 }

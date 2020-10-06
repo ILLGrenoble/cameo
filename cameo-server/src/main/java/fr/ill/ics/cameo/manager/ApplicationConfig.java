@@ -189,7 +189,7 @@ public class ApplicationConfig {
 			
 			if (!runSingle) {
 				stream = false;
-				LogInfo.getInstance().getLogger().warning("The application " + name + " cannot have multiple instances and show stream");	
+				Log.logger().warning("The application " + name + " cannot have multiple instances and show stream");	
 			}
 			
 		} else if (value.equalsIgnoreCase("no")) {

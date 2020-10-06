@@ -27,7 +27,6 @@ import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
-import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputPrintThread;
 import fr.ill.ics.cameo.OutputStreamSocket;
@@ -606,6 +605,7 @@ public class Console {
 		System.out.println("[display commands]");
 		System.out.println("  help                      Display the help.");
 		System.out.println("  server                    Display the server endpoint and version.");
+		System.out.println("  version                   Display the server version.");
 		System.out.println("  list                      Display the available applications.");
 		System.out.println("  apps <name>               Display all the started applications.");
 		System.out.println("");

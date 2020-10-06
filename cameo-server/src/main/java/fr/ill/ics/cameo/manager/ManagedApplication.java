@@ -98,7 +98,7 @@ public class ManagedApplication extends Application {
 			commandList.toArray(command);
 
 			String commandString = String.join(" ", command);
-			LogInfo.getInstance().getLogger().fine("Start " + commandString);
+			Log.logger().fine("Start " + commandString);
 			
 			// Create the builder from the command
 			ProcessBuilder builder = new ProcessBuilder(command);
@@ -121,7 +121,7 @@ public class ManagedApplication extends Application {
 			this.processHandle = new ProcessHandlerImpl(process);
 															
 		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Process cannot be launched for application " + this.getNameId() + " : " + e.getMessage());
 		}
 	}
 	
@@ -129,11 +129,11 @@ public class ManagedApplication extends Application {
 	public void executeStop() {
 		
 		if (stopExecutable == null) {
-			LogInfo.getInstance().getLogger().fine("No stop executable for " + getNameId());
+			Log.logger().fine("No stop executable for " + getNameId());
 			return;
 		}
 		
-		LogInfo.getInstance().getLogger().fine("Launching stop executable for application " + this.getNameId());
+		Log.logger().fine("Launching stop executable for application " + this.getNameId());
 		
 		// Get the pid.
 		String pid = process.pid() + "";
@@ -154,7 +154,7 @@ public class ManagedApplication extends Application {
 		commandList.toArray(command);
 	
 		String commandString = String.join(" ", command);
-		LogInfo.getInstance().getLogger().fine("Start " + commandString);
+		Log.logger().fine("Start " + commandString);
 			
 		ProcessBuilder builder = new ProcessBuilder(command);
 		
@@ -167,10 +167,10 @@ public class ManagedApplication extends Application {
 			builder.start();
 			
 		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Stop executable is not launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Stop executable is not launched for application " + this.getNameId() + " : " + e.getMessage());
 			e.printStackTrace();
 		}
-		LogInfo.getInstance().getLogger().info("Launched stop executable for application " + this.getNameId());
+		Log.logger().info("Launched stop executable for application " + this.getNameId());
 	}
 	
 	@Override

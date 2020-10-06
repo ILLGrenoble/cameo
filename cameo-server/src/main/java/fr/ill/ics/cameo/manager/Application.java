@@ -162,7 +162,7 @@ public abstract class Application extends ApplicationConfig {
 	
 	synchronized void setState(int applicationState) {
 		if (applicationState != this.applicationState) {
-			LogInfo.getInstance().getLogger().fine("Application " + getNameId() + " sets application state " + Converter.toString(applicationState));
+			Log.logger().fine("Application " + getNameId() + " sets application state " + Converter.toString(applicationState));
 			this.applicationState = applicationState;
 			this.pastApplicationStates |= applicationState;
 		}	
@@ -170,7 +170,7 @@ public abstract class Application extends ApplicationConfig {
 
 	synchronized void setProcessState(ProcessState processState) {
 		if (processState != this.processState) {
-			LogInfo.getInstance().getLogger().fine("Application " + getNameId() + " sets process state " + processState);
+			Log.logger().fine("Application " + getNameId() + " sets process state " + processState);
 			this.processState = processState;
 		}	
 	}
@@ -211,7 +211,7 @@ public abstract class Application extends ApplicationConfig {
 			return;
 		}
 		
-		LogInfo.getInstance().getLogger().fine("Launching error executable for application " + this.getNameId());
+		Log.logger().fine("Launching error executable for application " + this.getNameId());
 		
 		// Build the command arguments
 		ArrayList<String> commandList = new ArrayList<String>();
@@ -234,7 +234,7 @@ public abstract class Application extends ApplicationConfig {
 		commandList.toArray(command);
 	
 		String commandString = String.join(" ", command);
-		LogInfo.getInstance().getLogger().fine("Start " + commandString);
+		Log.logger().fine("Start " + commandString);
 		
 		ProcessBuilder builder = new ProcessBuilder(command);
 		
@@ -250,15 +250,15 @@ public abstract class Application extends ApplicationConfig {
 			process.waitFor();
 			
 			Date end = new Date();
-			LogInfo.getInstance().getLogger().fine("Processed error in " + (end.getTime() - begin.getTime()) + "ms");
+			Log.logger().fine("Processed error in " + (end.getTime() - begin.getTime()) + "ms");
 			
 		} catch (IOException e) {
-			LogInfo.getInstance().getLogger().severe("Error process is not launched for application " + this.getNameId() + " : " + e.getMessage());
+			Log.logger().severe("Error process is not launched for application " + this.getNameId() + " : " + e.getMessage());
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			
 		}
-		LogInfo.getInstance().getLogger().info("Finished processing error for application " + this.getNameId());
+		Log.logger().info("Finished processing error for application " + this.getNameId());
 	}
 	
 	abstract public void executeStop();

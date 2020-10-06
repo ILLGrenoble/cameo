@@ -2,6 +2,11 @@
 -----
 
 * Replaced protobuf by JSON.
+* Added server and version commands.
+* Removed test command.
+* Added long names for -a and -e options: --app, --endpoint.
+* Added -p option for port with long name --port.
+* Endpoint can be defined more simply: hostname:port or tcp://hostname or hostname.
 
 0.1.4
 -----

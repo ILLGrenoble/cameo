@@ -26,10 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public final class LogInfo {
+public final class Log {
 
 	private final Logger logger = Logger.getLogger("cameo.log");
-	private final static LogInfo instance = new LogInfo();
+	private final static Log instance = new Log();
 
 	private static class DebugFormatter extends Formatter {
 
@@ -48,12 +48,12 @@ public final class LogInfo {
 		}
 	}
 	
-	private LogInfo() {
+	private Log() {
 	}
 
-	public void init() {
+	public static void init() {
 
-		logger.setLevel(Level.FINE);
+		instance.logger.setLevel(Level.FINE);
 		
 		try {
 			File logDirectory = new File(ConfigManager.getInstance().getLogPath());
@@ -66,20 +66,20 @@ public final class LogInfo {
 			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/cameo.log", false);
 			fileHandler.setFormatter(new LogFormatter());
 			fileHandler.setLevel(Level.INFO);
-			logger.addHandler(fileHandler);
+			instance.logger.addHandler(fileHandler);
 			
 			if (ConfigManager.getInstance().isDebugMode()) {
 				ConsoleHandler consoleHandler = new ConsoleHandler();
 				consoleHandler.setFormatter(new DebugFormatter());
 				consoleHandler.setLevel(Level.FINE);
-				logger.addHandler(consoleHandler);
+				instance.logger.addHandler(consoleHandler);
 			}
 
 			// disable terminal output
-			logger.setUseParentHandlers(false);
+			instance.logger.setUseParentHandlers(false);
 
 			// first log
-			logger.fine("Logs written to " + ConfigManager.getInstance().getLogPath() + "/cameo.log");
+			instance.logger.fine("Logs written to " + ConfigManager.getInstance().getLogPath() + "/cameo.log");
 			
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -88,12 +88,8 @@ public final class LogInfo {
 		}
 	}
 
-	public Logger getLogger() {
-		return logger;
-	}
-
-	public final static LogInfo getInstance() {
-		return instance;
+	public static Logger logger() {
+		return instance.logger;
 	}
 
 }

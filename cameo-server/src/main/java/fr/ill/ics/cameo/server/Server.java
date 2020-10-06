@@ -29,7 +29,7 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;
-import fr.ill.ics.cameo.manager.LogInfo;
+import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -84,7 +84,7 @@ public class Server {
 		Zmq.Socket server = context.createSocket(Zmq.REP);
 		server.bind(ConfigManager.getInstance().getEndpoint());
 
-		LogInfo.getInstance().getLogger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
+		Log.logger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
 
 		// Init the stream sockets.
 		manager.initStreamSockets(context);
@@ -94,7 +94,7 @@ public class Server {
 			public void run() {
 
 				manager.killAllApplications();
-				LogInfo.getInstance().getLogger().fine("Exited");
+				Log.logger().fine("Exited");
 			}
 		}));
 

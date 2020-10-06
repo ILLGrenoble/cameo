@@ -17,13 +17,13 @@ public class UnmanagedApplication extends Application {
 			try {
 				processHandle = ProcessHandlerImpl.ofPid(pid);
 				
-				LogInfo.getInstance().getLogger().info("Unmanaged application " + this.getNameId() + " has a process handle");
+				Log.logger().info("Unmanaged application " + this.getNameId() + " has a process handle");
 				
 			} catch (Exception e) {
-				LogInfo.getInstance().getLogger().info("Unmanaged application " + this.getNameId() + " has no process handle");
+				Log.logger().info("Unmanaged application " + this.getNameId() + " has no process handle");
 			}
 		} else {
-			LogInfo.getInstance().getLogger().info("Unmanaged application " + this.getNameId() + " has no pid");
+			Log.logger().info("Unmanaged application " + this.getNameId() + " has no pid");
 		}
 	}
 	

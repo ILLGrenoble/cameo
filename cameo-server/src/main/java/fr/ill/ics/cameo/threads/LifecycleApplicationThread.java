@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationState;
-import fr.ill.ics.cameo.manager.LogInfo;
+import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.ProcessState;
 
@@ -89,7 +89,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 
 			// Pass result to error callback.
 			if (result != 0 && !application.hasToBeKilled()) {
-				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " returned error code " + result);
+				Log.logger().info("Application " + application.getNameId() + " returned error code " + result);
 				
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
@@ -108,7 +108,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 	
 	public void run() {
 		
-		LogInfo.getInstance().getLogger().info("Thread for application " + application.getNameId() + " started");
+		Log.logger().info("Thread for application " + application.getNameId() + " started");
 		manager.setApplicationProcessState(application, ProcessState.RUNNING);
 		manager.setApplicationState(application, ApplicationState.STARTING);
 		application.start();
@@ -116,7 +116,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// Wait starting time if starting time > 0.
 		boolean forceRunning = false;
 		
-		LogInfo.getInstance().getLogger().info("Waiting end of starting time for " + application.getNameId());
+		Log.logger().info("Waiting end of starting time for " + application.getNameId());
 
 		double start = System.currentTimeMillis();
 		
@@ -126,7 +126,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			if (!application.isAlive()) {
 				
 				if (application.getStartingTime() > 0) {
-					LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " stopped running while starting time");
+					Log.logger().warning("Application " + application.getNameId() + " stopped running while starting time");
 				}
 				break;
 			}
@@ -151,10 +151,10 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			manager.setApplicationState(application, ApplicationState.RUNNING);
 
 			if (forceRunning && application.getStartingTime() > 0) {
-				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " is RUNNING before starting time expired");
+				Log.logger().info("Application " + application.getNameId() + " is RUNNING before starting time expired");
 			}
 			else {
-				LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " is now RUNNING");
+				Log.logger().info("Application " + application.getNameId() + " is now RUNNING");
 			}
 		}
 
@@ -165,7 +165,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 
 		// If the application has to stop.
 		if (application.hasToStop()) {
-			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " has to stop");
+			Log.logger().info("Application " + application.getNameId() + " has to stop");
 			manager.setApplicationProcessState(application, ProcessState.ZOMBIE);
 			
 			// Test if application is stopped nicely.
@@ -182,10 +182,10 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				double time = System.currentTimeMillis();
 				
 				if (application.getStoppingTime() > 0) {
-					LogInfo.getInstance().getLogger().info("Waiting for the application " + application.getNameId() + " to stop before " + application.getStoppingTime() + "s");
+					Log.logger().info("Waiting for the application " + application.getNameId() + " to stop before " + application.getStoppingTime() + "s");
 				}
 				else {
-					LogInfo.getInstance().getLogger().info("Waiting for the application " + application.getNameId() + " to stop");
+					Log.logger().info("Waiting for the application " + application.getNameId() + " to stop");
 				}
 
 				// In case stopping time is -1, we wait indefinitely.
@@ -200,7 +200,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			// If process is still alive (timeout is over) or stop is immediate.
 			if (application.isAlive()) {
 				if (!application.hasToBeKilled()) {
-					LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " must be killed due to stop timeout");
+					Log.logger().warning("Application " + application.getNameId() + " must be killed due to stop timeout");
 				}	
 				application.kill();
 				manager.setApplicationState(application, ApplicationState.KILLED);
@@ -217,7 +217,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// If application died with state RUNNING.
 		// In case the application can restart.
 		else if (application.getApplicationState() == ApplicationState.RUNNING && application.isRestart()) {
-			LogInfo.getInstance().getLogger().warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
+			Log.logger().warning("Application " + application.getNameId() + " died with state RUNNING, trying to start it again");
 			
 			onTermination();
 			
@@ -229,7 +229,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			applicationThread.start();
 		}
 		else {
-			LogInfo.getInstance().getLogger().info("Application " + application.getNameId() + " has terminated");
+			Log.logger().info("Application " + application.getNameId() + " has terminated");
 			
 			if (!onTermination()) {
 				manager.setApplicationState(application, ApplicationState.ERROR);
