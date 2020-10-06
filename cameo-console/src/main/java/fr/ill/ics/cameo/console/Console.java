@@ -27,6 +27,7 @@ import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.ConnectionTimeout;
+import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputPrintThread;
 import fr.ill.ics.cameo.OutputStreamSocket;
@@ -104,6 +105,20 @@ public class Console {
 				// Default endpoint.
 				endpoint = "tcp://localhost:7000";
 			}
+		}
+		
+		// Add the tcp:// prefix if necessary.
+		if (!endpoint.startsWith("tcp://")) {
+			endpoint = "tcp://" + endpoint;
+		}
+		
+		// Find the port and add default 7000 port if not present.
+		int tcpSeparator = endpoint.indexOf(':');
+		int portSeparator = endpoint.lastIndexOf(':');
+		
+		if (tcpSeparator == portSeparator) {
+			// No port is defined.
+			endpoint += ":7000";
 		}
 	}
 	
@@ -569,9 +584,11 @@ public class Console {
 		showVersion();
 		
 		System.out.println("Usage:");
-		System.out.println("[-e, --endpoint <endpoint>] Define the server endpoint.");
+		System.out.println("[-e, --endpoint <endpoint>] Define the server endpoint. Full endpoint is tcp://hostname:port. ");
+		System.out.println("                            Short endpoints hostname:port or tcp://hostname or hostname are valid.");
+		System.out.println("                            If endpoint is hostname then the port is 7000.");
 		System.out.println("                            If not specified, the CAMEO_SERVER environment variable is used.");
-		System.out.println("                            Default value is tcp://localhost:7000.");
+		System.out.println("                            If the CAMEO_SERVER environment variable is not defined, the default value is tcp://localhost:7000.");
 		System.out.println("[-p, --port <port>]         Define the server endpoint port.");
 		System.out.println("                            If specified, the endpoint is tcp://localhost:port.");
 		System.out.println("[-a, --app <name>]          Define the application name.");
@@ -633,6 +650,11 @@ public class Console {
 		}
 		catch (UnexpectedException e) {
 			System.out.println("Incompatible cameo server.");
+			System.exit(1);
+		}
+		catch (Exception e) {
+			System.out.println("Cannot connect to server: " + e.getMessage());
+			System.exit(1);
 		}
 		finally {
 			if (console != null) {
