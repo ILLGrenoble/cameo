@@ -125,7 +125,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			if (!application.isAlive()) {
 				
 				if (application.getStartingTime() > 0) {
-					Log.logger().warning("Application " + application.getNameId() + " stopped running while starting time");
+					Log.logger().fine("Application " + application.getNameId() + " stopped running while starting time");
 				}
 				break;
 			}
@@ -192,7 +192,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			// If process is still alive (timeout is over) or stop is immediate.
 			if (application.isAlive()) {
 				if (!application.hasToBeKilled()) {
-					Log.logger().warning("Application " + application.getNameId() + " must be killed due to stop timeout");
+					Log.logger().fine("Application " + application.getNameId() + " must be killed due to stop timeout");
 				}	
 				application.kill();
 				manager.setApplicationState(application, ApplicationState.KILLED);
@@ -209,7 +209,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// If application died with state RUNNING.
 		// In case the application can restart.
 		else if (application.getApplicationState() == ApplicationState.RUNNING && application.isRestart()) {
-			Log.logger().warning("Application " + application.getNameId() + " died, trying to start it again");
+			Log.logger().fine("Application " + application.getNameId() + " died, restarting it");
 			
 			onTermination();
 			

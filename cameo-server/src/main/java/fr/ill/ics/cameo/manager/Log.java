@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 public final class Log {
 
 	private final Logger logger = Logger.getLogger("cameo.log");
+	private static boolean logConsole = false;
 	private final static Log instance = new Log();
 
 	private static class DebugFormatter extends Formatter {
@@ -51,6 +52,10 @@ public final class Log {
 	private Log() {
 	}
 
+	public static void enableLogConsole() {
+		logConsole  = true;
+	}
+	
 	public static void init() {
 
 		instance.logger.setLevel(Level.FINE);
@@ -62,16 +67,18 @@ public final class Log {
 			if (!logDirectory.exists()) {
 				logDirectory.mkdir();
 			}
-						
+			
+			Level logLevel = Level.parse(ConfigManager.getInstance().getLogLevel().toUpperCase());
+			
 			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/cameo.log", false);
 			fileHandler.setFormatter(new LogFormatter());
-			fileHandler.setLevel(Level.INFO);
+			fileHandler.setLevel(logLevel);
 			instance.logger.addHandler(fileHandler);
 			
-			if (ConfigManager.getInstance().isDebugMode()) {
+			if (logConsole) {
 				ConsoleHandler consoleHandler = new ConsoleHandler();
 				consoleHandler.setFormatter(new DebugFormatter());
-				consoleHandler.setLevel(Level.FINE);
+				consoleHandler.setLevel(logLevel);
 				instance.logger.addHandler(consoleHandler);
 			}
 

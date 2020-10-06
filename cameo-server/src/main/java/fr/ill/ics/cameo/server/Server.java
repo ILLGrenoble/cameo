@@ -306,11 +306,22 @@ public class Server {
 		// Verify arguments.
 		if (args.length < 1) {
 			showVersion();
-			System.out.printf("Usage: <XML config file>\n");
+			System.out.printf("Usage: [--log-console] <config file>\n");
 			System.exit(1);
 		}
+		
+		String configFile = "";
+		
+		for (int i = 0; i < args.length; ++i) {
+			if (args[i].equals("--log-console")) {
+				Log.enableLogConsole();
+			}
+			if (args[i].endsWith(".xml")) {
+				configFile = args[i];
+			}
+		}
 
-		Server server = new Server(args[0]);
+		Server server = new Server(configFile);
 		server.run();
 	}
 }

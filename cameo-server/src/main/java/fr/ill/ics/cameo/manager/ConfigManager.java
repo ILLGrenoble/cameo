@@ -25,7 +25,7 @@ public final class ConfigManager {
 	private final static ConfigManager instance = new ConfigManager();
 
 	private int maxNumberOfApplications;
-	private boolean debugMode = false;
+	private String logLevel = "FINE";
 	private String configParent;
 	private String host;
 	private int port;
@@ -104,18 +104,29 @@ public final class ConfigManager {
 			System.exit(-1);
 		}
 	}
-
-	public boolean isDebugMode() {
-		return debugMode;
+	
+	public String getLogLevel() {
+		return logLevel;
 	}
-
-	public void setDebugMode(String mode) {
-		if (mode == null) {
-			debugMode = false;
-		} else if (mode.equalsIgnoreCase("ON")) {
-			debugMode = true;
-		} else if (mode.equalsIgnoreCase("OFF")) {
-			debugMode = false;
+	
+	public void setLogLevel(String level) {
+		if (level == null) {
+			logLevel = "FINE";
+		}
+		else if (level.equalsIgnoreCase("OFF")) {
+			logLevel = "OFF";
+		}
+		else if (level.equalsIgnoreCase("INFO")) {
+			logLevel = "INFO";
+		}
+		else if (level.equalsIgnoreCase("FINE")) {
+			logLevel = "FINE";
+		}
+		else if (level.equalsIgnoreCase("FINER")) {
+			logLevel = "FINER";
+		}
+		else if (level.equalsIgnoreCase("FINEST")) {
+			logLevel = "FINEST";
 		}
 	}
 

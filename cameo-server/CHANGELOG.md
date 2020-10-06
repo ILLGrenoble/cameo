@@ -3,8 +3,12 @@
 
 * Replaced protobuf by JSON.
 * In StreamApplicationThread, replaced reader.readLine() by a specialised readCharacters() method to manage properly the input streams (output from the cameo server, input from the process).
-* Removed the retries attribute of an application.
+* Removed the 'retries' attribute of an application config.
 * Added server version request.
+* Reviewed log messages.
+* Removed the 'debug' attribute from config.
+* Added the 'log_level' attribute in config.
+* Added the argument --log-console in Server main.
 
 0.1.8
 -----

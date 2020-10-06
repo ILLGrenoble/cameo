@@ -120,7 +120,7 @@ public abstract class ConfigLoader {
 		ConfigManager.getInstance().setHost(root.getAttributeValue("host"));
 		ConfigManager.getInstance().setFirstPort(root.getAttributeValue("port"));
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
-		ConfigManager.getInstance().setDebugMode(root.getAttributeValue("debug"));
+		ConfigManager.getInstance().setLogLevel(root.getAttributeValue("log_level"));
 		
 		// Sleep time.
 		int sleepTime = 5;
@@ -231,13 +231,11 @@ public abstract class ConfigLoader {
 	 * @return ApplicationConfig
 	 */
 	protected ApplicationConfig verifyApplicationExistence(String name) throws UnknownApplicationException {
-		Log.logger().fine("Verify command from user");
 
 		ApplicationConfig ApplicationConfig = null;
 		boolean isPresent = false;
 		Iterator<ApplicationConfig> it = applicationList.iterator();
 
-		Log.logger().fine("Application " + name + " has no argument");
 		while (it.hasNext()) {
 			ApplicationConfig element = (ApplicationConfig) it.next();
 			// if name is correct
@@ -258,14 +256,11 @@ public abstract class ConfigLoader {
 	 * show config of applications, only used to debug
 	 */
 	protected void showApplicationConfigs() {
-		Log.logger().fine("*********************************");
-		Log.logger().fine("List of applications            *");
+		Log.logger().fine("List of applications");
 		Iterator<ApplicationConfig> it = applicationList.iterator();
 		while (it.hasNext()) {
-			Log.logger().fine("*********************************");
 			Log.logger().fine(((ApplicationConfig)it.next()).toString());
 		}
-		Log.logger().fine("*********************************");
 	}
 	
 	public int getApplicationStreamPort(String name) {

@@ -189,7 +189,7 @@ public class ApplicationConfig {
 			
 			if (!runSingle) {
 				stream = false;
-				Log.logger().warning("The application " + name + " cannot have multiple instances and show stream");	
+				Log.logger().warning("The application " + name + " cannot have multiple=yes and stream=yes");
 			}
 			
 		} else if (value.equalsIgnoreCase("no")) {
@@ -384,7 +384,7 @@ public class ApplicationConfig {
 			stopArgsString = String.join(" ", stopArgs);
 		}	
 		
-		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorComand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + stream + ", streamPort=" + streamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + passInfo + "]";
+		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorCommand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + stream + ", streamPort=" + streamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + passInfo + "]";
 	}
 	
 }
