@@ -37,11 +37,25 @@ public class Console {
 
 	private String endpoint;
 	private Server server;
+	
+	private int currentIndex = 0;
+	
 	String[] applicationArgs;
 	private String applicationName = null;
 	private String commandName = "help";
 	private int applicationId = -1;
+	
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
+	
+	private static String APPLICATION_OPTION = "--app";
+	private static String SHORT_APPLICATION_OPTION = "-a";
+	
+	private static String ENDPOINT_OPTION = "--endpoint";
+	private static String SHORT_ENDPOINT_OPTION = "-e";
+	
+	private static String PORT_OPTION = "--port";
+	private static String SHORT_PORT_OPTION = "-p";
+	
 	
 	public static String column(String name, int length) {
 		String result = name;
@@ -56,16 +70,10 @@ public class Console {
 		return result;
 	}
 		
-	public Console(String[] args) {
-		super();
+	private void defineEndpoint(String[] args) {
 		
-		if (args.length == 0) {
-			return;
-		}
-		
-		int currentIndex = 0;
 		// Searching for endpoint.
-		if ("-e".equals(args[currentIndex])) {
+		if (ENDPOINT_OPTION.equals(args[currentIndex]) || SHORT_ENDPOINT_OPTION.equals(args[currentIndex])) {
 			if (args.length > currentIndex + 1) {
 				currentIndex += 1;
 				endpoint = args[currentIndex];
@@ -76,21 +84,35 @@ public class Console {
 				System.exit(1);
 			}
 		}
+		else if (PORT_OPTION.equals(args[currentIndex]) || SHORT_PORT_OPTION.equals(args[currentIndex])) {
+			if (args.length > currentIndex + 1) {
+				currentIndex += 1;
+				endpoint = "tcp://localhost:" + args[currentIndex];
+				currentIndex += 1;
+			}
+			else {
+				System.out.println("Port is missing.");
+				System.exit(1);
+			}
+		}
 		else {
-			// Check environment
+			// Check environment.
 			Map<String, String> environment = System.getenv();
 			if (environment.containsKey(CAMEO_SERVER)) {
 				endpoint = environment.get(CAMEO_SERVER);
 			} else {
-				// Default endpoint
+				// Default endpoint.
 				endpoint = "tcp://localhost:7000";
 			}
 		}
-
+	}
+	
+	private void defineCommandName(String[] args) {
+		
 		if (args.length == currentIndex) {
 			commandName = "help";
 		}
-		else if ("-a".equals(args[currentIndex])) {
+		else if (APPLICATION_OPTION.equals(args[currentIndex]) || SHORT_APPLICATION_OPTION.equals(args[currentIndex])) {
 			
 			// Searching for the application name.
 			// The application is specified with -a option.
@@ -123,11 +145,25 @@ public class Console {
 				currentIndex += 1;
 			}
 		}
-				
+	}
+	
+	private void defineApplicationArgs(String[] args) {
 		applicationArgs = new String[args.length - currentIndex];
 		for (int i = 0; i < args.length - currentIndex; i++) {
 			applicationArgs[i] = args[i + currentIndex];
 		}
+	}
+	
+	public Console(String[] args) {
+		super();
+		
+		if (args.length == 0) {
+			return;
+		}
+		
+		defineEndpoint(args);
+		defineCommandName(args);
+		defineApplicationArgs(args);
 		
 		// Initialise the server if it is not a help command.
 		if (!commandName.equals("help")) {
@@ -449,7 +485,7 @@ public class Console {
 			// waiting for the end of process
 			state = result.waitFor();	
 		}
-		
+				
 		if (streamSocket != null) {
 			outputThread.waitFor();
 		}
@@ -458,6 +494,9 @@ public class Console {
 		
 		if (state == Application.State.SUCCESS) {
 			System.out.println("The application " + result.getNameId() + " terminated successfully.");
+			
+			// Return 0 as it is SUCCESS.
+			System.exit(0);
 		}
 		else if (state == Application.State.STOPPED) {
 			System.out.println("The application " + result.getNameId() + " has been stopped.");
@@ -474,6 +513,9 @@ public class Console {
 				System.out.println("The application " + result.getNameId() + " terminated with error.");
 			}
 		}
+		
+		// Return the state in case it is not SUCCESS.
+		//System.exit(state);
 	}
 	
 	private void processConnect(boolean input) {
@@ -527,27 +569,29 @@ public class Console {
 		showVersion();
 		
 		System.out.println("Usage:");
-		System.out.println("[-e <endpoint>]         Define the server endpoint.");
-		System.out.println("                        If not specified, the CAMEO_SERVER environment variable is used.");
-		System.out.println("                        Default value is tcp://localhost:7000.");
-		System.out.println("[-a <name>]             Define the application name.");
+		System.out.println("[-e, --endpoint <endpoint>] Define the server endpoint.");
+		System.out.println("                            If not specified, the CAMEO_SERVER environment variable is used.");
+		System.out.println("                            Default value is tcp://localhost:7000.");
+		System.out.println("[-p, --port <port>]         Define the server endpoint port.");
+		System.out.println("                            If specified, the endpoint is tcp://localhost:port.");
+		System.out.println("[-a, --app <name>]          Define the application name.");
 		System.out.println("");
 		System.out.println("[commands]");
-		System.out.println("  start [name] <args>   Starts the application with name.");
-		System.out.println("  exec [name] <args>    Starts the application with name and blocks until its termination. Output streams are displayed.");
-		System.out.println("  test [name] <args>    Same than exec.");
-		System.out.println("  stop [name]           Stop the application with name. Kills the application if the stop timeout is reached.");
-		System.out.println("  stop [id]             Stop the application with id. Kills the application if the stop timeout is reached.");
-		System.out.println("  kill [name]           Kill the application with name.");
-		System.out.println("  kill [id]             Kill the application with id.");
-		System.out.println("  connect [name]        Connect the application with name.");
-		System.out.println("  listen [name]         Listen to the application with name.");
+		System.out.println("  start [name] <args>       Starts the application with name.");
+		System.out.println("  exec [name] <args>        Starts the application with name and blocks until its termination. Output streams are displayed.");
+		System.out.println("  test [name] <args>        Same than exec.");
+		System.out.println("  stop [name]               Stop the application with name. Kills the application if the stop timeout is reached.");
+		System.out.println("  stop [id]                 Stop the application with id. Kills the application if the stop timeout is reached.");
+		System.out.println("  kill [name]               Kill the application with name.");
+		System.out.println("  kill [id]                 Kill the application with id.");
+		System.out.println("  connect [name]            Connect the application with name.");
+		System.out.println("  listen [name]             Listen to the application with name.");
 		System.out.println("");
 		System.out.println("[display commands]");
-		System.out.println("  help                  Display the help.");
-		System.out.println("  server                Display the server endpoint and version.");
-		System.out.println("  list                  Display the available applications.");
-		System.out.println("  apps <name>           Display all the started applications.");
+		System.out.println("  help                      Display the help.");
+		System.out.println("  server                    Display the server endpoint and version.");
+		System.out.println("  list                      Display the available applications.");
+		System.out.println("  apps <name>               Display all the started applications.");
 		System.out.println("");
 		System.out.println("Examples:");
 		System.out.println("exec subpubjava pubjava");
