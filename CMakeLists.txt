@@ -28,9 +28,8 @@ endif()
 # Dependencies
 #------------------------------------------------------------
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(ZeroMQ REQUIRED) # I cannot find it
-find_package(Protobuf 3.0.0 REQUIRED)
-
+find_package(ZeroMQ REQUIRED)
+find_package(Rapidjson REQUIRED)
 
 #------------------------------------------------------------
 # Libraries
@@ -44,11 +43,8 @@ file(GLOB_RECURSE CAMEO_SOURCE_FILES "src/*.cpp")
 #message(${CAMEO_PUBLIC_HEADER_FILES})
 #message(${CAMEO_SOURCE_FILES})
 
-# this generates the Messages.pb.h and Messages.pb.cc files
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS  proto/Messages.proto)
-
-add_library(cameo ${CAMEO_SOURCE_FILES} ${PROTO_SRCS})
-target_link_libraries(cameo PRIVATE zmq protobuf ${Protobuf_LIBRARIES})
+add_library(cameo ${CAMEO_SOURCE_FILES})
+target_link_libraries(cameo PRIVATE zmq)
 target_include_directories(cameo
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR} # this is to get protobuf messages
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
