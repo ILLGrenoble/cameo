@@ -221,7 +221,7 @@ public class Console {
 			else if (commandName.equals("list")) {
 				processAllAvailable();
 			}
-			else if (commandName.equals("exec") || commandName.equals("test")) {
+			else if (commandName.equals("exec")) {
 				processExec();
 			}
 			else if (commandName.equals("connect")) {
@@ -579,7 +579,6 @@ public class Console {
 		System.out.println("[commands]");
 		System.out.println("  start [name] <args>       Starts the application with name.");
 		System.out.println("  exec [name] <args>        Starts the application with name and blocks until its termination. Output streams are displayed.");
-		System.out.println("  test [name] <args>        Same than exec.");
 		System.out.println("  stop [name]               Stop the application with name. Kills the application if the stop timeout is reached.");
 		System.out.println("  stop [id]                 Stop the application with id. Kills the application if the stop timeout is reached.");
 		System.out.println("  kill [name]               Kill the application with name.");
