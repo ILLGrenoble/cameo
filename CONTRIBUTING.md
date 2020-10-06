@@ -32,5 +32,5 @@ git subtree merge -P cameo-api-cpp/ cpp_master
 git log --graph --grep='(split)' --invert-grep master 
 ```
 
-
+This way the history is present on both sides.
 
