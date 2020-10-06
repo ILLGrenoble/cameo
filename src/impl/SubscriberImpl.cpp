@@ -15,13 +15,13 @@
  */
 
 #include "SubscriberImpl.h"
-#include "../Serializer.h"
+#include "Serializer.h"
 #include "CancelIdGenerator.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
-#include "../Server.h"
-#include "../message/JSON.h"
-#include "../message/Message.h"
+#include "Server.h"
+#include "message/JSON.h"
+#include "message/Message.h"
 #include <sstream>
 
 using namespace std;
