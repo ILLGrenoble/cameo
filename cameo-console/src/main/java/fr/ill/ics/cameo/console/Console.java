@@ -19,11 +19,9 @@ package fr.ill.ics.cameo.console;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -47,9 +45,11 @@ public class Console {
 	private String commandName = "help";
 	private int applicationId = -1;
 
+	// Command options.
 	boolean start = false;
 	boolean mute = false;
 	boolean quiet = false;
+	boolean consoleVersion = false;
 	
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
@@ -70,6 +70,10 @@ public class Console {
 	
 	private static String QUIET_OPTION = "--quiet";
 	private static String SHORT_QUIET_OPTION = "-q";
+	
+	private static String CONSOLE_OPTION = "--console";
+	private static String SHORT_CONSOLE_OPTION = "-c";
+	
 	
 	public static String column(String name, int length) {
 		String result = name;
@@ -182,6 +186,9 @@ public class Console {
 				else if (QUIET_OPTION.equals(arg) || SHORT_QUIET_OPTION.equals(arg)) {
 					quiet = true;
 				}
+				else if (CONSOLE_OPTION.equals(arg) || SHORT_CONSOLE_OPTION.equals(arg)) {
+					consoleVersion = true;
+				}
 				currentIndex += 1;
 			}
 			else {
@@ -243,7 +250,7 @@ public class Console {
 				processServerEndpoint();
 			}
 			else if (commandName.equals("version")) {
-				processServerVersion();
+				processVersion();
 			}
 			else if (commandName.equals("server")) {
 				processServer();
@@ -288,10 +295,15 @@ public class Console {
 		System.out.println(endpoint);
 	}
 	
-	private void processServerVersion() {
-
-		int[] version = server.getVersion();
-		System.out.println(version[0] + "." + version[1] + "." + version[2]);
+	private void processVersion() {
+		
+		if (consoleVersion) {
+			System.out.println(getVersion());
+		}
+		else {
+			int[] version = server.getVersion();
+			System.out.println(version[0] + "." + version[1] + "." + version[2]);
+		}
 	}
 	
 	private void processServer() {
@@ -642,8 +654,6 @@ public class Console {
 
 	private void processHelp() {
 		
-		showVersion();
-		
 		System.out.println("Usage: cmo <server options> [command] <command options>");
 		System.out.println("[server options]");
 		System.out.println("-e, --endpoint [endpoint]      Define the server endpoint. Full endpoint is tcp://hostname:port. ");
@@ -675,7 +685,9 @@ public class Console {
 		System.out.println("  help                         Display the help.");
 		System.out.println("  endpoint                     Display the server endpoint.");
 		System.out.println("  server                       Display the server endpoint and version.");
-		System.out.println("  version                      Display the server version.");
+		System.out.println("  version <options>            Display the server version.");
+		System.out.println("    [options]");
+		System.out.println("    -c, --console              Display the console version.");
 		System.out.println("  list                         Display the available applications.");
 		System.out.println("  apps <name>                  Display all the started applications.");
 		System.out.println("");
@@ -687,7 +699,7 @@ public class Console {
 		System.out.println("$ cmo -e tcp://localhost:7000 connect -s subpubjava");
 	}
 	
-	private static void showVersion() {
+	private static String getVersion() {
 		
 		try {
 			Enumeration<URL> resources = Console.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
@@ -699,16 +711,17 @@ public class Console {
 				
 				if (attributes.getValue("Specification-Version") != null 
 					&& attributes.getValue("Build-Timestamp") != null) {
-					System.out.println("Cameo console version " + attributes.getValue("Specification-Version") + "--" + attributes.getValue("Build-Timestamp"));
 					
 					// The manifest is found, we can return.
-					return;
+					return attributes.getValue("Specification-Version");
 				}
 			}
 		}
 		catch (IOException E) {
 	      // handle
 	    }
+		
+		return "?";
 	}
 
 	public static void main(String[] args) {
