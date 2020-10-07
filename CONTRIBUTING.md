@@ -34,3 +34,20 @@ git log --graph --grep='(split)' --invert-grep master
 
 This way the history is present on both sides.
 
+-----------------------------------------
+# Example: propagation of changes from MAIN/master to CPP/devel
+```
+git clone git@code.ill.fr:cameo/cameo.git
+git remote add cpp git@code.ill.fr:cameo/cameo-api-cpp.git
+git fetch cpp
+
+git subtree split -P cameo-api-cpp --annotate='(split3) ' --rejoin -b main_master
+git branch --track cpp/devel cpp_devel
+
+git checkout cpp_devel
+git merge main_master
+git push cpp cpp_devel
+git checkout master
+git push origin 
+```
+
