@@ -19,9 +19,11 @@ package fr.ill.ics.cameo.console;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -43,6 +45,7 @@ public class Console {
 	String[] applicationArgs;
 	private String applicationName = null;
 	private String commandName = "help";
+	private Set<String> commandOptions = new HashSet<String>();
 	private int applicationId = -1;
 	
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
@@ -56,6 +59,14 @@ public class Console {
 	private static String PORT_OPTION = "--port";
 	private static String SHORT_PORT_OPTION = "-p";
 	
+	private static String MUTE_OPTION = "--mute";
+	private static String SHORT_MUTE_OPTION = "-m";
+	
+	private static String START_OPTION = "--start";
+	private static String SHORT_START_OPTION = "-s";
+	
+	private static String QUIET_OPTION = "--quiet";
+	private static String SHORT_QUIET_OPTION = "-q";
 	
 	public static String column(String name, int length) {
 		String result = name;
@@ -153,11 +164,31 @@ public class Console {
 			// The command name is then first
 			commandName = args[currentIndex];
 			currentIndex += 1;
-			
-			if (args.length > currentIndex) {
-				applicationName = args[currentIndex];
+		}
+		
+		// Options to command.
+		while (args.length > currentIndex) {
+			String arg = args[currentIndex];
+			if (arg.startsWith("-")) {
+				if (MUTE_OPTION.equals(arg) || SHORT_MUTE_OPTION.equals(arg)) {
+					commandOptions.add(MUTE_OPTION);
+				}
+				else if (START_OPTION.equals(arg) || SHORT_START_OPTION.equals(arg)) {
+					commandOptions.add(START_OPTION);
+				}
+				else if (QUIET_OPTION.equals(arg) || SHORT_QUIET_OPTION.equals(arg)) {
+					commandOptions.add(QUIET_OPTION);
+				}
 				currentIndex += 1;
 			}
+			else {
+				break;
+			}
+		}
+		
+		if (args.length > currentIndex) {
+			applicationName = args[currentIndex];
+			currentIndex += 1;
 		}
 	}
 	
@@ -230,7 +261,6 @@ public class Console {
 				else {
 					processShow();
 				}
-				
 			}
 			else if (commandName.equals("list")) {
 				processAllAvailable();
@@ -239,10 +269,7 @@ public class Console {
 				processExec();
 			}
 			else if (commandName.equals("connect")) {
-				processConnect(true);
-			}
-			else if (commandName.equals("listen")) {
-				processConnect(false);
+				processConnect();
 			}
 			else {
 				System.out.println("Unknown command " + commandName + ".");
@@ -440,7 +467,7 @@ public class Console {
 			System.out.println("Started " + result.getNameId() + ".");
 		}
 		else {
-			System.out.println("Cannot test " + applicationName + ": " + result.getErrorMessage() + ".");
+			System.out.println("Cannot start " + applicationName + ": " + result.getErrorMessage() + ".");
 			return;			
 		}
 		
@@ -532,7 +559,18 @@ public class Console {
 		//System.exit(state);
 	}
 	
-	private void processConnect(boolean input) {
+	private void processConnect() {
+		
+		boolean input = true;
+		boolean start = false;
+		
+		if (commandOptions.contains(MUTE_OPTION)) {
+			input = false;
+		}
+		
+		if (commandOptions.contains(START_OPTION)) {
+			start = true;
+		}
 
 		if (applicationName == null) {
 			System.out.println("Application name is missing.");
@@ -540,17 +578,37 @@ public class Console {
 		}
 		
 		List<Application.Instance> results = server.connectAll(applicationName, Option.OUTPUTSTREAM);
+		Application.Instance result;
 		
 		if (results.size() > 1) {
-			System.out.println("More than one application " + applicationName + " is running, please select one.");
+			System.out.println("More than one application " + applicationName + " is executing, please select one.");
 			return;
 		}
 		else if (results.isEmpty()) {
-			System.out.println("No application " + applicationName + " is running.");
+			
+			// There is no application.
+			if (!start) {
+				// Return as the option 'start' is false.
+				System.out.println("No application " + applicationName + " is executing.");
+				return;
+			}
+			else {
+				// Start the application as the option 'start' is true.
+				result = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);		
+				
+				if (result.exists()) {
+					System.out.println("Started " + result.getNameId() + ".");
+				}
+				else {
+					System.out.println("Cannot start " + applicationName + ": " + result.getErrorMessage() + ".");
+					return;
+				}
+			}
 		}
-		
-		Application.Instance result = results.get(0);
-		
+		else {
+			result = results.get(0);
+		}
+				
 		// start input thread
 		InputThread inputThread = null;
 		
@@ -583,14 +641,15 @@ public class Console {
 		showVersion();
 		
 		System.out.println("Usage:");
-		System.out.println("[-e, --endpoint <endpoint>] Define the server endpoint. Full endpoint is tcp://hostname:port. ");
+		System.out.println("[options]");
+		System.out.println("-e, --endpoint [endpoint]   Define the server endpoint. Full endpoint is tcp://hostname:port. ");
 		System.out.println("                            Short endpoints hostname:port or tcp://hostname or hostname are valid.");
 		System.out.println("                            If endpoint is hostname then the port is 7000.");
 		System.out.println("                            If not specified, the CAMEO_SERVER environment variable is used.");
 		System.out.println("                            If the CAMEO_SERVER environment variable is not defined, the default value is tcp://localhost:7000.");
-		System.out.println("[-p, --port <port>]         Define the server endpoint port.");
+		System.out.println("-p, --port [port]           Define the server endpoint port.");
 		System.out.println("                            If specified, the endpoint is tcp://localhost:port.");
-		System.out.println("[-a, --app <name>]          Define the application name.");
+		System.out.println("-a, --app [name]            Define the application name.");
 		System.out.println("");
 		System.out.println("[commands]");
 		System.out.println("  start [name] <args>       Starts the application with name.");
@@ -599,8 +658,10 @@ public class Console {
 		System.out.println("  stop [id]                 Stop the application with id. Kills the application if the stop timeout is reached.");
 		System.out.println("  kill [name]               Kill the application with name.");
 		System.out.println("  kill [id]                 Kill the application with id.");
-		System.out.println("  connect [name]            Connect the application with name.");
-		System.out.println("  listen [name]             Listen to the application with name.");
+		System.out.println("  connect <options> [name]  Connect the application with name.");
+		System.out.println("    [options]");
+		System.out.println("    -m, --mute              No input stream.");
+		System.out.println("    -s, --start             Start the application if it is not already executing.");
 		System.out.println("");
 		System.out.println("[display commands]");
 		System.out.println("  help                      Display the help.");
@@ -612,8 +673,9 @@ public class Console {
 		System.out.println("Examples:");
 		System.out.println("exec subpubjava pubjava");
 		System.out.println("kill subpubjava");
-		System.out.println("-a subpubjava test pubjava");
-		System.out.println("-e tcp://localhost:7000 -a subpubjava test pubjava");
+		System.out.println("-a subpubjava exec pubjava");
+		System.out.println("-e tcp://localhost:7000 -a subpubjava exec pubjava");
+		System.out.println("-e tcp://localhost:7000 connect -s subpubjava");
 	}
 	
 	private static void showVersion() {
@@ -654,6 +716,7 @@ public class Console {
 		}
 		catch (Exception e) {
 			System.out.println("Cannot connect to server: " + e.getMessage());
+			e.printStackTrace();
 			System.exit(1);
 		}
 		finally {
