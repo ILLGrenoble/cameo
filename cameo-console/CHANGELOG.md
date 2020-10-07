@@ -3,10 +3,12 @@
 
 * Replaced protobuf by JSON.
 * Added server and version commands.
-* Removed test command.
-* Added long names for -a and -e options: --app, --endpoint.
+* Removed test command as it is an alias to exec.
+* Added long names --app and --endpoint for -a and -e options.
 * Added -p option for port with long name --port.
 * Endpoint can be defined more simply: hostname:port or tcp://hostname or hostname.
+* Added options --mute, -m and --start, -s options to connect.
+* Removed listen command as it is done with connect --mute.
 
 0.1.4
 -----
