@@ -16,12 +16,12 @@
 
 #include "RequestImpl.h"
 
-#include "../Application.h"
-#include "../Serializer.h"
+#include "Application.h"
+#include "Serializer.h"
 #include "ServicesImpl.h"
 #include "RequestSocketImpl.h"
-#include "../message/JSON.h"
-#include "../message/Message.h"
+#include "message/JSON.h"
+#include "message/Message.h"
 #include <sstream>
 
 using namespace std;
