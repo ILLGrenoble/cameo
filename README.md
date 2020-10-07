@@ -17,7 +17,7 @@ yum install -y $pkgs
 
 
 ### Ubuntu XXX
-
+sudo apt install  libzmq3-dev rapidjson-dev
 
 
 ## Compilation instructions
