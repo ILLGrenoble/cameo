@@ -15,10 +15,10 @@
  */
 
 #include "ServicesImpl.h"
-#include "../SocketException.h"
-#include "../ConnectionTimeout.h"
-#include "../message/JSON.h"
-#include "../message/Message.h"
+#include "SocketException.h"
+#include "ConnectionTimeout.h"
+#include "message/JSON.h"
+#include "message/Message.h"
 #include "RequestSocketImpl.h"
 #include <iostream>
 #include <sstream>
