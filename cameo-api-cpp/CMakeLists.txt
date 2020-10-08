@@ -2,7 +2,7 @@ if(NOT DEFINED PROJECT_NAME)
   cmake_minimum_required(VERSION 3.7.2)
   
   # Project name and version
-  project(cameo VERSION 0.3.0 LANGUAGES CXX)
+  project(cameo VERSION 1.0.0 LANGUAGES CXX)
 endif()
 
 include(GNUInstallDirs)
@@ -46,7 +46,6 @@ file(GLOB_RECURSE CAMEO_SOURCE_FILES "src/*.cpp")
 add_library(cameo ${CAMEO_SOURCE_FILES})
 target_link_libraries(cameo PRIVATE zmq)
 target_include_directories(cameo
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR} # this is to get protobuf messages
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -74,7 +73,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cameoConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 
 # this is to install the headers
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ # don't forget the trailing /
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
   )
 
