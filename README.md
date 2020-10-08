@@ -4,6 +4,7 @@
 ### CENTOS 8 
 
 List of packages:
+ - cmake
  - cppzmq-devel
  - rapidjson-devel
  
@@ -17,7 +18,7 @@ yum install -y $pkgs
 
 
 ### Ubuntu XXX
-sudo apt install  libzmq3-dev rapidjson-dev
+```sudo apt install cmake libzmq3-dev rapidjson-dev```
 
 
 ## Compilation instructions
