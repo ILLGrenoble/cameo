@@ -59,6 +59,9 @@ public:
 	std::string createOutputRequest(const std::string& name) const;
 	std::string createRequestResponse(int64_t value) const;
 	std::string createRequestResponse(int64_t value, const std::string& message) const;
+	std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
+	std::string createGetKeyValueRequest(int id, const std::string& key);
+	std::string createRemoveKeyRequest(int id, const std::string& key);
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);

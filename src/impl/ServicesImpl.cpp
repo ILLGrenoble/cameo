@@ -17,11 +17,11 @@
 #include "ServicesImpl.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
-#include "message/JSON.h"
 #include "message/Message.h"
 #include "RequestSocketImpl.h"
 #include <iostream>
 #include <sstream>
+#include "JSON.h"
 
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
@@ -389,6 +389,55 @@ std::string ServicesImpl::createRequestResponse(int64_t value, const std::string
 
 	request.pushKey(message::RequestResponse::MESSAGE);
 	request.pushString(message);
+
+	return request.toString();
+}
+
+
+std::string ServicesImpl::createStoreKeyValueRequest(int id, const std::string& key, const std::string& value) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::STORE_KEY_VALUE);
+
+	request.pushKey(message::StoreKeyValueRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::StoreKeyValueRequest::KEY);
+	request.pushString(key);
+
+	request.pushKey(message::StoreKeyValueRequest::VALUE);
+	request.pushString(value);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createGetKeyValueRequest(int id, const std::string& key) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::GET_KEY_VALUE);
+
+	request.pushKey(message::GetKeyValueRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::GetKeyValueRequest::KEY);
+	request.pushString(key);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createRemoveKeyRequest(int id, const std::string& key) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REMOVE_KEY);
+
+	request.pushKey(message::RemoveKeyRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::RemoveKeyRequest::KEY);
+	request.pushString(key);
 
 	return request.toString();
 }

@@ -28,6 +28,8 @@
 #include "PublisherCreationException.h"
 #include "RequesterCreationException.h"
 #include "ResponderCreationException.h"
+#include "UndefinedApplicationException.h"
+#include "UndefinedKeyException.h"
 #include "Response.h"
 #include "Serializer.h"
 #include "Services.h"
@@ -143,6 +145,10 @@ public:
 	 */
 	static std::unique_ptr<Instance> connectToStarter();
 
+	static void storeKeyValue(const std::string& key, const std::string& value);
+	static std::string getKeyValue(const std::string& key);
+	static void removeKey(const std::string& key);
+
 private:
 	void initApplication(int argc, char *argv[]);
 
@@ -227,6 +233,8 @@ public:
 	bool getResult(std::string& result);
 
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
+
+	std::string getKeyValue(const std::string& key);
 
 private:
 	Instance(Server * server);

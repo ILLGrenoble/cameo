@@ -60,6 +60,7 @@ typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
 
 void parse(Object & object, zmq::message_t * message);
+void parse(Object & object, const std::string& string);
 
 }
 }
