@@ -16,13 +16,13 @@
 
 #include "EventStreamSocket.h"
 
+#include "JSON.h"
 #include "impl/SocketWaitingImpl.h"
 #include "PortEvent.h"
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
 #include "impl/StreamSocketImpl.h"
-#include "message/JSON.h"
 #include "message/Message.h"
 
 using namespace std;

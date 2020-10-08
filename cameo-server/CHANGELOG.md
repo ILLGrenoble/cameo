@@ -9,6 +9,7 @@
 * Removed the 'debug' attribute from config.
 * Added the 'log_level' attribute in config.
 * Added the argument --log-console in Server main.
+* Added storage requests.
 
 0.1.8
 -----

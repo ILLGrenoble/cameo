@@ -21,6 +21,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+
+#include "JSON.h"
 #include "EventStreamSocket.h"
 #include "impl/ServicesImpl.h"
 #include "impl/PublisherImpl.h"
@@ -33,7 +35,6 @@
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "message/JSON.h"
 #include "message/Message.h"
 #include "Server.h"
 #include "StarterServerException.h"
@@ -403,6 +404,18 @@ std::unique_ptr<Instance> This::connectToStarter() {
 	return unique_ptr<Instance>(nullptr);
 }
 
+void This::storeKeyValue(const std::string& key, const std::string& value) {
+	m_instance.m_server->storeKeyValue(m_instance.m_id, key, value);
+}
+
+std::string This::getKeyValue(const std::string& key) {
+	return m_instance.m_server->getKeyValue(m_instance.m_id, key);
+}
+
+void This::removeKey(const std::string& key) {
+	m_instance.m_server->removeKey(m_instance.m_id, key);
+}
+
 void This::stoppingFunction(StopFunctionType stop) {
 
 	application::State state = waitForStop();
@@ -663,6 +676,11 @@ bool Instance::getResult(std::string& result) {
 
 std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
 	return m_outputStreamSocket;
+}
+
+std::string Instance::getKeyValue(const std::string& key) {
+	// TODO catch exceptions and rethrow an exception: TerminatedException?
+	return m_server->getKeyValue(m_id, key);
 }
 
 ///////////////////////////////////////////////////////////////////////////

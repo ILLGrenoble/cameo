@@ -15,6 +15,7 @@
  */
 
 #include "JSON.h"
+
 #include <iostream>
 
 using namespace std;
@@ -75,6 +76,14 @@ std::string StringObject::toString() {
 void parse(Object & object, zmq::message_t * message) {
 
 	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
+	if (!ok) {
+		cerr << "Cannot parse message" << endl;
+	}
+}
+
+void parse(Object & object, const std::string& string) {
+
+	rapidjson::ParseResult ok = object.Parse(static_cast<const char *>(string.c_str()), string.size());
 	if (!ok) {
 		cerr << "Cannot parse message" << endl;
 	}

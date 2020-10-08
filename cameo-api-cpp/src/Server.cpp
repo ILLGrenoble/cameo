@@ -21,10 +21,12 @@
 #include "EventThread.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "message/JSON.h"
 #include "message/Message.h"
+#include "UndefinedApplicationException.h"
+#include "UndefinedKeyException.h"
 #include <iostream>
 #include <sstream>
+#include "JSON.h"
 
 using namespace std;
 
@@ -420,6 +422,54 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 	connectionChecker->startThread(getAvailableTimeout(), pollingTimeMs);
 
 	return connectionChecker;
+}
+
+void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStoreKeyValueRequest(id, key, value));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+}
+
+std::string Server::getKeyValue(int id, const std::string& key) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetKeyValueRequest(id, key));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == 0) {
+		return response[message::RequestResponse::MESSAGE].GetString();
+	}
+	else if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+	else if (value == -2) {
+		throw UndefinedKeyException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+
+	return "";
+}
+
+void Server::removeKey(int id, const std::string& key) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemoveKeyRequest(id, key));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+	else if (value == -2) {
+		throw UndefinedKeyException(response[message::RequestResponse::MESSAGE].GetString());
+	}
 }
 
 std::vector<EventListener *> Server::getEventListeners() {

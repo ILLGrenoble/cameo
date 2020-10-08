@@ -10,6 +10,8 @@
 * Added options --mute, -m and --start, -s options to connect.
 * Added option --console, -c to version.
 * Removed listen command as it is done with connect --mute.
+* Added stop handler by typing S enter.
+* Added option --no-stop-handler, -S to disable the stop handler.
 
 0.1.4
 -----

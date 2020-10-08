@@ -19,11 +19,11 @@
 #include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
-#include "message/JSON.h"
 #include "message/Message.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include "JSON.h"
 
 using namespace std;
 

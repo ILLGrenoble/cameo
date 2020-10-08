@@ -54,6 +54,9 @@ namespace message {
 	const int STARTED_UNMANAGED = 27;
 	const int TERMINATED_UNMANAGED = 28;
 	const int IMPL_VERSION = 29;
+	const int STORE_KEY_VALUE = 30;
+	const int GET_KEY_VALUE = 31;
+	const int REMOVE_KEY = 32;
 
 	namespace Event {
 		constexpr const char* CANCEL = "CANCEL";
@@ -240,6 +243,22 @@ namespace message {
 		constexpr const char* MAJOR = "major";
 		constexpr const char* MINOR = "minor";
 		constexpr const char* REVISION = "revision";
+	}
+
+	namespace StoreKeyValueRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* KEY = "key"; // string
+		constexpr const char* VALUE = "value"; // string
+	}
+
+	namespace GetKeyValueRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* KEY = "key"; // string
+	}
+
+	namespace RemoveKeyRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* KEY = "key"; // string
 	}
 
 }
