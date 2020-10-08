@@ -27,21 +27,34 @@ public class InputThread extends Thread {
 	private Server server;
 	private int applicationID;
 	private boolean running = true;
+	private Runnable stopHandler;
 	
 	public InputThread(Server server, int applicationID) {
 		this.server = server;
 		this.applicationID = applicationID;
 	}
 	
+	public void setStopHandler(Runnable handler) {
+		this.stopHandler = handler;
+	}
+	
 	public void run() {
 		
 		try {
 			BufferedInputStream bis = new BufferedInputStream(System.in);
+			
 			while (running) {
 				byte[] buffer = new byte[4096];
 				if (bis.available() > 0) {
 					int readSize = bis.read(buffer, 0, bis.available());
 					String input = new String(buffer, 0, readSize - 1);
+					
+					// Stop handler.
+					if (stopHandler != null && "S".equals(input)) {
+						stopHandler.run();
+						break;
+					}
+					
 					// adding the character which is better managed
 					input += "\n";
 					

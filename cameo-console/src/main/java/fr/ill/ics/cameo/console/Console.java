@@ -44,12 +44,13 @@ public class Console {
 	private String applicationName = null;
 	private String commandName = "help";
 	private int applicationId = -1;
-
+	private boolean useStopHandler = true;
+	
 	// Command options.
-	boolean start = false;
-	boolean mute = false;
-	boolean quiet = false;
-	boolean consoleVersion = false;
+	private boolean start = false;
+	private boolean mute = false;
+	private boolean quiet = false;
+	private boolean consoleVersion = false;
 	
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
@@ -70,6 +71,9 @@ public class Console {
 	
 	private static String QUIET_OPTION = "--quiet";
 	private static String SHORT_QUIET_OPTION = "-q";
+	
+	private static String NO_STOP_HANDLER_OPTION = "--no-stop-handler";
+	private static String SHORT_NO_STOP_HANDLER_OPTION = "-S";
 	
 	private static String CONSOLE_OPTION = "--console";
 	private static String SHORT_CONSOLE_OPTION = "-c";
@@ -188,6 +192,9 @@ public class Console {
 				}
 				else if (CONSOLE_OPTION.equals(arg) || SHORT_CONSOLE_OPTION.equals(arg)) {
 					consoleVersion = true;
+				}
+				else if (NO_STOP_HANDLER_OPTION.equals(arg) || SHORT_NO_STOP_HANDLER_OPTION.equals(arg)) {
+					useStopHandler = false;
 				}
 				currentIndex += 1;
 			}
@@ -490,6 +497,10 @@ public class Console {
 	
 	private int startThreadsAndWaitFor(Application.Instance app) {
 		
+		final String appName = app.getName();
+		int appId = app.getId();
+		final String appNameId = app.getNameId();
+		
 		OutputStreamSocket streamSocket = app.getOutputStreamSocket();
 		OutputPrintThread outputThread = null;
 		
@@ -501,16 +512,45 @@ public class Console {
 			}
 		}
 		else {
-			System.out.println("The application " + app.getNameId() + " has no output stream.");
+			System.out.println("The application " + appNameId + " has no output stream.");
 		}
 		
 		// Start the input thread.
 		InputThread inputThread = null;
 		
 		if (!mute) {
-			inputThread = new InputThread(server, app.getId());
+			inputThread = new InputThread(server, appId);
+			
+			if (useStopHandler) {
+				inputThread.setStopHandler(new Runnable() {
+					public void run() {
+						// create a new Services object in case the shutdown hook happens during the termination
+						// of the main object
+						Server server = new Server(endpoint);
+						server.isAvailable();
+						
+						List<Application.Instance> applications = server.connectAll(appName);
+						for (Application.Instance application : applications) {
+							if (application.getId() == appId) {
+								application.stop();
+								System.out.println("Stopping " + appNameId + ".");
+							}
+						}
+	
+						// never forget to terminate the server to properly release JeroMQ objects
+						// otherwise the termination of the application will block
+						server.terminate();
+					}
+				});
+			}
+			
 			inputThread.start();
 		}	
+
+		// If this line is executed it means that the app finished:
+		// - Either the streams are finished.
+		// - Either we are in quiet mode.
+		int state = waitFor(app);
 		
 		// Wait for the output thread.
 		if (outputThread != null) {
@@ -522,14 +562,11 @@ public class Console {
 			inputThread.stopAndWaitFor();	
 		}
 
-		// If this line is executed it means that the app finished:
-		// - Either the streams are finished.
-		// - Either we are in quiet mode.
-		return waitFor(app);
+		return state;
 	}
 	
 	private void processExec() {
-
+		
 		if (applicationName == null) {
 			System.out.println("Application name is missing.");
 			System.exit(1);
@@ -537,9 +574,12 @@ public class Console {
 		
 		// then start the application
 		final Application.Instance app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
-				
+		final String appName = app.getName();
+		int appId = app.getId();
+		final String appNameId = app.getNameId();
+		
 		if (app.exists()) {
-			System.out.println("Started " + app.getNameId() + ".");
+			System.out.println("Started " + appNameId + ".");
 		}
 		else {
 			System.out.println("Cannot start " + applicationName + ": " + app.getErrorMessage() + ".");
@@ -554,12 +594,12 @@ public class Console {
 				Server server = new Server(endpoint);
 				server.isAvailable();
 				
-				List<Application.Instance> applications = server.connectAll(app.getName());
+				List<Application.Instance> applications = server.connectAll(appName);
 				for (Application.Instance application : applications) {
-					if (application.getId() == app.getId()) {
+					if (application.getId() == appId) {
 						application.kill();
 						application.waitFor();
-						System.out.println("Killed " + app.getNameId() + ".");
+						System.out.println("Killed " + appNameId + ".");
 					}
 				}
 
@@ -574,19 +614,19 @@ public class Console {
 		
 		// Process state.
 		if (state == Application.State.SUCCESS) {
-			System.out.println("The application " + app.getNameId() + " terminated successfully.");
+			System.out.println("The application " + appNameId + " terminated successfully.");
 			
 			// Return 0 as it is SUCCESS.
 			System.exit(0);
 		}
 		else if (state == Application.State.STOPPED) {
-			System.out.println("The application " + app.getNameId() + " has been stopped.");
+			System.out.println("The application " + appNameId + " has been stopped.");
 		}
 		else if (state == Application.State.KILLED) {
-			System.out.println("The application " + app.getNameId() + " has been killed.");
+			System.out.println("The application " + appNameId + " has been killed.");
 		}
 		else if (state == Application.State.ERROR) {
-			System.out.println("The application " + app.getNameId() + " terminated with error.");
+			System.out.println("The application " + appNameId + " terminated with error.");
 		}
 		
 		// Return the state in case it is not SUCCESS.
@@ -633,22 +673,24 @@ public class Console {
 			app = apps.get(0);
 		}
 		
-		System.out.println("Connected " + app.getNameId());
+		final String appNameId = app.getNameId();
+		
+		System.out.println("Connected " + appNameId);
 		
 		// Start the threads and wait for them and the app.
 		int state = startThreadsAndWaitFor(app);
 				
 		if (state == Application.State.SUCCESS) {
-			System.out.println("The application " + app.getNameId() + " terminated successfully.");
+			System.out.println("The application " + appNameId + " terminated successfully.");
 		}
 		else if (state == Application.State.STOPPED) {
-			System.out.println("The application " + app.getNameId() + " has been stopped.");
+			System.out.println("The application " + appNameId + " has been stopped.");
 		}
 		else if (state == Application.State.KILLED) {
-			System.out.println("The application " + app.getNameId() + " has been killed.");
+			System.out.println("The application " + appNameId + " has been killed.");
 		}
 		else if (state == Application.State.ERROR) {
-			System.out.println("The application " + app.getNameId() + " terminated with error.");
+			System.out.println("The application " + appNameId + " terminated with error.");
 		}
 	}
 
@@ -656,26 +698,28 @@ public class Console {
 		
 		System.out.println("Usage: cmo <server options> [command] <command options>");
 		System.out.println("[server options]");
-		System.out.println("-e, --endpoint [endpoint]      Define the server endpoint. Full endpoint is tcp://hostname:port. ");
+		System.out.println("  -e, --endpoint [endpoint]    Define the server endpoint. Full endpoint is tcp://hostname:port. ");
 		System.out.println("                               Short endpoints hostname:port or tcp://hostname or hostname are valid.");
 		System.out.println("                               If endpoint is hostname then the port is 7000.");
 		System.out.println("                               If not specified, the CAMEO_SERVER environment variable is used.");
 		System.out.println("                               If the CAMEO_SERVER environment variable is not defined, the default value is tcp://localhost:7000.");
-		System.out.println("-p, --port [port]              Define the server endpoint port.");
+		System.out.println("  -p, --port [port]            Define the server endpoint port.");
 		System.out.println("                               If specified, the endpoint is tcp://localhost:port.");
-		System.out.println("-a, --app [name]               Define the application name.");
+		System.out.println("  -a, --app [name]             Define the application name.");
 		System.out.println("");
 		System.out.println("[commands]");
 		System.out.println("  start [name] <args>          Start the application with name.");
 		System.out.println("  exec <options> [name] <args> Start the application with name and blocks until its termination. Output streams are displayed.");
 		System.out.println("    [options]");
-		System.out.println("    -m, --mute                 No input stream.");
-		System.out.println("    -q, --quiet                No output stream.");
+		System.out.println("    -m, --mute                 Disable the input stream.");
+		System.out.println("    -q, --quiet                Disable the output stream.");
+		System.out.println("    -S, --no-stop-handler      Disable the stop handler.");
 		System.out.println("  connect <options> [name]     Connect the application with name.");
 		System.out.println("    [options]");
 		System.out.println("    -s, --start                Start the application if it is not already executing.");
-		System.out.println("    -m, --mute                 No input stream.");
-		System.out.println("    -q, --quiet                No output stream.");
+		System.out.println("    -m, --mute                 Disable the input stream.");
+		System.out.println("    -q, --quiet                Disable the output stream.");
+		System.out.println("    -S, --no-stop-handler      Disable the stop handler.");
 		System.out.println("  stop [name]                  Stop the application with name. Kill the application if the stop timeout is reached.");
 		System.out.println("  stop [id]                    Stop the application with id. Kill the application if the stop timeout is reached.");
 		System.out.println("  kill [name]                  Kill the application with name.");
@@ -691,7 +735,11 @@ public class Console {
 		System.out.println("  list                         Display the available applications.");
 		System.out.println("  apps <name>                  Display all the started applications.");
 		System.out.println("");
-		System.out.println("Examples:");
+		System.out.println("[stop the exec and connect command]");
+		System.out.println("  ctrl+c                       Kill the application.");
+		System.out.println("  S, shift+s                   Stop the application if the stop handler is enabled (default).");
+		System.out.println("");
+		System.out.println("[examples]");
 		System.out.println("$ cmo exec subpubjava pubjava");
 		System.out.println("$ cmo kill subpubjava");
 		System.out.println("$ cmo -a subpubjava exec pubjava");
