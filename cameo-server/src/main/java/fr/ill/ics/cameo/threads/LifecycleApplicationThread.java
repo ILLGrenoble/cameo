@@ -33,6 +33,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 
 	private Manager manager;
 	private Logger logger;
+	private int exitValue;
 
 	/**
 	 * Constructor.
@@ -85,7 +86,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		
 		// Get result of the last execution.
 		try {
-			int exitValue = application.getProcess().waitFor();
+			exitValue = application.getProcess().waitFor();
 
 			// Pass result to error callback.
 			if (exitValue != 0 && !application.hasToBeKilled()) {
@@ -94,7 +95,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
 					int currentState = application.getApplicationState();
-					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR, exitValue);
+					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR);
 					application.executeError(exitValue, currentState);
 				}
 				return false;
@@ -224,14 +225,14 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			Log.logger().info("Application " + application.getNameId() + " has terminated");
 			
 			if (!onTermination()) {
-				manager.setApplicationState(application, ApplicationState.ERROR);
+				manager.setApplicationState(application, ApplicationState.ERROR, exitValue);
 			}
 			else {
 				if (application.hasToStop()) {
-					manager.setApplicationState(application, ApplicationState.STOPPED);
+					manager.setApplicationState(application, ApplicationState.STOPPED, exitValue);
 				}
 				else {
-					manager.setApplicationState(application, ApplicationState.SUCCESS);
+					manager.setApplicationState(application, ApplicationState.SUCCESS, exitValue);
 				}
 			}
 			
