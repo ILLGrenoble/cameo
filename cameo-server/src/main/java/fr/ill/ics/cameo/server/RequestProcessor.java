@@ -62,7 +62,7 @@ public class RequestProcessor {
 		reply.add("Connection OK");
 		
 		// Send sync message for synchronizing subscribers.
-		manager.sendStatus(-1, "", ApplicationState.UNKNOWN, ApplicationState.UNKNOWN);
+		manager.sendStatus(-1, "", ApplicationState.UNKNOWN, ApplicationState.UNKNOWN, -1);
 		
 		return reply;
 	}

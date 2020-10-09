@@ -85,17 +85,17 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		
 		// Get result of the last execution.
 		try {
-			int result = application.getProcess().waitFor();
+			int exitValue = application.getProcess().waitFor();
 
 			// Pass result to error callback.
-			if (result != 0 && !application.hasToBeKilled()) {
-				Log.logger().info("Application " + application.getNameId() + " returned error code " + result);
+			if (exitValue != 0 && !application.hasToBeKilled()) {
+				Log.logger().info("Application " + application.getNameId() + " returned error code " + exitValue);
 				
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
 					int currentState = application.getApplicationState();
-					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR);
-					application.executeError(result, currentState);
+					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR, exitValue);
+					application.executeError(exitValue, currentState);
 				}
 				return false;
 			}

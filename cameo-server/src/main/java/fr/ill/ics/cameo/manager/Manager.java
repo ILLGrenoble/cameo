@@ -114,7 +114,7 @@ public class Manager extends ConfigLoader {
 		return streamPublishers.get(name);
 	}
 
-	public synchronized void sendStatus(int id, String name, int state, int pastStates) {
+	public synchronized void sendStatus(int id, String name, int state, int pastStates, int exitCode) {
 		
 		// Send the status.
 		JSONObject event = new JSONObject();
@@ -122,6 +122,10 @@ public class Manager extends ConfigLoader {
 		event.put(Message.StatusEvent.NAME, name);
 		event.put(Message.StatusEvent.APPLICATION_STATE, state);
 		event.put(Message.StatusEvent.PAST_APPLICATION_STATES, pastStates);
+		
+		if (exitCode != -1) {
+			event.put(Message.StatusEvent.EXIT_CODE, exitCode);
+		}
 		
 		eventPublisher.sendMore("STATUS");
 		eventPublisher.send(Message.serialize(event), 0);
@@ -516,16 +520,14 @@ public class Manager extends ConfigLoader {
 		}
 	}
 	
-	public synchronized void setApplicationState(Application application, int applicationState) {
-		
-		//Log.logger().info("Application " + application.getNameId() + " is " + );
+	public synchronized void setApplicationState(Application application, int applicationState, int exitValue) {
 		
 		// states are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED
 		// set the status of the application
 		application.setState(applicationState);
 		
 		// send the status
-		sendStatus(application.getId(), application.getName(), applicationState, application.getPastApplicationStates());
+		sendStatus(application.getId(), application.getName(), applicationState, application.getPastApplicationStates(), exitValue);
 				
 		// remove the application for terminal states
 		if (applicationState == ApplicationState.ERROR
@@ -535,6 +537,10 @@ public class Manager extends ConfigLoader {
 			
 			removeApplication(application);
 		}
+	}
+	
+	public synchronized void setApplicationState(Application application, int applicationState) {
+		setApplicationState(application, applicationState, -1);
 	}
 
 	public synchronized void setApplicationProcessState(Application application, ProcessState processState) {

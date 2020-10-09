@@ -93,6 +93,7 @@ public class Message {
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
 		public static final String PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		public static final String EXIT_CODE = "exitCode"; // optional
 	}
 
 	public static class PublisherEvent {
