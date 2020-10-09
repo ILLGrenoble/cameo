@@ -127,7 +127,7 @@ public class Message {
 		public static final String APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
 	}
 
-	public static class OuputWithIdRequest {
+	public static class OutputWithIdRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}
 

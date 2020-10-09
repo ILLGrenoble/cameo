@@ -260,7 +260,7 @@ public class RequestProcessor {
 		Log.logger().fine("Received OutputWithId request");
 				
 		try {
-			int port = manager.getStreamPort(JSON.getInt(request, Message.OuputWithIdRequest.ID));
+			int port = manager.getStreamPort(JSON.getInt(request, Message.OutputWithIdRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

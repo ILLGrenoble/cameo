@@ -847,7 +847,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.OUTPUT_WITH_ID);
-		request.put(Message.OuputWithIdRequest.ID, id);
+		request.put(Message.OutputWithIdRequest.ID, id);
 
 		return message(request);
 	}
