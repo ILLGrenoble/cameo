@@ -21,6 +21,6 @@ public class MaxNumberOfApplicationsReached extends Exception {
 	private static final long serialVersionUID = -679186322182419615L;
 
 	public String getMessage() {
-		return "max number of applications reached";
+		return "Maximum number of applications reached";
 	}
 }

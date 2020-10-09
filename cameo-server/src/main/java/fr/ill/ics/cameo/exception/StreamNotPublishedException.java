@@ -21,6 +21,6 @@ public class StreamNotPublishedException extends Exception {
 	private static final long serialVersionUID = -153342115687589400L;
 
 	public String getMessage() {
-		return "Stream is not published" ;
+		return "Stream is not published";
 	}
 }

@@ -125,7 +125,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			if (!application.isAlive()) {
 				
 				if (application.getStartingTime() > 0) {
-					Log.logger().fine("Application " + application.getNameId() + " stopped running while starting time");
+					Log.logger().fine("Application " + application.getNameId() + " stopped executing while starting time");
 				}
 				break;
 			}

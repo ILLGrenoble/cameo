@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.exception;
 
-public class ApplicationAlreadyRunning extends Exception {
+public class ApplicationAlreadyExecuting extends Exception {
 
 	private static final long serialVersionUID = -8962060462712890982L;
 
 	public String getMessage() {
-		return "this application is already running";
+		return "The application is already executing";
 	}
 }

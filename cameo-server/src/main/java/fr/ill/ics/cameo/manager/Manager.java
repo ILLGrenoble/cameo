@@ -29,7 +29,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Context;
-import fr.ill.ics.cameo.exception.ApplicationAlreadyRunning;
+import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
@@ -221,9 +221,9 @@ public class Manager extends ConfigLoader {
 	 * @return
 	 * @throws UnknownApplicationException
 	 * @throws MaxNumberOfApplicationsReached
-	 * @throws ApplicationAlreadyRunning
+	 * @throws ApplicationAlreadyExecuting
 	 */
-	public synchronized Application startApplication(String name, String[] args, String starterReference) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+	public synchronized Application startApplication(String name, String[] args, String starterReference) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
@@ -407,10 +407,10 @@ public class Manager extends ConfigLoader {
 	 * verify if an application already run
 	 * 
 	 * @param config
-	 * @throws ApplicationAlreadyRunning
+	 * @throws ApplicationAlreadyExecuting
 	 * @throws MaxNumberOfApplicationsReached 
 	 */
-	private void verifyNumberOfInstances(String name, boolean single) throws ApplicationAlreadyRunning, MaxNumberOfApplicationsReached {
+	private void verifyNumberOfInstances(String name, boolean single) throws ApplicationAlreadyExecuting, MaxNumberOfApplicationsReached {
 		
 		// count the application instances
 		int counter = 0;
@@ -431,9 +431,9 @@ public class Manager extends ConfigLoader {
 					++counter;
 					
 					if (single) {
-						Log.logger().info("Application with name " + application.getName() + " is already running with id " + application.getId());
+						Log.logger().info("Application with name " + application.getName() + " is already executing with id " + application.getId());
 				
-						throw new ApplicationAlreadyRunning();
+						throw new ApplicationAlreadyExecuting();
 					}
 					else if (counter >= ConfigManager.getInstance().getMaxNumberOfApplications()) {
 						Log.logger().info("Max number of applications reached");
@@ -797,7 +797,7 @@ public class Manager extends ConfigLoader {
 		return result;
 	}
 
-	public int newStartedUnmanagedApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+	public int newStartedUnmanagedApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		// Verify if the application is already running
 		verifyNumberOfInstances(name, false);
@@ -820,7 +820,7 @@ public class Manager extends ConfigLoader {
 		return id;
 	}
 	
-	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyRunning {
+	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		return newStartedUnmanagedApplication(name, 0);
 	}
 

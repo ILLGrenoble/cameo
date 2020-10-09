@@ -21,6 +21,6 @@ public class IdNotFoundException extends Exception {
 	private static final long serialVersionUID = -5038844210257342962L;
 
 	public String getMessage() {
-		return "the id doesn't exist" ;
+		return "The id doesn't exist";
 	}
 }

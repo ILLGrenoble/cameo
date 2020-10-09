@@ -21,6 +21,6 @@ public class UnknownPublisherException extends Exception {
 	private static final long serialVersionUID = -1252817527218337600L;
 
 	public String getMessage() {
-		return "unknown publisher";
+		return "Unknown publisher";
 	}
 }

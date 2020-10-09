@@ -21,6 +21,6 @@ public class UnmanagedApplicationException extends Exception {
 	private static final long serialVersionUID = 2994457373229964613L;
 
 	public String getMessage() {
-		return "the application is unmanaged" ;
+		return "The application is unmanaged" ;
 	}
 }

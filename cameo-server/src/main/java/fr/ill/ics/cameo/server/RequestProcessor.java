@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
-import fr.ill.ics.cameo.exception.ApplicationAlreadyRunning;
+import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
@@ -100,7 +100,7 @@ public class RequestProcessor {
 			
 			return Converter.reply(response);
 		}
-		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
+		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			
 			JSONObject response = new JSONObject();
 			response.put(Message.RequestResponse.VALUE, Long.valueOf(-1));
@@ -735,7 +735,7 @@ public class RequestProcessor {
 			
 			return Converter.reply(response);
 		}
-		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyRunning e) {
+		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
 			response.put(Message.RequestResponse.VALUE, -1);

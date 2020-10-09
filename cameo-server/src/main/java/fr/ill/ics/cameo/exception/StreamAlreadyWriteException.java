@@ -34,6 +34,6 @@ public class StreamAlreadyWriteException extends Exception {
 	}
 	
 	public String getMessage() {
-		return "log are already written at '" +this.getLogPath()+ "'" ;
+		return "Logs are already written at '" +this.getLogPath()+ "'";
 	}
 }
