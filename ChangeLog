@@ -6,6 +6,7 @@
 * Added Output::isEndOfLine() which returns true if the message terminates with an end of line.
 * Removed Configuration::getRetries().
 * Added storage functions: This::storeKeyValue(), This::getKeyValue(), This::removeKey(), Instance::getKeyValue().
+* Added Instance::getPastStates().
 
 0.3.3
 -----
