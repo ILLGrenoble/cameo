@@ -37,7 +37,7 @@ namespace message {
 	const int WRITE_INPUT = 10;
 	const int KILL = 11;
 	const int STATUS = 12;
-	const int ALL_AVAILABLE = 13;
+	const int LIST = 13;
 	const int SET_STATUS = 14;
 	const int GET_STATUS = 15;
 	const int CREATE_PUBLISHER = 16;

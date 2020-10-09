@@ -141,11 +141,11 @@ std::string ServicesImpl::createConnectRequest(const std::string& name) const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createAllAvailableRequest() const {
+std::string ServicesImpl::createListRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::ALL_AVAILABLE);
+	request.pushInt(message::LIST);
 
 	return request.toString();
 }
