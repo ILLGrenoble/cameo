@@ -1,0 +1,22 @@
+BasedOnStyle: LLVM
+IndentWidth: 8
+#UseTab: UT_AlignWithSpaces # available in release later than 9
+UseTab: ForContinuationAndIndentation
+BreakBeforeBraces: Custom
+BraceWrapping:
+	AfterNamespace: false
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 110
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+AlignTrailingComments: true
+AccessModifierOffset: -8 # It has to be equal to the tab size
+NamespaceIndentation: None
+PointerAlignment: Left
+AlwaysBreakAfterReturnType: None
+
+SortIncludes: false
+
+
