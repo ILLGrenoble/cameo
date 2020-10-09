@@ -56,7 +56,8 @@ public:
 	std::string createRemovePortRequest(int id, const std::string& name) const;
 	std::string createStartedUnmanagedRequest(const std::string& name) const;
 	std::string createTerminatedUnmanagedRequest(int id) const;
-	std::string createOutputRequest(const std::string& name) const;
+	std::string createOutputPortWithIdRequest(int id) const;
+	std::string createOutputPortRequest(const std::string& name) const;
 	std::string createRequestResponse(int64_t value) const;
 	std::string createRequestResponse(int64_t value, const std::string& message) const;
 	std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
@@ -67,8 +68,6 @@ public:
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
-
-	std::string createOutputWithIdRequest(int id) const;
 
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);

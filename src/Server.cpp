@@ -129,7 +129,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, Op
 
 int Server::getStreamPort(const std::string& name) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputRequest(name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputPortRequest(name));
 
 	// Get the JSON response.
 	json::Object response;
