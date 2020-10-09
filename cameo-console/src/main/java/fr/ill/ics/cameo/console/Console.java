@@ -495,7 +495,7 @@ public class Console {
 		return state;
 	}
 	
-	private int startThreadsAndWaitFor(Application.Instance app) {
+	private int startThreadsAndWaitFor(Application.Instance app, Thread shutdownHook) {
 		
 		final String appName = app.getName();
 		int appId = app.getId();
@@ -519,7 +519,7 @@ public class Console {
 		InputThread inputThread = null;
 		
 		if (!mute) {
-			inputThread = new InputThread(server, appId);
+			inputThread = new InputThread(server, appId, shutdownHook);
 			
 			if (useStopHandler) {
 				inputThread.setStopHandler(new Runnable() {
@@ -547,11 +547,9 @@ public class Console {
 			inputThread.start();
 		}	
 
-		// If this line is executed it means that the app finished:
-		// - Either the streams are finished.
-		// - Either we are in quiet mode.
+		// Wait for the app.
 		int state = waitFor(app);
-		
+				
 		// Wait for the output thread.
 		if (outputThread != null) {
 			outputThread.waitFor();
@@ -586,7 +584,7 @@ public class Console {
 			return;			
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		Thread shutdownHook = new Thread(new Runnable() {
 			public void run() {
 				
 				// create a new Services object in case the shutdown hook happens during the termination
@@ -607,10 +605,12 @@ public class Console {
 				// otherwise the termination of the application will block
 				server.terminate();
 			}
-		}));
+		});
+		
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
 		
 		// Start the threads and wait for them and the app.
-		int state = startThreadsAndWaitFor(app);
+		int state = startThreadsAndWaitFor(app, shutdownHook);
 		
 		// Process state.
 		if (state == Application.State.SUCCESS) {
@@ -678,7 +678,7 @@ public class Console {
 		System.out.println("Connected " + appNameId);
 		
 		// Start the threads and wait for them and the app.
-		int state = startThreadsAndWaitFor(app);
+		int state = startThreadsAndWaitFor(app, null);
 				
 		if (state == Application.State.SUCCESS) {
 			System.out.println("The application " + appNameId + " terminated successfully.");
@@ -735,9 +735,10 @@ public class Console {
 		System.out.println("  list                         Display the available applications.");
 		System.out.println("  apps <name>                  Display all the started applications.");
 		System.out.println("");
-		System.out.println("[stop the exec and connect command]");
-		System.out.println("  ctrl+c                       Kill the application.");
-		System.out.println("  S, shift+s                   Stop the application if the stop handler is enabled (default).");
+		System.out.println("[exit in exec, connect]");
+		System.out.println("  ctrl+c                       Kill the application only in exec and quit.");
+		System.out.println("  S, shift+s enter             Stop the application if the stop handler is enabled (default) and quit.");
+		System.out.println("  Q, shift+q enter             Quit without killing the application.");
 		System.out.println("");
 		System.out.println("[examples]");
 		System.out.println("$ cmo exec subpubjava pubjava");

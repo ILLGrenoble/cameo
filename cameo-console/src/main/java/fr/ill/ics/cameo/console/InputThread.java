@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.console;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
+import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.RemoteException;
 import fr.ill.ics.cameo.Server;
 
@@ -28,10 +29,12 @@ public class InputThread extends Thread {
 	private int applicationID;
 	private boolean running = true;
 	private Runnable stopHandler;
+	private Thread shutdownHook;
 	
-	public InputThread(Server server, int applicationID) {
+	public InputThread(Server server, int applicationID, Thread shutdownHook) {
 		this.server = server;
 		this.applicationID = applicationID;
+		this.shutdownHook = shutdownHook;
 	}
 	
 	public void setStopHandler(Runnable handler) {
@@ -48,6 +51,14 @@ public class InputThread extends Thread {
 				if (bis.available() > 0) {
 					int readSize = bis.read(buffer, 0, bis.available());
 					String input = new String(buffer, 0, readSize - 1);
+					
+					if ("Q".equals(input)) {
+						// Remove the shutdown hook so that the application is not killed.
+						if (shutdownHook != null) {
+							Runtime.getRuntime().removeShutdownHook(shutdownHook);
+						}
+						System.exit(0);
+					}
 					
 					// Stop handler.
 					if (stopHandler != null && "S".equals(input)) {
