@@ -229,6 +229,11 @@ public:
 	 */
 	State getActualState() const;
 
+	/**
+	 * Returns the past states.
+	 */
+	std::set<State> getPastStates() const;
+
 	bool getBinaryResult(std::string& result);
 	bool getResult(std::string& result);
 

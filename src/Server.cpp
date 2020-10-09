@@ -390,6 +390,68 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	return infos;
 }
 
+application::State Server::getActualState(int id) const {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
+}
+
+std::set<application::State> Server::getPastStates(int id) const {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	application::State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
+
+	set<application::State> result;
+
+	if ((applicationStates & application::STARTING) != 0) {
+		result.insert(application::STARTING);
+	}
+
+	if ((applicationStates & application::RUNNING) != 0) {
+		result.insert(application::RUNNING);
+	}
+
+	if ((applicationStates & application::STOPPING) != 0) {
+		result.insert(application::STOPPING);
+	}
+
+	if ((applicationStates & application::KILLING) != 0) {
+		result.insert(application::KILLING);
+	}
+
+	if ((applicationStates & application::PROCESSING_ERROR) != 0) {
+		result.insert(application::PROCESSING_ERROR);
+	}
+
+	if ((applicationStates & application::FAILURE) != 0) {
+		result.insert(application::FAILURE);
+	}
+
+	if ((applicationStates & application::SUCCESS) != 0) {
+		result.insert(application::SUCCESS);
+	}
+
+	if ((applicationStates & application::STOPPED) != 0) {
+		result.insert(application::STOPPED);
+	}
+
+	if ((applicationStates & application::KILLED) != 0) {
+		result.insert(application::KILLED);
+	}
+
+	return result;
+}
+
 std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 	return Services::openEventStream();
 }
