@@ -342,7 +342,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	vector<application::Info> infos;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createShowAllRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAppsRequest());
 
 	// Get the JSON response.
 	json::Object response;

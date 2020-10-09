@@ -29,7 +29,7 @@ namespace message {
 	const int START = 2;
 	const int STOP = 3;
 	const int CONNECT = 4;
-	const int SHOW_ALL = 5;
+	const int APPS = 5;
 	const int SHOW = 6;
 	const int ENABLE_STREAM = 7;
 	const int IS_ALIVE = 8;
