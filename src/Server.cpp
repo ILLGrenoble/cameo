@@ -311,7 +311,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 	json::Object response;
 	json::parse(response, reply.get());
 
-	json::Value& applicationConfigs = response[message::AllAvailableResponse::APPLICATION_CONFIG];
+	json::Value& applicationConfigs = response[message::ListResponse::APPLICATION_CONFIG];
 	json::Value::Array array = applicationConfigs.GetArray();
 	size_t size = array.Size();
 

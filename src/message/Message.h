@@ -97,7 +97,7 @@ namespace message {
 		constexpr const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 
-	namespace AllAvailableResponse {
+	namespace ListResponse {
 		constexpr const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
 	}
 
