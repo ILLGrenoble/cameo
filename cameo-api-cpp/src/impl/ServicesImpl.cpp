@@ -168,14 +168,26 @@ std::string ServicesImpl::createStreamStatusRequest() const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createOutputWithIdRequest(int id) const {
+std::string ServicesImpl::createOutputPortWithIdRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::OUTPUT_WITH_ID);
+	request.pushInt(message::OUTPUT_PORT_WITH_ID);
 
-	request.pushKey(message::OutputWithIdRequest::ID);
+	request.pushKey(message::OutputPortWithIdRequest::ID);
 	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createOutputPortRequest(const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::OUTPUT_PORT);
+
+	request.pushKey(message::OutputPortRequest::NAME);
+	request.pushString(name);
 
 	return request.toString();
 }
@@ -347,18 +359,6 @@ std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
 
 	request.pushKey(message::TerminatedUnmanagedRequest::ID);
 	request.pushInt(id);
-
-	return request.toString();
-}
-
-std::string ServicesImpl::createOutputRequest(const std::string& name) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::OUTPUT);
-
-	request.pushKey(message::OutputRequest::NAME);
-	request.pushString(name);
 
 	return request.toString();
 }

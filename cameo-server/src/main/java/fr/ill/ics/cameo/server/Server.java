@@ -141,11 +141,11 @@ public class Server {
 				else if (type == Message.CONNECT) {
 					reply = process.processConnectRequest(request, manager);
 				}
-				else if (type == Message.OUTPUT_WITH_ID) {
-					reply = process.processOutputWithIdRequest(request, manager);
+				else if (type == Message.OUTPUT_PORT_WITH_ID) {
+					reply = process.processOutputPortWithIdRequest(request, manager);
 				}
-				else if (type == Message.OUTPUT) {
-					reply = process.processOutputRequest(request, manager);
+				else if (type == Message.OUTPUT_PORT) {
+					reply = process.processOutputPortRequest(request, manager);
 				}
 				else if (type == Message.IS_ALIVE) {
 					reply = process.processIsAliveRequest(request, manager);

@@ -255,12 +255,12 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processOutputWithIdRequest(JSONObject request, Manager manager) {
+	public Msg processOutputPortWithIdRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received OutputWithId request");
+		Log.logger().fine("Received OutputPortWithId request");
 				
 		try {
-			int port = manager.getStreamPort(JSON.getInt(request, Message.OutputWithIdRequest.ID));
+			int port = manager.getStreamPort(JSON.getInt(request, Message.OutputPortWithIdRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
@@ -392,7 +392,7 @@ public class RequestProcessor {
 	 * 
 	 * @return
 	 */
-	public Msg processOutputRequest(JSONObject request, Manager manager) {
+	public Msg processOutputPortRequest(JSONObject request, Manager manager) {
 		
 		Log.logger().fine("Received Ouput request");
 		

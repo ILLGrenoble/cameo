@@ -30,8 +30,8 @@ namespace message {
 	const int STOP = 3;
 	const int CONNECT = 4;
 	const int APPS = 5;
-	const int OUTPUT_WITH_ID = 6;
-	const int OUTPUT = 7;
+	const int OUTPUT_PORT_WITH_ID = 6;
+	const int OUTPUT_PORT = 7;
 	const int ENABLE_STREAM = 8;
 	const int IS_ALIVE = 9;
 	const int WRITE_INPUT = 10;
@@ -139,11 +139,11 @@ namespace message {
 		constexpr const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
 	}
 
-	namespace OutputWithIdRequest {
+	namespace OutputPortWithIdRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
-	namespace OutputRequest {
+	namespace OutputPortRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
 	}
 

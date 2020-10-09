@@ -168,7 +168,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
-		Zmq.Msg request = createOutputRequest(name);
+		Zmq.Msg request = createOutputPortRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
@@ -502,7 +502,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
 
-		Zmq.Msg request = createOutputWithIdRequest(id);
+		Zmq.Msg request = createOutputPortWithIdRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -843,11 +843,11 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createOutputWithIdRequest(int id) {
+	private Zmq.Msg createOutputPortWithIdRequest(int id) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.OUTPUT_WITH_ID);
-		request.put(Message.OutputWithIdRequest.ID, id);
+		request.put(Message.TYPE, Message.OUTPUT_PORT_WITH_ID);
+		request.put(Message.OutputPortWithIdRequest.ID, id);
 
 		return message(request);
 	}
@@ -879,10 +879,10 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @param name
 	 */
-	private Zmq.Msg createOutputRequest(String name) {
+	private Zmq.Msg createOutputPortRequest(String name) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.OUTPUT);
+		request.put(Message.TYPE, Message.OUTPUT_PORT);
 		request.put(Message.OutputRequest.NAME, name);
 
 		return message(request);
