@@ -5,7 +5,8 @@
 * Added Server.getVersion() which returns the server version.
 * Added Output.isEndOfLine() which returns true if the message terminates with an end of line.
 * Removed Configuration.getRetries().
-* Added storage methods: This.storeKeyValue(), This.getKeyValue(), This.removeKey(), Instance.getKeyValue().  
+* Added storage methods: This.storeKeyValue(), This.getKeyValue(), This.removeKey(), Instance.getKeyValue().
+* Added Instance.getPastStates().  
 
 0.1.9
 -----
