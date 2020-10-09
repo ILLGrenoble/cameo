@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.Application.Info;
@@ -303,15 +304,11 @@ public class InstanceImpl extends EventListener {
 	}
 
 	public int getActualState() {
-		List<Info> infos = server.getApplicationInfos(getName());
-		
-		for (Info info : infos) {
-			if (info.getId() == id) {
-				return info.getApplicationState();
-			}
-		}
+		return server.getActualState(id);
+	}
 
-		return State.UNKNOWN;
+	public Set<Integer> getPastStates() {
+		return server.getPastStates(id);
 	}
 	
 	public void terminate() {

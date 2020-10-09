@@ -17,8 +17,10 @@
 package fr.ill.ics.cameo.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.json.simple.JSONArray;
@@ -26,6 +28,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.Application.State;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.EventStreamSocket;
@@ -465,6 +468,93 @@ public class ServerImpl extends ServicesImpl {
 		}
 		
 		return result;
+	}
+	
+
+	public int getActualState(int id) {
+		
+		Zmq.Msg request = createGetStatusRequest(id);
+		
+		try {
+			Zmq.Msg reply = requestSocket.request(request);
+			
+			byte[] messageData = reply.getFirstData();
+			
+			if (messageData == null) {
+				return State.UNKNOWN;
+			}
+			
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+			
+			return JSON.getInt(response, Message.StatusEvent.APPLICATION_STATE);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+
+	public Set<Integer> getPastStates(int id) {
+		
+		Zmq.Msg request = createGetStatusRequest(id);
+		
+		try {
+			Zmq.Msg reply = requestSocket.request(request);
+			
+			byte[] messageData = reply.getFirstData();
+			
+			if (messageData == null) {
+				return null;
+			}
+			
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+			
+			int applicationStates = JSON.getInt(response, Message.StatusEvent.PAST_APPLICATION_STATES);
+			
+			Set<Integer> result = new HashSet<Integer>();
+			
+			if ((applicationStates & State.STARTING) != 0) {
+				result.add(State.STARTING);
+			}
+			
+			if ((applicationStates & State.RUNNING) != 0) {
+				result.add(State.RUNNING);
+			}
+			
+			if ((applicationStates & State.STOPPING) != 0) {
+				result.add(State.STOPPING);
+			}
+			
+			if ((applicationStates & State.KILLING) != 0) {
+				result.add(State.KILLING);
+			}
+			
+			if ((applicationStates & State.PROCESSING_ERROR) != 0) {
+				result.add(State.PROCESSING_ERROR);
+			}
+			
+			if ((applicationStates & State.ERROR) != 0) {
+				result.add(State.ERROR);
+			}
+			
+			if ((applicationStates & State.SUCCESS) != 0) {
+				result.add(State.SUCCESS);
+			}
+			
+			if ((applicationStates & State.STOPPED) != 0) {
+				result.add(State.STOPPED);
+			}
+			
+			if ((applicationStates & State.KILLED) != 0) {
+				result.add(State.KILLED);
+			}
+			
+			return result;
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
 	}
 
 	private OutputStreamSocket createOutputStreamSocket(int port) {

@@ -93,6 +93,16 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
+	application::State getActualState(int id) const;
+
+	/**
+	 * throws ConnectionTimeout
+	 */
+	std::set<application::State> getPastStates(int id) const;
+
+	/**
+	 * throws ConnectionTimeout
+	 */
 	std::unique_ptr<EventStreamSocket> openEventStream();
 
 	/**

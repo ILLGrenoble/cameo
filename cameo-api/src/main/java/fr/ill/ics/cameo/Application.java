@@ -19,14 +19,15 @@ package fr.ill.ics.cameo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;
 import fr.ill.ics.cameo.impl.RequestImpl;
 import fr.ill.ics.cameo.impl.RequesterImpl;
 import fr.ill.ics.cameo.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.SubscriberImpl;
+import fr.ill.ics.cameo.impl.ThisImpl;
 
 public class Application {
 	
@@ -385,6 +386,10 @@ public class Application {
 		
 		public int getActualState() {
 			return impl.getActualState();
+		}
+		
+		public Set<Integer> getPastStates() {
+			return impl.getPastStates();
 		}
 		
 		/**

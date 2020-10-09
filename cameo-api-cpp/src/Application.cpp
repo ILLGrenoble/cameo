@@ -644,17 +644,11 @@ State Instance::getLastState() {
 }
 
 State Instance::getActualState() const {
+	return m_server->getActualState(m_id);
+}
 
-	vector<application::Info> infos = m_server->getApplicationInfos();
-
-	for (vector<application::Info>::const_iterator i = infos.begin(); i != infos.end(); ++i) {
-		application::Info const & info = *i;
-		if (info.getId() == m_id) {
-			return info.getState();
-		}
-	}
-
-	return UNKNOWN;
+std::set<State> Instance::getPastStates() const {
+	return m_server->getPastStates(m_id);
 }
 
 bool Instance::getBinaryResult(std::string& result) {
