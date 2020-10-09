@@ -117,9 +117,9 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processShowAllRequest(JSONObject request, Manager manager) {
+	public Msg processAppsRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received ShowAll request");
+		Log.logger().fine("Received Apps request");
 		
 		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
 		
@@ -260,7 +260,7 @@ public class RequestProcessor {
 		Log.logger().fine("Received ShowStream request");
 				
 		try {
-			int port = manager.showStream(JSON.getInt(request, Message.ShowStreamRequest.ID));
+			int port = manager.getStreamPort(JSON.getInt(request, Message.ShowStreamRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

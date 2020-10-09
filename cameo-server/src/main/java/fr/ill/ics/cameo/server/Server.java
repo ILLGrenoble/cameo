@@ -132,9 +132,6 @@ public class Server {
 				else if (type == Message.START) {
 					reply = process.processStartRequest(request, manager);
 				}
-				else if (type == Message.SHOW_ALL) {
-					reply = process.processShowAllRequest(request, manager);
-				}
 				else if (type == Message.STOP) {
 					reply = process.processStopRequest(request, manager);
 				}
@@ -155,6 +152,9 @@ public class Server {
 				}
 				else if (type == Message.STATUS) {
 					reply = process.processStatusRequest();
+				}
+				else if (type == Message.APPS) {
+					reply = process.processAppsRequest(request, manager);
 				}
 				else if (type == Message.ALL_AVAILABLE) {
 					reply = process.processAllAvailableRequest(request, manager);

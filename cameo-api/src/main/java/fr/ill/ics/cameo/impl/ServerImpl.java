@@ -415,7 +415,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Info> getApplicationInfos() {
 
-		Zmq.Msg request = createShowAllRequest();
+		Zmq.Msg request = createAppsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
@@ -830,10 +830,10 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createShowAllRequest() {
+	private Zmq.Msg createAppsRequest() {
 
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SHOW_ALL);
+		request.put(Message.TYPE, Message.APPS);
 
 		return message(request);
 	}

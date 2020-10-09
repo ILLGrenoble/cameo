@@ -17,7 +17,7 @@ public class Message {
 	public static final long START = 2;
 	public static final long STOP = 3;
 	public static final long CONNECT = 4;
-	public static final long SHOW_ALL = 5;
+	public static final long APPS = 5;
 	public static final long SHOW = 6;
 	public static final long ENABLE_STREAM = 7;
 	public static final long IS_ALIVE = 8;

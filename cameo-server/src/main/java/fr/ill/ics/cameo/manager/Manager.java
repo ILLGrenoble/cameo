@@ -387,7 +387,7 @@ public class Manager extends ConfigLoader {
 	 * @throws UnknownApplicationException
 	 * @throws StreamNotPublishedException 
 	 */
-	public synchronized int showStream(int id) throws IdNotFoundException, UnknownApplicationException, StreamNotPublishedException {
+	public synchronized int getStreamPort(int id) throws IdNotFoundException, UnknownApplicationException, StreamNotPublishedException {
 		
 		// find application
 		if (applicationMap.containsKey(id)) {

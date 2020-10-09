@@ -150,11 +150,11 @@ std::string ServicesImpl::createAllAvailableRequest() const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createShowAllRequest() const {
+std::string ServicesImpl::createAppsRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SHOW_ALL);
+	request.pushInt(message::APPS);
 
 	return request.toString();
 }
