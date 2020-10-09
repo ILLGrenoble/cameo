@@ -21,7 +21,7 @@ public class Message {
 	public static final long OUTPUT_WITH_ID = 6;
 	public static final long OUTPUT = 7;
 	public static final long IS_ALIVE = 9;
-	public static final long SEND_PARAMETERS = 10;
+	public static final long WRITE_INPUT = 10;
 	public static final long KILL = 11;
 	public static final long STATUS = 12;
 	public static final long ALL_AVAILABLE = 13;
@@ -148,7 +148,7 @@ public class Message {
 		public static final String EOL = "eol"; // boolean
 	}
 
-	public static class SendParametersRequest {
+	public static class WriteInputRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String PARAMETERS = "parameters"; // repeated string parameters = 2;
 	}

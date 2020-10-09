@@ -34,7 +34,7 @@ namespace message {
 	const int OUTPUT = 7;
 	const int ENABLE_STREAM = 8;
 	const int IS_ALIVE = 9;
-	const int SEND_PARAMETERS = 10;
+	const int WRITE_INPUT = 10;
 	const int KILL = 11;
 	const int STATUS = 12;
 	const int ALL_AVAILABLE = 13;
@@ -161,9 +161,9 @@ namespace message {
 		constexpr const char* EOL = "eol"; // boolean
 	}
 
-	namespace SendParametersRequest {
+	namespace WriteInputRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* PARAMETERS = "parameters"; // repeated string parameters = 2;
+		constexpr const char* INPUTS = "inputs"; // repeated string parameters = 2;
 	}
 
 	namespace KillRequest {

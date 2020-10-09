@@ -233,13 +233,13 @@ public class Server {
 	 * send parameters to an application
 	 * 
 	 * @param id
-	 * @param parametersArray
+	 * @param inputs
 	 * @return null, if reply is null, else Response
 	 * @throws WriteException 
 	 * @throws ConnectionTimeout 
 	 */
-	public void writeToInputStream(int id, String[] parametersArray) throws WriteException {
-		impl.writeToInputStream(id, parametersArray);
+	public void writeToInputStream(int id, String[] inputs) throws WriteException {
+		impl.writeToInputStream(id, inputs);
 	}
 	
 	/**
@@ -251,8 +251,8 @@ public class Server {
 	 * @throws WriteException 
 	 * @throws ConnectionTimeout 
 	 */
-	public void writeToInputStream(int id, String parameters) throws WriteException {
-		impl.writeToInputStream(id, parameters);
+	public void writeToInputStream(int id, String inputs) throws WriteException {
+		impl.writeToInputStream(id, inputs);
 	}
 	
 	/**

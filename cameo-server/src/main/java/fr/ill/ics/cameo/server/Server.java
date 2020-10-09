@@ -150,8 +150,8 @@ public class Server {
 				else if (type == Message.IS_ALIVE) {
 					reply = process.processIsAliveRequest(request, manager);
 				}
-				else if (type == Message.SEND_PARAMETERS) {
-					reply = process.processSendParametersRequest(request, manager);
+				else if (type == Message.WRITE_INPUT) {
+					reply = process.processWriteInputRequest(request, manager);
 				}
 				else if (type == Message.STATUS) {
 					reply = process.processStatusRequest();

@@ -552,14 +552,14 @@ public class ServerImpl extends ServicesImpl {
 	 * send parameters to an application
 	 * 
 	 * @param id
-	 * @param parametersArray
+	 * @param inputs
 	 * @return null, if reply is null, else Response
 	 * @throws WriteException 
 	 * @throws ConnectionTimeout 
 	 */
-	public void writeToInputStream(int id, String[] parametersArray) throws WriteException {
+	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
-		Zmq.Msg request = createSendParametersRequest(id, parametersArray);
+		Zmq.Msg request = createWriteInputRequest(id, inputs);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -588,12 +588,12 @@ public class ServerImpl extends ServicesImpl {
 	 * @throws WriteException 
 	 * @throws ConnectionTimeout 
 	 */
-	public void writeToInputStream(int id, String parameters) throws WriteException {
+	public void writeToInputStream(int id, String input) throws WriteException {
 		
-		String[] parametersArray = new String[1];
-		parametersArray[0] = parameters;
+		String[] inputArray = new String[1];
+		inputArray[0] = input;
 		
-		writeToInputStream(id, parametersArray);
+		writeToInputStream(id, inputArray);
 	}
 	
 	/**
@@ -853,23 +853,23 @@ public class ServerImpl extends ServicesImpl {
 	}
 	
 	/**
-	 * create SendParameters request
+	 * create WriteInput request
 	 * 
 	 * @param id
-	 * @param parameters
+	 * @param inputs
 	 * @return
 	 */
-	private Zmq.Msg createSendParametersRequest(int id, String[] parameters) {
+	private Zmq.Msg createWriteInputRequest(int id, String[] inputs) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SEND_PARAMETERS);
-		request.put(Message.SendParametersRequest.ID, id);
+		request.put(Message.TYPE, Message.WRITE_INPUT);
+		request.put(Message.WriteInputRequest.ID, id);
 		
 		JSONArray list = new JSONArray();
-		for (int i = 0; i < parameters.length; i++) {
-			list.add(parameters[i]);
+		for (int i = 0; i < inputs.length; i++) {
+			list.add(inputs[i]);
 		}
-		request.put(Message.SendParametersRequest.PARAMETERS, list);
+		request.put(Message.WriteInputRequest.PARAMETERS, list);
 
 		return message(request);
 	}

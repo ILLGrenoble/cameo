@@ -306,21 +306,21 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processSendParametersRequest(JSONObject request, Manager manager) {
+	public Msg processWriteInputRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received SendParameters request");
+		Log.logger().fine("Received WriteInput request");
 		
 		// Convert the parameters.
-		JSONArray list = JSON.getArray(request, Message.SendParametersRequest.PARAMETERS);
+		JSONArray list = JSON.getArray(request, Message.WriteInputRequest.PARAMETERS);
 		
-		String[] parametersArray = new String[list.size()];
+		String[] inputArray = new String[list.size()];
 		
 		for (int i = 0; i < list.size(); i++) {
-			parametersArray[i] = (String)list.get(i);
+			inputArray[i] = (String)list.get(i);
 		}
 		
 		try {
-			manager.writeToInputStream((JSON.getInt(request, Message.SendParametersRequest.ID)), parametersArray);
+			manager.writeToInputStream((JSON.getInt(request, Message.WriteInputRequest.ID)), inputArray);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
