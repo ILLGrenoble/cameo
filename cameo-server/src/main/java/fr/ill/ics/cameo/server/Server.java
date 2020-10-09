@@ -159,8 +159,8 @@ public class Server {
 				else if (type == Message.APPS) {
 					reply = process.processAppsRequest(request, manager);
 				}
-				else if (type == Message.ALL_AVAILABLE) {
-					reply = process.processAllAvailableRequest(request, manager);
+				else if (type == Message.LIST) {
+					reply = process.processListRequest(request, manager);
 				}
 				else if (type == Message.SET_STATUS) {
 					reply = process.processSetStatusRequest(request, manager);

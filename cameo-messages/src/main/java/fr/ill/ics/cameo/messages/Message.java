@@ -24,7 +24,7 @@ public class Message {
 	public static final long WRITE_INPUT = 10;
 	public static final long KILL = 11;
 	public static final long STATUS = 12;
-	public static final long ALL_AVAILABLE = 13;
+	public static final long LIST = 13;
 	public static final long SET_STATUS = 14;
 	public static final long GET_STATUS = 15;
 	public static final long CREATE_PUBLISHER = 16;
@@ -84,7 +84,7 @@ public class Message {
 		public static final String STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 
-	public static class AllAvailableResponse {
+	public static class ListResponse {
 		public static final String APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
 	}
 

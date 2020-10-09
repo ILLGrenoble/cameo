@@ -305,7 +305,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	vector<application::Configuration> configs;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAllAvailableRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createListRequest());
 
 	// Get the JSON response.
 	json::Object response;

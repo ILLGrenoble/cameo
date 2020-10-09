@@ -358,9 +358,9 @@ public class RequestProcessor {
 		return Converter.reply(response);
 	}
 	
-	public Msg processAllAvailableRequest(JSONObject request, Manager manager) {
+	public Msg processListRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received AllAvailable request");
+		Log.logger().fine("Received List request");
 		
 		List<ApplicationConfig> list = manager.getAvailableApplications();
 		
@@ -371,18 +371,18 @@ public class RequestProcessor {
 		while (it.hasNext()) {
 			ApplicationConfig application = (ApplicationConfig) it.next();
 
-			JSONObject applicationInfo = new JSONObject();
-			applicationInfo.put(Message.ApplicationConfig.NAME, application.getName());
-			applicationInfo.put(Message.ApplicationConfig.DESCRIPTION, application.getDescription());
-			applicationInfo.put(Message.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
-			applicationInfo.put(Message.ApplicationConfig.RESTART, application.isRestart());
-			applicationInfo.put(Message.ApplicationConfig.STARTING_TIME, application.getStartingTime());
-			applicationInfo.put(Message.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
+			JSONObject config = new JSONObject();
+			config.put(Message.ApplicationConfig.NAME, application.getName());
+			config.put(Message.ApplicationConfig.DESCRIPTION, application.getDescription());
+			config.put(Message.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
+			config.put(Message.ApplicationConfig.RESTART, application.isRestart());
+			config.put(Message.ApplicationConfig.STARTING_TIME, application.getStartingTime());
+			config.put(Message.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
 			
-			array.add(applicationInfo);
+			array.add(config);
 		}
 		
-		response.put(Message.AllAvailableResponse.APPLICATION_CONFIG, array);
+		response.put(Message.ListResponse.APPLICATION_CONFIG, array);
 		
 		return Converter.reply(response);
 	}
@@ -394,7 +394,7 @@ public class RequestProcessor {
 	 */
 	public Msg processOutputPortRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received Ouput request");
+		Log.logger().fine("Received OuputPort request");
 		
 		int port = manager.getApplicationStreamPort(JSON.getString(request, Message.OutputRequest.NAME));
 		

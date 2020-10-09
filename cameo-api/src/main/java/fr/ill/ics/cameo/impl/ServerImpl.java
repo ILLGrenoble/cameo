@@ -376,7 +376,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Configuration> getApplicationConfigurations() {
 
-		Zmq.Msg request = createAllAvailableRequest();
+		Zmq.Msg request = createListRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
@@ -386,7 +386,7 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 						
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.AllAvailableResponse.APPLICATION_CONFIG);
+			JSONArray list = JSON.getArray(response, Message.ListResponse.APPLICATION_CONFIG);
 			
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject config = (JSONObject)list.get(i);
@@ -817,10 +817,10 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createAllAvailableRequest() {
+	private Zmq.Msg createListRequest() {
 
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.ALL_AVAILABLE);
+		request.put(Message.TYPE, Message.LIST);
 
 		return message(request);
 	}
