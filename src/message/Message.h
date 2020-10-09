@@ -106,6 +106,7 @@ namespace message {
 		constexpr const char* NAME = "name"; // required string name = 2;
 		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
 		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr const char* EXIT_CODE = "exitCode"; // optional
 	}
 
 	namespace PublisherEvent {
