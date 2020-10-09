@@ -20,7 +20,6 @@ public class Message {
 	public static final long APPS = 5;
 	public static final long OUTPUT_WITH_ID = 6;
 	public static final long OUTPUT = 7;
-	public static final long ENABLE_STREAM = 8;
 	public static final long IS_ALIVE = 9;
 	public static final long SEND_PARAMETERS = 10;
 	public static final long KILL = 11;
