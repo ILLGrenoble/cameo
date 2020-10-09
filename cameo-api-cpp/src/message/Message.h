@@ -30,14 +30,14 @@ namespace message {
 	const int STOP = 3;
 	const int CONNECT = 4;
 	const int APPS = 5;
-	const int SHOW = 6;
-	const int ENABLE_STREAM = 7;
-	const int IS_ALIVE = 8;
-	const int SEND_PARAMETERS = 9;
-	const int KILL = 10;
-	const int STATUS = 11;
-	const int ALL_AVAILABLE = 12;
-	const int OUTPUT = 13;
+	const int OUTPUT_WITH_ID = 6;
+	const int OUTPUT = 7;
+	const int ENABLE_STREAM = 8;
+	const int IS_ALIVE = 9;
+	const int SEND_PARAMETERS = 10;
+	const int KILL = 11;
+	const int STATUS = 12;
+	const int ALL_AVAILABLE = 13;
 	const int SET_STATUS = 14;
 	const int GET_STATUS = 15;
 	const int CREATE_PUBLISHER = 16;
@@ -139,8 +139,12 @@ namespace message {
 		constexpr const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
 	}
 
-	namespace ShowStreamRequest {
+	namespace OutputWithIdRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
+	}
+
+	namespace OutputRequest {
+		constexpr const char* NAME = "name"; // required string name = 1;
 	}
 
 	namespace IsAliveRequest {
@@ -164,10 +168,6 @@ namespace message {
 
 	namespace KillRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
-
-	namespace OutputRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
 	}
 
 	namespace SetStatusRequest {

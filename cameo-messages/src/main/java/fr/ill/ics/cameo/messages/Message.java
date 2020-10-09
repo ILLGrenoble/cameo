@@ -18,14 +18,14 @@ public class Message {
 	public static final long STOP = 3;
 	public static final long CONNECT = 4;
 	public static final long APPS = 5;
-	public static final long SHOW = 6;
-	public static final long ENABLE_STREAM = 7;
-	public static final long IS_ALIVE = 8;
-	public static final long SEND_PARAMETERS = 9;
-	public static final long KILL = 10;
-	public static final long STATUS = 11;
-	public static final long ALL_AVAILABLE = 12;
-	public static final long OUTPUT = 13;
+	public static final long OUTPUT_WITH_ID = 6;
+	public static final long OUTPUT = 7;
+	public static final long ENABLE_STREAM = 8;
+	public static final long IS_ALIVE = 9;
+	public static final long SEND_PARAMETERS = 10;
+	public static final long KILL = 11;
+	public static final long STATUS = 12;
+	public static final long ALL_AVAILABLE = 13;
 	public static final long SET_STATUS = 14;
 	public static final long GET_STATUS = 15;
 	public static final long CREATE_PUBLISHER = 16;
@@ -127,8 +127,12 @@ public class Message {
 		public static final String APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
 	}
 
-	public static class ShowStreamRequest {
+	public static class OuputWithIdRequest {
 		public static final String ID = "id"; // required int32 id = 1;
+	}
+
+	public static class OutputRequest {
+		public static final String NAME = "name"; // required string name = 1;
 	}
 
 	public static class IsAliveRequest {
@@ -152,10 +156,6 @@ public class Message {
 
 	public static class KillRequest {
 		public static final String ID = "id"; // required int32 id = 1;
-	}
-
-	public static class OutputRequest {
-		public static final String NAME = "name"; // required string name = 1;
 	}
 
 	public static class SetStatusRequest {

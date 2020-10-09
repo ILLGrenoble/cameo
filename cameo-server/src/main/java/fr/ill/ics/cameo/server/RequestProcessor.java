@@ -255,12 +255,12 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processShowStreamRequest(JSONObject request, Manager manager) {
+	public Msg processOutputWithIdRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received ShowStream request");
+		Log.logger().fine("Received OutputWithId request");
 				
 		try {
-			int port = manager.getStreamPort(JSON.getInt(request, Message.ShowStreamRequest.ID));
+			int port = manager.getStreamPort(JSON.getInt(request, Message.OuputWithIdRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

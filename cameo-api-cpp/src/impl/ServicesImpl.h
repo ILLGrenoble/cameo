@@ -68,7 +68,7 @@ public:
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
-	std::string createShowStreamRequest(int id) const;
+	std::string createOutputWithIdRequest(int id) const;
 
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);

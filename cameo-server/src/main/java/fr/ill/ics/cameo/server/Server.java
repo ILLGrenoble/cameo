@@ -141,8 +141,11 @@ public class Server {
 				else if (type == Message.CONNECT) {
 					reply = process.processConnectRequest(request, manager);
 				}
-				else if (type == Message.SHOW) {
-					reply = process.processShowStreamRequest(request, manager);
+				else if (type == Message.OUTPUT_WITH_ID) {
+					reply = process.processOutputWithIdRequest(request, manager);
+				}
+				else if (type == Message.OUTPUT) {
+					reply = process.processOutputRequest(request, manager);
 				}
 				else if (type == Message.IS_ALIVE) {
 					reply = process.processIsAliveRequest(request, manager);
@@ -158,9 +161,6 @@ public class Server {
 				}
 				else if (type == Message.ALL_AVAILABLE) {
 					reply = process.processAllAvailableRequest(request, manager);
-				}
-				else if (type == Message.OUTPUT) {
-					reply = process.processOutputRequest(request, manager);
 				}
 				else if (type == Message.SET_STATUS) {
 					reply = process.processSetStatusRequest(request, manager);

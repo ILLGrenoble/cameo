@@ -502,7 +502,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
 
-		Zmq.Msg request = createShowStreamRequest(id);
+		Zmq.Msg request = createOutputWithIdRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -843,11 +843,11 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createShowStreamRequest(int id) {
+	private Zmq.Msg createOutputWithIdRequest(int id) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SHOW);
-		request.put(Message.ShowStreamRequest.ID, id);
+		request.put(Message.TYPE, Message.OUTPUT_WITH_ID);
+		request.put(Message.OuputWithIdRequest.ID, id);
 
 		return message(request);
 	}

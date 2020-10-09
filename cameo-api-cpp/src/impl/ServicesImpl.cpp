@@ -168,13 +168,13 @@ std::string ServicesImpl::createStreamStatusRequest() const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createShowStreamRequest(int id) const {
+std::string ServicesImpl::createOutputWithIdRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SHOW);
+	request.pushInt(message::OUTPUT_WITH_ID);
 
-	request.pushKey(message::ShowStreamRequest::ID);
+	request.pushKey(message::OutputWithIdRequest::ID);
 	request.pushInt(id);
 
 	return request.toString();
