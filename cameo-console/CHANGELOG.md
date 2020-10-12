@@ -13,6 +13,7 @@
 * Added stop handler by typing S enter.
 * New option --no-stop-handler, -S to disable the stop handler.
 * Quit the exec command without killing the application by typing Q.
+* Exit with the exit code when the application executed or connected exits with an error.
 
 0.1.4
 -----

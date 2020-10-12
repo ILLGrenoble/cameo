@@ -563,6 +563,34 @@ public class Console {
 		return state;
 	}
 	
+	private void finishApplication(int state, String appNameId, Integer exitCode) {
+		
+		// Process state.
+		if (state == Application.State.SUCCESS) {
+			System.out.println("The application " + appNameId + " terminated successfully.");
+		}
+		else if (state == Application.State.STOPPED) {
+			System.out.println("The application " + appNameId + " has been stopped.");
+		}
+		else if (state == Application.State.KILLED) {
+			System.out.println("The application " + appNameId + " has been killed.");
+		}
+		else if (state == Application.State.ERROR) {
+			if (exitCode != null) {
+				System.out.println("The application " + appNameId + " terminated with error " + exitCode + ".");
+				
+				// Exit with the exit code of the app.
+				System.exit(exitCode);
+			}
+			else {
+				System.out.println("The application " + appNameId + " terminated with error.");
+				
+				// Exit with -1 as we do not know.				
+				System.exit(-1);
+			}
+		}
+	}
+	
 	private void processExec() {
 		
 		if (applicationName == null) {
@@ -612,30 +640,8 @@ public class Console {
 		// Start the threads and wait for them and the app.
 		int state = startThreadsAndWaitFor(app, shutdownHook);
 		
-		// Process state.
-		if (state == Application.State.SUCCESS) {
-			System.out.println("The application " + appNameId + " terminated successfully.");
-			
-			// Return 0 as it is SUCCESS.
-			System.exit(0);
-		}
-		else if (state == Application.State.STOPPED) {
-			System.out.println("The application " + appNameId + " has been stopped.");
-		}
-		else if (state == Application.State.KILLED) {
-			System.out.println("The application " + appNameId + " has been killed.");
-		}
-		else if (state == Application.State.ERROR) {
-			if (app.getExitCode() != null) {
-				System.out.println("The application " + appNameId + " terminated with error " + app.getExitCode() + ".");	
-			}
-			else {
-				System.out.println("The application " + appNameId + " terminated with error.");
-			}
-		}
-		
-		// Return the state in case it is not SUCCESS.
-		//System.exit(state);
+		// Finish the application.
+		finishApplication(state, appNameId, app.getExitCode());
 	}
 	
 	private void processConnect() {
@@ -685,23 +691,8 @@ public class Console {
 		// Start the threads and wait for them and the app.
 		int state = startThreadsAndWaitFor(app, null);
 				
-		if (state == Application.State.SUCCESS) {
-			System.out.println("The application " + appNameId + " terminated successfully.");
-		}
-		else if (state == Application.State.STOPPED) {
-			System.out.println("The application " + appNameId + " has been stopped.");
-		}
-		else if (state == Application.State.KILLED) {
-			System.out.println("The application " + appNameId + " has been killed.");
-		}
-		else if (state == Application.State.ERROR) {
-			if (app.getExitCode() != null) {
-				System.out.println("The application " + appNameId + " terminated with error " + app.getExitCode() + ".");	
-			}
-			else {
-				System.out.println("The application " + appNameId + " terminated with error.");
-			}
-		}
+		// Finish the application.
+		finishApplication(state, appNameId, app.getExitCode());
 	}
 
 	private void processHelp() {
