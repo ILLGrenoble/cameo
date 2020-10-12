@@ -7,6 +7,7 @@
 * Removed Configuration::getRetries().
 * Added storage functions: This::storeKeyValue(), This::getKeyValue(), This::removeKey(), Instance::getKeyValue().
 * Added Instance::getPastStates().
+* Added Instance.getExitCode().
 
 0.3.3
 -----

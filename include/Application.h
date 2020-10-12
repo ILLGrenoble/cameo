@@ -234,6 +234,11 @@ public:
 	 */
 	std::set<State> getPastStates() const;
 
+	/**
+	 * Returns the exit code.
+	 */
+	int getExitCode() const;
+
 	bool getBinaryResult(std::string& result);
 	bool getResult(std::string& result);
 
@@ -260,6 +265,7 @@ private:
 	State m_lastState;
 	bool m_hasResult;
 	std::string m_resultData;
+	int m_exitCode;
 	std::unique_ptr<WaitingImpl> m_waiting;
 };
 

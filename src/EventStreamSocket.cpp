@@ -59,6 +59,9 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		application::State state = event[message::StatusEvent::APPLICATION_STATE].GetInt();
 		application::State pastStates = event[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
+		if (event.HasMember(message::StatusEvent::EXIT_CODE)) {
+			return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates, event[message::StatusEvent::EXIT_CODE].GetInt()));
+		}
 		return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates));
 	}
 	else if (response == message::Event::RESULT) {

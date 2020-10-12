@@ -439,7 +439,8 @@ Instance::Instance(Server * server) :
 	m_pastStates(0),
 	m_initialState(UNKNOWN),
 	m_lastState(UNKNOWN),
-	m_hasResult(false) {
+	m_hasResult(false),
+	m_exitCode(-1) {
 
 	m_waiting.reset(new GenericWaitingImpl(bind(&Instance::cancelWaitFor, this)));
 }
@@ -572,6 +573,11 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
+				// Assign the exit code.
+				if (status->getExitCode() != -1) {
+					m_exitCode = status->getExitCode();
+				}
+
 				// Call the state handler.
 				if (handler != nullptr) {
 					handler(state);
@@ -649,6 +655,10 @@ State Instance::getActualState() const {
 
 std::set<State> Instance::getPastStates() const {
 	return m_server->getPastStates(m_id);
+}
+
+int Instance::getExitCode() const {
+	return m_exitCode;
 }
 
 bool Instance::getBinaryResult(std::string& result) {
