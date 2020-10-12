@@ -21,6 +21,7 @@ public class StatusEvent extends Event {
 	
 	private int applicationState;
 	private int pastApplicationStates;
+	private Integer exitCode;
 	
 	public final static StatusEvent SYNC = new StatusEvent(-1, "", Application.State.UNKNOWN, Application.State.UNKNOWN);
 	public final static StatusEvent END = new StatusEvent(-2, "", Application.State.UNKNOWN, Application.State.UNKNOWN);
@@ -30,13 +31,28 @@ public class StatusEvent extends Event {
 		this.applicationState = applicationState;
 		this.pastApplicationStates = pastApplicationStates;
 	}
-
+	
+	public StatusEvent(int id, String name, int applicationState, int pastApplicationStates, int exitCode) {
+		super(id, name);
+		this.applicationState = applicationState;
+		this.pastApplicationStates = pastApplicationStates;
+		this.exitCode = exitCode;
+	}
+	
 	public int getState() {
 		return applicationState;
 	}
 	
 	public int getPastStates() {
 		return pastApplicationStates;
+	}
+	
+	/**
+	 * Gets the exit code.
+	 * @return null if the exit code is not defined.
+	 */
+	public Integer getExitCode() {
+		return exitCode;
 	}
 
 	@Override

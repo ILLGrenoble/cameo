@@ -55,7 +55,8 @@ public class InstanceImpl extends EventListener {
 	private int initialState = Application.State.UNKNOWN;
 	private int lastState = Application.State.UNKNOWN;
 	private byte[] resultData;
-	private InstanceWaitingImpl waiting = new InstanceWaitingImpl(this);	
+	private InstanceWaitingImpl waiting = new InstanceWaitingImpl(this);
+	private Integer exitCode;
 	
 	InstanceImpl(ServerImpl server) {
 		this.server = server;
@@ -125,6 +126,10 @@ public class InstanceImpl extends EventListener {
 	 */
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+	
+	public Integer getExitCode() {
+		return exitCode;
 	}
 	
 	/**
@@ -240,6 +245,11 @@ public class InstanceImpl extends EventListener {
 					int state = status.getState();
 					pastStates = status.getPastStates();
 					lastState = state;
+					
+					// Assign the exit code.
+					if (status.getExitCode() != null) {
+						exitCode = status.getExitCode();
+					}
 					
 					// test the terminal state
 					if (state == Application.State.SUCCESS 

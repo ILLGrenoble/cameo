@@ -33,7 +33,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 
 	private Manager manager;
 	private Logger logger;
-	private int exitValue;
+	private int exitValue = 0;
 
 	/**
 	 * Constructor.
@@ -95,7 +95,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
 					int currentState = application.getApplicationState();
-					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR);
+					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR, exitValue);
 					application.executeError(exitValue, currentState);
 				}
 				return false;

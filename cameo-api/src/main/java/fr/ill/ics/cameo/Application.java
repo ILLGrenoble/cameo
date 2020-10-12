@@ -343,7 +343,7 @@ public class Application {
 		public String getErrorMessage() {
 			return impl.getErrorMessage();
 		}
-					
+		
 		/**
 		 * Requests the stop of the application.
 		 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
@@ -390,6 +390,14 @@ public class Application {
 		
 		public Set<Integer> getPastStates() {
 			return impl.getPastStates();
+		}
+		
+		/**
+		 * Returns the exit code.
+		 * @return null if is not assigned, the exit code otherwise
+		 */
+		public Integer getExitCode() {
+			return impl.getExitCode();
 		}
 		
 		/**

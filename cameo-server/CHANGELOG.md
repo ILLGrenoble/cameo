@@ -10,6 +10,7 @@
 * Added the 'log_level' attribute in config.
 * Added the argument --log-console in Server main.
 * Added storage requests.
+* Send the exit code in the status events.
 
 0.1.8
 -----

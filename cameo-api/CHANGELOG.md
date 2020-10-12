@@ -6,7 +6,8 @@
 * Added Output.isEndOfLine() which returns true if the message terminates with an end of line.
 * Removed Configuration.getRetries().
 * Added storage methods: This.storeKeyValue(), This.getKeyValue(), This.removeKey(), Instance.getKeyValue().
-* Added Instance.getPastStates().  
+* Added Instance.getPastStates().
+* Added Instance.getExitCode().  
 
 0.1.9
 -----

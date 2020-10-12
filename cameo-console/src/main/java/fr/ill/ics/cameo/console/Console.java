@@ -626,7 +626,12 @@ public class Console {
 			System.out.println("The application " + appNameId + " has been killed.");
 		}
 		else if (state == Application.State.ERROR) {
-			System.out.println("The application " + appNameId + " terminated with error.");
+			if (app.getExitCode() != null) {
+				System.out.println("The application " + appNameId + " terminated with error " + app.getExitCode() + ".");	
+			}
+			else {
+				System.out.println("The application " + appNameId + " terminated with error.");
+			}
 		}
 		
 		// Return the state in case it is not SUCCESS.
@@ -690,7 +695,12 @@ public class Console {
 			System.out.println("The application " + appNameId + " has been killed.");
 		}
 		else if (state == Application.State.ERROR) {
-			System.out.println("The application " + appNameId + " terminated with error.");
+			if (app.getExitCode() != null) {
+				System.out.println("The application " + appNameId + " terminated with error " + app.getExitCode() + ".");	
+			}
+			else {
+				System.out.println("The application " + appNameId + " terminated with error.");
+			}
 		}
 	}
 

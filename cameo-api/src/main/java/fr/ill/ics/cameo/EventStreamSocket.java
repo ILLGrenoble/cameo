@@ -57,9 +57,14 @@ public class EventStreamSocket {
 				String name = JSON.getString(status, Message.StatusEvent.NAME);
 				int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
 				int pastStates = JSON.getInt(status, Message.StatusEvent.PAST_APPLICATION_STATES);
-				
-				event = new StatusEvent(id, name, state, pastStates);
-			
+								
+				if (status.containsKey(Message.StatusEvent.EXIT_CODE)) {
+					int exitCode = JSON.getInt(status, Message.StatusEvent.EXIT_CODE);
+					event = new StatusEvent(id, name, state, pastStates, exitCode);
+				}
+				else {
+					event = new StatusEvent(id, name, state, pastStates);	
+				}
 			}
 			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");

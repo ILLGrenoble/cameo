@@ -20,14 +20,18 @@
 
 namespace cameo {
 
-StatusEvent::StatusEvent(int id, const std::string& name, application::State state, application::State pastStates) :
+StatusEvent::StatusEvent(int id, const std::string& name, application::State state, application::State pastStates, int exitCode) :
 	Event(id, name),
 	m_state(state),
-	m_pastStates(pastStates) {
+	m_pastStates(pastStates),
+	m_exitCode(exitCode) {
 }
 
 StatusEvent::StatusEvent(const StatusEvent& event) :
-	Event(event), m_state(event.m_state), m_pastStates(event.m_pastStates) {
+	Event(event),
+	m_state(event.m_state),
+	m_pastStates(event.m_pastStates),
+	m_exitCode(event.m_exitCode) {
 }
 
 StatusEvent* StatusEvent::clone() {
@@ -40,6 +44,10 @@ application::State StatusEvent::getState() const {
 
 application::State StatusEvent::getPastStates() const {
 	return m_pastStates;
+}
+
+int StatusEvent::getExitCode() const {
+	return m_exitCode;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::StatusEvent& status) {
