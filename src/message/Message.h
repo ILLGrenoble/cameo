@@ -29,10 +29,10 @@ namespace message {
 	const int START = 2;
 	const int STOP = 3;
 	const int CONNECT = 4;
-	const int APPS = 5;
-	const int OUTPUT_PORT_WITH_ID = 6;
+	const int CONNECT_WITH_ID = 5;
+	const int APPS = 6;
 	const int OUTPUT_PORT = 7;
-	const int ENABLE_STREAM = 8;
+	const int OUTPUT_PORT_WITH_ID = 8;
 	const int IS_ALIVE = 9;
 	const int WRITE_INPUT = 10;
 	const int KILL = 11;
@@ -86,6 +86,10 @@ namespace message {
 
 	namespace ConnectRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
+	}
+
+	namespace ConnectWithIdRequest {
+		constexpr const char* ID = "id"; // int32
 	}
 
 	namespace ApplicationConfig {

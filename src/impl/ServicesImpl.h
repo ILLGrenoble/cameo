@@ -40,6 +40,7 @@ public:
 	std::string createStopRequest(int id) const;
 	std::string createKillRequest(int id) const;
 	std::string createConnectRequest(const std::string& name) const;
+	std::string createConnectWithIdRequest(int id) const;
 	std::string createIsAliveRequest(int id) const;
 	std::string createListRequest() const;
 	std::string createAppsRequest() const;

@@ -141,6 +141,18 @@ std::string ServicesImpl::createConnectRequest(const std::string& name) const {
 	return request.toString();
 }
 
+std::string ServicesImpl::createConnectWithIdRequest(int id) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CONNECT_WITH_ID);
+
+	request.pushKey(message::ConnectWithIdRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
 std::string ServicesImpl::createListRequest() const {
 
 	json::StringObject request;
