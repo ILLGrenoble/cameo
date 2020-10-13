@@ -22,7 +22,7 @@
 #include <rapidjson/document.h>
 #include "zmq.hpp"
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 
 namespace cameo {
 namespace json {
