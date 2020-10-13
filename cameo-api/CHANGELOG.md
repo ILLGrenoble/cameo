@@ -9,6 +9,7 @@
 * Added Instance.getPastStates().
 * Added Instance.getExitCode().
 * Filter OutputStreamSocket on application id.
+* Added Server.connect() with id.
 
 0.1.9
 -----

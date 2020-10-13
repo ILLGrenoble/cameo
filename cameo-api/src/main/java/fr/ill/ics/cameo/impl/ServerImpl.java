@@ -283,7 +283,7 @@ public class ServerImpl extends ServicesImpl {
 		
 	public void killAllAndWaitFor(String name) {
 		
-		List<InstanceImpl> applications = connectAll(name);
+		List<InstanceImpl> applications = connectAll(name, Option.NONE);
 		
 		for (InstanceImpl application : applications) {
 			application.kill();
@@ -291,32 +291,25 @@ public class ServerImpl extends ServicesImpl {
 		}
 	}
 	
-	/**
-	 * 
-	 * @return List of Instance, null if a connection timeout occurs
-	 * @throws ConnectionTimeout
-	 */
-	public List<InstanceImpl> connectAll(String name, int options) {
-
-		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
+	private List<InstanceImpl> getInstancesFromApplicationInfos(Zmq.Msg reply, boolean outputStream) {
 		
 		List<InstanceImpl> instances = new ArrayList<InstanceImpl>();
 		
-		Zmq.Msg request = createConnectRequest(name);
-		Zmq.Msg reply = requestSocket.request(request);
-
 		try {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
-
+			
 			// Get the list of application info.
 			JSONArray list = JSON.getArray(response, Message.ApplicationInfoListResponse.APPLICATION_INFO);
-			
+						
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject applicationInfo = (JSONObject)list.get(i);
 
 				// Create a new instance.
 				InstanceImpl instance = new InstanceImpl(this);
+			
+				// Get the name.
+				String name = JSON.getString(applicationInfo, Message.ApplicationInfo.NAME);
 				
 				// We set the name of the application and register before starting because the id is not available.
 				instance.setName(name);
@@ -358,8 +351,14 @@ public class ServerImpl extends ServicesImpl {
 	 * @return List of Instance, null if a connection timeout occurs
 	 * @throws ConnectionTimeout
 	 */
-	public List<InstanceImpl> connectAll(String name) {
-		return connectAll(name, Option.NONE);
+	public List<InstanceImpl> connectAll(String name, int options) {
+
+		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
+		
+		Zmq.Msg request = createConnectRequest(name);
+		Zmq.Msg reply = requestSocket.request(request);
+
+		return getInstancesFromApplicationInfos(reply, outputStream);
 	}
 	
 	/**
@@ -370,6 +369,27 @@ public class ServerImpl extends ServicesImpl {
 	public InstanceImpl connect(String name, int options) {
 		List<InstanceImpl> instances = connectAll(name, options);
 		
+		if (instances.size() == 0) {
+			return new InstanceImpl(this);
+		}
+		
+		return instances.get(0);
+	}
+	
+	/**
+	 * 
+	 * @return Returns the application with id.
+	 * @throws ConnectionTimeout
+	 */
+	public InstanceImpl connect(int id, int options) {
+		
+		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
+		
+		Zmq.Msg request = createConnectWithIdRequest(id);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		List<InstanceImpl> instances = getInstancesFromApplicationInfos(reply, outputStream);
+
 		if (instances.size() == 0) {
 			return new InstanceImpl(this);
 		}
@@ -897,9 +917,6 @@ public class ServerImpl extends ServicesImpl {
 
 	/**
 	 * create connect request
-	 * 
-	 * @param name
-	 * @param argsOfApplication
 	 * @return request
 	 */
 	private Zmq.Msg createConnectRequest(String name) {
@@ -907,6 +924,19 @@ public class ServerImpl extends ServicesImpl {
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CONNECT);
 		request.put(Message.ConnectRequest.NAME, name);
+
+		return message(request);
+	}
+
+	/**
+	 * create connect with id request
+	 * @return request
+	 */
+	private Zmq.Msg createConnectWithIdRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CONNECT_WITH_ID);
+		request.put(Message.ConnectWithIdRequest.ID, id);
 
 		return message(request);
 	}

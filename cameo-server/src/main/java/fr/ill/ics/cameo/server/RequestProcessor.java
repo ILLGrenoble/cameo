@@ -247,6 +247,40 @@ public class RequestProcessor {
 	
 		return Converter.reply(response);
 	}
+
+	public Msg processConnectWithIdRequest(JSONObject request, Manager manager) {
+		
+		Log.logger().fine("Received ConnectWithId request");
+		
+		int applicationId = JSON.getInt(request, Message.ConnectWithIdRequest.ID);
+		
+		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
+		
+		JSONObject response = new JSONObject();
+		JSONArray array = new JSONArray();
+		
+		Iterator<ApplicationInfo> it = list.iterator();
+		while (it.hasNext()) {
+			ApplicationInfo application = it.next();
+			
+			JSONObject applicationInfo = new JSONObject();
+			
+			// Filtering on the application name.
+			if (applicationId == application.getId()) {
+				applicationInfo.put(Message.ApplicationInfo.ID, application.getId());
+				applicationInfo.put(Message.ApplicationInfo.ARGS, application.getArgs());
+				applicationInfo.put(Message.ApplicationInfo.NAME, application.getName());
+				applicationInfo.put(Message.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+				applicationInfo.put(Message.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+				applicationInfo.put(Message.ApplicationInfo.PID, application.getPid());
+				
+				array.add(applicationInfo);
+			}
+		}
+		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
+	
+		return Converter.reply(response);
+	}
 	
 	/**
 	 * ShowCommand

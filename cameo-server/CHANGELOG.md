@@ -12,6 +12,7 @@
 * Added storage requests.
 * Send the exit code in the status events.
 * Enabled multiple=yes and stream=yes.
+* Added connect with id request.
 
 0.1.8
 -----

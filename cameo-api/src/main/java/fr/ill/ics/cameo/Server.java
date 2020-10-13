@@ -190,6 +190,24 @@ public class Server {
 	
 	/**
 	 * 
+	 * @return Returns the application with id.
+	 * @throws ConnectionTimeout
+	 */
+	public Application.Instance connect(int id, int options) {
+		return new Application.Instance(impl.connect(id, options));
+	}
+	
+	/**
+	 * 
+	 * @return Returns the application with id.
+	 * @throws ConnectionTimeout
+	 */
+	public Application.Instance connect(int id) {
+		return new Application.Instance(impl.connect(id, Option.NONE));
+	}
+	
+	/**
+	 * 
 	 * @return List of ApplicationConfig if everything is ok, else null
 	 * @throws ConnectionTimeout
 	 */

@@ -209,13 +209,13 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	application::InstanceArray instances;
-
 	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectRequest(name));
 
 	// Get the JSON response.
 	json::Object response;
 	json::parse(response, reply.get());
+
+	application::InstanceArray instances;
 
 	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
 	json::Value::Array array = applicationInfo.GetArray();
@@ -283,6 +283,53 @@ std::unique_ptr<application::Instance> Server::connect(const std::string& name, 
 	}
 
 	return std::move(instances[0]);
+}
+
+std::unique_ptr<application::Instance> Server::connect(int id, Option options) {
+
+	bool outputStream = ((options & OUTPUTSTREAM) != 0);
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectWithIdRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfo.GetArray();
+	size_t size = array.Size();
+
+	if (size > 0) {
+		json::Value::Object info = array[0].GetObject();
+
+		unique_ptr<application::Instance> instance = makeInstance();
+
+		// Set the name and register the instance as event listener.
+		string name = info[message::ApplicationInfo::NAME].GetString();
+		instance->setName(name);
+		registerEventListener(instance.get());
+
+		int applicationId = info[message::ApplicationInfo::ID].GetInt();
+
+		// test if the application is still alive otherwise we could have missed a status message
+		if (isAlive(applicationId)) {
+
+			// We connect to the stream port before starting the application.
+			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
+			instance->setId(applicationId);
+			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
+			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
+
+			if (outputStream) {
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(getStreamPort(name));
+				instance->setOutputStreamSocket(streamSocket);
+			}
+
+			return instance;
+		}
+	}
+
+	return makeInstance();
 }
 
 void Server::killAllAndWaitFor(const std::string& name) {

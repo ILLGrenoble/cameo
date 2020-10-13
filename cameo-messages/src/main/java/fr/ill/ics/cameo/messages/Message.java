@@ -17,9 +17,10 @@ public class Message {
 	public static final long START = 2;
 	public static final long STOP = 3;
 	public static final long CONNECT = 4;
-	public static final long APPS = 5;
-	public static final long OUTPUT_PORT_WITH_ID = 6;
+	public static final long CONNECT_WITH_ID = 5;
+	public static final long APPS = 6;
 	public static final long OUTPUT_PORT = 7;
+	public static final long OUTPUT_PORT_WITH_ID = 8;
 	public static final long IS_ALIVE = 9;
 	public static final long WRITE_INPUT = 10;
 	public static final long KILL = 11;
@@ -73,6 +74,10 @@ public class Message {
 
 	public static class ConnectRequest {
 		public static final String NAME = "name"; // required string name = 1;
+	}
+	
+	public static class ConnectWithIdRequest {
+		public static final String ID = "id"; // int32
 	}
 
 	public static class ApplicationConfig {

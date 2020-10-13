@@ -69,6 +69,7 @@ public:
 	std::unique_ptr<application::Instance> start(const std::string& name, Option options = NONE);
 	application::InstanceArray connectAll(const std::string& name, Option options = NONE);
 	std::unique_ptr<application::Instance> connect(const std::string& name, Option options = NONE);
+	std::unique_ptr<application::Instance> connect(int id, Option options = NONE);
 
 	/**
 	 * throws ConnectionTimeout
@@ -128,6 +129,7 @@ public:
 private:
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
+
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName);
 	int getAvailableTimeout() const;
