@@ -149,11 +149,12 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 	registerEventListener(instance.get());
 
 	try {
+		unique_ptr<OutputStreamSocket> streamSocket;
+
 		if (outputStream) {
-			// We connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
-			unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
-			instance->setOutputStreamSocket(socket);
+			// We connect to the stream port before starting the application.
+			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
+			streamSocket = createOutputStreamSocket(getStreamPort(name));
 		}
 
 		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getReference()));
@@ -168,6 +169,10 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 		}
 		else {
 			instance->setId(value);
+
+			if (outputStream) {
+				instance->setOutputStreamSocket(streamSocket);
+			}
 		}
 	}
 	catch (const ConnectionTimeout& e) {
@@ -237,16 +242,16 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 		if (isAlive(applicationId)) {
 			aliveInstancesCount++;
 
-			// We connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
-			if (outputStream) {
-				unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
-				instance->setOutputStreamSocket(socket);
-			}
-
+			// We connect to the stream port before starting the application.
+			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
 			instance->setId(applicationId);
 			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
+
+			if (outputStream) {
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(getStreamPort(name));
+				instance->setOutputStreamSocket(streamSocket);
+			}
 
 			instances.m_array[i] = std::move(instance);
 		}

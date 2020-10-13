@@ -57,6 +57,8 @@ class OutputStreamSocket {
 public:
 	~OutputStreamSocket();
 
+	void setApplicationId(int id);
+
 	bool receive(Output& ouput);
 	void cancel();
 	bool isEnded() const;
@@ -67,6 +69,7 @@ private:
 
 	WaitingImpl * waiting();
 
+	int m_applicationId;
 	bool m_ended;
 	bool m_canceled;
 
