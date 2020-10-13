@@ -651,37 +651,58 @@ public class Console {
 			System.exit(1);
 		}
 		
-		// Connect all the apps.
-		List<Application.Instance> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
-		Application.Instance app;
+		Application.Instance app = null;
 		
-		if (apps.size() > 1) {
-			System.out.println("More than one application " + applicationName + " is executing, please select one.");
-			return;
-		}
-		else if (apps.isEmpty()) {
+		// Test if an id is provided.
+		try {
+			applicationId = Integer.parseInt(applicationName);
 			
-			// There is no application.
-			if (!start) {
-				// Return as the option 'start' is false.
-				System.out.println("No application " + applicationName + " is executing.");
+			// We can connect to the application with the id.
+			app = server.connect(applicationId, Option.OUTPUTSTREAM);
+			
+			if (!app.exists()) {
+				System.out.println("Cannot connect : there is no application executing with id " + applicationId + ".");
 				return;
 			}
-			else {
-				// Start the application as the option 'start' is true.
-				app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);		
+		}
+		catch (NumberFormatException e) {
+			// Do nothing.
+		}
+		
+		// Test if no id is provided. Thus use the name.
+		if (applicationId == -1) {
 				
-				if (app.exists()) {
-					System.out.println("Started " + app.getNameId() + ".");
-				}
-				else {
-					System.out.println("Cannot start " + applicationName + ": " + app.getErrorMessage() + ".");
+			// Connect all the apps.
+			List<Application.Instance> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
+			
+			if (apps.size() > 1) {
+				System.out.println("More than one application " + applicationName + " is executing, please select one.");
+				return;
+			}
+			else if (apps.isEmpty()) {
+				
+				// There is no application.
+				if (!start) {
+					// Return as the option 'start' is false.
+					System.out.println("There is no application " + applicationName + " that is executing.");
 					return;
 				}
+				else {
+					// Start the application as the option 'start' is true.
+					app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);		
+					
+					if (app.exists()) {
+						System.out.println("Started " + app.getNameId() + ".");
+					}
+					else {
+						System.out.println("Cannot start " + applicationName + " : " + app.getErrorMessage() + ".");
+						return;
+					}
+				}
 			}
-		}
-		else {
-			app = apps.get(0);
+			else {
+				app = apps.get(0);
+			}
 		}
 		
 		final String appNameId = app.getNameId();
@@ -698,6 +719,7 @@ public class Console {
 	private void processHelp() {
 		
 		System.out.println("Usage: cmo <server options> [command] <command options>");
+		
 		System.out.println("[server options]");
 		System.out.println("  -e, --endpoint [endpoint]    Define the server endpoint. Full endpoint is tcp://hostname:port. ");
 		System.out.println("                               Short endpoints hostname:port or tcp://hostname or hostname are valid.");
@@ -708,24 +730,36 @@ public class Console {
 		System.out.println("                               If specified, the endpoint is tcp://localhost:port.");
 		System.out.println("  -a, --app [name]             Define the application name.");
 		System.out.println("");
+		
 		System.out.println("[commands]");
 		System.out.println("  start [name] <args>          Start the application with name.");
+		
 		System.out.println("  exec <options> [name] <args> Start the application with name and blocks until its termination. Output streams are displayed.");
 		System.out.println("    [options]");
 		System.out.println("    -m, --mute                 Disable the input stream.");
 		System.out.println("    -q, --quiet                Disable the output stream.");
 		System.out.println("    -S, --no-stop-handler      Disable the stop handler.");
+
 		System.out.println("  connect <options> [name]     Connect the application with name.");
 		System.out.println("    [options]");
 		System.out.println("    -s, --start                Start the application if it is not already executing.");
 		System.out.println("    -m, --mute                 Disable the input stream.");
 		System.out.println("    -q, --quiet                Disable the output stream.");
 		System.out.println("    -S, --no-stop-handler      Disable the stop handler.");
+		
+		System.out.println("  connect <options> [id]       Connect the application with id.");
+		System.out.println("    [options]");
+		System.out.println("    -m, --mute                 Disable the input stream.");
+		System.out.println("    -q, --quiet                Disable the output stream.");
+		System.out.println("    -S, --no-stop-handler      Disable the stop handler.");
+		
 		System.out.println("  stop [name]                  Stop the application with name. Kill the application if the stop timeout is reached.");
 		System.out.println("  stop [id]                    Stop the application with id. Kill the application if the stop timeout is reached.");
+		
 		System.out.println("  kill [name]                  Kill the application with name.");
 		System.out.println("  kill [id]                    Kill the application with id.");
 		System.out.println("");
+		
 		System.out.println("[display commands]");
 		System.out.println("  help                         Display the help.");
 		System.out.println("  endpoint                     Display the server endpoint.");
@@ -736,11 +770,13 @@ public class Console {
 		System.out.println("  list                         Display the available applications.");
 		System.out.println("  apps <name>                  Display all the started applications.");
 		System.out.println("");
+		
 		System.out.println("[exit in exec, connect]");
 		System.out.println("  ctrl+c                       Kill the application only in exec and quit.");
 		System.out.println("  S, shift+s enter             Stop the application if the stop handler is enabled (default) and quit.");
 		System.out.println("  Q, shift+q enter             Quit without killing the application.");
 		System.out.println("");
+		
 		System.out.println("[examples]");
 		System.out.println("$ cmo exec subpubjava pubjava");
 		System.out.println("$ cmo kill subpubjava");
