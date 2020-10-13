@@ -186,12 +186,6 @@ public class ApplicationConfig {
 			this.stream = runSingle;
 		} else if (value.equalsIgnoreCase("yes")) {
 			this.stream = true;
-			
-			if (!runSingle) {
-				stream = false;
-				Log.logger().warning("The application " + name + " cannot have multiple=yes and stream=yes");
-			}
-			
 		} else if (value.equalsIgnoreCase("no")) {
 			this.stream = false;
 		} else {

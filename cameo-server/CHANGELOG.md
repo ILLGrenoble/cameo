@@ -11,6 +11,7 @@
 * Added the argument --log-console in Server main.
 * Added storage requests.
 * Send the exit code in the status events.
+* Enabled multiple=yes and stream=yes.
 
 0.1.8
 -----

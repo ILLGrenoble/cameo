@@ -29,6 +29,7 @@ public class OutputStreamSocket {
 	private ServicesImpl services;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
+	private int applicationId = -1;
 	private boolean ended = false;
 	private boolean canceled = false;
 
@@ -39,38 +40,59 @@ public class OutputStreamSocket {
 		this.cancelSocket = cancelPublisher;		
 	}
 	
+	/**
+	 * Sets the application id.
+	 * @param id
+	 */
+	public void setApplicationId(int id) {
+		this.applicationId = id;
+	}
+	
 	public Application.Output receive()	{
 		
-		String message = this.socket.recvStr();
-				
-		if (message.equals(Message.Event.STREAM)) {
-		}
-		else if (message.equals(Message.Event.ENDSTREAM)) {
-			ended = true;
-			return null;
-		}
-		else if (message.equals(Message.Event.CANCEL)) {
-			canceled = true;
-			return null;
-		}
-				
-		byte[] streamMessage = this.socket.recv();
-		
-		try {
-			// Get the JSON object.
-			JSONObject stream = services.parse(streamMessage);
+		// Loop on recvStr() because in case of configuration multiple=yes, messages can come from different instances.
+		while (true) {
+			String messageType = this.socket.recvStr();
 			
-			int id = JSON.getInt(stream, Message.ApplicationStream.ID);
-			String line = JSON.getString(stream, Message.ApplicationStream.MESSAGE);
-			boolean endOfLine = JSON.getBoolean(stream, Message.ApplicationStream.EOL);
+			// Cancel can only come from this instance.
+			if (messageType.equals(Message.Event.CANCEL)) {
+				canceled = true;
+				return null;
+			}
 			
-			return new Application.Output(id, line, endOfLine);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+			// Get the second part of the message.
+			byte[] messageValue = this.socket.recv();
+			
+			try {
+				// Get the JSON object.
+				JSONObject stream = services.parse(messageValue);
+				
+				int id = JSON.getInt(stream, Message.ApplicationStream.ID);
+				
+				// Filter on the application id so that only the messages concerning the instance applicationId are processed.
+				// Others are ignored.
+				if (applicationId == -1 || applicationId == id) {
+
+					// Terminate the stream if type of message is ENDSTREAM.
+					if (messageType.equals(Message.Event.ENDSTREAM)) {
+						ended = true;
+						return null;
+					}
+					
+					// Here the type of message is STREAM.
+					String line = JSON.getString(stream, Message.ApplicationStream.MESSAGE);
+					boolean endOfLine = JSON.getBoolean(stream, Message.ApplicationStream.EOL);
+					
+					return new Application.Output(id, line, endOfLine);
+				}
+				
+				// Here, the application id is different from id, then re-iterate.
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse response : " + messageValue);
+			}
 		}
 	}
-
 	
 	public boolean isEnded() {
 		return ended;

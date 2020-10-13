@@ -7,7 +7,8 @@
 * Removed Configuration.getRetries().
 * Added storage methods: This.storeKeyValue(), This.getKeyValue(), This.removeKey(), Instance.getKeyValue().
 * Added Instance.getPastStates().
-* Added Instance.getExitCode().  
+* Added Instance.getExitCode().
+* Filter OutputStreamSocket on application id.
 
 0.1.9
 -----

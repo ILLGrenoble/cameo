@@ -203,10 +203,12 @@ public class ServerImpl extends ServicesImpl {
 		registerEventListener(instance);
 		
 		try {
-			// We connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
+			// We connect to the stream port before starting the application.
+			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
+			OutputStreamSocket streamSocket = null;
+			
 			if (outputStream) {
-				instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
+				streamSocket = createOutputStreamSocket(getStreamPort(name));
 			}
 			
 			Response response = startApplication(name, args, instanceReference);
@@ -216,6 +218,10 @@ public class ServerImpl extends ServicesImpl {
 			}
 			else {
 				instance.setId(response.getValue());
+				
+				if (outputStream) {
+					instance.setOutputStreamSocket(streamSocket);
+				}
 			}
 		}
 		catch (ConnectionTimeout e) {
@@ -320,15 +326,14 @@ public class ServerImpl extends ServicesImpl {
 				
 				// Test if the application is still alive otherwise we could have missed a status message.
 				if (isAlive(applicationId)) {
-					// We connect to the stream port before starting the application
-					// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
-					if (outputStream) {
-						instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
-					}
-										
+					
 					instance.setId(applicationId);
 					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.APPLICATION_STATE));
 					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
+					
+					if (outputStream) {
+						instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
+					}
 					
 					instances.add(instance);
 				}
@@ -612,7 +617,11 @@ public class ServerImpl extends ServicesImpl {
 			throw new OutputStreamException(JSON.getString(response, Message.RequestResponse.MESSAGE));
 		}
 		
-		return createOutputStreamSocket(port);
+		// Create the output stream socket.
+		OutputStreamSocket streamSocket = createOutputStreamSocket(port);
+		streamSocket.setApplicationId(id);
+		
+		return streamSocket;
 	}
 	
 	/**

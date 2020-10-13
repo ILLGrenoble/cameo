@@ -8,6 +8,7 @@
 * Added storage functions: This::storeKeyValue(), This::getKeyValue(), This::removeKey(), Instance::getKeyValue().
 * Added Instance::getPastStates().
 * Added Instance.getExitCode().
+* Filter OutputStreamSocket on application id.
 
 0.3.3
 -----

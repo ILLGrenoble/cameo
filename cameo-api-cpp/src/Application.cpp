@@ -466,6 +466,7 @@ void Instance::setErrorMessage(const std::string& message) {
 
 void Instance::setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket) {
 	m_outputStreamSocket = std::move(socket);
+	m_outputStreamSocket->setApplicationId(m_id);
 }
 
 void Instance::setPastStates(State pastStates) {

@@ -70,7 +70,8 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	void setOutputStreamSocket(OutputStreamSocket outputSocket) {
-		this.outputSocket = outputSocket;		
+		this.outputSocket = outputSocket;
+		this.outputSocket.setApplicationId(id);
 	}
 	
 	void setErrorMessage(String message) {
