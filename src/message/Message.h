@@ -26,47 +26,53 @@ namespace message {
 	constexpr const char* TYPE = "type";
 
 	const int SYNC = 1;
-	const int START = 2;
-	const int STOP = 3;
-	const int CONNECT = 4;
-	const int CONNECT_WITH_ID = 5;
-	const int APPS = 6;
-	const int OUTPUT_PORT = 7;
-	const int OUTPUT_PORT_WITH_ID = 8;
-	const int IS_ALIVE = 9;
-	const int WRITE_INPUT = 10;
-	const int KILL = 11;
-	const int STATUS = 12;
-	const int LIST = 13;
-	const int SET_STATUS = 14;
-	const int GET_STATUS = 15;
-	const int CREATE_PUBLISHER = 16;
-	const int TERMINATE_PUBLISHER = 17;
-	const int CONNECT_PUBLISHER = 18;
-	const int SUBSCRIBE_PUBLISHER = 19;
-	const int CANCEL = 20;
-	const int SET_RESULT = 21;
-	const int REQUEST_PORT = 22;
-	const int CONNECT_PORT = 23;
-	const int REMOVE_PORT = 24;
-	const int REQUEST = 25;
-	const int RESPONSE = 26;
-	const int STARTED_UNMANAGED = 27;
-	const int TERMINATED_UNMANAGED = 28;
-	const int IMPL_VERSION = 29;
-	const int STORE_KEY_VALUE = 30;
-	const int GET_KEY_VALUE = 31;
-	const int REMOVE_KEY = 32;
+	const int SYNC_STREAM = 2;
+	const int START = 3;
+	const int STOP = 4;
+	const int CONNECT = 5;
+	const int CONNECT_WITH_ID = 6;
+	const int APPS = 7;
+	const int OUTPUT_PORT = 8;
+	const int OUTPUT_PORT_WITH_ID = 9;
+	const int IS_ALIVE = 10;
+	const int WRITE_INPUT = 11;
+	const int KILL = 12;
+	const int STATUS = 13;
+	const int LIST = 14;
+	const int SET_STATUS = 15;
+	const int GET_STATUS = 16;
+	const int CREATE_PUBLISHER = 17;
+	const int TERMINATE_PUBLISHER = 18;
+	const int CONNECT_PUBLISHER = 19;
+	const int SUBSCRIBE_PUBLISHER = 20;
+	const int CANCEL = 21;
+	const int SET_RESULT = 22;
+	const int REQUEST_PORT = 23;
+	const int CONNECT_PORT = 24;
+	const int REMOVE_PORT = 25;
+	const int REQUEST = 26;
+	const int RESPONSE = 27;
+	const int STARTED_UNMANAGED = 28;
+	const int TERMINATED_UNMANAGED = 29;
+	const int IMPL_VERSION = 30;
+	const int STORE_KEY_VALUE = 31;
+	const int GET_KEY_VALUE = 32;
+	const int REMOVE_KEY = 33;
 
 	namespace Event {
+		constexpr const char* SYNC = "SYNC";
 		constexpr const char* CANCEL = "CANCEL";
 		constexpr const char* STREAM = "STREAM";
 		constexpr const char* ENDSTREAM = "ENDSTREAM";
-		constexpr const char* SYNC = "SYNC";
+		constexpr const char* SYNCSTREAM = "SYNCSTREAM";
 		constexpr const char* STATUS = "STATUS";
 		constexpr const char* RESULT = "RESULT";
 		constexpr const char* PORT = "PORT";
 		constexpr const char* PUBLISHER = "PUBLISHER";
+	}
+
+	namespace SyncStreamRequest {
+		constexpr const char* NAME = "name"; // string
 	}
 
 	namespace StartRequest {
