@@ -78,14 +78,17 @@ public class Console {
 	private static String CONSOLE_OPTION = "--console";
 	private static String SHORT_CONSOLE_OPTION = "-c";
 	
+	private static String NAME = "Name";
+	private static String DESCRIPTION = "Description";
+	private static String ID = "ID";
+	private static String PID = "PID";
+	private static String STATUS = "Status";
+	private static String ARGS = "Args";
 	
-	public static String column(String name, int length) {
+	
+	public static String cellString(String name, int length) {
 		String result = name;
-		
-		if (name.length() > 16) {
-			return result.substring(0, 16) + "... ";
-		}
-		
+				
 		for (int i = 0; i < length - name.length(); ++i) {
 			result += " ";
 		}
@@ -272,15 +275,10 @@ public class Console {
 				processKill();
 			}
 			else if (commandName.equals("apps")) {
-				if (applicationName == null) {
-					processShowAll();
-				}
-				else {
-					processShow();
-				}
+				processApps();
 			}
 			else if (commandName.equals("list")) {
-				processAllAvailable();
+				processList();
 			}
 			else if (commandName.equals("exec")) {
 				processExec();
@@ -331,9 +329,7 @@ public class Console {
 		return ids;
 	}
 	
-	private void processAllAvailable() {
-
-		System.out.println(column("Name", 20) + column("Description", 20));
+	private void processList() {
 		
 		List<Application.Configuration> applicationConfigs = server.getApplicationConfigurations();
 
@@ -346,44 +342,72 @@ public class Console {
 			System.out.println("No available application in server " + endpoint + ".");
 		}
 		
+		// Calculate max lengths of name and description.
+		int maxNameLength = NAME.length() + 1;
+		int maxDescriptionLength = DESCRIPTION.length() + 1;
+				
 		for (Application.Configuration config : applicationConfigs) {
-			System.out.println(column(config.getName(), 20) + config.getDescription());
+			if (config.getName().length() > maxNameLength) {
+				maxNameLength = config.getName().length();
+			}
+			if (config.getDescription().length() > maxNameLength) {
+				maxDescriptionLength = config.getDescription().length();
+			}
+		}
+		
+		// Print headers.
+		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
+		
+		String line = "";
+		for (int i = 0; i < maxNameLength + maxDescriptionLength + 1; ++i) {
+			line += '-';
+		}
+		System.out.println(line);
+		
+		for (Application.Configuration config : applicationConfigs) {
+			System.out.println(cellString(config.getName(), maxNameLength) + " " + config.getDescription());
 		}		
 	}
 	
-	private void processShowAll() {
-
-		System.out.println(column("Name", 20) + column("ID", 10) + column("PID", 10) + column("Status", 30));
+	private void processApps() {
 		
 		List<Application.Info> applicationInstances = server.getApplicationInfos();
+		
+		int maxNameLength = NAME.length();
+		int maxArgsLength = ARGS.length();
+		
+		for (Application.Info info : applicationInstances) {
+			if (info.getName().length() > maxNameLength) {
+				maxNameLength = info.getName().length();
+			}
+			if (info.getArgs().length() > maxArgsLength) {
+				maxArgsLength = info.getArgs().length();
+			}
+		}
+		
+		// Print headers.
+		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(ID, 10) + cellString(PID, 10) + cellString(STATUS, 20) + cellString(ARGS, maxArgsLength));
+		
+		String line = "";
+		int length = maxNameLength + 1 + 10 + 10 + 20 + maxArgsLength;
+		for (int i = 0; i < length; ++i) {
+			line += '-';
+		}
+		System.out.println(line);
 		
 		for (Application.Info info : applicationInstances) {
 			
 			long pid = info.getPid();
 			if (pid == 0) {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column("-", 10) + column(Application.State.toString(info.getApplicationState()), 30));
+				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString("-", 10) 
+					+ cellString(Application.State.toString(info.getApplicationState()), 20)
+					+ info.getArgs());
 			}
 			else {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(info.getPid() + "", 10) + column(Application.State.toString(info.getApplicationState()), 30));
+				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString(info.getPid() + "", 10) 
+					+ cellString(Application.State.toString(info.getApplicationState()), 20)
+					+ info.getArgs());
 			}
-		}
-	}
-
-	private void processShow() {
-
-		if (applicationName == null) {
-			System.out.println("Application name is missing.");
-			System.exit(1);
-		}
-		
-		LinkedList<Integer> applicationIDs = getIDs(applicationName);
-		
-		List<Application.Info> applicationInstances = server.getApplicationInfos();
-		
-		for (Application.Info info : applicationInstances) {
-			if (applicationIDs.contains(info.getId())) {
-				System.out.println(column(info.getName(), 20) + column(info.getId() + "", 10) + column(info.getPid() + "", 10) + column(Application.State.toString(info.getApplicationState()), 30));
-			}	
 		}
 	}
 		
