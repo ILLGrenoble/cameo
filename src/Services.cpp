@@ -176,7 +176,20 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
-std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port) {
+int Services::getStreamPort(const std::string& name) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputPortRequest(name));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response[message::RequestResponse::VALUE].GetInt();
+}
+
+std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(const std::string& name) {
+
+	int port = getStreamPort(name);
 
 	if (port == -1) {
 		return nullptr;
@@ -191,6 +204,9 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(int port)
 	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
 	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint, cancelEndpoint);
+
+	// Wait for the connection to be ready.
+	m_impl->waitForStreamSubscriber(subscriber, m_requestSocket.get(), name);
 
 	// Create the output stream socket.
 	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
