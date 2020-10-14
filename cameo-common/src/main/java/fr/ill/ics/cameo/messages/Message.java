@@ -14,47 +14,53 @@ public class Message {
 	public static final String TYPE = "type";
 	
 	public static final long SYNC = 1;
-	public static final long START = 2;
-	public static final long STOP = 3;
-	public static final long CONNECT = 4;
-	public static final long CONNECT_WITH_ID = 5;
-	public static final long APPS = 6;
-	public static final long OUTPUT_PORT = 7;
-	public static final long OUTPUT_PORT_WITH_ID = 8;
-	public static final long IS_ALIVE = 9;
-	public static final long WRITE_INPUT = 10;
-	public static final long KILL = 11;
-	public static final long STATUS = 12;
-	public static final long LIST = 13;
-	public static final long SET_STATUS = 14;
-	public static final long GET_STATUS = 15;
-	public static final long CREATE_PUBLISHER = 16;
-	public static final long TERMINATE_PUBLISHER = 17;
-	public static final long CONNECT_PUBLISHER = 18;
-	public static final long SUBSCRIBE_PUBLISHER = 19;
-	public static final long CANCEL = 20;
-	public static final long SET_RESULT = 21;
-	public static final long REQUEST_PORT = 22;
-	public static final long CONNECT_PORT = 23;
-	public static final long REMOVE_PORT = 24;
-	public static final long REQUEST = 25;
-	public static final long RESPONSE = 26;
-	public static final long STARTED_UNMANAGED = 27;
-	public static final long TERMINATED_UNMANAGED = 28;
-	public static final long IMPL_VERSION = 29;
-	public static final long STORE_KEY_VALUE = 30;
-	public static final long GET_KEY_VALUE = 31;
-	public static final long REMOVE_KEY = 32;
+	public static final long SYNC_STREAM = 2;
+	public static final long START = 3;
+	public static final long STOP = 4;
+	public static final long CONNECT = 5;
+	public static final long CONNECT_WITH_ID = 6;
+	public static final long APPS = 7;
+	public static final long OUTPUT_PORT = 8;
+	public static final long OUTPUT_PORT_WITH_ID = 9;
+	public static final long IS_ALIVE = 10;
+	public static final long WRITE_INPUT = 11;
+	public static final long KILL = 12;
+	public static final long STATUS = 13;
+	public static final long LIST = 14;
+	public static final long SET_STATUS = 15;
+	public static final long GET_STATUS = 16;
+	public static final long CREATE_PUBLISHER = 17;
+	public static final long TERMINATE_PUBLISHER = 18;
+	public static final long CONNECT_PUBLISHER = 19;
+	public static final long SUBSCRIBE_PUBLISHER = 20;
+	public static final long CANCEL = 21;
+	public static final long SET_RESULT = 22;
+	public static final long REQUEST_PORT = 23;
+	public static final long CONNECT_PORT = 24;
+	public static final long REMOVE_PORT = 25;
+	public static final long REQUEST = 26;
+	public static final long RESPONSE = 27;
+	public static final long STARTED_UNMANAGED = 28;
+	public static final long TERMINATED_UNMANAGED = 29;
+	public static final long IMPL_VERSION = 30;
+	public static final long STORE_KEY_VALUE = 31;
+	public static final long GET_KEY_VALUE = 32;
+	public static final long REMOVE_KEY = 33;
 		
 	public static class Event {
+		public static final String SYNC = "SYNC";
 		public static final String CANCEL = "CANCEL";
 		public static final String STREAM = "STREAM";
 		public static final String ENDSTREAM = "ENDSTREAM";
-		public static final String SYNC = "SYNC";
+		public static final String SYNCSTREAM = "SYNCSTREAM";
 		public static final String STATUS = "STATUS";
 		public static final String RESULT = "RESULT";
 		public static final String PORT = "PORT";
 		public static final String PUBLISHER = "PUBLISHER";
+	}
+	
+	public static class SyncStreamRequest {
+		public static final String NAME = "name"; // string
 	}
 	
 	public static class StartRequest {
