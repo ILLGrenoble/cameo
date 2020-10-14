@@ -203,12 +203,11 @@ public class ServerImpl extends ServicesImpl {
 		registerEventListener(instance);
 		
 		try {
-			// We connect to the stream port before starting the application.
-			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
+			// Connect to the stream port. A sync is made to ensure that the subscriber is connected.
 			OutputStreamSocket streamSocket = null;
 			
 			if (outputStream) {
-				streamSocket = createOutputStreamSocket(getStreamPort(name));
+				streamSocket = createOutputStreamSocket(name);
 			}
 			
 			Response response = startApplication(name, args, instanceReference);
@@ -325,7 +324,7 @@ public class ServerImpl extends ServicesImpl {
 					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
 					
 					if (outputStream) {
-						instance.setOutputStreamSocket(createOutputStreamSocket(getStreamPort(name)));
+						instance.setOutputStreamSocket(createOutputStreamSocket(name));
 					}
 					
 					instances.add(instance);
@@ -582,7 +581,9 @@ public class ServerImpl extends ServicesImpl {
 		}
 	}
 
-	private OutputStreamSocket createOutputStreamSocket(int port) {
+	private OutputStreamSocket createOutputStreamSocket(String name) {
+		
+		int port = getStreamPort(name);
 		
 		if (port == -1) {
 			return null;
@@ -592,6 +593,7 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(url + ":" + port);
+		subscriber.subscribe(Message.Event.SYNCSTREAM);
 		subscriber.subscribe(Message.Event.STREAM);
 		subscriber.subscribe(Message.Event.ENDSTREAM);
 		
@@ -603,45 +605,21 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 		
-		return new OutputStreamSocket(this, subscriber, cancelPublisher);
-	}
+		// Polling to wait for connection.
+		Zmq.Poller poller = context.createPoller(subscriber);
 		
-	/**
-	 * Returns a OutputStreamSocket if the application with id exists, else null.
-	 * The application may have existed.
-	 * 
-	 * @param id
-	 * @return
-	 * @throws OutputStreamException
-	 * @throws ConnectionTimeout 
-	 */
-	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
+		while (true) {
+			
+			// the server returns a SYNCSTREAM message that is used to synchronize the subscriber
+			sendSyncStream(name);
 
-		Zmq.Msg request = createOutputPortWithIdRequest(id);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+			// return at the first response.
+			if (poller.poll(100)) {
+				break;
+			}
 		}
 		
-		int port = JSON.getInt(response, Message.RequestResponse.VALUE);
-		
-		// In case of error, the returned value is -1.
-		if (port == -1) {
-			throw new OutputStreamException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-		}
-		
-		// Create the output stream socket.
-		OutputStreamSocket streamSocket = createOutputStreamSocket(port);
-		streamSocket.setApplicationId(id);
-		
-		return streamSocket;
+		return new OutputStreamSocket(this, subscriber, cancelPublisher);
 	}
 	
 	/**

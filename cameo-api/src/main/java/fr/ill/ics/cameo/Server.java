@@ -242,20 +242,7 @@ public class Server {
 	public int getActualState(int id) {
 		return impl.getActualState(id);
 	}
-	
-	/**
-	 * Returns a OutputStreamSocket if the application with id exists, else null.
-	 * The application may have existed.
-	 * 
-	 * @param id
-	 * @return
-	 * @throws OutputStreamException
-	 * @throws ConnectionTimeout 
-	 */
-	public OutputStreamSocket openOutputStream(int id) throws OutputStreamException {
-		return impl.openOutputStream(id);
-	}
-		
+				
 	/**
 	 * send parameters to an application
 	 * 

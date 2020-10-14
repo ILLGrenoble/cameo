@@ -134,6 +134,19 @@ public class ServicesImpl {
 		}
 	}
 	
+	protected void sendSyncStream(String name) {
+		
+		Zmq.Msg request = createSyncStreamRequest(name);
+		try {
+			Zmq.Msg reply = requestSocket.request(request);
+			reply.destroy();
+			request.destroy();
+
+		} catch (ConnectionTimeout e) {
+			// do nothing
+		}
+	}
+
 	protected void retrieveServerVersion() {
 		
 		Zmq.Msg request = createVersionRequest();
@@ -232,6 +245,16 @@ public class ServicesImpl {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SYNC);
+		
+		return message(request);
+	}
+	
+
+	protected Zmq.Msg createSyncStreamRequest(String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SYNC_STREAM);
+		request.put(Message.SyncStreamRequest.NAME, name);
 		
 		return message(request);
 	}

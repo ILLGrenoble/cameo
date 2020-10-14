@@ -35,6 +35,7 @@ public:
 	int getTimeout() const;
 
 	std::string createSyncRequest() const;
+	std::string createSyncStreamRequest(const std::string& name) const;
 	std::string createVersionRequest() const;
 	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const;
 	std::string createStopRequest(int id) const;
@@ -71,6 +72,8 @@ public:
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
+	void sendSyncStream(RequestSocketImpl * socket, const std::string& name);
+	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);
 
 	zmq::context_t m_context;

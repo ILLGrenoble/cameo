@@ -62,6 +62,18 @@ std::string ServicesImpl::createSyncRequest() const {
 	return request.toString();
 }
 
+std::string ServicesImpl::createSyncStreamRequest(const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SYNC_STREAM);
+
+	request.pushKey(message::SyncStreamRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
 std::string ServicesImpl::createVersionRequest() const {
 
 	json::StringObject request;
@@ -480,6 +492,7 @@ zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& en
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
 	vector<string> streamList;
+	streamList.push_back(message::Event::SYNCSTREAM);
 	streamList.push_back(message::Event::STREAM);
 	streamList.push_back(message::Event::ENDSTREAM);
 	streamList.push_back(message::Event::CANCEL);
@@ -540,6 +553,41 @@ bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 	}
 
 	return false;
+}
+
+void ServicesImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
+
+	string request = createSyncStreamRequest(name);
+
+	try {
+		unique_ptr<zmq::message_t> reply = socket->request(request);
+	}
+	catch (const ConnectionTimeout&) {
+		// The server is not accessible.
+	}
+	catch (...) {
+		// Should not happen.
+	}
+}
+
+void ServicesImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name) {
+
+	// Poll subscriber.
+	zmq_pollitem_t items[1];
+	items[0].socket = static_cast<void *>(*subscriber);
+	items[0].fd = 0;
+	items[0].events = ZMQ_POLLIN;
+	items[0].revents = 0;
+
+	while (true) {
+		sendSyncStream(socket, name);
+
+		// Wait for 100ms.
+		int rc = zmq::poll(items, 1, 100);
+		if (rc != 0) {
+			break;
+		}
+	}
 }
 
 void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {

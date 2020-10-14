@@ -73,6 +73,11 @@ bool OutputStreamSocket::receive(Output& output) {
 		// Get the second part of the message.
 		message = m_impl->receive();
 
+		// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
+		if (messageType == message::Event::SYNCSTREAM) {
+			continue;
+		}
+
 		// Get the JSON event.
 		json::Object event;
 		json::parse(event, message.get());

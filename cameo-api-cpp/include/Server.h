@@ -133,7 +133,6 @@ private:
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName);
 	int getAvailableTimeout() const;
-	int getStreamPort(const std::string& name);
 	void storeKeyValue(int id, const std::string& key, const std::string& value);
 	std::string getKeyValue(int id, const std::string& key);
 	void removeKey(int id, const std::string& key);

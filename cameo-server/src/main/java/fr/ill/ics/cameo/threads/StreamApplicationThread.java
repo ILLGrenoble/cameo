@@ -54,7 +54,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	public StreamApplicationThread(Application application, Manager manager) {
 		super(application);
 		
-		// we get the application by the name as the publisher is shared among the different instances
+		// We get the application by the name as the publisher is shared among the different instances.
 		publisher = manager.getStreamPublisher(application.getName()); 
 	}
 	
@@ -88,8 +88,8 @@ public class StreamApplicationThread extends ApplicationThread {
 			event.put(Message.ApplicationStream.MESSAGE, line);
 			event.put(Message.ApplicationStream.EOL, endOfLine);
 			
-			publisher.sendMore(Message.Event.STREAM);
-			publisher.send(Message.serialize(event), 0);
+			// Synchronize the publisher as it can be accessed from another thread.
+			Manager.publishSynchronized(publisher, Message.Event.STREAM, Message.serialize(event));
 		}
 	}
 	
@@ -146,6 +146,12 @@ public class StreamApplicationThread extends ApplicationThread {
 	}
 	
 	public void run() {
+
+		// The process can be null if the application does not exist.
+		if (application.getProcess() == null) {
+			sendEndOfStream();
+			return;
+		}
 		
 		// The process is now accessible and cannot be null.
 		InputStreamReader is = new InputStreamReader(application.getProcess().getInputStream());
@@ -218,9 +224,9 @@ public class StreamApplicationThread extends ApplicationThread {
 			event.put(Message.ApplicationStream.ID, application.getId());
 			event.put(Message.ApplicationStream.MESSAGE, Message.Event.ENDSTREAM);
 			event.put(Message.ApplicationStream.EOL, true);
-			
-			publisher.sendMore(Message.Event.ENDSTREAM);
-			publisher.send(Message.serialize(event), 0);
+
+			// Synchronize the publisher as it can be accessed from another thread.
+			Manager.publishSynchronized(publisher, Message.Event.ENDSTREAM, Message.serialize(event));
 		}
 	}
 	

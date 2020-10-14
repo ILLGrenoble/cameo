@@ -113,6 +113,14 @@ public class Manager extends ConfigLoader {
 	public Zmq.Socket getStreamPublisher(String name) {
 		return streamPublishers.get(name);
 	}
+	
+	public static void publishSynchronized(Zmq.Socket publisher, String type, byte[] data) {
+		
+		synchronized (publisher) {
+			publisher.sendMore(type);
+			publisher.send(data, 0);
+		}
+	}
 
 	public synchronized void sendStatus(int id, String name, int state, int pastStates, int exitCode) {
 		

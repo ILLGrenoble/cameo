@@ -62,6 +62,11 @@ public class OutputStreamSocket {
 			
 			// Get the second part of the message.
 			byte[] messageValue = this.socket.recv();
+
+			// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
+			if (messageType.equals(Message.Event.SYNCSTREAM)) {
+				continue;
+			}
 			
 			try {
 				// Get the JSON object.
@@ -72,7 +77,7 @@ public class OutputStreamSocket {
 				// Filter on the application id so that only the messages concerning the instance applicationId are processed.
 				// Others are ignored.
 				if (applicationId == -1 || applicationId == id) {
-
+					
 					// Terminate the stream if type of message is ENDSTREAM.
 					if (messageType.equals(Message.Event.ENDSTREAM)) {
 						ended = true;

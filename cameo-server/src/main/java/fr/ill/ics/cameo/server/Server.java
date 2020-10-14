@@ -129,6 +129,9 @@ public class Server {
 				if (type == Message.SYNC) {
 					reply = process.processSync(manager);
 				}
+				else if (type == Message.SYNC_STREAM) {
+					reply = process.processSyncStream(request, manager);
+				}
 				else if (type == Message.START) {
 					reply = process.processStartRequest(request, manager);
 				}

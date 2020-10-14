@@ -13,6 +13,7 @@
 * Send the exit code in the status events.
 * Enabled multiple=yes and stream=yes.
 * Added connect with id request.
+* Added sync stream request. Moved the creation of the stream thread at an earlier location.
 
 0.1.8
 -----

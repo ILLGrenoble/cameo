@@ -112,6 +112,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		manager.setApplicationProcessState(application, ProcessState.RUNNING);
 		manager.setApplicationState(application, ApplicationState.STARTING);
 		application.start();
+		manager.startApplicationStreamThread(application);
 		
 		// Wait starting time if starting time > 0.
 		boolean forceRunning = false;
@@ -129,9 +130,6 @@ public class LifecycleApplicationThread extends ApplicationThread {
 					Log.logger().fine("Application " + application.getNameId() + " stopped executing while starting time");
 				}
 				break;
-			}
-			else {
-				manager.startApplicationStreamThread(application);
 			}
 
 			sleep();

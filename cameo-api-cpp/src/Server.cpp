@@ -127,17 +127,6 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, Op
 	return start(name, vector<string>(), options);
 }
 
-int Server::getStreamPort(const std::string& name) {
-
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputPortRequest(name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	return response[message::RequestResponse::VALUE].GetInt();
-}
-
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
@@ -152,9 +141,8 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 		unique_ptr<OutputStreamSocket> streamSocket;
 
 		if (outputStream) {
-			// We connect to the stream port before starting the application.
-			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
-			streamSocket = createOutputStreamSocket(getStreamPort(name));
+			// Connect to the stream port. A sync is made to ensure that the subscriber is connected.
+			streamSocket = createOutputStreamSocket(name);
 		}
 
 		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getReference()));
@@ -242,14 +230,12 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 		if (isAlive(applicationId)) {
 			aliveInstancesCount++;
 
-			// We connect to the stream port before starting the application.
-			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
 			instance->setId(applicationId);
 			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
 			if (outputStream) {
-				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(getStreamPort(name));
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
 				instance->setOutputStreamSocket(streamSocket);
 			}
 
@@ -314,14 +300,12 @@ std::unique_ptr<application::Instance> Server::connect(int id, Option options) {
 		// test if the application is still alive otherwise we could have missed a status message
 		if (isAlive(applicationId)) {
 
-			// We connect to the stream port before starting the application.
-			// However that does NOT guarantee that the stream will be connected before the ENDSTREAM arrives in case of an application that terminates rapidly.
 			instance->setId(applicationId);
 			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
 			if (outputStream) {
-				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(getStreamPort(name));
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
 				instance->setOutputStreamSocket(streamSocket);
 			}
 

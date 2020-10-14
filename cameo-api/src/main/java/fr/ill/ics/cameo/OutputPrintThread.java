@@ -46,7 +46,7 @@ public class OutputPrintThread extends Thread {
 			}
 			
 		} catch (Exception e) {
-			System.out.println("error: " + e.getMessage());
+			e.printStackTrace();
 			
 		} finally {
 			// destroy the socket, because it is no longer needed

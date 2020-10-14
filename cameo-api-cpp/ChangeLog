@@ -10,6 +10,7 @@
 * Added Instance.getExitCode().
 * Filter OutputStreamSocket on application id.
 * Added Server::connect() with id.
+* Output stream is synced.
 
 0.3.3
 -----
