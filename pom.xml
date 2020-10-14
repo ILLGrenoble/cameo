@@ -35,7 +35,7 @@
 	
 	<modules>
 		<module>cameo-process-handle</module>
-		<module>cameo-messages</module>
+		<module>cameo-common</module>
 		<module>cameo-com</module>
 		<module>cameo-server</module>
 		<module>cameo-server-jzmq</module>
