@@ -623,16 +623,16 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 	return m_lastState;
 }
 
-State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler) {
-	return waitFor(states, eventName, handler, true);
-}
-
 State Instance::waitFor(int states, StateHandlerType handler) {
-	return waitFor(states, "", handler);
+	return waitFor(states, "", handler, true);
 }
 
 State Instance::waitFor(StateHandlerType handler) {
-	return waitFor(0, "", handler);
+	return waitFor(0, "", handler, true);
+}
+
+State Instance::waitFor(const std::string& eventName) {
+	return waitFor(0, eventName, nullptr, true);
 }
 
 void Instance::cancelWaitFor() {
@@ -821,7 +821,7 @@ std::unique_ptr<Subscriber> Subscriber::create(Instance & instance, const std::s
 	}
 
 	// waiting for the publisher
-	State lastState = instance.waitFor(0, publisherName);
+	State lastState = instance.waitFor(publisherName);
 
 	// state cannot be terminal or it means that the application has terminated that is not planned.
 	if (lastState == SUCCESS
@@ -1060,7 +1060,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
 		// Wait for the responder port.
-		instance.waitFor(0, responderPortName);
+		instance.waitFor(responderPortName);
 
 		// Retry to connect.
 		reply = instanceRequestSocket->request(request);
