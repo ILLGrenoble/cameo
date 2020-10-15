@@ -9,7 +9,7 @@
 * Removed the 'debug' attribute from config.
 * Added the 'log_level' attribute in config.
 * Added the argument --log-console in Server main.
-* Added storage requests.
+* Added storage requests and send key value events.
 * Send the exit code in the status events.
 * Enabled multiple=yes and stream=yes.
 * Added connect with id request.

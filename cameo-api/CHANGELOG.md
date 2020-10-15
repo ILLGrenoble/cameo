@@ -11,6 +11,7 @@
 * Filter OutputStreamSocket on application id.
 * Added Server.connect() with id.
 * Output stream is synced.
+* Added Instance.waitFor(KeyValue) to wait for a key value event.
 
 0.1.9
 -----
