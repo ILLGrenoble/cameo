@@ -194,6 +194,7 @@ public class ServicesImpl {
 		subscriber.subscribe(Message.Event.RESULT);
 		subscriber.subscribe(Message.Event.PUBLISHER);
 		subscriber.subscribe(Message.Event.PORT);
+		subscriber.subscribe(Message.Event.KEYVALUE);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		

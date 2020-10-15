@@ -475,6 +475,7 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	streamList.push_back(message::Event::RESULT);
 	streamList.push_back(message::Event::PUBLISHER);
 	streamList.push_back(message::Event::PORT);
+	streamList.push_back(message::Event::KEYVALUE);
 	streamList.push_back(message::Event::CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
