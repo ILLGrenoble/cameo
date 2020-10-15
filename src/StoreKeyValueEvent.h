@@ -31,11 +31,6 @@ public:
 	StoreKeyValueEvent(const StoreKeyValueEvent& event);
 
 	virtual StoreKeyValueEvent* clone();
-
-	const std::string& getValue() const;
-
-private:
-	std::string m_value;
 };
 
 std::ostream& operator<<(std::ostream&, const StoreKeyValueEvent&);

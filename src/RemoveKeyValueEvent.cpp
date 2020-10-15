@@ -14,28 +14,28 @@
  * limitations under the Licence.
  */
 
-#include "RemoveKeyEvent.h"
-
 #include <iostream>
+#include "RemoveKeyValueEvent.h"
 
 namespace cameo {
 
-RemoveKeyEvent::RemoveKeyEvent(int id, const std::string& name, const std::string& key) :
-	KeyEvent(id, name, key) {
+RemoveKeyValueEvent::RemoveKeyValueEvent(int id, const std::string& name, const std::string& key, const std::string& value) :
+	KeyEvent(id, name, key, value) {
 }
 
-RemoveKeyEvent::RemoveKeyEvent(const RemoveKeyEvent& event) :
+RemoveKeyValueEvent::RemoveKeyValueEvent(const RemoveKeyValueEvent& event) :
 	KeyEvent(event) {
 }
 
-RemoveKeyEvent* RemoveKeyEvent::clone() {
-	return new RemoveKeyEvent(*this);
+RemoveKeyValueEvent* RemoveKeyValueEvent::clone() {
+	return new RemoveKeyValueEvent(*this);
 }
 
-std::ostream& operator<<(std::ostream& os, const cameo::RemoveKeyEvent& event) {
+std::ostream& operator<<(std::ostream& os, const cameo::RemoveKeyValueEvent& event) {
 	os << "name=" << event.m_name
 		<< "\nid=" << event.m_id
-		<< "\nkey=" << event.m_key;
+		<< "\nkey=" << event.m_key
+		<< "\nvalue=" << event.m_value;
 
 	return os;
 }

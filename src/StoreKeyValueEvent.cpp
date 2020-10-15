@@ -21,20 +21,15 @@
 namespace cameo {
 
 StoreKeyValueEvent::StoreKeyValueEvent(int id, const std::string& name, const std::string& key, const std::string& value) :
-	KeyEvent(id, name, key),
-	m_value(value) {
+	KeyEvent(id, name, key, value) {
 }
 
 StoreKeyValueEvent::StoreKeyValueEvent(const StoreKeyValueEvent& event) :
-	KeyEvent(event), m_value(event.m_value) {
+	KeyEvent(event) {
 }
 
 StoreKeyValueEvent* StoreKeyValueEvent::clone() {
 	return new StoreKeyValueEvent(*this);
-}
-
-const std::string& StoreKeyValueEvent::getValue() const {
-	return m_value;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::StoreKeyValueEvent& event) {

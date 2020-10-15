@@ -14,26 +14,26 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REMOVEKEYEVENT_H_
-#define CAMEO_REMOVEKEYEVENT_H_
+#ifndef CAMEO_REMOVEKEYVALUEEVENT_H_
+#define CAMEO_REMOVEKEYVALUEEVENT_H_
 
 #include <iostream>
 #include "KeyEvent.h"
 
 namespace cameo {
 
-class RemoveKeyEvent : public KeyEvent {
+class RemoveKeyValueEvent : public KeyEvent {
 
-	friend std::ostream& operator<<(std::ostream&, const RemoveKeyEvent&);
+	friend std::ostream& operator<<(std::ostream&, const RemoveKeyValueEvent&);
 
 public:
-	RemoveKeyEvent(int id, const std::string& name, const std::string& key);
-	RemoveKeyEvent(const RemoveKeyEvent& event);
+	RemoveKeyValueEvent(int id, const std::string& name, const std::string& key, const std::string& value);
+	RemoveKeyValueEvent(const RemoveKeyValueEvent& event);
 
-	virtual RemoveKeyEvent* clone();
+	virtual RemoveKeyValueEvent* clone();
 };
 
-std::ostream& operator<<(std::ostream&, const RemoveKeyEvent&);
+std::ostream& operator<<(std::ostream&, const RemoveKeyValueEvent&);
 
 }
 
