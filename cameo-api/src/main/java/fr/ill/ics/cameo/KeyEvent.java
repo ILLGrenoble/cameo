@@ -19,13 +19,21 @@ package fr.ill.ics.cameo;
 
 public class KeyEvent extends Event {
 	
+	public enum Status {STORED, REMOVED};
+
+	private Status status;
 	private String key;
 	private String value;
 	
-	public KeyEvent(int id, String name, String key, String value) {
+	public KeyEvent(int id, String name, Status status, String key, String value) {
 		super(id, name);
+		this.status = status;
 		this.key = key;
 		this.value = value;
+	}
+	
+	public Status getStatus() {
+		return status;
 	}
 	
 	public String getKey() {
@@ -35,7 +43,7 @@ public class KeyEvent extends Event {
 	public String getValue() {
 		return value;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -49,9 +57,6 @@ public class KeyEvent extends Event {
 		}
 		KeyEvent other = (KeyEvent) obj;
 		
-		if (key != other.key) {
-			return false;
-		}
 		if (id != other.id) {
 			return false;
 		}
@@ -60,6 +65,12 @@ public class KeyEvent extends Event {
 				return false;
 			}
 		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (key != other.key) {
+			return false;
+		}
+		if (status != other.status) {
 			return false;
 		}
 		if (value == null) {

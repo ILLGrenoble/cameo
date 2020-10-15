@@ -126,39 +126,26 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.STOREKEYVALUE)) {
+		else if (message.equals(Message.Event.KEYVALUE)) {
 			
-			byte[] storeKeyValueMessage = this.socket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = services.parse(storeKeyValueMessage);
-				
-				int id = JSON.getInt(jsonObject, Message.StoreKeyValueEvent.ID);
-				String name = JSON.getString(jsonObject, Message.StoreKeyValueEvent.NAME);
-				String key = JSON.getString(jsonObject, Message.StoreKeyValueEvent.KEY);
-				String value = JSON.getString(jsonObject, Message.StoreKeyValueEvent.VALUE);
-				
-				event = new StoreKeyValueEvent(id, name, key, value);
-			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-		}
-		else if (message.equals(Message.Event.REMOVEKEYVALUE)) {
-			
-			byte[] removeKeyMessage = this.socket.recv();
+			byte[] keyValueMessage = this.socket.recv();
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(removeKeyMessage);
+				JSONObject jsonObject = services.parse(keyValueMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.StoreKeyValueEvent.ID);
-				String name = JSON.getString(jsonObject, Message.StoreKeyValueEvent.NAME);
-				String key = JSON.getString(jsonObject, Message.StoreKeyValueEvent.KEY);
-				String value = JSON.getString(jsonObject, Message.StoreKeyValueEvent.VALUE);
+				int id = JSON.getInt(jsonObject, Message.KeyEvent.ID);
+				String name = JSON.getString(jsonObject, Message.KeyEvent.NAME);
+				long status = JSON.getLong(jsonObject, Message.KeyEvent.STATUS);
+				String key = JSON.getString(jsonObject, Message.KeyEvent.KEY);
+				String value = JSON.getString(jsonObject, Message.KeyEvent.VALUE);
 				
-				event = new RemoveKeyValueEvent(id, name, key, value);
+				if (status == Message.STORE_KEY_VALUE) {
+					event = new KeyEvent(id, name, KeyEvent.Status.STORED, key, value);
+				}
+				else {
+					event = new KeyEvent(id, name, KeyEvent.Status.REMOVED, key, value);
+				}
 			}
 			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");

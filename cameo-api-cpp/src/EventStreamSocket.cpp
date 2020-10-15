@@ -22,10 +22,9 @@
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
-#include "StoreKeyValueEvent.h"
+#include "KeyEvent.h"
 #include "impl/StreamSocketImpl.h"
 #include "message/Message.h"
-#include "RemoveKeyValueEvent.h"
 
 using namespace std;
 
@@ -111,7 +110,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return unique_ptr<Event>(new PortEvent(id, name, portName));
 	}
-	else if (response == message::Event::STOREKEYVALUE) {
+	else if (response == message::Event::KEYVALUE) {
 
 		message = m_impl->receive();
 
@@ -119,27 +118,18 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::Object event;
 		json::parse(event, message.get());
 
-		int id = event[message::StoreKeyValueEvent::ID].GetInt();
-		string name = event[message::StoreKeyValueEvent::NAME].GetString();
-		string key = event[message::StoreKeyValueEvent::KEY].GetString();
-		string value = event[message::StoreKeyValueEvent::VALUE].GetString();
+		int id = event[message::KeyEvent::ID].GetInt();
+		string name = event[message::KeyEvent::NAME].GetString();
+		long status = event[message::KeyEvent::STATUS].GetInt64();
+		string key = event[message::KeyEvent::KEY].GetString();
+		string value = event[message::KeyEvent::VALUE].GetString();
 
-		return unique_ptr<Event>(new StoreKeyValueEvent(id, name, key, value));
-	}
-	else if (response == message::Event::REMOVEKEYVALUE) {
-
-		message = m_impl->receive();
-
-		// Get the JSON event.
-		json::Object event;
-		json::parse(event, message.get());
-
-		int id = event[message::RemoveKeyValueEvent::ID].GetInt();
-		string name = event[message::RemoveKeyValueEvent::NAME].GetString();
-		string key = event[message::RemoveKeyValueEvent::KEY].GetString();
-		string value = event[message::RemoveKeyValueEvent::VALUE].GetString();
-
-		return unique_ptr<Event>(new RemoveKeyValueEvent(id, name, key, value));
+		if (status == message::STORE_KEY_VALUE) {
+			return unique_ptr<Event>(new KeyEvent(id, name, KeyEvent::Status::STORED, key, value));
+		}
+		else {
+			return unique_ptr<Event>(new KeyEvent(id, name, KeyEvent::Status::REMOVED, key, value));
+		}
 	}
 	else if (response == message::Event::CANCEL) {
 

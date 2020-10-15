@@ -24,17 +24,27 @@ namespace cameo {
 
 class KeyEvent : public Event {
 
+	friend std::ostream& operator<<(std::ostream&, const KeyEvent&);
+
 public:
-	KeyEvent(int id, const std::string& name, const std::string& key, const std::string& value);
+	enum Status {STORED, REMOVED};
+
+	KeyEvent(int id, const std::string& name, Status status, const std::string& key, const std::string& value);
 	KeyEvent(const KeyEvent& event);
 
+	virtual KeyEvent* clone();
+
+	Status getStatus() const;
 	const std::string& getKey() const;
 	const std::string& getValue() const;
 
 private:
+	Status m_status;
 	std::string m_key;
 	std::string m_value;
 };
+
+std::ostream& operator<<(std::ostream&, const KeyEvent&);
 
 }
 

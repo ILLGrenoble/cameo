@@ -175,24 +175,26 @@ public class Manager extends ConfigLoader {
 	public synchronized void sendStoreKeyValue(int id, String name, String key, String value) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.StoreKeyValueEvent.ID, id);
-		event.put(Message.StoreKeyValueEvent.NAME, name);
-		event.put(Message.StoreKeyValueEvent.KEY, key);
-		event.put(Message.StoreKeyValueEvent.VALUE, value);
+		event.put(Message.KeyEvent.ID, id);
+		event.put(Message.KeyEvent.NAME, name);
+		event.put(Message.KeyEvent.STATUS, Message.STORE_KEY_VALUE);
+		event.put(Message.KeyEvent.KEY, key);
+		event.put(Message.KeyEvent.VALUE, value);
 		
-		eventPublisher.sendMore(Message.Event.STOREKEYVALUE);
+		eventPublisher.sendMore(Message.Event.KEYVALUE);
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
 	public synchronized void sendRemoveKeyValue(int id, String name, String key, String value) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.RemoveKeyValueEvent.ID, id);
-		event.put(Message.RemoveKeyValueEvent.NAME, name);
-		event.put(Message.RemoveKeyValueEvent.KEY, key);
-		event.put(Message.RemoveKeyValueEvent.VALUE, value);
+		event.put(Message.KeyEvent.ID, id);
+		event.put(Message.KeyEvent.NAME, name);
+		event.put(Message.KeyEvent.STATUS, Message.REMOVE_KEY);
+		event.put(Message.KeyEvent.KEY, key);
+		event.put(Message.KeyEvent.VALUE, value);
 		
-		eventPublisher.sendMore(Message.Event.REMOVEKEYVALUE);
+		eventPublisher.sendMore(Message.Event.KEYVALUE);
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
