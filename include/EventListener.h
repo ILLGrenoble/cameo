@@ -30,6 +30,10 @@ public:
 	EventListener();
 	virtual ~EventListener();
 
+	/**
+	 * Sets the name of the listener i.e. the application name.
+	 * It is used to filter the messages in the event thread because when the listener is registered, the application id is not known.
+	 */
 	void setName(const std::string& name);
 	const std::string& getName() const;
 

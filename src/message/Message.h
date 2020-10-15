@@ -69,6 +69,8 @@ namespace message {
 		constexpr const char* RESULT = "RESULT";
 		constexpr const char* PORT = "PORT";
 		constexpr const char* PUBLISHER = "PUBLISHER";
+		constexpr const char* STOREKEYVALUE = "STOREKEYVALUE";
+		constexpr const char* REMOVEKEY = "REMOVEKEY";
 	}
 
 	namespace SyncStreamRequest {
@@ -272,6 +274,18 @@ namespace message {
 		constexpr const char* KEY = "key"; // string
 	}
 
+	namespace StoreKeyValueEvent {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* NAME = "name"; // string
+		constexpr const char* KEY = "key"; // string
+		constexpr const char* VALUE = "value"; // string
+	}
+
+	namespace RemoveKeyEvent {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* NAME = "name"; // string
+		constexpr const char* KEY = "key"; // string
+	}
 }
 
 }
