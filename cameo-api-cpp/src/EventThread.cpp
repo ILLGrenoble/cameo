@@ -52,6 +52,7 @@ void EventThread::start() {
 			for (EventListener * listener : eventListeners) {
 
 				// If the application name is null, all the status are pushed, otherwise, filter on the name.
+				// We filter on the name because the id is not known at the registration.
 				if (listener->getName() == ""
 					|| listener->getName() == event->getName()) {
 

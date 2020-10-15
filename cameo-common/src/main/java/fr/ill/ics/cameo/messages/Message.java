@@ -57,6 +57,8 @@ public class Message {
 		public static final String RESULT = "RESULT";
 		public static final String PORT = "PORT";
 		public static final String PUBLISHER = "PUBLISHER";
+		public static final String STOREKEYVALUE = "STOREKEYVALUE";
+		public static final String REMOVEKEY = "REMOVEKEY";
 	}
 	
 	public static class SyncStreamRequest {
@@ -124,7 +126,7 @@ public class Message {
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String PORT_NAME = "portName"; // required string portName = 3;
 	}
-
+	
 	public static class ApplicationInfo {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
@@ -257,6 +259,19 @@ public class Message {
 	
 	public static class RemoveKeyRequest {
 		public static final String ID = "id"; // int32
+		public static final String KEY = "key"; // string
+	}
+
+	public static class StoreKeyValueEvent {
+		public static final String ID = "id"; // int32
+		public static final String NAME = "name"; // string
+		public static final String KEY = "key"; // string
+		public static final String VALUE = "value"; // string
+	}
+	
+	public static class RemoveKeyEvent {
+		public static final String ID = "id"; // int32
+		public static final String NAME = "name"; // string
 		public static final String KEY = "key"; // string
 	}
 	

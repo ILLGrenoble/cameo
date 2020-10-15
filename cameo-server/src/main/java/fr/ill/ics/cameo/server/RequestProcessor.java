@@ -849,7 +849,7 @@ public class RequestProcessor {
 		
 		try {
 			manager.storeKeyValue(applicationId, key, value);
-			
+						
 			// Return the reply.
 			JSONObject response = new JSONObject();
 			response.put(Message.RequestResponse.VALUE, 0);

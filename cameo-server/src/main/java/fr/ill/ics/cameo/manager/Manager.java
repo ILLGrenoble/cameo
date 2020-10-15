@@ -124,7 +124,6 @@ public class Manager extends ConfigLoader {
 
 	public synchronized void sendStatus(int id, String name, int state, int pastStates, int exitCode) {
 		
-		// Send the status.
 		JSONObject event = new JSONObject();
 		event.put(Message.StatusEvent.ID, id);
 		event.put(Message.StatusEvent.NAME, name);
@@ -135,46 +134,65 @@ public class Manager extends ConfigLoader {
 			event.put(Message.StatusEvent.EXIT_CODE, exitCode);
 		}
 		
-		eventPublisher.sendMore("STATUS");
+		eventPublisher.sendMore(Message.Event.STATUS);
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 
 	public synchronized void sendResult(int id, String name, byte[] data) {
 		
-		// Send the result.
 		JSONObject event = new JSONObject();
 		event.put(Message.ResultEvent.ID, id);
 		event.put(Message.ResultEvent.NAME, name);
 
 		// The result has 3 parts.
-		eventPublisher.sendMore("RESULT");
+		eventPublisher.sendMore(Message.Event.RESULT);
 		eventPublisher.sendMore(Message.serialize(event));
 		eventPublisher.send(data, 0);
 	}
 	
 	public synchronized void sendPublisher(int id, String name, String publisherName) {
 		
-		// Send the publisher.
 		JSONObject event = new JSONObject();
 		event.put(Message.PublisherEvent.ID, id);
 		event.put(Message.PublisherEvent.NAME, name);
 		event.put(Message.PublisherEvent.PUBLISHER_NAME, publisherName);
 		
-		eventPublisher.sendMore("PUBLISHER");
+		eventPublisher.sendMore(Message.Event.PUBLISHER);
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
 	public synchronized void sendPort(int id, String name, String portName) {
 		
-		// Send the port.
 		JSONObject event = new JSONObject();
 		event.put(Message.PortEvent.ID, id);
 		event.put(Message.PortEvent.NAME, name);
 		event.put(Message.PortEvent.PORT_NAME, portName);
 		
-		eventPublisher.sendMore("PORT");
+		eventPublisher.sendMore(Message.Event.PORT);
 		eventPublisher.send(Message.serialize(event), 0);
+	}
+	
+	public synchronized void sendStoreKeyValue(int id, String name, String key, String value) {
 		
+		JSONObject event = new JSONObject();
+		event.put(Message.StoreKeyValueEvent.ID, id);
+		event.put(Message.StoreKeyValueEvent.NAME, name);
+		event.put(Message.StoreKeyValueEvent.KEY, key);
+		event.put(Message.StoreKeyValueEvent.VALUE, value);
+		
+		eventPublisher.sendMore(Message.Event.STOREKEYVALUE);
+		eventPublisher.send(Message.serialize(event), 0);
+	}
+	
+	public synchronized void sendRemoveKey(int id, String name, String key) {
+		
+		JSONObject event = new JSONObject();
+		event.put(Message.RemoveKeyEvent.ID, id);
+		event.put(Message.RemoveKeyEvent.NAME, name);
+		event.put(Message.RemoveKeyEvent.KEY, key);
+		
+		eventPublisher.sendMore(Message.Event.REMOVEKEY);
+		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
 	private int findFreeId(int begin, int end) {
@@ -868,6 +886,9 @@ public class Manager extends ConfigLoader {
 		if (application != null) {
 			application.storeKeyValue(key, value);
 			
+			// Send the event.
+			sendStoreKeyValue(id, application.getName(), key, value);
+			
 		} else {
 			throw new IdNotFoundException();
 		}
@@ -890,7 +911,14 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		
 		if (application != null) {
-			return application.removeKey(key);
+			boolean removed = application.removeKey(key);
+			
+			if (removed) {
+				// Send the event.
+				sendRemoveKey(id, application.getName(), key);
+			}
+			
+			return removed;
 			
 		} else {
 			throw new IdNotFoundException();

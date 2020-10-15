@@ -51,15 +51,15 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject status = services.parse(statusMessage);
+				JSONObject jsonObject = services.parse(statusMessage);
 				
-				int id = JSON.getInt(status, Message.StatusEvent.ID);
-				String name = JSON.getString(status, Message.StatusEvent.NAME);
-				int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
-				int pastStates = JSON.getInt(status, Message.StatusEvent.PAST_APPLICATION_STATES);
+				int id = JSON.getInt(jsonObject, Message.StatusEvent.ID);
+				String name = JSON.getString(jsonObject, Message.StatusEvent.NAME);
+				int state = JSON.getInt(jsonObject, Message.StatusEvent.APPLICATION_STATE);
+				int pastStates = JSON.getInt(jsonObject, Message.StatusEvent.PAST_APPLICATION_STATES);
 								
-				if (status.containsKey(Message.StatusEvent.EXIT_CODE)) {
-					int exitCode = JSON.getInt(status, Message.StatusEvent.EXIT_CODE);
+				if (jsonObject.containsKey(Message.StatusEvent.EXIT_CODE)) {
+					int exitCode = JSON.getInt(jsonObject, Message.StatusEvent.EXIT_CODE);
 					event = new StatusEvent(id, name, state, pastStates, exitCode);
 				}
 				else {
@@ -76,10 +76,10 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject result = services.parse(resultMessage);
+				JSONObject jsonObject = services.parse(resultMessage);
 				
-				int id = JSON.getInt(result, Message.ResultEvent.ID);
-				String name = JSON.getString(result, Message.ResultEvent.NAME);
+				int id = JSON.getInt(jsonObject, Message.ResultEvent.ID);
+				String name = JSON.getString(jsonObject, Message.ResultEvent.NAME);
 				
 				// Get the next message to get the data.
 				byte[] data = this.socket.recv();
@@ -96,11 +96,11 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject publisher = services.parse(publisherMessage);
+				JSONObject jsonObject = services.parse(publisherMessage);
 				
-				int id = JSON.getInt(publisher, Message.PublisherEvent.ID);
-				String name = JSON.getString(publisher, Message.PublisherEvent.NAME);
-				String publisherName = JSON.getString(publisher, Message.PublisherEvent.PUBLISHER_NAME);
+				int id = JSON.getInt(jsonObject, Message.PublisherEvent.ID);
+				String name = JSON.getString(jsonObject, Message.PublisherEvent.NAME);
+				String publisherName = JSON.getString(jsonObject, Message.PublisherEvent.PUBLISHER_NAME);
 				
 				event = new PublisherEvent(id, name, publisherName);
 			}
@@ -114,13 +114,50 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject publisher = services.parse(portMessage);
+				JSONObject jsonObject = services.parse(portMessage);
 				
-				int id = JSON.getInt(publisher, Message.PortEvent.ID);
-				String name = JSON.getString(publisher, Message.PortEvent.NAME);
-				String portName = JSON.getString(publisher, Message.PortEvent.PORT_NAME);
+				int id = JSON.getInt(jsonObject, Message.PortEvent.ID);
+				String name = JSON.getString(jsonObject, Message.PortEvent.NAME);
+				String portName = JSON.getString(jsonObject, Message.PortEvent.PORT_NAME);
 				
 				event = new PortEvent(id, name, portName);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse response");
+			}
+		}
+		else if (message.equals(Message.Event.STOREKEYVALUE)) {
+			
+			byte[] storeKeyValueMessage = this.socket.recv();
+			
+			try {
+				// Get the JSON object.
+				JSONObject jsonObject = services.parse(storeKeyValueMessage);
+				
+				int id = JSON.getInt(jsonObject, Message.StoreKeyValueEvent.ID);
+				String name = JSON.getString(jsonObject, Message.StoreKeyValueEvent.NAME);
+				String key = JSON.getString(jsonObject, Message.StoreKeyValueEvent.KEY);
+				String value = JSON.getString(jsonObject, Message.StoreKeyValueEvent.VALUE);
+				
+				event = new StoreKeyValueEvent(id, name, key, value);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse response");
+			}
+		}
+		else if (message.equals(Message.Event.REMOVEKEY)) {
+			
+			byte[] removeKeyMessage = this.socket.recv();
+			
+			try {
+				// Get the JSON object.
+				JSONObject jsonObject = services.parse(removeKeyMessage);
+				
+				int id = JSON.getInt(jsonObject, Message.StoreKeyValueEvent.ID);
+				String name = JSON.getString(jsonObject, Message.StoreKeyValueEvent.NAME);
+				String key = JSON.getString(jsonObject, Message.StoreKeyValueEvent.KEY);
+				
+				event = new RemoveKeyEvent(id, name, key);
 			}
 			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");

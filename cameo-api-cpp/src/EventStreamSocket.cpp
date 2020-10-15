@@ -22,6 +22,8 @@
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
+#include "StoreKeyValueEvent.h"
+#include "RemoveKeyEvent.h"
 #include "impl/StreamSocketImpl.h"
 #include "message/Message.h"
 
@@ -108,6 +110,35 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		string portName = event[message::PortEvent::PORT_NAME].GetString();
 
 		return unique_ptr<Event>(new PortEvent(id, name, portName));
+	}
+	else if (response == message::Event::STOREKEYVALUE) {
+
+		message = m_impl->receive();
+
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
+
+		int id = event[message::StoreKeyValueEvent::ID].GetInt();
+		string name = event[message::StoreKeyValueEvent::NAME].GetString();
+		string key = event[message::StoreKeyValueEvent::KEY].GetString();
+		string value = event[message::StoreKeyValueEvent::VALUE].GetString();
+
+		return unique_ptr<Event>(new StoreKeyValueEvent(id, name, key, value));
+	}
+	else if (response == message::Event::REMOVEKEY) {
+
+		message = m_impl->receive();
+
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
+
+		int id = event[message::RemoveKeyEvent::ID].GetInt();
+		string name = event[message::RemoveKeyEvent::NAME].GetString();
+		string key = event[message::RemoveKeyEvent::KEY].GetString();
+
+		return unique_ptr<Event>(new RemoveKeyEvent(id, name, key));
 	}
 	else if (response == message::Event::CANCEL) {
 

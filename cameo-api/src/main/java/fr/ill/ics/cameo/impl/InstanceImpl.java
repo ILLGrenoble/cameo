@@ -309,7 +309,7 @@ public class InstanceImpl extends EventListener {
 	public int waitFor() {
 		return waitFor(0);
 	}
-	
+		
 	public void cancelWaitFor() {
 		cancel(id);
 	}
