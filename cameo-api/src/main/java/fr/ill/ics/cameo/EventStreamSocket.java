@@ -145,7 +145,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.REMOVEKEY)) {
+		else if (message.equals(Message.Event.REMOVEKEYVALUE)) {
 			
 			byte[] removeKeyMessage = this.socket.recv();
 			
@@ -156,8 +156,9 @@ public class EventStreamSocket {
 				int id = JSON.getInt(jsonObject, Message.StoreKeyValueEvent.ID);
 				String name = JSON.getString(jsonObject, Message.StoreKeyValueEvent.NAME);
 				String key = JSON.getString(jsonObject, Message.StoreKeyValueEvent.KEY);
+				String value = JSON.getString(jsonObject, Message.StoreKeyValueEvent.VALUE);
 				
-				event = new RemoveKeyEvent(id, name, key);
+				event = new RemoveKeyValueEvent(id, name, key, value);
 			}
 			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");

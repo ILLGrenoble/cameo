@@ -184,14 +184,15 @@ public class Manager extends ConfigLoader {
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
-	public synchronized void sendRemoveKey(int id, String name, String key) {
+	public synchronized void sendRemoveKeyValue(int id, String name, String key, String value) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.RemoveKeyEvent.ID, id);
-		event.put(Message.RemoveKeyEvent.NAME, name);
-		event.put(Message.RemoveKeyEvent.KEY, key);
+		event.put(Message.RemoveKeyValueEvent.ID, id);
+		event.put(Message.RemoveKeyValueEvent.NAME, name);
+		event.put(Message.RemoveKeyValueEvent.KEY, key);
+		event.put(Message.RemoveKeyValueEvent.VALUE, value);
 		
-		eventPublisher.sendMore(Message.Event.REMOVEKEY);
+		eventPublisher.sendMore(Message.Event.REMOVEKEYVALUE);
 		eventPublisher.send(Message.serialize(event), 0);
 	}
 	
@@ -911,11 +912,12 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		
 		if (application != null) {
+			String value = application.getKeyValue(key);
 			boolean removed = application.removeKey(key);
 			
 			if (removed) {
 				// Send the event.
-				sendRemoveKey(id, application.getName(), key);
+				sendRemoveKeyValue(id, application.getName(), key, value);
 			}
 			
 			return removed;

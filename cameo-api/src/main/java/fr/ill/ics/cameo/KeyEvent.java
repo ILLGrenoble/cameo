@@ -20,14 +20,20 @@ package fr.ill.ics.cameo;
 public class KeyEvent extends Event {
 	
 	private String key;
+	private String value;
 	
-	public KeyEvent(int id, String name, String key) {
+	public KeyEvent(int id, String name, String key, String value) {
 		super(id, name);
 		this.key = key;
+		this.value = value;
 	}
 	
 	public String getKey() {
 		return key;
+	}
+
+	public String getValue() {
+		return value;
 	}
 
 	@Override
@@ -54,6 +60,13 @@ public class KeyEvent extends Event {
 				return false;
 			}
 		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (value == null) {
+			if (other.value != null) {
+				return false;
+			}
+		} else if (!value.equals(other.value)) {
 			return false;
 		}
 		return true;

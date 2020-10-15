@@ -58,7 +58,7 @@ public class Message {
 		public static final String PORT = "PORT";
 		public static final String PUBLISHER = "PUBLISHER";
 		public static final String STOREKEYVALUE = "STOREKEYVALUE";
-		public static final String REMOVEKEY = "REMOVEKEY";
+		public static final String REMOVEKEYVALUE = "REMOVEKEYVALUE";
 	}
 	
 	public static class SyncStreamRequest {
@@ -269,10 +269,11 @@ public class Message {
 		public static final String VALUE = "value"; // string
 	}
 	
-	public static class RemoveKeyEvent {
+	public static class RemoveKeyValueEvent {
 		public static final String ID = "id"; // int32
 		public static final String NAME = "name"; // string
 		public static final String KEY = "key"; // string
+		public static final String VALUE = "value"; // string
 	}
 	
 	public static String parseString(byte[] data) {

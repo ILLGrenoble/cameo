@@ -19,34 +19,7 @@ package fr.ill.ics.cameo;
 
 public class StoreKeyValueEvent extends KeyEvent {
 	
-	private String value;
-	
 	public StoreKeyValueEvent(int id, String name, String key, String value) {
-		super(id, name, key);
-		this.value = value;
+		super(id, name, key, value);
 	}
-	
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		
-		if (!super.equals(obj)) {
-			return false;
-		}
-		
-		StoreKeyValueEvent other = (StoreKeyValueEvent) obj;
-		
-		if (value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!value.equals(other.value)) {
-			return false;
-		}
-		return true;		
-	}
-	
 }

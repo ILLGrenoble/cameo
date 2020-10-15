@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,21 +14,27 @@ package fr.ill.ics.cameo;
  * limitations under the Licence.
  */
 
+#ifndef CAMEO_REMOVEKEYVALUEEVENT_H_
+#define CAMEO_REMOVEKEYVALUEEVENT_H_
 
+#include <iostream>
+#include "KeyEvent.h"
 
-public class RemoveKeyEvent extends KeyEvent {
-	
-	public RemoveKeyEvent(int id, String name, String key) {
-		super(id, name, key);
-	}
+namespace cameo {
 
-	@Override
-	public boolean equals(Object obj) {
-		
-		if (!super.equals(obj)) {
-			return false;
-		}
-		return true;		
-	}
-	
+class RemoveKeyValueEvent : public KeyEvent {
+
+	friend std::ostream& operator<<(std::ostream&, const RemoveKeyValueEvent&);
+
+public:
+	RemoveKeyValueEvent(int id, const std::string& name, const std::string& key, const std::string& value);
+	RemoveKeyValueEvent(const RemoveKeyValueEvent& event);
+
+	virtual RemoveKeyValueEvent* clone();
+};
+
+std::ostream& operator<<(std::ostream&, const RemoveKeyValueEvent&);
+
 }
+
+#endif

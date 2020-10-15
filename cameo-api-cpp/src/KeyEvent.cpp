@@ -20,17 +20,24 @@
 
 namespace cameo {
 
-KeyEvent::KeyEvent(int id, const std::string& name, const std::string& key) :
+KeyEvent::KeyEvent(int id, const std::string& name, const std::string& key, const std::string& value) :
 	Event(id, name),
-	m_key(key) {
+	m_key(key),
+	m_value(value) {
 }
 
 KeyEvent::KeyEvent(const KeyEvent& event) :
-	Event(event), m_key(event.m_key) {
+	Event(event),
+	m_key(event.m_key),
+	m_value(event.m_value) {
 }
 
 const std::string& KeyEvent::getKey() const {
 	return m_key;
+}
+
+const std::string& KeyEvent::getValue() const {
+	return m_value;
 }
 
 }

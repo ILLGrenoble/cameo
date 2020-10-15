@@ -1,3 +1,4 @@
+package fr.ill.ics.cameo;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,27 +15,12 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REMOVEKEYEVENT_H_
-#define CAMEO_REMOVEKEYEVENT_H_
 
-#include <iostream>
-#include "KeyEvent.h"
 
-namespace cameo {
-
-class RemoveKeyEvent : public KeyEvent {
-
-	friend std::ostream& operator<<(std::ostream&, const RemoveKeyEvent&);
-
-public:
-	RemoveKeyEvent(int id, const std::string& name, const std::string& key);
-	RemoveKeyEvent(const RemoveKeyEvent& event);
-
-	virtual RemoveKeyEvent* clone();
-};
-
-std::ostream& operator<<(std::ostream&, const RemoveKeyEvent&);
-
+public class RemoveKeyValueEvent extends KeyEvent {
+	
+	public RemoveKeyValueEvent(int id, String name, String key, String value) {
+		super(id, name, key, value);
+	}
+	
 }
-
-#endif

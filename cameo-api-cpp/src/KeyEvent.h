@@ -25,13 +25,15 @@ namespace cameo {
 class KeyEvent : public Event {
 
 public:
-	KeyEvent(int id, const std::string& name, const std::string& key);
+	KeyEvent(int id, const std::string& name, const std::string& key, const std::string& value);
 	KeyEvent(const KeyEvent& event);
 
 	const std::string& getKey() const;
+	const std::string& getValue() const;
 
 private:
 	std::string m_key;
+	std::string m_value;
 };
 
 }
