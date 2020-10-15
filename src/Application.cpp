@@ -42,6 +42,7 @@
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "PortEvent.h"
+#include "KeyEvent.h"
 #include "CancelEvent.h"
 
 using namespace std;
@@ -535,7 +536,7 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking) {
+State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking) {
 
 	if (!exists()) {
 		// The application was not launched
@@ -613,6 +614,19 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 						break;
 					}
 				}
+				else if (KeyEvent * keyEvent = dynamic_cast<KeyEvent *>(event.get())) {
+					if (keyEvent->getKey() == keyValue.getKey()) {
+						// Set the status and value.
+						if (keyEvent->getStatus() == KeyEvent::Status::STORED) {
+							keyValue.setStatus(KeyValue::Status::STORED);
+						}
+						else {
+							keyValue.setStatus(KeyValue::Status::REMOVED);
+						}
+						keyValue.setValue(keyEvent->getValue());
+						break;
+					}
+				}
 				else if (CancelEvent * cancel = dynamic_cast<CancelEvent *>(event.get())) {
 					break;
 				}
@@ -624,15 +638,22 @@ State Instance::waitFor(int states, const std::string& eventName, StateHandlerTy
 }
 
 State Instance::waitFor(int states, StateHandlerType handler) {
-	return waitFor(states, "", handler, true);
+	KeyValue keyValue("");
+	return waitFor(states, "", keyValue, handler, true);
 }
 
 State Instance::waitFor(StateHandlerType handler) {
-	return waitFor(0, "", handler, true);
+	KeyValue keyValue("");
+	return waitFor(0, "", keyValue, handler, true);
 }
 
 State Instance::waitFor(const std::string& eventName) {
-	return waitFor(0, eventName, nullptr, true);
+	KeyValue keyValue("");
+	return waitFor(0, eventName, keyValue, nullptr, true);
+}
+
+State Instance::waitFor(KeyValue& keyValue) {
+	return waitFor(0, "", keyValue, nullptr, true);
 }
 
 void Instance::cancelWaitFor() {
@@ -646,8 +667,8 @@ State Instance::now() {
 }
 
 State Instance::getLastState() {
-
-	return waitFor(0, "", nullptr, false);
+	KeyValue keyValue("");
+	return waitFor(0, "", keyValue, nullptr, false);
 }
 
 State Instance::getActualState() const {

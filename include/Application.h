@@ -35,6 +35,7 @@
 #include "Services.h"
 #include "TimeCondition.h"
 #include "EventListener.h"
+#include "KeyValue.h"
 
 namespace cameo {
 
@@ -210,6 +211,7 @@ public:
 	State waitFor(StateHandlerType handler = nullptr);
 	State waitFor(int states, StateHandlerType handler = nullptr);
 	State waitFor(const std::string& eventName);
+	State waitFor(KeyValue& keyValue);
 
 	void cancelWaitFor();
 
@@ -254,7 +256,7 @@ private:
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
-	State waitFor(int states, const std::string& eventName, StateHandlerType handler, bool blocking);
+	State waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking);
 
 	Server * m_server;
 	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
