@@ -16,16 +16,15 @@
 
 package fr.ill.ics.cameo.impl;
 
-import java.util.List;
 import java.util.Set;
 
 import fr.ill.ics.cameo.Application;
-import fr.ill.ics.cameo.Application.Info;
-import fr.ill.ics.cameo.Application.State;
 import fr.ill.ics.cameo.CancelEvent;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
+import fr.ill.ics.cameo.KeyEvent;
+import fr.ill.ics.cameo.KeyValue;
 import fr.ill.ics.cameo.OutputStreamSocket;
 import fr.ill.ics.cameo.PortEvent;
 import fr.ill.ics.cameo.PublisherEvent;
@@ -208,7 +207,7 @@ public class InstanceImpl extends EventListener {
 	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
 	 * The method is not thread-safe and must not be called concurrently.
 	 */
-	private int waitFor(int states, String eventName, boolean blocking) {
+	private int waitFor(int states, String eventName, KeyValue keyValue, boolean blocking) {
 
 		if (!exists()) {
 			return lastState;
@@ -286,6 +285,24 @@ public class InstanceImpl extends EventListener {
 						break;
 					}
 					
+				} else if (event instanceof KeyEvent) {
+					
+					KeyEvent keyEvent = (KeyEvent)event;
+
+					// Check if it is the event that is waited for.
+					if (keyValue != null && keyEvent.getKey().equals(keyValue.getKey())) {
+						
+						// Set the status and value.
+						if (keyEvent.getStatus() == KeyEvent.Status.STORED) {
+							keyValue.setStatus(KeyValue.Status.STORED);
+						}
+						else {
+							keyValue.setStatus(KeyValue.Status.REMOVED);
+						}
+						keyValue.setValue(keyEvent.getValue());
+						break;
+					}
+					
 				} else if (event instanceof CancelEvent) {
 					break;
 				}
@@ -296,15 +313,19 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	public int waitFor(String eventName) {
-		return waitFor(0, eventName, true);
+		return waitFor(0, eventName, null, true);
+	}
+	
+	public int waitFor(KeyValue keyValue) {
+		return waitFor(0, null, keyValue, true);
 	}
 	
 	public int waitFor(int states, boolean blocking) {
-		return waitFor(states, null, blocking);
+		return waitFor(states, null, null, blocking);
 	}
 	
 	public int waitFor(int states) {
-		return waitFor(states, null, true);
+		return waitFor(states, null, null, true);
 	}
 	
 	/**

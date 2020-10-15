@@ -375,6 +375,10 @@ public class Application {
 			return impl.waitFor(0);
 		}
 		
+		public int waitFor(KeyValue keyValue) {
+			return impl.waitFor(keyValue);
+		}
+		
 		public void cancelWaitFor() {
 			impl.cancelWaitFor();
 		}
