@@ -461,7 +461,7 @@ public class ThisImpl extends ServicesImpl {
 			if (responderPort == -1) {
 				
 				// Wait for the responder port.
-				instanceImpl.waitFor(0, responderPortName);
+				instanceImpl.waitFor(responderPortName);
 
 				// Retry to connect.
 				request = createConnectPortRequest(responderId, responderPortName);

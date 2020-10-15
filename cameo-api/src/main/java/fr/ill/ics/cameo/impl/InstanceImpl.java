@@ -208,7 +208,7 @@ public class InstanceImpl extends EventListener {
 	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
 	 * The method is not thread-safe and must not be called concurrently.
 	 */
-	public int waitFor(int states, String eventName, boolean blocking) {
+	private int waitFor(int states, String eventName, boolean blocking) {
 
 		if (!exists()) {
 			return lastState;
@@ -295,12 +295,16 @@ public class InstanceImpl extends EventListener {
 		return lastState;
 	}
 	
-	public int waitFor(int states, String eventName) {
-		return waitFor(states, eventName, true);
+	public int waitFor(String eventName) {
+		return waitFor(0, eventName, true);
+	}
+	
+	public int waitFor(int states, boolean blocking) {
+		return waitFor(states, null, blocking);
 	}
 	
 	public int waitFor(int states) {
-		return waitFor(states, null);
+		return waitFor(states, null, true);
 	}
 	
 	/**
@@ -345,7 +349,7 @@ public class InstanceImpl extends EventListener {
 		}
 		
 		// waiting for the publisher
-		waitFor(0, publisherName);
+		waitFor(publisherName);
 		
 		// state cannot be terminal or it means that the application has terminated that is not planned.
 		if (lastState == Application.State.SUCCESS 

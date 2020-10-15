@@ -209,7 +209,7 @@ public:
 
 	State waitFor(StateHandlerType handler = nullptr);
 	State waitFor(int states, StateHandlerType handler = nullptr);
-	State waitFor(int states, const std::string& eventName, StateHandlerType handler = nullptr);
+	State waitFor(const std::string& eventName);
 
 	void cancelWaitFor();
 
