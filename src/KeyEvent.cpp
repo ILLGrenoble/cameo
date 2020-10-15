@@ -20,16 +20,26 @@
 
 namespace cameo {
 
-KeyEvent::KeyEvent(int id, const std::string& name, const std::string& key, const std::string& value) :
+KeyEvent::KeyEvent(int id, const std::string& name, Status status, const std::string& key, const std::string& value) :
 	Event(id, name),
+	m_status(status),
 	m_key(key),
 	m_value(value) {
 }
 
 KeyEvent::KeyEvent(const KeyEvent& event) :
 	Event(event),
+	m_status(event.m_status),
 	m_key(event.m_key),
 	m_value(event.m_value) {
+}
+
+KeyEvent* KeyEvent::clone() {
+	return new KeyEvent(*this);
+}
+
+KeyEvent::Status KeyEvent::getStatus() const {
+	return m_status;
 }
 
 const std::string& KeyEvent::getKey() const {
@@ -38,6 +48,16 @@ const std::string& KeyEvent::getKey() const {
 
 const std::string& KeyEvent::getValue() const {
 	return m_value;
+}
+
+std::ostream& operator<<(std::ostream& os, const KeyEvent& event) {
+	os << "name=" << event.m_name
+		<< "\nid=" << event.m_id
+		<< "\nstatus" << static_cast<int>(event.m_status)
+		<< "\nkey=" << event.m_key
+		<< "\nvalue=" << event.m_value;
+
+	return os;
 }
 
 }
