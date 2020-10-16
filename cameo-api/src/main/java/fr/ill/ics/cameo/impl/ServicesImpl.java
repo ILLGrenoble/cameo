@@ -308,12 +308,12 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createStartedUnmanagedRequest(String name, long pid) {
+	protected Zmq.Msg createAttachUnmanagedRequest(String name, long pid) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.STARTED_UNMANAGED);
-		request.put(Message.StartedUnmanagedRequest.NAME, name);
-		request.put(Message.StartedUnmanagedRequest.PID, pid);
+		request.put(Message.TYPE, Message.ATTACH_UNMANAGED);
+		request.put(Message.AttachUnmanagedRequest.NAME, name);
+		request.put(Message.AttachUnmanagedRequest.PID, pid);
 		
 		return message(request);
 	}
@@ -324,11 +324,11 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createTerminatedUnmanagedRequest(int id) {
+	protected Zmq.Msg createDetachUnmanagedRequest(int id) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.TERMINATED_UNMANAGED);
-		request.put(Message.TerminatedUnmanagedRequest.ID, id);
+		request.put(Message.TYPE, Message.DETACH_UNMANAGED);
+		request.put(Message.DetachUnmanagedRequest.ID, id);
 		
 		return message(request);
 	}

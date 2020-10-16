@@ -179,29 +179,29 @@ public class Server {
 					byte[] resultData = message.getLastData();
 					reply = process.processSetResultRequest(request, resultData, manager);
 				}
-				else if (type == Message.REQUEST_PORT) {
-					reply = process.processRequestPortRequest(request, manager);
+				else if (type == Message.REQUEST_PORT_v0) {
+					reply = process.processRequestPortV0Request(request, manager);
 				}
-				else if (type == Message.CONNECT_PORT) {
-					reply = process.processConnectPortRequest(request, manager);
+				else if (type == Message.CONNECT_PORT_v0) {
+					reply = process.processConnectPortV0Request(request, manager);
 				}
-				else if (type == Message.REMOVE_PORT) {
-					reply = process.processRemovePortRequest(request, manager);
+				else if (type == Message.REMOVE_PORT_v0) {
+					reply = process.processRemovePortV0Request(request, manager);
 				}
-				else if (type == Message.CREATE_PUBLISHER) {
+				else if (type == Message.CREATE_PUBLISHER_v0) {
 					reply = process.processCreatePublisherRequest(request, manager);
 				}
-				else if (type == Message.TERMINATE_PUBLISHER) {
+				else if (type == Message.TERMINATE_PUBLISHER_v0) {
 					reply = process.processTerminatePublisherRequest(request, manager);
 				}
-				else if (type == Message.CONNECT_PUBLISHER) {
+				else if (type == Message.CONNECT_PUBLISHER_v0) {
 					reply = process.processConnectPublisherRequest(request, manager);
 				}
-				else if (type == Message.STARTED_UNMANAGED) {
-					reply = process.processStartedUnmanagedRequest(request, manager);
+				else if (type == Message.ATTACH_UNMANAGED) {
+					reply = process.processAttachUnmanagedRequest(request, manager);
 				}
-				else if (type == Message.TERMINATED_UNMANAGED) {
-					reply = process.processTerminatedUnmanagedRequest(request, manager);
+				else if (type == Message.DETACH_UNMANAGED) {
+					reply = process.processDetachUnmanagedRequest(request, manager);
 				}
 				else if (type == Message.IMPL_VERSION) {
 					reply = process.processVersion(version);

@@ -537,12 +537,12 @@ public class RequestProcessor {
 	}
 
 
-	public Msg processRequestPortRequest(JSONObject request, Manager manager) {
+	public Msg processRequestPortV0Request(JSONObject request, Manager manager) {
 
 		Log.logger().fine("Received RequestPort request");
 		
-		int applicationId = JSON.getInt(request, Message.RequestPortRequest.ID);
-		String portName = JSON.getString(request, Message.RequestPortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.RequestPortV0Request.ID);
+		String portName = JSON.getString(request, Message.RequestPortV0Request.NAME);
 		
 		try {
 			int port = manager.requestPortForApplication(applicationId, portName);
@@ -573,12 +573,12 @@ public class RequestProcessor {
 		}
 	}
 
-	public Msg processConnectPortRequest(JSONObject request, Manager manager) {
+	public Msg processConnectPortV0Request(JSONObject request, Manager manager) {
 		
 		Log.logger().fine("Received ConnectPort request");
 		
-		int applicationId = JSON.getInt(request, Message.ConnectPortRequest.ID);
-		String portName = JSON.getString(request, Message.ConnectPortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.ConnectPortV0Request.ID);
+		String portName = JSON.getString(request, Message.ConnectPortV0Request.NAME);
 		
 		try {
 			int port = manager.connectPortForApplication(applicationId, portName);
@@ -609,12 +609,12 @@ public class RequestProcessor {
 		}
 	}
 
-	public Msg processRemovePortRequest(JSONObject request, Manager manager) {
+	public Msg processRemovePortV0Request(JSONObject request, Manager manager) {
 
 		Log.logger().fine("Received RemovePort request");
 		
-		int applicationId = JSON.getInt(request, Message.RemovePortRequest.ID);
-		String portName = JSON.getString(request, Message.RemovePortRequest.NAME);
+		int applicationId = JSON.getInt(request, Message.RemovePortV0Request.ID);
+		String portName = JSON.getString(request, Message.RemovePortV0Request.NAME);
 		
 		try {
 			boolean done = manager.removePortForApplication(applicationId, portName);
@@ -766,17 +766,17 @@ public class RequestProcessor {
 		}
 	}
 
-	public Msg processStartedUnmanagedRequest(JSONObject request, Manager manager) {
+	public Msg processAttachUnmanagedRequest(JSONObject request, Manager manager) {
 
 		Log.logger().fine("Received StartedUnmanaged request");
 		
 		int applicationId = 0;
-		String name = JSON.getString(request, Message.StartedUnmanagedRequest.NAME);
+		String name = JSON.getString(request, Message.AttachUnmanagedRequest.NAME);
 		
 		try {
 			// Set the PID if it is passed.
-			if (request.containsKey(Message.StartedUnmanagedRequest.PID)) {
-				int pid = JSON.getInt(request, Message.StartedUnmanagedRequest.PID);
+			if (request.containsKey(Message.AttachUnmanagedRequest.PID)) {
+				int pid = JSON.getInt(request, Message.AttachUnmanagedRequest.PID);
 				applicationId = manager.newStartedUnmanagedApplication(name, pid);
 			}
 			else {
@@ -800,11 +800,11 @@ public class RequestProcessor {
 		} 
 	}
 
-	public Msg processTerminatedUnmanagedRequest(JSONObject request, Manager manager) {
+	public Msg processDetachUnmanagedRequest(JSONObject request, Manager manager) {
 		
 		Log.logger().fine("Received TerminatedUnmanaged request");
 		
-		int applicationId = JSON.getInt(request, Message.TerminatedUnmanagedRequest.ID);
+		int applicationId = JSON.getInt(request, Message.DetachUnmanagedRequest.ID);
 		
 		try {
 			String applicationName = manager.setUnmanagedApplicationTerminated(applicationId);

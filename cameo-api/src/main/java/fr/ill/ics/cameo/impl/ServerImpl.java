@@ -998,7 +998,7 @@ public class ServerImpl extends ServicesImpl {
 	private Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_PUBLISHER);
+		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
 		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
 		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
 
@@ -1008,7 +1008,7 @@ public class ServerImpl extends ServicesImpl {
 	protected Zmq.Msg createSubscribePublisherRequest() {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER);
+		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER_v0);
 
 		return message(request);
 	}

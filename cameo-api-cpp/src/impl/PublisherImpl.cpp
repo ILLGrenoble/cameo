@@ -98,7 +98,7 @@ bool PublisherImpl::waitForSubscribers() {
 		if (type == message::SYNC) {
 			reply.reset(processInitCommand());
 		}
-		else if (type == message::SUBSCRIBE_PUBLISHER) {
+		else if (type == message::SUBSCRIBE_PUBLISHER_v0) {
 			counter++;
 			reply.reset(processSubscribePublisherCommand());
 		}

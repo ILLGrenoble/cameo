@@ -41,19 +41,19 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
-	const int CREATE_PUBLISHER = 17;
-	const int TERMINATE_PUBLISHER = 18;
-	const int CONNECT_PUBLISHER = 19;
-	const int SUBSCRIBE_PUBLISHER = 20;
+	const int CREATE_PUBLISHER_v0 = 17;
+	const int TERMINATE_PUBLISHER_v0 = 18;
+	const int CONNECT_PUBLISHER_v0 = 19;
+	const int SUBSCRIBE_PUBLISHER_v0 = 20;
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
-	const int REQUEST_PORT = 23;
-	const int CONNECT_PORT = 24;
-	const int REMOVE_PORT = 25;
+	const int REQUEST_PORT_v0 = 23;
+	const int CONNECT_PORT_v0 = 24;
+	const int REMOVE_PORT_v0 = 25;
 	const int REQUEST = 26;
 	const int RESPONSE = 27;
-	const int STARTED_UNMANAGED = 28;
-	const int TERMINATED_UNMANAGED = 29;
+	const int ATTACH_UNMANAGED = 28;
+	const int DETACH_UNMANAGED = 29;
 	const int IMPL_VERSION = 30;
 	const int STORE_KEY_VALUE = 31;
 	const int GET_KEY_VALUE = 32;
@@ -196,17 +196,17 @@ namespace message {
 		constexpr const char* DATA = "data"; // required bytes data = 2;
 	}
 
-	namespace RequestPortRequest {
+	namespace RequestPortV0Request {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
-	namespace ConnectPortRequest {
+	namespace ConnectPortV0Request {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* NAME = "name"; // required string name = 2;
 	}
 
-	namespace RemovePortRequest {
+	namespace RemovePortV0Request {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* NAME = "name"; // required string name = 2;
 	}
@@ -242,12 +242,12 @@ namespace message {
 		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
-	namespace StartedUnmanagedRequest {
+	namespace AttachUnmanagedRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* PID = "pid"; // optional int64 pid = 2;
 	}
 
-	namespace TerminatedUnmanagedRequest {
+	namespace DetachUnmanagedRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 

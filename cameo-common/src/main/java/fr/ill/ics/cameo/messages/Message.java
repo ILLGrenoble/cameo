@@ -29,19 +29,19 @@ public class Message {
 	public static final long LIST = 14;
 	public static final long SET_STATUS = 15;
 	public static final long GET_STATUS = 16;
-	public static final long CREATE_PUBLISHER = 17;
-	public static final long TERMINATE_PUBLISHER = 18;
-	public static final long CONNECT_PUBLISHER = 19;
-	public static final long SUBSCRIBE_PUBLISHER = 20;
+	public static final long CREATE_PUBLISHER_v0 = 17;
+	public static final long TERMINATE_PUBLISHER_v0 = 18;
+	public static final long CONNECT_PUBLISHER_v0 = 19;
+	public static final long SUBSCRIBE_PUBLISHER_v0 = 20;
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
-	public static final long REQUEST_PORT = 23;
-	public static final long CONNECT_PORT = 24;
-	public static final long REMOVE_PORT = 25;
+	public static final long REQUEST_PORT_v0 = 23;
+	public static final long CONNECT_PORT_v0 = 24;
+	public static final long REMOVE_PORT_v0 = 25;
 	public static final long REQUEST = 26;
 	public static final long RESPONSE = 27;
-	public static final long STARTED_UNMANAGED = 28;
-	public static final long TERMINATED_UNMANAGED = 29;
+	public static final long ATTACH_UNMANAGED = 28;
+	public static final long DETACH_UNMANAGED = 29;
 	public static final long IMPL_VERSION = 30;
 	public static final long STORE_KEY_VALUE = 31;
 	public static final long GET_KEY_VALUE = 32;
@@ -184,17 +184,17 @@ public class Message {
 		public static final String DATA = "data"; // required bytes data = 2;
 	}
 
-	public static class RequestPortRequest {
+	public static class RequestPortV0Request {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 	}
 
-	public static class ConnectPortRequest {
+	public static class ConnectPortV0Request {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 	}
 
-	public static class RemovePortRequest {
+	public static class RemovePortV0Request {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 	}
@@ -230,12 +230,12 @@ public class Message {
 		public static final String REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
-	public static class StartedUnmanagedRequest {
+	public static class AttachUnmanagedRequest {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String PID = "pid"; // optional int64 pid = 2;
 	}
 
-	public static class TerminatedUnmanagedRequest {
+	public static class DetachUnmanagedRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}
 	

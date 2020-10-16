@@ -53,11 +53,11 @@ public:
 	std::string createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const;
 	std::string createConnectPublisherRequest(int id, const std::string& publisherName) const;
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
-	std::string createRequestPortRequest(int id, const std::string& name) const;
-	std::string createConnectPortRequest(int id, const std::string& name) const;
-	std::string createRemovePortRequest(int id, const std::string& name) const;
-	std::string createStartedUnmanagedRequest(const std::string& name) const;
-	std::string createTerminatedUnmanagedRequest(int id) const;
+	std::string createRequestPortV0Request(int id, const std::string& name) const;
+	std::string createConnectPortV0Request(int id, const std::string& name) const;
+	std::string createRemovePortV0Request(int id, const std::string& name) const;
+	std::string createAttachUnmanagedRequest(const std::string& name) const;
+	std::string createDetachUnmanagedRequest(int id) const;
 	std::string createOutputPortWithIdRequest(int id) const;
 	std::string createOutputPortRequest(const std::string& name) const;
 	std::string createRequestResponse(int64_t value) const;

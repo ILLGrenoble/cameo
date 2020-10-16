@@ -95,7 +95,7 @@ public class PublisherImpl {
 					if (type == Message.SYNC) {
 						reply = processSyncRequest();						
 					}
-					else if (type == Message.SUBSCRIBE_PUBLISHER) {
+					else if (type == Message.SUBSCRIBE_PUBLISHER_v0) {
 						counter++;
 						reply = processSubscribePublisherRequest();
 					}
