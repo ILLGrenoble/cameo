@@ -30,7 +30,6 @@ public final class ConfigManager {
 	private String host;
 	private int port;
 	private int streamPort;
-	private TreeSet<Integer> openPorts = new TreeSet<Integer>();
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
@@ -129,29 +128,6 @@ public final class ConfigManager {
 			logLevel = "FINEST";
 		}
 	}
-
-	public int getNextPort() {
-
-		int port = streamPort + 1;
-		while (true) {
-			
-			if (openPorts.contains(port)) {
-				port++;
-			} else {
-				// found a port
-				openPorts.add(port);
-				break;
-			}
-		}
-				
-		return port;
-	}
-	
-	public void removePort(int port) {
-		if (openPorts.contains(port)) {
-			openPorts.remove(port);
-		}
-	}
 	
 	public int getStreamPort() {
 		return streamPort;
@@ -165,6 +141,9 @@ public final class ConfigManager {
 				System.err.println("Error, the property 'port' must be a value between 1025 and 39999");
 				System.exit(-1);
 			}
+			
+			// Set the base port of the port manager.
+			PortManager.getInstance().setBasePort(streamPort + 1);
 
 		} catch (java.lang.NumberFormatException e) {
 			System.err.println("Error, the property 'port' is required");

@@ -176,7 +176,7 @@ public abstract class ConfigLoader {
 			application.setEnvironmentFile(item.getAttributeValue("environment"));
 			
 			if (application.hasStream()) {
-				application.setStreamPort(ConfigManager.getInstance().getNextPort());
+				application.setStreamPort(PortManager.getInstance().getNextPort());
 			}
 
 			// Start command

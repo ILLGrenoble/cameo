@@ -238,7 +238,7 @@ public class Manager extends ConfigLoader {
 		// Iterate on the ports of the application to remove them.
 		HashMap<String, Integer> ports = application.getPorts();
 		for (Entry<String, Integer> e : ports.entrySet()) {
-			ConfigManager.getInstance().removePort(e.getValue());	
+			PortManager.getInstance().removePort(e.getValue());	
 		}
 				
 		applicationMap.remove(application.getId());
@@ -665,7 +665,7 @@ public class Manager extends ConfigLoader {
 			return -1;
 		}
 		
-		int port = ConfigManager.getInstance().getNextPort();
+		int port = PortManager.getInstance().getNextPort();
 		ports.put(portName, port);
 
 		sendPort(id, application.getName(), portName);
@@ -702,7 +702,7 @@ public class Manager extends ConfigLoader {
 		HashMap<String, Integer> ports = application.getPorts();
 		
 		if (ports.containsKey(portName)) {
-			ConfigManager.getInstance().removePort(ports.get(portName));
+			PortManager.getInstance().removePort(ports.get(portName));
 			ports.remove(portName);
 			Log.logger().info("Application " + application.getNameId() + " removed socket " + portName);
 			
@@ -730,8 +730,8 @@ public class Manager extends ConfigLoader {
 		// create 2 new ports because we need:
 		// - publisher port
 		// - synchronizer port
-		int publisherPort = ConfigManager.getInstance().getNextPort();
-		int synchronizerPort = ConfigManager.getInstance().getNextPort();
+		int publisherPort = PortManager.getInstance().getNextPort();
+		int synchronizerPort = PortManager.getInstance().getNextPort();
 
 		HashMap<String, Integer> ports = application.getPorts();
 		
@@ -773,8 +773,8 @@ public class Manager extends ConfigLoader {
 			int publisherPort = ports.get(PUBLISHER_PREFIX + publisherName);
 			int synchronizerPort = ports.get(SYNCHRONIZER_PREFIX + publisherName);
 			
-			ConfigManager.getInstance().removePort(publisherPort);
-			ConfigManager.getInstance().removePort(synchronizerPort);
+			PortManager.getInstance().removePort(publisherPort);
+			PortManager.getInstance().removePort(synchronizerPort);
 			publishers.remove(publisherName);
 			
 			Log.logger().info("Application " + application.getNameId() + " closed publisher socket " + publisherName + " on ports " + publisherPort + " and " + synchronizerPort);
