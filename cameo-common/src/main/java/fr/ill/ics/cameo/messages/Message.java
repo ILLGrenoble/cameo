@@ -100,7 +100,7 @@ public class Message {
 		public static final String STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
 	}
 
-	public static class ListResponse {
+	public static class ApplicationConfigListResponse {
 		public static final String APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
 	}
 

@@ -438,7 +438,7 @@ public class RequestProcessor {
 			array.add(config);
 		}
 		
-		response.put(Message.ListResponse.APPLICATION_CONFIG, array);
+		response.put(Message.ApplicationConfigListResponse.APPLICATION_CONFIG, array);
 		
 		return Converter.reply(response);
 	}

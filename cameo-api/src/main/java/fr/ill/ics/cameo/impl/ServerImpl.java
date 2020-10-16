@@ -413,7 +413,7 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 						
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.ListResponse.APPLICATION_CONFIG);
+			JSONArray list = JSON.getArray(response, Message.ApplicationConfigListResponse.APPLICATION_CONFIG);
 			
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject config = (JSONObject)list.get(i);
