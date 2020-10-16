@@ -665,7 +665,7 @@ public class Manager extends ConfigLoader {
 			return -1;
 		}
 		
-		int port = PortManager.getInstance().getNextPort();
+		int port = PortManager.getInstance().requestPort();
 		ports.put(portName, port);
 
 		sendPort(id, application.getName(), portName);
@@ -730,8 +730,8 @@ public class Manager extends ConfigLoader {
 		// create 2 new ports because we need:
 		// - publisher port
 		// - synchronizer port
-		int publisherPort = PortManager.getInstance().getNextPort();
-		int synchronizerPort = PortManager.getInstance().getNextPort();
+		int publisherPort = PortManager.getInstance().requestPort();
+		int synchronizerPort = PortManager.getInstance().requestPort();
 
 		HashMap<String, Integer> ports = application.getPorts();
 		
