@@ -259,7 +259,7 @@ std::string ServicesImpl::createSubscribePublisherRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SUBSCRIBE_PUBLISHER);
+	request.pushInt(message::SUBSCRIBE_PUBLISHER_v0);
 
 	return request.toString();
 }
@@ -268,7 +268,7 @@ std::string ServicesImpl::createCreatePublisherRequest(int id, const std::string
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CREATE_PUBLISHER);
+	request.pushInt(message::CREATE_PUBLISHER_v0);
 
 	request.pushKey(message::CreatePublisherRequest::ID);
 	request.pushInt(id);
@@ -286,7 +286,7 @@ std::string ServicesImpl::createConnectPublisherRequest(int id, const std::strin
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PUBLISHER);
+	request.pushInt(message::CONNECT_PUBLISHER_v0);
 
 	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
 	request.pushInt(id);
@@ -301,7 +301,7 @@ std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::str
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATE_PUBLISHER);
+	request.pushInt(message::TERMINATE_PUBLISHER_v0);
 
 	request.pushKey(message::TerminatePublisherRequest::ID);
 	request.pushInt(id);
@@ -312,76 +312,76 @@ std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::str
 	return request.toString();
 }
 
-std::string ServicesImpl::createRequestPortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createRequestPortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST_PORT);
+	request.pushInt(message::REQUEST_PORT_v0);
 
-	request.pushKey(message::RequestPortRequest::ID);
+	request.pushKey(message::RequestPortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::RequestPortRequest::NAME);
+	request.pushKey(message::RequestPortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createConnectPortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createConnectPortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PORT);
+	request.pushInt(message::CONNECT_PORT_v0);
 
-	request.pushKey(message::ConnectPortRequest::ID);
+	request.pushKey(message::ConnectPortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::ConnectPortRequest::NAME);
+	request.pushKey(message::ConnectPortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createRemovePortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createRemovePortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REMOVE_PORT);
+	request.pushInt(message::REMOVE_PORT_v0);
 
-	request.pushKey(message::RemovePortRequest::ID);
+	request.pushKey(message::RemovePortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::RemovePortRequest::NAME);
+	request.pushKey(message::RemovePortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
+std::string ServicesImpl::createAttachUnmanagedRequest(const std::string& name) const {
 
 	// Get the pid.
 	long pid = GET_PROCESS_PID();
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::STARTED_UNMANAGED);
+	request.pushInt(message::ATTACH_UNMANAGED);
 
-	request.pushKey(message::StartedUnmanagedRequest::NAME);
+	request.pushKey(message::AttachUnmanagedRequest::NAME);
 	request.pushString(name);
 
-	request.pushKey(message::StartedUnmanagedRequest::PID);
+	request.pushKey(message::AttachUnmanagedRequest::PID);
 	request.pushInt64(pid);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
+std::string ServicesImpl::createDetachUnmanagedRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATED_UNMANAGED);
+	request.pushInt(message::DETACH_UNMANAGED);
 
-	request.pushKey(message::TerminatedUnmanagedRequest::ID);
+	request.pushKey(message::DetachUnmanagedRequest::ID);
 	request.pushInt(id);
 
 	return request.toString();

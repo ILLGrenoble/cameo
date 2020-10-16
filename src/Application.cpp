@@ -273,7 +273,7 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartedUnmanagedRequest(m_name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAttachUnmanagedRequest(m_name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -284,7 +284,7 @@ int This::initUnmanagedApplication() {
 
 void This::terminateUnmanagedApplication() {
 
-	m_requestSocket->request(m_impl->createTerminatedUnmanagedRequest(m_id));
+	m_requestSocket->request(m_impl->createDetachUnmanagedRequest(m_id));
 }
 
 bool This::setRunning() {
@@ -341,7 +341,7 @@ bool This::destroyPublisher(const std::string& name) const {
 
 bool This::removePort(const std::string& name) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemovePortRequest(m_id, name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemovePortV0Request(m_id, name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -1007,7 +1007,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, portName));
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortV0Request(This::m_instance.m_id, portName));
 
 	// Get the JSON response.
 	json::Object response;
@@ -1068,7 +1068,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string request = This::m_instance.m_impl->createConnectPortRequest(responderId, responderPortName);
+	string request = This::m_instance.m_impl->createConnectPortV0Request(responderId, responderPortName);
 
 	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(request);
 
@@ -1096,7 +1096,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	}
 
 	// Request a requester port.
-	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortRequest(This::m_instance.m_id, requesterPortName));
+	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortV0Request(This::m_instance.m_id, requesterPortName));
 	json::parse(response, reply.get());
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
