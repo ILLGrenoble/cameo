@@ -240,7 +240,11 @@ public class Manager extends ConfigLoader {
 		for (Entry<String, Integer> e : ports.entrySet()) {
 			PortManager.getInstance().removePort(e.getValue());	
 		}
-				
+		
+		// Remove the application from the port manager.
+		PortManager.getInstance().removeApplication(application.getId());
+		
+		// Remove the application from the map.
 		applicationMap.remove(application.getId());
 	}
 	
@@ -665,7 +669,7 @@ public class Manager extends ConfigLoader {
 			return -1;
 		}
 		
-		int port = PortManager.getInstance().requestPort();
+		int port = PortManager.getInstance().requestPort(id);
 		ports.put(portName, port);
 
 		sendPort(id, application.getName(), portName);
@@ -730,8 +734,8 @@ public class Manager extends ConfigLoader {
 		// create 2 new ports because we need:
 		// - publisher port
 		// - synchronizer port
-		int publisherPort = PortManager.getInstance().requestPort();
-		int synchronizerPort = PortManager.getInstance().requestPort();
+		int publisherPort = PortManager.getInstance().requestPort(id);
+		int synchronizerPort = PortManager.getInstance().requestPort(id);
 
 		HashMap<String, Integer> ports = application.getPorts();
 		
