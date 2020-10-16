@@ -15,6 +15,8 @@
 * Added connect with id request.
 * Added sync stream request. Moved the creation of the stream thread at an earlier location.
 * The class PortManager is responsible for managing the ports.
+* Renamed some requests with v0 suffix to indicate they will disappear.
+* Implemented new port requests.
 
 0.1.8
 -----

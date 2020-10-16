@@ -39,6 +39,7 @@ import fr.ill.ics.cameo.manager.ApplicationState;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
+import fr.ill.ics.cameo.manager.PortInfo;
 import fr.ill.ics.cameo.manager.StatusInfo;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -539,7 +540,7 @@ public class RequestProcessor {
 
 	public Msg processRequestPortV0Request(JSONObject request, Manager manager) {
 
-		Log.logger().fine("Received RequestPort request");
+		Log.logger().fine("Received RequestPortV0 request");
 		
 		int applicationId = JSON.getInt(request, Message.RequestPortV0Request.ID);
 		String portName = JSON.getString(request, Message.RequestPortV0Request.NAME);
@@ -575,7 +576,7 @@ public class RequestProcessor {
 
 	public Msg processConnectPortV0Request(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received ConnectPort request");
+		Log.logger().fine("Received ConnectPortV0 request");
 		
 		int applicationId = JSON.getInt(request, Message.ConnectPortV0Request.ID);
 		String portName = JSON.getString(request, Message.ConnectPortV0Request.NAME);
@@ -611,7 +612,7 @@ public class RequestProcessor {
 
 	public Msg processRemovePortV0Request(JSONObject request, Manager manager) {
 
-		Log.logger().fine("Received RemovePort request");
+		Log.logger().fine("Received RemovePortV0 request");
 		
 		int applicationId = JSON.getInt(request, Message.RemovePortV0Request.ID);
 		String portName = JSON.getString(request, Message.RemovePortV0Request.NAME);
@@ -939,6 +940,113 @@ public class RequestProcessor {
 			
 			return Converter.reply(response);
 		}
+	}
+
+	public Msg processRequestPortRequest(JSONObject request, Manager manager) {
+		
+		Log.logger().fine("Received RequestPort request");
+		
+		int applicationId = JSON.getInt(request, Message.RequestPortRequest.ID);
+		
+		try {
+			// Request a port.
+			int port = manager.requestPort(applicationId);
+
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, port);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
+
+	public Msg processUnavailablePortRequest(JSONObject request, Manager manager) {
+				
+		Log.logger().fine("Received UnavailablePort request");
+		
+		int applicationId = JSON.getInt(request, Message.UnavailablePortRequest.ID);
+		int port = JSON.getInt(request, Message.UnavailablePortRequest.PORT);
+
+		try {
+			// Set the port unavailable.
+			manager.setPortUnavailable(applicationId, port);
+			
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
+
+	public Msg processReleasePortRequest(JSONObject request, Manager manager) {
+		
+		Log.logger().fine("Received ReleasePort request");
+		
+		int applicationId = JSON.getInt(request, Message.ReleasePortRequest.ID);
+		int port = JSON.getInt(request, Message.ReleasePortRequest.PORT);
+		
+		try {
+			// Release the port.
+			manager.releasePort(applicationId, port);
+			
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
+
+	public Msg processPortsRequest(JSONObject request, Manager manager) {
+		
+		Log.logger().fine("Received Ports request");
+		
+		List<PortInfo> list = manager.getPortList();
+		
+		JSONObject response = new JSONObject();
+		JSONArray array = new JSONArray();
+		
+		Iterator<PortInfo> it = list.iterator();
+		while (it.hasNext()) {
+			PortInfo port = it.next();
+			
+			JSONObject portInfo = new JSONObject();
+			portInfo.put(Message.PortInfo.PORT, port.getPort());
+			portInfo.put(Message.PortInfo.STATUS, port.getStatus());
+			portInfo.put(Message.PortInfo.APPLICATION_NAME_ID, port.getApplicationNameId());
+		}
+		
+		response.put(Message.PortInfoListResponse.PORT_INFO, array);
+		
+		return Converter.reply(response);
 	}
 	
 }

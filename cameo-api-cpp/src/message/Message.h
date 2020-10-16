@@ -58,6 +58,10 @@ namespace message {
 	const int STORE_KEY_VALUE = 31;
 	const int GET_KEY_VALUE = 32;
 	const int REMOVE_KEY = 33;
+	const int REQUEST_PORT = 34;
+	const int UNAVAILABLE_PORT = 35;
+	const int RELEASE_PORT = 36;
+	const int PORTS = 37;
 
 	namespace Event {
 		constexpr const char* SYNC = "SYNC";
@@ -279,6 +283,30 @@ namespace message {
 		constexpr const char* STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
 		constexpr const char* KEY = "key"; // string
 		constexpr const char* VALUE = "value"; // string
+	}
+
+	namespace RequestPortRequest {
+		constexpr const char* ID = "id"; // int32
+	}
+
+	namespace UnavailablePortRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* PORT = "port"; // int32
+	}
+
+	namespace ReleasePortRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* PORT = "port"; // int32
+	}
+
+	namespace PortInfo {
+		constexpr const char* PORT = "port"; // int32
+		constexpr const char* STATUS = "status"; // string
+		constexpr const char* APPLICATION_NAME_ID = "applicationNameId"; // string
+	}
+
+	namespace PortInfoListResponse {
+		constexpr const char* PORT_INFO = "portInfo"; // multiple PortInfo
 	}
 }
 

@@ -46,7 +46,11 @@ public class Message {
 	public static final long STORE_KEY_VALUE = 31;
 	public static final long GET_KEY_VALUE = 32;
 	public static final long REMOVE_KEY = 33;
-		
+	public static final long REQUEST_PORT = 34;
+	public static final long UNAVAILABLE_PORT = 35;
+	public static final long RELEASE_PORT = 36;
+	public static final long PORTS = 37;
+			
 	public static class Event {
 		public static final String SYNC = "SYNC";
 		public static final String CANCEL = "CANCEL";
@@ -267,6 +271,30 @@ public class Message {
 		public static final String STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
 		public static final String KEY = "key"; // string
 		public static final String VALUE = "value"; // string
+	}
+	
+	public static class RequestPortRequest {
+		public static final String ID = "id"; // int32
+	}
+	
+	public static class UnavailablePortRequest {
+		public static final String ID = "id"; // int32
+		public static final String PORT = "port"; // int32
+	}
+	
+	public static class ReleasePortRequest {
+		public static final String ID = "id"; // int32
+		public static final String PORT = "port"; // int32
+	}
+	
+	public static class PortInfo {
+		public static final String PORT = "port"; // int32
+		public static final String STATUS = "status"; // string
+		public static final String APPLICATION_NAME_ID = "applicationNameId"; // string
+	}
+
+	public static class PortInfoListResponse {
+		public static final String PORT_INFO = "portInfo"; // multiple PortInfo
 	}
 	
 	public static String parseString(byte[] data) {

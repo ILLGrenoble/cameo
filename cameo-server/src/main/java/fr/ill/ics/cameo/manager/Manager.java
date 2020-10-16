@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +37,7 @@ import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
+import fr.ill.ics.cameo.manager.PortManager.State;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
@@ -931,5 +933,70 @@ public class Manager extends ConfigLoader {
 		} else {
 			throw new IdNotFoundException();
 		}
+	}
+
+	public int requestPort(int id) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			int port = PortManager.getInstance().requestPort(id);
+
+			Log.logger().fine("Application " + application.getNameId() + " has port " + port);
+			
+			return port;
+			
+		} else {
+			throw new IdNotFoundException();
+		}
+	}
+
+	public void setPortUnavailable(int id, int port) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			PortManager.getInstance().setPortUnavailable(port);
+			
+			Log.logger().fine("Application " + application.getNameId() + " has set port " + port + " unavailable");
+			
+		} else {
+			throw new IdNotFoundException();
+		}
+	}
+	
+	public void releasePort(int id, int port) throws IdNotFoundException {
+		
+		Application application = applicationMap.get(id);
+		
+		if (application != null) {
+			boolean removed = PortManager.getInstance().removePort(port);
+			
+			Log.logger().fine("Application " + application.getNameId() + " has released port " + port);
+			
+		} else {
+			throw new IdNotFoundException();
+		}
+	}
+	
+	public List<PortInfo> getPortList() {
+		
+		LinkedList<PortInfo> result = new LinkedList<PortInfo>();
+		
+		for (Entry<Integer, PortManager.State> p : PortManager.getInstance().getReservedPorts().entrySet()) {
+
+			int port = p.getKey();
+			String status = p.getValue().status.toString();
+			String applicationNameId = "";
+			Integer applicationId = p.getValue().applicationId;
+			
+			if (applicationId != null) {
+				applicationNameId = applicationMap.get(applicationId).getNameId();
+			}
+			
+			result.add(new PortInfo(port, status, applicationNameId));
+		}
+		
+		return result;
 	}
 }

@@ -215,6 +215,18 @@ public class Server {
 				else if (type == Message.REMOVE_KEY) {
 					reply = process.processRemoveKeyValue(request, manager);
 				}
+				else if (type == Message.REQUEST_PORT) {
+					reply = process.processRequestPortRequest(request, manager);
+				}
+				else if (type == Message.UNAVAILABLE_PORT) {
+					reply = process.processUnavailablePortRequest(request, manager);
+				}
+				else if (type == Message.RELEASE_PORT) {
+					reply = process.processReleasePortRequest(request, manager);
+				}
+				else if (type == Message.PORTS) {
+					reply = process.processPortsRequest(request, manager);
+				}
 				else {
 					System.err.println("Unknown request type " + type);
 					message.send(server);

@@ -18,6 +18,9 @@ package fr.ill.ics.cameo.manager;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public final class PortManager {
 
@@ -27,12 +30,12 @@ public final class PortManager {
 	/**
 	 * Status of an reserved port.
 	 */
-	private enum Status {ASSIGNED, UNAVAILABLE};
+	public enum Status {ASSIGNED, UNAVAILABLE};
 	
 	/**
 	 * State of an reserved port.
 	 */
-	private static class State {
+	public static class State {
 		
 		Status status = Status.ASSIGNED;
 		Integer applicationId = null;
@@ -74,6 +77,14 @@ public final class PortManager {
 	public void setBasePort(int port) {
 		basePort = port;
 	}
+	
+	/**
+	 * Get the reserved ports.
+	 * @return the reserved ports.
+	 */
+	public HashMap<Integer, State> getReservedPorts() {
+		return reservedPorts;
+	}
 
 	/**
 	 * Get the application ports. Create the entry if it does not exist.
@@ -110,6 +121,8 @@ public final class PortManager {
 				break;
 			}
 		}
+		
+		Log.logger().fine("Assigned port " + port);
 				
 		return port;
 	}
@@ -117,8 +130,9 @@ public final class PortManager {
 	/**
 	 * Remove the port.
 	 * @param port the port to remove
+	 * @return true if removed
 	 */
-	public void removePort(int port) {
+	public boolean removePort(int port) {
 		
 		// Remove the port from the reserved list.
 		State state = reservedPorts.remove(port);
@@ -128,7 +142,11 @@ public final class PortManager {
 				&& state.status == Status.ASSIGNED
 				&& state.applicationId != null) {
 			getApplicationPorts(state.applicationId).remove(port);
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -169,5 +187,5 @@ public final class PortManager {
 			state.applicationId = null;
 		}
 	}
-
+	
 }
