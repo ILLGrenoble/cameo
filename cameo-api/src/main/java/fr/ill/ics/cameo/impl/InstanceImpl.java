@@ -69,8 +69,10 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	void setOutputStreamSocket(OutputStreamSocket outputSocket) {
-		this.outputSocket = outputSocket;
-		this.outputSocket.setApplicationId(id);
+		if (outputSocket != null) {
+			this.outputSocket = outputSocket;
+			this.outputSocket.setApplicationId(id);
+		}
 	}
 	
 	void setErrorMessage(String message) {
