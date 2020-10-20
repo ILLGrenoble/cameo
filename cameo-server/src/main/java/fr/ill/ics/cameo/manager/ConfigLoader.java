@@ -46,10 +46,22 @@ public abstract class ConfigLoader {
 		String argsString = item.getAttributeValue("args");
 		int argsLength = 0;
 		String[] startArgs = null;
+		
+		// Process the args string and set it to null if it is empty.
+		if (argsString != null) {
+			argsString.trim();
+			if (argsString.isEmpty()) {
+				argsString = null;
+			}
+		}
+		
+		// Split the args string.
 		if (argsString != null) {
 			startArgs = argsString.split(" ");
 			argsLength = startArgs.length;
 		}
+				
+		// Process the arg tag and its value children.
 		List<Element> args = item.getChildren("arg");
 		String[] finalArgs = new String[argsLength + args.size()];
 		
