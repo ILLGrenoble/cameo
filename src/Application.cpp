@@ -53,6 +53,22 @@ namespace application {
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
 
+This::Com::Com(Server * server, int applicationId) :
+	m_server(server),
+	m_applicationId(applicationId) {
+}
+
+void This::Com::storeKeyValue(const std::string& key, const std::string& value) const {
+	m_server->storeKeyValue(m_applicationId, key, value);
+}
+std::string This::Com::getKeyValue(const std::string& key) const {
+	return m_server->getKeyValue(m_applicationId, key);
+}
+
+void This::Com::removeKey(const std::string& key) const {
+	m_server->removeKey(m_applicationId, key);
+}
+
 State This::parseState(const std::string& value) {
 
 	if (value == "UNKNOWN") {
@@ -207,6 +223,10 @@ void This::initApplication(int argc, char *argv[]) {
 	// Init listener.
 	setName(m_name);
 	m_server->registerEventListener(this);
+
+
+	// Init com.
+	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
 }
 
 This::~This() {
@@ -244,6 +264,10 @@ const std::string& This::getEndpoint() {
 
 Server& This::getServer() {
 	return *m_instance.m_server;
+}
+
+const This::Com& This::getCom() {
+	return *m_instance.m_com;
 }
 
 Server& This::getStarterServer() {
@@ -405,18 +429,6 @@ std::unique_ptr<Instance> This::connectToStarter() {
 	return unique_ptr<Instance>(nullptr);
 }
 
-void This::storeKeyValue(const std::string& key, const std::string& value) {
-	m_instance.m_server->storeKeyValue(m_instance.m_id, key, value);
-}
-
-std::string This::getKeyValue(const std::string& key) {
-	return m_instance.m_server->getKeyValue(m_instance.m_id, key);
-}
-
-void This::removeKey(const std::string& key) {
-	m_instance.m_server->removeKey(m_instance.m_id, key);
-}
-
 void This::stoppingFunction(StopFunctionType stop) {
 
 	application::State state = waitForStop();
@@ -434,9 +446,20 @@ void This::handleStopImpl(StopFunctionType function) {
 ///////////////////////////////////////////////////////////////////////////////
 // Instance
 
+Instance::Com::Com(Server * server) :
+	m_server(server),
+	m_applicationId(-1) {
+}
+
+std::string Instance::Com::getKeyValue(const std::string& key) const {
+	// TODO catch exceptions and rethrow an exception: TerminatedException?
+	return m_server->getKeyValue(m_applicationId, key);
+}
+
 Instance::Instance(Server * server) :
 	m_server(server),
 	m_id(-1),
+	m_com(server),
 	m_pastStates(0),
 	m_initialState(UNKNOWN),
 	m_lastState(UNKNOWN),
@@ -455,6 +478,7 @@ Instance::~Instance() {
 
 void Instance::setId(int id) {
 	m_id = id;
+	m_com.m_applicationId = id;
 }
 
 const std::string& Instance::getName() const {
@@ -500,6 +524,10 @@ std::string Instance::getNameId() const {
 	os << m_name << "." << m_id;
 
 	return os.str();
+}
+
+const Instance::Com& Instance::getCom() const {
+	return m_com;
 }
 
 bool Instance::hasResult() const {
@@ -704,11 +732,6 @@ bool Instance::getResult(std::string& result) {
 
 std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
 	return m_outputStreamSocket;
-}
-
-std::string Instance::getKeyValue(const std::string& key) {
-	// TODO catch exceptions and rethrow an exception: TerminatedException?
-	return m_server->getKeyValue(m_id, key);
 }
 
 ///////////////////////////////////////////////////////////////////////////

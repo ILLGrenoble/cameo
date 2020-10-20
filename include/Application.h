@@ -101,6 +101,25 @@ class This : private Services, private EventListener {
 	typedef std::function<void ()> StopFunctionType;
 
 public:
+	/**
+	 * Class defining the Communication Operations Manager (COM).
+	 */
+	class Com {
+
+		friend class This;
+
+	public:
+		void storeKeyValue(const std::string& key, const std::string& value) const;
+		std::string getKeyValue(const std::string& key) const;
+		void removeKey(const std::string& key) const;
+
+	private:
+		Com(Server * server, int applicationId);
+
+		Server * m_server;
+		int m_applicationId;
+	};
+
 	This();
 	~This();
 
@@ -117,6 +136,7 @@ public:
 	static int getTimeout();
 	static const std::string& getEndpoint();
 	static Server& getServer();
+	static const Com& getCom();
 
 	/**
 	 * throws StarterServerException.
@@ -146,10 +166,6 @@ public:
 	 */
 	static std::unique_ptr<Instance> connectToStarter();
 
-	static void storeKeyValue(const std::string& key, const std::string& value);
-	static std::string getKeyValue(const std::string& key);
-	static void removeKey(const std::string& key);
-
 private:
 	void initApplication(int argc, char *argv[]);
 
@@ -177,6 +193,7 @@ private:
 
 	std::unique_ptr<Server> m_server;
 	std::unique_ptr<Server> m_starterServer;
+	std::unique_ptr<Com> m_com;
 
 	std::unique_ptr<WaitingImplSet> m_waitingSet;
 	std::unique_ptr<HandlerImpl> m_stopHandler;
@@ -195,6 +212,20 @@ class Instance : private EventListener {
 public:
 	typedef std::function<void (State)> StateHandlerType;
 
+	class Com {
+
+		friend class Instance;
+
+	public:
+		std::string getKeyValue(const std::string& key) const;
+
+	private:
+		Com(Server * server);
+
+		Server * m_server;
+		int m_applicationId;
+	};
+
 	~Instance();
 
 	const std::string& getName() const;
@@ -202,6 +233,8 @@ public:
 	const std::string& getUrl() const;
 	const std::string& getEndpoint() const;
 	std::string getNameId() const;
+	const Com& getCom() const;
+
 	bool hasResult() const;
 	bool exists() const;
 	const std::string& getErrorMessage() const;
@@ -246,8 +279,6 @@ public:
 
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
 
-	std::string getKeyValue(const std::string& key);
-
 private:
 	Instance(Server * server);
 
@@ -262,6 +293,8 @@ private:
 	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
 	int m_id;
 	std::string m_errorMessage;
+	Com m_com;
+
 	int m_pastStates;
 	State m_initialState;
 	State m_lastState;
