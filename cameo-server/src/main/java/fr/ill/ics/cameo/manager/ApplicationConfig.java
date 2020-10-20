@@ -63,7 +63,7 @@ public class ApplicationConfig {
 			}
 			this.name = name;
 		} catch (NullPointerException e) {
-			System.err.println("Error with property 'name' in configuration file, 'name' is necessary");
+			System.err.println("Error with attribute 'name' in configuration file, 'name' is necessary");
 			System.exit(-1);
 		}
 	}
@@ -99,7 +99,7 @@ public class ApplicationConfig {
 			}
 			this.startExecutable = executable;
 		} catch (NullPointerException e) {
-			System.err.println("Error with property 'start_command' in configuration file, 'start_command' is necessary");
+			System.err.println("Error with attribute 'executable' in configuration file, 'executable' is necessary");
 			System.exit(-1);
 		}
 	}
@@ -160,7 +160,7 @@ public class ApplicationConfig {
 				this.startingTime = Integer.parseInt(startingTime);
 			}
 		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'starting_time' in configuration file");
+			System.err.println("Error with value of attribute 'starting_time' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -183,13 +183,13 @@ public class ApplicationConfig {
 	
 	public void setStream(String value) {
 		if (value == null) {
-			this.stream = runSingle;
+			this.stream = true;
 		} else if (value.equalsIgnoreCase("yes")) {
 			this.stream = true;
 		} else if (value.equalsIgnoreCase("no")) {
 			this.stream = false;
 		} else {
-			System.err.println("Error with property 'output_stream' in configuration file");
+			System.err.println("Error with attribute 'stream' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -225,7 +225,7 @@ public class ApplicationConfig {
 			}
 			
 		} catch (java.lang.NumberFormatException e) {
-			System.err.println("Error with property 'stopping_time' in configuration file");
+			System.err.println("Error with attribute 'stopping_time' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -243,9 +243,8 @@ public class ApplicationConfig {
 		} else if (value.equalsIgnoreCase("yes")) {
 			this.runSingle = false;
 		} else {
-			System.err.println("Error with property 'multiple' in configuration file");
+			System.err.println("Error with attribute 'multiple' in configuration file");
 			System.exit(-1);
-
 		}
 	}
 	
@@ -261,7 +260,7 @@ public class ApplicationConfig {
 		} else if (value.equalsIgnoreCase("no")) {
 			this.restart = false;
 		} else {
-			System.err.println("Error with property 'restart' in configuration file");
+			System.err.println("Error with attribute 'restart' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -291,7 +290,7 @@ public class ApplicationConfig {
 			this.passInfo = false;	
 			
 		} else {
-			System.err.println("Error with property 'pass_info' in configuration file");
+			System.err.println("Error with attribute 'pass_info' in configuration file");
 			System.exit(-1);
 		}
 	}
