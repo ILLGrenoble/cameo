@@ -97,8 +97,7 @@ public class ManagedApplication extends Application {
 			String command[] = new String[commandList.size()];
 			commandList.toArray(command);
 
-			String commandString = String.join(" ", command);
-			Log.logger().info("Application " + this.getNameId() + " executes " + commandString);
+			Log.logger().info("Application " + this.getNameId() + " executes " + commandListToString(command));
 			
 			// Create the builder from the command
 			ProcessBuilder builder = new ProcessBuilder(command);
@@ -150,8 +149,7 @@ public class ManagedApplication extends Application {
 		String command[] = new String[commandList.size()];
 		commandList.toArray(command);
 	
-		String commandString = String.join(" ", command);
-		Log.logger().info("Application " + this.getNameId() + " executes " + commandString);
+		Log.logger().info("Application " + this.getNameId() + " executes " + commandListToString(command));
 			
 		ProcessBuilder builder = new ProcessBuilder(command);
 		

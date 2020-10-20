@@ -200,6 +200,21 @@ public abstract class Application extends ApplicationConfig {
 	abstract public void start();
 	
 	/**
+	 * Create the string from the command list. The first element is the program name, the following are the arguments for which " are added around.
+	 * @param command
+	 * @return
+	 */
+	protected String commandListToString(String[] command) {
+		StringBuilder builder = new StringBuilder("$ " + command[0]);
+		
+		for (int i = 1; i < command.length; ++i) {
+			builder.append(" \"" + command[i] + "\"");
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
 	 * Launches the error executable.
 	 * It is not synchronized as it is blocking.
 	 * Arguments passed are id, error code
@@ -232,8 +247,7 @@ public abstract class Application extends ApplicationConfig {
 		String command[] = new String[commandList.size()];
 		commandList.toArray(command);
 	
-		String commandString = String.join(" ", command);
-		Log.logger().info("Application " + this.getNameId() + " executes error process " + commandString);
+		Log.logger().info("Application " + this.getNameId() + " executes error process " + commandListToString(command));
 		
 		ProcessBuilder builder = new ProcessBuilder(command);
 		
