@@ -5,13 +5,14 @@
 * Added Server.getVersion() which returns the server version.
 * Added Output.isEndOfLine() which returns true if the message terminates with an end of line.
 * Removed Configuration.getRetries().
-* Added storage methods: This.storeKeyValue(), This.getKeyValue(), This.removeKey(), Instance.getKeyValue().
+* Added storage methods.
 * Added Instance.getPastStates().
 * Added Instance.getExitCode().
 * Filter OutputStreamSocket on application id.
 * Added Server.connect() with id.
 * Output stream is synced.
 * Added Instance.waitFor(KeyValue) to wait for a key value event.
+* Added Com classes for port and storage requests.
 
 0.1.9
 -----
