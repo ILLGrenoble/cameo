@@ -466,6 +466,48 @@ std::string ServicesImpl::createRemoveKeyRequest(int id, const std::string& key)
 	return request.toString();
 }
 
+std::string ServicesImpl::createRequestPortRequest(int id) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REQUEST_PORT);
+
+	request.pushKey(message::RequestPortRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createPortUnavailableRequest(int id, int port) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::PORT_UNAVAILABLE);
+
+	request.pushKey(message::PortUnavailableRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::PortUnavailableRequest::PORT);
+	request.pushInt(port);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createReleasePortRequest(int id, int port) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RELEASE_PORT);
+
+	request.pushKey(message::ReleasePortRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::ReleasePortRequest::PORT);
+	request.pushInt(port);
+
+	return request.toString();
+}
+
 zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);

@@ -47,7 +47,7 @@ public class Message {
 	public static final long GET_KEY_VALUE = 32;
 	public static final long REMOVE_KEY = 33;
 	public static final long REQUEST_PORT = 34;
-	public static final long UNAVAILABLE_PORT = 35;
+	public static final long PORT_UNAVAILABLE = 35;
 	public static final long RELEASE_PORT = 36;
 	public static final long PORTS = 37;
 			
@@ -277,7 +277,7 @@ public class Message {
 		public static final String ID = "id"; // int32
 	}
 	
-	public static class UnavailablePortRequest {
+	public static class PortUnavailableRequest {
 		public static final String ID = "id"; // int32
 		public static final String PORT = "port"; // int32
 	}

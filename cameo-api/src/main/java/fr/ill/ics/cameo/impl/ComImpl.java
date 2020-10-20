@@ -42,4 +42,17 @@ public class ComImpl {
 	public void removeKey(String key) throws UndefinedApplicationException, UndefinedKeyException {
 		server.removeKey(applicationId, key);
 	}
+	
+	public int requestPort() throws UndefinedApplicationException {
+		return server.requestPort(applicationId);
+	}
+	
+	public void setPortUnavailable(int port) throws UndefinedApplicationException {
+		server.setPortUnavailable(applicationId, port);
+	}
+	
+	public void releasePort(int port) throws UndefinedApplicationException {
+		server.releasePort(applicationId, port);
+	}
+	
 }

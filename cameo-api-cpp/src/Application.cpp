@@ -69,6 +69,18 @@ void This::Com::removeKey(const std::string& key) const {
 	m_server->removeKey(m_applicationId, key);
 }
 
+int This::Com::requestPort() const {
+	return m_server->requestPort(m_applicationId);
+}
+
+void This::Com::setPortUnavailable(int port) const {
+	m_server->setPortUnavailable(m_applicationId, port);
+}
+
+void This::Com::releasePort(int port) const {
+	m_server->releasePort(m_applicationId, port);
+}
+
 State This::parseState(const std::string& value) {
 
 	if (value == "UNKNOWN") {

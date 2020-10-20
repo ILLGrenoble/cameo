@@ -76,6 +76,37 @@ public class Application {
 					e.printStackTrace();
 				}
 			}
+			
+			public int requestPort() {
+				try {
+					return impl.requestPort();
+				}
+				catch (UndefinedApplicationException e) {
+					// Should not happen in This.
+					e.printStackTrace();
+				}
+				return -1;
+			}
+			
+			public void setPortUnavailable(int port) {
+				try {
+					impl.setPortUnavailable(port);
+				}
+				catch (UndefinedApplicationException e) {
+					// Should not happen in This.
+					e.printStackTrace();
+				}
+			}
+			
+			public void releasePort(int port) {
+				try {
+					impl.releasePort(port);
+				}
+				catch (UndefinedApplicationException e) {
+					// Should not happen in This.
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		private static Com com;

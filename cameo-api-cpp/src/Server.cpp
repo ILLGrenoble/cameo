@@ -570,6 +570,50 @@ void Server::removeKey(int id, const std::string& key) {
 	}
 }
 
+int Server::requestPort(int id) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestPortRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+
+	return value;
+}
+
+void Server::setPortUnavailable(int id, int port) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortUnavailableRequest(id, port));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+}
+
+void Server::releasePort(int id, int port) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createReleasePortRequest(id, port));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+}
+
 std::vector<EventListener *> Server::getEventListeners() {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
 	return m_eventListeners;

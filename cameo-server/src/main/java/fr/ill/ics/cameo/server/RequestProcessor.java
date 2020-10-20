@@ -969,12 +969,12 @@ public class RequestProcessor {
 		}
 	}
 
-	public Msg processUnavailablePortRequest(JSONObject request, Manager manager) {
+	public Msg processPortUnavailableRequest(JSONObject request, Manager manager) {
 				
-		Log.logger().fine("Received UnavailablePort request");
+		Log.logger().fine("Received PortUnavailable request");
 		
-		int applicationId = JSON.getInt(request, Message.UnavailablePortRequest.ID);
-		int port = JSON.getInt(request, Message.UnavailablePortRequest.PORT);
+		int applicationId = JSON.getInt(request, Message.PortUnavailableRequest.ID);
+		int port = JSON.getInt(request, Message.PortUnavailableRequest.PORT);
 
 		try {
 			// Set the port unavailable.

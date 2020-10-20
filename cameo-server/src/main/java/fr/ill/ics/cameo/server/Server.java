@@ -218,8 +218,8 @@ public class Server {
 				else if (type == Message.REQUEST_PORT) {
 					reply = process.processRequestPortRequest(request, manager);
 				}
-				else if (type == Message.UNAVAILABLE_PORT) {
-					reply = process.processUnavailablePortRequest(request, manager);
+				else if (type == Message.PORT_UNAVAILABLE) {
+					reply = process.processPortUnavailableRequest(request, manager);
 				}
 				else if (type == Message.RELEASE_PORT) {
 					reply = process.processReleasePortRequest(request, manager);

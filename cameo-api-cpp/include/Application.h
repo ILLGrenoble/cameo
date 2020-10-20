@@ -113,6 +113,10 @@ public:
 		std::string getKeyValue(const std::string& key) const;
 		void removeKey(const std::string& key) const;
 
+		int requestPort() const;
+		void setPortUnavailable(int port) const;
+		void releasePort(int port) const;
+
 	private:
 		Com(Server * server, int applicationId);
 

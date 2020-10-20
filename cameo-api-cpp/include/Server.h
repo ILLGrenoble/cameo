@@ -133,9 +133,14 @@ private:
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
 	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName);
 	int getAvailableTimeout() const;
+
 	void storeKeyValue(int id, const std::string& key, const std::string& value);
 	std::string getKeyValue(int id, const std::string& key);
 	void removeKey(int id, const std::string& key);
+
+	int requestPort(int id);
+	void setPortUnavailable(int id, int port);
+	void releasePort(int id, int port);
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;

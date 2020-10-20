@@ -59,7 +59,7 @@ namespace message {
 	const int GET_KEY_VALUE = 32;
 	const int REMOVE_KEY = 33;
 	const int REQUEST_PORT = 34;
-	const int UNAVAILABLE_PORT = 35;
+	const int PORT_UNAVAILABLE = 35;
 	const int RELEASE_PORT = 36;
 	const int PORTS = 37;
 
@@ -289,7 +289,7 @@ namespace message {
 		constexpr const char* ID = "id"; // int32
 	}
 
-	namespace UnavailablePortRequest {
+	namespace PortUnavailableRequest {
 		constexpr const char* ID = "id"; // int32
 		constexpr const char* PORT = "port"; // int32
 	}

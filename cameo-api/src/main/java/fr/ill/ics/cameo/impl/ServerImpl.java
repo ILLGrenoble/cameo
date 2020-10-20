@@ -821,6 +821,70 @@ public class ServerImpl extends ServicesImpl {
 		}
 	}
 	
+	public int requestPort(int applicationId) throws UndefinedApplicationException {
+		
+		Zmq.Msg request = createRequestPortRequest(applicationId);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+			
+			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			if (value == -1) {
+				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+			return value;
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	public void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
+		
+		Zmq.Msg request = createPortUnavailableRequest(applicationId, port);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+			
+			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			if (value == -1) {
+				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	public void releasePort(int applicationId, int port) throws UndefinedApplicationException {
+		
+		Zmq.Msg request = createReleasePortRequest(applicationId, port);
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+			
+			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			if (value == -1) {
+				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			}
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+
 	/**
 	 * create isAlive request
 	 * 
@@ -1040,6 +1104,35 @@ public class ServerImpl extends ServicesImpl {
 		request.put(Message.TYPE, Message.REMOVE_KEY);
 		request.put(Message.RemoveKeyRequest.ID, applicationId);
 		request.put(Message.RemoveKeyRequest.KEY, key);
+
+		return message(request);
+	}
+
+	private Msg createRequestPortRequest(int applicationId) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.REQUEST_PORT);
+		request.put(Message.RequestPortRequest.ID, applicationId);
+
+		return message(request);	
+	}
+
+	private Msg createPortUnavailableRequest(int applicationId, int port) {
+
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.PORT_UNAVAILABLE);
+		request.put(Message.PortUnavailableRequest.ID, applicationId);
+		request.put(Message.PortUnavailableRequest.PORT, port);
+
+		return message(request);
+	}
+
+	private Msg createReleasePortRequest(int applicationId, int port) {
+
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.RELEASE_PORT);
+		request.put(Message.ReleasePortRequest.ID, applicationId);
+		request.put(Message.ReleasePortRequest.PORT, port);
 
 		return message(request);
 	}

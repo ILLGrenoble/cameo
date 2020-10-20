@@ -299,19 +299,7 @@ public class Server {
 		
 		return connectionChecker;
 	}
-	
-	public void storeKeyValue(int id, String key, String value) {
-		impl.storeKeyValue(id, key, value);
-	}
-	
-	public String getKeyValue(int id, String key) throws UndefinedApplicationException, UndefinedKeyException {
-		return impl.getKeyValue(id, key);
-	}
-	
-	public void removeKey(int id, String key) throws UndefinedApplicationException, UndefinedKeyException {
-		impl.removeKey(id, key);
-	}
-	
+		
 	@Override
 	public String toString() {
 		return impl.toString();
