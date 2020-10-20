@@ -48,8 +48,9 @@ public class InstanceImpl extends EventListener {
 
 	private ServerImpl server;
 	private int id = -1;
-	private String errorMessage;
 	private OutputStreamSocket outputSocket;
+	
+	private String errorMessage;
 	private int pastStates = 0;
 	private int initialState = Application.State.UNKNOWN;
 	private int lastState = Application.State.UNKNOWN;
@@ -66,6 +67,10 @@ public class InstanceImpl extends EventListener {
 
 	void setId(int id) {
 		this.id = id;
+	}
+	
+	public ComImpl createCom() {
+		return new ComImpl(server, id);
 	}
 	
 	void setOutputStreamSocket(OutputStreamSocket outputSocket) {
@@ -409,10 +414,6 @@ public class InstanceImpl extends EventListener {
 		
 	public OutputStreamSocket getOutputStreamSocket() {
 		return outputSocket;
-	}
-
-	public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
-		return server.getKeyValue(id, key);
 	}
 	
 	@Override

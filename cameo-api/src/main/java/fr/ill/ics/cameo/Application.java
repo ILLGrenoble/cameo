@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import fr.ill.ics.cameo.impl.ComImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;
 import fr.ill.ics.cameo.impl.RequestImpl;
 import fr.ill.ics.cameo.impl.RequesterImpl;
 import fr.ill.ics.cameo.impl.ResponderImpl;
+import fr.ill.ics.cameo.impl.ServerImpl;
 import fr.ill.ics.cameo.impl.SubscriberImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 
@@ -38,18 +40,58 @@ public class Application {
 	public static class This {
 		
 		static ThisImpl impl;
+		private static ServerImpl serverImpl;
 		private static Server server;
 		private static Server starterServer;
 		
+		public static class Com {
+			
+			private ComImpl impl;
+			
+			Com(ComImpl impl) {
+				this.impl = impl;
+			}
+			
+			public void storeKeyValue(String key, String value) {
+				impl.storeKeyValue(key, value);
+			}
+			
+			public String getKeyValue(String key) throws UndefinedKeyException {
+				try {
+					return impl.getKeyValue(key);
+				}
+				catch (UndefinedApplicationException e) {
+					// Should not happen in This.
+					e.printStackTrace();
+				}
+				return null;
+			}
+			
+			public void removeKey(String key) throws UndefinedKeyException {
+				try {
+					impl.removeKey(key);
+				}
+				catch (UndefinedApplicationException e) {
+					// Should not happen in This.
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		private static Com com;
+		
 		static public void init(String[] args) {
 			impl = new ThisImpl(args);
-			server = new Server(impl.getEndpoint());
 			
+			serverImpl = new ServerImpl(impl.getEndpoint(), 0);
+			server = new Server(serverImpl);
 			server.registerEventListener(impl.getEventListener());
 			
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());
-			}	
+			}
+			
+			com = new Com(new ComImpl(serverImpl, impl.getId()));
 		}
 		
 		static public String getName() {
@@ -82,7 +124,11 @@ public class Application {
 		static public Server getStarterServer() {
 			return starterServer;
 		}
-				
+		
+		static public Com getCom() {
+			return com;
+		}
+		
 		static public boolean isAvailable(int timeout) {
 			return impl.isAvailable(timeout);
 		}
@@ -169,33 +215,6 @@ public class Application {
 				return getName() + "." + getId() + "@" + getEndpoint();
 			}
 			return "";
-		}
-		
-		static public void storeKeyValue(String key, String value) {
-			server.storeKeyValue(impl.getId(), key, value);
-		}
-		
-		static public String getKeyValue(String key) throws UndefinedKeyException {
-			
-			try {
-				return server.getKeyValue(impl.getId(), key);
-			}
-			catch (UndefinedApplicationException e) {
-				// Should not happen.
-				e.printStackTrace();
-			}
-			
-			return null;
-		}
-		
-		static public void removeKey(String key) throws UndefinedKeyException {
-			try {
-				server.removeKey(impl.getId(), key);
-			}
-			catch (UndefinedApplicationException e) {
-				// Should not happen.
-				e.printStackTrace();
-			}
 		}
 	}
 	
@@ -308,15 +327,33 @@ public class Application {
 	 * There is no connection timeout as they are hidden as bad results.
 	 * The class is not thread safe and should be used in a single thread.
 	 * Question? stop/kill can be called concurrently 
-	 * @author legoc
 	 *
 	 */
 	public static class Instance {
 
 		private InstanceImpl impl;
 		
+		/**
+		 * Class defining the Communication Operations Manager (COM).
+		 */
+		public static class Com {
+			
+			private ComImpl impl;
+			
+			Com(ComImpl impl) {
+				this.impl = impl;
+			}
+			
+			public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
+				return impl.getKeyValue(key);
+			}
+		}
+		
+		private Com com;
+		
 		Instance(InstanceImpl impl) {
 			this.impl = impl;
+			this.com = new Com(impl.createCom());
 		}
 		
 		public String getName() {
@@ -337,6 +374,10 @@ public class Application {
 		
 		public String getNameId() {
 			return impl.getNameId();
+		}
+		
+		public Com getCom() {
+			return com;
 		}
 		
 		public boolean hasResult() {
@@ -447,10 +488,6 @@ public class Application {
 				
 		public OutputStreamSocket getOutputStreamSocket() {
 			return impl.getOutputStreamSocket();
-		}
-		
-		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
-			return impl.getKeyValue(key);
 		}
 		
 		@Override

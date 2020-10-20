@@ -32,7 +32,11 @@ import fr.ill.ics.cameo.impl.ServerImpl;
 public class Server {
 
 	private ServerImpl impl;
-		
+	
+	Server(ServerImpl impl) {
+		this.impl = impl;
+	}
+	
 	/**
 	 * Constructor with endpoint.
 	 * This constructor must be used when the services are related to another cameo server that
@@ -56,7 +60,7 @@ public class Server {
 	public Server(String endpoint, int timeout) {
 		impl = new ServerImpl(endpoint, timeout);
 	}
-	
+
 	public int getTimeout() {
 		return impl.getTimeout();
 	}
