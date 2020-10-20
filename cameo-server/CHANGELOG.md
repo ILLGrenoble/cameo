@@ -11,7 +11,8 @@
 * Added the argument --log-console in Server main.
 * Added storage requests and send key value events.
 * Send the exit code in the status events.
-* Enabled multiple=yes and stream=yes.
+* In config, enabled multiple=yes and stream=yes.
+* In config, stream=yes by default, even if multiple=yes.
 * Added connect with id request.
 * Added sync stream request. Moved the creation of the stream thread at an earlier location.
 * The class PortManager is responsible for managing the ports.
