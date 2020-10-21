@@ -129,21 +129,20 @@ public final class ConfigManager {
 		}
 	}
 	
+	public void setStreamPort(int port) {
+		streamPort = port;
+	}
+	
 	public int getStreamPort() {
 		return streamPort;
 	}
 	
-	public void setFirstPort(String firstPort) {
+	public void setBasePort(String portString) {
 		try {
-			port = Integer.parseInt(firstPort);
-			streamPort = port + 1;
-			if (streamPort <= 1024 || streamPort >= 40000) {
-				System.err.println("Error, the property 'port' must be a value between 1025 and 39999");
-				System.exit(-1);
-			}
-			
+			port = Integer.parseInt(portString);
+
 			// Set the base port of the port manager.
-			PortManager.getInstance().setBasePort(streamPort + 1);
+			PortManager.getInstance().setBasePort(port + 1);
 
 		} catch (java.lang.NumberFormatException e) {
 			System.err.println("Error, the property 'port' is required");

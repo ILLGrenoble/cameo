@@ -426,7 +426,7 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	return infos;
 }
 
-std::vector<application::Port> Server::getApplicationPorts() const {
+std::vector<application::Port> Server::getPorts() const {
 
 	vector<application::Port> ports;
 
@@ -445,9 +445,9 @@ std::vector<application::Port> Server::getApplicationPorts() const {
 
 		int port = info[message::PortInfo::PORT].GetInt();
 		string status = info[message::PortInfo::STATUS].GetString();
-		string application = info[message::PortInfo::APPLICATION].GetString();
+		string owner = info[message::PortInfo::OWNER].GetString();
 
-		application::Port portInfo(port, status, application);
+		application::Port portInfo(port, status, owner);
 
 		ports.push_back(portInfo);
 	}

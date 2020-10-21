@@ -94,7 +94,7 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<application::Port> getApplicationPorts() const;
+	std::vector<application::Port> getPorts() const;
 
 	/**
 	 * throws ConnectionTimeout

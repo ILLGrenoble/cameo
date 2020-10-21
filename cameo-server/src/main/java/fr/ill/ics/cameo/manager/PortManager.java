@@ -127,8 +127,6 @@ public final class PortManager {
 				break;
 			}
 		}
-		
-		Log.logger().fine("Assigned port " + port);
 				
 		return port;
 	}

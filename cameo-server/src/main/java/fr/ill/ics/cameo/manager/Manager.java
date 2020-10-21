@@ -89,25 +89,47 @@ public class Manager extends ConfigLoader {
 		Log.logger().fine("Max Id is " + MAX_ID);
 	}
 
+	private synchronized int bindSocket(Zmq.Socket socket, String applicationName) {
+		
+		// Loop until the socket is bound.
+		while (true) {
+			
+			// Request a new port.
+			int port = PortManager.getInstance().requestPort(applicationName, null);
+			
+			// Try to bind the port.
+			try {
+				socket.bind("tcp://*:" + port);
+				return port;
+			}
+			catch (Exception e) {
+				// The port is not available.
+				PortManager.getInstance().setPortUnavailable(port);
+			}
+		}
+	}
+	
 	public synchronized void initStreamSockets(Context context) {
 		
 		eventPublisher = context.createSocket(Zmq.PUB);
 		
-		int port = ConfigManager.getInstance().getStreamPort();
-		eventPublisher.bind("tcp://*:" + port);
+		int port = bindSocket(eventPublisher, "<server>:<event>");
+		ConfigManager.getInstance().setStreamPort(port);
 		
 		Log.logger().info("Status socket on port " + port);
 		
 		// iterate the application configurations
-		for (ApplicationConfig c : applicationList) {
-			Zmq.Socket streamPublisher = context.createSocket(Zmq.PUB);
-			if (c.hasStream()) {
-				port = c.getStreamPort();
-				streamPublisher.bind("tcp://*:" + port);
+		for (ApplicationConfig config : applicationList) {
+			
+			if (config.hasStream()) {
+				Zmq.Socket streamPublisher = context.createSocket(Zmq.PUB);
 				
-				streamPublishers.put(c.getName(), streamPublisher);
+				port = bindSocket(streamPublisher, "<server>:<output>" + config.getName());
+				config.setStreamPort(port);
 				
-				Log.logger().info("Application " + c.getName() + " output socket on port " + port);
+				streamPublishers.put(config.getName(), streamPublisher);
+				
+				Log.logger().info("Application " + config.getName() + " output socket on port " + port);
 			}	
 		}
 	}

@@ -416,23 +416,23 @@ public class Console {
 
 	private void processPorts() {
 		
-		List<Application.Port> ports = server.getApplicationPorts();
+		List<Application.Port> ports = server.getPorts();
 		
 		int maxOwnerLength = APPLICATION.length();
 		
 		for (Application.Port port : ports) {
-			if (port.getApplication().length() > maxOwnerLength) {
-				maxOwnerLength = port.getApplication().length();
+			if (port.getOwner().length() > maxOwnerLength) {
+				maxOwnerLength = port.getOwner().length();
 			}
 		}
 		
 		// Print headers.
-		System.out.println(cellString(PORT, 10) + cellString(STATUS, 10) + cellString(APPLICATION, maxOwnerLength));
+		System.out.println(cellString(PORT, 10) + cellString(STATUS, 15) + cellString(APPLICATION, maxOwnerLength));
 		
 		printLine(10 + 10 + maxOwnerLength);
 		
 		for (Application.Port port : ports) {
-			System.out.println(cellString(port.getPort() + "", 10) + cellString(port.getStatus(), 15) + cellString(port.getApplication(), maxOwnerLength));
+			System.out.println(cellString(port.getPort() + "", 10) + cellString(port.getStatus(), 15) + cellString(port.getOwner(), maxOwnerLength));
 		}
 	}
 		

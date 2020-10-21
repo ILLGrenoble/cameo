@@ -632,13 +632,13 @@ public class Application {
 		
 		private int port;
 		private String status;
-		private String application;
+		private String owner;
 		
-		public Port(int port, String status, String application) {
+		public Port(int port, String status, String owner) {
 			super();
 			this.port = port;
 			this.status = status;
-			this.application = application;
+			this.owner = owner;
 		}
 
 		public int getPort() {
@@ -649,8 +649,8 @@ public class Application {
 			return status;
 		}
 
-		public String getApplication() {
-			return application;
+		public String getOwner() {
+			return owner;
 		}
 		
 	}

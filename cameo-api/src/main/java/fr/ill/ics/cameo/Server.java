@@ -238,8 +238,8 @@ public class Server {
 		return impl.getApplicationInfos(name);		
 	}
 	
-	public List<Application.Port> getApplicationPorts() {
-		return impl.getApplicationPorts();
+	public List<Application.Port> getPorts() {
+		return impl.getPorts();
 	}
 	
 	/**

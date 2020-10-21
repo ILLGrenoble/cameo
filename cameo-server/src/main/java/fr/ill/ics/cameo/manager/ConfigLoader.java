@@ -130,7 +130,7 @@ public abstract class ConfigLoader {
 		// Set the attributes
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue("max_applications"));
 		ConfigManager.getInstance().setHost(root.getAttributeValue("host"));
-		ConfigManager.getInstance().setFirstPort(root.getAttributeValue("port"));
+		ConfigManager.getInstance().setBasePort(root.getAttributeValue("port"));
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue("log_level"));
 		
@@ -189,10 +189,6 @@ public abstract class ConfigLoader {
 			application.setRestart(item.getAttributeValue("restart"));
 			application.setEnvironmentFile(item.getAttributeValue("environment"));
 			
-			if (application.hasStream()) {
-				application.setStreamPort(PortManager.getInstance().requestPort(applicationName, null));
-			}
-
 			// Start command
 			Element startItem = item.getChild("start");
 			if (startItem == null) {

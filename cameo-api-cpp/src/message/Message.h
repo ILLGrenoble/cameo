@@ -302,7 +302,7 @@ namespace message {
 	namespace PortInfo {
 		constexpr const char* PORT = "port"; // int32
 		constexpr const char* STATUS = "status"; // string
-		constexpr const char* APPLICATION = "application"; // string
+		constexpr const char* OWNER = "owner"; // string
 	}
 
 	namespace PortInfoListResponse {

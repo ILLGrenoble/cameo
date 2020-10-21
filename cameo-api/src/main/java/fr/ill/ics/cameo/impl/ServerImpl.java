@@ -885,7 +885,7 @@ public class ServerImpl extends ServicesImpl {
 		}
 	}
 	
-	public List<Application.Port> getApplicationPorts() {
+	public List<Application.Port> getPorts() {
 		
 		Zmq.Msg request = createPortsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
@@ -904,7 +904,7 @@ public class ServerImpl extends ServicesImpl {
 								
 				int port = JSON.getInt(info, Message.PortInfo.PORT);
 				String status = JSON.getString(info, Message.PortInfo.STATUS);
-				String owner = JSON.getString(info, Message.PortInfo.APPLICATION);
+				String owner = JSON.getString(info, Message.PortInfo.OWNER);
 			
 				ports.add(new Application.Port(port, status, owner));
 			}
