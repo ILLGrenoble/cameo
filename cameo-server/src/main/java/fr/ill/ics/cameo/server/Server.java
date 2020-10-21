@@ -82,7 +82,14 @@ public class Server {
 		// Create the context.
 		context = new Zmq.Context();
 		Zmq.Socket server = context.createSocket(Zmq.REP);
-		server.bind(ConfigManager.getInstance().getEndpoint());
+		
+		try {
+			server.bind(ConfigManager.getInstance().getEndpoint());
+		}
+		catch (Exception e) {
+			Log.logger().severe("Cannot start server on port " + ConfigManager.getInstance().getPort() + ": " + e.getMessage());
+			System.exit(1);
+		}
 
 		Log.logger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
 
