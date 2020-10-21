@@ -1249,6 +1249,27 @@ int Info::getPid() const {
 	return m_pid;
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Port
+
+Port::Port(int port, const std::string& status, const std::string& application) :
+	m_port(port),
+	m_status(status),
+	m_application(application) {
+}
+
+int Port::getPort() const {
+	return m_port;
+}
+
+const std::string& Port::getStatus() const {
+	return m_status;
+}
+
+const std::string& Port::getApplication() const {
+	return m_application;
+}
+
 std::string toString(cameo::application::State applicationStates) {
 
 	vector<string> states;
@@ -1391,6 +1412,15 @@ std::ostream& operator<<(std::ostream& os, const application::Info& info) {
 			<< ", id=" << info.m_id
 			<< ", state=" << info.m_applicationState
 			<< ", args=" << info.m_args << "]";
+
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const application::Port& port) {
+
+	os << "[port=" << port.m_port
+			<< ", status=" << port.m_status
+			<< ", application=" << port.m_application << "]";
 
 	return os;
 }
