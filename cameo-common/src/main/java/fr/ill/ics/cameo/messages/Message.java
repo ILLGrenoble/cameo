@@ -290,7 +290,7 @@ public class Message {
 	public static class PortInfo {
 		public static final String PORT = "port"; // int32
 		public static final String STATUS = "status"; // string
-		public static final String APPLICATION_NAME_ID = "applicationNameId"; // string
+		public static final String APPLICATION = "application"; // string
 	}
 
 	public static class PortInfoListResponse {

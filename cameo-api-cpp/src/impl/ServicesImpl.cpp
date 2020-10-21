@@ -508,6 +508,15 @@ std::string ServicesImpl::createReleasePortRequest(int id, int port) {
 	return request.toString();
 }
 
+std::string ServicesImpl::createPortsRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::PORTS);
+
+	return request.toString();
+}
+
 zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);

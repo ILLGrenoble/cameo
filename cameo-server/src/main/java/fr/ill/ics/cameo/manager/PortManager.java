@@ -38,9 +38,11 @@ public final class PortManager {
 	public static class State {
 		
 		Status status = Status.ASSIGNED;
+		String applicationName = null;
 		Integer applicationId = null;
 		
-		public State(int applicationId) {
+		public State(String applicationName, Integer applicationId) {
+			this.applicationName = applicationName;
 			this.applicationId = applicationId;
 		}
 	}
@@ -103,7 +105,7 @@ public final class PortManager {
 	 * Request a non-reserved port. However the port can be unavailable because another application opened it.
 	 * @return a port
 	 */
-	public int requestPort(int applicationId) {
+	public int requestPort(String applicationName, Integer applicationId) {
 
 		// Loop from the base port.
 		int port = basePort;
@@ -115,8 +117,12 @@ public final class PortManager {
 			}
 			else {
 				// Found a port. Add it in the reserved ports and application ports.
-				reservedPorts.put(port, new State(applicationId));
-				getApplicationPorts(applicationId).add(port);
+				reservedPorts.put(port, new State(applicationName, applicationId));
+				
+				// Add the port in the application map if the id exists.
+				if (applicationId != null) {
+					getApplicationPorts(applicationId).add(port);
+				}
 				
 				break;
 			}
@@ -126,7 +132,7 @@ public final class PortManager {
 				
 		return port;
 	}
-	
+			
 	/**
 	 * Remove the port.
 	 * @param port the port to remove
@@ -183,8 +189,7 @@ public final class PortManager {
 				getApplicationPorts(state.applicationId).remove(port);
 			}
 			
-			// Set the application id to null;
-			state.applicationId = null;
+			// Do not set the application id and name to null, so that we can memorize the application which set the port unavailable;
 		}
 	}
 	

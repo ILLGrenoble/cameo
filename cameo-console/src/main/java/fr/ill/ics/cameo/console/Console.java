@@ -84,6 +84,8 @@ public class Console {
 	private static String PID = "PID";
 	private static String STATUS = "Status";
 	private static String ARGS = "Args";
+	private static String PORT = "Port";
+	private static String APPLICATION = "Application";
 	
 	
 	public static String cellString(String name, int length) {
@@ -94,7 +96,15 @@ public class Console {
 		}
 		return result;
 	}
-		
+
+	public static void printLine(int length) {
+		String line = "";
+		for (int i = 0; i < length; ++i) {
+			line += '-';
+		}
+		System.out.println(line);
+	}
+	
 	private void defineEndpoint(String[] args) {
 		
 		// Searching for endpoint.
@@ -280,6 +290,9 @@ public class Console {
 			else if (commandName.equals("list")) {
 				processList();
 			}
+			else if (commandName.equals("ports")) {
+				processPorts();
+			}
 			else if (commandName.equals("exec")) {
 				processExec();
 			}
@@ -357,12 +370,7 @@ public class Console {
 		
 		// Print headers.
 		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
-		
-		String line = "";
-		for (int i = 0; i < maxNameLength + maxDescriptionLength + 1; ++i) {
-			line += '-';
-		}
-		System.out.println(line);
+		printLine(maxNameLength + maxDescriptionLength + 1);
 		
 		for (Application.Configuration config : applicationConfigs) {
 			System.out.println(cellString(config.getName(), maxNameLength) + " " + config.getDescription());
@@ -388,12 +396,7 @@ public class Console {
 		// Print headers.
 		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(ID, 10) + cellString(PID, 10) + cellString(STATUS, 20) + cellString(ARGS, maxArgsLength));
 		
-		String line = "";
-		int length = maxNameLength + 1 + 10 + 10 + 20 + maxArgsLength;
-		for (int i = 0; i < length; ++i) {
-			line += '-';
-		}
-		System.out.println(line);
+		printLine(maxNameLength + 1 + 10 + 10 + 20 + maxArgsLength);
 		
 		for (Application.Info info : applicationInstances) {
 			
@@ -408,6 +411,28 @@ public class Console {
 					+ cellString(Application.State.toString(info.getApplicationState()), 20)
 					+ info.getArgs());
 			}
+		}
+	}
+
+	private void processPorts() {
+		
+		List<Application.Port> ports = server.getApplicationPorts();
+		
+		int maxOwnerLength = APPLICATION.length();
+		
+		for (Application.Port port : ports) {
+			if (port.getApplication().length() > maxOwnerLength) {
+				maxOwnerLength = port.getApplication().length();
+			}
+		}
+		
+		// Print headers.
+		System.out.println(cellString(PORT, 10) + cellString(STATUS, 10) + cellString(APPLICATION, maxOwnerLength));
+		
+		printLine(10 + 10 + maxOwnerLength);
+		
+		for (Application.Port port : ports) {
+			System.out.println(cellString(port.getPort() + "", 10) + cellString(port.getStatus(), 15) + cellString(port.getApplication(), maxOwnerLength));
 		}
 	}
 		
@@ -792,6 +817,7 @@ public class Console {
 		System.out.println("    [options]");
 		System.out.println("    -c, --console              Display the console version.");
 		System.out.println("  list                         Display the available applications.");
+		System.out.println("  ports                        Display the application ports.");
 		System.out.println("  apps <name>                  Display all the started applications.");
 		System.out.println("");
 		

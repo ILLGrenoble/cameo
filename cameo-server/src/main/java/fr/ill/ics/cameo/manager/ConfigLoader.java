@@ -165,7 +165,9 @@ public abstract class ConfigLoader {
 			
 			ApplicationConfig application = new ApplicationConfig();
 			
-			application.setName(item.getAttributeValue("name"));
+			String applicationName = item.getAttributeValue("name");
+			
+			application.setName(applicationName);
 			application.setDescription(item.getAttributeValue("description"));
 			application.setDirectory(item.getAttributeValue("working_directory"));
 			application.setErrorExecutable(item.getAttributeValue("error_command"));
@@ -188,7 +190,7 @@ public abstract class ConfigLoader {
 			application.setEnvironmentFile(item.getAttributeValue("environment"));
 			
 			if (application.hasStream()) {
-				application.setStreamPort(PortManager.getInstance().requestPort(0));
+				application.setStreamPort(PortManager.getInstance().requestPort(applicationName, null));
 			}
 
 			// Start command

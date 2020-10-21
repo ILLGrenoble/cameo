@@ -628,6 +628,33 @@ public class Application {
 
 	}
 	
+	public static class Port {
+		
+		private int port;
+		private String status;
+		private String application;
+		
+		public Port(int port, String status, String application) {
+			super();
+			this.port = port;
+			this.status = status;
+			this.application = application;
+		}
+
+		public int getPort() {
+			return port;
+		}
+
+		public String getStatus() {
+			return status;
+		}
+
+		public String getApplication() {
+			return application;
+		}
+		
+	}
+	
 	public static class Output {
 		
 		private int id;

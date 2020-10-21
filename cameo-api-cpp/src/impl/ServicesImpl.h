@@ -68,6 +68,7 @@ public:
 	std::string createRequestPortRequest(int id);
 	std::string createPortUnavailableRequest(int id, int port);
 	std::string createReleasePortRequest(int id, int port);
+	std::string createPortsRequest() const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);

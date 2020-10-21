@@ -384,8 +384,8 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 	json::Object response;
 	json::parse(response, reply.get());
 
-	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
-	json::Value::Array array = applicationInfo.GetArray();
+	json::Value& applicationInfos = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfos.GetArray();
 	size_t size = array.Size();
 
 	for (int i = 0; i < size; ++i) {
@@ -424,6 +424,35 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	}
 
 	return infos;
+}
+
+std::vector<application::Port> Server::getApplicationPorts() const {
+
+	vector<application::Port> ports;
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortsRequest());
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	json::Value& portInfos = response[message::PortInfoListResponse::PORT_INFO];
+	json::Value::Array array = portInfos.GetArray();
+	size_t size = array.Size();
+
+	for (int i = 0; i < size; ++i) {
+		json::Value::Object info = array[i].GetObject();
+
+		int port = info[message::PortInfo::PORT].GetInt();
+		string status = info[message::PortInfo::STATUS].GetString();
+		string application = info[message::PortInfo::APPLICATION].GetString();
+
+		application::Port portInfo(port, status, application);
+
+		ports.push_back(portInfo);
+	}
+
+	return ports;
 }
 
 application::State Server::getActualState(int id) const {

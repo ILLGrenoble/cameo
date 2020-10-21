@@ -884,6 +884,38 @@ public class ServerImpl extends ServicesImpl {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	}
+	
+	public List<Application.Port> getApplicationPorts() {
+		
+		Zmq.Msg request = createPortsRequest();
+		Zmq.Msg reply = requestSocket.request(request);
+		
+		LinkedList<Application.Port> ports = new LinkedList<Application.Port>();
+		
+		try {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+						
+			// Get the list of application info.
+			JSONArray list = JSON.getArray(response, Message.PortInfoListResponse.PORT_INFO);
+			
+			for (int i = 0; i < list.size(); ++i) {
+				JSONObject info = (JSONObject)list.get(i);
+								
+				int port = JSON.getInt(info, Message.PortInfo.PORT);
+				String status = JSON.getString(info, Message.PortInfo.STATUS);
+				String owner = JSON.getString(info, Message.PortInfo.APPLICATION);
+			
+				ports.add(new Application.Port(port, status, owner));
+			}
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+		
+		
+		return ports;
+	}
 
 	/**
 	 * create isAlive request
@@ -1133,6 +1165,14 @@ public class ServerImpl extends ServicesImpl {
 		request.put(Message.TYPE, Message.RELEASE_PORT);
 		request.put(Message.ReleasePortRequest.ID, applicationId);
 		request.put(Message.ReleasePortRequest.PORT, port);
+
+		return message(request);
+	}
+	
+	private Zmq.Msg createPortsRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.PORTS);
 
 		return message(request);
 	}

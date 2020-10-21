@@ -94,6 +94,11 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
+	std::vector<application::Port> getApplicationPorts() const;
+
+	/**
+	 * throws ConnectionTimeout
+	 */
 	application::State getActualState(int id) const;
 
 	/**

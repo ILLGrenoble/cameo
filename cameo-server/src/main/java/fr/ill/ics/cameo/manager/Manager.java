@@ -512,11 +512,11 @@ public class Manager extends ConfigLoader {
 	 * send parameters to an application
 	 * 
 	 * @param id
-	 * @param parametersToSend
+	 * @param inputs
 	 * @throws IdNotFoundException
 	 * @throws UnmanagedApplicationException 
 	 */
-	public synchronized void writeToInputStream(int id, String[] parametersToSend) throws IdNotFoundException, UnmanagedApplicationException {
+	public synchronized void writeToInputStream(int id, String[] inputs) throws IdNotFoundException, UnmanagedApplicationException {
 		
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
@@ -530,19 +530,19 @@ public class Manager extends ConfigLoader {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(application.getProcess().getOutputStream()));
 			
 			// build simple string from parameters
-			String parametersString = "";
-			for (int i = 0; i < parametersToSend.length - 1; i++) {
-				parametersString += parametersToSend[i] + " ";
+			String inputString = "";
+			for (int i = 0; i < inputs.length - 1; i++) {
+				inputString += inputs[i] + " ";
 			}
-			parametersString += parametersToSend[parametersToSend.length - 1];
+			inputString += inputs[inputs.length - 1];
 			
 			// send the parameters string
 			try {
-				writer.write(parametersString);
+				writer.write(inputString);
 				writer.flush();
 				
 			} catch (IOException e) {
-				Log.logger().severe("Enable to send parameters to application " + application.getNameId());
+				Log.logger().severe("Enable to write to input for application " + application.getNameId());
 				try {
 					writer.close();
 				} catch (IOException ec) {
@@ -671,7 +671,7 @@ public class Manager extends ConfigLoader {
 			return -1;
 		}
 		
-		int port = PortManager.getInstance().requestPort(id);
+		int port = PortManager.getInstance().requestPort(application.getName(), id);
 		ports.put(portName, port);
 
 		sendPort(id, application.getName(), portName);
@@ -736,8 +736,8 @@ public class Manager extends ConfigLoader {
 		// create 2 new ports because we need:
 		// - publisher port
 		// - synchronizer port
-		int publisherPort = PortManager.getInstance().requestPort(id);
-		int synchronizerPort = PortManager.getInstance().requestPort(id);
+		int publisherPort = PortManager.getInstance().requestPort(application.getName(), id);
+		int synchronizerPort = PortManager.getInstance().requestPort(application.getName(), id);
 
 		HashMap<String, Integer> ports = application.getPorts();
 		
@@ -940,7 +940,7 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		
 		if (application != null) {
-			int port = PortManager.getInstance().requestPort(id);
+			int port = PortManager.getInstance().requestPort(application.getName(), id);
 
 			Log.logger().fine("Application " + application.getNameId() + " has port " + port);
 			
@@ -987,14 +987,20 @@ public class Manager extends ConfigLoader {
 
 			int port = p.getKey();
 			String status = p.getValue().status.toString();
-			String applicationNameId = "";
+			String application = "";
+			
+			String applicationName = p.getValue().applicationName;
 			Integer applicationId = p.getValue().applicationId;
 			
-			if (applicationId != null) {
-				applicationNameId = applicationMap.get(applicationId).getNameId();
+			if (applicationName != null) {
+				application = applicationName;
+				
+				if (applicationId != null) {
+					application += "." + applicationId;
+				}
 			}
 			
-			result.add(new PortInfo(port, status, applicationNameId));
+			result.add(new PortInfo(port, status, application));
 		}
 		
 		return result;

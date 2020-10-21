@@ -579,6 +579,26 @@ private:
 	std::string m_name;
 };
 
+///////////////////////////////////////////////////////////////////////////
+// Port
+
+class Port {
+
+	friend std::ostream& operator<<(std::ostream&, const Port&);
+
+public:
+	Port(int port, const std::string& status, const std::string& application);
+
+	int getPort() const;
+	const std::string& getStatus() const;
+	const std::string& getApplication() const;
+
+private:
+	int m_port;
+	std::string m_status;
+	std::string m_application;
+};
+
 std::string toString(cameo::application::State applicationStates);
 std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Instance&);
@@ -589,6 +609,7 @@ std::ostream& operator<<(std::ostream&, const cameo::application::Responder&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Requester&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Configuration&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Info&);
+std::ostream& operator<<(std::ostream&, const cameo::application::Port&);
 
 }
 }

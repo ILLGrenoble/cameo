@@ -15,6 +15,7 @@
 * Quit the exec command without killing the application by typing Q.
 * Exit with the exit code when the application executed or connected exits with an error.
 * Added command connect with id.
+* Added command ports.
 
 0.1.4
 -----

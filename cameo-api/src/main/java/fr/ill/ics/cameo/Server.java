@@ -238,6 +238,10 @@ public class Server {
 		return impl.getApplicationInfos(name);		
 	}
 	
+	public List<Application.Port> getApplicationPorts() {
+		return impl.getApplicationPorts();
+	}
+	
 	/**
 	 * 
 	 * @param id

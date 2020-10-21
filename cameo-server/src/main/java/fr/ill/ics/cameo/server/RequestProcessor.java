@@ -1041,7 +1041,9 @@ public class RequestProcessor {
 			JSONObject portInfo = new JSONObject();
 			portInfo.put(Message.PortInfo.PORT, port.getPort());
 			portInfo.put(Message.PortInfo.STATUS, port.getStatus());
-			portInfo.put(Message.PortInfo.APPLICATION_NAME_ID, port.getApplicationNameId());
+			portInfo.put(Message.PortInfo.APPLICATION, port.getApplicationNameId());
+			
+			array.add(portInfo);
 		}
 		
 		response.put(Message.PortInfoListResponse.PORT_INFO, array);
