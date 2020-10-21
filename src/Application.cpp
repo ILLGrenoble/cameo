@@ -1252,10 +1252,10 @@ int Info::getPid() const {
 ///////////////////////////////////////////////////////////////////////////
 // Port
 
-Port::Port(int port, const std::string& status, const std::string& application) :
+Port::Port(int port, const std::string& status, const std::string& owner) :
 	m_port(port),
 	m_status(status),
-	m_application(application) {
+	m_owner(owner) {
 }
 
 int Port::getPort() const {
@@ -1266,8 +1266,8 @@ const std::string& Port::getStatus() const {
 	return m_status;
 }
 
-const std::string& Port::getApplication() const {
-	return m_application;
+const std::string& Port::getOwner() const {
+	return m_owner;
 }
 
 std::string toString(cameo::application::State applicationStates) {
@@ -1420,7 +1420,7 @@ std::ostream& operator<<(std::ostream& os, const application::Port& port) {
 
 	os << "[port=" << port.m_port
 			<< ", status=" << port.m_status
-			<< ", application=" << port.m_application << "]";
+			<< ", owner=" << port.m_owner << "]";
 
 	return os;
 }

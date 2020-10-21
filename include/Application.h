@@ -587,16 +587,16 @@ class Port {
 	friend std::ostream& operator<<(std::ostream&, const Port&);
 
 public:
-	Port(int port, const std::string& status, const std::string& application);
+	Port(int port, const std::string& status, const std::string& owner);
 
 	int getPort() const;
 	const std::string& getStatus() const;
-	const std::string& getApplication() const;
+	const std::string& getOwner() const;
 
 private:
 	int m_port;
 	std::string m_status;
-	std::string m_application;
+	std::string m_owner;
 };
 
 std::string toString(cameo::application::State applicationStates);
