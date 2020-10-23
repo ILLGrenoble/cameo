@@ -65,6 +65,12 @@ write_basic_package_version_file(cameoConfigVersion.cmake
   VERSION ${PROJECT_VERSION}
   )
 
+#------------------------------------------------------------
+# Tests
+#------------------------------------------------------------
+
+enable_testing()
+add_subdirectory(tests)
 
 #------------------------------------------------------------
 # Install
