@@ -50,7 +50,7 @@ public class Message {
 	public static final long PORT_UNAVAILABLE = 35;
 	public static final long RELEASE_PORT = 36;
 	public static final long PORTS = 37;
-			
+				
 	public static class Event {
 		public static final String SYNC = "SYNC";
 		public static final String CANCEL = "CANCEL";
@@ -62,6 +62,13 @@ public class Message {
 		public static final String PORT = "PORT";
 		public static final String PUBLISHER = "PUBLISHER";
 		public static final String KEYVALUE = "KEYVALUE";
+	}
+	
+	public static class ArgumentInfo {
+		public static final String NAME = "name"; // string
+		public static final String ID = "id"; // int32
+		public static final String SERVER = "server"; // string
+		public static final String STARTER = "starter"; // object
 	}
 	
 	public static class SyncStreamRequest {

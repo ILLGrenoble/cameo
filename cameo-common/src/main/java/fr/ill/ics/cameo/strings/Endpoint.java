@@ -23,12 +23,7 @@ public class Endpoint {
 	
 	public static Endpoint parse(String string) {
 		
-		if (!string.startsWith("tcp://")) {
-			throw new BadFormatException("Bad format for endpoint " + string);
-		}
-		
-		String substring = string.substring(6);
-		String[] tokens = substring.split(":");
+		String[] tokens = string.split(":");
 		
 		if (tokens.length != 2) {
 			throw new BadFormatException("Bad format for endpoint " + string);
@@ -49,7 +44,7 @@ public class Endpoint {
 
 	@Override
 	public String toString() {
-		return "tcp://" + address + ":" + port;
+		return address + ":" + port;
 	}
 	
 }

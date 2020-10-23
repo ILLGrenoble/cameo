@@ -76,6 +76,13 @@ namespace message {
 		constexpr const char* KEYVALUE = "KEYVALUE";
 	}
 
+	namespace ArgumentInfo {
+		constexpr const char* NAME = "name"; // string
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* SERVER = "server"; // string
+		constexpr const char* STARTER = "starter"; // object
+	}
+
 	namespace SyncStreamRequest {
 		constexpr const char* NAME = "name"; // string
 	}
