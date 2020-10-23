@@ -1,7 +1,25 @@
-add_executable(teststrings TestStrings.cpp)
+set(CMAKE_CXX_STANDARD 17)
 
-target_link_libraries(teststrings PUBLIC
+add_executable(testendpoint TestEndpoint.cpp)
+
+target_link_libraries(testendpoint PUBLIC
 	cameo
 	)
 	
-add_test(cameo teststrings)
+add_test(endpoint testendpoint)
+
+add_executable(testname TestName.cpp)
+
+target_link_libraries(testname PUBLIC
+	cameo
+	)
+	
+add_test(name testname)
+
+add_executable(testnameid TestNameId.cpp)
+
+target_link_libraries(testnameid PUBLIC
+	cameo
+	)
+	
+add_test(nameid testnameid)
