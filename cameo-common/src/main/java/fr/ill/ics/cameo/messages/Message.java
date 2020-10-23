@@ -64,7 +64,7 @@ public class Message {
 		public static final String KEYVALUE = "KEYVALUE";
 	}
 	
-	public static class ArgumentInfo {
+	public static class ApplicationIdentity {
 		public static final String NAME = "name"; // string
 		public static final String ID = "id"; // int32
 		public static final String SERVER = "server"; // string

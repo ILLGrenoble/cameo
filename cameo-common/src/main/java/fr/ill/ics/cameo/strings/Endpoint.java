@@ -4,13 +4,25 @@ import fr.ill.ics.cameo.BadFormatException;
 
 public class Endpoint {
 
+	private String protocol = "tcp";
 	private String address;
 	private int port;
+	
+	public Endpoint(String protocol, String address, int port) {
+		super();
+		this.protocol = protocol;
+		this.address = address;
+		this.port = port;
+	}
 	
 	public Endpoint(String address, int port) {
 		super();
 		this.address = address;
 		this.port = port;
+	}
+	
+	public String getProtocol() {
+		return protocol;
 	}
 	
 	public String getAddress() {
@@ -23,33 +35,38 @@ public class Endpoint {
 	
 	public static Endpoint parse(String string) {
 		
-		if (!string.startsWith("tcp://")) {
+		String[] tokens = string.split(":");
+		
+		if (tokens.length != 3) {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
-		String substring = string.substring(6);
-		String[] tokens = substring.split(":");
+		String protocol = tokens[0];
+		String substring = tokens[1];
+		String address;
 		
-		if (tokens.length != 2) {
+		try {
+			address = substring.substring(2);
+		}
+		catch (IndexOutOfBoundsException e) {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
-		String address = tokens[0];
 		int port = 0;
 		
 		try {
-			port = Integer.parseInt(tokens[1]);
+			port = Integer.parseInt(tokens[2]);
 		}
 		catch (NumberFormatException e) {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
-		return new Endpoint(address, port);
+		return new Endpoint(protocol, address, port);
 	}
 
 	@Override
 	public String toString() {
-		return "tcp://" + address + ":" + port;
+		return protocol + "://" + address + ":" + port;
 	}
 	
 }

@@ -25,6 +25,10 @@ public class JSON {
 	public static boolean getBoolean(JSONObject object, String key) {
 		return (Boolean)object.get(key);
 	}
+
+	public static JSONObject getObject(JSONObject object, String key) {
+		return (JSONObject)object.get(key);
+	}
 	
 	public static JSONArray getArray(JSONObject object, String key) {
 		return (JSONArray)object.get(key);
@@ -54,4 +58,5 @@ public class JSON {
 	public static JSONObject parse(String string) throws ParseException {
 		return (JSONObject)new JSONParser().parse(string);
 	}
+
 }

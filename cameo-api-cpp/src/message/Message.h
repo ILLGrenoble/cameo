@@ -76,7 +76,7 @@ namespace message {
 		constexpr const char* KEYVALUE = "KEYVALUE";
 	}
 
-	namespace ArgumentInfo {
+	namespace ApplicationIdentity {
 		constexpr const char* NAME = "name"; // string
 		constexpr const char* ID = "id"; // int32
 		constexpr const char* SERVER = "server"; // string
