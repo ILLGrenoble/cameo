@@ -28,8 +28,10 @@ std::vector<std::string> split(const std::string& str, char c);
 class Endpoint {
 
 public:
+	Endpoint(const std::string& protocol, const std::string& address, int port);
 	Endpoint(const std::string& address, int port);
 
+	const std::string& getProtocol() const;
 	const std::string& getAddress() const;
 	int getPort() const;
 
@@ -38,8 +40,43 @@ public:
 	std::string toString() const;
 
 private:
+	std::string m_protocol;
 	std::string m_address;
 	int m_port;
+};
+
+class ApplicationIdentity {
+
+public:
+	ApplicationIdentity(const std::string& name, int id, const Endpoint& endpoint);
+	ApplicationIdentity(const std::string& name, const Endpoint& endpoint);
+
+	const std::string& getName() const;
+	const std::optional<int>& getId() const;
+	const Endpoint& getEndpoint() const;
+
+	std::string toJSONString() const;
+
+private:
+	std::string m_name;
+	std::optional<int> m_id;
+	Endpoint m_endpoint;
+};
+
+class ApplicationWithStarterIdentity {
+
+public:
+	ApplicationWithStarterIdentity(const ApplicationIdentity& application, const ApplicationIdentity& starter);
+	ApplicationWithStarterIdentity(const ApplicationIdentity& application);
+
+	const ApplicationIdentity& getApplication() const;
+	const std::optional<ApplicationIdentity>& getStarter() const;
+
+	std::string toJSONString() const;
+
+private:
+	ApplicationIdentity m_application;
+	std::optional<ApplicationIdentity> m_starter;
 };
 
 }

@@ -13,17 +13,25 @@ int main(int argc, char *argv[]) {
 
 	endpoint = Endpoint::parse("tcp://gamma75:9999");
 
+	CAMEO_ASSERT_TRUE("tcp" == endpoint.getProtocol());
+	CAMEO_ASSERT_TRUE("gamma75" == endpoint.getAddress());
+	CAMEO_ASSERT_EQUAL(9999, endpoint.getPort());
+
+	endpoint = Endpoint::parse("ws://gamma75:9999");
+
+	CAMEO_ASSERT_TRUE("ws" == endpoint.getProtocol());
 	CAMEO_ASSERT_TRUE("gamma75" == endpoint.getAddress());
 	CAMEO_ASSERT_EQUAL(9999, endpoint.getPort());
 
 	endpoint = Endpoint::parse("tcp://175.29.285.15:9999");
 
+	CAMEO_ASSERT_TRUE("tcp" == endpoint.getProtocol());
 	CAMEO_ASSERT_TRUE("175.29.285.15" == endpoint.getAddress());
 	CAMEO_ASSERT_EQUAL(9999, endpoint.getPort());
 
 	bool error = false;
 	try {
-		Endpoint::parse("tcp:/gamma75:9999");
+		Endpoint::parse("gamma75:9999");
 	}
 	catch (...) {
 		error = true;

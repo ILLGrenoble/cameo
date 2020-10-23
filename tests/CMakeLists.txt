@@ -7,3 +7,21 @@ target_link_libraries(testendpoint PUBLIC
 	)
 	
 add_test(endpoint testendpoint)
+
+
+add_executable(testapplicationidentity TestApplicationIdentity.cpp)
+
+target_link_libraries(testapplicationidentity PUBLIC
+	cameo
+	)
+	
+add_test(applicationidentity testapplicationidentity)
+
+
+add_executable(testapplicationwithstarteridentity TestApplicationWithStarterIdentity.cpp)
+
+target_link_libraries(testapplicationwithstarteridentity PUBLIC
+	cameo
+	)
+	
+add_test(applicationwithstarteridentity testapplicationwithstarteridentity)
