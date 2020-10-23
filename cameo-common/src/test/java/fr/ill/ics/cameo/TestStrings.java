@@ -21,7 +21,7 @@ public class TestStrings {
 		
 		Endpoint endpoint = Endpoint.parse("tcp://gamma75:9999");
 		
-		assertEquals("gamma75", endpoint.getHostname());
+		assertEquals("gamma75", endpoint.getAddress());
 		assertEquals(9999, endpoint.getPort());
 
 		boolean error = false;
@@ -89,14 +89,21 @@ public class TestStrings {
 		
 		assertEquals("my-app", identity.getNameId().getName());
 		assertEquals(Integer.valueOf(31), identity.getNameId().getId());
-		assertEquals("gamma75", identity.getEndpoint().getHostname());
+		assertEquals("gamma75", identity.getEndpoint().getAddress());
+		assertEquals(9999, identity.getEndpoint().getPort());
+		
+		identity = ApplicationIdentity.parse("my-app.31@tcp://127.65.198.1:9999");
+		
+		assertEquals("my-app", identity.getNameId().getName());
+		assertEquals(Integer.valueOf(31), identity.getNameId().getId());
+		assertEquals("127.65.198.1", identity.getEndpoint().getAddress());
 		assertEquals(9999, identity.getEndpoint().getPort());
 		
 		identity = ApplicationIdentity.parse("my-app@tcp://gamma75:9999");
 		
 		assertEquals("my-app", identity.getNameId().getName());
 		assertEquals(null, identity.getNameId().getId());
-		assertEquals("gamma75", identity.getEndpoint().getHostname());
+		assertEquals("gamma75", identity.getEndpoint().getAddress());
 		assertEquals(9999, identity.getEndpoint().getPort());
 		
 		boolean error = false;

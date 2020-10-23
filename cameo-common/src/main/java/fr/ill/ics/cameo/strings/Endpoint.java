@@ -4,18 +4,19 @@ import fr.ill.ics.cameo.BadFormatException;
 
 public class Endpoint {
 
-	private String hostname;
+	private String address;
 	private int port;
 	
-	public Endpoint(String hostname, int port) {
+	public Endpoint(String address, int port) {
 		super();
-		this.hostname = hostname;
+		this.address = address;
 		this.port = port;
 	}
 	
-	public String getHostname() {
-		return hostname;
+	public String getAddress() {
+		return address;
 	}
+	
 	public int getPort() {
 		return port;
 	}
@@ -33,7 +34,7 @@ public class Endpoint {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
-		String hostname = tokens[0];
+		String address = tokens[0];
 		int port = 0;
 		
 		try {
@@ -43,12 +44,12 @@ public class Endpoint {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
-		return new Endpoint(hostname, port);
+		return new Endpoint(address, port);
 	}
 
 	@Override
 	public String toString() {
-		return "tcp://" + hostname + ":" + port;
+		return "tcp://" + address + ":" + port;
 	}
 	
 }
