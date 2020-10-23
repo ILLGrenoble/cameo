@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace cameo {
 
@@ -52,14 +53,19 @@ public:
 	/**
 	 * Constructor.
 	 */
-	NameId(const std::string& name, int id = -1);
+	NameId(const std::string& name);
+
+	/**
+	 * Constructor.
+	 */
+	NameId(const std::string& name, int id);
 
 	const std::string& getName() const;
 
 	/**
-	 * Return the id. A -1 value indicates that there is no id.
+	 * Return the id which may not exist.
 	 */
-	int getId() const;
+	const std::optional<int>& getId() const;
 
 	static NameId parse(const std::string& str);
 
@@ -67,7 +73,7 @@ public:
 
 private:
 	std::string m_name;
-	int m_id;
+	std::optional<int> m_id;
 };
 
 class ApplicationIdentity {
@@ -90,10 +96,11 @@ private:
 class ApplicationAndStarterIdentities {
 
 public:
+	ApplicationAndStarterIdentities(const ApplicationIdentity& application);
 	ApplicationAndStarterIdentities(const ApplicationIdentity& application, const ApplicationIdentity& starter);
 
 	const ApplicationIdentity& getApplication() const;
-	const ApplicationIdentity& getStarter() const;
+	const std::optional<ApplicationIdentity>& getStarter() const;
 
 	static ApplicationAndStarterIdentities parse(const std::string& str);
 
@@ -101,7 +108,7 @@ public:
 
 private:
 	ApplicationIdentity m_application;
-	ApplicationIdentity m_starter;
+	std::optional<ApplicationIdentity> m_starter;
 };
 
 }
