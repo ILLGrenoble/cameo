@@ -89,6 +89,10 @@ std::string Endpoint::toString() const {
 	return string("tcp://") + m_address + ":" + to_string(m_port);
 }
 
+NameId::NameId(const std::string& name) :
+	m_name(name) {
+}
+
 NameId::NameId(const std::string& name, int id) :
 	m_name(name),
 	m_id(id) {
@@ -98,7 +102,7 @@ const std::string& NameId::getName() const {
 	return m_name;
 }
 
-int NameId::getId() const {
+const std::optional<int>& NameId::getId() const {
 	return m_id;
 }
 
@@ -111,24 +115,23 @@ NameId NameId::parse(const std::string& str) {
 	}
 
 	string name = tokens[0];
-	int id = -1;
 
 	if (tokens.size() == 2) {
 		try {
-			id = stoi(tokens[1]);
+			int id = stoi(tokens[1]);
+			return NameId(name, id);
 		}
 		catch (...) {
 			throw new BadFormatException("Bad format for endpoint " + str);
 		}
 	}
-
-	return NameId(name, id);
+	return NameId(name);
 }
 
 std::string NameId::toString() const {
 
 	if (m_id > 0) {
-		return m_name + "." + to_string(m_id);
+		return m_name + "." + to_string(m_id.value());
 	}
 	return m_name;
 }
@@ -161,6 +164,10 @@ std::string ApplicationIdentity::toString() const {
 	return m_nameId.toString() + "@" + m_endpoint.toString();
 }
 
+ApplicationAndStarterIdentities::ApplicationAndStarterIdentities(const ApplicationIdentity& application) :
+	m_application(application) {
+}
+
 ApplicationAndStarterIdentities::ApplicationAndStarterIdentities(const ApplicationIdentity& application, const ApplicationIdentity& starter) :
 	m_application(application),
 	m_starter(starter) {
@@ -170,7 +177,7 @@ const ApplicationIdentity& ApplicationAndStarterIdentities::getApplication() con
 	return m_application;
 }
 
-const ApplicationIdentity& ApplicationAndStarterIdentities::getStarter() const {
+const std::optional<ApplicationIdentity>& ApplicationAndStarterIdentities::getStarter() const {
 	return m_starter;
 }
 
@@ -198,7 +205,7 @@ ApplicationAndStarterIdentities ApplicationAndStarterIdentities::parse(const std
 
 		ApplicationIdentity application = ApplicationIdentity::parse(applicationString);
 
-		return ApplicationAndStarterIdentities(application, application);
+		return ApplicationAndStarterIdentities(application);
 	}
 	else {
 		// Format <name>@<endpoint>:<name>@<endpoint>
@@ -220,12 +227,10 @@ ApplicationAndStarterIdentities ApplicationAndStarterIdentities::parse(const std
 }
 
 std::string ApplicationAndStarterIdentities::toString() const {
-//	if (starter != null) {
-//		return application + ":" + starter;
-//	}
-//	return application + ":";
-
-	return "";
+	if (m_starter.has_value()) {
+		return m_application.toString() + ":" + m_starter.value().toString();
+	}
+	return m_application.toString() + ":";
 }
 
 }

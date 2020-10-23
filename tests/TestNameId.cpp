@@ -12,10 +12,11 @@ int main(int argc, char *argv[]) {
 	NameId nameId = NameId::parse("my-app.31");
 
 	CAMEO_ASSERT_TRUE("my-app" == nameId.getName());
-	CAMEO_ASSERT_EQUAL(31, nameId.getId());
+	CAMEO_ASSERT_TRUE(nameId.getId().has_value());
+	CAMEO_ASSERT_EQUAL(31, nameId.getId().value());
 
 	nameId = NameId::parse("my-app32");
-	CAMEO_ASSERT_EQUAL(-1, nameId.getId());
+	CAMEO_ASSERT_TRUE(!nameId.getId().has_value());
 
 	bool error = false;
 	try {
