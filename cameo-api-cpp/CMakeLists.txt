@@ -14,7 +14,7 @@ endif()
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)
   # specify the C++ standard
-  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
 endif()
 
@@ -31,15 +31,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(ZeroMQ REQUIRED)
 find_package(Rapidjson REQUIRED)
 
-#------------------------------------------------------------
-# C++ version
-#------------------------------------------------------------
-#target_compile_features(cameo PUBLIC cxx_std_11)
-
-# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
-set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_EXTENSIONS OFF)
 
 #------------------------------------------------------------
 # Libraries
