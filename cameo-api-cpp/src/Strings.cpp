@@ -53,7 +53,12 @@ int Endpoint::getPort() const {
 
 Endpoint Endpoint::parse(const std::string& str) {
 
-	vector<string> tokens = split(str, ':');
+	if (str.substr(0, 6) != "tcp://") {
+		throw new BadFormatException("Bad format for endpoint " + str);
+	}
+
+	string substr = str.substr(6);
+	vector<string> tokens = split(substr, ':');
 
 	if (tokens.size() != 2) {
 		throw new BadFormatException("Bad format for endpoint " + str);
@@ -73,7 +78,7 @@ Endpoint Endpoint::parse(const std::string& str) {
 }
 
 std::string Endpoint::toString() const {
-	return m_address + ":" + to_string(m_port);
+	return string("tcp://") + m_address + ":" + to_string(m_port);
 }
 
 }

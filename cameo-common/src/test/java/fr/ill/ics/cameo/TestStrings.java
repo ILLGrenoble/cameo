@@ -12,16 +12,16 @@ public class TestStrings {
 	@Test
 	public void testEndpoint() {
 		
-		assertEquals("gamma75:9999", new Endpoint("gamma75", 9999).toString());
+		assertEquals("tcp://gamma75:9999", new Endpoint("gamma75", 9999).toString());
 		
-		Endpoint endpoint = Endpoint.parse("gamma75:9999");
+		Endpoint endpoint = Endpoint.parse("tcp://gamma75:9999");
 		
 		assertEquals("gamma75", endpoint.getAddress());
 		assertEquals(9999, endpoint.getPort());
 
 		boolean error = false;
 		try {
-			Endpoint.parse("gamma:75:9999");
+			Endpoint.parse("tc://gamma75:9999");
 		}
 		catch (Exception e) {
 			error = true;
@@ -30,7 +30,7 @@ public class TestStrings {
 		
 		error = false;
 		try {
-			Endpoint.parse("gamma75::9999");
+			Endpoint.parse("tcp://gamma75::9999");
 		}
 		catch (Exception e) {
 			error = true;
