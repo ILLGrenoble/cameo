@@ -17,7 +17,7 @@
 #ifndef CAMEO_TEST_H_
 #define CAMEO_TEST_H_
 
-#define ALEPH_ASSERT_THROW( condition )                             \
+#define CAMEO_ASSERT_TRUE( condition )                              \
 {                                                                   \
   if( !( condition ) )                                              \
   {                                                                 \
@@ -30,7 +30,7 @@
   }                                                                 \
 }
 
-#define ALEPH_ASSERT_EQUAL( x, y )                                  \
+#define CAMEO_ASSERT_EQUAL( x, y )                                  \
 {                                                                   \
   if( ( x ) != ( y ) )                                              \
   {                                                                 \

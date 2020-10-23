@@ -32,9 +32,18 @@ find_package(ZeroMQ REQUIRED)
 find_package(Rapidjson REQUIRED)
 
 #------------------------------------------------------------
+# C++ version
+#------------------------------------------------------------
+#target_compile_features(cameo PUBLIC cxx_std_11)
+
+# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
+set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_EXTENSIONS OFF)
+
+#------------------------------------------------------------
 # Libraries
 #------------------------------------------------------------
-
 
 #---------------
 # Files
@@ -50,7 +59,7 @@ target_include_directories(cameo
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
-#target_compile_features(cameo PUBLIC cxx_std_11)
+
 set_target_properties(cameo PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
@@ -69,6 +78,7 @@ write_basic_package_version_file(cameoConfigVersion.cmake
 # Tests
 #------------------------------------------------------------
 
+# Note: execute ctest --verbose to have more details 
 enable_testing()
 add_subdirectory(tests)
 

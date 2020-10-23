@@ -22,6 +22,10 @@
 
 namespace cameo {
 
+struct Name {
+	static bool check(const std::string& str);
+};
+
 std::vector<std::string> split(const std::string& str, char c);
 
 class Endpoint {
@@ -39,6 +43,65 @@ public:
 private:
 	std::string m_address;
 	int m_port;
+};
+
+
+class NameId {
+
+public:
+	/**
+	 * Constructor.
+	 */
+	NameId(const std::string& name, int id = -1);
+
+	const std::string& getName() const;
+
+	/**
+	 * Return the id. A -1 value indicates that there is no id.
+	 */
+	int getId() const;
+
+	static NameId parse(const std::string& str);
+
+	std::string toString() const;
+
+private:
+	std::string m_name;
+	int m_id;
+};
+
+class ApplicationIdentity {
+
+public:
+	ApplicationIdentity(const NameId& nameId, const Endpoint& endpoint);
+
+	const NameId& getNameId() const;
+	const Endpoint& getEndpoint() const;
+
+	static ApplicationIdentity parse(const std::string& str);
+
+	std::string toString() const;
+
+private:
+	NameId m_nameId;
+	Endpoint m_endpoint;
+};
+
+class ApplicationAndStarterIdentities {
+
+public:
+	ApplicationAndStarterIdentities(const ApplicationIdentity& application, const ApplicationIdentity& starter);
+
+	const ApplicationIdentity& getApplication() const;
+	const ApplicationIdentity& getStarter() const;
+
+	static ApplicationAndStarterIdentities parse(const std::string& str);
+
+	std::string toString() const;
+
+private:
+	ApplicationIdentity m_application;
+	ApplicationIdentity m_starter;
 };
 
 }
