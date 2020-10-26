@@ -1,12 +1,13 @@
 package fr.ill.ics.cameo.manager;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class UnmanagedApplication extends Application {
 
 	private boolean alive = true;
 	
-	public UnmanagedApplication(String endpoint, int id, String name, long pid) {
+	public UnmanagedApplication(Endpoint endpoint, int id, String name, long pid) {
 		super(endpoint, id);
 		
 		// Set config.

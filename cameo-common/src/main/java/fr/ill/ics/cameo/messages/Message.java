@@ -78,7 +78,7 @@ public class Message {
 	public static class StartRequest {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String ARGS = "args"; // repeated string args = 2;
-		public static final String INSTANCE_REFERENCE = "instanceReference"; // required string instanceReference = 3;
+		public static final String STARTER = "starter"; // object
 	}
 	
 	public static class RequestResponse {

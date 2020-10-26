@@ -129,10 +129,11 @@ public abstract class ConfigLoader {
 		
 		// Set the attributes
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue("max_applications"));
-		ConfigManager.getInstance().setHost(root.getAttributeValue("host"));
-		ConfigManager.getInstance().setBasePort(root.getAttributeValue("port"));
+		ConfigManager.getInstance().setEndpoint(root.getAttributeValue("host"), root.getAttributeValue("port")); 
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue("log_level"));
+		
+		
 		
 		// Sleep time.
 		int sleepTime = 5;

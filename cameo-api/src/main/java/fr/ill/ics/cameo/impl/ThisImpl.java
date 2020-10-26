@@ -39,6 +39,7 @@ import fr.ill.ics.cameo.WaitingSet;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ThisImpl extends ServicesImpl {
 	
@@ -46,6 +47,7 @@ public class ThisImpl extends ServicesImpl {
 	private int id;
 	private boolean managed = false;
 
+	private Endpoint endpoint;
 	private String starterEndpoint;
 	private String starterName;
 	private int starterId;
@@ -73,39 +75,62 @@ public class ThisImpl extends ServicesImpl {
 		
 		// the last argument contains the necessary information
 		String info = args[args.length - 1];
-		String[] tokens = info.split(":");
-
-		// check length
-		if (tokens.length < 4) {
-			throw new InvalidArgumentException(info + " is not a valid argument");
+		
+		System.out.println("info = " + info);
+		
+		// Parse the info.
+		JSONObject infoObject;
+		try {
+			infoObject = parser.parse(info);
 		}
+		catch (ParseException e) {
+			throw new InvalidArgumentException("bad format for info argument");
+		}
+		
+//		String[] tokens = info.split(":");
+//
+//		// check length
+//		if (tokens.length < 4) {
+//			throw new InvalidArgumentException(info + " is not a valid argument");
+//		}
+//
+//		url = tokens[0] + ":" + tokens[1];
+//		port = Integer.parseInt(tokens[2]);
 
-		url = tokens[0] + ":" + tokens[1];
-		port = Integer.parseInt(tokens[2]);
+		endpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
+		url = endpoint.getProtocol() + "://" + endpoint.getAddress();
+		port = endpoint.getPort();
 		
 		// We separated host endpoint and server in the past (server being tcp://localhost)
 		// but that generates troubles when two applications communicate remotely.
 		// However leave the same value seems to be ok.
 		serverEndpoint = url + ":" + port;
-
+		
 		// Init the context and socket.
 		init();
 		
 		// Retrieve the server version.
 		retrieveServerVersion();
 		
-		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
-		String nameId = tokens[3];
-		int index = nameId.lastIndexOf('.');
+//		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
+//		String nameId = tokens[3];
+//		int index = nameId.lastIndexOf('.');
 		
-		if (index != -1) {
+		name = JSON.getString(infoObject, Message.ApplicationIdentity.NAME);
+		
+//		if (index != -1) {
+		if (infoObject.containsKey(Message.ApplicationIdentity.ID)) {
 			managed = true;
-			name = nameId.substring(0, index);
-			id = Integer.parseInt(nameId.substring(index + 1));
+//			name = nameId.substring(0, index);
+//			id = Integer.parseInt(nameId.substring(index + 1));
+			
+			
+			id = JSON.getInt(infoObject, Message.ApplicationIdentity.ID);
 		}
 		else {
 			managed = false;
-			name = nameId;
+			//name = nameId;
+			
 			id = initUnmanagedApplication();
 			
 			if (id == -1) {
@@ -113,16 +138,24 @@ public class ThisImpl extends ServicesImpl {
 			}
 		}
 		
-		// Search for the starter reference.
-		if (tokens.length >= 7) {
-			index = tokens[4].lastIndexOf('@');
-			starterEndpoint = tokens[4].substring(index + 1) + ":" + tokens[5] + ":" + tokens[6]; 
-			String starterNameId = tokens[4].substring(0, index);
-			index = starterNameId.lastIndexOf('.');
-			starterName = starterNameId.substring(0, index);
-			starterId = Integer.parseInt(starterNameId.substring(index + 1));
-		}
+//		// Search for the starter reference.
+//		if (tokens.length >= 7) {
+//			index = tokens[4].lastIndexOf('@');
+//			starterEndpoint = tokens[4].substring(index + 1) + ":" + tokens[5] + ":" + tokens[6]; 
+//			String starterNameId = tokens[4].substring(0, index);
+//			index = starterNameId.lastIndexOf('.');
+//			starterName = starterNameId.substring(0, index);
+//			starterId = Integer.parseInt(starterNameId.substring(index + 1));
+//		}
 		
+		System.out.println("url = " + url);
+		System.out.println("port = " + port);
+		System.out.println("name = " + name);
+		System.out.println("id = " + id);
+		System.out.println("starterEndpoint = " + starterEndpoint);
+		System.out.println("starterName = " + starterName);
+		System.out.println("starterId = " + starterId);
+				
 		// Init listener.
 		eventListener.setName(name);
 	}

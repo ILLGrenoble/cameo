@@ -25,6 +25,7 @@ import java.util.HashSet;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.server.Converter;
+import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 
 /**
@@ -32,7 +33,7 @@ import fr.ill.ics.cameo.threads.StreamApplicationThread;
  */
 public abstract class Application extends ApplicationConfig {
 
-	protected String endpoint;
+	protected Endpoint endpoint;
 	protected int id;
 	protected ProcessHandlerImpl processHandle;
 	
@@ -53,7 +54,7 @@ public abstract class Application extends ApplicationConfig {
 	private HashMap<String, Publisher> publishers = new HashMap<String, Publisher>();
 	private HashSet<String> responders = new HashSet<String>();
 	
-	public Application(String endpoint, int id) {
+	public Application(Endpoint endpoint, int id) {
 		super();
 		
 		this.endpoint = endpoint;

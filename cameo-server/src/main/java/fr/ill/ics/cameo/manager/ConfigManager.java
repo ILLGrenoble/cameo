@@ -18,7 +18,8 @@ package fr.ill.ics.cameo.manager;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.TreeSet;
+
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public final class ConfigManager {
 
@@ -27,8 +28,7 @@ public final class ConfigManager {
 	private int maxNumberOfApplications;
 	private String logLevel = "FINE";
 	private String configParent;
-	private String host;
-	private int port;
+	private Endpoint endpoint;
 	private int streamPort;
 	private int sleepTime;
 	private int pollingTime;
@@ -79,7 +79,7 @@ public final class ConfigManager {
 	}
 	
 	public int getPort() {
-		return port;
+		return endpoint.getPort();
 	}
 
 	public int getMaxNumberOfApplications() {
@@ -137,54 +137,71 @@ public final class ConfigManager {
 		return streamPort;
 	}
 	
-	public void setBasePort(String portString) {
+	private int defineBasePort(String portString) {
+		
+		int port = 0;
+		
 		try {
 			port = Integer.parseInt(portString);
 
 			// Set the base port of the port manager.
 			PortManager.getInstance().setBasePort(port + 1);
-
+			
 		} catch (java.lang.NumberFormatException e) {
 			System.err.println("Error, the property 'port' is required");
 			System.exit(-1);
 		}
+		
+		return port;
 	}
 	
-	public void setHost(String host) {
+	private String defineHost(String hostString) {
+		
+		String host;
+		
 		// If host is provided, set it.
-		if (host == null) {
+		if (hostString == null) {
 			try {
 				// Otherwise try to get the hostname.
-				this.host = InetAddress.getLocalHost().getHostName();
+				host = InetAddress.getLocalHost().getHostName();
 			} catch (UnknownHostException e) {
 				try {
 					// Otherwise try to get the IP address.
-					this.host = InetAddress.getLocalHost().getHostAddress();
+					host = InetAddress.getLocalHost().getHostAddress();
 				} catch (UnknownHostException e2) {
 					// Otherwise set localhost.
-					this.host = "localhost";
+					host = "localhost";
 				}
 			}
 		// If host is IP
-		} else if (host.equals("IP")){
+		} else if (hostString.equals("IP")){
 			try {
 				// Try to get the IP address.
-				this.host = InetAddress.getLocalHost().getHostAddress();
+				host = InetAddress.getLocalHost().getHostAddress();
 			} catch (UnknownHostException e) {
 				// Otherwise set localhost.
-				this.host = "localhost";
+				host = "localhost";
 			}
 		} else {
-			this.host = host;
+			host = hostString;
 		}
+		
+		return host;
 	}
 
 	public String getEndpoint() {
-		return "tcp://*:" + port;
+		return "tcp://*:" + endpoint.getPort();
 	}
 	
-	public String getHostEndpoint() {
-		return "tcp://" + host + ":" + port;
+	public Endpoint getHostEndpoint() {
+		return endpoint;
+	}
+
+	public void setEndpoint(String hostString, String portString) {
+		String host = defineHost(hostString);
+		int port = defineBasePort(portString);
+
+		endpoint = new Endpoint(host, port);
 	}
 
 }

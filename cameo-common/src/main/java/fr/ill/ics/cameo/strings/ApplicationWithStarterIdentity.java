@@ -36,5 +36,9 @@ public class ApplicationWithStarterIdentity {
 		
 		return result;
 	}
+	
+	public String toJSONString() {
+		return toJSON().toJSONString();
+	}
 
 }

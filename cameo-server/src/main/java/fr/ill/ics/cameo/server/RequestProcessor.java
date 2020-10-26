@@ -113,7 +113,7 @@ public class RequestProcessor {
 			// Start the application.
 			Application application = manager.startApplication(JSON.getString(request, Message.StartRequest.NAME), 
 																args, 
-																JSON.getString(request, Message.StartRequest.INSTANCE_REFERENCE));
+																JSON.getString(request, Message.StartRequest.STARTER));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

@@ -36,6 +36,7 @@
 #include "impl/StreamSocketImpl.h"
 #include "impl/RequestSocketImpl.h"
 #include "message/Message.h"
+#include "Strings.h"
 #include "Server.h"
 #include "StarterServerException.h"
 #include "StatusEvent.h"
@@ -159,22 +160,31 @@ void This::initApplication(int argc, char *argv[]) {
 	}
 
 	string info(argv[argc - 1]);
-	vector<string> tokens = split(info);
 
-	if (tokens.size() < 4) {
-		throw InvalidArgumentException(info + " is not a valid argument");
-	}
+//	vector<string> tokens = split(info);
+//
+//	if (tokens.size() < 4) {
+//		throw InvalidArgumentException(info + " is not a valid argument");
+//	}
+//
+//	m_url = tokens[0] + ":" + tokens[1];
+//
+//	string port = tokens[2];
+//	istringstream is(port);
+//	is >> m_port;
 
-	m_url = tokens[0] + ":" + tokens[1];
+	json::Object infoObject;
+	json::parse(infoObject, info);
 
-	string port = tokens[2];
-	istringstream is(port);
-	is >> m_port;
+	Endpoint endpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
+
+	m_url = endpoint.getProtocol() + "://" + endpoint.getAddress();
+	m_port = endpoint.getPort();
 
 	// We separated host endpoint and server in the past (server being tcp://localhost)
 	// but that generates troubles when two applications communicate remotely.
 	// However leave the same value seems to be ok.
-	m_serverEndpoint = m_url + ":" + port;
+	m_serverEndpoint = m_url + ":" + to_string(m_port);
 
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
@@ -182,23 +192,27 @@ void This::initApplication(int argc, char *argv[]) {
 	// Retrieve the server version.
 	Services::retrieveServerVersion();
 
-	string nameId = tokens[3];
+//	string nameId = tokens[3];
+//
+//	int index = nameId.find_last_of('.');
 
-	int index = nameId.find_last_of('.');
+	m_name = infoObject[message::ApplicationIdentity::NAME].GetString();
 
-	// Search for the . character meaning that the application is managed and already has an id.
-	if (index != string::npos) {
+//	// Search for the . character meaning that the application is managed and already has an id.
+//	if (index != string::npos) {
+	if (infoObject.HasMember(message::ApplicationIdentity::ID)) {
 		m_managed = true;
-		m_name = nameId.substr(0, index);
-		string sid = nameId.substr(index + 1);
-		{
-			istringstream is(sid);
-			is >> m_id;
-		}
+//		m_name = nameId.substr(0, index);
+//		string sid = nameId.substr(index + 1);
+//		{
+//			istringstream is(sid);
+//			is >> m_id;
+//		}
+		m_id = infoObject[message::ApplicationIdentity::ID].GetInt();
 	}
 	else {
 		m_managed = false;
-		m_name = nameId;
+//		m_name = nameId;
 		m_id = initUnmanagedApplication();
 
 		if (m_id == -1) {
@@ -206,18 +220,18 @@ void This::initApplication(int argc, char *argv[]) {
 		}
 	}
 
-	if (tokens.size() >= 7) {
-		index = tokens[4].find_last_of('@');
-		m_starterEndpoint = tokens[4].substr(index + 1) + ":" + tokens[5] + ":" + tokens[6];
-		string starterNameId = tokens[4].substr(0, index);
-		index = starterNameId.find_last_of('.');
-		m_starterName = starterNameId.substr(0, index);
-		string sid = starterNameId.substr(index + 1);
-		{
-			istringstream is(sid);
-			is >> m_starterId;
-		}
-	}
+//	if (tokens.size() >= 7) {
+//		index = tokens[4].find_last_of('@');
+//		m_starterEndpoint = tokens[4].substr(index + 1) + ":" + tokens[5] + ":" + tokens[6];
+//		string starterNameId = tokens[4].substr(0, index);
+//		index = starterNameId.find_last_of('.');
+//		m_starterName = starterNameId.substr(0, index);
+//		string sid = starterNameId.substr(index + 1);
+//		{
+//			istringstream is(sid);
+//			is >> m_starterId;
+//		}
+//	}
 
 	// Must be here because the server endpoint is required.
 	initStatus();
@@ -239,6 +253,15 @@ void This::initApplication(int argc, char *argv[]) {
 
 	// Init com.
 	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
+
+
+	cout << "url = " << m_url << endl;
+	cout << "port = " << m_port << endl;
+	cout << "name = " << m_name << endl;
+	cout << "id = " << m_id << endl;
+	cout << "starterEndpoint = " << m_starterEndpoint << endl;
+	cout << "starterName = " << m_starterName << endl;
+	cout << "starterId = " << m_starterId << endl;
 }
 
 This::~This() {

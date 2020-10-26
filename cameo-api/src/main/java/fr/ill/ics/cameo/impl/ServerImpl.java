@@ -946,7 +946,7 @@ public class ServerImpl extends ServicesImpl {
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.START);
 		request.put(Message.StartRequest.NAME, name);
-		request.put(Message.StartRequest.INSTANCE_REFERENCE, instanceReference);
+		request.put(Message.StartRequest.STARTER, instanceReference);
 		
 		if (args != null) {
 			JSONArray list = new JSONArray();

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ManagedApplication extends Application {
 
@@ -12,7 +15,7 @@ public class ManagedApplication extends Application {
 	protected String[] args;
 	protected String starterReference;
 	
-	public ManagedApplication(String endpoint, int id, ApplicationConfig config, String[] args, String starterReference) {
+	public ManagedApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, String starterReference) {
 		super(endpoint, id);
 		
 		// Set the config.
@@ -90,7 +93,12 @@ public class ManagedApplication extends Application {
 			
 			// Add the endpoint and id
 			if (isPassInfo()) {
-				commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":" + starterReference);
+				//commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":" + starterReference);
+				//commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":");
+			
+				// Pass the info in JSON format.
+				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint));
+				commandList.add(identity.toJSONString());
 			}
 			
 			// Prepare the command

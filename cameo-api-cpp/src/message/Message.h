@@ -90,7 +90,7 @@ namespace message {
 	namespace StartRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* ARGS = "args"; // repeated string args = 2;
-		constexpr const char* INSTANCE_REFERENCE = "instanceReference"; // required string instanceReference = 3;
+		constexpr const char* STARTER = "starter"; // object
 	}
 
 	namespace RequestResponse {
