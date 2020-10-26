@@ -123,15 +123,12 @@ bool PublisherImpl::waitForSubscribers() {
 
 void PublisherImpl::cancelWaitForSubscribers() {
 
-	stringstream endpoint;
-	endpoint << m_application->getUrl() << ":" << (m_publisherPort + 1);
-
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_publisherPort + 1).toString());
 	requestSocket->request(request.toString());
 }
 

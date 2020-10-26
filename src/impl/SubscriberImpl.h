@@ -29,7 +29,7 @@ class Server;
 class SubscriberImpl {
 
 public:
-	SubscriberImpl(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	~SubscriberImpl();
 
 	void init();
@@ -44,7 +44,6 @@ public:
 	WaitingImpl * waiting();
 
 	Server * m_server;
-	std::string m_url;
 	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_publisherName;

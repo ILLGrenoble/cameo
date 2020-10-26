@@ -100,6 +100,10 @@ Endpoint Endpoint::parse(const std::string& str) {
 	return Endpoint(protocol, address, port);
 }
 
+Endpoint Endpoint::withPort(int port) const {
+	return Endpoint(m_protocol, m_address, port);
+}
+
 std::string Endpoint::toString() const {
 	return m_protocol + "://" + m_address + ":" + to_string(m_port);
 }

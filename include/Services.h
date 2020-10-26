@@ -43,9 +43,8 @@ public:
 	void setTimeout(int timeout);
 	int getTimeout() const;
 	const Endpoint& getEndpoint() const;
-	const std::string& getUrl() const;
 	std::array<int, 3> getVersion() const;
-	const std::string& getStatusEndpoint() const;
+	Endpoint getStatusEndpoint() const;
 
 	bool isAvailable(int timeout) const;
 	void retrieveServerVersion();
@@ -58,9 +57,7 @@ public:
 
 	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
-	std::string m_url;
 	int m_statusPort;
-	std::string m_serverStatusEndpoint;
 	std::unique_ptr<ServicesImpl> m_impl;
 	std::unique_ptr<RequestSocketImpl> m_requestSocket;
 };

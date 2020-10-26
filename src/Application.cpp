@@ -178,8 +178,6 @@ void This::initApplication(int argc, char *argv[]) {
 
 	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 
-	m_url = m_serverEndpoint.getProtocol() + "://" + m_serverEndpoint.getAddress();
-
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
@@ -305,10 +303,6 @@ Server& This::getStarterServer() {
 	}
 
 	return *m_instance.m_starterServer;
-}
-
-const std::string& This::getUrl() {
-	return m_instance.Services::getUrl();
 }
 
 bool This::isAvailable(int timeout) {
@@ -537,10 +531,6 @@ void Instance::setInitialState(State state) {
 
 int Instance::getId() const {
 	return m_id;
-}
-
-const std::string& Instance::getUrl() const {
-	return m_server->getUrl();
 }
 
 const Endpoint& Instance::getEndpoint() const {
@@ -879,8 +869,8 @@ void Publisher::sendEnd() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string & publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
-	m_impl(new SubscriberImpl(server, url, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instanceId, instanceEndpoint, statusEndpoint)) {
+Subscriber::Subscriber(Server * server, int publisherPort, int synchronizerPort, const std::string & publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
+	m_impl(new SubscriberImpl(server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instanceId, instanceEndpoint, statusEndpoint)) {
 }
 
 Subscriber::~Subscriber() {
@@ -1111,7 +1101,7 @@ Requester::~Requester() {
 std::unique_ptr<Requester> Requester::create(Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
-	string responderUrl = instance.getUrl();
+	string responderUrl = instance.getEndpoint().getProtocol() + "://" + instance.getEndpoint().getAddress();
 	string responderEndpoint = instance.getEndpoint().toString();
 
 	// Create a request socket to the server of the instance.

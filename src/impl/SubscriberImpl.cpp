@@ -28,9 +28,8 @@ using namespace std;
 
 namespace cameo {
 
-SubscriberImpl::SubscriberImpl(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
+SubscriberImpl::SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
 	m_server(server),
-	m_url(url),
 	m_publisherName(publisherName),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
@@ -56,10 +55,7 @@ void SubscriberImpl::init() {
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, string(message::Event::CANCEL).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, string(message::Event::STATUS).length());
 
-	stringstream pubEndpoint;
-	pubEndpoint << m_url << ":" << m_publisherPort;
-
-	m_subscriber->connect(pubEndpoint.str().c_str());
+	m_subscriber->connect(m_server->getEndpoint().withPort(m_publisherPort).toString());
 
 	// We must first bind the cancel publisher before connecting the subscriber.
 	stringstream cancelEndpoint;
@@ -77,13 +73,8 @@ void SubscriberImpl::init() {
 	// Synchronize the subscriber only if the number of subscribers > 0.
 	if (m_numberOfSubscribers > 0) {
 
-		stringstream syncEndpoint;
-		syncEndpoint << m_url << ":" << m_synchronizerPort;
-
-		string endpoint = syncEndpoint.str();
-
 		// Create a request socket.
-		unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(endpoint);
+		unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(m_server->getEndpoint().withPort(m_synchronizerPort).toString());
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];
