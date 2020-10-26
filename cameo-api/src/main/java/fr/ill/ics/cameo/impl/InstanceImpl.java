@@ -102,10 +102,6 @@ public class InstanceImpl extends EventListener {
 		return server.getEndpoint();
 	}
 	
-	public Endpoint getStatusEndpoint() {
-		return server.getStatusEndpoint();
-	}
-	
 	public String getNameId() {
 		return getName() + "." + id;
 	}

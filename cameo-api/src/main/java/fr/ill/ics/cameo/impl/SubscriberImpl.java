@@ -29,9 +29,9 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class SubscriberImpl {
 	
-	private ServerImpl server;
+	private ServerImpl server; // server of instance
 	private Zmq.Context context;
-	private Endpoint serverEndpoint;
+	private Endpoint serverEndpoint; // endpoint of server
 	private int publisherPort;
 	private int synchronizerPort;
 	private Zmq.Socket subscriber;
@@ -77,9 +77,9 @@ public class SubscriberImpl {
 		// Subscribe to CANCEL
 		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(Message.Event.CANCEL);
-
+		
 		// Subscribe to STATUS
-		subscriber.connect(instance.getStatusEndpoint().toString());
+		subscriber.connect(server.getStatusEndpoint().toString());
 		subscriber.subscribe(Message.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
