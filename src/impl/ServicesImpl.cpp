@@ -111,7 +111,7 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	}
 	request.endArray();
 
-	request.pushKey(message::StartRequest::INSTANCE_REFERENCE);
+	request.pushKey(message::StartRequest::STARTER);
 	request.pushString(instanceReference);
 
 	return request.toString();
