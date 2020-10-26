@@ -64,7 +64,6 @@ public class ServerImpl extends ServicesImpl {
 		serverEndpoint = endpoint;
 		
 		url = endpoint.getProtocol() + "://" + endpoint.getAddress();
-		port = endpoint.getPort();
 				
 		// Init the context and socket.
 		init();

@@ -179,7 +179,6 @@ void This::initApplication(int argc, char *argv[]) {
 	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 
 	m_url = m_serverEndpoint.getProtocol() + "://" + m_serverEndpoint.getAddress();
-	m_port = m_serverEndpoint.getPort();
 
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
@@ -250,8 +249,7 @@ void This::initApplication(int argc, char *argv[]) {
 	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
 
 
-	cout << "url = " << m_url << endl;
-	cout << "port = " << m_port << endl;
+	cout << "endpoint = " << m_serverEndpoint.toString() << endl;
 	cout << "name = " << m_name << endl;
 	cout << "id = " << m_id << endl;
 	cout << "starterEndpoint = " << m_starterEndpoint << endl;

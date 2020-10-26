@@ -38,7 +38,6 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	m_serverEndpoint = endpoint;
 	m_url = endpoint.getProtocol() + "://" + endpoint.getAddress();
-	m_port = endpoint.getPort();
 
 	// Set the timeout.
 	Services::setTimeout(timeoutMs);
@@ -107,10 +106,6 @@ const std::string& Server::getUrl() const {
 
 std::array<int, 3> Server::getVersion() const {
 	return Services::getVersion();
-}
-
-int Server::getPort() const {
-	return Services::getPort();
 }
 
 bool Server::isAvailable(int timeout) const {

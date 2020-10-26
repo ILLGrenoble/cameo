@@ -84,7 +84,7 @@ public class RequesterImpl {
 		request.put(Message.Request.APPLICATION_NAME, application.getName());
 		request.put(Message.Request.APPLICATION_ID, application.getId());
 		request.put(Message.Request.SERVER_URL, application.getUrl());
-		request.put(Message.Request.SERVER_PORT, application.getPort());
+		request.put(Message.Request.SERVER_PORT, application.getEndpoint().getPort());
 		request.put(Message.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = application.message(request);
@@ -106,7 +106,7 @@ public class RequesterImpl {
 		request.put(Message.Request.APPLICATION_NAME, application.getName());
 		request.put(Message.Request.APPLICATION_ID, application.getId());
 		request.put(Message.Request.SERVER_URL, application.getUrl());
-		request.put(Message.Request.SERVER_PORT, application.getPort());
+		request.put(Message.Request.SERVER_PORT, application.getEndpoint().getPort());
 		request.put(Message.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = application.message(request);

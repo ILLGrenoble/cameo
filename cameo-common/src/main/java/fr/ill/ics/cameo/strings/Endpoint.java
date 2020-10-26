@@ -63,6 +63,15 @@ public class Endpoint {
 		
 		return new Endpoint(protocol, address, port);
 	}
+	
+	/**
+	 * Returns a new Endpoint instance with a different port.
+	 * @param port
+	 * @return
+	 */
+	public Endpoint withPort(int port) {
+		return new Endpoint(protocol, address, port);
+	}
 
 	@Override
 	public String toString() {

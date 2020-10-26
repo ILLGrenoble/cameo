@@ -34,7 +34,6 @@ public class ServicesImpl {
 	protected Endpoint serverEndpoint;
 	protected int[] serverVersion = new int[3];
 	protected String url;
-	protected int port;
 	protected int statusPort;
 	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
@@ -63,10 +62,6 @@ public class ServicesImpl {
 	
 	public String getUrl() {
 		return url;
-	}
-	
-	public int getPort() {
-		return port;
 	}
 	
 	public int[] getVersion() {

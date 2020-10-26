@@ -94,7 +94,7 @@ void RequesterImpl::sendBinary(const std::string& requestData) {
 	request.pushString(m_application->getUrl());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getPort());
+	request.pushInt(m_application->getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);
@@ -126,7 +126,7 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	request.pushString(m_application->getUrl());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getPort());
+	request.pushInt(m_application->getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);

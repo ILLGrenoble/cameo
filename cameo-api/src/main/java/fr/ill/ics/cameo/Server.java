@@ -77,11 +77,7 @@ public class Server {
 	public String getUrl() {
 		return impl.getUrl();
 	}
-	
-	public int getPort() {
-		return impl.getPort();
-	}
-	
+		
 	public int[] getVersion() {
 		return impl.getVersion();
 	}

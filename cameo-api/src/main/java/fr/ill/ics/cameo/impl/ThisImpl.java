@@ -98,7 +98,6 @@ public class ThisImpl extends ServicesImpl {
 
 		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
 		url = serverEndpoint.getProtocol() + "://" + serverEndpoint.getAddress();
-		port = serverEndpoint.getPort();
 		
 		// Init the context and socket.
 		init();
@@ -142,8 +141,7 @@ public class ThisImpl extends ServicesImpl {
 //			starterId = Integer.parseInt(starterNameId.substring(index + 1));
 //		}
 		
-		System.out.println("url = " + url);
-		System.out.println("port = " + port);
+		System.out.println("endpoint = " + serverEndpoint);
 		System.out.println("name = " + name);
 		System.out.println("id = " + id);
 		System.out.println("starterEndpoint = " + starterEndpoint);
@@ -165,7 +163,7 @@ public class ThisImpl extends ServicesImpl {
 	public Endpoint getEndpoint() {
 		return serverEndpoint;
 	}
-	
+		
 	public String getStarterEndpoint() {
 		return starterEndpoint;
 	}
