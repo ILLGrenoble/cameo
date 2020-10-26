@@ -52,6 +52,10 @@ Endpoint::Endpoint(const std::string& address, int port) {
 	m_port = port;
 }
 
+Endpoint::Endpoint() :
+	m_port(0) {
+}
+
 const std::string& Endpoint::getProtocol() const {
 	return m_protocol;
 }
@@ -108,14 +112,19 @@ ApplicationIdentity::ApplicationIdentity(const std::string& name, int id, const 
 
 ApplicationIdentity::ApplicationIdentity(const std::string& name, const Endpoint& endpoint) :
 	m_name(name),
+	m_id(Null),
 	m_endpoint(endpoint) {
+}
+
+ApplicationIdentity::ApplicationIdentity() :
+	m_id(Null) {
 }
 
 const std::string& ApplicationIdentity::getName() const {
 	return m_name;
 }
 
-const std::optional<int>& ApplicationIdentity::getId() const {
+int ApplicationIdentity::getId() const {
 	return m_id;
 }
 
@@ -130,9 +139,9 @@ std::string ApplicationIdentity::toJSONString() const {
 	jsonObject.pushKey(message::ApplicationIdentity::NAME);
 	jsonObject.pushString(m_name);
 
-	if (m_id.has_value()) {
+	if (m_id != Null) {
 		jsonObject.pushKey(message::ApplicationIdentity::ID);
-		jsonObject.pushInt(m_id.value());
+		jsonObject.pushInt(m_id);
 	}
 
 	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
@@ -143,18 +152,24 @@ std::string ApplicationIdentity::toJSONString() const {
 
 ApplicationWithStarterIdentity::ApplicationWithStarterIdentity(const ApplicationIdentity& application, const ApplicationIdentity& starter) :
 	m_application(application),
+	m_hasStarter(true),
 	m_starter(starter) {
 }
 
 ApplicationWithStarterIdentity::ApplicationWithStarterIdentity(const ApplicationIdentity& application) :
-	m_application(application) {
+	m_application(application),
+	m_hasStarter(false) {
 }
 
 const ApplicationIdentity& ApplicationWithStarterIdentity::getApplication() const {
 	return m_application;
 }
 
-const std::optional<ApplicationIdentity>& ApplicationWithStarterIdentity::getStarter() const {
+bool ApplicationWithStarterIdentity::hasStarter() const {
+	return m_hasStarter;
+}
+
+const ApplicationIdentity& ApplicationWithStarterIdentity::getStarter() const {
 	return m_starter;
 }
 
@@ -165,26 +180,26 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 	jsonObject.pushKey(message::ApplicationIdentity::NAME);
 	jsonObject.pushString(m_application.getName());
 
-	if (m_application.getId().has_value()) {
+	if (m_application.getId() != Null) {
 		jsonObject.pushKey(message::ApplicationIdentity::ID);
-		jsonObject.pushInt(m_application.getId().value());
+		jsonObject.pushInt(m_application.getId());
 	}
 
 	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
 	jsonObject.pushString(m_application.getEndpoint().toString());
 
-	if (m_starter.has_value()) {
+	if (m_hasStarter) {
 		jsonObject.pushKey(message::ApplicationIdentity::STARTER);
 		jsonObject.startObject();
 
 		jsonObject.pushKey(message::ApplicationIdentity::NAME);
-		jsonObject.pushString(m_starter.value().getName());
+		jsonObject.pushString(m_starter.getName());
 
 		jsonObject.pushKey(message::ApplicationIdentity::ID);
-		jsonObject.pushInt(m_starter.value().getId().value());
+		jsonObject.pushInt(m_starter.getId());
 
 		jsonObject.pushKey(message::ApplicationIdentity::SERVER);
-		jsonObject.pushString(m_starter.value().getEndpoint().toString());
+		jsonObject.pushString(m_starter.getEndpoint().toString());
 
 		jsonObject.endObject();
 	}
