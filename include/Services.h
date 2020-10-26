@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include "Strings.h"
 #include "EventStreamSocket.h"
 #include "OutputStreamSocket.h"
 
@@ -41,7 +42,7 @@ public:
 
 	void setTimeout(int timeout);
 	int getTimeout() const;
-	const std::string& getEndpoint() const;
+	const Endpoint& getEndpoint() const;
 	const std::string& getUrl() const;
 	std::array<int, 3> getVersion() const;
 	int getPort() const;
@@ -56,7 +57,7 @@ public:
 	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint);
 	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
 
-	std::string m_serverEndpoint;
+	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
 	std::string m_url;
 	int m_port;

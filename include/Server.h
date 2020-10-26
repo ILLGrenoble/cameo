@@ -48,13 +48,14 @@ class Server : private Services {
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
+	Server(const Endpoint& endpoint, int timeoutMs = 0);
 	Server(const std::string& endpoint, int timeoutMs = 0);
 	~Server();
 
 	void setTimeout(int timeoutMs);
 
 	int getTimeout() const;
-	const std::string& getEndpoint() const;
+	const Endpoint& getEndpoint() const;
 	const std::string& getUrl() const;
 	std::array<int, 3> getVersion() const;
 	int getPort() const;
@@ -132,6 +133,7 @@ public:
 	void unregisterEventListener(EventListener * listener);
 
 private:
+	void initServer(const Endpoint& endpoint, int timeoutMs);
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 

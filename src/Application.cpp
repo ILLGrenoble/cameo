@@ -176,15 +176,10 @@ void This::initApplication(int argc, char *argv[]) {
 	json::Object infoObject;
 	json::parse(infoObject, info);
 
-	Endpoint endpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
+	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 
-	m_url = endpoint.getProtocol() + "://" + endpoint.getAddress();
-	m_port = endpoint.getPort();
-
-	// We separated host endpoint and server in the past (server being tcp://localhost)
-	// but that generates troubles when two applications communicate remotely.
-	// However leave the same value seems to be ok.
-	m_serverEndpoint = m_url + ":" + to_string(m_port);
+	m_url = m_serverEndpoint.getProtocol() + "://" + m_serverEndpoint.getAddress();
+	m_port = m_serverEndpoint.getPort();
 
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
@@ -289,11 +284,11 @@ int This::getTimeout() {
 	return m_instance.Services::getTimeout();
 }
 
-const std::string& This::getEndpoint() {
+const Endpoint& This::getEndpoint() {
 	if (m_instance.m_impl != nullptr) {
 		return m_instance.m_serverEndpoint;
 	}
-	static string result;
+	static Endpoint result;
 	return result;
 }
 
@@ -550,7 +545,7 @@ const std::string& Instance::getUrl() const {
 	return m_server->getUrl();
 }
 
-const std::string& Instance::getEndpoint() const {
+const Endpoint& Instance::getEndpoint() const {
 	return m_server->getEndpoint();
 }
 
@@ -1119,7 +1114,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 
 	int responderId = instance.getId();
 	string responderUrl = instance.getUrl();
-	string responderEndpoint = instance.getEndpoint();
+	string responderEndpoint = instance.getEndpoint().toString();
 
 	// Create a request socket to the server of the instance.
 	unique_ptr<RequestSocketImpl> instanceRequestSocket = This::m_instance.createRequestSocket(responderEndpoint);

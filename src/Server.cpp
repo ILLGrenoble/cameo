@@ -32,22 +32,13 @@ using namespace std;
 
 namespace cameo {
 
-Server::Server(const std::string& endpoint, int timeoutMs) :
-	Services() {
+void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	Services::init();
 
-	vector<string> tokens = split(endpoint);
-
-	if (tokens.size() < 3) {
-		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
-	}
-
-	m_url = tokens[0] + ":" + tokens[1];
-	string port = tokens[2];
-	istringstream is(port);
-	is >> m_port;
-	m_serverEndpoint = m_url + ":" + port;
+	m_serverEndpoint = endpoint;
+	m_url = endpoint.getProtocol() + "://" + endpoint.getAddress();
+	m_port = endpoint.getPort();
 
 	// Set the timeout.
 	Services::setTimeout(timeoutMs);
@@ -70,6 +61,27 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 	}
 }
 
+Server::Server(const Endpoint& endpoint, int timeoutMs) :
+	Services() {
+
+	Services::init();
+
+	initServer(endpoint, timeoutMs);
+}
+
+Server::Server(const std::string& endpoint, int timeoutMs) :
+	Services() {
+
+	Services::init();
+
+	try {
+		initServer(Endpoint::parse(endpoint), timeoutMs);
+	}
+	catch (...) {
+		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
+	}
+}
+
 Server::~Server() {
 	// Stop the event thread.
 	if (m_eventThread.get() != nullptr) {
@@ -85,7 +97,7 @@ int Server::getTimeout() const {
 	return Services::getTimeout();
 }
 
-const std::string& Server::getEndpoint() const {
+const Endpoint& Server::getEndpoint() const {
 	return Services::getEndpoint();
 }
 
@@ -537,7 +549,7 @@ std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const 
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
-	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint, m_serverStatusEndpoint));
+	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverStatusEndpoint));
 	subscriber->init();
 
 	return subscriber;
@@ -667,7 +679,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 
-	os << "server@" << server.m_serverEndpoint;
+	os << "server@" << server.m_serverEndpoint.toString();
 
 	return os;
 }
