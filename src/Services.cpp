@@ -30,7 +30,6 @@ using namespace std;
 namespace cameo {
 
 Services::Services() :
-	m_port(0),
 	m_statusPort(0),
 	m_impl(nullptr) {
 
@@ -101,10 +100,6 @@ const std::string& Services::getUrl() const {
 
 std::array<int, 3> Services::getVersion() const {
 	return m_serverVersion;
-}
-
-int Services::getPort() const {
-	return m_port;
 }
 
 const std::string& Services::getStatusEndpoint() const {

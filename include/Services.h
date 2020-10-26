@@ -45,7 +45,6 @@ public:
 	const Endpoint& getEndpoint() const;
 	const std::string& getUrl() const;
 	std::array<int, 3> getVersion() const;
-	int getPort() const;
 	const std::string& getStatusEndpoint() const;
 
 	bool isAvailable(int timeout) const;
@@ -60,7 +59,6 @@ public:
 	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
 	std::string m_url;
-	int m_port;
 	int m_statusPort;
 	std::string m_serverStatusEndpoint;
 	std::unique_ptr<ServicesImpl> m_impl;
