@@ -172,7 +172,6 @@ public:
 private:
 	void initApplication(int argc, char *argv[]);
 
-	static std::string getReference();
 	static State parseState(const std::string& value);
 	State getState(int id) const;
 
@@ -190,7 +189,7 @@ private:
 	int m_id;
 	bool m_managed;
 
-	std::string m_starterEndpoint;
+	Endpoint m_starterEndpoint;
 	std::string m_starterName;
 	int m_starterId;
 

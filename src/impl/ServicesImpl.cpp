@@ -95,7 +95,7 @@ std::string ServicesImpl::createIsAliveRequest(int id) const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const {
+std::string ServicesImpl::createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -111,8 +111,22 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	}
 	request.endArray();
 
-	request.pushKey(message::StartRequest::STARTER);
-	request.pushString(instanceReference);
+	if (thisId != -1) {
+		request.pushKey(message::StartRequest::STARTER);
+
+		request.startObject();
+
+		request.pushKey(message::ApplicationIdentity::NAME);
+		request.pushString(thisName);
+
+		request.pushKey(message::ApplicationIdentity::ID);
+		request.pushInt(thisId);
+
+		request.pushKey(message::ApplicationIdentity::SERVER);
+		request.pushString(thisEndpoint);
+
+		request.endObject();
+	}
 
 	return request.toString();
 }

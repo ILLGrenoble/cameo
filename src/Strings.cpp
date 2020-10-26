@@ -105,7 +105,10 @@ Endpoint Endpoint::withPort(int port) const {
 }
 
 std::string Endpoint::toString() const {
-	return m_protocol + "://" + m_address + ":" + to_string(m_port);
+	if (m_address != "") {
+		return m_protocol + "://" + m_address + ":" + to_string(m_port);
+	}
+	return "";
 }
 
 ApplicationIdentity::ApplicationIdentity(const std::string& name, int id, const Endpoint& endpoint) :
