@@ -128,10 +128,16 @@ public class Application {
 		}
 		
 		static public String getName() {
+			if (impl == null) {
+				return null;		
+			}
 			return impl.getName();
 		}
 	
 		static public int getId() {
+			if (impl == null) {
+				return 0;		
+			}
 			return impl.getId();
 		}
 		
@@ -241,17 +247,6 @@ public class Application {
 		 */
 		static public Instance connectToStarter() {
 			return connectToStarter(0);
-		}
-		
-		static String getReference() {
-			if (impl != null) {
-				return getName() + "." + getId() + "@" + getEndpoint();
-			}
-			return "";
-		}
-		
-		static ApplicationIdentity getIdentity() {
-			return null;
 		}
 	}
 	

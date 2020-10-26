@@ -47,7 +47,7 @@ public class ThisImpl extends ServicesImpl {
 	private int id;
 	private boolean managed = false;
 
-	private String starterEndpoint;
+	private Endpoint starterEndpoint;
 	private String starterName;
 	private int starterId;
 	
@@ -67,15 +67,13 @@ public class ThisImpl extends ServicesImpl {
 		
 		id = -1;
 		
-		// analysing args to get the endpoint and the id
+		// Analyse the args to get the info.
 		if (args.length == 0) {
 			throw new InvalidArgumentException("missing info argument");			
 		}
 		
-		// the last argument contains the necessary information
+		// The last argument contains the necessary information.
 		String info = args[args.length - 1];
-		
-		System.out.println("info = " + info);
 		
 		// Parse the info.
 		JSONObject infoObject;
@@ -85,17 +83,8 @@ public class ThisImpl extends ServicesImpl {
 		catch (ParseException e) {
 			throw new InvalidArgumentException("bad format for info argument");
 		}
-		
-//		String[] tokens = info.split(":");
-//
-//		// check length
-//		if (tokens.length < 4) {
-//			throw new InvalidArgumentException(info + " is not a valid argument");
-//		}
-//
-//		url = tokens[0] + ":" + tokens[1];
-//		port = Integer.parseInt(tokens[2]);
 
+		// Get the server endpoint.
 		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
 		
 		// Init the context and socket.
@@ -103,26 +92,17 @@ public class ThisImpl extends ServicesImpl {
 		
 		// Retrieve the server version.
 		retrieveServerVersion();
-		
-//		// Analyze 4th token that can be either the name.id or the name in case of unmanaged application. 
-//		String nameId = tokens[3];
-//		int index = nameId.lastIndexOf('.');
-		
+
+		// Get the name present for both managed and unmanaged apps.
 		name = JSON.getString(infoObject, Message.ApplicationIdentity.NAME);
-		
-//		if (index != -1) {
+
+		// For managed apps, id is present in info.
 		if (infoObject.containsKey(Message.ApplicationIdentity.ID)) {
 			managed = true;
-//			name = nameId.substring(0, index);
-//			id = Integer.parseInt(nameId.substring(index + 1));
-			
-			
 			id = JSON.getInt(infoObject, Message.ApplicationIdentity.ID);
 		}
 		else {
 			managed = false;
-			//name = nameId;
-			
 			id = initUnmanagedApplication();
 			
 			if (id == -1) {
@@ -130,15 +110,13 @@ public class ThisImpl extends ServicesImpl {
 			}
 		}
 		
-//		// Search for the starter reference.
-//		if (tokens.length >= 7) {
-//			index = tokens[4].lastIndexOf('@');
-//			starterEndpoint = tokens[4].substring(index + 1) + ":" + tokens[5] + ":" + tokens[6]; 
-//			String starterNameId = tokens[4].substring(0, index);
-//			index = starterNameId.lastIndexOf('.');
-//			starterName = starterNameId.substring(0, index);
-//			starterId = Integer.parseInt(starterNameId.substring(index + 1));
-//		}
+		// Get the starter info if it is present.
+		if (infoObject.containsKey(Message.ApplicationIdentity.STARTER)) {
+			JSONObject starterObject = JSON.getObject(infoObject, Message.ApplicationIdentity.STARTER);
+			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Message.ApplicationIdentity.SERVER));
+			starterName = JSON.getString(starterObject, Message.ApplicationIdentity.NAME);
+			starterId = JSON.getInt(starterObject, Message.ApplicationIdentity.ID);
+		}
 		
 		System.out.println("endpoint = " + serverEndpoint);
 		System.out.println("name = " + name);
@@ -163,7 +141,7 @@ public class ThisImpl extends ServicesImpl {
 		return serverEndpoint;
 	}
 		
-	public String getStarterEndpoint() {
+	public Endpoint getStarterEndpoint() {
 		return starterEndpoint;
 	}
 	

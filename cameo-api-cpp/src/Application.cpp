@@ -115,15 +115,6 @@ void This::init(int argc, char *argv[]) {
 	}
 }
 
-std::string This::getReference() {
-	if (m_instance.m_impl != nullptr) {
-		ostringstream os;
-		os << getName() << "." << getId() << "@" << getEndpoint();
-		return os.str();
-	}
-	return "";
-}
-
 void This::terminate() {
 
 	// Test if termination is already done.
@@ -161,18 +152,7 @@ void This::initApplication(int argc, char *argv[]) {
 
 	string info(argv[argc - 1]);
 
-//	vector<string> tokens = split(info);
-//
-//	if (tokens.size() < 4) {
-//		throw InvalidArgumentException(info + " is not a valid argument");
-//	}
-//
-//	m_url = tokens[0] + ":" + tokens[1];
-//
-//	string port = tokens[2];
-//	istringstream is(port);
-//	is >> m_port;
-
+	// Get the info object.
 	json::Object infoObject;
 	json::parse(infoObject, info);
 
@@ -184,55 +164,39 @@ void This::initApplication(int argc, char *argv[]) {
 	// Retrieve the server version.
 	Services::retrieveServerVersion();
 
-//	string nameId = tokens[3];
-//
-//	int index = nameId.find_last_of('.');
-
+	// Get the name.
 	m_name = infoObject[message::ApplicationIdentity::NAME].GetString();
 
-//	// Search for the . character meaning that the application is managed and already has an id.
-//	if (index != string::npos) {
+	// Managed apps have the id key.
 	if (infoObject.HasMember(message::ApplicationIdentity::ID)) {
 		m_managed = true;
-//		m_name = nameId.substr(0, index);
-//		string sid = nameId.substr(index + 1);
-//		{
-//			istringstream is(sid);
-//			is >> m_id;
-//		}
 		m_id = infoObject[message::ApplicationIdentity::ID].GetInt();
 	}
 	else {
 		m_managed = false;
-//		m_name = nameId;
-		m_id = initUnmanagedApplication();
-
-		if (m_id == -1) {
+		int id = initUnmanagedApplication();
+		if (id == -1) {
 			throw UnmanagedApplicationException(string("Maximum number of applications ") + m_name + " reached");
 		}
+		m_id = id;
 	}
 
-//	if (tokens.size() >= 7) {
-//		index = tokens[4].find_last_of('@');
-//		m_starterEndpoint = tokens[4].substr(index + 1) + ":" + tokens[5] + ":" + tokens[6];
-//		string starterNameId = tokens[4].substr(0, index);
-//		index = starterNameId.find_last_of('.');
-//		m_starterName = starterNameId.substr(0, index);
-//		string sid = starterNameId.substr(index + 1);
-//		{
-//			istringstream is(sid);
-//			is >> m_starterId;
-//		}
-//	}
+	// Get the starter info if it is present.
+	if (infoObject.HasMember(message::ApplicationIdentity::STARTER)) {
+		json::Value& starterValue = infoObject[message::ApplicationIdentity::STARTER];
+		m_starterEndpoint = Endpoint::parse(starterValue[message::ApplicationIdentity::SERVER].GetString());
+		m_starterName = starterValue[message::ApplicationIdentity::NAME].GetString();
+		m_starterId = starterValue[message::ApplicationIdentity::ID].GetInt();
+	}
 
 	// Must be here because the server endpoint is required.
 	initStatus();
 
-	// Create the local server
+	// Create the local server.
 	m_server = unique_ptr<Server>(new Server(m_serverEndpoint));
 
-	// Create the starter server
-	if (m_starterEndpoint != "") {
+	// Create the starter server.
+	if (m_starterEndpoint.getAddress() != "") {
 		m_starterServer = unique_ptr<Server>(new Server(m_starterEndpoint));
 	}
 
@@ -250,7 +214,7 @@ void This::initApplication(int argc, char *argv[]) {
 	cout << "endpoint = " << m_serverEndpoint.toString() << endl;
 	cout << "name = " << m_name << endl;
 	cout << "id = " << m_id << endl;
-	cout << "starterEndpoint = " << m_starterEndpoint << endl;
+	cout << "starterEndpoint = " << m_starterEndpoint.toString() << endl;
 	cout << "starterName = " << m_starterName << endl;
 	cout << "starterId = " << m_starterId << endl;
 }

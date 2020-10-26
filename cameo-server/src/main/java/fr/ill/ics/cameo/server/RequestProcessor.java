@@ -44,6 +44,8 @@ import fr.ill.ics.cameo.manager.StatusInfo;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.server.Server.Version;
+import fr.ill.ics.cameo.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * 
@@ -109,11 +111,27 @@ public class RequestProcessor {
 					args[i] = (String)list.get(i);
 				}
 			}
+						
+			System.out.println("request = " + request.toJSONString());
+			
+			JSONObject starterObject = JSON.getObject(request, Message.ApplicationIdentity.STARTER);
+			ApplicationIdentity starter = null;
+			if (starterObject != null) {
+				String endpoint = JSON.getString(starterObject, Message.ApplicationIdentity.SERVER);
+				try {
+					starter = new ApplicationIdentity(JSON.getString(starterObject, Message.ApplicationIdentity.NAME),
+														JSON.getInt(starterObject, Message.ApplicationIdentity.ID),
+														Endpoint.parse(endpoint));
+				}
+				catch (Exception e) {
+					Log.logger().severe("Cannot parse request starter endpoint " + endpoint);
+				}
+			}
 			
 			// Start the application.
 			Application application = manager.startApplication(JSON.getString(request, Message.StartRequest.NAME), 
-																args, 
-																JSON.getString(request, Message.StartRequest.STARTER));
+																args,
+																starter);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

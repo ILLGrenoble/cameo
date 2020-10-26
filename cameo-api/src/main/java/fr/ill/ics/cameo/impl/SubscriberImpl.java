@@ -82,13 +82,13 @@ public class SubscriberImpl {
 		subscriber.connect(instance.getStatusEndpoint().toString());
 		subscriber.subscribe(Message.Event.STATUS);
 		
+		System.out.println("subscribers # " + numberOfSubscribers);
+		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			
-			String endpoint = serverEndpoint + ":" + synchronizerPort;
-			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = server.createRequestSocket(endpoint);
+			RequestSocket requestSocket = server.createRequestSocket(serverEndpoint.withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);

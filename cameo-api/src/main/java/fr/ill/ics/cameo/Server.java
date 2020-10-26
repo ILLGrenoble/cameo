@@ -38,6 +38,10 @@ public class Server {
 		this.impl = impl;
 	}
 	
+	public Server(Endpoint endpoint) {
+		impl = new ServerImpl(endpoint, 0);
+	}
+	
 	/**
 	 * Constructor with endpoint.
 	 * This constructor must be used when the services are related to another cameo server that
@@ -48,6 +52,10 @@ public class Server {
 	 */
 	public Server(String endpoint) {
 		impl = new ServerImpl(endpoint, 0);
+	}
+
+	public Server(Endpoint endpoint, int timeout) {
+		impl = new ServerImpl(endpoint, timeout);
 	}
 	
 	/**
@@ -61,7 +69,7 @@ public class Server {
 	public Server(String endpoint, int timeout) {
 		impl = new ServerImpl(endpoint, timeout);
 	}
-
+	
 	public int getTimeout() {
 		return impl.getTimeout();
 	}
@@ -123,11 +131,11 @@ public class Server {
 	 * @throws ConnectionTimeout 
 	 */
 	public Application.Instance start(String name, String[] args, int options) {
-		return new Application.Instance(impl.start(name, args, options, Application.This.getReference()));
+		return new Application.Instance(impl.start(name, args, options));
 	}
 	
 	public Application.Instance start(String name, String[] args) {
-		return new Application.Instance(impl.start(name, args, 0, Application.This.getReference()));
+		return new Application.Instance(impl.start(name, args, 0));
 	}
 	
 	/**
@@ -138,11 +146,11 @@ public class Server {
 	 * @throws ConnectionTimeout 
 	 */
 	public Application.Instance start(String name, int options) {
-		return new Application.Instance(impl.start(name, options, Application.This.getReference()));
+		return new Application.Instance(impl.start(name, options));
 	}
 	
 	public Application.Instance start(String name) {
-		return new Application.Instance(impl.start(name, 0, Application.This.getReference()));
+		return new Application.Instance(impl.start(name, 0));
 	}
 		
 	public void killAllAndWaitFor(String name) {

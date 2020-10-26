@@ -29,6 +29,7 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.Application.State;
+import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.EventStreamSocket;
@@ -153,14 +154,20 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @param name
 	 * @param args
-	 * @param instanceReference 
 	 * @param returnResult 
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	private fr.ill.ics.cameo.impl.Response startApplication(String name, String[] args, String instanceReference) throws ConnectionTimeout {
+	private fr.ill.ics.cameo.impl.Response startApplication(String name, String[] args) throws ConnectionTimeout {
 		
-		Zmq.Msg request = createStartRequest(name, args, instanceReference);
+		Zmq.Msg request;
+		
+		if (This.getEndpoint() != null) {
+			request = createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
+		}
+		else {
+			request = createStartRequest(name, args, null, 0, null);
+		}
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
@@ -197,7 +204,7 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	public InstanceImpl start(String name, String[] args, int options, String instanceReference) {
+	public InstanceImpl start(String name, String[] args, int options) {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 				
@@ -215,7 +222,7 @@ public class ServerImpl extends ServicesImpl {
 				streamSocket = createOutputStreamSocket(name);
 			}
 			
-			Response response = startApplication(name, args, instanceReference);
+			Response response = startApplication(name, args);
 			
 			if (response.getValue() == -1) {
 				instance.setErrorMessage(response.getMessage());
@@ -235,8 +242,8 @@ public class ServerImpl extends ServicesImpl {
 		return instance;
 	}
 	
-	public InstanceImpl start(String name, String[] args, String serverEndpoint) {
-		return start(name, args, 0, serverEndpoint);
+	public InstanceImpl start(String name, String[] args) {
+		return start(name, args, 0);
 	}
 	
 	/**
@@ -246,12 +253,12 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	public InstanceImpl start(String name, int options, String instanceReference) {
-		return start(name, null, options, instanceReference);
+	public InstanceImpl start(String name, int options) {
+		return start(name, null, options);
 	}
 	
-	public InstanceImpl start(String name, String serverEndpoint) {
-		return start(name, 0, serverEndpoint);
+	public InstanceImpl start(String name) {
+		return start(name, 0);
 	}
 		
 	/**
@@ -942,16 +949,25 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @param name
 	 * @param args
-	 * @param instanceReference 
 	 * @param returnResult 
 	 * @return request
 	 */
-	private Zmq.Msg createStartRequest(String name, String[] args, String instanceReference) {
+	private Zmq.Msg createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.START);
 		request.put(Message.StartRequest.NAME, name);
-		request.put(Message.StartRequest.STARTER, instanceReference);
+		
+		// Add the starter object if This exists.
+		if (thisName != null) {
+			
+			JSONObject starter = new JSONObject();
+			starter.put(Message.ApplicationIdentity.NAME, thisName);
+			starter.put(Message.ApplicationIdentity.ID, thisId);
+			starter.put(Message.ApplicationIdentity.SERVER, thisEndpoint);
+			
+			request.put(Message.StartRequest.STARTER, starter);
+		}
 		
 		if (args != null) {
 			JSONArray list = new JSONArray();

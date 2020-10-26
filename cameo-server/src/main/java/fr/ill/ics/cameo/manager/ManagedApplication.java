@@ -13,9 +13,9 @@ public class ManagedApplication extends Application {
 
 	private java.lang.Process process;
 	protected String[] args;
-	protected String starterReference;
+	protected ApplicationIdentity starter;
 	
-	public ManagedApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, String starterReference) {
+	public ManagedApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter) {
 		super(endpoint, id);
 		
 		// Set the config.
@@ -41,7 +41,7 @@ public class ManagedApplication extends Application {
 		this.setEnvironmentVariables(config.getEnvironmentVariables());
 		
 		this.args = args;
-		this.starterReference = starterReference;
+		this.starter = starter;
 	}
 	
 	@Override
@@ -97,7 +97,7 @@ public class ManagedApplication extends Application {
 				//commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":");
 			
 				// Pass the info in JSON format.
-				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint));
+				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter);
 				commandList.add(identity.toJSONString());
 			}
 			

@@ -72,6 +72,8 @@ public class PublisherImpl {
 			
 			synchronizer.bind(endpoint);
 			
+			System.out.println("publisher synchronizer " + endpoint);
+			
 			// loop until the number of subscribers is reached
 			int counter = 0;
 			

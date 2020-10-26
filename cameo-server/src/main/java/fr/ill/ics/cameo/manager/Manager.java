@@ -39,6 +39,7 @@ import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.manager.PortManager.State;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 
@@ -284,7 +285,7 @@ public class Manager extends ConfigLoader {
 	 * @throws MaxNumberOfApplicationsReached
 	 * @throws ApplicationAlreadyExecuting
 	 */
-	public synchronized Application startApplication(String name, String[] args, String starterReference) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
@@ -296,7 +297,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create application
-		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starterReference);
+		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
 		// Threads
