@@ -82,8 +82,6 @@ public class SubscriberImpl {
 		subscriber.connect(instance.getStatusEndpoint().toString());
 		subscriber.subscribe(Message.Event.STATUS);
 		
-		System.out.println("subscribers # " + numberOfSubscribers);
-		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			

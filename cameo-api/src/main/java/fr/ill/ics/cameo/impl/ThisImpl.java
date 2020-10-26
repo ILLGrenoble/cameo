@@ -117,13 +117,6 @@ public class ThisImpl extends ServicesImpl {
 			starterName = JSON.getString(starterObject, Message.ApplicationIdentity.NAME);
 			starterId = JSON.getInt(starterObject, Message.ApplicationIdentity.ID);
 		}
-		
-		System.out.println("endpoint = " + serverEndpoint);
-		System.out.println("name = " + name);
-		System.out.println("id = " + id);
-		System.out.println("starterEndpoint = " + starterEndpoint);
-		System.out.println("starterName = " + starterName);
-		System.out.println("starterId = " + starterId);
 				
 		// Init listener.
 		eventListener.setName(name);

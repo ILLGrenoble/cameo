@@ -209,14 +209,6 @@ void This::initApplication(int argc, char *argv[]) {
 
 	// Init com.
 	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
-
-
-	cout << "endpoint = " << m_serverEndpoint.toString() << endl;
-	cout << "name = " << m_name << endl;
-	cout << "id = " << m_id << endl;
-	cout << "starterEndpoint = " << m_starterEndpoint.toString() << endl;
-	cout << "starterName = " << m_starterName << endl;
-	cout << "starterId = " << m_starterId << endl;
 }
 
 This::~This() {
