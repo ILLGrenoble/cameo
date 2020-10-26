@@ -56,7 +56,6 @@ public:
 
 	int getTimeout() const;
 	const Endpoint& getEndpoint() const;
-	const std::string& getUrl() const;
 	std::array<int, 3> getVersion() const;
 	bool isAvailable(int timeoutMs) const;
 

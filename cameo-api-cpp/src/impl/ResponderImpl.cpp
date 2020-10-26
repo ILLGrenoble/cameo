@@ -50,15 +50,12 @@ ResponderImpl::~ResponderImpl() {
 
 void ResponderImpl::cancel() {
 
-	stringstream endpoint;
-	endpoint << m_application->getUrl() << ":" << m_responderPort;
-
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
 	requestSocket->request(request.toString());
 }
 

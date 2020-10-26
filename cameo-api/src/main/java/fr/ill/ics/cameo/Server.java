@@ -73,11 +73,7 @@ public class Server {
 	public Endpoint getEndpoint() {
 		return impl.getEndpoint();
 	}
-	
-	public String getUrl() {
-		return impl.getUrl();
-	}
-		
+			
 	public int[] getVersion() {
 		return impl.getVersion();
 	}

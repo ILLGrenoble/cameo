@@ -401,10 +401,6 @@ public class Application {
 			return impl.getId();
 		}
 		
-		public String getUrl() {
-			return impl.getUrl();
-		}
-		
 		public Endpoint getEndpoint() {
 			return impl.getEndpoint();
 		}

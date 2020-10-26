@@ -91,7 +91,7 @@ void RequesterImpl::sendBinary(const std::string& requestData) {
 	request.pushInt(m_application->getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getUrl());
+	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
 	request.pushInt(m_application->getEndpoint().getPort());
@@ -123,7 +123,7 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	request.pushInt(m_application->getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getUrl());
+	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
 	request.pushInt(m_application->getEndpoint().getPort());
@@ -178,15 +178,12 @@ bool RequesterImpl::receive(std::string& data) {
 
 void RequesterImpl::cancel() {
 
-	stringstream requesterEndpoint;
-	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
-
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(requesterEndpoint.str());
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->request(request.toString());
 }
 

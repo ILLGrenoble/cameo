@@ -146,7 +146,6 @@ public:
 	 * throws StarterServerException.
 	 */
 	static Server& getStarterServer();
-	static const std::string& getUrl();
 	static bool isAvailable(int timeout = 10000);
 	static bool isStopping();
 
@@ -234,7 +233,6 @@ public:
 
 	const std::string& getName() const;
 	int getId() const;
-	const std::string& getUrl() const;
 	const Endpoint& getEndpoint() const;
 	std::string getNameId() const;
 	const Com& getCom() const;
@@ -416,7 +414,7 @@ public:
 	void cancel();
 
 private:
-	Subscriber(Server * server, const std::string& url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	Subscriber(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	void init();
 
 	std::unique_ptr<SubscriberImpl> m_impl;

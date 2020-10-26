@@ -39,6 +39,8 @@ public:
 
 	static Endpoint parse(const std::string& str);
 
+	Endpoint withPort(int port) const;
+
 	std::string toString() const;
 
 private:

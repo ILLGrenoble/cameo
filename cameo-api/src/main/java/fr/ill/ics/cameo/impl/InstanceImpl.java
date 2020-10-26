@@ -97,16 +97,12 @@ public class InstanceImpl extends EventListener {
 	public int getId() {
 		return id;
 	}
-	
-	public String getUrl() {
-		return server.getUrl();
-	}
-	
+		
 	public Endpoint getEndpoint() {
 		return server.getEndpoint();
 	}
 	
-	public String getStatusEndpoint() {
+	public Endpoint getStatusEndpoint() {
 		return server.getStatusEndpoint();
 	}
 	

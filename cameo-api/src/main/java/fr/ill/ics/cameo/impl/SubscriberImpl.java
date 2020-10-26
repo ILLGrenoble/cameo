@@ -31,7 +31,7 @@ public class SubscriberImpl {
 	
 	private ServerImpl server;
 	private Zmq.Context context;
-	private String url;
+	private Endpoint serverEndpoint;
 	private int publisherPort;
 	private int synchronizerPort;
 	private Zmq.Socket subscriber;
@@ -44,10 +44,10 @@ public class SubscriberImpl {
 	private boolean canceled = false;
 	private SubscriberWaitingImpl waiting = new SubscriberWaitingImpl(this);
 	
-	SubscriberImpl(ServerImpl server, Zmq.Context context, String url, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
+	SubscriberImpl(ServerImpl server, Zmq.Context context, Endpoint serverEndpoint, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
 		this.server = server;
 		this.context = context;
-		this.url = url;
+		this.serverEndpoint = serverEndpoint;
 		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.publisherName = publisherName;
@@ -62,7 +62,7 @@ public class SubscriberImpl {
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(url + ":" + publisherPort);
+		subscriber.connect(serverEndpoint.withPort(publisherPort).toString());
 		subscriber.subscribe(Message.Event.SYNC);
 		subscriber.subscribe(Message.Event.STREAM);
 		subscriber.subscribe(Message.Event.ENDSTREAM);
@@ -79,13 +79,13 @@ public class SubscriberImpl {
 		subscriber.subscribe(Message.Event.CANCEL);
 
 		// Subscribe to STATUS
-		subscriber.connect(instance.getStatusEndpoint());
+		subscriber.connect(instance.getStatusEndpoint().toString());
 		subscriber.subscribe(Message.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			
-			String endpoint = url + ":" + synchronizerPort;
+			String endpoint = serverEndpoint + ":" + synchronizerPort;
 			
 			// Create a socket that will be used for several requests.
 			RequestSocket requestSocket = server.createRequestSocket(endpoint);

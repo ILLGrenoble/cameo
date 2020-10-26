@@ -97,7 +97,6 @@ public class ThisImpl extends ServicesImpl {
 //		port = Integer.parseInt(tokens[2]);
 
 		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
-		url = serverEndpoint.getProtocol() + "://" + serverEndpoint.getAddress();
 		
 		// Init the context and socket.
 		init();
@@ -463,7 +462,7 @@ public class ThisImpl extends ServicesImpl {
 	public RequesterImpl request(String name, InstanceImpl instanceImpl) throws RequesterCreationException {
 		
 		int responderId = instanceImpl.getId();
-		String responderUrl = instanceImpl.getUrl();
+		String responderUrl = instanceImpl.getEndpoint().getProtocol() + "://" + instanceImpl.getEndpoint().getAddress();
 		String responderEndpoint = instanceImpl.getEndpoint().toString();
 		
 		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;

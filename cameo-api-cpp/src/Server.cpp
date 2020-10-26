@@ -37,7 +37,6 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 	Services::init();
 
 	m_serverEndpoint = endpoint;
-	m_url = endpoint.getProtocol() + "://" + endpoint.getAddress();
 
 	// Set the timeout.
 	Services::setTimeout(timeoutMs);
@@ -98,10 +97,6 @@ int Server::getTimeout() const {
 
 const Endpoint& Server::getEndpoint() const {
 	return Services::getEndpoint();
-}
-
-const std::string& Server::getUrl() const {
-	return Services::getUrl();
 }
 
 std::array<int, 3> Server::getVersion() const {
@@ -544,7 +539,7 @@ std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const 
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
-	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverStatusEndpoint));
+	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverEndpoint.withPort(m_statusPort).toString()));
 	subscriber->init();
 
 	return subscriber;

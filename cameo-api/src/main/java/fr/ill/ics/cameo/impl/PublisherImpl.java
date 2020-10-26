@@ -23,6 +23,7 @@ import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherImpl {
 
@@ -140,13 +141,13 @@ public class PublisherImpl {
 	}
 	
 	public void cancelWaitForSubscribers() {
-		String endpoint = application.getUrl() + ":" + (publisherPort + 1);
+		Endpoint endpoint = application.getEndpoint().withPort(publisherPort + 1);
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = application.createRequestSocket(endpoint);
+		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
 		requestSocket.request(application.message(request));
 			
 		// Terminate the socket.

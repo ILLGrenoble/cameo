@@ -94,16 +94,12 @@ const Endpoint& Services::getEndpoint() const {
 	return m_serverEndpoint;
 }
 
-const std::string& Services::getUrl() const {
-	return m_url;
-}
-
 std::array<int, 3> Services::getVersion() const {
 	return m_serverVersion;
 }
 
-const std::string& Services::getStatusEndpoint() const {
-	return m_serverStatusEndpoint;
+Endpoint Services::getStatusEndpoint() const {
+	return m_serverEndpoint.withPort(m_statusPort);
 }
 
 bool Services::isAvailable(int timeout) const {
@@ -142,10 +138,6 @@ void Services::initStatus() {
 
 	// Get the status port.
 	m_statusPort = value;
-
-	stringstream ss;
-	ss << m_url << ":" << m_statusPort;
-	m_serverStatusEndpoint = ss.str();
 }
 
 std::unique_ptr<EventStreamSocket> Services::openEventStream() {
@@ -162,7 +154,7 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 
 	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint.str());
-	zmq::socket_t * subscriber = m_impl->createEventSubscriber(m_serverStatusEndpoint, cancelEndpoint.str());
+	zmq::socket_t * subscriber = m_impl->createEventSubscriber(getStatusEndpoint().toString(), cancelEndpoint.str());
 
 	// Wait for the connection to be ready.
 	m_impl->waitForSubscriber(subscriber, m_requestSocket.get());
@@ -190,15 +182,12 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(const std
 		return nullptr;
 	}
 
-	// Prepare our context and subscriber.
-	string streamEndpoint = m_url + ":" + to_string(port);
-
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
 	string cancelEndpoint = "inproc://cancel." + to_string(CancelIdGenerator::newId());
 
 	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
-	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(streamEndpoint, cancelEndpoint);
+	zmq::socket_t * subscriber = m_impl->createOutputStreamSubscriber(m_serverEndpoint.withPort(port).toString(), cancelEndpoint);
 
 	// Wait for the connection to be ready.
 	m_impl->waitForStreamSubscriber(subscriber, m_requestSocket.get(), name);

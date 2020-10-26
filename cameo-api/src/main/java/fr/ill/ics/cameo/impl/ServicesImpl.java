@@ -33,7 +33,6 @@ public class ServicesImpl {
 
 	protected Endpoint serverEndpoint;
 	protected int[] serverVersion = new int[3];
-	protected String url;
 	protected int statusPort;
 	protected Zmq.Context context;
 	protected int timeout = 0; // default value because of ZeroMQ design
@@ -59,17 +58,13 @@ public class ServicesImpl {
 	public Endpoint getEndpoint() {
 		return serverEndpoint;
 	}
-	
-	public String getUrl() {
-		return url;
-	}
-	
+		
 	public int[] getVersion() {
 		return serverVersion;
 	}
 	
-	public String getStatusEndpoint() {
-		return url + ":" + statusPort;
+	public Endpoint getStatusEndpoint() {
+		return serverEndpoint.withPort(statusPort);
 	}
 	
 	public void destroySocket(Socket socket) {
@@ -185,7 +180,7 @@ public class ServicesImpl {
 		
 		statusPort = JSON.getInt(response, Message.RequestResponse.VALUE);
 		
-		subscriber.connect(url + ":" + statusPort);
+		subscriber.connect(getStatusEndpoint().toString());
 		subscriber.subscribe(Message.Event.STATUS);
 		subscriber.subscribe(Message.Event.RESULT);
 		subscriber.subscribe(Message.Event.PUBLISHER);

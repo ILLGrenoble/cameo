@@ -62,8 +62,6 @@ public class ServerImpl extends ServicesImpl {
 		this.timeout = timeout;
 		
 		serverEndpoint = endpoint;
-		
-		url = endpoint.getProtocol() + "://" + endpoint.getAddress();
 				
 		// Init the context and socket.
 		init();
@@ -599,7 +597,7 @@ public class ServerImpl extends ServicesImpl {
 		// Prepare our context and subscriber
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(url + ":" + port);
+		subscriber.connect(serverEndpoint.withPort(port).toString());
 		subscriber.subscribe(Message.Event.SYNCSTREAM);
 		subscriber.subscribe(Message.Event.STREAM);
 		subscriber.subscribe(Message.Event.ENDSTREAM);
@@ -732,7 +730,7 @@ public class ServerImpl extends ServicesImpl {
 		int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		SubscriberImpl subscriber = new SubscriberImpl(this, context, url, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
+		SubscriberImpl subscriber = new SubscriberImpl(this, context, serverEndpoint, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
 		subscriber.init();
 		
 		return subscriber;
