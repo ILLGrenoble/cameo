@@ -1147,6 +1147,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 		throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
+	// TODO simplify the use of some variables: responderUrl.
 	return unique_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
 }
 

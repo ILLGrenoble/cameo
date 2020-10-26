@@ -539,6 +539,7 @@ std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const 
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
+	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
 	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverEndpoint.withPort(m_statusPort).toString()));
 	subscriber->init();
 
