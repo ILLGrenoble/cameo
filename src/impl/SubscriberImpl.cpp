@@ -29,15 +29,15 @@ using namespace std;
 namespace cameo {
 
 SubscriberImpl::SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
-	m_server(server),
+	m_server(server), // server associated with instance
 	m_publisherName(publisherName),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
 	m_numberOfSubscribers(numberOfSubscribers),
 	m_instanceName(instanceName),
 	m_instanceId(instanceId),
-	m_instanceEndpoint(instanceEndpoint),
-	m_statusEndpoint(statusEndpoint),
+	m_instanceEndpoint(instanceEndpoint), // endpoint of server
+	m_statusEndpoint(statusEndpoint), // status endpoint of server
 	m_ended(false),
 	m_canceled(false) {
 }
