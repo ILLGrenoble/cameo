@@ -31,6 +31,7 @@ import fr.ill.ics.cameo.impl.ServerImpl;
 import fr.ill.ics.cameo.impl.SubscriberImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class Application {
 	
@@ -142,9 +143,9 @@ public class Application {
 			impl.setTimeout(timeout);
 		}
 		
-		static public String getEndpoint() {
+		static public Endpoint getEndpoint() {
 			if (impl == null) {
-				return "";				
+				return null;		
 			}
 			return impl.getEndpoint();
 		}
@@ -404,7 +405,7 @@ public class Application {
 			return impl.getUrl();
 		}
 		
-		public String getEndpoint() {
+		public Endpoint getEndpoint() {
 			return impl.getEndpoint();
 		}
 		
@@ -807,7 +808,7 @@ public class Application {
 			return impl.getInstanceId();
 		}
 		
-		public String getInstanceEndpoint() {
+		public Endpoint getInstanceEndpoint() {
 			return impl.getInstanceEndpoint();
 		}
 		

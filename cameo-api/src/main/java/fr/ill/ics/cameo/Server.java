@@ -22,6 +22,7 @@ import java.util.List;
 
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.ServerImpl;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -69,7 +70,7 @@ public class Server {
 		impl.setTimeout(timeout);
 	}
 	
-	public String getEndpoint() {
+	public Endpoint getEndpoint() {
 		return impl.getEndpoint();
 	}
 	

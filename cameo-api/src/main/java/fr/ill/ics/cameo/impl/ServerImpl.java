@@ -34,7 +34,6 @@ import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
-import fr.ill.ics.cameo.OutputStreamException;
 import fr.ill.ics.cameo.OutputStreamSocket;
 import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.UndefinedApplicationException;
@@ -45,6 +44,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -57,28 +57,15 @@ public class ServerImpl extends ServicesImpl {
 	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
 	private EventThread eventThread;
 		
-	/**
-	 * Constructor with endpoint.
-	 * This constructor must be used when the services are related to another cameo server that
-	 * has not started the current application.
-	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
-	 * @param endpoint
-	 */
-	public ServerImpl(String endpoint, int timeout) {
+	private void initServer(Endpoint endpoint, int timeout) {
 		
 		this.timeout = timeout;
 		
-		String[] tokens = endpoint.split(":");
-
-		// check length
-		if (tokens.length < 3) {
-			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}
+		serverEndpoint = endpoint;
 		
-		url = tokens[0] + ":" + tokens[1];
-		port = Integer.parseInt(tokens[2]);
-		serverEndpoint = url + ":" + port;
-		
+		url = endpoint.getProtocol() + "://" + endpoint.getAddress();
+		port = endpoint.getPort();
+				
 		// Init the context and socket.
 		init();
 		
@@ -91,6 +78,27 @@ public class ServerImpl extends ServicesImpl {
 		if (streamSocket != null) {
 			eventThread = new EventThread(this, streamSocket);
 			eventThread.start();
+		}
+	}
+	
+	/**
+	 * Constructor with endpoint.
+	 * This constructor must be used when the services are related to another cameo server that
+	 * has not started the current application.
+	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
+	 * @param endpoint
+	 */
+	public ServerImpl(Endpoint endpoint, int timeout) {
+		this.initServer(endpoint, timeout);
+	}
+	
+	public ServerImpl(String endpoint, int timeout) {
+
+		try {
+			this.initServer(Endpoint.parse(endpoint), timeout);
+		}
+		catch (Exception e) {
+			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
 		}
 	}
 	

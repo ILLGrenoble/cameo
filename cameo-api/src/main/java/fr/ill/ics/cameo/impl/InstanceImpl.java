@@ -31,9 +31,8 @@ import fr.ill.ics.cameo.PublisherEvent;
 import fr.ill.ics.cameo.ResultEvent;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.SubscriberCreationException;
-import fr.ill.ics.cameo.UndefinedApplicationException;
-import fr.ill.ics.cameo.UndefinedKeyException;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 
 /**
@@ -103,7 +102,7 @@ public class InstanceImpl extends EventListener {
 		return server.getUrl();
 	}
 	
-	public String getEndpoint() {
+	public Endpoint getEndpoint() {
 		return server.getEndpoint();
 	}
 	

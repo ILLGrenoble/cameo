@@ -25,6 +25,7 @@ import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class SubscriberImpl {
 	
@@ -133,7 +134,7 @@ public class SubscriberImpl {
 		return instance.getId();
 	}
 	
-	public String getInstanceEndpoint() {
+	public Endpoint getInstanceEndpoint() {
 		return instance.getEndpoint();
 	}
 	

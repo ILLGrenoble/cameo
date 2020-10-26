@@ -27,10 +27,11 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ServicesImpl {
 
-	protected String serverEndpoint;
+	protected Endpoint serverEndpoint;
 	protected int[] serverVersion = new int[3];
 	protected String url;
 	protected int port;
@@ -45,7 +46,7 @@ public class ServicesImpl {
 	 */
 	final protected void init() {
 		this.context = new Zmq.Context();
-		this.requestSocket = this.createRequestSocket(serverEndpoint);
+		this.requestSocket = this.createRequestSocket(serverEndpoint.toString());
 	}
 	
 	public int getTimeout() {
@@ -56,7 +57,7 @@ public class ServicesImpl {
 		this.timeout = timeout;
 	}
 	
-	public String getEndpoint() {
+	public Endpoint getEndpoint() {
 		return serverEndpoint;
 	}
 	

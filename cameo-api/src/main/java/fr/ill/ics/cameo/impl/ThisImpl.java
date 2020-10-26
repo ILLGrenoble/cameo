@@ -47,7 +47,6 @@ public class ThisImpl extends ServicesImpl {
 	private int id;
 	private boolean managed = false;
 
-	private Endpoint endpoint;
 	private String starterEndpoint;
 	private String starterName;
 	private int starterId;
@@ -97,14 +96,9 @@ public class ThisImpl extends ServicesImpl {
 //		url = tokens[0] + ":" + tokens[1];
 //		port = Integer.parseInt(tokens[2]);
 
-		endpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
-		url = endpoint.getProtocol() + "://" + endpoint.getAddress();
-		port = endpoint.getPort();
-		
-		// We separated host endpoint and server in the past (server being tcp://localhost)
-		// but that generates troubles when two applications communicate remotely.
-		// However leave the same value seems to be ok.
-		serverEndpoint = url + ":" + port;
+		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
+		url = serverEndpoint.getProtocol() + "://" + serverEndpoint.getAddress();
+		port = serverEndpoint.getPort();
 		
 		// Init the context and socket.
 		init();
@@ -168,7 +162,7 @@ public class ThisImpl extends ServicesImpl {
 		return id;
 	}
 	
-	public String getEndpoint() {
+	public Endpoint getEndpoint() {
 		return serverEndpoint;
 	}
 	
@@ -472,7 +466,7 @@ public class ThisImpl extends ServicesImpl {
 		
 		int responderId = instanceImpl.getId();
 		String responderUrl = instanceImpl.getUrl();
-		String responderEndpoint = instanceImpl.getEndpoint();
+		String responderEndpoint = instanceImpl.getEndpoint().toString();
 		
 		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
 		

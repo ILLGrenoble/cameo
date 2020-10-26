@@ -138,7 +138,7 @@ public:
 	static int getId();
 	static void setTimeout(int timeout);
 	static int getTimeout();
-	static const std::string& getEndpoint();
+	static const Endpoint& getEndpoint();
 	static Server& getServer();
 	static const Com& getCom();
 
@@ -235,7 +235,7 @@ public:
 	const std::string& getName() const;
 	int getId() const;
 	const std::string& getUrl() const;
-	const std::string& getEndpoint() const;
+	const Endpoint& getEndpoint() const;
 	std::string getNameId() const;
 	const Com& getCom() const;
 

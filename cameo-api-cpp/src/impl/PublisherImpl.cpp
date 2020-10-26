@@ -60,7 +60,7 @@ int PublisherImpl::getApplicationId() const {
 }
 
 const std::string& PublisherImpl::getApplicationEndpoint() const {
-	return m_application->getEndpoint();
+	return m_application->getEndpoint().toString();
 }
 
 bool PublisherImpl::waitForSubscribers() {
