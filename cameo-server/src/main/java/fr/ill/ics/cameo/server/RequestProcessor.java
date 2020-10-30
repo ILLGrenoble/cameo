@@ -111,8 +111,6 @@ public class RequestProcessor {
 					args[i] = (String)list.get(i);
 				}
 			}
-						
-			System.out.println("request = " + request.toJSONString());
 			
 			JSONObject starterObject = JSON.getObject(request, Message.ApplicationIdentity.STARTER);
 			ApplicationIdentity starter = null;
