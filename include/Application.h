@@ -347,7 +347,7 @@ public:
 	const std::string& getName() const;
 	const std::string& getApplicationName() const;
 	int getApplicationId() const;
-	const std::string& getApplicationEndpoint() const;
+	std::string getApplicationEndpoint() const;
 
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.

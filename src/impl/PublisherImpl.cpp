@@ -59,7 +59,7 @@ int PublisherImpl::getApplicationId() const {
 	return m_application->getId();
 }
 
-const std::string& PublisherImpl::getApplicationEndpoint() const {
+std::string PublisherImpl::getApplicationEndpoint() const {
 	return m_application->getEndpoint().toString();
 }
 
