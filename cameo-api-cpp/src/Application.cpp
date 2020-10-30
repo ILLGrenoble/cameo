@@ -786,7 +786,7 @@ int Publisher::getApplicationId() const {
 	return m_impl->getApplicationId();
 }
 
-const std::string& Publisher::getApplicationEndpoint() const {
+std::string Publisher::getApplicationEndpoint() const {
 	return m_impl->getApplicationEndpoint();
 }
 

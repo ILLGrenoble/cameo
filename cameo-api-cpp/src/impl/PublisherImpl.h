@@ -37,7 +37,7 @@ public:
 	const std::string& getName() const;
 	const std::string& getApplicationName() const;
 	int getApplicationId() const;
-	const std::string& getApplicationEndpoint() const;
+	std::string getApplicationEndpoint() const;
 
 	bool waitForSubscribers();
 	void cancelWaitForSubscribers();
