@@ -400,7 +400,11 @@ public class InstanceImpl extends EventListener {
 	}
 	
 	public String getStringResult() {
-		return Message.parseString(getResult());
+		byte[] result = getResult();
+		if (result == null) {
+			return null;
+		}
+		return Message.parseString(result);
 	}
 		
 	public OutputStreamSocket getOutputStreamSocket() {

@@ -40,6 +40,9 @@ public class ManagedApplication extends Application {
 		
 		this.setEnvironmentVariables(config.getEnvironmentVariables());
 		
+		// A stop executable is a stop handler.
+		this.hasStopHandler = (this.stopExecutable != null);
+		
 		this.args = args;
 		this.starter = starter;
 	}

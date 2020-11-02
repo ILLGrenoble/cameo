@@ -50,6 +50,7 @@ public class Message {
 	public static final long PORT_UNAVAILABLE = 35;
 	public static final long RELEASE_PORT = 36;
 	public static final long PORTS = 37;
+	public static final long SET_STOP_HANDLER = 38;
 				
 	public static class Event {
 		public static final String SYNC = "SYNC";
@@ -86,6 +87,11 @@ public class Message {
 		public static final String MESSAGE = "message"; // optional string message = 2;
 	}
 
+	public static class SetStopHandlerRequest {
+		public static final String ID = "id"; // int32
+		public static final String STOPPING_TIME = "stopping_time"; // int32
+	}
+	
 	public static class StopRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}

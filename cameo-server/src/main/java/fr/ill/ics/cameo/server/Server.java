@@ -234,6 +234,9 @@ public class Server {
 				else if (type == Message.PORTS) {
 					reply = process.processPortsRequest(request, manager);
 				}
+				else if (type == Message.SET_STOP_HANDLER) {
+					reply = process.processSetStopHandlerRequest(request, manager);
+				}
 				else {
 					System.err.println("Unknown request type " + type);
 					message.send(server);

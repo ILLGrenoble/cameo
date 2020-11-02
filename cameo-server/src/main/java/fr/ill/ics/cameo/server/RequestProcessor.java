@@ -183,6 +183,31 @@ public class RequestProcessor {
 		return Converter.reply(response);
 	}
 
+	public Msg processSetStopHandlerRequest(JSONObject request, Manager manager) {
+	
+		Log.logger().fine("Received SetStopHandler request");
+		
+		try {
+			manager.setApplicationStopHandler(JSON.getInt(request, Message.SetStopHandlerRequest.ID), JSON.getInt(request, Message.SetStopHandlerRequest.STOPPING_TIME));
+
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, 0);
+			response.put(Message.RequestResponse.MESSAGE, "OK");
+			
+			return Converter.reply(response);
+		}
+		catch (IdNotFoundException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Message.RequestResponse.VALUE, -1);
+			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			
+			return Converter.reply(response);
+		}
+	}
+
+	
 	/**
 	 * stop command
 	 * 

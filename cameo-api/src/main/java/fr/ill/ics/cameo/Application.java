@@ -224,13 +224,21 @@ public class Application {
 		}
 		
 		/**
-		 * Sets the stop handler.
+		 * Sets the stop handler with stopping time that overrides the one that may be defined in the configuration of the server.
+		 * @param handler
+		 */
+		static public void handleStop(final Handler handler, int stoppingTime) {
+			impl.createStopHandler(handler, stoppingTime);
+		}
+		
+		/**
+		 * Sets the stop handler with default stopping time.
 		 * @param handler
 		 */
 		static public void handleStop(final Handler handler) {
-			impl.createStopHandler(handler);
+			handleStop(handler, -1);
 		}
-				
+		
 		/**
 		 * 
 		 * @return

@@ -62,6 +62,7 @@ namespace message {
 	const int PORT_UNAVAILABLE = 35;
 	const int RELEASE_PORT = 36;
 	const int PORTS = 37;
+	const int SET_STOP_HANDLER = 38;
 
 	namespace Event {
 		constexpr const char* SYNC = "SYNC";
@@ -96,6 +97,11 @@ namespace message {
 	namespace RequestResponse {
 		constexpr const char* VALUE = "value"; // required int32 value = 1;
 		constexpr const char* MESSAGE = "message"; // optional string message = 2;
+	}
+
+	namespace SetStopHandlerRequest {
+		constexpr const char* ID = "id"; // int32
+		constexpr const char* STOPPING_TIME = "stopping_time"; // int32
 	}
 
 	namespace StopRequest {

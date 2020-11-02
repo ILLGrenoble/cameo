@@ -19,6 +19,7 @@
 * Renamed some requests with v0 suffix to indicate they will disappear.
 * Implemented new port requests.
 * Argument info passed in JSON format.
+* Reviewed 'stopping_time' meaning: is used only when a stop handler is defined (code or executable).
 
 0.1.8
 -----

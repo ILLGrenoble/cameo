@@ -321,6 +321,18 @@ public class Manager extends ConfigLoader {
 		return application;
 	}
 
+
+	public synchronized void setApplicationStopHandler(int id, int stoppingTime) throws IdNotFoundException {
+		
+		if (!applicationMap.containsKey(id)) {
+			throw new IdNotFoundException();
+		}
+		
+		Application application = applicationMap.get(id);
+		application.setStopHandler(stoppingTime);
+	}
+
+	
 	/**
 	 * stop application
 	 * 

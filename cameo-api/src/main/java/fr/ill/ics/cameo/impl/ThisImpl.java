@@ -37,6 +37,7 @@ import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.UnmanagedApplicationException;
 import fr.ill.ics.cameo.WaitingSet;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -267,7 +268,14 @@ public class ThisImpl extends ServicesImpl {
 		
 		requestSocket.request(request);
 	}
+	
+	private void setStopHandler(int stoppingTime) {
 		
+		Zmq.Msg request = createSetStopHandlerRequest(id, stoppingTime);
+		
+		requestSocket.request(request);
+	}
+	
 	/**
 	 * Gets the application state.
 	 * @return
@@ -343,7 +351,15 @@ public class ThisImpl extends ServicesImpl {
 	/**
 	 * 
 	 */
-	public void createStopHandler(Handler handler) {
+	public void createStopHandler(Handler handler, int stoppingTime) {
+		
+		if (handler == null) {
+			return;
+		}
+		
+		// Notify the server.
+		setStopHandler(stoppingTime);
+		
 		stopHandler = new HandlerImpl(this, handler);
 		stopHandler.start();
 	}

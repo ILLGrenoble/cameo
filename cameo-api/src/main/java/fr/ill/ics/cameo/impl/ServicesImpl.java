@@ -24,6 +24,7 @@ import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.SocketException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -320,6 +321,17 @@ public class ServicesImpl {
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.DETACH_UNMANAGED);
 		request.put(Message.DetachUnmanagedRequest.ID, id);
+		
+		return message(request);
+	}
+	
+	
+	protected Msg createSetStopHandlerRequest(int id, int stoppingTime) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.SET_STOP_HANDLER);
+		request.put(Message.SetStopHandlerRequest.ID, id);
+		request.put(Message.SetStopHandlerRequest.STOPPING_TIME, stoppingTime);
 		
 		return message(request);
 	}

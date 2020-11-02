@@ -32,7 +32,7 @@ public class ApplicationConfig {
 	protected String logPath;
 	protected boolean stream = true;
 	protected int streamPort = -1;
-	protected int stoppingTime = -1; // Default value is infinity
+	protected int stoppingTime = 10; // Default value is 10s
 	protected boolean runSingle;
 	protected boolean restart = false;
 	protected boolean passInfo;
@@ -217,7 +217,7 @@ public class ApplicationConfig {
 	public void setStoppingTime(String stoppingTime) {
 		try {
 			if (stoppingTime == null) {
-				this.stoppingTime = 0;
+				this.stoppingTime = 10;
 			} else if (stoppingTime.equals(INF)) {
 				this.stoppingTime = -1;
 			} else {

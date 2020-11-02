@@ -40,6 +40,7 @@ public abstract class Application extends ApplicationConfig {
 	protected int applicationState = ApplicationState.UNKNOWN;
 	protected int pastApplicationStates = ApplicationState.UNKNOWN;
 	protected ProcessState processState = ProcessState.UNKNOWN;
+	protected boolean hasStopHandler = false;
 	protected boolean hasToStop = false;
 	protected boolean hasToStopImmediately = false;
 	protected StreamApplicationThread streamThread = null;
@@ -120,11 +121,13 @@ public abstract class Application extends ApplicationConfig {
 	}
 
 	/**
-	 * The application is killed if a kill is requested or stopping time is 0.
+	 * The application is killed if a kill is requested or it has no stop handler or stopping time is 0.
 	 * @return
 	 */
 	synchronized public boolean hasToBeKilled() {
-		return hasToStopImmediately || (stoppingTime == 0);
+		return hasToStopImmediately
+			|| !hasStopHandler
+			|| (stoppingTime == 0);
 	}
 	
 	synchronized public StreamApplicationThread getStreamThread() {
@@ -160,6 +163,17 @@ public abstract class Application extends ApplicationConfig {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Synchronized set methods
+	
+	synchronized public void setStopHandler(int stoppingTime) {
+		this.hasStopHandler = true;
+		
+		// Stopping is overriden if it has been defined in the code.
+		if (stoppingTime > -1) {
+			this.stoppingTime = stoppingTime;
+		}
+		
+		Log.logger().fine("Application " + getNameId() + " has a stop handler with stopping time " + this.stoppingTime + "s");
+	}
 	
 	synchronized void setState(int applicationState) {
 		if (applicationState != this.applicationState) {
