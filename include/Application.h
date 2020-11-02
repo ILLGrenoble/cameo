@@ -150,9 +150,12 @@ public:
 	static bool isAvailable(int timeout = 10000);
 	static bool isStopping();
 
+	/**
+	 * Sets the stop handler with stopping time that overrides the one that may be defined in the configuration of the server.
+	 */
 	template<typename Type>
-	static void handleStop(Type function) {
-		m_instance.handleStopImpl(function);
+	static void handleStop(Type function, int stoppingTime = -1) {
+		m_instance.handleStopImpl(function, stoppingTime);
 	}
 
 	static void cancelWaitings();
@@ -185,7 +188,7 @@ private:
 	State waitForStop();
 
 	void stoppingFunction(StopFunctionType stop);
-	void handleStopImpl(StopFunctionType function);
+	void handleStopImpl(StopFunctionType function, int stoppingTime);
 
 	std::string m_name;
 	int m_id;

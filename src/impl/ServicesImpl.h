@@ -38,6 +38,7 @@ public:
 	std::string createSyncStreamRequest(const std::string& name) const;
 	std::string createVersionRequest() const;
 	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint) const;
+	std::string createSetStopHandlerRequest(int id, int stoppingTime) const;
 	std::string createStopRequest(int id) const;
 	std::string createKillRequest(int id) const;
 	std::string createConnectRequest(const std::string& name) const;

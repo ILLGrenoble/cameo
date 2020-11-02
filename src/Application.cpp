@@ -463,7 +463,12 @@ void This::stoppingFunction(StopFunctionType stop) {
 	}
 }
 
-void This::handleStopImpl(StopFunctionType function) {
+void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
+
+	// Notify the server.
+	m_requestSocket->request(m_impl->createSetStopHandlerRequest(m_id, stoppingTime));
+
+	// Create the handler.
 	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(bind(&This::stoppingFunction, this, function)));
 }
 

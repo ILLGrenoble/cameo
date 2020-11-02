@@ -131,6 +131,21 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	return request.toString();
 }
 
+std::string ServicesImpl::createSetStopHandlerRequest(int id, int stoppingTime) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SET_STOP_HANDLER);
+
+	request.pushKey(message::SetStopHandlerRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::SetStopHandlerRequest::STOPPING_TIME);
+	request.pushInt(stoppingTime);
+
+	return request.toString();
+}
+
 std::string ServicesImpl::createStopRequest(int id) const {
 
 	json::StringObject request;
