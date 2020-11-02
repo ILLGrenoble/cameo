@@ -115,6 +115,12 @@ void This::init(int argc, char *argv[]) {
 	}
 }
 
+void This::init(const std::string& name, const std::string& endpoint) {
+	if (m_instance.m_impl == nullptr) {
+		m_instance.initApplication(name, endpoint);
+	}
+}
+
 void This::terminate() {
 
 	// Test if termination is already done.
@@ -206,6 +212,47 @@ void This::initApplication(int argc, char *argv[]) {
 	setName(m_name);
 	m_server->registerEventListener(this);
 
+	// Init com.
+	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
+}
+
+void This::initApplication(const std::string& name, const std::string& endpoint) {
+
+	Services::init();
+
+	// Get the server endpoint.
+	m_serverEndpoint = Endpoint::parse(endpoint);
+
+	// Create the request socket. The server endpoint has been defined.
+	Services::initRequestSocket();
+
+	// Retrieve the server version.
+	Services::retrieveServerVersion();
+
+	// Get the name.
+	m_name = name;
+
+	// The application is de-facto unmanaged.
+	m_managed = false;
+
+	int id = initUnmanagedApplication();
+	if (id == -1) {
+		throw UnmanagedApplicationException(string("Maximum number of applications ") + m_name + " reached");
+	}
+	m_id = id;
+
+	// Must be here because the server endpoint is required.
+	initStatus();
+
+	// Create the local server.
+	m_server = unique_ptr<Server>(new Server(m_serverEndpoint));
+
+	// Create the waiting set.
+	m_waitingSet = unique_ptr<WaitingImplSet>(new WaitingImplSet());
+
+	// Init listener.
+	setName(m_name);
+	m_server->registerEventListener(this);
 
 	// Init com.
 	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
