@@ -286,12 +286,8 @@ public class ThisImpl extends ServicesImpl {
 	 */
 	public int waitForStop() {
 				
-		// Test actual state
-		int state = getState(id);
-		if (state == Application.State.STOPPING 
-			|| state == Application.State.KILLING) {
-			return state;
-		}
+		// Warning, this method is executed in a parallel thread.
+		int state = Application.State.UNKNOWN; 
 		
 		while (true) {
 			// waits for a new incoming status
