@@ -18,6 +18,7 @@
 * The class PortManager is responsible for managing the ports.
 * Renamed some requests with v0 suffix to indicate they will disappear.
 * Implemented new port requests.
+* Argument info passed in JSON format.
 
 0.1.8
 -----

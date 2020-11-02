@@ -13,6 +13,7 @@
 * Output stream is synced.
 * Added Instance.waitFor(KeyValue) to wait for a key value event.
 * Added Com classes for port and storage requests.
+* Argument info passed in JSON format.
 
 0.1.9
 -----
