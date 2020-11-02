@@ -160,7 +160,9 @@ void This::initApplication(int argc, char *argv[]) {
 
 	// Get the info object.
 	json::Object infoObject;
-	json::parse(infoObject, info);
+	if (!json::parse(infoObject, info)) {
+		throw InvalidArgumentException("Bad format for info argument");
+	}
 
 	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 

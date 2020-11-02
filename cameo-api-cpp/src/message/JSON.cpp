@@ -73,20 +73,22 @@ std::string StringObject::toString() {
 	return m_buffer.GetString();
 }
 
-void parse(Object & object, zmq::message_t * message) {
+bool parse(Object & object, zmq::message_t * message) {
 
 	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
 	if (!ok) {
-		cerr << "Cannot parse message" << endl;
+		return false;
 	}
+	return true;
 }
 
-void parse(Object & object, const std::string& string) {
+bool parse(Object & object, const std::string& string) {
 
 	rapidjson::ParseResult ok = object.Parse(static_cast<const char *>(string.c_str()), string.size());
 	if (!ok) {
-		cerr << "Cannot parse message" << endl;
+		return false;
 	}
+	return true;
 }
 
 }
