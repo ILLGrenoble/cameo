@@ -147,7 +147,7 @@ void This::initApplication(int argc, char *argv[]) {
 	Services::init();
 
 	if (argc == 0) {
-		throw InvalidArgumentException("missing info argument");
+		throw InvalidArgumentException("Missing info argument");
 	}
 
 	string info(argv[argc - 1]);
