@@ -44,7 +44,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class ThisImpl extends ServicesImpl {
 	
 	private String name;
-	private int id;
+	private int id = -1;
 	private boolean managed = false;
 
 	private Endpoint starterEndpoint;
@@ -64,8 +64,6 @@ public class ThisImpl extends ServicesImpl {
 	 * @param args
 	 */
 	public ThisImpl(String[] args) {
-		
-		id = -1;
 		
 		// Analyse the args to get the info.
 		if (args.length == 0) {
@@ -118,6 +116,32 @@ public class ThisImpl extends ServicesImpl {
 			starterId = JSON.getInt(starterObject, Message.ApplicationIdentity.ID);
 		}
 				
+		// Init listener.
+		eventListener.setName(name);
+	}
+	
+	public ThisImpl(String name, String endpoint) {
+		
+		// Get the server endpoint.
+		serverEndpoint = Endpoint.parse(endpoint);
+		
+		// Init the context and socket.
+		init();
+		
+		// Retrieve the server version.
+		retrieveServerVersion();
+
+		// Get the name.
+		this.name = name; 
+		
+		// This is de-facto an unmanaged application.		
+		managed = false;
+		id = initUnmanagedApplication();
+		
+		if (id == -1) {
+			throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
+		}
+						
 		// Init listener.
 		eventListener.setName(name);
 	}

@@ -113,9 +113,7 @@ public class Application {
 		
 		private static Com com;
 		
-		static public void init(String[] args) {
-			impl = new ThisImpl(args);
-			
+		static private void initServer() {
 			serverImpl = new ServerImpl(impl.getEndpoint(), 0);
 			server = new Server(serverImpl);
 			server.registerEventListener(impl.getEventListener());
@@ -127,6 +125,18 @@ public class Application {
 			com = new Com(new ComImpl(serverImpl, impl.getId()));
 		}
 		
+		static public void init(String[] args) {
+			impl = new ThisImpl(args);
+			
+			initServer();
+		}
+		
+		static public void init(String name, String endpoint) {
+			impl = new ThisImpl(name, endpoint);
+			
+			initServer();
+		}
+				
 		static public String getName() {
 			if (impl == null) {
 				return null;		

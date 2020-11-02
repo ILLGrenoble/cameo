@@ -128,6 +128,7 @@ public:
 	~This();
 
 	static void init(int argc, char *argv[]);
+	static void init(const std::string& name, const std::string& endpoint);
 
 	/**
 	 * The terminate call is not necessary unless the static instance of This is not destroyed automatically.
@@ -171,6 +172,7 @@ public:
 
 private:
 	void initApplication(int argc, char *argv[]);
+	void initApplication(const std::string& name, const std::string& endpoint);
 
 	static State parseState(const std::string& value);
 	State getState(int id) const;
