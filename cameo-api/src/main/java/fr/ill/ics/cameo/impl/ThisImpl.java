@@ -69,7 +69,7 @@ public class ThisImpl extends ServicesImpl {
 		
 		// Analyse the args to get the info.
 		if (args.length == 0) {
-			throw new InvalidArgumentException("missing info argument");			
+			throw new InvalidArgumentException("Missing info argument");			
 		}
 		
 		// The last argument contains the necessary information.
@@ -81,7 +81,7 @@ public class ThisImpl extends ServicesImpl {
 			infoObject = parser.parse(info);
 		}
 		catch (ParseException e) {
-			throw new InvalidArgumentException("bad format for info argument");
+			throw new InvalidArgumentException("Bad format for info argument");
 		}
 
 		// Get the server endpoint.
