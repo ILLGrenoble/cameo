@@ -356,12 +356,9 @@ bool This::removePort(const std::string& name) const {
 
 State This::waitForStop() {
 
-	// test if stop was requested elsewhere
-	State state = getState(m_id);
-	if (state == STOPPING
-		|| state == KILLING) {
-		return state;
-	}
+	// The function is executed in a thread in parallel.
+	// Do not parallelize the calls to the request socket.
+	State state = UNKNOWN;
 
 	while (true) {
 		// waits for a new incoming status
