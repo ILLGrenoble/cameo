@@ -83,7 +83,7 @@ public abstract class Application extends ApplicationConfig {
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Synchronized get methods
 	
-	synchronized public boolean isWriteStream() {
+	synchronized public boolean isWritingStream() {
 		return (logPath != null);
 	}
 	
@@ -304,7 +304,7 @@ public abstract class Application extends ApplicationConfig {
 	 * @override
 	 */
 	public String toString() {
-		return super.toString() + "\napplicationState=" + Converter.toString(this.applicationState) + "\nprocessState=" + this.processState + "\nhasToStop=" + this.hasToStop() + "\nshowStream=" + this.hasStream() + "\nstreamPort=" + this.getStreamPort() + "\nwriteStream=" + this.isWriteStream() + "\nid=" + this.getId();
+		return super.toString() + "\napplicationState=" + Converter.toString(this.applicationState) + "\nprocessState=" + this.processState + "\nhasToStop=" + this.hasToStop() + "\nshowStream=" + this.hasOutputStream() + "\nstreamPort=" + this.getOutputStreamPort() + "\nwriteStream=" + this.isWritingStream() + "\nid=" + this.getId();
 	}
 
 }

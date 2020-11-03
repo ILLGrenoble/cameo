@@ -122,11 +122,11 @@ public class Manager extends ConfigLoader {
 		// iterate the application configurations
 		for (ApplicationConfig config : applicationList) {
 			
-			if (config.hasStream()) {
+			if (config.hasOutputStream()) {
 				Zmq.Socket streamPublisher = context.createSocket(Zmq.PUB);
 				
 				port = bindSocket(streamPublisher, "<server>:<output>" + config.getName());
-				config.setStreamPort(port);
+				config.setOutputStreamPort(port);
 				
 				streamPublishers.put(config.getName(), streamPublisher);
 				
@@ -306,7 +306,7 @@ public class Manager extends ConfigLoader {
 		lifecycleThread.start();
 		
 		// Stream thread
-		if (application.isWriteStream() || application.hasStream()) {
+		if (application.isWritingStream() || application.hasOutputStream()) {
 			if (application.getLogPath() != null) {
 				Log.logger().fine("Application " + application.getNameId() + " has stream to log file '" + application.getLogPath() + "'");
 			} else {
@@ -435,11 +435,11 @@ public class Manager extends ConfigLoader {
 												application.getPastApplicationStates(),
 												args, 
 												application.hasToStop(), 
-												application.hasStream(), 
-												application.isWriteStream(), 
+												application.hasOutputStream(), 
+												application.isWritingStream(), 
 												application.runsSingle(), 
 												application.isRestart(), 
-												application.isPassInfo(), 
+												application.hasInfoArg(), 
 												application.getName(), 
 												application.getStartExecutable(), 
 												application.getStartingTime(), 
@@ -467,9 +467,9 @@ public class Manager extends ConfigLoader {
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
 						
-			Log.logger().fine("Application " + application.getNameId() + " has stream port " + application.getStreamPort());
+			Log.logger().fine("Application " + application.getNameId() + " has stream port " + application.getOutputStreamPort());
 			
-			return application.getStreamPort();
+			return application.getOutputStreamPort();
 			
 		} else {
 			throw new IdNotFoundException();

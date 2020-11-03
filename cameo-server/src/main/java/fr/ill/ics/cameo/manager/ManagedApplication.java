@@ -24,12 +24,12 @@ public class ManagedApplication extends Application {
 		this.setDirectory(config.getDirectory());
 		this.setStartingTime(config.getStartingTime());
 		this.setLogPath(config.getLogPath());
-		this.setStream(config.hasStream());
-		this.setStreamPort(config.getStreamPort());
+		this.setOutputStream(config.hasOutputStream());
+		this.setOutputStreamPort(config.getOutputStreamPort());
 		this.setStoppingTime(config.getStoppingTime());
 		this.setRunMultiple(config.runsSingle());
 		this.setRestart(config.isRestart());
-		this.setPassInfo(config.isPassInfo());
+		this.setInfoArg(config.hasInfoArg());
 
 		this.setStartExecutable(config.getStartExecutable());
 		this.setStartArgs(config.getStartArgs());
@@ -95,10 +95,7 @@ public class ManagedApplication extends Application {
 			}
 			
 			// Add the endpoint and id
-			if (isPassInfo()) {
-				//commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":" + starterReference);
-				//commandList.add(endpoint + ":" + name + "." + Integer.toString(getId()) + ":");
-			
+			if (hasInfoArg()) {
 				// Pass the info in JSON format.
 				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter);
 				commandList.add(identity.toJSONString());

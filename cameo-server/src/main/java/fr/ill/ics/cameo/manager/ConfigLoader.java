@@ -31,6 +31,36 @@ import fr.ill.ics.cameo.exception.UnknownApplicationException;
 
 public abstract class ConfigLoader {
 
+	private final String MAX_APPLICATIONS = "max_applications";
+	private final String HOST = "host";
+	private final String PORT = "port";
+	private final String LOG_DIRECTORY = "log_directory";
+	private final String LOG_LEVEL = "log_level";
+	private final String SLEEP_TIME = "sleep_time";
+	private final String POLLING_TIME = "polling_time";
+	private final String APPLICATIONS = "applications";
+	private final String APPLICATION = "application";
+	private final String NAME = "name";
+	private final String DESCRIPTION = "description";
+	private final String WORKING_DIRECTORY = "working_directory";
+	private final String DEFAULT = "default";
+	private final String STARTING_TIME = "starting_time";
+	private final String STOPPING_TIME = "stopping_time";
+	private final String MULTIPLE = "multiple";
+	private final String STREAM = "stream";
+	private final String OUTPUT_STREAM = "output_stream";
+	private final String PASS_INFO = "pass_info";
+	private final String INFO_ARG = "info_arg";
+	private final String RESTART = "restart";
+	private final String ENVIRONMENT = "environment";
+	private final String START = "start";
+	private final String EXECUTABLE = "executable";
+	private final String STOP = "stop";
+	private final String ERROR = "error";
+	private final String ARGS = "args";
+	private final String ARG = "arg";
+	private final String VALUE = "value";
+	
 	protected List<ApplicationConfig> applicationList;
 
 	public ConfigLoader(String path) {
@@ -43,7 +73,7 @@ public abstract class ConfigLoader {
 
 	private String[] loadArgs(Element item) {
 		
-		String argsString = item.getAttributeValue("args");
+		String argsString = item.getAttributeValue(ARGS);
 		int argsLength = 0;
 		String[] startArgs = null;
 		
@@ -62,7 +92,7 @@ public abstract class ConfigLoader {
 		}
 				
 		// Process the arg tag and its value children.
-		List<Element> args = item.getChildren("arg");
+		List<Element> args = item.getChildren(ARG);
 		String[] finalArgs = new String[argsLength + args.size()];
 		
 		int i = 0;
@@ -72,7 +102,7 @@ public abstract class ConfigLoader {
 		}
 		
 		for (Element arg : args) {
-			finalArgs[i] = arg.getAttributeValue("value");
+			finalArgs[i] = arg.getAttributeValue(VALUE);
 			++i;
 		}
 		
@@ -128,16 +158,16 @@ public abstract class ConfigLoader {
 		Element root = configXML.getRootElement();
 		
 		// Set the attributes
-		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue("max_applications"));
-		ConfigManager.getInstance().setEndpoint(root.getAttributeValue("host"), root.getAttributeValue("port")); 
-		ConfigManager.getInstance().setLogPath(root.getAttributeValue("log_directory"));
-		ConfigManager.getInstance().setLogLevel(root.getAttributeValue("log_level"));
+		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
+		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT)); 
+		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
+		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
 		
 		
 		
 		// Sleep time.
 		int sleepTime = 5;
-		String sleepTimeString = root.getAttributeValue("sleep_time");
+		String sleepTimeString = root.getAttributeValue(SLEEP_TIME);
 		try {
 			sleepTime = Integer.parseInt(sleepTimeString);
 		} catch (NumberFormatException e) {
@@ -148,70 +178,89 @@ public abstract class ConfigLoader {
 		
 		// Polling time.
 		int pollingTime = 100;
-		String pollingTimeString = root.getAttributeValue("polling_time");
+		String pollingTimeString = root.getAttributeValue(POLLING_TIME);
 		try {
 			pollingTime = Integer.parseInt(pollingTimeString);
 		} catch (NumberFormatException e) {
 			// Set default value
-			Log.logger().severe("Error while parsing polling time");
+			Log.logger().severe("Error while parsing '" + POLLING_TIME + "'");
 		}
 		
 		ConfigManager.getInstance().setPollingTime(pollingTime);
 		
 		// Get applications
-		List<Element> listApplication = root.getChild("applications").getChildren("application");
+		List<Element> listApplication = root.getChild(APPLICATIONS).getChildren(APPLICATION);
 		applicationList = new LinkedList<ApplicationConfig>();
 
 		for (Element item : listApplication) {
 			
 			ApplicationConfig application = new ApplicationConfig();
 			
-			String applicationName = item.getAttributeValue("name");
+			String applicationName = item.getAttributeValue(NAME);
 			
 			application.setName(applicationName);
-			application.setDescription(item.getAttributeValue("description"));
-			application.setDirectory(item.getAttributeValue("working_directory"));
-			application.setErrorExecutable(item.getAttributeValue("error_command"));
+			application.setDescription(item.getAttributeValue(DESCRIPTION));
+			application.setDirectory(item.getAttributeValue(WORKING_DIRECTORY));
 			
-			String logDirectory = item.getAttributeValue("log_directory");
+			String logDirectory = item.getAttributeValue(LOG_DIRECTORY);
 			
-			if ("default".equals(logDirectory)) {
+			if (DEFAULT.equals(logDirectory)) {
 				application.setLogPath(ConfigManager.getInstance().getLogPath());	
 			} else {
 				application.setLogPath(logDirectory);
 			}
 						
-			application.setStartingTime(item.getAttributeValue("starting_time"));
-			application.setStoppingTime(item.getAttributeValue("stopping_time"));
-			application.setStopExecutable(item.getAttributeValue("stop_command"));
-			application.setRunMultiple(item.getAttributeValue("multiple"));
-			application.setStream(item.getAttributeValue("stream"));
-			application.setPassInfo(item.getAttributeValue("pass_info"));
-			application.setRestart(item.getAttributeValue("restart"));
-			application.setEnvironmentFile(item.getAttributeValue("environment"));
+			application.setStartingTime(item.getAttributeValue(STARTING_TIME));
+			application.setStoppingTime(item.getAttributeValue(STOPPING_TIME));
+			application.setRunMultiple(item.getAttributeValue(MULTIPLE));
+			
+			// Both attributes are accepted: output_stream or stream.
+			String outputStreamValue = item.getAttributeValue(OUTPUT_STREAM);
+			String streamValue = item.getAttributeValue(STREAM);
+						
+			if (streamValue != null) {
+				application.setOutputStream(streamValue);
+			}
+			else {
+				application.setOutputStream(outputStreamValue);
+			}
+			
+			// Both attributes are accepted: info_arg or pass_info.
+			String infoArg = item.getAttributeValue(INFO_ARG);
+			String passInfo = item.getAttributeValue(PASS_INFO);
+			
+			if (passInfo != null) {
+				application.setInfoArg(passInfo);
+			}
+			else {
+				application.setInfoArg(infoArg);
+			}
+						
+			application.setRestart(item.getAttributeValue(RESTART));
+			application.setEnvironmentFile(item.getAttributeValue(ENVIRONMENT));
 			
 			// Start command
-			Element startItem = item.getChild("start");
+			Element startItem = item.getChild(START);
 			if (startItem == null) {
-				Log.logger().severe("application node must contain a start node");
+				Log.logger().severe("Application node must contain a '" + START + "' node");
 				continue;
 			}
-			application.setStartExecutable(startItem.getAttributeValue("executable"));
+			application.setStartExecutable(startItem.getAttributeValue(EXECUTABLE));
 			String[] startArgs = loadArgs(startItem);
 			application.setStartArgs(startArgs);
 			
 			// Stop command
-			Element stopItem = item.getChild("stop");
+			Element stopItem = item.getChild(STOP);
 			if (stopItem != null) {
-				application.setStopExecutable(stopItem.getAttributeValue("executable"));
+				application.setStopExecutable(stopItem.getAttributeValue(EXECUTABLE));
 				String[] stopArgs = loadArgs(stopItem);
 				application.setStopArgs(stopArgs);
 			}
 
 			// Error command
-			Element errorItem = item.getChild("error");
+			Element errorItem = item.getChild(ERROR);
 			if (errorItem != null) {
-				application.setErrorExecutable(errorItem.getAttributeValue("executable"));
+				application.setErrorExecutable(errorItem.getAttributeValue(EXECUTABLE));
 				String[] errorArgs = loadArgs(errorItem);
 				application.setErrorArgs(errorArgs);
 			}
@@ -279,7 +328,7 @@ public abstract class ConfigLoader {
 		while (it.hasNext()) {
 			ApplicationConfig config = it.next();
 			if (config.getName().equals(name)) {
-				return config.getStreamPort();
+				return config.getOutputStreamPort();
 			}
 		}
 		

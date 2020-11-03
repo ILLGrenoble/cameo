@@ -30,12 +30,12 @@ public class ApplicationConfig {
 	protected String directory;
 	protected int startingTime = 0;
 	protected String logPath;
-	protected boolean stream = true;
-	protected int streamPort = -1;
+	protected boolean outputStream = true;
+	protected int outputStreamPort = -1;
 	protected int stoppingTime = 10; // Default value is 10s
 	protected boolean runSingle;
 	protected boolean restart = false;
-	protected boolean passInfo;
+	protected boolean infoArg;
 	protected HashMap<String, String> environmentVariables = new HashMap<String, String>(); 
 	
 	protected String startExecutable;
@@ -173,33 +173,33 @@ public class ApplicationConfig {
 		this.logPath = outputPath;
 	}
 	
-	public boolean hasStream() {
-		return stream;
+	public boolean hasOutputStream() {
+		return outputStream;
 	}
 
-	public void setStream(boolean value) {
-		this.stream = value;
+	public void setOutputStream(boolean value) {
+		this.outputStream = value;
 	}
 	
-	public void setStream(String value) {
+	public void setOutputStream(String value) {
 		if (value == null) {
-			this.stream = true;
+			this.outputStream = true;
 		} else if (value.equalsIgnoreCase("yes")) {
-			this.stream = true;
+			this.outputStream = true;
 		} else if (value.equalsIgnoreCase("no")) {
-			this.stream = false;
+			this.outputStream = false;
 		} else {
-			System.err.println("Error with attribute 'stream' in configuration file");
+			System.err.println("Error with attribute 'output_stream' in configuration file");
 			System.exit(-1);
 		}
 	}
 		
-	public int getStreamPort() {
-		return this.streamPort;
+	public int getOutputStreamPort() {
+		return this.outputStreamPort;
 	}
 
-	public void setStreamPort(int port) {
-		this.streamPort = port;
+	public void setOutputStreamPort(int port) {
+		this.outputStreamPort = port;
 	}
 	
 	public void setStartingTime(int startingTime) {
@@ -254,7 +254,7 @@ public class ApplicationConfig {
 
 	public void setRestart(String value) {
 		if (value == null) {
-			this.restart = true; 
+			this.restart = false; 
 		} else if (value.equalsIgnoreCase("yes")) {
 			this.restart = true;
 		} else if (value.equalsIgnoreCase("no")) {
@@ -273,24 +273,24 @@ public class ApplicationConfig {
 		return restart;
 	}
 
-	public boolean isPassInfo() {
-		return passInfo;
+	public boolean hasInfoArg() {
+		return infoArg;
 	}
 
-	public void setPassInfo(boolean passInfo) {
-		this.passInfo = passInfo;
+	public void setInfoArg(boolean value) {
+		this.infoArg = value;
 	}
 	
-	public void setPassInfo(String passInfo) {
-		if (passInfo == null) {
-			this.passInfo = true;
-		} else if (passInfo.equalsIgnoreCase("yes")) {
-			this.passInfo = true;
-		} else if (passInfo.equalsIgnoreCase("no")) {
-			this.passInfo = false;	
+	public void setInfoArg(String value) {
+		if (value == null) {
+			this.infoArg = true;
+		} else if (value.equalsIgnoreCase("yes")) {
+			this.infoArg = true;
+		} else if (value.equalsIgnoreCase("no")) {
+			this.infoArg = false;	
 			
 		} else {
-			System.err.println("Error with attribute 'pass_info' in configuration file");
+			System.err.println("Error with attribute 'info_arg' in configuration file");
 			System.exit(-1);
 		}
 	}
@@ -377,7 +377,7 @@ public class ApplicationConfig {
 			stopArgsString = String.join(" ", stopArgs);
 		}	
 		
-		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorCommand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + stream + ", streamPort=" + streamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + passInfo + "]";
+		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorCommand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + outputStream + ", streamPort=" + outputStreamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + infoArg + "]";
 	}
 	
 }

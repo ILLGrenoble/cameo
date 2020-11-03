@@ -61,7 +61,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	private void sendMessage(String line, boolean endOfLine) {
 		
 		// Prepare the file if the log is written.
-		if (application.isWriteStream()) {
+		if (application.isWritingStream()) {
 			if (fileOutputStream == null) { 
 				// Create the log file if it has not been created.
 				createFile(application.getLogPath());
@@ -81,7 +81,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 
-		if (application.hasStream()) {
+		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
 			event.put(Message.ApplicationStream.ID, application.getId());
@@ -157,7 +157,7 @@ public class StreamApplicationThread extends ApplicationThread {
 		InputStreamReader is = new InputStreamReader(application.getProcess().getInputStream());
 		reader = new BufferedReader(is);
 				
-		if (application.isWriteStream()) {
+		if (application.isWritingStream()) {
 			createFile(application.getLogPath());
 			if (fileOutputStream == null) {
 				return;
@@ -168,7 +168,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				
 		try {
 			try {
-				while (application.isAlive() && (application.isWriteStream() || application.hasStream())) {
+				while (application.isAlive() && (application.isWritingStream() || application.hasOutputStream())) {
 					
 					// Polling because the standard Java API does not allow to do it differently. 
 					// Indeed when the process is killed, it is impossible to unblock the reader.readLine() call (and any other underlying calls). 
@@ -218,7 +218,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	public void sendEndOfStream() {
 		// Send the end of stream.
 		// The message was originally done in manager when the application was terminated but not the stream thread because they are not synchronized.
-		if (application.hasStream()) {
+		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
 			event.put(Message.ApplicationStream.ID, application.getId());
