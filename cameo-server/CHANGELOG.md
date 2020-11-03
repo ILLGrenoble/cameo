@@ -3,23 +3,24 @@
 
 * Replaced protobuf by JSON.
 * In StreamApplicationThread, replaced reader.readLine() by a specialised readCharacters() method to manage properly the input streams (output from the cameo server, input from the process).
-* Removed the 'retries' attribute of an application config.
 * Added server version request.
 * Reviewed log messages.
-* Removed the 'debug' attribute from config.
-* Added the 'log_level' attribute in config.
 * Added the argument --log-console in Server main.
 * Added storage requests and send key value events.
 * Send the exit code in the status events.
-* In config, enabled multiple=yes and stream=yes.
-* In config, stream=yes by default, even if multiple=yes.
 * Added connect with id request.
 * Added sync stream request. Moved the creation of the stream thread at an earlier location.
 * The class PortManager is responsible for managing the ports.
 * Renamed some requests with v0 suffix to indicate they will disappear.
 * Implemented new port requests.
-* Argument info passed in JSON format.
-* Reviewed 'stopping_time' meaning: is used only when a stop handler is defined (code or executable).
+* Argument info is passed in JSON format.
+* Removed the 'retries' attribute of an application config.
+* Reviewed 'stopping\_time' meaning: is used only when a stop handler is defined (code or executable).
+* Added 'info\_arg' and 'output\_stream' attributes, 'pass_info' and 'stream' are kept. 
+* Removed the 'debug' attribute from config.
+* Added the 'log\_level' attribute in config.
+* In config, enabled 'multiple'=yes and 'output\_stream'=yes.
+* In config, 'output\_stream'=yes by default, even if 'multiple'=yes.
 
 0.1.8
 -----
