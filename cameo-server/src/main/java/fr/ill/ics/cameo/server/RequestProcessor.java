@@ -159,7 +159,7 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received Apps request");
 		
-		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
+		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
 		JSONObject response = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -283,7 +283,7 @@ public class RequestProcessor {
 		
 		String applicationName = JSON.getString(request, Message.ConnectRequest.NAME);
 		
-		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
+		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
 		JSONObject response = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -317,7 +317,7 @@ public class RequestProcessor {
 		
 		int applicationId = JSON.getInt(request, Message.ConnectWithIdRequest.ID);
 		
-		LinkedList<ApplicationInfo> list = manager.showApplicationMap();
+		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
 		JSONObject response = new JSONObject();
 		JSONArray array = new JSONArray();

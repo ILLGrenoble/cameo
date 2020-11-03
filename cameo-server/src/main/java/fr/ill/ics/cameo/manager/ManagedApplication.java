@@ -126,6 +126,8 @@ public class ManagedApplication extends Application {
 			
 			// Get the process handle.
 			this.processHandle = new ProcessHandlerImpl(process);
+						
+			Log.logger().info("Application " + this.getNameId() + " has pid " + this.processHandle.getPid());
 															
 		} catch (IOException e) {
 			Log.logger().severe("Application " + this.getNameId() + " has not executed : " + e.getMessage());

@@ -15,7 +15,7 @@
 * Implemented new port requests.
 * Argument info is passed in JSON format.
 * Removed the 'retries' attribute of an application config.
-* Reviewed 'stopping\_time' meaning: is used only when a stop handler is defined (code or executable).
+* Reviewed 'stopping\_time' meaning: is used only when a stop handler is defined (code or executable). Otherwise if a stop is requested, a kill is applied.
 * Added 'info\_arg' and 'output\_stream' attributes, 'pass_info' and 'stream' are kept. 
 * Removed the 'debug' attribute from config.
 * Added the 'log\_level' attribute in config.

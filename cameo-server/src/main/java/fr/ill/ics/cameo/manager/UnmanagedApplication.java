@@ -18,7 +18,7 @@ public class UnmanagedApplication extends Application {
 			try {
 				processHandle = ProcessHandlerImpl.ofPid(pid);
 				
-				Log.logger().info("Unmanaged application " + this.getNameId() + " has a process handle");
+				Log.logger().info("Unmanaged application " + this.getNameId() + " has pid " + pid);
 				
 			} catch (Exception e) {
 				Log.logger().info("Unmanaged application " + this.getNameId() + " has no process handle");

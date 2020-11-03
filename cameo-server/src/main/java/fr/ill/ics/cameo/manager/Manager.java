@@ -416,15 +416,16 @@ public class Manager extends ConfigLoader {
 	 * 
 	 * @return reply with running appli
 	 */
-	public synchronized LinkedList<ApplicationInfo> showApplicationMap() {
+	public synchronized LinkedList<ApplicationInfo> getApplicationInfos() {
+		
 		LinkedList<ApplicationInfo> list = new LinkedList<ApplicationInfo>();
-		Log.logger().fine("Showing applications");
+		
 		String args = null;
 
 		for (java.util.Map.Entry<Integer, Application> entry : applicationMap.entrySet()) {
 			Application application = entry.getValue();
 			if (application.getArgs() == null) {
-				args = "no arguments";
+				args = "";
 			} else {
 				args = String.join(" ", application.getArgs());
 			}
