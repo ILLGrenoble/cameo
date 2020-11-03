@@ -61,7 +61,7 @@ public class Manager extends ConfigLoader {
 		Log.init();
 		Log.logger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
-		showApplicationConfigs();
+		displayApplicationConfigs();
 		
 		applicationMap = new ConcurrentHashMap<Integer, Application>();
 		
@@ -78,7 +78,7 @@ public class Manager extends ConfigLoader {
 		Log.init();
 		Log.logger().info("Endpoint is " + ConfigManager.getInstance().getHostEndpoint());
 		
-		showApplicationConfigs();
+		displayApplicationConfigs();
 		
 		applicationMap = new ConcurrentHashMap<Integer, Application>();
 		

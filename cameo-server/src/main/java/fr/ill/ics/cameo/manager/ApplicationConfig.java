@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.json.simple.JSONObject;
+
 public class ApplicationConfig {
 
 	protected String name;
@@ -360,8 +362,8 @@ public class ApplicationConfig {
 		return environmentVariables;
 	}
 	
-	@Override
-	public String toString() {
+	public String toJSONString() {
+		
 		String startArgsString = "";
 		if (startArgs != null) {
 			startArgsString = String.join(" ", startArgs);
@@ -377,7 +379,37 @@ public class ApplicationConfig {
 			stopArgsString = String.join(" ", stopArgs);
 		}	
 		
-		return "ApplicationConfig [name=" + name + ", description=" + description + ", directory=" + directory + ", startCommand=" + startExecutable + ", startArgs=" + startArgsString + ", errorCommand=" + errorExecutable + ", errorArgs=" + errorArgsString + ", startingTime=" + startingTime + ", logDirectory=" + logPath + ", stream=" + outputStream + ", streamPort=" + outputStreamPort + ", stopTimeout=" + stoppingTime + ", stopCommand=" + stopExecutable + ", stopArgs=" + stopArgsString + ", runSingle=" + runSingle + ", restart=" + restart + ", passInfo=" + infoArg + "]";
+		JSONObject object = new JSONObject();
+		
+		object.put("name", name);
+		object.put("description", description);
+		object.put("directory", directory);
+
+		object.put("multiple", !runSingle);
+		object.put("restart", restart);
+		object.put("infoArg", infoArg);
+
+		object.put("logDirectory", logPath);
+		object.put("outputStream", outputStream);
+		object.put("outputStreamPort", outputStreamPort);
+		
+		object.put("startExecutable", startExecutable);
+		object.put("startArgs", startArgsString);
+		object.put("startingTime", startingTime);
+
+		object.put("stoppingTime", stoppingTime);
+		object.put("stopExecutable", stopExecutable);
+		object.put("stopArgs", stopArgsString);
+
+		object.put("errorExecutable", errorExecutable);
+		object.put("errorArgs", errorArgsString);
+		
+		return object.toJSONString();
+	}
+	
+	@Override
+	public String toString() {
+		return "ApplicationConfig " + toJSONString();
 	}
 	
 }

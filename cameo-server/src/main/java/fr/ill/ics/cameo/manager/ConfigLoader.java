@@ -315,11 +315,13 @@ public abstract class ConfigLoader {
 	/**
 	 * show config of applications, only used to debug
 	 */
-	protected void showApplicationConfigs() {
+	protected void displayApplicationConfigs() {
+		
 		Log.logger().fine("List of applications");
 		Iterator<ApplicationConfig> it = applicationList.iterator();
 		while (it.hasNext()) {
-			Log.logger().fine(((ApplicationConfig)it.next()).toString());
+			ApplicationConfig config = it.next();
+			Log.logger().fine(config.getName() + " " + config.toJSONString());
 		}
 	}
 	
