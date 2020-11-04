@@ -333,7 +333,7 @@ public class ServerImpl extends ServicesImpl {
 					
 					instance.setId(applicationId);
 					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.APPLICATION_STATE));
-					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
+					instance.setPastStates(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
 					
 					if (outputStream) {
 						instance.setOutputStreamSocket(createOutputStreamSocket(name));
