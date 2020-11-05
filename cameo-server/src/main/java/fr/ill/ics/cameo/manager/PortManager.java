@@ -18,9 +18,6 @@ package fr.ill.ics.cameo.manager;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
 
 public final class PortManager {
 

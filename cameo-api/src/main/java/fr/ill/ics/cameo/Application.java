@@ -30,7 +30,6 @@ import fr.ill.ics.cameo.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.ServerImpl;
 import fr.ill.ics.cameo.impl.SubscriberImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
-import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class Application {

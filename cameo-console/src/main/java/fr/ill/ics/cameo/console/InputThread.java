@@ -19,7 +19,6 @@ package fr.ill.ics.cameo.console;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
-import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.RemoteException;
 import fr.ill.ics.cameo.Server;
 

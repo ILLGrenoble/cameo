@@ -37,7 +37,6 @@ import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
-import fr.ill.ics.cameo.manager.PortManager.State;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
