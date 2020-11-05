@@ -29,6 +29,9 @@ public class TestStrings {
 		assertEquals("gamma75", endpoint.getAddress());
 		assertEquals(9999, endpoint.getPort());
 
+		Endpoint endpoint2 = new Endpoint("tcp", "gamma75", 9999);
+		assertEquals(endpoint, endpoint2);
+		
 		boolean error = false;
 		try {
 			Endpoint.parse("gamma75:9999");

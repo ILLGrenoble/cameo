@@ -21,6 +21,40 @@ public class Endpoint {
 		this.port = port;
 	}
 	
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof Endpoint)) {
+			return false;
+		}
+		Endpoint other = (Endpoint)object;
+		
+		if (protocol == null && other.getProtocol() != null) {
+			return false;
+		}
+		if (!protocol.equals(other.getProtocol())) {
+			return false;
+		}
+		
+		if (address == null && other.getAddress() != null) {
+			return false;
+		}
+		if (!address.equals(other.getAddress())) {
+			return false;
+		}
+		
+		if (port != other.getPort()) {
+			return false;
+		}
+		
+		return true;
+	}
+		
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
 	public String getProtocol() {
 		return protocol;
 	}
