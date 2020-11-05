@@ -56,6 +56,12 @@ Endpoint::Endpoint() :
 	m_port(0) {
 }
 
+bool Endpoint::operator==(const Endpoint& endpoint) const {
+	return m_protocol == endpoint.m_protocol
+			&& m_address == endpoint.m_address
+			&& m_port == endpoint.m_port;
+}
+
 const std::string& Endpoint::getProtocol() const {
 	return m_protocol;
 }
@@ -212,6 +218,13 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 	}
 
 	return jsonObject.toString();
+}
+
+std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint) {
+
+	os << endpoint.toString();
+
+	return os;
 }
 
 }
