@@ -29,6 +29,10 @@ int main(int argc, char *argv[]) {
 	CAMEO_ASSERT_TRUE("175.29.285.15" == endpoint.getAddress());
 	CAMEO_ASSERT_EQUAL(9999, endpoint.getPort());
 
+	Endpoint endpoint2("tcp", "175.29.285.15", 9999);
+
+	CAMEO_ASSERT_TRUE(endpoint == endpoint2);
+
 	bool error = false;
 	try {
 		Endpoint::parse("gamma75:9999");

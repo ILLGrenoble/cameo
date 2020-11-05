@@ -28,10 +28,14 @@ std::vector<std::string> split(const std::string& str, char c);
 
 class Endpoint {
 
+	friend std::ostream& operator<<(std::ostream&, const Endpoint&);
+
 public:
 	Endpoint(const std::string& protocol, const std::string& address, int port);
 	Endpoint(const std::string& address, int port);
 	Endpoint();
+
+	bool operator==(const Endpoint& endpoint) const;
 
 	const std::string& getProtocol() const;
 	const std::string& getAddress() const;
@@ -87,5 +91,7 @@ private:
 };
 
 }
+
+std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif
