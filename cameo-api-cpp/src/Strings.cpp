@@ -19,6 +19,7 @@
 #include "message/Message.h"
 #include "BadFormatException.h"
 #include <regex>
+#include <ostream>
 
 using namespace std;
 

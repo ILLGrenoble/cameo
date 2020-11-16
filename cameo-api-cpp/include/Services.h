@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include "Strings.h"
 #include "EventStreamSocket.h"
 #include "OutputStreamSocket.h"
