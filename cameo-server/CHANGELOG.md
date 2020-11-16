@@ -1,3 +1,8 @@
+1.0.1
+-----
+
+* Added test on the operating system to add \ character before " on Windows: the JSON string passed as info argument cannot be parsed otherwise.
+
 1.0.0
 -----
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.manager.OperatingSystem.OS;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -98,7 +99,14 @@ public class ManagedApplication extends Application {
 			if (hasInfoArg()) {
 				// Pass the info in JSON format.
 				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter);
-				commandList.add(identity.toJSONString());
+
+				// On Windows, " are removed, so we need to force their presence by escaping.
+				String identityString = identity.toJSONString();
+				if (OperatingSystem.get() == OS.WINDOWS) {
+					identityString = identityString.replaceAll("[\"]", "\\\\\"");
+				}
+				
+				commandList.add(identityString);
 			}
 			
 			// Prepare the command
