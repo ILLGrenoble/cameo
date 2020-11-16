@@ -26,7 +26,8 @@
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
 #ifdef _WIN32
-	#define GET_PROCESS_PID() GetCurrentProcessId()
+	#include <process.h>
+	#define GET_PROCESS_PID() _getpid()
 #else
 	#include <unistd.h>
 
