@@ -44,11 +44,11 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
-	// Retrieve the server version.
-	Services::retrieveServerVersion();
-
 	// Manage the ConnectionTimeout exception that can occur.
 	try {
+		// Retrieve the server version.
+		Services::retrieveServerVersion();
+
 		// Start the event thread.
 		unique_ptr<EventStreamSocket> socket = openEventStream();
 		m_eventThread.reset(new EventThread(this, socket));
