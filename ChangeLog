@@ -2,6 +2,7 @@
 -----
 
 * Some minor changes to compile under Visual Studio 19.
+* In Server constructor, moved retrieval of server version in try/catch to avoid exception when there is a timeout.
 
 1.0.0
 -----
