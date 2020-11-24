@@ -83,7 +83,12 @@ const State SUCCESS = 64;
 const State STOPPED = 128;
 const State KILLED = 256;
 
-
+  /** \class This 
+   * \brief class managing the current CAMEO application.
+   *
+   * \details The application has to be launched by CAMEO command line or another CAMEO app
+   * \todo why this does not inherit from the Instance class?
+   */
 class This : private Services, private EventListener {
 
 	friend class cameo::application::Publisher;
@@ -135,11 +140,11 @@ public:
 	 */
 	static void terminate();
 
-	static const std::string& getName();
-	static int getId();
+	static const std::string& getName(); ///< returns the name of the CAMEO application corresponding to this instance
+	static int getId();  ///< returns the ID number of the instance
 	static void setTimeout(int timeout);
 	static int getTimeout();
-	static const Endpoint& getEndpoint();
+	static const Endpoint& getEndpoint(); ///< returns the TCP address of this instance
 	static Server& getServer();
 	static const Com& getCom();
 
@@ -160,7 +165,7 @@ public:
 
 	static void cancelWaitings();
 
-	static bool setRunning();
+	static bool setRunning(); ///< sets the current instance in RUNNING state
 
 	/**
 	 * Sets the result.
@@ -252,7 +257,7 @@ public:
 	State waitFor(const std::string& eventName);
 	State waitFor(KeyValue& keyValue);
 
-	void cancelWaitFor();
+	void cancelWaitFor(); // to unblock another instance
 
 	/**
 	 * Deprecated.
@@ -472,17 +477,22 @@ class Responder {
 public:
 	~Responder();
 
-	/**
-	 * Returns the responder with name.
+	/** \brief Returns the responder with name.
 	 * throws ResponderCreationException.
 	 */
 	static std::unique_ptr<Responder> create(const std::string& name);
 
+	/// Returns the name of the responder
 	const std::string& getName() const;
 
 	void cancel();
+
+	/** \brief Receive a request 
+	 * blocking command
+	 */
 	std::unique_ptr<Request> receive();
 
+	/** check if it has been canceled */
 	bool isCanceled() const;
 
 private:
@@ -618,3 +628,4 @@ std::ostream& operator<<(std::ostream&, const cameo::application::Port&);
 
 
 #endif
+
