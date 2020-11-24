@@ -5,6 +5,9 @@ if(NOT DEFINED PROJECT_NAME)
   project(cameo VERSION 1.0.1 LANGUAGES CXX)
 endif()
 
+message("========================================")
+message("Project ${PROJECT_NAME}, major version: ${PROJECT_VERSION_MAJOR}, version ${PROJECT_VERSION}")
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -50,14 +53,14 @@ target_include_directories(cameo
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
+#target_include_directories(cameo PRIVATE ${DOCTEST_INCLUDE_DIR})
+#target_compile_features(cameo PUBLIC cxx_std_11)
 
 set_target_properties(cameo PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   )
 
-message(${PROJECT_VERSION_MAJOR})
-message(${PROJECT_VERSION})
 #---------------
 # Library version
 write_basic_package_version_file(cameoConfigVersion.cmake
@@ -119,6 +122,24 @@ export(TARGETS cameo FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
 #enable_testing()
 #add_subdirectory(test)
 
+# include(ExternalProject)
+# find_package(Git REQUIRED)
+
+# ExternalProject_Add(
+#     doctest
+#     PREFIX ${CMAKE_BINARY_DIR}/doctest
+#     GIT_REPOSITORY https://github.com/onqtam/doctest.git
+#     TIMEOUT 10
+#     UPDATE_COMMAND ${GIT_EXECUTABLE} pull
+#     CONFIGURE_COMMAND ""
+#     BUILD_COMMAND ""
+#     INSTALL_COMMAND ""
+#     LOG_DOWNLOAD ON
+# )
+
+# # Expose required variable (DOCTEST_INCLUDE_DIR) to parent scope
+# ExternalProject_Get_Property(doctest source_dir)
+# set(DOCTEST_INCLUDE_DIR ${source_dir}/doctest CACHE INTERNAL "Path to include folder for doctest")
 
 #include(CMakeFindDependencyMacro)
 #find_dependency(
