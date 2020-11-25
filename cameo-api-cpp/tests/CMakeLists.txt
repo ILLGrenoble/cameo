@@ -19,6 +19,10 @@ target_link_libraries(testapplicationidentity
 target_include_directories(testapplicationidentity
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/
   )
+target_include_directories(testapplicationidentity
+    SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+)
+
 add_test(applicationidentity testapplicationidentity)
 
 
@@ -30,5 +34,8 @@ target_link_libraries(testapplicationwithstarteridentity PRIVATE
 target_include_directories(testapplicationwithstarteridentity
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/
   )
+target_include_directories(testapplicationwithstarteridentity
+    SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+)
 	
 add_test(applicationwithstarteridentity testapplicationwithstarteridentity)
