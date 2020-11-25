@@ -212,7 +212,7 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 	size_t size = array.Size();
 
 	// Allocate the array.
-	instances.allocate(size);
+	instances.reserve(size);
 
 	int aliveInstancesCount = 0;
 
@@ -241,19 +241,19 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 				instance->setOutputStreamSocket(streamSocket);
 			}
 
-			instances.m_array[i] = std::move(instance);
+			instances.push_back(std::move(instance));
 		}
 	}
 
 	// Copy the alive instances.
 	application::InstanceArray aliveInstances;
-	aliveInstances.allocate(aliveInstancesCount);
+	aliveInstances.reserve(aliveInstancesCount);
 
 	int j = 0;
 	for (int i = 0; i < size; ++i) {
 
-		if (instances.m_array[i].get() != 0) {
-			aliveInstances[j] = std::move(instances.m_array[i]);
+		if (instances[i].get() != nullptr) {
+			aliveInstances.push_back(std::move(instances[i]));
 			j++;
 		}
 	}

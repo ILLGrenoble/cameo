@@ -321,24 +321,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////
 // InstanceArray
 
-class InstanceArray {
-
-	friend class cameo::Server;
-
-public:
-	InstanceArray(const InstanceArray& array);
-	~InstanceArray();
-
-	std::size_t size() const;
-	std::unique_ptr<Instance>& operator[](std::size_t index);
-
-private:
-	InstanceArray();
-	void allocate(std::size_t size);
-
-	std::size_t m_size;
-	std::unique_ptr<Instance>* m_array;
-};
+typedef std::vector<std::unique_ptr<Instance>> InstanceArray;
 
 ///////////////////////////////////////////////////////////////////////////
 // Publisher

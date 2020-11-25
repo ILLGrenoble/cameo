@@ -759,41 +759,6 @@ std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
 	return m_outputStreamSocket;
 }
 
-///////////////////////////////////////////////////////////////////////////
-// InstanceArray
-
-InstanceArray::InstanceArray() :
-	m_size(0),
-	m_array(0) {
-}
-
-InstanceArray::InstanceArray(const InstanceArray& array) :
-	m_size(array.m_size),
-	m_array(new unique_ptr<Instance>[m_size]) {
-
-	// transferring pointers
-	for (size_t i = 0; i < m_size; i++) {
-		m_array[i] = std::move(array.m_array[i]);
-	}
-}
-
-InstanceArray::~InstanceArray() {
-	delete [] m_array;
-}
-
-void InstanceArray::allocate(std::size_t size) {
-	m_size = size;
-	m_array = new unique_ptr<Instance>[size];
-}
-
-std::size_t InstanceArray::size() const {
-	return m_size;
-}
-
-std::unique_ptr<Instance>& InstanceArray::operator[](std::size_t index) {
-	return m_array[index];
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
