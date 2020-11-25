@@ -3,6 +3,7 @@ if(NOT DEFINED PROJECT_NAME)
   
   # Project name and version
   project(cameo VERSION 1.0.1 LANGUAGES CXX)
+  #cmake_policy(SET CMP0048 NEW)
 endif()
 
 message("========================================")
@@ -10,9 +11,11 @@ message("Project ${PROJECT_NAME}, major version: ${PROJECT_VERSION_MAJOR}, versi
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(FetchContent)
 
 if(NOT DEFINED BUILD_SHARED_LIBS)
-  set(BUILD_SHARED_LIBS True)
+  option(BUILD_SHARED_LIBS "Building dynamic (ON) or static (OFF)" ON)
+  #set(BUILD_SHARED_LIBS True)
 endif()
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)
@@ -32,9 +35,22 @@ endif()
 #------------------------------------------------------------
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(ZeroMQ REQUIRED)
-find_package(Rapidjson REQUIRED)
+find_package(Rapidjson QUIET)
+if(NOT Rapidjson_FOUND)
+  message(WARNING "Using Rapidjson from GIT repository")
+  FetchContent_Declare(rapidjson
+	GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+	GIT_TAG v1.1.0
+	GIT_SHALLOW True
+	#INSTALL_COMMAND "make install"
+	)
+  FetchContent_GetProperties(rapidjson)
+  FetchContent_Populate(rapidjson)
 
-
+  set(Rapidjson_ROOT ${rapidjson_SOURCE_DIR})
+  find_package(Rapidjson REQUIRED)
+endif()
+  message(${Rapidjson_INCLUDE_DIRS})
 #------------------------------------------------------------
 # Libraries
 #------------------------------------------------------------
@@ -42,9 +58,6 @@ find_package(Rapidjson REQUIRED)
 #---------------
 # Files
 file(GLOB_RECURSE CAMEO_SOURCE_FILES "src/*.cpp")
-#file(GLOB CAMEO_PUBLIC_HEADER_FILES "./*.h")
-#message(${CAMEO_PUBLIC_HEADER_FILES})
-#message(${CAMEO_SOURCE_FILES})
 
 add_library(cameo ${CAMEO_SOURCE_FILES})
 target_link_libraries(cameo PRIVATE zmq)
@@ -53,6 +66,9 @@ target_include_directories(cameo
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
+target_include_directories(cameo
+    SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+)
 #target_include_directories(cameo PRIVATE ${DOCTEST_INCLUDE_DIR})
 #target_compile_features(cameo PUBLIC cxx_std_11)
 
@@ -156,7 +172,7 @@ if (DOXYGEN_FOUND)
   message("Doxygen build started")
   
   # note the option ALL which allows to build the docs together with the application
-  add_custom_target( doc 
+  add_custom_target( cameo_doc 
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen"
