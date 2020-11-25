@@ -40,8 +40,8 @@
 namespace cameo {
 
 enum Option {
-	NONE = 0,
-	OUTPUTSTREAM = 1
+	     NONE = 0,
+	     OUTPUTSTREAM = 1
 };
 
 class Server;
@@ -72,18 +72,23 @@ typedef int32_t State;
 
 #undef ERROR
 
-const State UNKNOWN = 0;
-const State STARTING = 1;
-const State RUNNING = 2;
-const State STOPPING = 4;
-const State KILLING = 8;
+const State UNKNOWN          = 0;
+const State STARTING         = 1;
+const State RUNNING          = 2;
+const State STOPPING         = 4;
+const State KILLING          = 8;
 const State PROCESSING_ERROR = 16;
-const State FAILURE = 32;
-const State SUCCESS = 64;
-const State STOPPED = 128;
-const State KILLED = 256;
+const State FAILURE          = 32;
+const State SUCCESS          = 64;
+const State STOPPED          = 128;
+const State KILLED           = 256;
 
-
+/** \class This
+ * \brief class managing the current CAMEO application.
+ *
+ * \details The application has to be launched by CAMEO command line or another CAMEO app
+ * \todo why this does not inherit from the Instance class?
+ */
 class This : private Services, private EventListener {
 
 	friend class cameo::application::Publisher;
@@ -98,7 +103,7 @@ class This : private Services, private EventListener {
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 
-	typedef std::function<void ()> StopFunctionType;
+	typedef std::function<void()> StopFunctionType;
 
 public:
 	/**
@@ -118,28 +123,30 @@ public:
 		void releasePort(int port) const;
 
 	private:
-		Com(Server * server, int applicationId);
+		Com(Server* server, int applicationId);
 
-		Server * m_server;
+		Server* m_server;
 		int m_applicationId;
 	};
 
 	This();
 	~This();
 
-	static void init(int argc, char *argv[]);
+	static void init(int argc, char* argv[]);
 	static void init(const std::string& name, const std::string& endpoint);
 
 	/**
-	 * The terminate call is not necessary unless the static instance of This is not destroyed automatically.
+	 * The terminate call is not necessary unless the static instance of This is not destroyed
+	 * automatically.
 	 */
 	static void terminate();
 
-	static const std::string& getName();
-	static int getId();
+	/// \brief returns the name of the CAMEO application corresponding to this instance
+	static const std::string& getName(); 
+	static int getId(); ///< returns the ID number of the instance
 	static void setTimeout(int timeout);
 	static int getTimeout();
-	static const Endpoint& getEndpoint();
+	static const Endpoint& getEndpoint(); ///< returns the TCP address of this instance
 	static Server& getServer();
 	static const Com& getCom();
 
@@ -151,16 +158,17 @@ public:
 	static bool isStopping();
 
 	/**
-	 * Sets the stop handler with stopping time that overrides the one that may be defined in the configuration of the server.
+	 * Sets the stop handler with stopping time that overrides the one that may be defined in the
+	 * configuration of the server.
 	 */
-	template<typename Type>
+	template <typename Type>
 	static void handleStop(Type function, int stoppingTime = -1) {
 		m_instance.handleStopImpl(function, stoppingTime);
 	}
 
 	static void cancelWaitings();
 
-	static bool setRunning();
+	static bool setRunning(); ///< sets the current instance in RUNNING state
 
 	/**
 	 * Sets the result.
@@ -174,7 +182,7 @@ public:
 	static std::unique_ptr<Instance> connectToStarter();
 
 private:
-	void initApplication(int argc, char *argv[]);
+	void initApplication(int argc, char* argv[]);
 	void initApplication(const std::string& name, const std::string& endpoint);
 
 	static State parseState(const std::string& value);
@@ -217,7 +225,7 @@ class Instance : private EventListener {
 	friend std::ostream& operator<<(std::ostream&, const Instance&);
 
 public:
-	typedef std::function<void (State)> StateHandlerType;
+	typedef std::function<void(State)> StateHandlerType;
 
 	class Com {
 
@@ -227,9 +235,9 @@ public:
 		std::string getKeyValue(const std::string& key) const;
 
 	private:
-		Com(Server * server);
+		Com(Server* server);
 
-		Server * m_server;
+		Server* m_server;
 		int m_applicationId;
 	};
 
@@ -252,7 +260,7 @@ public:
 	State waitFor(const std::string& eventName);
 	State waitFor(KeyValue& keyValue);
 
-	void cancelWaitFor();
+	void cancelWaitFor(); // to unblock another instance
 
 	/**
 	 * Deprecated.
@@ -286,7 +294,7 @@ public:
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
 
 private:
-	Instance(Server * server);
+	Instance(Server* server);
 
 	void setId(int id);
 	void setErrorMessage(const std::string& message);
@@ -295,7 +303,7 @@ private:
 	void setInitialState(State state);
 	State waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking);
 
-	Server * m_server;
+	Server* m_server;
 	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
 	int m_id;
 	std::string m_errorMessage;
@@ -374,7 +382,8 @@ public:
 	bool isEnded() const;
 
 private:
-	Publisher(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
+	Publisher(application::This* application, int publisherPort, int synchronizerPort,
+		  const std::string& name, int numberOfSubscribers);
 
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -392,7 +401,7 @@ class Subscriber {
 public:
 	~Subscriber();
 
-	static std::unique_ptr<Subscriber> create(Instance & instance, const std::string& publisherName);
+	static std::unique_ptr<Subscriber> create(Instance& instance, const std::string& publisherName);
 
 	const std::string& getPublisherName() const;
 	const std::string& getInstanceName() const;
@@ -418,7 +427,9 @@ public:
 	void cancel();
 
 private:
-	Subscriber(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	Subscriber(Server* server, int publisherPort, int synchronizerPort, const std::string& publisherName,
+		   int numberOfSubscribers, const std::string& instanceName, int instanceId,
+		   const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	void init();
 
 	std::unique_ptr<SubscriberImpl> m_impl;
@@ -456,7 +467,7 @@ public:
 	std::unique_ptr<Server> getServer();
 
 private:
-	Request(std::unique_ptr<RequestImpl> & impl);
+	Request(std::unique_ptr<RequestImpl>& impl);
 
 	std::unique_ptr<RequestImpl> m_impl;
 	std::unique_ptr<Server> m_requesterServer;
@@ -472,21 +483,26 @@ class Responder {
 public:
 	~Responder();
 
-	/**
-	 * Returns the responder with name.
+	/** \brief Returns the responder with name.
 	 * throws ResponderCreationException.
 	 */
 	static std::unique_ptr<Responder> create(const std::string& name);
 
+	/// Returns the name of the responder
 	const std::string& getName() const;
 
 	void cancel();
+
+	/** \brief Receive a request
+	 * blocking command
+	 */
 	std::unique_ptr<Request> receive();
 
+	/** check if it has been canceled */
 	bool isCanceled() const;
 
 private:
-	Responder(application::This * application, int responderPort, const std::string& name);
+	Responder(application::This* application, int responderPort, const std::string& name);
 
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -497,7 +513,7 @@ private:
 
 class Requester {
 
-friend std::ostream& operator<<(std::ostream&, const Requester&);
+	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
 public:
 	~Requester();
@@ -506,7 +522,7 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::unique_ptr<Requester> create(Instance & instance, const std::string& name);
+	static std::unique_ptr<Requester> create(Instance& instance, const std::string& name);
 
 	const std::string& getName() const;
 
@@ -522,7 +538,8 @@ public:
 	bool isCanceled() const;
 
 private:
-	Requester(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
+	Requester(application::This* application, const std::string& url, int requesterPort,
+		  int responderPort, const std::string& name, int responderId, int requesterId);
 
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -536,7 +553,8 @@ class Configuration {
 	friend std::ostream& operator<<(std::ostream&, const Configuration&);
 
 public:
-	Configuration(const std::string& name, const std::string& description, bool singleInfo, bool restart, int startingTime, int stoppingTime);
+	Configuration(const std::string& name, const std::string& description, bool singleInfo, bool restart,
+		      int startingTime, int stoppingTime);
 
 	const std::string& getName() const;
 	const std::string& getDescription() const;
@@ -562,7 +580,8 @@ class Info {
 	friend std::ostream& operator<<(std::ostream&, const Info&);
 
 public:
-	Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates, const std::string& args);
+	Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates,
+	     const std::string& args);
 
 	int getId() const;
 	State getState() const;
@@ -613,8 +632,7 @@ std::ostream& operator<<(std::ostream&, const cameo::application::Configuration&
 std::ostream& operator<<(std::ostream&, const cameo::application::Info&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Port&);
 
-}
-}
-
+} // namespace application
+} // namespace cameo
 
 #endif
