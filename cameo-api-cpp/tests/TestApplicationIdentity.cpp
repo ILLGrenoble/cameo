@@ -1,7 +1,7 @@
 #include "Test.h"
-#include "../include/Strings.h"
-#include "../include/JSON.h"
-#include "../src/message/Message.h"
+#include "Strings.h"
+#include "JSON.h"
+#include "message/Message.h"
 #include <iostream>
 
 using namespace std;
