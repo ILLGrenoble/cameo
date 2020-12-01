@@ -7,8 +7,11 @@ then
 fi
 
 version=$1
-libDir=${2:-/usr/share/java/}
+
+libDir=${2:-/usr/local/share/java/}
 binDir=${3:-/usr/local/bin/}
+jzmq="-jzmq"
+
 install_script_dir=`dirname $0`
 
 mkdir -p "$libDir" || {
@@ -17,8 +20,8 @@ mkdir -p "$libDir" || {
 }
 mkdir -p "$binDir"
 
-libName="cameo-server-"$version"-full.jar"
-targetLibName="${install_script_dir}/../target/$libName"
+libName=cameo-server${jzmq}-${version}-full.jar
+targetLibName=cameo-server$jzmq/target/$libName
 
 if [ ! -e "$targetLibName" ]
 then
@@ -38,7 +41,8 @@ rm "$libDir/$libNoVersionName"
 ln -s "$libDir/$libName" "$libDir/$libNoVersionName"
 
 echo "Installed $libName into $libDir"
-
+chmod +r $libDir/$libName
+#############################################
 fileName="$binDir/cameo-server"
 echo "#!/bin/sh" > "$fileName"
 echo "java -jar \"$libDir/$libNoVersionName\" \$@" >> "$fileName"
@@ -46,3 +50,20 @@ echo "java -jar \"$libDir/$libNoVersionName\" \$@" >> "$fileName"
 chmod 755 "$fileName"
 
 echo "Installed cameo-server into $binDir"
+
+
+#############################################
+fileName=$binDir/cmo
+version=1.0.0
+cat > $fileName <<EOF
+#!/bin/sh
+java -jar "$libDir/cameo-console${jzmq}-${version}-full.jar" \$@
+EOF
+chmod 755 $fileName
+echo "Installed cameo-console into $fileName"
+
+fileName=cameo-console$jzmq-$version-full.jar
+
+cp cameo-console$jzmq/target/$fileName $libDir
+chmod +r $libDir/$fileName
+echo "Installed $fileName into $libDir"
