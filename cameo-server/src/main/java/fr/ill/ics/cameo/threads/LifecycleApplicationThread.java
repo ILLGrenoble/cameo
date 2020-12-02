@@ -87,9 +87,12 @@ public class LifecycleApplicationThread extends ApplicationThread {
 		// Get result of the last execution.
 		try {
 			exitValue = application.getProcess().waitFor();
-
-			// Pass result to error callback.
-			if (exitValue != 0 && !application.hasToBeKilled()) {
+			
+			// An exit value different from 0 indicates the process terminated with an error.
+			// If the cameo app was killed i.e. destroyForcibly() was called (ManagedApplication.kill() or UnmanagedApplication.kill()) the exit value is 0.
+			// Thus we do not have to filter these cases.
+			// However for a manual kill using a system call, the exit value is not 0 but we can consider as an error.
+			if (exitValue != 0) {
 				Log.logger().info("Application " + application.getNameId() + " returned error code " + exitValue);
 				
 				// Execute the error callback.
