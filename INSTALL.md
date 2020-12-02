@@ -5,6 +5,8 @@
 
 ### Centos 8
 ``` yum install -y maven```
+Update to the most recent version of JAVA
+```sudo /sbin/alternatives --config java_sdk_openjdk```
 
 ## Instructions
 Download the version:
