@@ -922,16 +922,16 @@ bool Subscriber::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
-bool Subscriber::receiveBinary(std::string& data) const {
-	return m_impl->receiveBinary(data);
+std::optional<std::string> Subscriber::receiveBinary() const {
+	return m_impl->receiveBinary();
 }
 
-bool Subscriber::receive(std::string& data) const {
-	return m_impl->receive(data);
+std::optional<std::string> Subscriber::receive() const {
+	return m_impl->receive();
 }
 
-bool Subscriber::receiveTwoBinaryParts(std::string& data1, std::string& data2) const {
-	return m_impl->receiveTwoBinaryParts(data1, data2);
+std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinaryParts() const {
+	return m_impl->receiveTwoBinaryParts();
 }
 
 void Subscriber::cancel() {
@@ -1149,12 +1149,12 @@ void Requester::sendTwoBinaryParts(const std::string& request1, const std::strin
 	m_impl->sendTwoBinaryParts(request1, request2);
 }
 
-bool Requester::receiveBinary(std::string& response) {
-	return m_impl->receiveBinary(response);
+std::optional<std::string> Requester::receiveBinary() {
+	return m_impl->receiveBinary();
 }
 
-bool Requester::receive(std::string& response) {
-	return m_impl->receive(response);
+std::optional<std::string> Requester::receive() {
+	return m_impl->receive();
 }
 
 void Requester::cancel() {

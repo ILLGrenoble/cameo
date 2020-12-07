@@ -21,6 +21,7 @@
 #include <vector>
 #include <set>
 #include <memory>
+#include <optional>
 #include "InvalidArgumentException.h"
 #include "UnmanagedApplicationException.h"
 #include "SocketException.h"
@@ -403,11 +404,19 @@ public:
 	bool isCanceled() const;
 
 	/**
-	 * Returns false if the stream finishes.
+	 * Returns a string or nothing if the stream has finished.
 	 */
-	bool receiveBinary(std::string& data) const;
-	bool receive(std::string& data) const;
-	bool receiveTwoBinaryParts(std::string& data1, std::string& data2) const;
+	std::optional<std::string> receiveBinary() const;
+
+	/**
+	 * Returns a string or nothing if the stream has finished.
+	 */
+	std::optional<std::string> receive() const;
+
+	/**
+	 * Returns a tuple of strings or nothing if the stream has finished.
+	 */
+	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts() const;
 
 	void cancel();
 
@@ -515,8 +524,15 @@ public:
 	void send(const std::string& request);
 	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
 
-	bool receiveBinary(std::string& response);
-	bool receive(std::string& response);
+	/**
+	 * Returns a string or nothing if the requester is canceled.
+	 */
+	std::optional<std::string> receiveBinary();
+
+	/**
+	 * Returns a string or nothing if the requester is canceled.
+	 */
+	std::optional<std::string> receive();
 
 	void cancel();
 

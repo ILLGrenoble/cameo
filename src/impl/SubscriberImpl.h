@@ -21,6 +21,8 @@
 #include "zmq.hpp"
 #include <string>
 #include <vector>
+#include <optional>
+#include <tuple>
 
 namespace cameo {
 
@@ -37,9 +39,9 @@ public:
 	bool isEnded() const;
 	bool isCanceled() const;
 
-	bool receiveBinary(std::string& data);
-	bool receive(std::string& data);
-	bool receiveTwoBinaryParts(std::string& data1, std::string& data2);
+	std::optional<std::string> receiveBinary();
+	std::optional<std::string> receive();
+	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
 
 	WaitingImpl * waiting();
 
