@@ -697,9 +697,19 @@ State Instance::waitFor(int states, StateHandlerType handler) {
 	return waitFor(states, "", keyValue, handler, true);
 }
 
+State Instance::waitFor(int states) {
+	KeyValue keyValue("");
+	return waitFor(states, "", keyValue, nullptr, true);
+}
+
 State Instance::waitFor(StateHandlerType handler) {
 	KeyValue keyValue("");
 	return waitFor(0, "", keyValue, handler, true);
+}
+
+State Instance::waitFor() {
+	KeyValue keyValue("");
+	return waitFor(0, "", keyValue, nullptr, true);
 }
 
 State Instance::waitFor(const std::string& eventName) {

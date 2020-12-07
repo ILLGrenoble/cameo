@@ -39,10 +39,10 @@
 
 namespace cameo {
 
-enum Option {
-	     NONE = 0,
-	     OUTPUTSTREAM = 1
-};
+/**
+ * Option output stream.
+ */
+const int OUTPUTSTREAM = 1;
 
 class Server;
 class EventStreamSocket;
@@ -255,8 +255,10 @@ public:
 	bool stop();
 	bool kill();
 
-	State waitFor(StateHandlerType handler = nullptr);
-	State waitFor(int states, StateHandlerType handler = nullptr);
+	State waitFor(int states, StateHandlerType handler);
+	State waitFor(int states);
+	State waitFor(StateHandlerType handler);
+	State waitFor();
 	State waitFor(const std::string& eventName);
 	State waitFor(KeyValue& keyValue);
 
