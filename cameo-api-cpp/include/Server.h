@@ -64,11 +64,11 @@ public:
 	 */
 	bool isAvailable() const;
 
-	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
-	std::unique_ptr<application::Instance> start(const std::string& name, Option options = NONE);
-	application::InstanceArray connectAll(const std::string& name, Option options = NONE);
-	std::unique_ptr<application::Instance> connect(const std::string& name, Option options = NONE);
-	std::unique_ptr<application::Instance> connect(int id, Option options = NONE);
+	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
+	std::unique_ptr<application::Instance> start(const std::string& name, int options = 0);
+	application::InstanceArray connectAll(const std::string& name, int options = 0);
+	std::unique_ptr<application::Instance> connect(const std::string& name, int options = 0);
+	std::unique_ptr<application::Instance> connect(int id, int options = 0);
 
 	/**
 	 * throws ConnectionTimeout
