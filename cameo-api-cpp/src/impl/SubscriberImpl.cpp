@@ -105,7 +105,7 @@ bool SubscriberImpl::isCanceled() const {
 	return m_canceled;
 }
 
-bool SubscriberImpl::receiveBinary(std::string& data) {
+std::optional<std::string> SubscriberImpl::receiveBinary() {
 
 	while (true) {
 		unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -116,17 +116,15 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 		if (response == message::Event::STREAM) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
-			data = string(static_cast<char*>(message->data()), message->size());
-
-			return true;
+			return string(static_cast<char*>(message->data()), message->size());
 
 		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
-			return false;
+			return {};
 
 		} else if (response == message::Event::CANCEL) {
 			m_canceled = true;
-			return false;
+			return {};
 
 		} else if (response == message::Event::STATUS) {
 			message.reset(new zmq::message_t());
@@ -147,30 +145,20 @@ bool SubscriberImpl::receiveBinary(std::string& data) {
 					|| state == application::KILLED
 					|| state == application::FAILURE) {
 					// Exit because the remote application has terminated.
-					return false;
+					return {};
 				}
 			}
 		}
 	}
 
-	return false;
+	return {};
 }
 
-bool SubscriberImpl::receive(std::string& data) {
-
-	string bytes;
-	bool stream = receiveBinary(bytes);
-
-	if (!stream) {
-		return false;
-	}
-
-	parse(bytes, data);
-
-	return true;
+std::optional<std::string> SubscriberImpl::receive() {
+	return receiveBinary();
 }
 
-bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data2) {
+std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBinaryParts() {
 
 	while (true) {
 		unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -179,22 +167,25 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 		string response(static_cast<char*>(message->data()), message->size());
 
 		if (response == message::Event::STREAM) {
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
-			data1 = string(static_cast<char*>(message->data()), message->size());
+
+			std::tuple<std::string, std::string> result;
 
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
-			data2 = string(static_cast<char*>(message->data()), message->size());
+			string data1 = string(static_cast<char*>(message->data()), message->size());
 
-			return true;
+			message.reset(new zmq::message_t());
+			m_subscriber->recv(message.get());
+			string data2 = string(static_cast<char*>(message->data()), message->size());
+
+			return make_tuple(data1, data2);
 
 		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
-			return false;
+			return {};
 
 		} else if (response == message::Event::CANCEL) {
-			return false;
+			return {};
 
 		} else if (response == message::Event::STATUS) {
 			message.reset(new zmq::message_t());
@@ -215,13 +206,13 @@ bool SubscriberImpl::receiveTwoBinaryParts(std::string& data1, std::string& data
 					|| state == application::KILLED
 					|| state == application::FAILURE) {
 					// Exit because the remote application has terminated.
-					return false;
+					return {};
 				}
 			}
 		}
 	}
 
-	return false;
+	return {};
 }
 
 WaitingImpl * SubscriberImpl::waiting() {

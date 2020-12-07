@@ -134,7 +134,11 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	m_requestSocket->request(request.toString(), requestData1, requestData2);
 }
 
-bool RequesterImpl::receiveBinary(std::string& response) {
+std::optional<std::string> RequesterImpl::receiveBinary() {
+
+	if (m_canceled) {
+		return {};
+	}
 
 	unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_repSocket->recv(message.get(), 0);
@@ -145,14 +149,18 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	int type = request[message::TYPE].GetInt();
 
+	if (type == message::CANCEL) {
+		m_canceled = true;
+		return {};
+	}
+
+	optional<string> result;
+
 	if (type == message::RESPONSE) {
 		// Get the second part for the message.
 		message.reset(new zmq::message_t);
 		m_repSocket->recv(message.get(), 0);
-		response = string(message->data<char>(), message->size());
-	}
-	else if (type == message::CANCEL) {
-		m_canceled = true;
+		result = string(message->data<char>(), message->size());
 	}
 
 	// Create the reply.
@@ -163,17 +171,11 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	m_repSocket->send(*reply);
 
-	return !m_canceled;
+	return result;
 }
 
-bool RequesterImpl::receive(std::string& data) {
-
-	string bytes;
-	bool result = receiveBinary(bytes);
-
-	parse(bytes, data);
-
-	return result;
+std::optional<std::string> RequesterImpl::receive() {
+	return receiveBinary();
 }
 
 void RequesterImpl::cancel() {
