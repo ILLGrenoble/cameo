@@ -748,21 +748,19 @@ int Instance::getExitCode() const {
 	return m_exitCode;
 }
 
-bool Instance::getBinaryResult(std::string& result) {
+std::optional<std::string> Instance::getBinaryResult() {
 
 	waitFor();
-	result = m_resultData;
 
-	return m_hasResult;
+	if (m_hasResult) {
+		return m_resultData;
+	}
+
+	return {};
 }
 
-bool Instance::getResult(std::string& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
+std::optional<std::string> Instance::getResult() {
+	return getBinaryResult();
 }
 
 std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
