@@ -291,8 +291,8 @@ public:
 	 */
 	int getExitCode() const;
 
-	bool getBinaryResult(std::string& result);
-	bool getResult(std::string& result);
+	std::optional<std::string> getBinaryResult();
+	std::optional<std::string> getResult();
 
 	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
 
