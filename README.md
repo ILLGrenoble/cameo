@@ -1,6 +1,10 @@
 
 ## Dependencies 
-
+ - cmake 3.7.2
+ - cppzmq
+ - rapidjson
+ - doxygen (optional)
+ 
 ### CENTOS 8 
 
 List of packages:
@@ -9,7 +13,7 @@ List of packages:
  - rapidjson-devel
  
 ```
-pkgs="zeromq-devel rapidjson-devel"
+pkgs="cmake zeromq-devel rapidjson-devel"
 yum install -y $pkgs
 ```
 
