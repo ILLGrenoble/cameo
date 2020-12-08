@@ -18,13 +18,6 @@ if(NOT DEFINED BUILD_SHARED_LIBS)
   #set(BUILD_SHARED_LIBS True)
 endif()
 
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-  # specify the C++ standard
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED True)
-endif()
-
-
 # fix the RPATH for the linker
 #if(not APPLE)
 #  set(CMAKE_INSTALL_RPATH $ORIGIN)
@@ -70,7 +63,7 @@ target_include_directories(cameo
     SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
 )
 #target_include_directories(cameo PRIVATE ${DOCTEST_INCLUDE_DIR})
-#target_compile_features(cameo PUBLIC cxx_std_11)
+target_compile_features(cameo PUBLIC cxx_std_17)
 
 set_target_properties(cameo PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
