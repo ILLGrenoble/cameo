@@ -21,6 +21,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <optional>
 #include "GenericWaitingImpl.h"
 #include "zmq.hpp"
 
@@ -47,8 +48,8 @@ public:
 	void send(const std::string& requestData);
 	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
 
-	bool receiveBinary(std::string& response);
-	bool receive(std::string& response);
+	std::optional<std::string> receiveBinary();
+	std::optional<std::string> receive();
 
 	void cancel();
 	void terminate();

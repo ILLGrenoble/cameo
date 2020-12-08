@@ -697,9 +697,19 @@ State Instance::waitFor(int states, StateHandlerType handler) {
 	return waitFor(states, "", keyValue, handler, true);
 }
 
+State Instance::waitFor(int states) {
+	KeyValue keyValue("");
+	return waitFor(states, "", keyValue, nullptr, true);
+}
+
 State Instance::waitFor(StateHandlerType handler) {
 	KeyValue keyValue("");
 	return waitFor(0, "", keyValue, handler, true);
+}
+
+State Instance::waitFor() {
+	KeyValue keyValue("");
+	return waitFor(0, "", keyValue, nullptr, true);
 }
 
 State Instance::waitFor(const std::string& eventName) {
@@ -738,21 +748,19 @@ int Instance::getExitCode() const {
 	return m_exitCode;
 }
 
-bool Instance::getBinaryResult(std::string& result) {
+std::optional<std::string> Instance::getBinaryResult() {
 
 	waitFor();
-	result = m_resultData;
 
-	return m_hasResult;
+	if (m_hasResult) {
+		return m_resultData;
+	}
+
+	return {};
 }
 
-bool Instance::getResult(std::string& result) {
-
-	string bytes;
-	getBinaryResult(bytes);
-	parse(bytes, result);
-
-	return m_hasResult;
+std::optional<std::string> Instance::getResult() {
+	return getBinaryResult();
 }
 
 std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
@@ -912,16 +920,16 @@ bool Subscriber::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
-bool Subscriber::receiveBinary(std::string& data) const {
-	return m_impl->receiveBinary(data);
+std::optional<std::string> Subscriber::receiveBinary() const {
+	return m_impl->receiveBinary();
 }
 
-bool Subscriber::receive(std::string& data) const {
-	return m_impl->receive(data);
+std::optional<std::string> Subscriber::receive() const {
+	return m_impl->receive();
 }
 
-bool Subscriber::receiveTwoBinaryParts(std::string& data1, std::string& data2) const {
-	return m_impl->receiveTwoBinaryParts(data1, data2);
+std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinaryParts() const {
+	return m_impl->receiveTwoBinaryParts();
 }
 
 void Subscriber::cancel() {
@@ -1139,12 +1147,12 @@ void Requester::sendTwoBinaryParts(const std::string& request1, const std::strin
 	m_impl->sendTwoBinaryParts(request1, request2);
 }
 
-bool Requester::receiveBinary(std::string& response) {
-	return m_impl->receiveBinary(response);
+std::optional<std::string> Requester::receiveBinary() {
+	return m_impl->receiveBinary();
 }
 
-bool Requester::receive(std::string& response) {
-	return m_impl->receive(response);
+std::optional<std::string> Requester::receive() {
+	return m_impl->receive();
 }
 
 void Requester::cancel() {
