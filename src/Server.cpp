@@ -31,7 +31,8 @@
 using namespace std;
 
 namespace cameo {
-
+constexpr int defaultTimeout = 10000;
+	
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	Services::init();
@@ -117,7 +118,7 @@ int Server::getAvailableTimeout() const {
 		return timeout;
 	}
 	else {
-		return 10000;
+		return defaultTimeout;
 	}
 }
 
