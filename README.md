@@ -4,7 +4,7 @@ This library provides the Python API for Cameo.
 
  
 ## Compilation dependencies
-
+   - cmake
 The API is obtained using pybind11 and the C++ Cameo API.
    - [pybind11](https://github.com/pybind/pybind11)
 

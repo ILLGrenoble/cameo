@@ -1,5 +1,5 @@
 if(NOT DEFINED PROJECT_NAME)
-  cmake_minimum_required(VERSION 3.7.2)
+  cmake_minimum_required(VERSION 3.11.2)
 
   # Project name and version
   project(cameopy VERSION 1.0.0 LANGUAGES CXX)
@@ -10,8 +10,7 @@ find_package(Git REQUIRED)
 #------------------------------
 find_package(doctest QUIET)
 if(NOT doctest_FOUND)
-  ExternalProject_Add(
-    doctest
+  ExternalProject_Add(doctest
     PREFIX ${CMAKE_BINARY_DIR}/doctest
     GIT_REPOSITORY https://github.com/onqtam/doctest.git
     TIMEOUT 10

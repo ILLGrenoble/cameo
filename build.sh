@@ -1,5 +1,10 @@
 #!/bin/bash
 
+usage(){
+    echo "`basename $0` [INSTALL_PREFIX] [CMAKE_PREFIX_PATH]" 
+}
+
+
 case $1 in
     dev|DEV|devel|DEVEL)
 	DEV=true
@@ -7,9 +12,14 @@ case $1 in
 	echo "[INFO] Development mode: installation directory is $INSTALL_PREFIX"
 	ARGS="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=$3"
 	;;
+    "")
+	;;
     *)
+	INSTALL_PREFIX=$1
+	ARGS="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=$2"
 	;;
 esac
+
 
 # to force recompilation:
 # cmake --build . --target cameo-api-cpp --clean-first

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7.2)
+cmake_minimum_required(VERSION 3.11.3)
 # Project name and version
 project(cameopy VERSION 1.0.0 LANGUAGES CXX)
 
@@ -9,6 +9,9 @@ set(BUILD_SHARED_LIBS True)
 
 
 include(ExternalProject)
+
+
+option(TESTING "Enable testing" OFF)
 #------------------------------------------------------------ Dependencies
 # 2.4.3 is the version that has been used for development and tests
 find_package(pybind11 2.4.3 QUIET)  
@@ -63,6 +66,8 @@ ExternalProject_Add(cameopython
   #INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
   )
 
+
+if(TESTING)
 enable_testing()
 
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
@@ -72,7 +77,7 @@ ExternalProject_Add(testing
   CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} 
   INSTALL_COMMAND ""
   )
-
+endif(TESTING)
 
 #if(CAMEOPYTHON_TESTS)
 #  message("TESTS have been enabled")
@@ -84,25 +89,3 @@ ExternalProject_Add(testing
 
 #ExternalProject_Add_StepDependencies(cameopython build cameocpp)
 
-
-#find_package(cameo REQUIRED)
-#message(${cameo_INCLUDE_DIRS})
-#add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/${CPP_API})
-
-# include directories
-#include_directories(${PROJECT_SOURCE_DIR}/src)
-#include_directories(${PYTHON_INCLUDE_DIRS})
-#include_directories(${Boost_INCLUDE_DIRS})
-
-# create the lib
-#add_library(${MODULE_NAME} src/TimeCondition.cpp)
-#target_link_libraries(${MODULE_NAME} ${Boost_LIBRARIES} ${${CPP_API}_INCLUDE_DIR})
-#target_include_directories(${MODULE_NAME} ${cameo_INCLUDE_DIR})
-
-# Copy the __init__.py file
-#configure_file(__init__.py ${CMAKE_CURRENT_BINARY_DIR}/src/__init__.py COPYONLY)
-
-# Suppress prefix "lib" because Python does not allow this prefix
-#set_target_properties(${MODULE_NAME} PROPERTIES PREFIX "")
-
-#install(TARGETS ${MODULE_NAME} __init__.py DESTINATION "${PYTHON_INSTALL_PATH}")

@@ -10,7 +10,7 @@ include(CMakePackageConfigHelpers)
 
 set(BUILD_SHARED_LIBS True)
 # this works only on linux....
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/lib64")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
 #list(APPEND CMAKE_MODULE_PATH ${pybind11_DIR}/../pybind11/tools/)
 #list(APPEND CMAKE_MODULE_PATH ${pybind11_DIR})
