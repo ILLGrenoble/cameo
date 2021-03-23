@@ -58,7 +58,7 @@ bool RequestImpl::replyBinary(const std::string& response) {
 	request.pushInt(message::RESPONSE);
 
 	// Create a request socket. It is created for each request that could be optimized.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint);
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint, m_timeout);
 
 	try {
 		requestSocket->request(request.toString(), response);

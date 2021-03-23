@@ -2,7 +2,7 @@ if(NOT DEFINED PROJECT_NAME)
   cmake_minimum_required(VERSION 3.7.2)
   
   # Project name and version
-  project(cameo VERSION 1.0.1 LANGUAGES CXX)
+  project(cameo VERSION 1.0.2 LANGUAGES CXX)
 endif()
 
 include(GNUInstallDirs)
