@@ -23,7 +23,7 @@ using namespace cameo::application;
 
 PYBIND11_MODULE(cameopy, m) {
 
-	m.doc() = "pybind11 example plugin"; // optional module docstring
+	m.doc() = "Python binding of C++ API"; // optional module docstring
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
