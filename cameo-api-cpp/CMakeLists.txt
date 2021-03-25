@@ -1,10 +1,15 @@
 if(NOT DEFINED PROJECT_NAME)
-  cmake_minimum_required(VERSION 3.7.2)
-  
-  # Project name and version
-  project(cameo VERSION 1.1.0 LANGUAGES CXX)
-  #cmake_policy(SET CMP0048 NEW)
-endif()
+  #  cmake_minimum_required(VERSION 3.7.2)
+    cmake_minimum_required(VERSION 3.12.0)
+endif()  
+# Project name and version
+project(cameo
+  VERSION 1.1.0
+  LANGUAGES CXX
+  HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
+  )
+#cmake_policy(SET CMP0048 NEW)
+
 
 message("========================================")
 message("Project ${PROJECT_NAME}, major version: ${PROJECT_VERSION_MAJOR}, version ${PROJECT_VERSION}")
@@ -176,3 +181,17 @@ else (DOXYGEN_FOUND)
 endif (DOXYGEN_FOUND)
 
 
+######
+
+set (CPACK_PACKAGE_VENDOR "ILL")
+#set (CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_SOURCE_DIR}/DESCRIPTION)
+set (CPACK_PACKAGE_DESCRIPTION "This is a short description")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cameo C++ API")
+set (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)
+set (CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
+set (CPACK_GENERATOR "CPACK_BINARY_DEB")
+set (CPACK_PACKAGE_CONTACT "Shervin Nourbakhsh <shervin.nourbakhsh@ill.fr>")
+
+set (CPACK_GENERATOR "DEB")
+
+include(CPack)
