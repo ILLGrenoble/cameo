@@ -24,7 +24,7 @@ using namespace cameo::application;
 PYBIND11_MODULE(cameopy, m) {
 
 	m.doc() = "pybind11 example plugin"; // optional module docstring
-	m.def("toString", &toString, "Fuction converting numerical state to its string representation");
+	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
 	m.attr("UNKNOWN")            = UNKNOWN;
