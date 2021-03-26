@@ -92,6 +92,10 @@ add_subdirectory(tests)
 #------------------------------------------------------------
 # Install
 #------------------------------------------------------------
+install(FILES ${CMAKE_SOURCE_DIR}/LICENSE.txt
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}/
+  RENAME copyright
+  )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cameoConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 
@@ -158,14 +162,20 @@ endif (DOXYGEN_FOUND)
 ######
 
 set (CPACK_PACKAGE_VENDOR "ILL")
+set (CPACK_PACKAGE_CONTACT "Shervin Nourbakhsh <shervin.nourbakhsh@ill.fr>")
 #set (CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_SOURCE_DIR}/DESCRIPTION)
-set (CPACK_PACKAGE_DESCRIPTION "This is a short description")
+set (CPACK_PACKAGE_DESCRIPTION "This is the long description")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cameo C++ API")
 set (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)
 set (CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
-set (CPACK_GENERATOR "CPACK_BINARY_DEB")
-set (CPACK_PACKAGE_CONTACT "Shervin Nourbakhsh <shervin.nourbakhsh@ill.fr>")
+
+
+#set (CPACK_GENERATOR "CPACK_BINARY_DEB")
 
 set (CPACK_GENERATOR "DEB")
-
+#set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+set (CPACK_DEBIAN_PACKAGE_SECTION libdevel)
+set (CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set (CPACK_DEBIAN_PACKAGE_DEPENDS "cameo(>=1.0.0), libzmq (>=5)")
+set (CPACK_DEBIAN_PACKAGE_PRIORITY optional)
 include(CPack)
