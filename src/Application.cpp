@@ -21,6 +21,8 @@ namespace py = pybind11;
 #include <cameo/cameo.h>
 using namespace cameo::application;
 
+#include <iostream>
+
 PYBIND11_MODULE(cameopy, m) {
 
 	m.doc() = "Python binding of C++ API"; // optional module docstring
@@ -83,9 +85,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getErrorMessage", &Instance::getErrorMessage)
 	    .def("stop", &Instance::stop)
 	    .def("kill", &Instance::kill)
-	    .def("waitFor", py::overload_cast<>(&Instance::waitFor))
-	    .def("waitFor", py::overload_cast<int>(&Instance::waitFor))
-	    .def("waitFor", py::overload_cast<const std::string&>(&Instance::waitFor))
+	    .def("waitFor", py::overload_cast<>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<int>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<const std::string&>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitFor", &Instance::cancelWaitFor)
 	    .def("getLastState", &Instance::getLastState)
 	    .def("getActualState", &Instance::getActualState)
@@ -109,7 +111,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getApplicationName", &Publisher::getApplicationName)
 	    .def("getApplicationId", &Publisher::getApplicationId)
 	    .def("getApplicationEndpoint", &Publisher::getApplicationEndpoint)
-	    .def("waitForSubscribers", &Publisher::waitForSubscribers)
+	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitForSubscribers", &Publisher::cancelWaitForSubscribers)
 	    .def("sendBinary", &Publisher::sendBinary)
 	    .def("send", &Publisher::send)
@@ -125,9 +127,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getInstanceEndpoint", &Subscriber::getInstanceEndpoint)
 	    .def("isEnded", &Subscriber::isEnded)
 	    .def("isCanceled", &Subscriber::isCanceled)
-	    .def("receiveBinary", &Subscriber::receiveBinary)
-	    .def("receive", &Subscriber::receive)
-	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts)
+	    .def("receiveBinary", &Subscriber::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Subscriber::cancel);
 
 	py::class_<Request>(m, "Request")
@@ -147,7 +149,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("create", &Responder::create)
 	    .def("getName", &Responder::getName)
 	    .def("cancel", &Responder::cancel)
-	    .def("receive", &Responder::receive)
+	    .def("receive", &Responder::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &Responder::isCanceled);
 
 
@@ -157,8 +159,8 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("sendBinary", &Requester::sendBinary)
 	    .def("send", &Requester::send)
 	    .def("sendTwoBinaryParts", &Requester::sendTwoBinaryParts)
-	    .def("receiveBinary", &Requester::receiveBinary)
-	    .def("receive", &Requester::receive)
+	    .def("receiveBinary", &Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Requester::cancel)
 	    .def("isCanceled", &Requester::isCanceled);
 
