@@ -1,6 +1,4 @@
-if(NOT DEFINED PROJECT_NAME)
-    cmake_minimum_required(VERSION 3.12.0)
-endif()  
+cmake_minimum_required(VERSION 3.12.0)
 
 project(cameo-api-cpp
   VERSION 1.1.0
@@ -88,7 +86,7 @@ set_target_properties(${LIBNAME} PROPERTIES
 #------------------------------------------------------------
 # Install
 #------------------------------------------------------------
-install(FILES ${CMAKE_SOURCE_DIR}/LICENSE.txt
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
   DESTINATION ${CMAKE_INSTALL_DOCDIR}/
   RENAME copyright
   COMPONENT lib
@@ -146,6 +144,26 @@ write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
 # makes the project importable from the build directory
 export(TARGETS ${LIBNAME} FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
 
+if(UNIX)
+  add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+    COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
+    COMMENT "Compressing changelog"
+	)
+  
+  add_custom_target(changelog
+	ALL
+	#	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+	COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog > ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+	)
+  
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+	DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+	COMPONENT lib
+	)
+endif(UNIX)
 
 ################ Doc
 find_package(Doxygen)
@@ -169,47 +187,18 @@ else (DOXYGEN_FOUND)
 endif (DOXYGEN_FOUND)
 
 
-######
-
-set (CPACK_PACKAGE_VENDOR "ILL")
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cameo C++ API")
-set (CPACK_PACKAGE_DESCRIPTION "This is the long description")
-#set (CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_SOURCE_DIR}/DESCRIPTION)
-set (CPACK_PACKAGE_CONTACT "Shervin Nourbakhsh <shervin.nourbakhsh@ill.fr>")
-
-
-set (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)
-set (CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
-set (CPACK_PACKAGE_CHECKSUM MD5)
-
-set (CPACK_COMPONENTS_IGNORE_GROUPS ON)
-set (CPACK_GENERATOR "DEB")
-set (CPACK_DEB_COMPONENT_INSTALL ON)
-
-#set (CPACK_MONOLITHIC_INSTALL OFF)
-#set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-
-set (CPACK_COMPONENT_DEV_REQUIRED ON)
-set (CPACK_COMPONENT_LIB_REQUIRED ON)
-set (CPACK_COMPONENT_DEV_DEPENDS LIB)
-
-set (CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
-set (CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
-set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set (CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY ">=")
-#set (CPACK_DEBIAN_ENABLE_COMPONENT_DEPENDS ON)
-set (CPACK_DEBIAN_PACKAGE_DEPENDS ON)
-set (CPACK_DEBIAN_LIB_PACKAGE_DEPENDS "cameo(>=1.0.0), libzmq (>=5)")
-set (CPACK_DEBIAN_LIB_PACKAGE_SECTION lib)
-set (CPACK_DEBIAN_DEV_PACKAGE_DEPENDS "${LIBNAME}-lib (=${PROJECT_VERSION}), libzmq3-dev")
-set (CPACK_DEBIAN_DEV_PACKAGE_RECOMMENDS "rapidjson-dev (>=5)")
-set (CPACK_DEBIAN_DEV_PACKAGE_SECTION libdevel)
-set (CPACK_DEBIAN_PACKAGE_PRIORITY optional)
-
-
-if((${CMAKE_BUILD_TYPE} EQUAL "Debug") OR (${CMAKE_BUILD_TYPE} EQUAL "RelWithDebInfo"))
-  set (CPACK_DEBIAN_DEBUGINFO_PACKAGE ON)
+###### Common CPACK
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../CPackConfigCommon.in)
+  
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cameo C++ API")
+  set (CPACK_PACKAGE_DESCRIPTION "This is the long description")
 endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
+
+
+
 
 
 
