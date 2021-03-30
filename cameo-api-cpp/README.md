@@ -34,6 +34,12 @@ cmake ..
 cmake --build .
 ```
 
+To compile also the with the test programs:
+```
+cmake -DTESTS=ON ..
+cmake --build .
+```
+
 
 ## Development 
 How to find the list of public headers and check that they are all in the include/ directory
