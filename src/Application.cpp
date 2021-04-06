@@ -74,12 +74,23 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("setResult", &This::setResult, py::call_guard<py::gil_scoped_release>())
 	    .def("connectToStarter", &This::connectToStarter, py::call_guard<py::gil_scoped_release>());
 
+	py::class_<cameo::Output>(m, "Output")
+		.def("getId", &cameo::Output::getId)
+		.def("getMessage", &cameo::Output::getMessage)
+		.def("isEndOfLine", &cameo::Output::isEndOfLine);
+
+	py::class_<cameo::OutputStreamSocket>(m, "OutputStreamSocket")
+		.def("receive", &cameo::OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
+		.def("cancel", &cameo::OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("isEnded", &cameo::OutputStreamSocket::isEnded)
+		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
+
 	py::class_<Instance>(m, "Instance")
 	    .def("getName", &Instance::getName)
 	    .def("getId", &Instance::getId)
 	    .def("getEndpoint", &Instance::getEndpoint)
 	    .def("getNameId", &Instance::getNameId)
-	    .def("getCom", &Instance::getCom)
+	    //.def("getCom", &Instance::getCom)
 	    .def("hasResult", &Instance::hasResult)
 	    .def("exists", &Instance::exists)
 	    .def("getErrorMessage", &Instance::getErrorMessage)
@@ -208,6 +219,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getApplicationInfos", py::overload_cast<const std::string&>(&cameo::Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
 	    .def("getPorts", &cameo::Server::getPorts, py::call_guard<py::gil_scoped_release>())
 	    .def("getActualState", &cameo::Server::getActualState, py::call_guard<py::gil_scoped_release>())
-	    .def("getPastStates", &cameo::Server::getPastStates, py::call_guard<py::gil_scoped_release>())
-	    .def("openEventStream", &cameo::Server::openEventStream, py::call_guard<py::gil_scoped_release>());
+	    .def("getPastStates", &cameo::Server::getPastStates, py::call_guard<py::gil_scoped_release>());
+	    //.def("openEventStream", &cameo::Server::openEventStream, py::call_guard<py::gil_scoped_release>());
 }
