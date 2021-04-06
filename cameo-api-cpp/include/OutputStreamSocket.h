@@ -17,8 +17,9 @@
 #ifndef CAMEO_OUTPUTSTREAMSOCKET_H_
 #define CAMEO_OUTPUTSTREAMSOCKET_H_
 
-#include <memory>
 #include "Event.h"
+#include <memory>
+#include <optional>
 
 namespace cameo {
 
@@ -59,7 +60,7 @@ public:
 
 	void setApplicationId(int id);
 
-	bool receive(Output& ouput);
+	std::optional<Output> receive();
 	void cancel();
 	bool isEnded() const;
 	bool isCanceled() const;

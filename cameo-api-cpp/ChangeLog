@@ -5,6 +5,7 @@
 * Added Instance::waitFor() and Instance::waitFor(int) for python binding.
 * Implemented subscriber and requester with optional string result in receive() function.
 * Implemented Instance::getResult() with optional string result.
+* Implemented OutputStreamSocket::receive() with optional Output result.
 
 1.0.2
 -----

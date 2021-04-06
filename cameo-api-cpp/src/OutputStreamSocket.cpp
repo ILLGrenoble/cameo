@@ -57,7 +57,7 @@ void OutputStreamSocket::setApplicationId(int id) {
 	m_applicationId = id;
 }
 
-bool OutputStreamSocket::receive(Output& output) {
+std::optional<Output> OutputStreamSocket::receive() {
 
 	// Loop on receive() because in case of configuration multiple=yes, messages can come from different instances.
 	while (true) {
@@ -67,7 +67,7 @@ bool OutputStreamSocket::receive(Output& output) {
 		// Cancel can only come from this instance.
 		if (messageType == message::Event::CANCEL) {
 			m_canceled = true;
-			return false;
+			return {};
 		}
 
 		// Get the second part of the message.
@@ -91,22 +91,25 @@ bool OutputStreamSocket::receive(Output& output) {
 			// Terminate the stream if type of message is ENDSTREAM.
 			if (messageType == message::Event::ENDSTREAM) {
 				m_ended = true;
-				return false;
+				return {};
 			}
 
 			// Here the type of message is STREAM.
 			string line = event[message::ApplicationStream::MESSAGE].GetString();
 			bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
 
+			Output output;
 			output.m_id = id;
 			output.m_message = line;
 			output.m_endOfLine = endOfLine;
 
-			return true;
+			return optional<Output>(output);
 		}
 
 		// Here, the application id is different from id, then re-iterate.
 	}
+
+	return {};
 }
 
 void OutputStreamSocket::cancel() {
