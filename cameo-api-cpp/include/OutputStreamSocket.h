@@ -55,10 +55,10 @@ class OutputStreamSocket {
 	friend class Services;
 	friend class application::Instance;
 
+	void setApplicationId(int id);
+
 public:
 	~OutputStreamSocket();
-
-	void setApplicationId(int id);
 
 	std::optional<Output> receive();
 	void cancel();

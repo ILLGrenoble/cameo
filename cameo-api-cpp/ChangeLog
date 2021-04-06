@@ -6,6 +6,7 @@
 * Implemented subscriber and requester with optional string result in receive() function.
 * Implemented Instance::getResult() with optional string result.
 * Implemented OutputStreamSocket::receive() with optional Output result.
+* Instance::getOutputStreamSocket() now returns a unique_ptr<OutputStreamSocket>.
 
 1.0.2
 -----

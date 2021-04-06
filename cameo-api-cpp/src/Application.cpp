@@ -763,8 +763,8 @@ std::optional<std::string> Instance::getResult() {
 	return getBinaryResult();
 }
 
-std::shared_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
-	return m_outputStreamSocket;
+std::unique_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
+	return std::move(m_outputStreamSocket);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

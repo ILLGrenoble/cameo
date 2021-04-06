@@ -294,7 +294,7 @@ public:
 	std::optional<std::string> getBinaryResult();
 	std::optional<std::string> getResult();
 
-	std::shared_ptr<OutputStreamSocket> getOutputStreamSocket();
+	std::unique_ptr<OutputStreamSocket> getOutputStreamSocket();
 
 private:
 	Instance(Server* server);
@@ -307,7 +307,7 @@ private:
 	State waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking);
 
 	Server* m_server;
-	std::shared_ptr<OutputStreamSocket> m_outputStreamSocket;
+	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;
 	int m_id;
 	std::string m_errorMessage;
 	Com m_com;
