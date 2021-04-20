@@ -1,13 +1,15 @@
-You can build the project with the aid of the build.sh script.
+## Dependencies for testing:
+Ubuntu bionic: `sudo apt install doctest-dev`
 
-If you want to install it in a non-standard path (MY_INSTALL_PATH) and enable the testing:
-```
-./build.sh dev MY_INSTALL_PATH
-```
-otherwise:
-```./build.sh```
 
-By default MY_INSTALL_PATH is `/tmp/devel/`
+## How to compile and install
+```
+cmake -S . -B <build_directory> -DCMAKE_PREFIX_PATH=<cpp_api_build_directory>
+cmake --build <build_directory>
+```
+
+in order to install in a non-standard directory add the `-DCMAKE_INSTALL_PREFIX=<your_base_path>` to the first cmake invocation.
+
 
 If you are using a non-standard path, the following environmental variables should then be set.
 ```
@@ -21,7 +23,7 @@ Example for the fish shell:
 #!/bin/fish
 set -lx CMAKE_INSTALL_PREFIX /tmp/devel/
 set -lx PYTHONPATH $PYTHONPATH $CMAKE_INSTALL_PREFIX/lib64/python3.6/site-packages/
-set -lx LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64/
+set -lx LD_LIBRARY_PATH $CMAKE_INSTALL_PREFIX/lib64/
 ```
 
 # Testing

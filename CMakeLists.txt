@@ -1,91 +1,123 @@
-cmake_minimum_required(VERSION 3.11.3)
+cmake_minimum_required(VERSION 3.12.0)
+
 # Project name and version
-project(cameopy VERSION 1.0.0 LANGUAGES CXX)
+project(cameo-api-python
+  VERSION 1.0.0
+  LANGUAGES CXX
+  HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
+  )
 
+#--------------- Helpers
 include(GNUInstallDirs)
-
-# Want to compile dynamic or static libraries
-set(BUILD_SHARED_LIBS True)
-
-
-include(ExternalProject)
+include(CMakePackageConfigHelpers)
+include(FetchContent)
 
 
-option(TESTING "Enable testing" OFF)
-#------------------------------------------------------------ Dependencies
-# 2.4.3 is the version that has been used for development and tests
-find_package(pybind11 2.4.3 QUIET)  
-find_package(cameo 1.1 QUIET)
-#------------------------------------------------------------
-
+# in order to find FindZeroMQ.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/)
 
 #------------------------------------------------------------
+# Dependencies
+#------------------------------------------------------------
+#list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
+#message(STATUS ${CMAKE_MODULE_PATH})
+find_package(cameo-api-cpp-static 1.1.0 REQUIRED) # provided by the C++ API
+find_package(pybind11 2.4.3 QUIET)
 if(NOT pybind11_FOUND)
-  message(WARNING "Using PYBIND11 from GIT repository")
-  ExternalProject_Add(pybind11 
+  message(WARNING "Using pybind11 from GIT repository")
+  FetchContent_Declare(pybind11
 	GIT_REPOSITORY https://github.com/pybind/pybind11.git
-	GIT_TAG v2.5.0
+	GIT_TAG v2.4.3
 	GIT_SHALLOW True
-	#INSTALL_COMMAND ""
-	UPDATE_COMMAND ""
-	UPDATE_DISCONNECTED FALSE
-	CMAKE_ARGS -DPYBIND11_TEST=OFF -DPYBIND11_INSTALL=ON -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/pybind11_install/
-	#I am obliged to perform the install step otherwise some files from pybind are not put together and I don't manage to set it.
 	)
-      ExternalProject_Get_Property(pybind11 install_dir BINARY_DIR)
-
-      list(APPEND DEPENDENT_PACKAGES pybind11)
-  #set(pybind11_DIR ${install_dir})
-  set(pybind11_DIR ${CMAKE_CURRENT_BINARY_DIR}/pybind11_install/share/cmake/pybind11)
+  FetchContent_GetProperties(pybind11)
+  if(NOT pybind11_POPULATED)
+	FetchContent_Populate(pybind11)
+	add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
+	mark_as_advanced(PYBIND11_TEST)
+	mark_as_advanced(PYBIND11_INSTALL)
+  endif()
+  #else()
+#  find_package(pybind11 2.4.3 REQUIRED)
 endif()
 
-#------------------------------------------------------------
-if(NOT cameo_FOUND)
-  ExternalProject_Add(cameo
-    GIT_REPOSITORY https://code.ill.fr/cameo/cameo-api-cpp.git
-    #    GIT_TAG master_new
-    GIT_TAG master
-    GIT_REMOTE_NAME cameocpp
-    GIT_SHALLOW True
-    #SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cameo-api-cpp/
-    INSTALL_DIR ${CMAKE_INSTALL_PREFIX} # this does not work...
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-    #INSTALL_COMMAND "" # this disables the install step for the external project
+pybind11_add_module(cameopy src/Application.cpp)
+
+#file(GENERATE OUTPUT /tmp/message.log CONTENT $<TARGET_PROPERTY:cameo,INTERFACE_INCLUDE_DIRECTORIES>)
+target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
+#target_compile_features(cameopy PUBLIC cxx_std_17)
+#target_include_directories(cameopy
+#  PRIVATE $<TARGET_PROPERTY:Cameo::cameo-api-cpp,INTERFACE_INCLUDE_DIRECTORIES>
+#  )
+
+#target_include_directories(${MODULE_NAME} ${cameo_INCLUDE_DIR})
+set_target_properties(cameopy PROPERTIES
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  VERSION ${PROJECT_VERSION}
+  )
+
+
+
+#####------------------------------------------- copied from CMakeLists.txt of openPMD-api
+if(WIN32)
+  set(CMAKE_INSTALL_PYTHONDIR_DEFAULT
+    "${CMAKE_INSTALL_LIBDIR}/site-packages"
     )
-  ExternalProject_Get_Property(cameo install_dir BINARY_DIR)
-  set(cameo_DIR ${BINARY_DIR})
-  list(APPEND DEPENDENT_PACKAGES cameo)
-  #set(cameo_DIR ${install_dir})
-endif(NOT cameo_FOUND)
+else()
+  set(CMAKE_INSTALL_PYTHONDIR_DEFAULT
+    "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages"
+    )
+endif()
+set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_PYTHONDIR_DEFAULT}"
+  CACHE STRING "Location for installed python package"
+  )
+#set(CMAKE_PYTHON_OUTPUT_DIRECTORY
+#  "${openPMD_BINARY_DIR}/${CMAKE_INSTALL_PYTHONDIR}"
+#  CACHE PATH "Build directory for python modules"
+#  )
+# set_target_properties(raytracing.py PROPERTIES
+# #  ARCHIVE_OUTPUT_NAME openpmd_api_cxx
+# #  LIBRARY_OUTPUT_NAME openpmd_api_cxx
+#   ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api
+#   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api
+#   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api
+#   PDB_OUTPUT_DIRECTORY ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api_api
+#   COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api
+#   )
+# add_custom_command(TARGET raytracing.py POST_BUILD
+#   COMMAND ${CMAKE_COMMAND} -E copy_directory
+#   ${openPMD_SOURCE_DIR}/python/src/raytracing_api
+#   ${CMAKE_PYTHON_OUTPUT_DIRECTORY}/raytracing_api
+#   )
+
+##### End of ------------------------------------ copied from CMakeLists.txt of openPMD-api
 
 
-ExternalProject_Add(cameopython
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/
-  DEPENDS  ${DEPENDENT_PACKAGES}
-  CMAKE_ARGS  -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}  -Dpybind11_DIR=${pybind11_DIR} #pybind is fake-installed in the build
-  #INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
+
+#---------------
+# Library version
+write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
+  COMPATIBILITY SameMajorVersion
+  VERSION ${PROJECT_VERSION}
+  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+
+#------------------------------------------------------------
+# Install
+#------------------------------------------------------------
+install(
+  FILES   ${CMAKE_CURRENT_SOURCE_DIR}/src/__init__.py
+  DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/${PROJECT_NAME}
+  )
+install(TARGETS cameopy
+  EXPORT cameopyexport
+  LIBRARY DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/${PROJECT_NAME}
   )
 
 
-if(TESTING)
-enable_testing()
-
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
-ExternalProject_Add(testing
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test/
-  DEPENDS ${DEPENDENT_PACKAGES}
-  CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} 
-  INSTALL_COMMAND ""
-  )
-endif(TESTING)
-
-#if(CAMEOPYTHON_TESTS)
-#  message("TESTS have been enabled")
-#  enable_testing()
-#  
-#  add_subdirectory(test)
-#endif(CAMEOPYTHON_TESTS)
-#unset(CAMEOPYTHON_TESTS CACHE)  # this removes the value from the CACHE, this is a trick to get the test compiled when running cmake --build . the second time
-
-#ExternalProject_Add_StepDependencies(cameopython build cameocpp)
-
+#------------------------------------------------------------
+# CPack
+#------------------------------------------------------------
+include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
+include(CPack)

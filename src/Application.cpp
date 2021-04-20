@@ -18,7 +18,7 @@
 #include <pybind11/stl.h>
 namespace py = pybind11;
 
-#include <cameo/cameo.h>
+#include <cameo/api/cameo.h>
 using namespace cameo::application;
 
 #include <iostream>
