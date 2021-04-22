@@ -21,7 +21,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
 add_custom_command(
   OUTPUT ${PROJECT_JAR}
-  COMMAND mvn  clean install
+  COMMAND mvn clean install
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
   VERBATIM
   )

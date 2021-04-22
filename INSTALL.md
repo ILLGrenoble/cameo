@@ -29,10 +29,8 @@ install.sh 1.0.1
 
 ### Option2:
 ```
-mkdir build/
-cd build/
-cmake ..
-cmake --build .
+cmake -S . -B build/
+cmake --build build/
 ```
 
 Packages can be installed directly:
@@ -56,3 +54,20 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/cameo-install ..
 cmake --build . --target install
 ```
 Get the include and so files from the temporary directory.
+
+
+
+
+```
+rm build/ /tmp/cpp/ /tmp/python/ -R
+cmake -S . -B build/
+cmake --build build/
+
+cmake -S cameo-api-cpp -B build/cpp/
+cmake -S cameo-api-python -B build/python/ -DCMAKE_PREFIX_PATH=build/cpp
+cmake --build build/cpp/
+cmake --build build/python/
+
+cpack --config build/CPackConfig.cmake -B build/packaging/
+cpack --config
+```
