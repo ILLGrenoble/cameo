@@ -1,42 +1,37 @@
-if(NOT DEFINED PROJECT_NAME)
-  cmake_minimum_required(VERSION 3.7.2)
+cmake_minimum_required(VERSION 3.12.0)
 
-  # Project name and version
-  project(cameopy VERSION 1.0.0 LANGUAGES CXX)
-endif()
+# Project name and version
+project(cameo-api-python
+  VERSION 1.0.0
+  LANGUAGES CXX
+  HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
+  )
 
+#--------------- Options
+set(BUILD_SHARED_LIBS True) # it is not a choise for the user
+#--------------- Helpers
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-set(BUILD_SHARED_LIBS True)
-# this works only on linux....
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-#list(APPEND CMAKE_MODULE_PATH ${pybind11_DIR}/../pybind11/tools/)
-#list(APPEND CMAKE_MODULE_PATH ${pybind11_DIR})
-#list(APPEND CMAKE_PREFIX_PATH ${pybind11_DIR}/../)
-#message(WARNING "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-#message(WARNING "CMAKE_ARGS: ${CMAKE_PREFIX_PATH}")
-#message(WARNING "PYBIND11_DIR: ${pybind11_DIR}/../")
-
+# in order to find FindZeroMQ.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/)
 
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
-message(STATUS ${CMAKE_PREFIX_PATH})
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(cameo 1.1.0 REQUIRED) # provided by the C++ API
-
-#find_package(pybind11 CONFIG)
+#list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
+#message(STATUS ${CMAKE_MODULE_PATH})
+find_package(cameo-api-cpp-static 1.1.0 REQUIRED cameo-api-cpp-static) # provided by the C++ API
 find_package(pybind11 2.4.3 REQUIRED)
 
-pybind11_add_module(cameopy Application.cpp)
+pybind11_add_module(cameopy src/Application.cpp)
 
 #file(GENERATE OUTPUT /tmp/message.log CONTENT $<TARGET_PROPERTY:cameo,INTERFACE_INCLUDE_DIRECTORIES>)
-target_link_libraries(cameopy PRIVATE cameo)
+target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
 #target_compile_features(cameopy PUBLIC cxx_std_17)
 #target_include_directories(cameopy
-#  PRIVATE $<TARGET_PROPERTY:cameo,INTERFACE_INCLUDE_DIRECTORIES>
+#  PRIVATE $<TARGET_PROPERTY:Cameo::cameo-api-cpp,INTERFACE_INCLUDE_DIRECTORIES>
 #  )
 
 #target_include_directories(${MODULE_NAME} ${cameo_INCLUDE_DIR})
@@ -95,15 +90,18 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
 #------------------------------------------------------------
 # Install
 #------------------------------------------------------------
-#------------------------------------------------------------
-# Install
-#------------------------------------------------------------
 install(
-  FILES   ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+  FILES   ${CMAKE_CURRENT_SOURCE_DIR}/src/__init__.py
   DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/${PROJECT_NAME}
   )
 install(TARGETS cameopy
   EXPORT cameopyexport
-  DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/${PROJECT_NAME}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_PYTHONDIR}/${PROJECT_NAME}
   )
 
+
+#------------------------------------------------------------
+# CPack
+#------------------------------------------------------------
+include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
+include(CPack)

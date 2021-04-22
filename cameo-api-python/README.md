@@ -26,7 +26,12 @@ For testing:
 ```sudo apt install doctest-dev```
 
 ## How to compile and install
-You can run the `build.sh` script.
+```
+cmake -S . -B <build_directory> -DCMAKE_PREFIX_PATH=<cpp_api_build_directory>
+cmake --build <build_directory>
+```
+
+in order to install in a non-standard directory add the `-DCMAKE_INSTALL_PREFIX=<your_base_path>` to the first cmake invocation.
 
 Don't forget to set your LD_LIBRARY_PATH to `/usr/local/lib64/`
 
