@@ -5,28 +5,29 @@ project(cameo-api-cpp
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
+#--------------- Helpers
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(FetchContent)
+
 # name of the target library
 set(LIBNAME ${PROJECT_NAME})
 set(NAMESPACE Cameo)
-
+set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api)
+set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake)
+set(component_runtime CAMEO_API_CPP_RUNTIME)
+set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
 option(TESTS "Compiling the test programs" OFF)
 if(NOT DEFINED ${BUILD_SHARED_LIBS})
   option(BUILD_SHARED_LIBS "Building dynamic (ON) or static (OFF)" ON)
   message(STATUS "Building shared libraries: ${BUILD_SHARED_LIBS}")
 endif()
-if (DEFINED CAMEO_API_CPP_SHARED_LIBS)
-    set(BUILD_SHARED_LIBS "${CAMEO_API_CPP_SHARED_LIBS}")
-endif ()
 
-#--------------- Helpers
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-include(FetchContent)
 
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
-  set(CMAKE_BUILD_TYPE "Release")
+  set(CMAKE_BUILD_TYPE "Release") # set Release by default
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
@@ -38,7 +39,9 @@ endif()
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
+# this is needed when including this file as subdir
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(ZeroMQ REQUIRED)
 find_package (Threads REQUIRED)
 find_package(Rapidjson 1.1.0 QUIET)
@@ -56,36 +59,62 @@ if(NOT Rapidjson_FOUND)
   find_package(Rapidjson REQUIRED)
 endif()
 message(STATUS "Rapidjson found here: ${Rapidjson_INCLUDE_DIRS}")
+
+
+#------------------------------------------------------------
 #------------------------------------------------------------
 # Libraries
 #------------------------------------------------------------
-set (INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api)
 #---------------
 # Files
-file(GLOB_RECURSE CAMEO_SOURCE_FILES "src/*.cpp")
+file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
 add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
-add_library(${LIBNAME}-static STATIC $<TARGET_OBJECTS:${LIBNAME}-obj>)
-add_library(${LIBNAME} ${CAMEO_SOURCE_FILES})
-add_library(${NAMESPACE}::${LIBNAME} ALIAS ${LIBNAME})
-target_link_libraries(${LIBNAME} PUBLIC zmq Threads::Threads)
-target_include_directories(${LIBNAME}
+target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads)
+target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>  # here's the version
   PUBLIC $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
   )
-target_include_directories(${LIBNAME}
+target_include_directories(${LIBNAME}-obj
   SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
 )
-target_compile_features(${LIBNAME} PUBLIC cxx_std_17)
+target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
 
+set_target_properties(${LIBNAME}-obj PROPERTIES
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  VERSION ${PROJECT_VERSION}
+  POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
+  )
+
+add_library(${LIBNAME}-static STATIC $<TARGET_OBJECTS:${LIBNAME}-obj>)
+add_library(${LIBNAME}  $<TARGET_OBJECTS:${LIBNAME}-obj>)
 set_target_properties(${LIBNAME} PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
   )
+
+add_library(${NAMESPACE}::${LIBNAME} ALIAS ${LIBNAME})
+add_library(${NAMESPACE}::${LIBNAME}-obj ALIAS ${LIBNAME}-obj)
+add_library(${NAMESPACE}::${LIBNAME}-static ALIAS ${LIBNAME}-static)
+target_include_directories(${LIBNAME}-static
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>  # here's the version
+  ) 
+target_compile_features(${LIBNAME}-static PUBLIC cxx_std_17)
+target_link_libraries(${LIBNAME}-static PUBLIC zmq Threads::Threads)
+
+
+#------------------------------------------------------------
+
+include(GenerateExportHeader)
+generate_export_header(${LIBNAME}
+    EXPORT_MACRO_NAME ${LIBNAME}_EXPORT
+    EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/${INSTALL_INCLUDEDIR}/export.h
+)
 
 #------------------------------------------------------------
 # Install
@@ -93,71 +122,83 @@ set_target_properties(${LIBNAME} PROPERTIES
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
   DESTINATION ${CMAKE_INSTALL_DOCDIR}/
   RENAME copyright
-  COMPONENT ${PROJECT_NAME}_Runtime
+  COMPONENT ${component_runtime}
   )
 
 
 
 #---------------
 # Library version
-write_basic_package_version_file(${PROJECT_NAME}ConfigVersion.cmake
+write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake
+  COMPATIBILITY SameMajorVersion
+  VERSION ${PROJECT_VERSION}
+  )
+write_basic_package_version_file(${PROJECT_NAME}-static-config-version.cmake
   COMPATIBILITY SameMajorVersion
   VERSION ${PROJECT_VERSION}
   )
 
-install(TARGETS ${LIBNAME}
+install(TARGETS ${LIBNAME} 
   EXPORT cameoTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} # windows
-    COMPONENT ${PROJECT_NAME}_Runtime
+    COMPONENT ${component_runtime}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # dynamic
-    COMPONENT ${PROJECT_NAME}_Runtime
-    NAMELINK_COMPONENT ${PROJECT_NAME}_Development #from CMake 3.12
+    COMPONENT ${component_runtime}
+    NAMELINK_COMPONENT ${component_development} #from CMake 3.12
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # static
-    COMPONENT ${PROJECT_NAME}_Development
-  PUBLIC_HEADER  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT ${PROJECT_NAME}_Development
-  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    COMPONENT ${PROJECT_NAME}_Development
+    COMPONENT ${component_development}
+  PUBLIC_HEADER  DESTINATION ${INSTALL_INCLUDEDIR}
+    COMPONENT ${component_development}
+  INCLUDES DESTINATION ${INSTALL_INCLUDEDIR}
+    COMPONENT ${component_development}
   )
 
 # this is to install the headers
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ # don't forget the trailing /
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api/
-  COMPONENT ${PROJECT_NAME}_Development
+  DESTINATION ${INSTALL_INCLUDEDIR}
+  COMPONENT ${component_development}
   FILES_MATCHING  PATTERN *.h
   )
 # this is to install the version header that is generated by cmake
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ # don't forget the trailing /
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api/
-  COMPONENT ${PROJECT_NAME}_Development
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  COMPONENT ${component_development}
   FILES_MATCHING  PATTERN *.h
   )
 
-
+# this is for cameo-api-python to compile from the local build tree
+export(TARGETS ${LIBNAME}-static
+  NAMESPACE ${NAMESPACE}::
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-static-targets.cmake
+  )
 export(EXPORT cameoTargets
   #   FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-${type}-targets.cmake
   FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-targets.cmake
   NAMESPACE ${NAMESPACE}::
   )
-configure_file(cmake/${PROJECT_NAME}Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+configure_package_config_file(cmake/${PROJECT_NAME}-config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION  ${ConfigPackageLocation}
+  )
+configure_file(cmake/${PROJECT_NAME}-static-config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-static-config.cmake
   COPYONLY
   )
 
-set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake)
+
 install(EXPORT cameoTargets
   FILE ${PROJECT_NAME}-targets.cmake
 #  FILE ${PROJECT_NAME}Config.cmake #${PROJECT_NAME}Targets.cmake
   NAMESPACE ${NAMESPACE}::
   DESTINATION ${ConfigPackageLocation}
-  COMPONENT ${PROJECT_NAME}_Development
+  COMPONENT ${component_development}
   )
 install(
   FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
   DESTINATION ${ConfigPackageLocation}
-  COMPONENT ${PROJECT_NAME}_Development
+  COMPONENT ${component_development}
   )
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
@@ -180,7 +221,7 @@ if(UNIX)
   
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
 	DESTINATION "${CMAKE_INSTALL_DOCDIR}"
-	COMPONENT ${PROJECT_NAME}_Runtime
+	COMPONENT ${component_runtime}
 	)
 endif(UNIX)
 
@@ -210,6 +251,7 @@ endif (DOXYGEN_FOUND)
 #------------------------------------------------------------
 # CPack
 #------------------------------------------------------------
+include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
 include(CPack)
 
 #------------------------------------------------------------
