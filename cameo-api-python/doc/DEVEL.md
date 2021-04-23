@@ -1,3 +1,7 @@
+## Dependencies for testing:
+Ubuntu bionic: `sudo apt install doctest-dev`
+
+
 ## How to compile and install
 ```
 cmake -S . -B <build_directory> -DCMAKE_PREFIX_PATH=<cpp_api_build_directory>
