@@ -10,13 +10,16 @@ set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERS
 
 add_custom_command(
   OUTPUT ${PROJECT_JAR}
-  COMMAND mvn  install
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND mvn install
+  #  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}  # this would compile only this package
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../ # this compiles everything
   VERBATIM
   )
 add_custom_target(${PROJECT_NAME}
-#  ALL
+  ALL
   DEPENDS ${PROJECT_JAR}
   )
 
-
+#include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
+#include(${CMAKE_CURRENT_SOURCE_DIR}/../packaging/CPackConfig.cmake.in)
+#include(CPack)
