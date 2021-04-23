@@ -21,8 +21,8 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
 add_custom_command(
   OUTPUT ${PROJECT_JAR}
-  COMMAND mvn clean install
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
+  COMMAND mvn install
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
   VERBATIM
   )
 add_custom_target(server
@@ -33,17 +33,17 @@ add_custom_target(server
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
-  COMPONENT server
   )
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
+install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-server/scripts/cameo-server
+  TYPE BIN
+  )
+
+#------------------------------------------------------------
+# CPack
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   include(${CMAKE_CURRENT_SOURCE_DIR}/../CPackConfigCommon.in)
-
-
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cameo C++ API")
-  set (CPACK_PACKAGE_DESCRIPTION "This is the long description")
-
+  include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
-
 endif()
+#------------------------------------------------------------
