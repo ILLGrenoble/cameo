@@ -2,11 +2,12 @@
 
 ## Dependencies
  - maven 
-
+ - java (>=9)
+ 
 ### Centos 8
 ``` yum install -y maven java-latest-openjdk-devel ```
-Update to the most recent version of JAVA
 
+Update to the most recent version of JAVA
 ``` sudo /sbin/alternatives --config java_sdk_openjdk ```
 
 ## Instructions
@@ -15,59 +16,27 @@ Download the version:
 git clone -b v1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
 ```
 
-
-### Option1: 
-Compile the Java sources:
+### Option1: maven+cmake
+Compile:
 ```
-cd cameo
-mvn clean install
-```
-Install the jzmq version of the cameo-server:
-```
-install.sh 1.0.1
-```
-
-### Option2:
-```
-cmake -S . -B build/
+cd cameo/
+cmake -S . -B build/ -D<OPTION>
 cmake --build build/
 ```
-
-Packages can be installed directly:
+Possible options are:
+ - CMAKE_INSTALL_PREFIX=<your_chosen_install_basepath>: to install in a non-standard directory
+ - CAMEO_API_CPP=ON: to build and install the C++ API
+ - CAMEO_API_PYTHON=ON: to build and install the Python API
+ 
+Install:
 ```
-cmake --build . --target install
+sudo cmake --build . --target install
 ```
-or they can be first packaged in either DEB or RPM format
+### Option2: cmake + cpack = DEB package
+It is also possible to build and create Debian packages. In this case, please use the build_and_package.sh script.
 ```
-cpack -G RPM|DEB
+./build_and_package.sh <build_directory>
 ```
-and then installed with your package manager
+The script provides the following .deb packages located in <build_directory>/packages/
+They can be installed using package manager.
 
-
-
-Compile and install the C++ API sources into a temporary directory e.g. */tmp/cameo-install* :
-```
-cd cameo-api-cpp
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/cameo-install ..
-cmake --build . --target install
-```
-Get the include and so files from the temporary directory.
-
-
-
-
-```
-rm build/ /tmp/cpp/ /tmp/python/ -R
-cmake -S . -B build/
-cmake --build build/
-
-cmake -S cameo-api-cpp -B build/cpp/
-cmake -S cameo-api-python -B build/python/ -DCMAKE_PREFIX_PATH=build/cpp
-cmake --build build/cpp/
-cmake --build build/python/
-
-cpack --config build/CPackConfig.cmake -B build/packaging/
-cpack --config
-```

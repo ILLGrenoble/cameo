@@ -6,6 +6,18 @@ project(cameo
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
+option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
+option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
+
+if(${CAMEO_API_CPP})
+  list(APPEND APIs cameo-api-cpp)
+endif()
+if(${CAMEO_API_PYTHON})
+  list(APPEND APIs cameo-api-cpp)
+  mark_as_advanced(CAMEO_API_CPP)
+  list(APPEND APIs cameo-api-python)
+endif()
+
 #------------------------------------------------------------
 # This is a trick: for the subprojects metioned here,
 # the find_package does nothing, since the targets will be defined
@@ -23,8 +35,9 @@ foreach(package cameo-com-jzmq  )
   add_subdirectory(cameo-com/${package})
 endforeach()
 
-foreach(package  #cameo-server-jzmq cameo-console-jzmq
-    cameo-api-cpp cameo-api-python)
+
+foreach(package  cameo-server-jzmq cameo-console-jzmq
+    ${APIs})
   add_subdirectory(${package})
 endforeach()
 
