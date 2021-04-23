@@ -18,13 +18,7 @@ set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake)
 set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
-option(TESTS "Compiling the test programs" OFF)
-if(NOT DEFINED ${BUILD_SHARED_LIBS})
-  option(BUILD_SHARED_LIBS "Building dynamic (ON) or static (OFF)" ON)
-  message(STATUS "Building shared libraries: ${BUILD_SHARED_LIBS}")
-endif()
-
-
+option(CAMEO_API_CPP_TESTS "Compiling the test programs" OFF)
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
@@ -257,8 +251,8 @@ include(CPack)
 #------------------------------------------------------------
 # Tests
 #------------------------------------------------------------
-if(TESTS)
+if(CAMEO_API_CPP_TESTS)
 # Note: execute ctest --verbose to have more details 
 enable_testing()
 add_subdirectory(tests)
-endif(TESTS)
+endif(CAMEO_API_CPP_TESTS)
