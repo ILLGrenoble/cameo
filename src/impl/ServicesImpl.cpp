@@ -26,7 +26,8 @@
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
 #ifdef _WIN32
-	#define GET_PROCESS_PID() GetCurrentProcessId()
+	#include <process.h>
+	#define GET_PROCESS_PID() _getpid()
 #else
 	#include <unistd.h>
 
@@ -62,6 +63,18 @@ std::string ServicesImpl::createSyncRequest() const {
 	return request.toString();
 }
 
+std::string ServicesImpl::createSyncStreamRequest(const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SYNC_STREAM);
+
+	request.pushKey(message::SyncStreamRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
+
 std::string ServicesImpl::createVersionRequest() const {
 
 	json::StringObject request;
@@ -83,7 +96,7 @@ std::string ServicesImpl::createIsAliveRequest(int id) const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const {
+std::string ServicesImpl::createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -99,8 +112,37 @@ std::string ServicesImpl::createStartRequest(const std::string& name, const std:
 	}
 	request.endArray();
 
-	request.pushKey(message::StartRequest::INSTANCE_REFERENCE);
-	request.pushString(instanceReference);
+	if (thisId != -1) {
+		request.pushKey(message::StartRequest::STARTER);
+
+		request.startObject();
+
+		request.pushKey(message::ApplicationIdentity::NAME);
+		request.pushString(thisName);
+
+		request.pushKey(message::ApplicationIdentity::ID);
+		request.pushInt(thisId);
+
+		request.pushKey(message::ApplicationIdentity::SERVER);
+		request.pushString(thisEndpoint);
+
+		request.endObject();
+	}
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createSetStopHandlerRequest(int id, int stoppingTime) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SET_STOP_HANDLER);
+
+	request.pushKey(message::SetStopHandlerRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::SetStopHandlerRequest::STOPPING_TIME);
+	request.pushInt(stoppingTime);
 
 	return request.toString();
 }
@@ -141,20 +183,32 @@ std::string ServicesImpl::createConnectRequest(const std::string& name) const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createAllAvailableRequest() const {
+std::string ServicesImpl::createConnectWithIdRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::ALL_AVAILABLE);
+	request.pushInt(message::CONNECT_WITH_ID);
+
+	request.pushKey(message::ConnectWithIdRequest::ID);
+	request.pushInt(id);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createShowAllRequest() const {
+std::string ServicesImpl::createListRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SHOW_ALL);
+	request.pushInt(message::LIST);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createAppsRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::APPS);
 
 	return request.toString();
 }
@@ -168,14 +222,26 @@ std::string ServicesImpl::createStreamStatusRequest() const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createShowStreamRequest(int id) const {
+std::string ServicesImpl::createOutputPortWithIdRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SHOW);
+	request.pushInt(message::OUTPUT_PORT_WITH_ID);
 
-	request.pushKey(message::ShowStreamRequest::ID);
+	request.pushKey(message::OutputPortWithIdRequest::ID);
 	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createOutputPortRequest(const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::OUTPUT_PORT);
+
+	request.pushKey(message::OutputPortRequest::NAME);
+	request.pushString(name);
 
 	return request.toString();
 }
@@ -223,7 +289,7 @@ std::string ServicesImpl::createSubscribePublisherRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SUBSCRIBE_PUBLISHER);
+	request.pushInt(message::SUBSCRIBE_PUBLISHER_v0);
 
 	return request.toString();
 }
@@ -232,7 +298,7 @@ std::string ServicesImpl::createCreatePublisherRequest(int id, const std::string
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CREATE_PUBLISHER);
+	request.pushInt(message::CREATE_PUBLISHER_v0);
 
 	request.pushKey(message::CreatePublisherRequest::ID);
 	request.pushInt(id);
@@ -250,7 +316,7 @@ std::string ServicesImpl::createConnectPublisherRequest(int id, const std::strin
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PUBLISHER);
+	request.pushInt(message::CONNECT_PUBLISHER_v0);
 
 	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
 	request.pushInt(id);
@@ -265,7 +331,7 @@ std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::str
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATE_PUBLISHER);
+	request.pushInt(message::TERMINATE_PUBLISHER_v0);
 
 	request.pushKey(message::TerminatePublisherRequest::ID);
 	request.pushInt(id);
@@ -276,89 +342,77 @@ std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::str
 	return request.toString();
 }
 
-std::string ServicesImpl::createRequestPortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createRequestPortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST_PORT);
+	request.pushInt(message::REQUEST_PORT_v0);
 
-	request.pushKey(message::RequestPortRequest::ID);
+	request.pushKey(message::RequestPortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::RequestPortRequest::NAME);
+	request.pushKey(message::RequestPortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createConnectPortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createConnectPortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PORT);
+	request.pushInt(message::CONNECT_PORT_v0);
 
-	request.pushKey(message::ConnectPortRequest::ID);
+	request.pushKey(message::ConnectPortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::ConnectPortRequest::NAME);
+	request.pushKey(message::ConnectPortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createRemovePortRequest(int id, const std::string& name) const {
+std::string ServicesImpl::createRemovePortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REMOVE_PORT);
+	request.pushInt(message::REMOVE_PORT_v0);
 
-	request.pushKey(message::RemovePortRequest::ID);
+	request.pushKey(message::RemovePortV0Request::ID);
 	request.pushInt(id);
 
-	request.pushKey(message::RemovePortRequest::NAME);
+	request.pushKey(message::RemovePortV0Request::NAME);
 	request.pushString(name);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createStartedUnmanagedRequest(const std::string& name) const {
+std::string ServicesImpl::createAttachUnmanagedRequest(const std::string& name) const {
 
 	// Get the pid.
 	long pid = GET_PROCESS_PID();
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::STARTED_UNMANAGED);
+	request.pushInt(message::ATTACH_UNMANAGED);
 
-	request.pushKey(message::StartedUnmanagedRequest::NAME);
+	request.pushKey(message::AttachUnmanagedRequest::NAME);
 	request.pushString(name);
 
-	request.pushKey(message::StartedUnmanagedRequest::PID);
+	request.pushKey(message::AttachUnmanagedRequest::PID);
 	request.pushInt64(pid);
 
 	return request.toString();
 }
 
-std::string ServicesImpl::createTerminatedUnmanagedRequest(int id) const {
+std::string ServicesImpl::createDetachUnmanagedRequest(int id) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATED_UNMANAGED);
+	request.pushInt(message::DETACH_UNMANAGED);
 
-	request.pushKey(message::TerminatedUnmanagedRequest::ID);
+	request.pushKey(message::DetachUnmanagedRequest::ID);
 	request.pushInt(id);
-
-	return request.toString();
-}
-
-std::string ServicesImpl::createOutputRequest(const std::string& name) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::OUTPUT);
-
-	request.pushKey(message::OutputRequest::NAME);
-	request.pushString(name);
 
 	return request.toString();
 }
@@ -442,6 +496,57 @@ std::string ServicesImpl::createRemoveKeyRequest(int id, const std::string& key)
 	return request.toString();
 }
 
+std::string ServicesImpl::createRequestPortRequest(int id) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::REQUEST_PORT);
+
+	request.pushKey(message::RequestPortRequest::ID);
+	request.pushInt(id);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createPortUnavailableRequest(int id, int port) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::PORT_UNAVAILABLE);
+
+	request.pushKey(message::PortUnavailableRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::PortUnavailableRequest::PORT);
+	request.pushInt(port);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createReleasePortRequest(int id, int port) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RELEASE_PORT);
+
+	request.pushKey(message::ReleasePortRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::ReleasePortRequest::PORT);
+	request.pushInt(port);
+
+	return request.toString();
+}
+
+std::string ServicesImpl::createPortsRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::PORTS);
+
+	return request.toString();
+}
+
 zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
@@ -451,6 +556,7 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	streamList.push_back(message::Event::RESULT);
 	streamList.push_back(message::Event::PUBLISHER);
 	streamList.push_back(message::Event::PORT);
+	streamList.push_back(message::Event::KEYVALUE);
 	streamList.push_back(message::Event::CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
@@ -468,6 +574,7 @@ zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& en
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
 	vector<string> streamList;
+	streamList.push_back(message::Event::SYNCSTREAM);
 	streamList.push_back(message::Event::STREAM);
 	streamList.push_back(message::Event::ENDSTREAM);
 	streamList.push_back(message::Event::CANCEL);
@@ -528,6 +635,41 @@ bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 	}
 
 	return false;
+}
+
+void ServicesImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
+
+	string request = createSyncStreamRequest(name);
+
+	try {
+		unique_ptr<zmq::message_t> reply = socket->request(request);
+	}
+	catch (const ConnectionTimeout&) {
+		// The server is not accessible.
+	}
+	catch (...) {
+		// Should not happen.
+	}
+}
+
+void ServicesImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name) {
+
+	// Poll subscriber.
+	zmq_pollitem_t items[1];
+	items[0].socket = static_cast<void *>(*subscriber);
+	items[0].fd = 0;
+	items[0].events = ZMQ_POLLIN;
+	items[0].revents = 0;
+
+	while (true) {
+		sendSyncStream(socket, name);
+
+		// Wait for 100ms.
+		int rc = zmq::poll(items, 1, 100);
+		if (rc != 0) {
+			break;
+		}
+	}
 }
 
 void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {

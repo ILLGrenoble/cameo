@@ -31,23 +31,13 @@
 using namespace std;
 
 namespace cameo {
-
-Server::Server(const std::string& endpoint, int timeoutMs) :
-	Services() {
+constexpr int defaultTimeout = 10000;
+	
+void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	Services::init();
 
-	vector<string> tokens = split(endpoint);
-
-	if (tokens.size() < 3) {
-		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
-	}
-
-	m_url = tokens[0] + ":" + tokens[1];
-	string port = tokens[2];
-	istringstream is(port);
-	is >> m_port;
-	m_serverEndpoint = m_url + ":" + port;
+	m_serverEndpoint = endpoint;
 
 	// Set the timeout.
 	Services::setTimeout(timeoutMs);
@@ -55,11 +45,11 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 	// Create the request socket. The server endpoint has been defined.
 	Services::initRequestSocket();
 
-	// Retrieve the server version.
-	Services::retrieveServerVersion();
-
 	// Manage the ConnectionTimeout exception that can occur.
 	try {
+		// Retrieve the server version.
+		Services::retrieveServerVersion();
+
 		// Start the event thread.
 		unique_ptr<EventStreamSocket> socket = openEventStream();
 		m_eventThread.reset(new EventThread(this, socket));
@@ -67,6 +57,27 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 	}
 	catch (...) {
 		// ...
+	}
+}
+
+Server::Server(const Endpoint& endpoint, int timeoutMs) :
+	Services() {
+
+	Services::init();
+
+	initServer(endpoint, timeoutMs);
+}
+
+Server::Server(const std::string& endpoint, int timeoutMs) :
+	Services() {
+
+	Services::init();
+
+	try {
+		initServer(Endpoint::parse(endpoint), timeoutMs);
+	}
+	catch (...) {
+		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
 	}
 }
 
@@ -85,20 +96,12 @@ int Server::getTimeout() const {
 	return Services::getTimeout();
 }
 
-const std::string& Server::getEndpoint() const {
+const Endpoint& Server::getEndpoint() const {
 	return Services::getEndpoint();
-}
-
-const std::string& Server::getUrl() const {
-	return Services::getUrl();
 }
 
 std::array<int, 3> Server::getVersion() const {
 	return Services::getVersion();
-}
-
-int Server::getPort() const {
-	return Services::getPort();
 }
 
 bool Server::isAvailable(int timeout) const {
@@ -115,7 +118,7 @@ int Server::getAvailableTimeout() const {
 		return timeout;
 	}
 	else {
-		return 10000;
+		return defaultTimeout;
 	}
 }
 
@@ -123,22 +126,11 @@ std::unique_ptr<application::Instance> Server::makeInstance() {
 	return unique_ptr<application::Instance>(new application::Instance(this));
 }
 
-std::unique_ptr<application::Instance> Server::start(const std::string& name, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, int options) {
 	return start(name, vector<string>(), options);
 }
 
-int Server::getStreamPort(const std::string& name) {
-
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputRequest(name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	return response[message::RequestResponse::VALUE].GetInt();
-}
-
-std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
@@ -149,14 +141,14 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 	registerEventListener(instance.get());
 
 	try {
+		unique_ptr<OutputStreamSocket> streamSocket;
+
 		if (outputStream) {
-			// We connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
-			unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
-			instance->setOutputStreamSocket(socket);
+			// Connect to the stream port. A sync is made to ensure that the subscriber is connected.
+			streamSocket = createOutputStreamSocket(name);
 		}
 
-		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getReference()));
+		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
 
 		// Get the JSON response.
 		json::Object response;
@@ -168,6 +160,10 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 		}
 		else {
 			instance->setId(value);
+
+			if (outputStream) {
+				instance->setOutputStreamSocket(streamSocket);
+			}
 		}
 	}
 	catch (const ConnectionTimeout& e) {
@@ -200,11 +196,9 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	return Response(value, message);
 }
 
-application::InstanceArray Server::connectAll(const std::string& name, Option options) {
+application::InstanceArray Server::connectAll(const std::string& name, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
-
-	application::InstanceArray instances;
 
 	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectRequest(name));
 
@@ -212,12 +206,14 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 	json::Object response;
 	json::parse(response, reply.get());
 
+	application::InstanceArray instances;
+
 	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
 	json::Value::Array array = applicationInfo.GetArray();
 	size_t size = array.Size();
 
 	// Allocate the array.
-	instances.allocate(size);
+	instances.reserve(size);
 
 	int aliveInstancesCount = 0;
 
@@ -237,30 +233,28 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 		if (isAlive(applicationId)) {
 			aliveInstancesCount++;
 
-			// We connect to the stream port before starting the application
-			// so that we are sure that the ENDSTREAM message will be received even if the application terminates rapidly.
-			if (outputStream) {
-				unique_ptr<OutputStreamSocket> socket = createOutputStreamSocket(getStreamPort(name));
-				instance->setOutputStreamSocket(socket);
-			}
-
 			instance->setId(applicationId);
 			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
-			instances.m_array[i] = std::move(instance);
+			if (outputStream) {
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
+				instance->setOutputStreamSocket(streamSocket);
+			}
+
+			instances.push_back(std::move(instance));
 		}
 	}
 
 	// Copy the alive instances.
 	application::InstanceArray aliveInstances;
-	aliveInstances.allocate(aliveInstancesCount);
+	aliveInstances.reserve(aliveInstancesCount);
 
 	int j = 0;
 	for (int i = 0; i < size; ++i) {
 
-		if (instances.m_array[i].get() != 0) {
-			aliveInstances[j] = std::move(instances.m_array[i]);
+		if (instances[i].get() != nullptr) {
+			aliveInstances.push_back(std::move(instances[i]));
 			j++;
 		}
 	}
@@ -268,7 +262,7 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 	return aliveInstances;
 }
 
-std::unique_ptr<application::Instance> Server::connect(const std::string& name, Option options) {
+std::unique_ptr<application::Instance> Server::connect(const std::string& name, int options) {
 
 	application::InstanceArray instances = connectAll(name, options);
 
@@ -278,6 +272,51 @@ std::unique_ptr<application::Instance> Server::connect(const std::string& name, 
 	}
 
 	return std::move(instances[0]);
+}
+
+std::unique_ptr<application::Instance> Server::connect(int id, int options) {
+
+	bool outputStream = ((options & OUTPUTSTREAM) != 0);
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectWithIdRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfo.GetArray();
+	size_t size = array.Size();
+
+	if (size > 0) {
+		json::Value::Object info = array[0].GetObject();
+
+		unique_ptr<application::Instance> instance = makeInstance();
+
+		// Set the name and register the instance as event listener.
+		string name = info[message::ApplicationInfo::NAME].GetString();
+		instance->setName(name);
+		registerEventListener(instance.get());
+
+		int applicationId = info[message::ApplicationInfo::ID].GetInt();
+
+		// test if the application is still alive otherwise we could have missed a status message
+		if (isAlive(applicationId)) {
+
+			instance->setId(applicationId);
+			instance->setInitialState(info[message::ApplicationInfo::APPLICATION_STATE].GetInt());
+			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
+
+			if (outputStream) {
+				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
+				instance->setOutputStreamSocket(streamSocket);
+			}
+
+			return instance;
+		}
+	}
+
+	return makeInstance();
 }
 
 void Server::killAllAndWaitFor(const std::string& name) {
@@ -305,13 +344,13 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	vector<application::Configuration> configs;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAllAvailableRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createListRequest());
 
 	// Get the JSON response.
 	json::Object response;
 	json::parse(response, reply.get());
 
-	json::Value& applicationConfigs = response[message::AllAvailableResponse::APPLICATION_CONFIG];
+	json::Value& applicationConfigs = response[message::ApplicationConfigListResponse::APPLICATION_CONFIG];
 	json::Value::Array array = applicationConfigs.GetArray();
 	size_t size = array.Size();
 
@@ -342,14 +381,14 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	vector<application::Info> infos;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createShowAllRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAppsRequest());
 
 	// Get the JSON response.
 	json::Object response;
 	json::parse(response, reply.get());
 
-	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
-	json::Value::Array array = applicationInfo.GetArray();
+	json::Value& applicationInfos = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
+	json::Value::Array array = applicationInfos.GetArray();
 	size_t size = array.Size();
 
 	for (int i = 0; i < size; ++i) {
@@ -390,6 +429,97 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	return infos;
 }
 
+std::vector<application::Port> Server::getPorts() const {
+
+	vector<application::Port> ports;
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortsRequest());
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	json::Value& portInfos = response[message::PortInfoListResponse::PORT_INFO];
+	json::Value::Array array = portInfos.GetArray();
+	size_t size = array.Size();
+
+	for (int i = 0; i < size; ++i) {
+		json::Value::Object info = array[i].GetObject();
+
+		int port = info[message::PortInfo::PORT].GetInt();
+		string status = info[message::PortInfo::STATUS].GetString();
+		string owner = info[message::PortInfo::OWNER].GetString();
+
+		application::Port portInfo(port, status, owner);
+
+		ports.push_back(portInfo);
+	}
+
+	return ports;
+}
+
+application::State Server::getActualState(int id) const {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
+}
+
+std::set<application::State> Server::getPastStates(int id) const {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	application::State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
+
+	set<application::State> result;
+
+	if ((applicationStates & application::STARTING) != 0) {
+		result.insert(application::STARTING);
+	}
+
+	if ((applicationStates & application::RUNNING) != 0) {
+		result.insert(application::RUNNING);
+	}
+
+	if ((applicationStates & application::STOPPING) != 0) {
+		result.insert(application::STOPPING);
+	}
+
+	if ((applicationStates & application::KILLING) != 0) {
+		result.insert(application::KILLING);
+	}
+
+	if ((applicationStates & application::PROCESSING_ERROR) != 0) {
+		result.insert(application::PROCESSING_ERROR);
+	}
+
+	if ((applicationStates & application::FAILURE) != 0) {
+		result.insert(application::FAILURE);
+	}
+
+	if ((applicationStates & application::SUCCESS) != 0) {
+		result.insert(application::SUCCESS);
+	}
+
+	if ((applicationStates & application::STOPPED) != 0) {
+		result.insert(application::STOPPED);
+	}
+
+	if ((applicationStates & application::KILLED) != 0) {
+		result.insert(application::KILLED);
+	}
+
+	return result;
+}
+
 std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 	return Services::openEventStream();
 }
@@ -410,7 +540,8 @@ std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const 
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
-	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, getUrl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint, m_serverStatusEndpoint));
+	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
+	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverEndpoint.withPort(m_statusPort).toString()));
 	subscriber->init();
 
 	return subscriber;
@@ -472,6 +603,50 @@ void Server::removeKey(int id, const std::string& key) {
 	}
 }
 
+int Server::requestPort(int id) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestPortRequest(id));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+
+	return value;
+}
+
+void Server::setPortUnavailable(int id, int port) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortUnavailableRequest(id, port));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+}
+
+void Server::releasePort(int id, int port) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createReleasePortRequest(id, port));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+	if (value == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+}
+
 std::vector<EventListener *> Server::getEventListeners() {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
 	return m_eventListeners;
@@ -496,7 +671,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 
-	os << "server@" << server.m_serverEndpoint;
+	os << "server@" << server.m_serverEndpoint.toString();
 
 	return os;
 }

@@ -22,7 +22,7 @@
 #include <rapidjson/document.h>
 #include "zmq.hpp"
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 
 namespace cameo {
 namespace json {
@@ -59,8 +59,8 @@ private:
 typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
 
-void parse(Object & object, zmq::message_t * message);
-void parse(Object & object, const std::string& string);
+bool parse(Object & object, zmq::message_t * message);
+bool parse(Object & object, const std::string& string);
 
 }
 }

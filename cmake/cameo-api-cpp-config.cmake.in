@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+find_dependency(ZeroMQ)
+find_dependency (Threads)
+
+if(NOT TARGET ${NAMESPACE}::${LIBNAME})
+  include(${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}-targets.cmake)
+endif()

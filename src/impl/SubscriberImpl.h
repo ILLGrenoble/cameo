@@ -21,6 +21,8 @@
 #include "zmq.hpp"
 #include <string>
 #include <vector>
+#include <optional>
+#include <tuple>
 
 namespace cameo {
 
@@ -29,7 +31,7 @@ class Server;
 class SubscriberImpl {
 
 public:
-	SubscriberImpl(Server * server, const std::string & url, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	~SubscriberImpl();
 
 	void init();
@@ -37,14 +39,13 @@ public:
 	bool isEnded() const;
 	bool isCanceled() const;
 
-	bool receiveBinary(std::string& data);
-	bool receive(std::string& data);
-	bool receiveTwoBinaryParts(std::string& data1, std::string& data2);
+	std::optional<std::string> receiveBinary();
+	std::optional<std::string> receive();
+	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
 
 	WaitingImpl * waiting();
 
 	Server * m_server;
-	std::string m_url;
 	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_publisherName;

@@ -14,36 +14,37 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_STATUSEVENT_H_
-#define CAMEO_STATUSEVENT_H_
+#ifndef CAMEO_KEYEVENT_H_
+#define CAMEO_KEYEVENT_H_
 
 #include <iostream>
-#include "Application.h"
 #include "Event.h"
 
 namespace cameo {
 
-class StatusEvent : public Event {
+class KeyEvent : public Event {
 
-	friend std::ostream& operator<<(std::ostream&, const StatusEvent&);
+	friend std::ostream& operator<<(std::ostream&, const KeyEvent&);
 
 public:
-	StatusEvent(int id, const std::string& name, application::State state, application::State pastStates, int exitCode = -1);
-	StatusEvent(const StatusEvent& event);
+	enum Status {STORED, REMOVED};
 
-	virtual StatusEvent* clone();
+	KeyEvent(int id, const std::string& name, Status status, const std::string& key, const std::string& value);
+	KeyEvent(const KeyEvent& event);
 
-	application::State getState() const;
-	application::State getPastStates() const;
-	int getExitCode() const;
+	virtual KeyEvent* clone();
+
+	Status getStatus() const;
+	const std::string& getKey() const;
+	const std::string& getValue() const;
 
 private:
-	application::State m_state;
-	application::State m_pastStates;
-	int m_exitCode; // TODO replace with optional
+	Status m_status;
+	std::string m_key;
+	std::string m_value;
 };
 
-std::ostream& operator<<(std::ostream&, const StatusEvent&);
+std::ostream& operator<<(std::ostream&, const KeyEvent&);
 
 }
 

@@ -1,45 +1,52 @@
+# cameo-api-cpp
 
-## Dependencies 
+This library provides the C++ API for Cameo.
 
-### CENTOS 8 
 
-List of packages:
- - cmake
- - cppzmq-devel
- - rapidjson-devel
+## Compilation dependencies 
+ - cmake 3.12.0
+ - cppzmq
+ - [rapidjson](https://github.com/Tencent/rapidjson)
+ If not found on the system it is automatically downloaded and installed
+ - doxygen (optional)
  
+For convenience, the packages for some major distributions are listed in the following:
+
+ - CENTOS 8: `yum install -y cmake cppzmq-devel rapidjson-devel`
+ - Debian 10:
+ - Ubuntu : `sudo apt install cmake libzmq3-dev rapidjson-dev`
+
+
+## How to compile and install
 ```
-pkgs="zeromq-devel rapidjson-devel"
-yum install -y $pkgs
+cmake -S . -B <build directory> -D<OPTION>
+cmake --build <build directory>
 ```
+Possible options are:
+ - CMAKE_INSTALL_PREFIX=<your_chosen_install_basepath>: to install in a non-standard directory
 
-### Debian XXX
-
-
-
-### Ubuntu XXX
-```sudo apt install cmake libzmq3-dev rapidjson-dev```
-
-
-## Compilation instructions
-
+In order to install from source:
 ```
-mkdir build/
-cd build/
-cmake ..
-cmake --build .
+cmake --build <build directory> --target install
 ```
 
-# To Do
- - [ ] remove zmq deprecated methods
- ```
- /opt/panosc/cameo/src/impl/SubscriberImpl.cpp:210:36: warning: ‘bool zmq::detail::socket_base::recv(zmq::message_t*, int)’ is deprecated: from 4.3.1, use recv taking a reference to message_t and recv_flags [-Wdeprecated-declarations]
-    m_subscriber->recv(message.get());
-                                    ^
-In file included from /opt/panosc/cameo/src/impl/SocketWaitingImpl.h:23,
-                 from /opt/panosc/cameo/src/impl/SubscriberImpl.h:20,
-                 from /opt/panosc/cameo/src/impl/SubscriberImpl.cpp:17:
-/usr/include/zmq.hpp:1267:10: note: declared here
-     bool recv(message_t *msg_, int flags_ = 0)
-          ^~~~
+Debian packages can also be created by:
 ```
+cpack -G DEB --config <build directory>/CPackConfig.cmake -B <build directory>/packaging 
+```
+and be found in `<build directory>/packaging`
+
+Two packages are created:
+ - -lib: the runtime library for the user
+ - -dev: the development package with the public headers and cmake config files
+
+
+
+## Running tests
+To compile also the with the test programs:
+```
+cmake -S . -B build/ -DCAMEO_API_CPP_TESTS=ON ..
+cmake --build build/
+```
+
+Developers can follow the instructions [here](doc/DEVEL.md)

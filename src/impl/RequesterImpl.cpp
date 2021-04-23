@@ -91,10 +91,10 @@ void RequesterImpl::sendBinary(const std::string& requestData) {
 	request.pushInt(m_application->getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getUrl());
+	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getPort());
+	request.pushInt(m_application->getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);
@@ -123,10 +123,10 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	request.pushInt(m_application->getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getUrl());
+	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getPort());
+	request.pushInt(m_application->getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);
@@ -134,7 +134,11 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	m_requestSocket->request(request.toString(), requestData1, requestData2);
 }
 
-bool RequesterImpl::receiveBinary(std::string& response) {
+std::optional<std::string> RequesterImpl::receiveBinary() {
+
+	if (m_canceled) {
+		return {};
+	}
 
 	unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_repSocket->recv(message.get(), 0);
@@ -145,14 +149,18 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	int type = request[message::TYPE].GetInt();
 
+	if (type == message::CANCEL) {
+		m_canceled = true;
+		return {};
+	}
+
+	optional<string> result;
+
 	if (type == message::RESPONSE) {
 		// Get the second part for the message.
 		message.reset(new zmq::message_t);
 		m_repSocket->recv(message.get(), 0);
-		response = string(message->data<char>(), message->size());
-	}
-	else if (type == message::CANCEL) {
-		m_canceled = true;
+		result = string(message->data<char>(), message->size());
 	}
 
 	// Create the reply.
@@ -163,30 +171,21 @@ bool RequesterImpl::receiveBinary(std::string& response) {
 
 	m_repSocket->send(*reply);
 
-	return !m_canceled;
-}
-
-bool RequesterImpl::receive(std::string& data) {
-
-	string bytes;
-	bool result = receiveBinary(bytes);
-
-	parse(bytes, data);
-
 	return result;
 }
 
-void RequesterImpl::cancel() {
+std::optional<std::string> RequesterImpl::receive() {
+	return receiveBinary();
+}
 
-	stringstream requesterEndpoint;
-	requesterEndpoint << m_application->getUrl() << ":" << m_requesterPort;
+void RequesterImpl::cancel() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(requesterEndpoint.str());
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->request(request.toString());
 }
 

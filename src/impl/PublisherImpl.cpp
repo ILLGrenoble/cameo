@@ -59,8 +59,8 @@ int PublisherImpl::getApplicationId() const {
 	return m_application->getId();
 }
 
-const std::string& PublisherImpl::getApplicationEndpoint() const {
-	return m_application->getEndpoint();
+std::string PublisherImpl::getApplicationEndpoint() const {
+	return m_application->getEndpoint().toString();
 }
 
 bool PublisherImpl::waitForSubscribers() {
@@ -98,7 +98,7 @@ bool PublisherImpl::waitForSubscribers() {
 		if (type == message::SYNC) {
 			reply.reset(processInitCommand());
 		}
-		else if (type == message::SUBSCRIBE_PUBLISHER) {
+		else if (type == message::SUBSCRIBE_PUBLISHER_v0) {
 			counter++;
 			reply.reset(processSubscribePublisherCommand());
 		}
@@ -123,15 +123,12 @@ bool PublisherImpl::waitForSubscribers() {
 
 void PublisherImpl::cancelWaitForSubscribers() {
 
-	stringstream endpoint;
-	endpoint << m_application->getUrl() << ":" << (m_publisherPort + 1);
-
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(endpoint.str());
+	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_publisherPort + 1).toString());
 	requestSocket->request(request.toString());
 }
 

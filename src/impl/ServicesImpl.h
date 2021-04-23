@@ -35,14 +35,17 @@ public:
 	int getTimeout() const;
 
 	std::string createSyncRequest() const;
+	std::string createSyncStreamRequest(const std::string& name) const;
 	std::string createVersionRequest() const;
-	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& instanceReference) const;
+	std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint) const;
+	std::string createSetStopHandlerRequest(int id, int stoppingTime) const;
 	std::string createStopRequest(int id) const;
 	std::string createKillRequest(int id) const;
 	std::string createConnectRequest(const std::string& name) const;
+	std::string createConnectWithIdRequest(int id) const;
 	std::string createIsAliveRequest(int id) const;
-	std::string createAllAvailableRequest() const;
-	std::string createShowAllRequest() const;
+	std::string createListRequest() const;
+	std::string createAppsRequest() const;
 	std::string createStreamStatusRequest() const;
 	std::string createSetStatusRequest(int id, int32_t state) const;
 	std::string createGetStatusRequest(int id) const;
@@ -51,26 +54,31 @@ public:
 	std::string createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const;
 	std::string createConnectPublisherRequest(int id, const std::string& publisherName) const;
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
-	std::string createRequestPortRequest(int id, const std::string& name) const;
-	std::string createConnectPortRequest(int id, const std::string& name) const;
-	std::string createRemovePortRequest(int id, const std::string& name) const;
-	std::string createStartedUnmanagedRequest(const std::string& name) const;
-	std::string createTerminatedUnmanagedRequest(int id) const;
-	std::string createOutputRequest(const std::string& name) const;
+	std::string createRequestPortV0Request(int id, const std::string& name) const;
+	std::string createConnectPortV0Request(int id, const std::string& name) const;
+	std::string createRemovePortV0Request(int id, const std::string& name) const;
+	std::string createAttachUnmanagedRequest(const std::string& name) const;
+	std::string createDetachUnmanagedRequest(int id) const;
+	std::string createOutputPortWithIdRequest(int id) const;
+	std::string createOutputPortRequest(const std::string& name) const;
 	std::string createRequestResponse(int64_t value) const;
 	std::string createRequestResponse(int64_t value, const std::string& message) const;
 	std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
 	std::string createGetKeyValueRequest(int id, const std::string& key);
 	std::string createRemoveKeyRequest(int id, const std::string& key);
+	std::string createRequestPortRequest(int id);
+	std::string createPortUnavailableRequest(int id, int port);
+	std::string createReleasePortRequest(int id, int port);
+	std::string createPortsRequest() const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
-	std::string createShowStreamRequest(int id) const;
-
 	bool isAvailable(RequestSocketImpl * socket, int timeout);
+	void sendSyncStream(RequestSocketImpl * socket, const std::string& name);
+	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);
 
 	zmq::context_t m_context;

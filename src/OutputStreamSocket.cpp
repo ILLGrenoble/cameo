@@ -44,6 +44,7 @@ bool Output::isEndOfLine() const {
 }
 
 OutputStreamSocket::OutputStreamSocket(StreamSocketImpl * impl) :
+	m_applicationId(-1),
 	m_ended(false),
 	m_canceled(false),
 	m_impl(impl) {
@@ -52,38 +53,63 @@ OutputStreamSocket::OutputStreamSocket(StreamSocketImpl * impl) :
 OutputStreamSocket::~OutputStreamSocket() {
 }
 
-bool OutputStreamSocket::receive(Output& output) {
+void OutputStreamSocket::setApplicationId(int id) {
+	m_applicationId = id;
+}
 
-	unique_ptr<zmq::message_t> message(m_impl->receive());
+std::optional<Output> OutputStreamSocket::receive() {
 
-	string response(message->data<char>(), message->size());
+	// Loop on receive() because in case of configuration multiple=yes, messages can come from different instances.
+	while (true) {
+		unique_ptr<zmq::message_t> message(m_impl->receive());
+		string messageType(message->data<char>(), message->size());
 
-	if (response == message::Event::STREAM) {
+		// Cancel can only come from this instance.
+		if (messageType == message::Event::CANCEL) {
+			m_canceled = true;
+			return {};
+		}
+
+		// Get the second part of the message.
+		message = m_impl->receive();
+
+		// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
+		if (messageType == message::Event::SYNCSTREAM) {
+			continue;
+		}
+
+		// Get the JSON event.
+		json::Object event;
+		json::parse(event, message.get());
+
+		int id = event[message::ApplicationStream::ID].GetInt();
+
+		// Filter on the application id so that only the messages concerning the instance applicationId are processed.
+		// Others are ignored.
+		if (m_applicationId == -1 || m_applicationId == id) {
+
+			// Terminate the stream if type of message is ENDSTREAM.
+			if (messageType == message::Event::ENDSTREAM) {
+				m_ended = true;
+				return {};
+			}
+
+			// Here the type of message is STREAM.
+			string line = event[message::ApplicationStream::MESSAGE].GetString();
+			bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
+
+			Output output;
+			output.m_id = id;
+			output.m_message = line;
+			output.m_endOfLine = endOfLine;
+
+			return optional<Output>(output);
+		}
+
+		// Here, the application id is different from id, then re-iterate.
 	}
-	else if (response == message::Event::ENDSTREAM) {
-		m_ended = true;
-		return false;
-	}
-	else if (response == message::Event::CANCEL) {
-		m_canceled = true;
-		return false;
-	}
 
-	message = m_impl->receive();
-
-	// Get the JSON event.
-	json::Object event;
-	json::parse(event, message.get());
-
-	int id = event[message::ApplicationStream::ID].GetInt();
-	string line = event[message::ApplicationStream::MESSAGE].GetString();
-	bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
-
-	output.m_id = id;
-	output.m_message = line;
-	output.m_endOfLine = endOfLine;
-
-	return true;
+	return {};
 }
 
 void OutputStreamSocket::cancel() {
