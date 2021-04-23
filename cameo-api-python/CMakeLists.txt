@@ -7,11 +7,10 @@ project(cameo-api-python
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
-#--------------- Options
-set(BUILD_SHARED_LIBS True) # it is not a choise for the user
 #--------------- Helpers
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(FetchContent)
 
 
 # in order to find FindZeroMQ.cmake
@@ -22,8 +21,25 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/)
 #------------------------------------------------------------
 #list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
 #message(STATUS ${CMAKE_MODULE_PATH})
-find_package(cameo-api-cpp-static 1.1.0 REQUIRED cameo-api-cpp-static) # provided by the C++ API
-find_package(pybind11 2.4.3 REQUIRED)
+find_package(cameo-api-cpp-static 1.1.0 REQUIRED) # provided by the C++ API
+find_package(pybind11 2.4.3 QUIET)
+if(NOT pybind11_FOUND)
+  message(WARNING "Using pybind11 from GIT repository")
+  FetchContent_Declare(pybind11
+	GIT_REPOSITORY https://github.com/pybind/pybind11.git
+	GIT_TAG v2.4.3
+	GIT_SHALLOW True
+	)
+  FetchContent_GetProperties(pybind11)
+  if(NOT pybind11_POPULATED)
+	FetchContent_Populate(pybind11)
+	add_subdirectory(${pybind11_SOURCE_DIR} ${pybind11_BINARY_DIR})
+	mark_as_advanced(PYBIND11_TEST)
+	mark_as_advanced(PYBIND11_INSTALL)
+  endif()
+  #else()
+#  find_package(pybind11 2.4.3 REQUIRED)
+endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
 
