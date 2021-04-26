@@ -8,6 +8,10 @@ project(cameo
 
 option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
 option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
+if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+  set(CMAKE_BUILD_TYPE "Release") # set Release by default
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
   list(APPEND APIs cameo-api-cpp)
