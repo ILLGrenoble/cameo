@@ -12,6 +12,7 @@ function mvPack(){
 #--------------- JAVA
 for source_dir in cameo-server-jzmq cameo-console-jzmq
 do
+	echo "COMPONENT: $source_dir"
 	build_dir=$BASE_BUILD_DIR/$source_dir
 	cmake -S $source_dir -B $build_dir/ || exit 1
 	cmake --build $build_dir || exit 1
@@ -21,9 +22,10 @@ done
 
 #--------------- API
 #---------- C++
-cmake -S cameo-api-cpp -B $BASE_BUILD_DIR/cameo-api-cpp/
-cmake --build $BASE_BUILD_DIR/cameo-api-cpp/
-cpack --config $BASE_BUILD_DIR/cameo-api-cpp/CPackConfig.cmake -B $BASE_BUILD_DIR/cameo-api-cpp/packaging 
+build_dir=$BASE_BUILD_DIR/cameo-api-cpp/
+cmake -S cameo-api-cpp -B $build_dir
+cmake --build $build_dir
+cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging 
 mvPack
 
 #---------- Python

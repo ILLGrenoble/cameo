@@ -66,12 +66,12 @@ file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
 add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
-target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads)
+target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
 target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>  # here's the version
-  PUBLIC $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+  PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 target_include_directories(${LIBNAME}-obj
   SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
@@ -85,23 +85,32 @@ set_target_properties(${LIBNAME}-obj PROPERTIES
   )
 
 add_library(${LIBNAME}-static STATIC $<TARGET_OBJECTS:${LIBNAME}-obj>)
-add_library(${LIBNAME}  $<TARGET_OBJECTS:${LIBNAME}-obj>)
-set_target_properties(${LIBNAME} PROPERTIES
-  SOVERSION ${PROJECT_VERSION_MAJOR}
-  VERSION ${PROJECT_VERSION}
-  POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
-  )
+add_library(${LIBNAME} $<TARGET_OBJECTS:${LIBNAME}-obj>)
 
 add_library(${NAMESPACE}::${LIBNAME} ALIAS ${LIBNAME})
 add_library(${NAMESPACE}::${LIBNAME}-obj ALIAS ${LIBNAME}-obj)
 add_library(${NAMESPACE}::${LIBNAME}-static ALIAS ${LIBNAME}-static)
-target_include_directories(${LIBNAME}-static
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>  # here's the version
-  ) 
-target_compile_features(${LIBNAME}-static PUBLIC cxx_std_17)
-target_link_libraries(${LIBNAME}-static PUBLIC zmq Threads::Threads)
 
+target_include_directories(${LIBNAME}
+  SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+  )
+
+get_target_property(obj_INTERFACE_LINK_LIBRARIES ${LIBNAME}-obj INTERFACE_LINK_LIBRARIES)
+get_target_property(obj_INTERFACE_COMPILE_FEATURES ${LIBNAME}-obj INTERFACE_COMPILE_FEATURES)
+get_target_property(obj_INTERFACE_INCLUDE_DIRECTORIES ${LIBNAME}-obj INTERFACE_INCLUDE_DIRECTORIES)
+set_target_properties(${LIBNAME} PROPERTIES
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  VERSION ${PROJECT_VERSION}
+  POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
+  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
+  INTERFACE_COMPILE_FEATURES ${obj_INTERFACE_COMPILE_FEATURES}
+  INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
+  )
+set_target_properties(${LIBNAME}-static PROPERTIES
+  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
+  INTERFACE_COMPILE_FEATURES "${obj_INTERFACE_COMPILE_FEATURES}"
+  INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
+  )
 
 #------------------------------------------------------------
 
@@ -144,8 +153,7 @@ install(TARGETS ${LIBNAME}
     COMPONENT ${component_development}
   PUBLIC_HEADER  DESTINATION ${INSTALL_INCLUDEDIR}
     COMPONENT ${component_development}
-  INCLUDES DESTINATION ${INSTALL_INCLUDEDIR}
-#    COMPONENT ${component_development}
+#  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 # this is to install the headers
