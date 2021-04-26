@@ -19,6 +19,7 @@ set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
 option(CAMEO_API_CPP_TESTS "Compiling the test programs" OFF)
+option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
@@ -144,7 +145,7 @@ install(TARGETS ${LIBNAME}
   PUBLIC_HEADER  DESTINATION ${INSTALL_INCLUDEDIR}
     COMPONENT ${component_development}
   INCLUDES DESTINATION ${INSTALL_INCLUDEDIR}
-    COMPONENT ${component_development}
+#    COMPONENT ${component_development}
   )
 
 # this is to install the headers
@@ -197,6 +198,12 @@ install(
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
+
+install(
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/FindZeroMQ.cmake
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT ${component_development}
+  )
 
 if(UNIX)
   add_custom_command(
