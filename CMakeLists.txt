@@ -31,9 +31,9 @@ endmacro()
 
 
 #dependencies
-foreach(package cameo-com-jzmq  )
-  add_subdirectory(cameo-com/${package})
-endforeach()
+#foreach(package cameo-com-jzmq  )
+#  add_subdirectory(cameo-com/${package})
+#endforeach()
 
 
 foreach(package  cameo-server-jzmq cameo-console-jzmq
