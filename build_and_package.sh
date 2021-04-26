@@ -1,6 +1,8 @@
 #!/bin/bash
 
 BASE_BUILD_DIR=${1:-/dev/shm/cameo/}
+[ "$BASE_BUILD_DIR" != "${BASE_BUILD_DIR#/}" ] || BASE_BUILD_DIR=$PWD/$BASE_BUILD_DIR
+
 packages_dir=${BASE_BUILD_DIR}/packages
 mkdir ${packages_dir} -p
 #mvn  install
