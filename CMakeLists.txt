@@ -21,7 +21,7 @@ if(${CAMEO_API_PYTHON})
   mark_as_advanced(CAMEO_API_CPP)
   list(APPEND APIs cameo-api-python)
 endif()
-
+list(REMOVE_DUPLICATES APIs)
 #------------------------------------------------------------
 # This is a trick: for the subprojects metioned here,
 # the find_package does nothing, since the targets will be defined
