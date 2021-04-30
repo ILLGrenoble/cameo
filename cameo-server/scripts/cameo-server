@@ -1,2 +1,0 @@
-#!/bin/sh
-java -jar "/usr/local/share/java//cameo-server.jar" $@

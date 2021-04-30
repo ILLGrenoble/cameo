@@ -12,8 +12,9 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 # find the jar file produced by MAVEN
+set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
 set(PROJECT_TARGET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/target")
-set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
+set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
 
 set(JAVA_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/java/cameo)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
@@ -33,9 +34,15 @@ add_custom_target(console
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
-  COMPONENT console
+#  COMPONENT console
   )
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cameo-console/scripts/cmo.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cmo)
+
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
+  TYPE BIN
+  )
 
 #------------------------------------------------------------
 # CPack
