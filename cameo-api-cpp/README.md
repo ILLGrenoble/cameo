@@ -1,47 +1,52 @@
+# cameo-api-cpp
 
-## Dependencies 
- - cmake 3.7.2
+This library provides the C++ API for Cameo.
+
+
+## Compilation dependencies 
+ - cmake 3.12.0
  - cppzmq
- - rapidjson
+ - [rapidjson](https://github.com/Tencent/rapidjson)
+ If not found on the system it is automatically downloaded and installed
  - doxygen (optional)
  
-### CENTOS 8 
+For convenience, the packages for some major distributions are listed in the following:
 
-List of packages:
- - cmake
- - cppzmq-devel
- - rapidjson-devel
- 
+ - CENTOS 8: `yum install -y cmake cppzmq-devel rapidjson-devel`
+ - Debian 10:
+ - Ubuntu : `sudo apt install cmake libzmq3-dev rapidjson-dev`
+
+
+## How to compile and install
 ```
-pkgs="cmake zeromq-devel rapidjson-devel"
-yum install -y $pkgs
+cmake -S . -B <build directory> -D<OPTION>
+cmake --build <build directory>
 ```
+Possible options are:
+ - CMAKE_INSTALL_PREFIX=<your_chosen_install_basepath>: to install in a non-standard directory
 
-### Debian XXX
-
-
-
-### Ubuntu XXX
-```sudo apt install cmake libzmq3-dev rapidjson-dev```
-
-
-## Compilation instructions
-
+In order to install from source:
 ```
-mkdir build/
-cd build/
-cmake ..
-cmake --build .
+cmake --build <build directory> --target install
 ```
 
+Debian packages can also be created by:
+```
+cpack -G DEB --config <build directory>/CPackConfig.cmake -B <build directory>/packaging 
+```
+and be found in `<build directory>/packaging`
 
-## Development 
-How to find the list of public headers and check that they are all in the include/ directory
- 1. move all the headers in src/
- 2. move cameo.h to include/
- 3. run the following command multiple times until there is no output
+Two packages are created:
+ - -lib: the runtime library for the user
+ - -dev: the development package with the public headers and cmake config files
+
+
+
+## Running tests
+To compile also the with the test programs:
 ```
-#!/bin/fish
-set -l ORIG_DIR src
-for f in (for file in include/*; grep include $file | grep '"'; end | sort | uniq | sed 's|.* "||;s|"||'); if [ -e $ORIG_DIR/$f ] ; echo $f; git mv $ORIG_DIR/$f include/; end; end
+cmake -S . -B build/ -DCAMEO_API_CPP_TESTS=ON ..
+cmake --build build/
 ```
+
+Developers can follow the instructions [here](doc/DEVEL.md)

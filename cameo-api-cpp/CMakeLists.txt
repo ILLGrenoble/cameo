@@ -1,42 +1,51 @@
-if(NOT DEFINED PROJECT_NAME)
-  cmake_minimum_required(VERSION 3.7.2)
-  
-  # Project name and version
-  project(cameo VERSION 1.1.0 LANGUAGES CXX)
-  #cmake_policy(SET CMP0048 NEW)
-endif()
+cmake_minimum_required(VERSION 3.12.0)
 
-message("========================================")
-message("Project ${PROJECT_NAME}, major version: ${PROJECT_VERSION_MAJOR}, version ${PROJECT_VERSION}")
-
+project(cameo-api-cpp
+  VERSION 1.1.0
+  LANGUAGES CXX
+  HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
+  )
+#--------------- Helpers
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
-if(NOT DEFINED BUILD_SHARED_LIBS)
-  option(BUILD_SHARED_LIBS "Building dynamic (ON) or static (OFF)" ON)
-  #set(BUILD_SHARED_LIBS True)
-endif()
+# name of the target library
+set(LIBNAME ${PROJECT_NAME})
+set(NAMESPACE Cameo)
+set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api)
+set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake)
+set(component_runtime CAMEO_API_CPP_RUNTIME)
+set(component_development CAMEO_API_CPP_DEVELOPMENT)
+#--------------- Options
+option(CAMEO_API_CPP_TESTS "Compiling the test programs" OFF)
+option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
+if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+  set(CMAKE_BUILD_TYPE "Release") # set Release by default
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 # fix the RPATH for the linker
-#if(not APPLE)
-#  set(CMAKE_INSTALL_RPATH $ORIGIN)
-#endif()
+if(NOT APPLE)
+  set(CMAKE_INSTALL_RPATH $ORIGIN)
+endif()
 
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
+# this is needed when including this file as subdir
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(ZeroMQ REQUIRED)
-find_package(Rapidjson QUIET)
+find_package (Threads REQUIRED)
+find_package(Rapidjson 1.1.0 QUIET)
 if(NOT Rapidjson_FOUND)
   message(WARNING "Using Rapidjson from GIT repository")
   FetchContent_Declare(rapidjson
 	GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
 	GIT_TAG v1.1.0
 	GIT_SHALLOW True
-	#INSTALL_COMMAND "make install"
 	)
   FetchContent_GetProperties(rapidjson)
   FetchContent_Populate(rapidjson)
@@ -44,118 +53,191 @@ if(NOT Rapidjson_FOUND)
   set(Rapidjson_ROOT ${rapidjson_SOURCE_DIR})
   find_package(Rapidjson REQUIRED)
 endif()
-  message(${Rapidjson_INCLUDE_DIRS})
+message(STATUS "Rapidjson found here: ${Rapidjson_INCLUDE_DIRS}")
+
+
+#------------------------------------------------------------
 #------------------------------------------------------------
 # Libraries
 #------------------------------------------------------------
-
 #---------------
 # Files
-file(GLOB_RECURSE CAMEO_SOURCE_FILES "src/*.cpp")
+file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
-add_library(cameo ${CAMEO_SOURCE_FILES})
-target_link_libraries(cameo PRIVATE zmq)
-target_include_directories(cameo
+add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
+target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
+target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>  # here's the version
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
-target_include_directories(cameo
-    SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+target_include_directories(${LIBNAME}-obj
+  SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
 )
-#target_include_directories(cameo PRIVATE ${DOCTEST_INCLUDE_DIR})
-target_compile_features(cameo PUBLIC cxx_std_17)
+target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
 
-set_target_properties(cameo PROPERTIES
+set_target_properties(${LIBNAME}-obj PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
+  POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
   )
 
-#---------------
-# Library version
-write_basic_package_version_file(cameoConfigVersion.cmake
-  COMPATIBILITY SameMajorVersion
+add_library(${LIBNAME}-static STATIC $<TARGET_OBJECTS:${LIBNAME}-obj>)
+add_library(${LIBNAME} $<TARGET_OBJECTS:${LIBNAME}-obj>)
+
+add_library(${NAMESPACE}::${LIBNAME} ALIAS ${LIBNAME})
+add_library(${NAMESPACE}::${LIBNAME}-obj ALIAS ${LIBNAME}-obj)
+add_library(${NAMESPACE}::${LIBNAME}-static ALIAS ${LIBNAME}-static)
+
+target_include_directories(${LIBNAME}
+  SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+  )
+
+get_target_property(obj_INTERFACE_LINK_LIBRARIES ${LIBNAME}-obj INTERFACE_LINK_LIBRARIES)
+get_target_property(obj_INTERFACE_COMPILE_FEATURES ${LIBNAME}-obj INTERFACE_COMPILE_FEATURES)
+get_target_property(obj_INTERFACE_INCLUDE_DIRECTORIES ${LIBNAME}-obj INTERFACE_INCLUDE_DIRECTORIES)
+set_target_properties(${LIBNAME} PROPERTIES
+  SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
+  POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
+  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
+  INTERFACE_COMPILE_FEATURES ${obj_INTERFACE_COMPILE_FEATURES}
+  INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
+  )
+set_target_properties(${LIBNAME}-static PROPERTIES
+  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
+  INTERFACE_COMPILE_FEATURES "${obj_INTERFACE_COMPILE_FEATURES}"
+  INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
   )
 
 #------------------------------------------------------------
-# Tests
-#------------------------------------------------------------
 
-# Note: execute ctest --verbose to have more details 
-enable_testing()
-add_subdirectory(tests)
+include(GenerateExportHeader)
+generate_export_header(${LIBNAME}
+    EXPORT_MACRO_NAME ${LIBNAME}_EXPORT
+    EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/${INSTALL_INCLUDEDIR}/export.h
+)
 
 #------------------------------------------------------------
 # Install
 #------------------------------------------------------------
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cameoConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}/
+  RENAME copyright
+  COMPONENT ${component_runtime}
+  )
+
+
+
+#---------------
+# Library version
+write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake
+  COMPATIBILITY SameMajorVersion
+  VERSION ${PROJECT_VERSION}
+  )
+write_basic_package_version_file(${PROJECT_NAME}-static-config-version.cmake
+  COMPATIBILITY SameMajorVersion
+  VERSION ${PROJECT_VERSION}
+  )
+
+install(TARGETS ${LIBNAME} 
+  EXPORT cameoTargets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} # windows
+    COMPONENT ${component_runtime}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # dynamic
+    COMPONENT ${component_runtime}
+    NAMELINK_COMPONENT ${component_development} #from CMake 3.12
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # static
+    COMPONENT ${component_development}
+  PUBLIC_HEADER  DESTINATION ${INSTALL_INCLUDEDIR}
+    COMPONENT ${component_development}
+#  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
 
 # this is to install the headers
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ # don't forget the trailing /
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+  DESTINATION ${INSTALL_INCLUDEDIR}
+  COMPONENT ${component_development}
+  FILES_MATCHING  PATTERN *.h
+  )
+# this is to install the version header that is generated by cmake
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ # don't forget the trailing /
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  COMPONENT ${component_development}
+  FILES_MATCHING  PATTERN *.h
   )
 
-# in CMake 3.14 you just need #install(TARGETS cameo)
-install(TARGETS cameo
-  EXPORT cameoexport
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} # windows
-    COMPONENT cameo_Runtime
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} # dynamic
-    COMPONENT cameo_Runtime
-#    NAMELINK_COMPONENT cameo_Development #from CMake 3.12
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} # static
-    COMPONENT cameo_Development
-  PUBLIC_HEADER  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# this is for cameo-api-python to compile from the local build tree
+export(TARGETS ${LIBNAME}-static
+  NAMESPACE ${NAMESPACE}::
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-static-targets.cmake
+  )
+export(EXPORT cameoTargets
+  #   FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-${type}-targets.cmake
+  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-targets.cmake
+  NAMESPACE ${NAMESPACE}::
+  )
+configure_package_config_file(cmake/${PROJECT_NAME}-config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION  ${ConfigPackageLocation}
+  )
+configure_file(cmake/${PROJECT_NAME}-static-config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-static-config.cmake
+  COPYONLY
   )
 
 
+install(EXPORT cameoTargets
+  FILE ${PROJECT_NAME}-targets.cmake
+#  FILE ${PROJECT_NAME}Config.cmake #${PROJECT_NAME}Targets.cmake
+  NAMESPACE ${NAMESPACE}::
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT ${component_development}
+  )
+install(
+  FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT ${component_development}
+  )
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT cameoexport
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
-  FILE ${PROJECT_NAME}Config.cmake 
+
+install(
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/FindZeroMQ.cmake
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT ${component_development}
   )
-# makes the project importable from the build directory
-export(TARGETS cameo FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake)
 
-# the install_manifest file is created only after the installation....
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/install_manifest.txt
-#  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake
-#  RENAME cameo_install_manifest.txt
-#  )
+if(UNIX)
+  add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+    COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
+    COMMENT "Compressing changelog"
+	)
+  
+  add_custom_target(changelog
+	ALL
+	#	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+	COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog > ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+	)
+  
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+	DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+	COMPONENT ${component_runtime}
+	)
+endif(UNIX)
 
-
-#enable_testing()
-#add_subdirectory(test)
-
-# include(ExternalProject)
-# find_package(Git REQUIRED)
-
-# ExternalProject_Add(
-#     doctest
-#     PREFIX ${CMAKE_BINARY_DIR}/doctest
-#     GIT_REPOSITORY https://github.com/onqtam/doctest.git
-#     TIMEOUT 10
-#     UPDATE_COMMAND ${GIT_EXECUTABLE} pull
-#     CONFIGURE_COMMAND ""
-#     BUILD_COMMAND ""
-#     INSTALL_COMMAND ""
-#     LOG_DOWNLOAD ON
-# )
-
-# # Expose required variable (DOCTEST_INCLUDE_DIR) to parent scope
-# ExternalProject_Get_Property(doctest source_dir)
-# set(DOCTEST_INCLUDE_DIR ${source_dir}/doctest CACHE INTERNAL "Path to include folder for doctest")
-
-#include(CMakeFindDependencyMacro)
-#find_dependency(
-#include("${CMAKE_CURRENT_LIST_DIR}/cameo.cmake")
-################ Doc
-find_package(Doxygen)
+#------------------------------------------------------------
+# Doc
+#------------------------------------------------------------
+find_package(Doxygen QUIET)
 if (DOXYGEN_FOUND)
   # set input and output files
   set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
@@ -175,4 +257,17 @@ else (DOXYGEN_FOUND)
   message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
 
+#------------------------------------------------------------
+# CPack
+#------------------------------------------------------------
+include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
+include(CPack)
 
+#------------------------------------------------------------
+# Tests
+#------------------------------------------------------------
+if(CAMEO_API_CPP_TESTS)
+# Note: execute ctest --verbose to have more details 
+enable_testing()
+add_subdirectory(tests)
+endif(CAMEO_API_CPP_TESTS)

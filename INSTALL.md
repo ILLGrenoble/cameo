@@ -2,34 +2,41 @@
 
 ## Dependencies
  - maven 
-
+ - java (>=9)
+ 
 ### Centos 8
-``` yum install -y maven```
+``` yum install -y maven java-latest-openjdk-devel ```
+
 Update to the most recent version of JAVA
-```sudo /sbin/alternatives --config java_sdk_openjdk```
+``` sudo /sbin/alternatives --config java_sdk_openjdk ```
 
 ## Instructions
 Download the version:
 ```
 git clone -b v1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
 ```
-Compile the Java sources:
-```
-cd cameo
-mvn clean install
-```
-Install the jzmq version of the cameo-server:
-```
-install.sh 1.0.1
-```
 
+### Option1: maven+cmake
+Compile:
+```
+cd cameo/
+cmake -S . -B build/ -D<OPTION>
+cmake --build build/
+```
+Possible options are:
+ - CMAKE_INSTALL_PREFIX=<your_chosen_install_basepath>: to install in a non-standard directory
+ - CAMEO_API_CPP=ON: to build and install the C++ API
+ - CAMEO_API_PYTHON=ON: to build and install the Python API
+ 
+Install:
+```
+sudo cmake --build . --target install
+```
+### Option2: cmake + cpack = DEB package
+It is also possible to build and create Debian packages. In this case, please use the build_and_package.sh script.
+```
+./build_and_package.sh <build_directory>
+```
+The script provides the following .deb packages located in <build_directory>/packages/
+They can be installed using package manager.
 
-Compile and install the C++ API sources into a temporary directory e.g. */tmp/cameo-install* :
-```
-cd cameo-api-cpp
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/cameo-install ..
-cmake --build . --target install
-```
-Get the include and so files from the temporary directory.

@@ -1,0 +1,224 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+namespace py = pybind11;
+
+#include <cameo/api/cameo.h>
+using namespace cameo::application;
+
+#include <iostream>
+
+PYBIND11_MODULE(cameopy, m) {
+
+	m.doc() = "Python binding of C++ API"; // optional module docstring
+	m.def("toString", &toString, "Function converting numerical state to its string representation");
+
+	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
+	m.attr("UNKNOWN")            = UNKNOWN;
+	m.attr("STARTING")           = STARTING;
+	m.attr("RUNNING")            = RUNNING;
+	m.attr("STOPPING")           = STOPPING;
+	m.attr("KILLING")            = KILLING;
+	m.attr("PROCESSING_ERROR")   = PROCESSING_ERROR;
+	m.attr("FAILURE")            = FAILURE;
+	m.attr("SUCCESS")            = SUCCESS;
+	m.attr("STOPPED")            = STOPPED;
+	m.attr("KILLED")             = KILLED;
+
+
+	// Important note:
+	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.
+	// If the policy is not set, the bindings are blocking other Python running threads.
+
+	py::class_<This>(m, "This")
+	    .def(
+		"init",
+		[](std::vector<std::string> args) {
+			std::vector<char*> cstrs;
+			cstrs.reserve(args.size());
+			for (auto& s : args)
+				cstrs.push_back(const_cast<char*>(s.c_str()));
+			This::init(args.size(), cstrs.data());
+		}, py::call_guard<py::gil_scoped_release>(),
+		"initialize the application")
+	    .def("terminate", &This::terminate, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &This::getName)
+	    .def("getId", &This::getId)
+	    .def("setTimeout", &This::setTimeout)
+	    .def("getTimeout", &This::getTimeout)
+	    .def("getEndpoint", &This::getEndpoint)
+	    .def("getServer", &This::getServer, py::return_value_policy::reference)
+	    .def("getCom", &This::getCom)
+	    .def("getStarterServer", &This::getStarterServer)
+	    .def("isAvailable", &This::isAvailable, py::call_guard<py::gil_scoped_release>()) //, py::arg("timeout") = 1000) // this does not work!
+	    .def("isStopping", &This::isStopping, py::call_guard<py::gil_scoped_release>())
+	    //	    .def("handleStop", &This::handleStop)
+	    .def("cancelWaitings", &This::cancelWaitings, py::call_guard<py::gil_scoped_release>())
+	    .def("setRunning", &This::setRunning, py::call_guard<py::gil_scoped_release>())
+	    .def("setBinaryResult", &This::setBinaryResult, py::call_guard<py::gil_scoped_release>())
+	    .def("setResult", &This::setResult, py::call_guard<py::gil_scoped_release>())
+	    .def("connectToStarter", &This::connectToStarter, py::call_guard<py::gil_scoped_release>());
+
+	py::class_<cameo::Output>(m, "Output")
+		.def("getId", &cameo::Output::getId)
+		.def("getMessage", &cameo::Output::getMessage)
+		.def("isEndOfLine", &cameo::Output::isEndOfLine);
+
+	py::class_<cameo::OutputStreamSocket>(m, "OutputStreamSocket")
+		.def("receive", &cameo::OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
+		.def("cancel", &cameo::OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("isEnded", &cameo::OutputStreamSocket::isEnded)
+		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
+
+	py::class_<Instance>(m, "Instance")
+	    .def("getName", &Instance::getName)
+	    .def("getId", &Instance::getId)
+	    .def("getEndpoint", &Instance::getEndpoint)
+	    .def("getNameId", &Instance::getNameId)
+	    //.def("getCom", &Instance::getCom)
+	    .def("hasResult", &Instance::hasResult)
+	    .def("exists", &Instance::exists)
+	    .def("getErrorMessage", &Instance::getErrorMessage)
+	    .def("stop", &Instance::stop, py::call_guard<py::gil_scoped_release>())
+	    .def("kill", &Instance::kill, py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<int>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<const std::string&>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("cancelWaitFor", &Instance::cancelWaitFor, py::call_guard<py::gil_scoped_release>())
+	    .def("getLastState", &Instance::getLastState, py::call_guard<py::gil_scoped_release>())
+	    .def("getActualState", &Instance::getActualState, py::call_guard<py::gil_scoped_release>())
+	    .def("getPastStates", &Instance::getPastStates, py::call_guard<py::gil_scoped_release>())
+	    .def("getExitCode", &Instance::getExitCode)
+	    .def("getBinaryResult",
+		 [](Instance* instance) {
+			 auto result = instance->getBinaryResult();
+			 if (result.has_value() == false)
+				 return py::bytes("");
+			 return py::bytes(result.value());
+		 }, py::call_guard<py::gil_scoped_release>())
+	    .def("getResult", &Instance::getResult, py::call_guard<py::gil_scoped_release>())
+	    .def("getOutputStreamSocket", &Instance::getOutputStreamSocket);
+
+	py::class_<InstanceArray>(m, "InstanceArray");
+
+	py::class_<Publisher>(m, "Publisher")
+	    .def("create", &Publisher::create, py::arg("numberOfSubscribers") = 0, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &Publisher::getName)
+	    .def("getApplicationName", &Publisher::getApplicationName)
+	    .def("getApplicationId", &Publisher::getApplicationId)
+	    .def("getApplicationEndpoint", &Publisher::getApplicationEndpoint)
+	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
+	    .def("cancelWaitForSubscribers", &Publisher::cancelWaitForSubscribers, py::call_guard<py::gil_scoped_release>())
+	    .def("sendBinary", &Publisher::sendBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("send", &Publisher::send, py::call_guard<py::gil_scoped_release>())
+	    .def("sendTwoBinaryParts", &Publisher::sendTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
+	    .def("sendEnd", &Publisher::sendEnd, py::call_guard<py::gil_scoped_release>())
+	    .def("isEnded", &Publisher::isEnded);
+
+	py::class_<Subscriber>(m, "Subscriber")
+	    .def("create", &Subscriber::create, py::call_guard<py::gil_scoped_release>())
+	    .def("getPublisherName", &Subscriber::getPublisherName)
+	    .def("getInstanceName", &Subscriber::getInstanceName)
+	    .def("getInstanceId", &Subscriber::getInstanceId)
+	    .def("getInstanceEndpoint", &Subscriber::getInstanceEndpoint)
+	    .def("isEnded", &Subscriber::isEnded)
+	    .def("isCanceled", &Subscriber::isCanceled)
+	    .def("receiveBinary", &Subscriber::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
+	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>());
+
+	py::class_<Request>(m, "Request")
+	    .def("getObjectId", &Request::getObjectId)
+	    .def("getRequesterEndpoint", &Request::getRequesterEndpoint)
+	    .def("getBinary", &Request::getBinary)
+	    .def("get", &Request::get)
+	    .def("getSecondBinaryPart", &Request::getSecondBinaryPart)
+	    .def("setTimeout", &Request::setTimeout)
+	    .def("replyBinary", &Request::replyBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("reply", &Request::reply, py::call_guard<py::gil_scoped_release>())
+	    .def("connectToRequester", &Request::connectToRequester, py::call_guard<py::gil_scoped_release>())
+	    // the following require "Server.h"
+	    .def("getServer", &Request::getServer);
+
+	py::class_<Responder>(m, "Responder")
+	    .def("create", &Responder::create, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &Responder::getName)
+	    .def("cancel", &Responder::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &Responder::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &Responder::isCanceled);
+
+
+	py::class_<Requester>(m, "Requester")
+	    .def("create", &Requester::create, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &Requester::getName)
+	    .def("sendBinary", &Requester::sendBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("send", &Requester::send, py::call_guard<py::gil_scoped_release>())
+	    .def("sendTwoBinaryParts", &Requester::sendTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
+	    .def("receiveBinary", &Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &Requester::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &Requester::isCanceled);
+
+
+	py::class_<Configuration>(m, "Configuration")
+	    .def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
+	    .def("getName", &Configuration::getName)
+	    .def("getDescription", &Configuration::getDescription)
+	    .def("hasSingleInstance", &Configuration::hasSingleInstance)
+	    .def("canRestart", &Configuration::canRestart)
+	    .def("getStartingTime", &Configuration::getStartingTime)
+	    .def("getStoppingTime", &Configuration::getStoppingTime);
+
+	py::class_<Info>(m, "Info")
+	    .def(py::init<const std::string&, int, int, State, State, const std::string&>())
+	    .def("getId", &Info::getId)
+	    .def("getState", &Info::getState)
+	    .def("getPastStates", &Info::getPastStates)
+	    .def("getArgs", &Info::getArgs)
+	    .def("getName", &Info::getName)
+	    .def("getPid", &Info::getPid);
+
+	py::class_<Port>(m, "Port")
+	    .def(py::init<int, const std::string&, const std::string&>())
+	    .def("getPort", &Port::getPort)
+	    .def("getStatus", &Port::getStatus)
+	    .def("getOwner", &Port::getOwner);
+
+	py::class_<cameo::Server>(m, "Server")
+	    .def(py::init<const std::string&>())
+	    .def("setTimeout", &cameo::Server::setTimeout)
+	    .def("getTimeout", &cameo::Server::getTimeout)
+	    .def("getEndpoint", &cameo::Server::getEndpoint)
+	    .def("getVersion", &cameo::Server::getVersion)
+	    .def("isAvailable", py::overload_cast<>(&cameo::Server::isAvailable, py::const_), py::call_guard<py::gil_scoped_release>())
+	    .def("isAvailable", py::overload_cast<int>(&cameo::Server::isAvailable, py::const_), py::call_guard<py::gil_scoped_release>())
+	    .def("start", py::overload_cast<const std::string&, int>(&cameo::Server::start), py::call_guard<py::gil_scoped_release>())
+	    .def("start", py::overload_cast<const std::string&, const std::vector<std::string>&, int>(&cameo::Server::start), py::call_guard<py::gil_scoped_release>())
+	    .def("connectAll", &cameo::Server::connectAll, py::call_guard<py::gil_scoped_release>())
+	    .def("connect", py::overload_cast<const std::string&, int>(&cameo::Server::connect), py::call_guard<py::gil_scoped_release>())
+	    .def("connect", py::overload_cast<int, int>(&cameo::Server::connect), py::call_guard<py::gil_scoped_release>())
+	    .def("killAllAndWaitFor", &cameo::Server::killAllAndWaitFor, py::call_guard<py::gil_scoped_release>())
+	    .def("getApplicationConfigurations", &cameo::Server::getApplicationConfigurations, py::call_guard<py::gil_scoped_release>())
+	    .def("getApplicationInfos", py::overload_cast<>(&cameo::Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
+	    .def("getApplicationInfos", py::overload_cast<const std::string&>(&cameo::Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
+	    .def("getPorts", &cameo::Server::getPorts, py::call_guard<py::gil_scoped_release>())
+	    .def("getActualState", &cameo::Server::getActualState, py::call_guard<py::gil_scoped_release>())
+	    .def("getPastStates", &cameo::Server::getPastStates, py::call_guard<py::gil_scoped_release>());
+	    //.def("openEventStream", &cameo::Server::openEventStream, py::call_guard<py::gil_scoped_release>());
+}
