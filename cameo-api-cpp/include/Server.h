@@ -52,12 +52,12 @@ public:
 	Server(const std::string& endpoint, int timeoutMs = 0);
 	~Server();
 
-	void setTimeout(int timeoutMs);
+	void setTimeout(int value);
 
 	int getTimeout() const;
 	const Endpoint& getEndpoint() const;
 	std::array<int, 3> getVersion() const;
-	bool isAvailable(int timeoutMs) const;
+	bool isAvailable(int timeout) const;
 
 	/**
 	 * Returns true if is available. Uses the timeout if set or 10000ms.

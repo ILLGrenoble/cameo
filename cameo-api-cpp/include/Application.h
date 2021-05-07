@@ -145,7 +145,7 @@ public:
 	/// \brief returns the name of the CAMEO application corresponding to this instance
 	static const std::string& getName(); 
 	static int getId(); ///< returns the ID number of the instance
-	static void setTimeout(int timeout);
+	static void setTimeout(int value);
 	static int getTimeout();
 	static const Endpoint& getEndpoint(); ///< returns the TCP address of this instance
 	static Server& getServer();

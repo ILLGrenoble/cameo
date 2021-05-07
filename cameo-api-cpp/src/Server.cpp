@@ -88,8 +88,8 @@ Server::~Server() {
 	}
 }
 
-void Server::setTimeout(int timeoutMs) {
-	Services::setTimeout(timeoutMs);
+void Server::setTimeout(int value) {
+	Services::setTimeout(value);
 }
 
 int Server::getTimeout() const {

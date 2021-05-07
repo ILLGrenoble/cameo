@@ -277,8 +277,8 @@ int This::getId() {
 	return m_instance.m_id;
 }
 
-void This::setTimeout(int timeout) {
-	m_instance.Services::setTimeout(timeout);
+void This::setTimeout(int value) {
+	m_instance.Services::setTimeout(value);
 }
 
 int This::getTimeout() {
