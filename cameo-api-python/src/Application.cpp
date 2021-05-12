@@ -258,7 +258,7 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 
 	    .def("start", py::overload_cast<const std::string&, const std::vector<std::string>&, int>(&cameo::Server::start),
-	    		"name"_a, "args"_a, "options"_a,
+	    		"name"_a, "args"_a, "options"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("connectAll", &cameo::Server::connectAll,
 	    		"name"_a, "options"_a = 0,
