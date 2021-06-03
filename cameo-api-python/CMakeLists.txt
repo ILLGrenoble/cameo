@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12.0)
 
 # Project name and version
-project(cameo-api-python
+project(cameopy
   VERSION 1.1.0
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
@@ -23,6 +23,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/)
 #message(STATUS ${CMAKE_MODULE_PATH})
 find_package(cameo-api-cpp-static 1.1.0 REQUIRED) # provided by the C++ API
 find_package(pybind11 2.4.3 QUIET)
+find_package (Python REQUIRED)
 if(NOT pybind11_FOUND)
   message(WARNING "Using pybind11 from GIT repository")
   FetchContent_Declare(pybind11
@@ -64,9 +65,8 @@ if(WIN32)
     "${CMAKE_INSTALL_LIBDIR}/site-packages"
     )
 else()
-  set(CMAKE_INSTALL_PYTHONDIR_DEFAULT
-    "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages"
-    )
+  file(RELATIVE_PATH CMAKE_INSTALL_PYTHONDIR_DEFAULT "/usr/" ${Python_SITELIB})
+	# "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages"
 endif()
 set(CMAKE_INSTALL_PYTHONDIR "${CMAKE_INSTALL_PYTHONDIR_DEFAULT}"
   CACHE STRING "Location for installed python package"
