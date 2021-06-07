@@ -1,3 +1,8 @@
+1.0.3
+-----
+
+* Changed default value for log level from FINE to INFO.
+
 1.0.2
 -----
 
