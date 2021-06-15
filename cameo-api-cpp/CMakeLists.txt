@@ -14,7 +14,7 @@ include(FetchContent)
 set(LIBNAME ${PROJECT_NAME})
 set(NAMESPACE Cameo)
 set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api)
-set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake)
+set(ConfigPackageLocation ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME})
 set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
@@ -146,10 +146,10 @@ install(TARGETS ${LIBNAME}
   EXPORT cameoTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} # windows
     COMPONENT ${component_runtime}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # dynamic
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/ # dynamic
     COMPONENT ${component_runtime}
     NAMELINK_COMPONENT ${component_development} #from CMake 3.12
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/cameo/ # static
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/ # static
     COMPONENT ${component_development}
   PUBLIC_HEADER  DESTINATION ${INSTALL_INCLUDEDIR}
     COMPONENT ${component_development}
@@ -200,6 +200,7 @@ install(
   FILES
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/FindZeroMQ.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT ${component_development}
   )
@@ -207,11 +208,6 @@ install(
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
 
-install(
-  FILES ${CMAKE_CURRENT_SOURCE_DIR}/FindZeroMQ.cmake
-  DESTINATION ${ConfigPackageLocation}
-  COMPONENT ${component_development}
-  )
 
 if(UNIX)
   add_custom_command(

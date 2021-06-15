@@ -10,6 +10,8 @@
 Update to the most recent version of JAVA
 ``` sudo /sbin/alternatives --config java_sdk_openjdk ```
 
+### Ubuntu
+``` sudo apt install maven```
 ## Instructions
 Download the version:
 ```
