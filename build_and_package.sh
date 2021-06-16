@@ -25,8 +25,8 @@ done
 #--------------- API
 #---------- C++
 build_dir=$BASE_BUILD_DIR/cameo-api-cpp/
-cmake -S cameo-api-cpp -B $build_dir
-cmake --build $build_dir
+cmake -S cameo-api-cpp -B $build_dir -DCMAKE_INSTALL_PREFIX=/usr/ # with this it adds x86_64-linux-gnu to the path when running cpack
+cmake --build $build_dir 
 cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging 
 mvPack
 
