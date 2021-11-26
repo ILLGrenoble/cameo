@@ -1,5 +1,5 @@
 if(NOT DEFINED PROJECT_NAME)
-  cmake_minimum_required(VERSION 3.11.2)
+  cmake_minimum_required(VERSION 3.12.0)
 
   # Project name and version
   project(cameopy VERSION 1.0.0 LANGUAGES CXX)
