@@ -16,7 +16,7 @@
 
 #include "EventStreamSocket.h"
 
-#include "JSON.h"
+#include "../include/JSON.h"
 #include "impl/SocketWaitingImpl.h"
 #include "PortEvent.h"
 #include "PublisherEvent.h"

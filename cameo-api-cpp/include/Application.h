@@ -36,6 +36,7 @@
 #include "Services.h"
 #include "TimeCondition.h"
 #include "EventListener.h"
+#include "JSON.h"
 #include "KeyValue.h"
 
 namespace cameo {
@@ -234,6 +235,7 @@ public:
 
 	public:
 		std::string getKeyValue(const std::string& key) const;
+		json::Object request(const std::string& request, int overrideTimeout = -1) const;
 
 	private:
 		Com(Server* server);
@@ -246,7 +248,8 @@ public:
 
 	const std::string& getName() const;
 	int getId() const;
-	const Endpoint& getEndpoint() const;
+	Endpoint getEndpoint() const;
+	Endpoint getStatusEndpoint() const;
 	std::string getNameId() const;
 	const Com& getCom() const;
 
@@ -326,225 +329,6 @@ private:
 
 typedef std::vector<std::unique_ptr<Instance>> InstanceArray;
 
-///////////////////////////////////////////////////////////////////////////
-// Publisher
-
-class Publisher {
-
-	friend class cameo::application::This;
-	friend std::ostream& operator<<(std::ostream&, const Publisher&);
-
-public:
-	~Publisher();
-
-	/**
-	 * Returns the publisher with name.
-	 * throws PublisherCreationException.
-	 */
-	static std::unique_ptr<Publisher> create(const std::string& name, int numberOfSubscribers = 0);
-
-	const std::string& getName() const;
-	const std::string& getApplicationName() const;
-	int getApplicationId() const;
-	std::string getApplicationEndpoint() const;
-
-	/**
-	 * Returns true if the wait succeeds or false if it was canceled.
-	 */
-	bool waitForSubscribers() const;
-	void cancelWaitForSubscribers();
-
-	void sendBinary(const std::string& data) const;
-	void send(const std::string& data) const;
-	void sendTwoBinaryParts(const std::string& data1, const std::string& data2) const;
-	void sendEnd() const;
-
-	/**
-	 * Deprecated.
-	 * TODO remove in next version.
-	 */
-	bool hasEnded() const;
-
-	bool isEnded() const;
-
-private:
-	Publisher(application::This* application, int publisherPort, int synchronizerPort,
-		  const std::string& name, int numberOfSubscribers);
-
-	std::unique_ptr<PublisherImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Subscriber
-
-class Subscriber {
-
-	friend class cameo::Server;
-	friend class cameo::application::Instance;
-	friend std::ostream& operator<<(std::ostream&, const Subscriber&);
-
-public:
-	~Subscriber();
-
-	static std::unique_ptr<Subscriber> create(Instance& instance, const std::string& publisherName);
-
-	const std::string& getPublisherName() const;
-	const std::string& getInstanceName() const;
-	int getInstanceId() const;
-	const std::string& getInstanceEndpoint() const;
-
-	/**
-	 * Deprecated.
-	 * TODO remove in next version.
-	 */
-	bool hasEnded() const;
-
-	bool isEnded() const;
-	bool isCanceled() const;
-
-	/**
-	 * Returns a string or nothing if the stream has finished.
-	 */
-	std::optional<std::string> receiveBinary() const;
-
-	/**
-	 * Returns a string or nothing if the stream has finished.
-	 */
-	std::optional<std::string> receive() const;
-
-	/**
-	 * Returns a tuple of strings or nothing if the stream has finished.
-	 */
-	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts() const;
-
-	void cancel();
-
-private:
-	Subscriber(Server* server, int publisherPort, int synchronizerPort, const std::string& publisherName,
-		   int numberOfSubscribers, const std::string& instanceName, int instanceId,
-		   const std::string& instanceEndpoint, const std::string& statusEndpoint);
-	void init();
-
-	std::unique_ptr<SubscriberImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Request
-
-class Request {
-
-	friend class cameo::application::Responder;
-	friend std::ostream& operator<<(std::ostream&, const Request&);
-
-public:
-	~Request();
-
-	std::string getObjectId() const;
-	std::string getRequesterEndpoint() const;
-
-	const std::string& getBinary() const;
-	std::string get() const;
-	const std::string& getSecondBinaryPart() const;
-
-	void setTimeout(int value);
-
-	bool replyBinary(const std::string& response);
-	bool reply(const std::string& response);
-
-	std::unique_ptr<Instance> connectToRequester();
-
-	/**
-	 * Transfers the ownership of the requester server.
-	 */
-	std::unique_ptr<Server> getServer();
-
-private:
-	Request(std::unique_ptr<RequestImpl>& impl);
-
-	std::unique_ptr<RequestImpl> m_impl;
-	std::unique_ptr<Server> m_requesterServer;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Responder
-
-class Responder {
-
-	friend std::ostream& operator<<(std::ostream&, const Responder&);
-
-public:
-	~Responder();
-
-	/** \brief Returns the responder with name.
-	 * throws ResponderCreationException.
-	 */
-	static std::unique_ptr<Responder> create(const std::string& name);
-
-	/// Returns the name of the responder
-	const std::string& getName() const;
-
-	void cancel();
-
-	/** \brief Receive a request
-	 * blocking command
-	 */
-	std::unique_ptr<Request> receive();
-
-	/** check if it has been canceled */
-	bool isCanceled() const;
-
-private:
-	Responder(application::This* application, int responderPort, const std::string& name);
-
-	std::unique_ptr<ResponderImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Requester
-
-class Requester {
-
-	friend std::ostream& operator<<(std::ostream&, const Requester&);
-
-public:
-	~Requester();
-
-	/**
-	 * Returns the responder with name.
-	 * throws RequesterCreationException.
-	 */
-	static std::unique_ptr<Requester> create(Instance& instance, const std::string& name);
-
-	const std::string& getName() const;
-
-	void sendBinary(const std::string& request);
-	void send(const std::string& request);
-	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
-
-	/**
-	 * Returns a string or nothing if the requester is canceled.
-	 */
-	std::optional<std::string> receiveBinary();
-
-	/**
-	 * Returns a string or nothing if the requester is canceled.
-	 */
-	std::optional<std::string> receive();
-
-	void cancel();
-
-	bool isCanceled() const;
-
-private:
-	Requester(application::This* application, const std::string& url, int requesterPort,
-		  int responderPort, const std::string& name, int responderId, int requesterId);
-
-	std::unique_ptr<RequesterImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
-};
 
 ///////////////////////////////////////////////////////////////////////////
 // Configuration
@@ -624,11 +408,6 @@ private:
 std::string toString(cameo::application::State applicationStates);
 std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Instance&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Publisher&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Subscriber&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Request&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Responder&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Requester&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Configuration&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Info&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Port&);

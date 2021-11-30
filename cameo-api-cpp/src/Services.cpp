@@ -23,7 +23,8 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "JSON.h"
+
+#include "../include/JSON.h"
 
 using namespace std;
 

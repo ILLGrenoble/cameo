@@ -21,7 +21,8 @@
 #include "impl/StreamSocketImpl.h"
 #include "message/Message.h"
 #include <iostream>
-#include "JSON.h"
+
+#include "../include/JSON.h"
 
 using namespace std;
 

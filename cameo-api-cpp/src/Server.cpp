@@ -26,7 +26,8 @@
 #include "UndefinedKeyException.h"
 #include <iostream>
 #include <sstream>
-#include "JSON.h"
+
+#include "../include/JSON.h"
 
 using namespace std;
 
@@ -524,29 +525,6 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 	return Services::openEventStream();
 }
 
-std::unique_ptr<application::Subscriber> Server::createSubscriber(int id, const std::string& publisherName, const std::string& instanceName) {
-
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectPublisherRequest(id, publisherName));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
-	if (publisherPort == -1) {
-		throw SubscriberCreationException(response[message::PublisherResponse::MESSAGE].GetString());
-	}
-
-	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
-	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
-
-	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(this, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, id, m_serverEndpoint.toString(), m_serverEndpoint.withPort(m_statusPort).toString()));
-	subscriber->init();
-
-	return subscriber;
-}
-
 std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
 
 	unique_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
@@ -645,6 +623,17 @@ void Server::releasePort(int id, int port) {
 	if (value == -1) {
 		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
+}
+
+json::Object Server::request(const std::string& request, int overrideTimeout) {
+
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(request, overrideTimeout);
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response;
 }
 
 std::vector<EventListener *> Server::getEventListeners() {

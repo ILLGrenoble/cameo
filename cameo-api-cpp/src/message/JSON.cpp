@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "JSON.h"
+#include "../../include/JSON.h"
 
 #include <iostream>
 

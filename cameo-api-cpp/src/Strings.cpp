@@ -15,11 +15,11 @@
  */
 
 #include "Strings.h"
-#include "JSON.h"
 #include "message/Message.h"
 #include "BadFormatException.h"
 #include <regex>
 #include <ostream>
+#include "../include/JSON.h"
 
 using namespace std;
 

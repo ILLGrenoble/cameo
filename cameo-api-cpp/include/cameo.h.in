@@ -23,5 +23,7 @@
 
 #include "Application.h"
 #include "Server.h"
+#include "RequesterResponder.h"
+#include "PublisherSubscriber.h"
 
 #endif

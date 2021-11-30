@@ -136,7 +136,6 @@ private:
 	bool isAlive(int id) const;
 
 	Response stopApplicationAsynchronously(int id, bool immediately) const;
-	std::unique_ptr<application::Subscriber> createSubscriber(int id, const std::string& publisherName, const std::string& instanceName);
 	int getAvailableTimeout() const;
 
 	void storeKeyValue(int id, const std::string& key, const std::string& value);
@@ -146,6 +145,8 @@ private:
 	int requestPort(int id);
 	void setPortUnavailable(int id, int port);
 	void releasePort(int id, int port);
+
+	json::Object request(const std::string& request, int overrideTimeout = -1);
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;
