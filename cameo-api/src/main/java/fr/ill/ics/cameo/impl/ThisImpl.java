@@ -37,6 +37,7 @@ import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.UnmanagedApplicationException;
 import fr.ill.ics.cameo.WaitingSet;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -435,96 +436,6 @@ public class ThisImpl extends ServicesImpl {
 			throw new UnexpectedException("Cannot parse response");
 		}
 	}
-		
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponderCreationException, ConnectionTimeout
-	 */
-	public ResponderImpl respond(String name) throws ResponderCreationException {
-		
-		String portName = ResponderImpl.RESPONDER_PREFIX + name;
-		Zmq.Msg request = createRequestPortV0Request(id, portName);
-
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			int port = JSON.getInt(response, Message.RequestResponse.VALUE);
-			if (port == -1) {
-				throw new ResponderCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-			}
-			
-			return new ResponderImpl(this, context, port, name);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-	}
-
-	public RequesterImpl request(String name, InstanceImpl instanceImpl) throws RequesterCreationException {
-		
-		int responderId = instanceImpl.getId();
-		String responderUrl = instanceImpl.getEndpoint().getProtocol() + "://" + instanceImpl.getEndpoint().getAddress();
-		String responderEndpoint = instanceImpl.getEndpoint().toString();
-		
-		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
-		
-		int requesterId = RequesterImpl.newRequesterId();
-		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
-
-		// Create the responder socket that will be called twice.
-		RequestSocket responderSocket = createRequestSocket(responderEndpoint);
-		
-		try {
-			// First connect to the responder.
-			Zmq.Msg request = createConnectPortV0Request(responderId, responderPortName);
-			Zmq.Msg reply = responderSocket.request(request);
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			int responderPort = JSON.getInt(response, Message.RequestResponse.VALUE);
-			if (responderPort == -1) {
-				
-				// Wait for the responder port.
-				instanceImpl.waitFor(responderPortName);
-
-				// Retry to connect.
-				request = createConnectPortV0Request(responderId, responderPortName);
-				reply = responderSocket.request(request);
-				response = parse(reply);
-				responderPort = JSON.getInt(response, Message.RequestResponse.VALUE);
-				
-				if (responderPort == -1) {
-					throw new RequesterCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-				}
-			}
-			
-			// Request a requester port.
-			request = createRequestPortV0Request(id, requesterPortName);
-			
-			reply = requestSocket.request(request);
-			response = parse(reply);
-			int requesterPort = JSON.getInt(response, Message.RequestResponse.VALUE);
-			
-			if (requesterPort == -1) {
-				throw new RequesterCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-			}
-			
-			return new RequesterImpl(this, context, responderUrl, requesterPort, responderPort, name, responderId, requesterId);
-			
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-		finally {
-			responderSocket.terminate();
-		}
-	}
 	
 	public void removePort(String name) {
 		
@@ -546,7 +457,20 @@ public class ThisImpl extends ServicesImpl {
 		}
 	}
 
-	private Zmq.Msg createSetStatusRequest(int id, int state) {
+	public JSONObject request(Msg request) {
+		
+		try {
+			Zmq.Msg reply = requestSocket.request(request);
+			
+			// Get the JSON response object.
+			return parse(reply);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+
+	private static Zmq.Msg createSetStatusRequest(int id, int state) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SET_STATUS);
@@ -556,7 +480,7 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 	
-	private Zmq.Msg createRequestPortV0Request(int id, String name) {
+	public static Zmq.Msg createRequestPortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REQUEST_PORT_v0);
@@ -566,7 +490,7 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 
-	private Zmq.Msg createConnectPortV0Request(int id, String name) {
+	public static Zmq.Msg createConnectPortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CONNECT_PORT_v0);
@@ -576,7 +500,7 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 
-	private Zmq.Msg createRemovePortV0Request(int id, String name) {
+	public static Zmq.Msg createRemovePortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REMOVE_PORT_v0);
@@ -586,7 +510,7 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 	
-	private Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
+	public static Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CREATE_PUBLISHER_v0);
@@ -597,7 +521,7 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 	
-	private Zmq.Msg createSetResultRequest(int id, byte[] result) {
+	private static Zmq.Msg createSetResultRequest(int id, byte[] result) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SET_RESULT);
@@ -611,7 +535,7 @@ public class ThisImpl extends ServicesImpl {
 		return messageResult;
 	}
 	
-	private Zmq.Msg createTerminatePublisherRequest(int id, String name) {
+	public static Zmq.Msg createTerminatePublisherRequest(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.TERMINATE_PUBLISHER_v0);

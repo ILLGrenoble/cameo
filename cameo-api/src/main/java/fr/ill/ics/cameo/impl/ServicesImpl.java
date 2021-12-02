@@ -68,6 +68,10 @@ public class ServicesImpl {
 		return serverEndpoint.withPort(statusPort);
 	}
 	
+	public Zmq.Context getContext() {
+		return context;
+	}
+	
 	public void destroySocket(Socket socket) {
 		context.destroySocket(socket);
 	}
@@ -213,7 +217,8 @@ public class ServicesImpl {
 		return new EventStreamSocket(this, subscriber, cancelPublisher);
 	}
 	
-	protected RequestSocket createRequestSocket(String endpoint) throws SocketException {
+	
+	public RequestSocket createRequestSocket(String endpoint) throws SocketException {
 		
 		RequestSocket requestSocket = new RequestSocket(context, timeout);
 		requestSocket.connect(endpoint);
@@ -221,7 +226,7 @@ public class ServicesImpl {
 		return requestSocket;
 	}
 	
-	protected Zmq.Msg message(JSONObject object) {
+	protected static Zmq.Msg message(JSONObject object) {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Message.serialize(object));
@@ -234,7 +239,7 @@ public class ServicesImpl {
 	 * 
 	 * @return
 	 */
-	protected Zmq.Msg createSyncRequest() {
+	protected static Zmq.Msg createSyncRequest() {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SYNC);
@@ -243,7 +248,7 @@ public class ServicesImpl {
 	}
 	
 
-	protected Zmq.Msg createSyncStreamRequest(String name) {
+	protected static Zmq.Msg createSyncStreamRequest(String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SYNC_STREAM);
@@ -257,7 +262,7 @@ public class ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	protected Zmq.Msg createVersionRequest() {
+	protected static Zmq.Msg createVersionRequest() {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.IMPL_VERSION);
@@ -270,7 +275,7 @@ public class ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	protected Zmq.Msg createStreamStatusRequest() {
+	protected static Zmq.Msg createStreamStatusRequest() {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.STATUS);
@@ -284,7 +289,7 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createGetStatusRequest(int id) {
+	protected static Zmq.Msg createGetStatusRequest(int id) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.GET_STATUS);
@@ -300,7 +305,7 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createAttachUnmanagedRequest(String name, long pid) {
+	protected static Zmq.Msg createAttachUnmanagedRequest(String name, long pid) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.ATTACH_UNMANAGED);
@@ -316,7 +321,7 @@ public class ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	protected Zmq.Msg createDetachUnmanagedRequest(int id) {
+	protected static Zmq.Msg createDetachUnmanagedRequest(int id) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.DETACH_UNMANAGED);
@@ -326,7 +331,7 @@ public class ServicesImpl {
 	}
 	
 	
-	protected Msg createSetStopHandlerRequest(int id, int stoppingTime) {
+	protected static Msg createSetStopHandlerRequest(int id, int stoppingTime) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SET_STOP_HANDLER);

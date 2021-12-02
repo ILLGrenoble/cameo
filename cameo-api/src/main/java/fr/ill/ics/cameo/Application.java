@@ -21,12 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.impl.ComImpl;
 import fr.ill.ics.cameo.impl.InstanceImpl;
 import fr.ill.ics.cameo.impl.PublisherImpl;
-import fr.ill.ics.cameo.impl.RequestImpl;
-import fr.ill.ics.cameo.impl.RequesterImpl;
-import fr.ill.ics.cameo.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.ServerImpl;
 import fr.ill.ics.cameo.impl.SubscriberImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
@@ -48,9 +49,11 @@ public class Application {
 		public static class Com {
 			
 			private ComImpl impl;
+			private ThisImpl thisImpl;
 			
-			Com(ComImpl impl) {
+			Com(ComImpl impl, ThisImpl thisImpl) {
 				this.impl = impl;
+				this.thisImpl = thisImpl;
 			}
 			
 			public void storeKeyValue(String key, String value) {
@@ -108,6 +111,27 @@ public class Application {
 					e.printStackTrace();
 				}
 			}
+
+			public JSONObject request(Msg request) {
+				return thisImpl.request(request);
+			}
+			
+			public JSONObject parse(Msg message) {
+				try {
+					return thisImpl.parse(message);
+				}
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse message");
+				}
+			}
+			
+			/**
+			 * TODO Temporary access.
+			 * @return
+			 */
+			public ThisImpl getImpl() {
+				return thisImpl;
+			}
 		}
 		
 		private static Com com;
@@ -120,8 +144,7 @@ public class Application {
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());
 			}
-			
-			com = new Com(new ComImpl(serverImpl, impl.getId()));
+			com = new Com(new ComImpl(serverImpl, impl.getId()), impl);
 		}
 		
 		static public void init(String[] args) {
@@ -474,6 +497,15 @@ public class Application {
 		 */
 		public int waitFor() {
 			return impl.waitFor(0);
+		}
+		
+		/**
+		 * TODO Temporary access.
+		 * @param eventName
+		 * @return
+		 */
+		public int waitFor(String eventName) {
+			return impl.waitFor(eventName);
 		}
 		
 		public int waitFor(KeyValue keyValue) {
@@ -860,212 +892,6 @@ public class Application {
 			impl.terminate();
 		}
 
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-	}
-	
-	
-	/**
-	 * Class Request.
-	 * 
-	 */
-	public static class Request {
-		
-		private RequestImpl impl;
-		private Server requesterServer = null;
-		
-		Request(RequestImpl impl) {
-			this.impl = impl;
-		}
-		
-		public byte[] getBinary() {
-			return impl.get();
-		}
-		
-		public String get() {
-			return impl.getString();
-		}
-		
-		public byte[][] getTwoBinaryParts() {
-			
-			byte[][] result = new byte[2][];
-			result[0] = impl.get();
-			result[1] = impl.get2();
-			
-			return result;
-		}
-		
-		public void reply(byte[] response) {
-			impl.reply(response);
-		}
-		
-		public void reply(String response) {
-			impl.reply(response);
-		}
-		
-		public Instance connectToRequester() {
-			
-			// Instantiate the requester server if it is null.
-			if (requesterServer == null) {
-				requesterServer = new Server(impl.getRequesterServerEndpoint());
-			}	
-			
-			// Connect and find the instance.
-			List<Instance> instances = requesterServer.connectAll(impl.getRequesterApplicationName());
-			
-			for (Instance instance : instances) {
-				if (instance.getId() == impl.getRequesterApplicationId()) {
-					return instance;
-				}
-			}
-			
-			// Not found.
-			return null;
-		}
-		
-		/**
-		 * Gets the requester server and transfers the ownership. The client code is responsible to terminate the server.
-		 * @return
-		 */
-		public Server getServer() {
-			
-			// Transfers the ownership of the server.
-			Server result = requesterServer;
-			requesterServer = null;
-			
-			return result;
-		}
-		
-		public void terminate() {
-			
-			if (requesterServer != null) {
-				requesterServer.terminate();
-			}
-		}
-		
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-	}
-
-	/**
-	 * Class Responder.
-	 *
-	 */
-	public static class Responder {
-
-		private ResponderImpl impl;
-		
-		Responder(ResponderImpl impl) {
-			this.impl = impl;
-		}
-		
-		/**
-		 * 
-		 * @param name
-		 * @return
-		 * @throws ResponderCreationException, ConnectionTimeout
-		 */
-		static public Responder create(String name) throws ResponderCreationException {
-			return new Responder(This.impl.respond(name));
-		}
-		
-		public String getName() {
-			return impl.getName();
-		}
-		
-		public Request receive() {
-			RequestImpl requestImpl = impl.receive();
-			if (requestImpl == null) {
-				return null;
-			}
-			return new Request(requestImpl);
-		}
-
-		public void cancel() {
-			impl.cancel();			
-		}
-		
-		public boolean isEnded() {
-			return impl.isEnded();
-		}
-		
-		public boolean isCanceled() {
-			return impl.isCanceled();
-		}
-				
-		public void terminate() {
-			impl.terminate();
-		}
-			
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-	}
-
-	
-	/**
-	 * Class Responder.
-	 *
-	 */
-	public static class Requester {
-
-		private RequesterImpl impl;
-		
-		Requester(RequesterImpl impl) {
-			this.impl = impl;
-		}
-		
-		/**
-		 * 
-		 * @param name
-		 * @return
-		 * @throws RequesterCreationException, ConnectionTimeout
-		 */
-		static public Requester create(Instance application, String name) throws RequesterCreationException {
-			return new Requester(This.impl.request(name, application.impl));
-		}
-		
-		public String getName() {
-			return impl.getName();
-		}
-		
-		public void send(byte[] request) {
-			impl.send(request);
-		}
-		
-		public void send(String request) {
-			impl.send(request);
-		}
-		
-		public void sendTwoParts(byte[] request1, byte[] request2) {
-			impl.sendTwoParts(request1, request2);
-		}
-		
-		public byte[] receive() {
-			return impl.receive();
-		}
-		
-		public String receiveString() {
-			return impl.receiveString();
-		}
-		
-		public void cancel() {
-			impl.cancel();			
-		}
-		
-		public boolean isCanceled() {
-			return impl.isCanceled();
-		}
-		
-		public void terminate() {
-			impl.terminate();
-		}
-			
 		@Override
 		public String toString() {
 			return impl.toString();

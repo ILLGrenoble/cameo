@@ -31,7 +31,6 @@ public class RequesterImpl {
 	public static final String REQUESTER_PREFIX = "req.";
 
 	private ThisImpl application;
-	Zmq.Context context;
 	private int requesterPort;
 	private String name;
 	private int responderId;
@@ -46,9 +45,8 @@ public class RequesterImpl {
 	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
-	public RequesterImpl(ThisImpl application, Zmq.Context context, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
+	public RequesterImpl(ThisImpl application, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.application = application;
-		this.context = context;
 		this.requesterPort = requesterPort;
 		String responderEndpoint = url + ":" + responderPort;
 		this.name = name;
@@ -59,7 +57,7 @@ public class RequesterImpl {
 		requestSocket = application.createRequestSocket(responderEndpoint);
 		
 		// Create the REP socket.
-		requester = context.createSocket(Zmq.REP);
+		requester = this.application.getContext().createSocket(Zmq.REP);
 		requester.bind("tcp://*:" + requesterPort);
 		
 		waiting.add();
@@ -192,7 +190,7 @@ public class RequesterImpl {
 		// Terminate the request socket.
 		requestSocket.terminate();
 		
-		context.destroySocket(requester);
+		this.application.getContext().destroySocket(requester);
 		
 		try {
 			application.removePort(getRequesterPortName(name, responderId, requesterId));

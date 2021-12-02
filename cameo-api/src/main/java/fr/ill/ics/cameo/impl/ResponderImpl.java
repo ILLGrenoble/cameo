@@ -31,7 +31,6 @@ public class ResponderImpl {
 	public static final String RESPONDER_PREFIX = "rep.";
 
 	private ThisImpl application;
-	Zmq.Context context;
 	private int responderPort;
 	private String name;
 	private Zmq.Socket responder;
@@ -40,14 +39,13 @@ public class ResponderImpl {
 	private boolean canceled = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
 	
-	public ResponderImpl(ThisImpl application, Zmq.Context context, int responderPort, String name) {
+	public ResponderImpl(ThisImpl application, int responderPort, String name) {
 		this.application = application;
-		this.context = context;
 		this.responderPort = responderPort;
 		this.name = name;
 
 		// create a socket REP
-		responder = context.createSocket(Zmq.REP);
+		responder = this.application.getContext().createSocket(Zmq.REP);
 		responder.bind("tcp://*:" + responderPort);
 		
 		waiting.add();
@@ -158,7 +156,7 @@ public class ResponderImpl {
 	public void terminate() {
 
 		waiting.remove();
-		context.destroySocket(responder);
+		this.application.getContext().destroySocket(responder);
 		
 		try {
 			application.removePort(RESPONDER_PREFIX + name);
