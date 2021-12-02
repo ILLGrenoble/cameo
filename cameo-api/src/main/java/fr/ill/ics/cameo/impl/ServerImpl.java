@@ -707,44 +707,6 @@ public class ServerImpl extends ServicesImpl {
 	
 	/**
 	 * 
-	 * @param applicationName
-	 * @param publisherName
-	 * @return
-	 * @throws SubscriberCreationException
-	 * @throws ConnectionTimeout
-	 */
-	public SubscriberImpl createSubscriber(int applicationId, String publisherName, InstanceImpl instance) throws SubscriberCreationException {
-		
-		Zmq.Msg request = createConnectPublisherRequest(applicationId, publisherName);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-		
-		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
-		
-		if (publisherPort == -1) {
-			throw new SubscriberCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-		}
-		
-		int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
-		int numberOfSubscribers = JSON.getInt(response, Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
-		
-		SubscriberImpl subscriber = new SubscriberImpl(this, context, serverEndpoint, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
-		subscriber.init();
-		
-		return subscriber;
-	}
-	
-	/**
-	 * 
 	 * @param applicationId
 	 * @param key
 	 * @param value
@@ -1108,16 +1070,6 @@ public class ServerImpl extends ServicesImpl {
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.OUTPUT_PORT);
 		request.put(Message.OutputRequest.NAME, name);
-
-		return message(request);
-	}
-	
-	private Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
-		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
-		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
 
 		return message(request);
 	}

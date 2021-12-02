@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
+import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
@@ -30,8 +31,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class SubscriberImpl {
 	
 	private ServerImpl server; // server of instance
-	private Zmq.Context context;
-	private Endpoint serverEndpoint; // endpoint of server
 	private int publisherPort;
 	private int synchronizerPort;
 	private Zmq.Socket subscriber;
@@ -39,15 +38,13 @@ public class SubscriberImpl {
 	private Zmq.Socket cancelPublisher;
 	private String publisherName;
 	private int numberOfSubscribers;
-	private InstanceImpl instance;
+	private Instance instance;
 	private boolean ended = false;
 	private boolean canceled = false;
 	private SubscriberWaitingImpl waiting = new SubscriberWaitingImpl(this);
 	
-	SubscriberImpl(ServerImpl server, Zmq.Context context, Endpoint serverEndpoint, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, InstanceImpl instance) {
+	public SubscriberImpl(ServerImpl server, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, Instance instance) {
 		this.server = server;
-		this.context = context;
-		this.serverEndpoint = serverEndpoint;
 		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.publisherName = publisherName;
@@ -57,12 +54,12 @@ public class SubscriberImpl {
 		waiting.add();
 	}
 	
-	void init() throws ConnectionTimeout {
+	public void init() throws ConnectionTimeout {
 		
 		// Create the subscriber
-		subscriber = context.createSocket(Zmq.SUB);
+		subscriber = server.getContext().createSocket(Zmq.SUB);
 		
-		subscriber.connect(serverEndpoint.withPort(publisherPort).toString());
+		subscriber.connect(server.getEndpoint().withPort(publisherPort).toString());
 		subscriber.subscribe(Message.Event.SYNC);
 		subscriber.subscribe(Message.Event.STREAM);
 		subscriber.subscribe(Message.Event.ENDSTREAM);
@@ -71,7 +68,7 @@ public class SubscriberImpl {
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		// Create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
-		cancelPublisher = context.createSocket(Zmq.PUB);
+		cancelPublisher = server.getContext().createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 
 		// Subscribe to CANCEL
@@ -86,10 +83,10 @@ public class SubscriberImpl {
 		if (numberOfSubscribers > 0) {
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = server.createRequestSocket(serverEndpoint.withPort(synchronizerPort).toString());
+			RequestSocket requestSocket = server.createRequestSocket(server.getEndpoint().withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
-			Zmq.Poller poller = context.createPoller(subscriber);
+			Zmq.Poller poller = server.getContext().createPoller(subscriber);
 			
 			boolean ready = false;
 			while (!ready) {
@@ -277,8 +274,8 @@ public class SubscriberImpl {
 		
 		waiting.remove();
 		
-		context.destroySocket(subscriber);
-		context.destroySocket(cancelPublisher);
+		server.getContext().destroySocket(subscriber);
+		server.getContext().destroySocket(cancelPublisher);
 	}
 
 	@Override

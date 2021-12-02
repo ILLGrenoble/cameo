@@ -19,8 +19,10 @@ package fr.ill.ics.cameo.impl;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import fr.ill.ics.cameo.PublisherDestructionException;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -28,7 +30,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class PublisherImpl {
 
 	private ThisImpl application;
-	Zmq.Context context;
 	private int publisherPort;
 	private int synchronizerPort;
 	private String name;
@@ -37,16 +38,15 @@ public class PublisherImpl {
 	private boolean ended = false;
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
 	
-	public PublisherImpl(ThisImpl application, Zmq.Context context, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
+	public PublisherImpl(ThisImpl application, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
 		this.application = application;
-		this.context = context;
 		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
 
 		// create a socket for publishing
-		publisher = context.createSocket(Zmq.PUB);
+		publisher = this.application.getContext().createSocket(Zmq.PUB);
 		publisher.bind("tcp://*:" + publisherPort);
 		
 		waiting.add();
@@ -67,7 +67,7 @@ public class PublisherImpl {
 		
 		try {
 			// create a socket to receive the messages from the subscribers
-			synchronizer = context.createSocket(Zmq.REP);
+			synchronizer = this.application.getContext().createSocket(Zmq.REP);
 			String endpoint = "tcp://*:" + synchronizerPort;
 			
 			synchronizer.bind(endpoint);
@@ -133,7 +133,7 @@ public class PublisherImpl {
 		} finally {
 			// destroy synchronizer socket as we do not need it anymore.
 			if (synchronizer != null) {
-				context.destroySocket(synchronizer);
+				this.application.getContext().destroySocket(synchronizer);
 			}	
 		}
 		
@@ -195,12 +195,14 @@ public class PublisherImpl {
 		waiting.remove();
 		sendEnd();
 		
-		context.destroySocket(publisher);
+		this.application.getContext().destroySocket(publisher);
 		
-		try {
-			application.destroyPublisher(name);
-		} catch (Exception e) {
-			System.err.println("cannot destroy publisher: " + e.getMessage());
+		Zmq.Msg request = ThisImpl.createTerminatePublisherRequest(This.getId(), name);
+		JSONObject response = This.getCom().request(request);
+		
+		int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+		if (value == -1) {
+			System.err.println("Cannot terminate publisher");
 		}
 	}
 	

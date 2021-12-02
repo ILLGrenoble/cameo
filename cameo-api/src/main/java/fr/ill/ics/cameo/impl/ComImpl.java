@@ -55,4 +55,12 @@ public class ComImpl {
 		server.releasePort(applicationId, port);
 	}
 	
+	/**
+	 * TODO Temporary access.
+	 * @return
+	 */
+	public ServerImpl getServer() {
+		return server;
+	}
+	
 }

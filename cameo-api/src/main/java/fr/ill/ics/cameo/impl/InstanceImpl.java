@@ -352,43 +352,6 @@ public class InstanceImpl extends EventListener {
 		// Unregister the waiting.
 		waiting.remove();
 	}
-	
-	/**
-	 * Subscribes to the application publisher.
-	 * @param publisherName
-	 * @return
-	 */
-	public SubscriberImpl subscribe(String publisherName) {
-		try {
-			SubscriberImpl subscriber = server.createSubscriber(id, publisherName, this);
-			return subscriber;
-			
-		} catch (SubscriberCreationException e) {
-			// the publisher does not exist, so we are waiting for it
-		}
-		
-		// waiting for the publisher
-		waitFor(publisherName);
-		
-		// state cannot be terminal or it means that the application has terminated that is not planned.
-		if (lastState == Application.State.SUCCESS 
-			|| lastState == Application.State.STOPPED
-			|| lastState == Application.State.KILLED					
-			|| lastState == Application.State.ERROR) {
-			return null;
-		}
-		
-		try {
-			SubscriberImpl subscriber = server.createSubscriber(id, publisherName, this);
-			return subscriber;
-			
-		} catch (SubscriberCreationException e) {
-			// that should not happen
-			System.err.println("the publisher " + publisherName + " does not exist but should");
-		}
-		
-		return null;
-	}
 		
 	/**
 	 * Returns the result of the Instance.

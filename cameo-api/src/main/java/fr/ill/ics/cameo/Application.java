@@ -132,6 +132,14 @@ public class Application {
 			public ThisImpl getImpl() {
 				return thisImpl;
 			}
+			
+			/**
+			 * TODO Temporary access.
+			 * @return
+			 */
+			public ServerImpl getServerImpl() {
+				return impl.getServer();
+			}
 		}
 		
 		private static Com com;
@@ -733,169 +741,7 @@ public class Application {
 
 	}
 		
-	/**
-	 * Class Publisher.
-	 *
-	 */
-	public static class Publisher {
 
-		private PublisherImpl impl;
-		
-		Publisher(PublisherImpl impl) {
-			this.impl = impl;
-		}
-		
-		/**
-		 * 
-		 * @param name
-		 * @return
-		 * @throws PublisherCreationException, ConnectionTimeout
-		 */
-		static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
-			return new Publisher(This.impl.publish(name, numberOfSubscribers));
-		}
-		
-		/**
-		 * 
-		 * @param name
-		 * @return
-		 * @throws PublisherCreationException, ConnectionTimeout
-		 */
-		static public Publisher create(String name) throws PublisherCreationException {
-			return new Publisher(This.impl.publish(name, 0));
-		}
-		
-		public String getName() {
-			return impl.getName();
-		}
-		
-		/**
-		 * Returns true if the wait succeeds or false if it was canceled.
-		 * @return
-		 */
-		public boolean waitForSubscribers() {
-			return impl.waitForSubscribers();
-		}
-		
-		/**
-		 * Cancels the wait for subscribers.
-		 */
-		public void cancelWaitForSubscribers() {
-			impl.cancelWaitForSubscribers();
-		}
-
-		public void send(byte[] data) {
-			impl.send(data);
-		}
-		
-		public void send(String data) {
-			impl.send(data);
-		}
-				
-		public void sendTwoParts(byte[] data1, byte[] data2) {
-			impl.sendTwoParts(data1, data2);
-		}
-		
-		public void sendEnd() {
-			impl.sendEnd();
-		}
-		
-		public boolean isEnded() {
-			return impl.isEnded();
-		}
-		
-		public void terminate() {
-			impl.terminate();
-		}
-			
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-	}
 	
-	
-	/**
-	 * Class Subscriber. 
-	 *
-	 */
-	public static class Subscriber {
-		
-		private SubscriberImpl impl;
-		
-		Subscriber(SubscriberImpl impl) {
-			this.impl = impl;
-		}
-		
-		/**
-		 * Subscribes to the application publisher.
-		 * @param publisherName
-		 * @return
-		 */
-		public static Subscriber create(Instance application, String publisherName) {
-			return new Subscriber(application.impl.subscribe(publisherName));
-		}
-				
-		public String getPublisherName() { 
-			return impl.getPublisherName();
-		}
-		
-		public String getInstanceName() {
-			return impl.getInstanceName();
-		}
-		
-		public int getInstanceId() {
-			return impl.getInstanceId();
-		}
-		
-		public Endpoint getInstanceEndpoint() {
-			return impl.getInstanceEndpoint();
-		}
-		
-		public boolean isEnded() {
-			return impl.isEnded();
-		}
-		
-		public boolean isCanceled() {
-			return impl.isCanceled();
-		}
-				
-		/**
-		 * 
-		 * @return the byte[] data. If the return value is null, then the stream is finished. 
-		 */
-		public byte[] receive() {
-			return impl.receive();
-		}
-		
-		/**
-		 * 
-		 * @return the string data. If the return value is null, then the stream is finished. 
-		 */
-		public String receiveString() {
-			return impl.receiveString();
-		}
-		
-		/**
-		 * 
-		 * @return the two parts byte[][] data. If the return value is null, then the stream is finished. 
-		 */
-		public byte[][] receiveTwoParts() {
-			return impl.receiveTwoParts();
-		}
-		
-		public void cancel() {
-			impl.cancel();
-		}
-		
-		public void terminate() {
-			impl.terminate();
-		}
-
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-	}
 
 }

@@ -373,70 +373,6 @@ public class ThisImpl extends ServicesImpl {
 		waitingSet.cancelAll();		
 	}
 	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
-	 */
-	public PublisherImpl publish(String name, int numberOfSubscribers) throws PublisherCreationException {
-		
-		Zmq.Msg request = createCreatePublisherRequest(id, name, numberOfSubscribers);
-		
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
-
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
-			if (publisherPort == -1) {
-				throw new PublisherCreationException(JSON.getString(response, Message.PublisherResponse.MESSAGE));
-			}
-			int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
-			
-			return new PublisherImpl(this, context, publisherPort, synchronizerPort, name, numberOfSubscribers);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
-	 */
-	public PublisherImpl publish(String name) throws PublisherCreationException {
-		return publish(name, 0);
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @throws PublisherDestructionException, ConnectionTimeout
-	 */
-	void destroyPublisher(String name) throws PublisherDestructionException {
-		
-		Zmq.Msg request = createTerminatePublisherRequest(id, name);
-		
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new PublisherDestructionException(JSON.getString(response, Message.RequestResponse.MESSAGE));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-	}
-	
 	public void removePort(String name) {
 		
 		Zmq.Msg request = createRemovePortV0Request(id, name);
@@ -517,6 +453,16 @@ public class ThisImpl extends ServicesImpl {
 		request.put(Message.CreatePublisherRequest.ID, id);
 		request.put(Message.CreatePublisherRequest.NAME, name);
 		request.put(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+
+		return message(request);
+	}
+	
+	public static Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
+		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
+		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
 
 		return message(request);
 	}
