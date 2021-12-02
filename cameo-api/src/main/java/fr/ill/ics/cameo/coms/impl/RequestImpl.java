@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.coms.impl;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.impl.RequestSocket;
-import fr.ill.ics.cameo.impl.ThisImpl;
+import fr.ill.ics.cameo.base.impl.RequestSocket;
+import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.Message;
 
 public class RequestImpl {

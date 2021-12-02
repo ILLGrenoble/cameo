@@ -19,12 +19,12 @@ package fr.ill.ics.cameo.coms.impl;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.Application.This;
-import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.impl.RequestSocket;
-import fr.ill.ics.cameo.impl.ServicesImpl;
-import fr.ill.ics.cameo.impl.ThisImpl;
+import fr.ill.ics.cameo.base.UnexpectedException;
+import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.RequestSocket;
+import fr.ill.ics.cameo.base.impl.ServicesImpl;
+import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;

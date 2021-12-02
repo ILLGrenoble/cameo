@@ -2,13 +2,13 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Application;
-import fr.ill.ics.cameo.Application.Instance;
-import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.Application.Instance;
+import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.ServicesImpl;
+import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
-import fr.ill.ics.cameo.impl.ServicesImpl;
-import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;

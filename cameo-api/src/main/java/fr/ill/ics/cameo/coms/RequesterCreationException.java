@@ -15,7 +15,7 @@ package fr.ill.ics.cameo.coms;
  * limitations under the Licence.
  */
 
-import fr.ill.ics.cameo.RemoteException;
+import fr.ill.ics.cameo.base.RemoteException;
 
 public class RequesterCreationException extends RemoteException {
 	

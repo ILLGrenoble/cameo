@@ -25,13 +25,13 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import fr.ill.ics.cameo.Application;
-import fr.ill.ics.cameo.ConnectionTimeout;
-import fr.ill.ics.cameo.Option;
-import fr.ill.ics.cameo.OutputPrintThread;
-import fr.ill.ics.cameo.OutputStreamSocket;
-import fr.ill.ics.cameo.Server;
-import fr.ill.ics.cameo.UnexpectedException;
+import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
+import fr.ill.ics.cameo.base.Option;
+import fr.ill.ics.cameo.base.OutputPrintThread;
+import fr.ill.ics.cameo.base.OutputStreamSocket;
+import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.UnexpectedException;
 
 public class Console {
 
