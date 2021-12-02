@@ -5,7 +5,8 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.PublisherCreationException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.impl.PublisherImpl;
+import fr.ill.ics.cameo.coms.impl.PublisherImpl;
+import fr.ill.ics.cameo.impl.ServicesImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -18,13 +19,24 @@ public class Publisher {
 
 	private PublisherImpl impl;
 	
-	Publisher(PublisherImpl impl) {
+	private Publisher(PublisherImpl impl) {
 		this.impl = impl;
+	}
+	
+	private static Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CREATE_PUBLISHER_v0);
+		request.put(Message.CreatePublisherRequest.ID, id);
+		request.put(Message.CreatePublisherRequest.NAME, name);
+		request.put(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+
+		return ServicesImpl.message(request);
 	}
 	
 	static PublisherImpl createPublisher(String name, int numberOfSubscribers) throws PublisherCreationException {
 	
-		Zmq.Msg request = ThisImpl.createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
+		Zmq.Msg request = createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
 		
 		JSONObject response = This.getCom().request(request);
 	

@@ -1,16 +1,14 @@
 package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.SubscriberCreationException;
-import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.impl.InstanceImpl;
-import fr.ill.ics.cameo.impl.SubscriberImpl;
+import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
+import fr.ill.ics.cameo.impl.ServicesImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -24,13 +22,23 @@ public class Subscriber {
 	
 	private SubscriberImpl impl;
 	
-	Subscriber(SubscriberImpl impl) {
+	private Subscriber(SubscriberImpl impl) {
 		this.impl = impl;
 	}
 	
-	static SubscriberImpl createSubscriber(int applicationId, String publisherName, Instance instance) throws SubscriberCreationException {
+	private static Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
 		
-		Zmq.Msg request = ThisImpl.createConnectPublisherRequest(applicationId, publisherName);
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
+		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
+		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
+
+		return ServicesImpl.message(request);
+	}
+	
+	private static SubscriberImpl createSubscriber(int applicationId, String publisherName, Instance instance) throws SubscriberCreationException {
+		
+		Zmq.Msg request = createConnectPublisherRequest(applicationId, publisherName);
 		JSONObject response = This.getCom().request(request);
 		
 		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);

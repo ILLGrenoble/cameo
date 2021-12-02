@@ -14,15 +14,17 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.impl;
+package fr.ill.ics.cameo.coms.impl;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.PublisherDestructionException;
+import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Application.This;
+import fr.ill.ics.cameo.impl.RequestSocket;
+import fr.ill.ics.cameo.impl.ServicesImpl;
+import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -190,6 +192,16 @@ public class PublisherImpl {
 		return ended;
 	}
 	
+	private static Zmq.Msg createTerminatePublisherRequest(int id, String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Message.TYPE, Message.TERMINATE_PUBLISHER_v0);
+		request.put(Message.TerminatePublisherRequest.ID, id);
+		request.put(Message.TerminatePublisherRequest.NAME, name);
+
+		return ServicesImpl.message(request);
+	}
+	
 	public void terminate() {
 
 		waiting.remove();
@@ -197,7 +209,7 @@ public class PublisherImpl {
 		
 		this.application.getContext().destroySocket(publisher);
 		
-		Zmq.Msg request = ThisImpl.createTerminatePublisherRequest(This.getId(), name);
+		Zmq.Msg request = createTerminatePublisherRequest(This.getId(), name);
 		JSONObject response = This.getCom().request(request);
 		
 		int value = JSON.getInt(response, Message.RequestResponse.VALUE);

@@ -28,10 +28,6 @@ import fr.ill.ics.cameo.Event;
 import fr.ill.ics.cameo.EventListener;
 import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.ProcessHandlerImpl;
-import fr.ill.ics.cameo.PublisherCreationException;
-import fr.ill.ics.cameo.PublisherDestructionException;
-import fr.ill.ics.cameo.RequesterCreationException;
-import fr.ill.ics.cameo.ResponderCreationException;
 import fr.ill.ics.cameo.StatusEvent;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.UnmanagedApplicationException;
@@ -446,27 +442,6 @@ public class ThisImpl extends ServicesImpl {
 		return message(request);
 	}
 	
-	public static Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CREATE_PUBLISHER_v0);
-		request.put(Message.CreatePublisherRequest.ID, id);
-		request.put(Message.CreatePublisherRequest.NAME, name);
-		request.put(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
-
-		return message(request);
-	}
-	
-	public static Zmq.Msg createConnectPublisherRequest(int applicationId, String publisherName) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
-		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
-		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
-
-		return message(request);
-	}
-	
 	private static Zmq.Msg createSetResultRequest(int id, byte[] result) {
 
 		JSONObject request = new JSONObject();
@@ -481,16 +456,6 @@ public class ThisImpl extends ServicesImpl {
 		return messageResult;
 	}
 	
-	public static Zmq.Msg createTerminatePublisherRequest(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.TERMINATE_PUBLISHER_v0);
-		request.put(Message.TerminatePublisherRequest.ID, id);
-		request.put(Message.TerminatePublisherRequest.NAME, name);
-
-		return message(request);
-	}
-		
 	@Override
 	public String toString() {
 		return name + "." + id + "@" + serverEndpoint;

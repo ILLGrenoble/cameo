@@ -226,7 +226,7 @@ public class ServicesImpl {
 		return requestSocket;
 	}
 	
-	protected static Zmq.Msg message(JSONObject object) {
+	public static Zmq.Msg message(JSONObject object) {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Message.serialize(object));
@@ -239,7 +239,7 @@ public class ServicesImpl {
 	 * 
 	 * @return
 	 */
-	protected static Zmq.Msg createSyncRequest() {
+	public static Zmq.Msg createSyncRequest() {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SYNC);

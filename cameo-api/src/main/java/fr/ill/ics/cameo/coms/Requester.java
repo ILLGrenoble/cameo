@@ -1,15 +1,14 @@
 package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.RequesterCreationException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.coms.impl.RequesterImpl;
+import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.RequestSocket;
-import fr.ill.ics.cameo.impl.RequesterImpl;
-import fr.ill.ics.cameo.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -22,11 +21,11 @@ public class Requester {
 
 	private RequesterImpl impl;
 	
-	Requester(RequesterImpl impl) {
+	private Requester(RequesterImpl impl) {
 		this.impl = impl;
 	}
 	
-	static RequesterImpl createRequester(Instance application, String name) throws RequesterCreationException {
+	private static RequesterImpl createRequester(Instance application, String name) throws RequesterCreationException {
 		
 		int responderId = application.getId();
 		String responderUrl = application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress();

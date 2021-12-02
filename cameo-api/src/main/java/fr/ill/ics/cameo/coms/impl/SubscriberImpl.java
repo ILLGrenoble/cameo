@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.impl;
+package fr.ill.ics.cameo.coms.impl;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -24,6 +24,10 @@ import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.ConnectionTimeout;
 import fr.ill.ics.cameo.UnexpectedException;
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.impl.CancelIdGenerator;
+import fr.ill.ics.cameo.impl.RequestSocket;
+import fr.ill.ics.cameo.impl.ServerImpl;
+import fr.ill.ics.cameo.impl.ServicesImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -92,7 +96,7 @@ public class SubscriberImpl {
 			while (!ready) {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				Zmq.Msg request = server.createSyncRequest();
+				Zmq.Msg request = ServicesImpl.createSyncRequest();
 				Zmq.Msg reply = null;
 				try {
 					reply = requestSocket.request(request);
@@ -111,7 +115,7 @@ public class SubscriberImpl {
 			
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
-			Zmq.Msg request = server.createSubscribePublisherRequest();
+			Zmq.Msg request = ServerImpl.createSubscribePublisherRequest();
 			requestSocket.request(request);
 			requestSocket.terminate();
 		}

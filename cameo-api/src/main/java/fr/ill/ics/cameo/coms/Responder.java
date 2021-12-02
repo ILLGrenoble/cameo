@@ -5,8 +5,8 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Application.This;
 import fr.ill.ics.cameo.ResponderCreationException;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.impl.RequestImpl;
-import fr.ill.ics.cameo.impl.ResponderImpl;
+import fr.ill.ics.cameo.coms.impl.RequestImpl;
+import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
@@ -19,11 +19,11 @@ public class Responder {
 
 	private ResponderImpl impl;
 	
-	Responder(ResponderImpl impl) {
+	private Responder(ResponderImpl impl) {
 		this.impl = impl;
 	}
 	
-	static ResponderImpl createResponder(String name) throws ResponderCreationException {
+	private static ResponderImpl createResponder(String name) throws ResponderCreationException {
 		
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
 		Zmq.Msg request = ThisImpl.createRequestPortV0Request(This.getId(), portName);

@@ -2,9 +2,9 @@ package fr.ill.ics.cameo.coms;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.Server;
 import fr.ill.ics.cameo.Application.Instance;
-import fr.ill.ics.cameo.impl.RequestImpl;
+import fr.ill.ics.cameo.Server;
+import fr.ill.ics.cameo.coms.impl.RequestImpl;
 
 /**
  * Class Request.

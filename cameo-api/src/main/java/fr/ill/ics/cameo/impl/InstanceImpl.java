@@ -30,7 +30,6 @@ import fr.ill.ics.cameo.PortEvent;
 import fr.ill.ics.cameo.PublisherEvent;
 import fr.ill.ics.cameo.ResultEvent;
 import fr.ill.ics.cameo.StatusEvent;
-import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;
 

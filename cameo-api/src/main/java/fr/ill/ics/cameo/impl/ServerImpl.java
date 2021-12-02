@@ -36,7 +36,6 @@ import fr.ill.ics.cameo.EventStreamSocket;
 import fr.ill.ics.cameo.InvalidArgumentException;
 import fr.ill.ics.cameo.Option;
 import fr.ill.ics.cameo.OutputStreamSocket;
-import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.UndefinedApplicationException;
 import fr.ill.ics.cameo.UndefinedKeyException;
 import fr.ill.ics.cameo.UnexpectedException;
@@ -1074,7 +1073,7 @@ public class ServerImpl extends ServicesImpl {
 		return message(request);
 	}
 	
-	protected Zmq.Msg createSubscribePublisherRequest() {
+	public static Zmq.Msg createSubscribePublisherRequest() {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER_v0);

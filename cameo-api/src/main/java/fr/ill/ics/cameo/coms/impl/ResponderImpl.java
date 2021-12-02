@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.impl;
+package fr.ill.ics.cameo.coms.impl;
 
 import java.util.List;
 
@@ -22,6 +22,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.impl.RequestSocket;
+import fr.ill.ics.cameo.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Message;
 import fr.ill.ics.cameo.strings.Endpoint;

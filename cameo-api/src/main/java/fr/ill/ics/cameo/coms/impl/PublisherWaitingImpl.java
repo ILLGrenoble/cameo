@@ -14,26 +14,26 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.impl;
+package fr.ill.ics.cameo.coms.impl;
 
 import fr.ill.ics.cameo.Waiting;
 
-public class SubscriberWaitingImpl extends Waiting {
+public class PublisherWaitingImpl extends Waiting {
 
-	private SubscriberImpl subscriber;
+	private PublisherImpl publisher;
 	
-	public SubscriberWaitingImpl(SubscriberImpl subscriber) {
-		this.subscriber = subscriber;
+	public PublisherWaitingImpl(PublisherImpl publisher) {
+		this.publisher = publisher;
 	}
 	
 	@Override
 	public void cancel() {
-		subscriber.cancel();
+		publisher.cancelWaitForSubscribers();
 	}
 
 	@Override
 	public void terminate() {
-		subscriber.terminate();
+		publisher.terminate();
 	}
 	
 }

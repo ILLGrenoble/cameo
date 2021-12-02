@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.impl;
+package fr.ill.ics.cameo.coms.impl;
 
 import fr.ill.ics.cameo.Waiting;
 
