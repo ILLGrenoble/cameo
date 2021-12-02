@@ -57,6 +57,8 @@ public:
 	zmq::message_t * processSubscribePublisherCommand();
 	zmq::message_t * processCancelPublisherSyncCommand();
 
+	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
+
 	application::This * m_application;
 	int m_publisherPort;
 	int m_synchronizerPort;

@@ -181,7 +181,15 @@ void PublisherImpl::terminate() {
 		setEnd();
 		m_publisher.reset(nullptr);
 
-		bool success = m_application->destroyPublisher(m_name);
+		unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
+
+		// Get the JSON response.
+		json::Object response;
+		json::parse(response, reply.get());
+
+		int value = response[message::RequestResponse::VALUE].GetInt();
+		bool success = (value != -1);
+
 		if (!success) {
 			cerr << "server cannot destroy publisher " << m_name << endl;
 		}
@@ -250,5 +258,19 @@ zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 	return reply;
 }
 
+std::string PublisherImpl::createTerminatePublisherRequest(int id, const std::string& name) const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::TERMINATE_PUBLISHER_v0);
+
+	request.pushKey(message::TerminatePublisherRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::TerminatePublisherRequest::NAME);
+	request.pushString(name);
+
+	return request.toString();
+}
 
 }

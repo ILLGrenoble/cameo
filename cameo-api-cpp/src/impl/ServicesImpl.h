@@ -50,10 +50,6 @@ public:
 	std::string createSetStatusRequest(int id, int32_t state) const;
 	std::string createGetStatusRequest(int id) const;
 	std::string createSetResultRequest(int id) const;
-	std::string createSubscribePublisherRequest() const;
-	std::string createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const;
-	std::string createConnectPublisherRequest(int id, const std::string& publisherName) const;
-	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
 	std::string createRequestPortV0Request(int id, const std::string& name) const;
 	std::string createConnectPortV0Request(int id, const std::string& name) const;
 	std::string createRemovePortV0Request(int id, const std::string& name) const;

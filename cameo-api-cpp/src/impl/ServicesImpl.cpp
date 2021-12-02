@@ -286,63 +286,6 @@ std::string ServicesImpl::createSetResultRequest(int id) const {
 	return request.toString();
 }
 
-std::string ServicesImpl::createSubscribePublisherRequest() const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::SUBSCRIBE_PUBLISHER_v0);
-
-	return request.toString();
-}
-
-std::string ServicesImpl::createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::CREATE_PUBLISHER_v0);
-
-	request.pushKey(message::CreatePublisherRequest::ID);
-	request.pushInt(id);
-
-	request.pushKey(message::CreatePublisherRequest::NAME);
-	request.pushString(name);
-
-	request.pushKey(message::CreatePublisherRequest::NUMBER_OF_SUBSCRIBERS);
-	request.pushInt(numberOfSubscribers);
-
-	return request.toString();
-}
-
-std::string ServicesImpl::createConnectPublisherRequest(int id, const std::string& publisherName) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PUBLISHER_v0);
-
-	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
-	request.pushInt(id);
-
-	request.pushKey(message::ConnectPublisherRequest::PUBLISHER_NAME);
-	request.pushString(publisherName);
-
-	return request.toString();
-}
-
-std::string ServicesImpl::createTerminatePublisherRequest(int id, const std::string& name) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATE_PUBLISHER_v0);
-
-	request.pushKey(message::TerminatePublisherRequest::ID);
-	request.pushInt(id);
-
-	request.pushKey(message::TerminatePublisherRequest::NAME);
-	request.pushString(name);
-
-	return request.toString();
-}
-
 std::string ServicesImpl::createRequestPortV0Request(int id, const std::string& name) const {
 
 	json::StringObject request;

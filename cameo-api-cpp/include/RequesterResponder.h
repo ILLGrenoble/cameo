@@ -15,6 +15,8 @@
  */
 
 #include "Application.h"
+#include "ResponderCreationException.h"
+#include "RequesterCreationException.h"
 
 namespace cameo {
 namespace application {

@@ -94,7 +94,7 @@ void SubscriberImpl::init() {
 			}
 		}
 
-		requestSocket->request(m_server->m_impl->createSubscribePublisherRequest());
+		requestSocket->request(createSubscribePublisherRequest());
 	}
 }
 
@@ -221,5 +221,15 @@ WaitingImpl * SubscriberImpl::waiting() {
 	// Waiting gets the cancel publisher.
 	return new SocketWaitingImpl(m_cancelPublisher.get(), message::Event::CANCEL);
 }
+
+std::string SubscriberImpl::createSubscribePublisherRequest() const {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::SUBSCRIBE_PUBLISHER_v0);
+
+	return request.toString();
+}
+
 
 }

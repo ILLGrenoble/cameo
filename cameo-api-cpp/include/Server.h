@@ -25,7 +25,6 @@
 #include "ConnectionTimeout.h"
 #include "Response.h"
 #include "Services.h"
-#include "SubscriberCreationException.h"
 
 namespace cameo {
 

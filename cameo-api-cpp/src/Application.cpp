@@ -372,19 +372,6 @@ State This::getState(int id) const {
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-bool This::destroyPublisher(const std::string& name) const {
-
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createTerminatePublisherRequest(m_id, name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	int value = response[message::RequestResponse::VALUE].GetInt();
-
-	return (value != -1);
-}
-
 bool This::removePort(const std::string& name) const {
 
 	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemovePortV0Request(m_id, name));

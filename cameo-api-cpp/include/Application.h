@@ -26,9 +26,6 @@
 #include "UnmanagedApplicationException.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
-#include "PublisherCreationException.h"
-#include "RequesterCreationException.h"
-#include "ResponderCreationException.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "Response.h"
@@ -193,7 +190,6 @@ private:
 	int initUnmanagedApplication();
 	void terminateUnmanagedApplication();
 
-	bool destroyPublisher(const std::string& name) const;
 	bool removePort(const std::string& name) const;
 	State waitForStop();
 

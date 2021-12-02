@@ -45,6 +45,8 @@ public:
 
 	WaitingImpl * waiting();
 
+	std::string createSubscribePublisherRequest() const;
+
 	Server * m_server;
 	int m_publisherPort;
 	int m_synchronizerPort;

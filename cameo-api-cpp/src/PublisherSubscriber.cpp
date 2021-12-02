@@ -45,7 +45,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
+	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
 
 	// Get the JSON response.
 	json::Object response;
@@ -109,6 +109,25 @@ void Publisher::sendEnd() const {
 	m_impl->setEnd();
 }
 
+std::string Publisher::createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CREATE_PUBLISHER_v0);
+
+	request.pushKey(message::CreatePublisherRequest::ID);
+	request.pushInt(id);
+
+	request.pushKey(message::CreatePublisherRequest::NAME);
+	request.pushString(name);
+
+	request.pushKey(message::CreatePublisherRequest::NUMBER_OF_SUBSCRIBERS);
+	request.pushInt(numberOfSubscribers);
+
+	return request.toString();
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
@@ -122,7 +141,7 @@ Subscriber::~Subscriber() {
 std::unique_ptr<application::Subscriber> Subscriber::createSubscriber(Instance & instance, const std::string& publisherName, const std::string& instanceName) {
 
 	// Get the JSON response.
-	json::Object response = instance.getCom().request(instance.m_server->m_impl->createConnectPublisherRequest(instance.m_id, publisherName));
+	json::Object response = instance.getCom().request(createConnectPublisherRequest(instance.m_id, publisherName));
 
 	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {
@@ -217,6 +236,21 @@ std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinary
 
 void Subscriber::cancel() {
 	m_waiting->cancel();
+}
+
+std::string Subscriber::createConnectPublisherRequest(int id, const std::string& publisherName) {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::CONNECT_PUBLISHER_v0);
+
+	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
+	request.pushInt(id);
+
+	request.pushKey(message::ConnectPublisherRequest::PUBLISHER_NAME);
+	request.pushString(publisherName);
+
+	return request.toString();
 }
 
 std::ostream& operator<<(std::ostream& os, const application::Publisher& publisher) {
