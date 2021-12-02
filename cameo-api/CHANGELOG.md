@@ -1,3 +1,8 @@
+1.1.0
+-----
+
+* Requester, Responder, Request classes out of Application.
+
 1.0.0
 -----
 
