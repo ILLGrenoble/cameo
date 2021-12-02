@@ -30,6 +30,8 @@ namespace application {
 	class This;
 }
 
+namespace coms {
+
 class RequestImpl;
 
 class ResponderImpl {
@@ -53,6 +55,7 @@ public:
 	static const std::string RESPONDER_PREFIX;
 };
 
+}
 }
 
 #endif

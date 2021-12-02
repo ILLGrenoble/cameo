@@ -17,9 +17,11 @@
 #include "PublisherCreationException.h"
 
 namespace cameo {
+namespace coms {
 
 PublisherCreationException::PublisherCreationException(const std::string& message) :
 	RemoteException(message) {
 }
 
+}
 }

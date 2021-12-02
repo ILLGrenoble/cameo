@@ -28,6 +28,7 @@
 using namespace std;
 
 namespace cameo {
+namespace coms {
 
 RequestImpl::RequestImpl(application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort) :
 	m_application(application),
@@ -81,4 +82,6 @@ bool RequestImpl::reply(const std::string& response) {
 }
 
 }
+}
+
 

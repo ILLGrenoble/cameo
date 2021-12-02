@@ -37,11 +37,13 @@ class EventThread;
 
 class Server : private Services {
 
-	friend class SubscriberImpl;
-	friend class RequestImpl;
 	friend class application::Instance;
 	friend class application::This;
-	friend class application::Subscriber;
+
+	friend class coms::Subscriber;
+	friend class coms::SubscriberImpl;
+	friend class coms::RequestImpl;
+
 	friend std::ostream& operator<<(std::ostream&, const Server&);
 
 public:

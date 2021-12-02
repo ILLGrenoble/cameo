@@ -46,24 +46,30 @@ const int OUTPUTSTREAM = 1;
 class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
-class PublisherImpl;
-class SubscriberImpl;
-class RequestImpl;
-class ResponderImpl;
-class RequesterImpl;
 class WaitingImpl;
 class SocketWaitingImpl;
 class GenericWaitingImpl;
 class WaitingImplSet;
 class HandlerImpl;
 
-namespace application {
+
+namespace coms {
 
 // forward declarations
 class Publisher;
 class Subscriber;
 class Responder;
 class Requester;
+class PublisherImpl;
+class SubscriberImpl;
+class RequestImpl;
+class ResponderImpl;
+class RequesterImpl;
+
+}
+
+namespace application {
+
 class Instance;
 class Waiting;
 
@@ -90,13 +96,13 @@ const State KILLED           = 256;
  */
 class This : private Services, private EventListener {
 
-	friend class cameo::application::Publisher;
-	friend class cameo::application::Responder;
-	friend class cameo::application::Requester;
-	friend class cameo::PublisherImpl;
-	friend class cameo::RequestImpl;
-	friend class cameo::ResponderImpl;
-	friend class cameo::RequesterImpl;
+	friend class cameo::coms::Publisher;
+	friend class cameo::coms::Responder;
+	friend class cameo::coms::Requester;
+	friend class cameo::coms::PublisherImpl;
+	friend class cameo::coms::RequestImpl;
+	friend class cameo::coms::ResponderImpl;
+	friend class cameo::coms::RequesterImpl;
 	friend class cameo::SocketWaitingImpl;
 	friend class cameo::GenericWaitingImpl;
 	friend class cameo::Server;
@@ -219,7 +225,7 @@ private:
 class Instance : private EventListener {
 
 	friend class cameo::Server;
-	friend class cameo::application::Subscriber;
+	friend class cameo::coms::Subscriber;
 	friend std::ostream& operator<<(std::ostream&, const Instance&);
 
 public:

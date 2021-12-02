@@ -28,6 +28,7 @@
 using namespace std;
 
 namespace cameo {
+namespace coms {
 
 PublisherImpl::PublisherImpl(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
 	m_application(application),
@@ -275,3 +276,5 @@ std::string PublisherImpl::createTerminatePublisherRequest(int id, const std::st
 }
 
 }
+}
+

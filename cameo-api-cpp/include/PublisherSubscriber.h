@@ -19,7 +19,7 @@
 #include "SubscriberCreationException.h"
 
 namespace cameo {
-namespace application {
+namespace coms {
 
 ///////////////////////////////////////////////////////////////////////////
 // Publisher
@@ -27,7 +27,6 @@ namespace application {
 class Publisher {
 
 	friend class cameo::application::This;
-	friend std::ostream& operator<<(std::ostream&, const Publisher&);
 
 public:
 	~Publisher();
@@ -78,12 +77,11 @@ class Subscriber {
 
 	friend class cameo::Server;
 	friend class cameo::application::Instance;
-	friend std::ostream& operator<<(std::ostream&, const Subscriber&);
 
 public:
 	~Subscriber();
 
-	static std::unique_ptr<Subscriber> create(Instance &instance, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(application::Instance &instance, const std::string &publisherName);
 
 	const std::string& getPublisherName() const;
 	const std::string& getInstanceName() const;
@@ -120,15 +118,16 @@ private:
 	Subscriber(Server *server, int publisherPort, int synchronizerPort, const std::string &publisherName, int numberOfSubscribers, const std::string &instanceName, int instanceId, const std::string &instanceEndpoint, const std::string &statusEndpoint);
 	void init();
 
-	static std::unique_ptr<application::Subscriber> createSubscriber(Instance &instance, const std::string &publisherName, const std::string &instanceName);
+	static std::unique_ptr<Subscriber> createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);
 	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
 	std::unique_ptr<SubscriberImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
-std::ostream& operator<<(std::ostream&, const cameo::application::Publisher&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Subscriber&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 
 }
 }
+

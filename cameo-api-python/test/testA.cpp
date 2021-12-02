@@ -107,9 +107,9 @@ TEST_CASE("requester") {
 	// why returning a smart pointer instead of an object?
 	// what is exactly an instance? what does it represent?
 
-	std::unique_ptr<cameo::application::Requester> requester =
-	    //   cameo::application::Requester::create( *responderServer, CAMEO_RESPONDER);
-	    cameo::application::Requester::create(*responder_instance, CAMEO_RESPONDER);
+	std::unique_ptr<cameo::coms::Requester> requester =
+	    //   cameo::coms::Requester::create( *responderServer, CAMEO_RESPONDER);
+	    cameo::coms::Requester::create(*responder_instance, CAMEO_RESPONDER);
 
 
 	// requester->send(TEXT);
@@ -132,9 +132,9 @@ TEST_CASE("responder") {
 	std::cout << "Name: " << cameo::application::This::getName() << std::endl;
 	std::cout << "Id: " << cameo::application::This::getId() << std::endl;
 	std::cout << "Timeout: " << cameo::application::This::getTimeout() << std::endl;
-	std::unique_ptr<cameo::application::Responder> responder;
+	std::unique_ptr<cameo::coms::Responder> responder;
 	try {
-		responder = cameo::application::Responder::create(CAMEO_RESPONDER);
+		responder = cameo::coms::Responder::create(CAMEO_RESPONDER);
 		std::cout << "Created responder " << *responder << std::endl;
 	} catch (const cameo::ResponderCreationException& e) {
 		std::cout << "Responder error" << std::endl;
@@ -144,7 +144,7 @@ TEST_CASE("responder") {
 	// this ensures that both are at this stage: requester and responder
 	std::unique_ptr<cameo::application::Instance> starter = cameo::application::This::connectToStarter();
 
-	std::unique_ptr<cameo::application::Request> request = responder->receive();
+	std::unique_ptr<cameo::coms::Request> request = responder->receive();
 	CHECK(request->getBinary() == TEXT);
 	//  CHECK(request->getObjectId() == " ");
 	request->replyBinary(TEXT);
@@ -178,8 +178,8 @@ TEST_CASE("subscriber") {
 	CHECK(publisher_instance->getId() == publisherServer->getId());
 	// publisher_instance and publisherServer are the SAME!
 
-	std::unique_ptr<cameo::application::Subscriber> subscriber =
-	    cameo::application::Subscriber::create(*publisher_instance, publisher_name);
+	std::unique_ptr<cameo::coms::Subscriber> subscriber =
+	    cameo::coms::Subscriber::create(*publisher_instance, publisher_name);
 	CHECK(subscriber->getPublisherName() == publisher_name);
 	
 	auto message = subscriber->receiveBinary();
@@ -198,9 +198,9 @@ TEST_CASE("publisher") { // it is started from the subscriber
 	std::cout << "Name: " << cameo::application::This::getName() << std::endl;
 	std::cout << "Id: " << cameo::application::This::getId() << std::endl;
 	std::cout << "Timeout: " << cameo::application::This::getTimeout() << std::endl;
-	std::unique_ptr<cameo::application::Publisher> publisher;
+	std::unique_ptr<cameo::coms::Publisher> publisher;
 	try {
-		publisher = cameo::application::Publisher::create(CAMEO_PUBLISHER);
+		publisher = cameo::coms::Publisher::create(CAMEO_PUBLISHER);
 		std::cout << "Created publisher " << *publisher << std::endl;
 	} catch (const cameo::PublisherCreationException& e) {
 		std::cout << "Publisher error" << std::endl;

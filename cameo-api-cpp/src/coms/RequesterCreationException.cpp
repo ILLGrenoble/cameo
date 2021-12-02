@@ -17,9 +17,11 @@
 #include "RequesterCreationException.h"
 
 namespace cameo {
+namespace coms {
 
 RequesterCreationException::RequesterCreationException(const std::string& message) :
 	RemoteException(message) {
 }
 
+}
 }

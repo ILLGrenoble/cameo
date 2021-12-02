@@ -27,13 +27,12 @@
 using namespace std;
 
 namespace cameo {
-namespace application {
-
+namespace coms {
 
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-Publisher::Publisher(This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
+Publisher::Publisher(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
 	m_impl(new PublisherImpl(application, publisherPort, synchronizerPort, name, numberOfSubscribers)) {
 
 	// Create the waiting here.
@@ -45,7 +44,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(createCreatePublisherRequest(This::m_instance.m_id, name, numberOfSubscribers));
+	unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
 
 	// Get the JSON response.
 	json::Object response;
@@ -57,7 +56,7 @@ std::unique_ptr<Publisher> Publisher::create(const std::string& name, int number
 	}
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 
-	return unique_ptr<Publisher>(new Publisher(&This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
+	return unique_ptr<Publisher>(new Publisher(&application::This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
 }
 
 
@@ -138,7 +137,7 @@ Subscriber::Subscriber(Server * server, int publisherPort, int synchronizerPort,
 Subscriber::~Subscriber() {
 }
 
-std::unique_ptr<application::Subscriber> Subscriber::createSubscriber(Instance & instance, const std::string& publisherName, const std::string& instanceName) {
+std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
 
 	// Get the JSON response.
 	json::Object response = instance.getCom().request(createConnectPublisherRequest(instance.m_id, publisherName));
@@ -152,13 +151,13 @@ std::unique_ptr<application::Subscriber> Subscriber::createSubscriber(Instance &
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
 	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	unique_ptr<application::Subscriber> subscriber(new application::Subscriber(instance.m_server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
+	unique_ptr<Subscriber> subscriber(new Subscriber(instance.m_server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
 	subscriber->init();
 
 	return subscriber;
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(Instance & instance, const std::string& publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance, const std::string& publisherName) {
 	try {
 		return createSubscriber(instance, publisherName, instance.m_name);
 
@@ -167,13 +166,13 @@ std::unique_ptr<Subscriber> Subscriber::create(Instance & instance, const std::s
 	}
 
 	// waiting for the publisher
-	State lastState = instance.waitFor(publisherName);
+	application::State lastState = instance.waitFor(publisherName);
 
 	// state cannot be terminal or it means that the application has terminated that is not planned.
-	if (lastState == SUCCESS
-		|| lastState == STOPPED
-		|| lastState == KILLED
-		|| lastState == FAILURE) {
+	if (lastState == application::SUCCESS
+		|| lastState == application::STOPPED
+		|| lastState == application::KILLED
+		|| lastState == application::FAILURE) {
 		return unique_ptr<Subscriber>(nullptr);
 	}
 
@@ -253,7 +252,7 @@ std::string Subscriber::createConnectPublisherRequest(int id, const std::string&
 	return request.toString();
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Publisher& publisher) {
+std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {
 
 	os << "pub." << publisher.getName()
 		<< ":" << publisher.getApplicationName()
@@ -263,7 +262,7 @@ std::ostream& operator<<(std::ostream& os, const application::Publisher& publish
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Subscriber& subscriber) {
+std::ostream& operator<<(std::ostream& os, const cameo::coms::Subscriber& subscriber) {
 
 	os << "sub." << subscriber.getPublisherName()
 		<< ":" << subscriber.getInstanceName()
@@ -275,3 +274,4 @@ std::ostream& operator<<(std::ostream& os, const application::Subscriber& subscr
 
 }
 }
+

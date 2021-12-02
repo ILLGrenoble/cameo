@@ -19,14 +19,14 @@
 #include "RequesterCreationException.h"
 
 namespace cameo {
-namespace application {
+namespace coms {
 
 ///////////////////////////////////////////////////////////////////////////
 // Request
 
 class Request {
 
-	friend class cameo::application::Responder;
+	friend class cameo::coms::Responder;
 	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
@@ -44,7 +44,7 @@ public:
 	bool replyBinary(const std::string& response);
 	bool reply(const std::string& response);
 
-	std::unique_ptr<Instance> connectToRequester();
+	std::unique_ptr<application::Instance> connectToRequester();
 
 	/**
 	 * Transfers the ownership of the requester server.
@@ -107,7 +107,7 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::unique_ptr<Requester> create(Instance& instance, const std::string& name);
+	static std::unique_ptr<Requester> create(application::Instance& instance, const std::string& name);
 
 	const std::string& getName() const;
 
@@ -137,9 +137,10 @@ private:
 	std::unique_ptr<WaitingImpl> m_waiting;
 };
 
-std::ostream& operator<<(std::ostream&, const cameo::application::Request&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Responder&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Requester&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Request&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Responder&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
 
 }
 }
+

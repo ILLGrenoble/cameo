@@ -28,6 +28,7 @@
 using namespace std;
 
 namespace cameo {
+namespace coms {
 
 const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
 std::mutex RequesterImpl::m_mutex;
@@ -206,3 +207,5 @@ void RequesterImpl::terminate() {
 }
 
 }
+}
+

@@ -29,6 +29,7 @@
 using namespace std;
 
 namespace cameo {
+namespace coms {
 
 const std::string ResponderImpl::RESPONDER_PREFIX = "rep.";
 
@@ -142,3 +143,5 @@ void ResponderImpl::terminate() {
 }
 
 }
+}
+

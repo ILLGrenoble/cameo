@@ -17,9 +17,12 @@
 #include "ResponderCreationException.h"
 
 namespace cameo {
+namespace coms {
 
 ResponderCreationException::ResponderCreationException(const std::string& message) :
 	RemoteException(message) {
 }
 
 }
+}
+

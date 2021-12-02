@@ -20,6 +20,7 @@
 #include "RemoteException.h"
 
 namespace cameo {
+namespace coms {
 
 class RequesterCreationException : public RemoteException {
 
@@ -27,6 +28,7 @@ public:
 	RequesterCreationException(const std::string& message);
 };
 
+}
 }
 
 #endif

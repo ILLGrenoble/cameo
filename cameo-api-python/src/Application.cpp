@@ -21,7 +21,9 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 #include <cameo/api/cameo.h>
+
 using namespace cameo::application;
+using namespace cameo::coms;
 
 #include <iostream>
 

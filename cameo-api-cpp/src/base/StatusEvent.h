@@ -17,9 +17,10 @@
 #ifndef CAMEO_STATUSEVENT_H_
 #define CAMEO_STATUSEVENT_H_
 
-#include <iostream>
 #include "Application.h"
 #include "Event.h"
+
+#include <iostream>
 
 namespace cameo {
 

@@ -29,6 +29,8 @@ namespace application {
 	class This;
 }
 
+namespace coms {
+
 class PublisherImpl {
 
 public:
@@ -69,6 +71,7 @@ public:
 	bool m_ended;
 };
 
+}
 }
 
 #endif

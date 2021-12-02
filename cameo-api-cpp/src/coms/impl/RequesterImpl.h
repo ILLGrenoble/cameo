@@ -34,6 +34,8 @@ namespace application {
 
 class RequestSocketImpl;
 
+namespace coms {
+
 class RequesterImpl {
 
 public:
@@ -71,6 +73,7 @@ public:
 	static int m_requesterCounter;
 };
 
+}
 }
 
 #endif

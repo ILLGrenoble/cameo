@@ -28,7 +28,7 @@
 using namespace std;
 
 namespace cameo {
-namespace application {
+namespace coms {
 
 ///////////////////////////////////////////////////////////////////////////
 // Request
@@ -83,7 +83,7 @@ bool Request::reply(const std::string& response) {
 	return m_impl->reply(response);
 }
 
-std::unique_ptr<Instance> Request::connectToRequester() {
+std::unique_ptr<application::Instance> Request::connectToRequester() {
 
 	// Instantiate the requester server if it does not exist.
 	if (m_requesterServer.get() == nullptr) {
@@ -91,16 +91,16 @@ std::unique_ptr<Instance> Request::connectToRequester() {
 	}
 
 	// Connect and find the instance.
-	InstanceArray instances = m_requesterServer->connectAll(m_impl->m_requesterApplicationName);
+	application::InstanceArray instances = m_requesterServer->connectAll(m_impl->m_requesterApplicationName);
 
 	for (int i = 0; i < instances.size(); i++) {
 		if (instances[i]->getId() == m_impl->m_requesterApplicationId) {
-			return unique_ptr<Instance>(std::move(instances[i]));
+			return unique_ptr<application::Instance>(std::move(instances[i]));
 		}
 	}
 
 	// Not found.
-	return unique_ptr<Instance>(nullptr);
+	return unique_ptr<application::Instance>(nullptr);
 }
 
 std::unique_ptr<Server> Request::getServer() {
@@ -124,7 +124,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	unique_ptr<zmq::message_t> reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortV0Request(This::m_instance.m_id, portName));
+	unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(application::This::m_instance.m_impl->createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	// Get the JSON response.
 	json::Object response;
@@ -135,7 +135,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 		throw ResponderCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
-	return unique_ptr<Responder>(new Responder(&This::m_instance, responderPort, name));
+	return unique_ptr<Responder>(new Responder(&application::This::m_instance, responderPort, name));
 }
 
 const std::string& Responder::getName() const {
@@ -172,20 +172,20 @@ Requester::Requester(application::This * application, const std::string& url, in
 Requester::~Requester() {
 }
 
-std::unique_ptr<Requester> Requester::create(Instance & instance, const std::string& name) {
+std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
 	string responderUrl = instance.getEndpoint().getProtocol() + "://" + instance.getEndpoint().getAddress();
 	string responderEndpoint = instance.getEndpoint().toString();
 
 	// Create a request socket to the server of the instance.
-	unique_ptr<RequestSocketImpl> instanceRequestSocket = This::m_instance.createRequestSocket(responderEndpoint);
+	unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::m_instance.createRequestSocket(responderEndpoint);
 
 	string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string request = This::m_instance.m_impl->createConnectPortV0Request(responderId, responderPortName);
+	string request = application::This::m_instance.m_impl->createConnectPortV0Request(responderId, responderPortName);
 
 	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(request);
 
@@ -213,7 +213,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	}
 
 	// Request a requester port.
-	reply = This::m_instance.m_requestSocket->request(This::m_instance.m_impl->createRequestPortV0Request(This::m_instance.m_id, requesterPortName));
+	reply = application::This::m_instance.m_requestSocket->request(application::This::m_instance.m_impl->createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
 	json::parse(response, reply.get());
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
@@ -222,7 +222,7 @@ std::unique_ptr<Requester> Requester::create(Instance & instance, const std::str
 	}
 
 	// TODO simplify the use of some variables: responderUrl.
-	return unique_ptr<Requester>(new Requester(&This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
+	return unique_ptr<Requester>(new Requester(&application::This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
 }
 
 const std::string& Requester::getName() const {
@@ -257,8 +257,7 @@ bool Requester::isCanceled() const {
 	return m_impl->m_canceled;
 }
 
-
-std::ostream& operator<<(std::ostream& os, const application::Request& request) {
+std::ostream& operator<<(std::ostream& os, const Request& request) {
 
 	os << "[endpoint=" << request.m_impl->m_requesterEndpoint
 			<< ", id=" << request.m_impl->m_requesterApplicationId << "]";
@@ -266,7 +265,7 @@ std::ostream& operator<<(std::ostream& os, const application::Request& request) 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Responder& responder) {
+std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
 	os << "rep." << responder.getName()
 		<< ":" << responder.m_impl->m_application->getName()
@@ -276,7 +275,7 @@ std::ostream& operator<<(std::ostream& os, const application::Responder& respond
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Requester& requester) {
+std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 	os << "req." << requester.getName()
 		<< "." << requester.m_impl->m_requesterId
@@ -286,7 +285,6 @@ std::ostream& operator<<(std::ostream& os, const application::Requester& request
 
 	return os;
 }
-
 
 }
 }

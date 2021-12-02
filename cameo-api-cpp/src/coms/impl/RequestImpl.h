@@ -27,6 +27,8 @@ namespace application {
 	class This;
 }
 
+namespace coms {
+
 class RequestImpl {
 
 public:
@@ -48,6 +50,7 @@ public:
 	int m_timeout;
 };
 
+}
 }
 
 #endif

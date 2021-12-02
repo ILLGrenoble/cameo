@@ -17,9 +17,11 @@
 #include "SubscriberCreationException.h"
 
 namespace cameo {
+namespace coms {
 
 SubscriberCreationException::SubscriberCreationException(const std::string& message) :
 	RemoteException(message) {
 }
 
+}
 }

@@ -29,6 +29,8 @@ namespace cameo {
 
 class Server;
 
+namespace coms {
+
 class SubscriberImpl {
 
 public:
@@ -64,6 +66,7 @@ public:
 	bool m_canceled;
 };
 
+}
 }
 
 #endif

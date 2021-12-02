@@ -29,6 +29,7 @@
 using namespace std;
 
 namespace cameo {
+namespace coms {
 
 SubscriberImpl::SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
 	m_server(server), // server associated with instance
@@ -232,5 +233,5 @@ std::string SubscriberImpl::createSubscribePublisherRequest() const {
 	return request.toString();
 }
 
-
+}
 }
