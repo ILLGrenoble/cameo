@@ -27,7 +27,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../include/JSON.h"
+#include "JSON.h"
 
 using namespace std;
 

@@ -20,9 +20,8 @@
 #include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "message/Message.h"
+#include "JSON.h"
 #include <iostream>
-
-#include "../include/JSON.h"
 
 using namespace std;
 

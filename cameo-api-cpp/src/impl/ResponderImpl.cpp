@@ -21,9 +21,8 @@
 #include "RequestImpl.h"
 #include "RequestSocketImpl.h"
 #include "message/Message.h"
+#include "JSON.h"
 #include <sstream>
-
-#include "../../include/JSON.h"
 
 using namespace std;
 

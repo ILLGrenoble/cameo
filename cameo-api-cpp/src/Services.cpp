@@ -24,7 +24,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "../include/JSON.h"
+#include "JSON.h"
 
 using namespace std;
 

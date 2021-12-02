@@ -2,7 +2,7 @@
 #include "Strings.h"
 #include "message/Message.h"
 #include <iostream>
-#include "../include/JSON.h"
+#include "JSON.h"
 
 using namespace std;
 using namespace cameo;

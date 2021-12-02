@@ -19,7 +19,7 @@
 #include "BadFormatException.h"
 #include <regex>
 #include <ostream>
-#include "../include/JSON.h"
+#include "JSON.h"
 
 using namespace std;
 

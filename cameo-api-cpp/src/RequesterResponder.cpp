@@ -16,7 +16,7 @@
 
 #include "RequesterResponder.h"
 
-#include "../include/JSON.h"
+#include "JSON.h"
 #include "Server.h"
 #include "impl/ServicesImpl.h"
 #include "impl/RequestSocketImpl.h"

@@ -19,10 +19,9 @@
 #include "ConnectionTimeout.h"
 #include "message/Message.h"
 #include "RequestSocketImpl.h"
+#include "JSON.h"
 #include <iostream>
 #include <sstream>
-
-#include "../../include/JSON.h"
 
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.
