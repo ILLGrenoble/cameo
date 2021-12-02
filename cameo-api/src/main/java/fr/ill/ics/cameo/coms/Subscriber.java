@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Application;
 import fr.ill.ics.cameo.Application.Instance;
 import fr.ill.ics.cameo.Application.This;
-import fr.ill.ics.cameo.SubscriberCreationException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.impl.ServicesImpl;

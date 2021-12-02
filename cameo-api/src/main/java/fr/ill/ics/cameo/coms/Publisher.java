@@ -3,7 +3,6 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Application.This;
-import fr.ill.ics.cameo.PublisherCreationException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.impl.ServicesImpl;

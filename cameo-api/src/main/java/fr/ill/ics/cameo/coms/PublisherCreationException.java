@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo;
+package fr.ill.ics.cameo.coms;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +15,13 @@ package fr.ill.ics.cameo;
  * limitations under the Licence.
  */
 
+import fr.ill.ics.cameo.RemoteException;
 
+public class PublisherCreationException extends RemoteException {
 
-public class PublisherDestructionException extends RemoteException {
+	private static final long serialVersionUID = 2440394258939550338L;
 	
-	private static final long serialVersionUID = 8083849907842136934L;
-		
-	public PublisherDestructionException(String message) {
+	public PublisherCreationException(String message) {
 		super(message);
 	}
 }
