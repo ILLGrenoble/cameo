@@ -2,7 +2,7 @@
 #include "Strings.h"
 #include <iostream>
 
-#include "../src/base/Requests.h"
+#include "../src/base/Messages.h"
 #include "JSON.h"
 
 using namespace std;

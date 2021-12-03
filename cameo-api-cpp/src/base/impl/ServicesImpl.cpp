@@ -20,9 +20,10 @@
 #include "ConnectionTimeout.h"
 #include "JSON.h"
 #include "RequestSocketImpl.h"
+#include "../Messages.h"
+
 #include <iostream>
 #include <sstream>
-#include "../Requests.h"
 
 // Using Visual Studio preprocessor.
 // It must be improved in case of other compilers.

@@ -18,9 +18,9 @@
 
 #include "BadFormatException.h"
 #include "JSON.h"
+#include "Messages.h"
 #include <regex>
 #include <ostream>
-#include "Requests.h"
 
 using namespace std;
 

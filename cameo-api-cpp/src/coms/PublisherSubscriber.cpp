@@ -18,7 +18,7 @@
 
 #include "../base/impl/RequestSocketImpl.h"
 #include "../base/impl/ServicesImpl.h"
-#include "../base/Requests.h"
+#include "../base/Messages.h"
 #include "impl/PublisherImpl.h"
 #include "impl/SubscriberImpl.h"
 #include "JSON.h"

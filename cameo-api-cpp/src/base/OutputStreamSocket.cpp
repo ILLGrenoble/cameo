@@ -20,8 +20,8 @@
 #include "impl/ServicesImpl.h"
 #include "impl/SocketWaitingImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "Messages.h"
 #include <iostream>
-#include "Requests.h"
 
 using namespace std;
 

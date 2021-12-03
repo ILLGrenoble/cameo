@@ -16,7 +16,7 @@
 
 #include "SocketWaitingImpl.h"
 
-#include "../Requests.h"
+#include "../Messages.h"
 #include "Application.h"
 #include "WaitingImplSet.h"
 

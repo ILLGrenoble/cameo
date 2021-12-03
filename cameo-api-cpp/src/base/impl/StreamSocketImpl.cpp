@@ -16,7 +16,7 @@
 
 #include "StreamSocketImpl.h"
 
-#include "../Requests.h"
+#include "../Messages.h"
 
 using namespace std;
 

@@ -33,11 +33,11 @@
 #include "impl/WaitingImplSet.h"
 #include "Strings.h"
 #include "Server.h"
+#include "Messages.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include "Requests.h"
 
 using namespace std;
 

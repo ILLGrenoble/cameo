@@ -14,13 +14,12 @@
  * limitations under the Licence.
  */
 
-#include "Requests.h"
-
 #include "JSON.h"
+#include "Messages.h"
 
 namespace cameo {
 
-std::string createSyncRequest(){
+std::string createSyncRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -29,7 +28,7 @@ std::string createSyncRequest(){
 	return request.toString();
 }
 
-std::string createSyncStreamRequest(const std::string& name){
+std::string createSyncStreamRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -41,7 +40,7 @@ std::string createSyncStreamRequest(const std::string& name){
 	return request.toString();
 }
 
-std::string createVersionRequest(){
+std::string createVersionRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -50,7 +49,7 @@ std::string createVersionRequest(){
 	return request.toString();
 }
 
-std::string createIsAliveRequest(int id){
+std::string createIsAliveRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -62,7 +61,7 @@ std::string createIsAliveRequest(int id){
 	return request.toString();
 }
 
-std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint){
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -98,7 +97,7 @@ std::string createStartRequest(const std::string& name, const std::vector<std::s
 	return request.toString();
 }
 
-std::string createSetStopHandlerRequest(int id, int stoppingTime){
+std::string createSetStopHandlerRequest(int id, int stoppingTime) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -113,7 +112,7 @@ std::string createSetStopHandlerRequest(int id, int stoppingTime){
 	return request.toString();
 }
 
-std::string createStopRequest(int id){
+std::string createStopRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -125,7 +124,7 @@ std::string createStopRequest(int id){
 	return request.toString();
 }
 
-std::string createKillRequest(int id){
+std::string createKillRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -137,7 +136,7 @@ std::string createKillRequest(int id){
 	return request.toString();
 }
 
-std::string createConnectRequest(const std::string& name){
+std::string createConnectRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -149,7 +148,7 @@ std::string createConnectRequest(const std::string& name){
 	return request.toString();
 }
 
-std::string createConnectWithIdRequest(int id){
+std::string createConnectWithIdRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -161,7 +160,7 @@ std::string createConnectWithIdRequest(int id){
 	return request.toString();
 }
 
-std::string createListRequest(){
+std::string createListRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -170,7 +169,7 @@ std::string createListRequest(){
 	return request.toString();
 }
 
-std::string createAppsRequest(){
+std::string createAppsRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -179,7 +178,7 @@ std::string createAppsRequest(){
 	return request.toString();
 }
 
-std::string createStreamStatusRequest(){
+std::string createStreamStatusRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -188,7 +187,7 @@ std::string createStreamStatusRequest(){
 	return request.toString();
 }
 
-std::string createOutputPortWithIdRequest(int id){
+std::string createOutputPortWithIdRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -200,7 +199,7 @@ std::string createOutputPortWithIdRequest(int id){
 	return request.toString();
 }
 
-std::string createOutputPortRequest(const std::string& name){
+std::string createOutputPortRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -212,7 +211,7 @@ std::string createOutputPortRequest(const std::string& name){
 	return request.toString();
 }
 
-std::string createSetStatusRequest(int id, int32_t state){
+std::string createSetStatusRequest(int id, int32_t state) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -227,7 +226,7 @@ std::string createSetStatusRequest(int id, int32_t state){
 	return request.toString();
 }
 
-std::string createGetStatusRequest(int id){
+std::string createGetStatusRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -239,7 +238,7 @@ std::string createGetStatusRequest(int id){
 	return request.toString();
 }
 
-std::string createSetResultRequest(int id){
+std::string createSetResultRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -251,7 +250,7 @@ std::string createSetResultRequest(int id){
 	return request.toString();
 }
 
-std::string createRequestPortV0Request(int id, const std::string& name){
+std::string createRequestPortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -266,7 +265,7 @@ std::string createRequestPortV0Request(int id, const std::string& name){
 	return request.toString();
 }
 
-std::string createConnectPortV0Request(int id, const std::string& name){
+std::string createConnectPortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -281,7 +280,7 @@ std::string createConnectPortV0Request(int id, const std::string& name){
 	return request.toString();
 }
 
-std::string createRemovePortV0Request(int id, const std::string& name){
+std::string createRemovePortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -296,7 +295,7 @@ std::string createRemovePortV0Request(int id, const std::string& name){
 	return request.toString();
 }
 
-std::string createAttachUnmanagedRequest(const std::string& name, long pid){
+std::string createAttachUnmanagedRequest(const std::string& name, long pid) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -311,7 +310,7 @@ std::string createAttachUnmanagedRequest(const std::string& name, long pid){
 	return request.toString();
 }
 
-std::string createDetachUnmanagedRequest(int id){
+std::string createDetachUnmanagedRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -323,7 +322,7 @@ std::string createDetachUnmanagedRequest(int id){
 	return request.toString();
 }
 
-std::string createRequestResponse(int64_t value){
+std::string createRequestResponse(int64_t value) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -338,7 +337,7 @@ std::string createRequestResponse(int64_t value){
 	return request.toString();
 }
 
-std::string createRequestResponse(int64_t value, const std::string& message){
+std::string createRequestResponse(int64_t value, const std::string& message) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
