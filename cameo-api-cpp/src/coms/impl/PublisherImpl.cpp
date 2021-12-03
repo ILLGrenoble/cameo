@@ -19,9 +19,9 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "Requests.h"
 #include "../../base/impl/RequestSocketImpl.h"
 #include "../../base/impl/ServicesImpl.h"
+#include "../../base/Requests.h"
 #include <sstream>
 
 using namespace std;
@@ -241,7 +241,7 @@ zmq::message_t * PublisherImpl::processInitCommand() {
 
 zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
-	string result = m_application->m_impl->createRequestResponse(0, "OK");
+	string result = createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy(reply->data(), result.c_str(), result.length());
@@ -251,7 +251,7 @@ zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
 zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 
-	string result = m_application->m_impl->createRequestResponse(0, "OK");
+	string result = createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy(reply->data(), result.c_str(), result.length());

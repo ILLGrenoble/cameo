@@ -33,12 +33,11 @@
 #include "impl/WaitingImplSet.h"
 #include "Strings.h"
 #include "Server.h"
-#include "Requests.h"
-
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include "Requests.h"
 
 using namespace std;
 
@@ -318,7 +317,7 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAttachUnmanagedRequest(m_name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAttachUnmanagedRequest(m_name, m_instance.m_impl->getPid()));
 
 	// Get the JSON response.
 	json::Object response;
@@ -329,12 +328,12 @@ int This::initUnmanagedApplication() {
 
 void This::terminateUnmanagedApplication() {
 
-	m_requestSocket->request(m_impl->createDetachUnmanagedRequest(m_id));
+	m_requestSocket->request(createDetachUnmanagedRequest(m_id));
 }
 
 bool This::setRunning() {
 
-	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(m_instance.m_impl->createSetStatusRequest(m_instance.m_id, RUNNING));
+	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(createSetStatusRequest(m_instance.m_id, RUNNING));
 
 	// Get the JSON response.
 	json::Object response;
@@ -350,7 +349,7 @@ bool This::setRunning() {
 
 void This::setBinaryResult(const std::string& data) {
 
-	m_instance.m_requestSocket->request(m_instance.m_impl->createSetResultRequest(m_instance.m_id), data);
+	m_instance.m_requestSocket->request(createSetResultRequest(m_instance.m_id), data);
 }
 
 void This::setResult(const std::string& data) {
@@ -362,7 +361,7 @@ void This::setResult(const std::string& data) {
 
 State This::getState(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object event;
@@ -373,7 +372,7 @@ State This::getState(int id) const {
 
 bool This::removePort(const std::string& name) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemovePortV0Request(m_id, name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemovePortV0Request(m_id, name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -447,7 +446,7 @@ void This::stoppingFunction(StopFunctionType stop) {
 void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
-	m_requestSocket->request(m_impl->createSetStopHandlerRequest(m_id, stoppingTime));
+	m_requestSocket->request(createSetStopHandlerRequest(m_id, stoppingTime));
 
 	// Create the handler.
 	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(bind(&This::stoppingFunction, this, function)));

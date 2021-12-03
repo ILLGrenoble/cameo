@@ -15,7 +15,8 @@
  */
 
 #include "StreamSocketImpl.h"
-#include "Requests.h"
+
+#include "../Requests.h"
 
 using namespace std;
 

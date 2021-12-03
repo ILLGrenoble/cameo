@@ -16,9 +16,9 @@
 
 #include "SocketWaitingImpl.h"
 
+#include "../Requests.h"
 #include "Application.h"
 #include "WaitingImplSet.h"
-#include "Requests.h"
 
 using namespace std;
 

@@ -149,7 +149,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
+		unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
 
 		// Get the JSON response.
 		json::Object response;
@@ -179,10 +179,10 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	string request;
 
 	if (immediately) {
-		request = m_impl->createKillRequest(id);
+		request = createKillRequest(id);
 	}
 	else {
-		request = m_impl->createStopRequest(id);
+		request = createStopRequest(id);
 	}
 
 	unique_ptr<zmq::message_t> reply = m_requestSocket->request(request);
@@ -201,7 +201,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectRequest(name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectRequest(name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -279,7 +279,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createConnectWithIdRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectWithIdRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -332,7 +332,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createIsAliveRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createIsAliveRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -345,7 +345,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	vector<application::Configuration> configs;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createListRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createListRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -382,7 +382,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	vector<application::Info> infos;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createAppsRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAppsRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -434,7 +434,7 @@ std::vector<application::Port> Server::getPorts() const {
 
 	vector<application::Port> ports;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortsRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortsRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -461,7 +461,7 @@ std::vector<application::Port> Server::getPorts() const {
 
 application::State Server::getActualState(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -472,7 +472,7 @@ application::State Server::getActualState(int id) const {
 
 std::set<application::State> Server::getPastStates(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetStatusRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -535,7 +535,7 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStoreKeyValueRequest(id, key, value));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStoreKeyValueRequest(id, key, value));
 
 	// Get the JSON response.
 	json::Object response;
@@ -544,7 +544,7 @@ void Server::storeKeyValue(int id, const std::string& key, const std::string& va
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createGetKeyValueRequest(id, key));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetKeyValueRequest(id, key));
 
 	// Get the JSON response.
 	json::Object response;
@@ -566,7 +566,7 @@ std::string Server::getKeyValue(int id, const std::string& key) {
 
 void Server::removeKey(int id, const std::string& key) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRemoveKeyRequest(id, key));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemoveKeyRequest(id, key));
 
 	// Get the JSON response.
 	json::Object response;
@@ -583,7 +583,7 @@ void Server::removeKey(int id, const std::string& key) {
 
 int Server::requestPort(int id) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createRequestPortRequest(id));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRequestPortRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -599,7 +599,7 @@ int Server::requestPort(int id) {
 
 void Server::setPortUnavailable(int id, int port) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createPortUnavailableRequest(id, port));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortUnavailableRequest(id, port));
 
 	// Get the JSON response.
 	json::Object response;
@@ -613,7 +613,7 @@ void Server::setPortUnavailable(int id, int port) {
 
 void Server::releasePort(int id, int port) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createReleasePortRequest(id, port));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createReleasePortRequest(id, port));
 
 	// Get the JSON response.
 	json::Object response;

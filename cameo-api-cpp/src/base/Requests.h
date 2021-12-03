@@ -14,10 +14,11 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_MESSAGE_H_
-#define CAMEO_MESSAGE_H_
+#ifndef CAMEO_REQUESTS_H_
+#define CAMEO_REQUESTS_H_
 
 #include <string>
+#include <vector>
 
 namespace cameo {
 
@@ -321,7 +322,41 @@ namespace message {
 	namespace PortInfoListResponse {
 		constexpr const char* PORT_INFO = "portInfo"; // multiple PortInfo
 	}
+
 }
+
+std::string createSyncRequest();
+std::string createSyncStreamRequest(const std::string& name);
+std::string createVersionRequest();
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint);
+std::string createSetStopHandlerRequest(int id, int stoppingTime);
+std::string createStopRequest(int id);
+std::string createKillRequest(int id);
+std::string createConnectRequest(const std::string& name);
+std::string createConnectWithIdRequest(int id);
+std::string createIsAliveRequest(int id);
+std::string createListRequest();
+std::string createAppsRequest();
+std::string createStreamStatusRequest();
+std::string createSetStatusRequest(int id, int32_t state);
+std::string createGetStatusRequest(int id);
+std::string createSetResultRequest(int id);
+std::string createRequestPortV0Request(int id, const std::string& name);
+std::string createConnectPortV0Request(int id, const std::string& name);
+std::string createRemovePortV0Request(int id, const std::string& name);
+std::string createAttachUnmanagedRequest(const std::string& name, long pid);
+std::string createDetachUnmanagedRequest(int id);
+std::string createOutputPortWithIdRequest(int id);
+std::string createOutputPortRequest(const std::string& name);
+std::string createRequestResponse(int64_t value);
+std::string createRequestResponse(int64_t value, const std::string& message);
+std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
+std::string createGetKeyValueRequest(int id, const std::string& key);
+std::string createRemoveKeyRequest(int id, const std::string& key);
+std::string createRequestPortRequest(int id);
+std::string createPortUnavailableRequest(int id, int port);
+std::string createReleasePortRequest(int id, int port);
+std::string createPortsRequest();
 
 }
 

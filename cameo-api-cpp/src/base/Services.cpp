@@ -110,7 +110,7 @@ bool Services::isAvailable(int timeout) const {
 void Services::retrieveServerVersion() {
 
 	// Get the version.
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createVersionRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createVersionRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -124,7 +124,7 @@ void Services::retrieveServerVersion() {
 void Services::initStatus() {
 
 	// Get the status port.
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createStreamStatusRequest());
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStreamStatusRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -166,7 +166,7 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 
 int Services::getStreamPort(const std::string& name) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(m_impl->createOutputPortRequest(name));
+	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createOutputPortRequest(name));
 
 	// Get the JSON response.
 	json::Object response;

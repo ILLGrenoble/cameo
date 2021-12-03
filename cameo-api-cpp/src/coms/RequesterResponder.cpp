@@ -18,11 +18,11 @@
 
 #include "../base/impl/RequestSocketImpl.h"
 #include "../base/impl/ServicesImpl.h"
+#include "../base/Requests.h"
 #include "impl/RequesterImpl.h"
 #include "impl/RequestImpl.h"
 #include "impl/ResponderImpl.h"
 #include "JSON.h"
-#include "Requests.h"
 #include "Server.h"
 
 using namespace std;
@@ -124,7 +124,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(application::This::m_instance.m_impl->createRequestPortV0Request(application::This::m_instance.m_id, portName));
+	unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	// Get the JSON response.
 	json::Object response;
@@ -185,7 +185,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	int requesterId = RequesterImpl::newRequesterId();
 	string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
-	string request = application::This::m_instance.m_impl->createConnectPortV0Request(responderId, responderPortName);
+	string request = createConnectPortV0Request(responderId, responderPortName);
 
 	unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(request);
 
@@ -213,7 +213,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// Request a requester port.
-	reply = application::This::m_instance.m_requestSocket->request(application::This::m_instance.m_impl->createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
+	reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
 	json::parse(response, reply.get());
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();

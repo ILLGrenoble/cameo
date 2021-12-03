@@ -17,11 +17,11 @@
 #include "OutputStreamSocket.h"
 
 #include "JSON.h"
-#include "Requests.h"
 #include "impl/ServicesImpl.h"
 #include "impl/SocketWaitingImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include <iostream>
+#include "Requests.h"
 
 using namespace std;
 
