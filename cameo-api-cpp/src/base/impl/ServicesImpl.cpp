@@ -19,9 +19,8 @@
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "JSON.h"
+#include "Requests.h"
 #include "RequestSocketImpl.h"
-#include "../Message.h"
-
 #include <iostream>
 #include <sstream>
 

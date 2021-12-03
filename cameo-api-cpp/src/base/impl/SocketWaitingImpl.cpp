@@ -18,7 +18,7 @@
 
 #include "Application.h"
 #include "WaitingImplSet.h"
-#include "../Message.h"
+#include "Requests.h"
 
 using namespace std;
 

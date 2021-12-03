@@ -19,10 +19,9 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
+#include "Requests.h"
 #include "../../base/impl/RequestSocketImpl.h"
 #include "../../base/impl/ServicesImpl.h"
-#include "../../base/Message.h"
-
 #include <sstream>
 
 using namespace std;

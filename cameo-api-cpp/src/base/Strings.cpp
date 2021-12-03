@@ -18,8 +18,7 @@
 
 #include "BadFormatException.h"
 #include "JSON.h"
-#include "Message.h"
-
+#include "Requests.h"
 #include <regex>
 #include <ostream>
 

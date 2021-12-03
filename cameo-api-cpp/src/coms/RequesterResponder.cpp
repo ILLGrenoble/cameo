@@ -18,11 +18,11 @@
 
 #include "../base/impl/RequestSocketImpl.h"
 #include "../base/impl/ServicesImpl.h"
-#include "../base/Message.h"
 #include "impl/RequesterImpl.h"
 #include "impl/RequestImpl.h"
 #include "impl/ResponderImpl.h"
 #include "JSON.h"
+#include "Requests.h"
 #include "Server.h"
 
 using namespace std;

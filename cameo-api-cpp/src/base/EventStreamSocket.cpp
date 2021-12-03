@@ -24,7 +24,7 @@
 #include "impl/SocketWaitingImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "JSON.h"
-#include "Message.h"
+#include "Requests.h"
 
 using namespace std;
 

@@ -31,9 +31,9 @@
 #include "impl/StreamSocketImpl.h"
 #include "impl/WaitingImpl.h"
 #include "impl/WaitingImplSet.h"
-#include "Message.h"
 #include "Strings.h"
 #include "Server.h"
+#include "Requests.h"
 
 #include <sstream>
 #include <iostream>

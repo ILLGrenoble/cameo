@@ -2,8 +2,8 @@
 #include "Strings.h"
 #include <iostream>
 
-#include "../src/base/Message.h"
 #include "JSON.h"
+#include "Requests.h"
 
 using namespace std;
 using namespace cameo;

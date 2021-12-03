@@ -21,8 +21,7 @@
 #include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "JSON.h"
-#include "Message.h"
-
+#include "Requests.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
