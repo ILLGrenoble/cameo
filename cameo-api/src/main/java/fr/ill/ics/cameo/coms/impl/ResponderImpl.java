@@ -138,10 +138,12 @@ public class ResponderImpl {
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
-		
-		requestSocket.request(application.message(request));
+		requestSocket.request(message);
 		
 		// Terminate the socket.
 		requestSocket.terminate();

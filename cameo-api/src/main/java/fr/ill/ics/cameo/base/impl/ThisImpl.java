@@ -189,13 +189,14 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void setResult(byte[] data) {
 		
-		Zmq.Msg request = message(Messages.createSetResultRequest(id));
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(Messages.createSetResultRequest(id)));
 		
 		// Add the data in a second frame.
-		request.add(data);
+		message.add(data);
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(message);
 			
 			// Get the JSON response object.
 			JSONObject response = parse(reply);

@@ -226,7 +226,10 @@ public class PublisherImpl {
 		response.put(Messages.RequestResponse.VALUE, 0);
 		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
-		return application.message(response);
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(response));
+		
+		return message;
 	}
 	
 	@Override

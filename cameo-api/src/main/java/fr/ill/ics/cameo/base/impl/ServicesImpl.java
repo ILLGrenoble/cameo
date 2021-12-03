@@ -213,12 +213,4 @@ public class ServicesImpl {
 		return requestSocket;
 	}
 	
-	public static Zmq.Msg message(JSONObject object) {
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(object));
-
-		return message;
-	}
-	
 }

@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.SocketException;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestSocket {
 
@@ -77,11 +78,19 @@ public class RequestSocket {
 	}
 	
 	public Zmq.Msg request(JSONObject request, int overrideTimeout) throws ConnectionTimeout {
-		return request(ServicesImpl.message(request), overrideTimeout);
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
+		return request(message, overrideTimeout);
 	}
 	
 	public Zmq.Msg request(JSONObject request) throws ConnectionTimeout {
-		return request(ServicesImpl.message(request), -1);
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
+		return request(message, -1);
 	}
 	
 	public void terminate() {

@@ -66,7 +66,8 @@ public class RequestImpl {
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.RESPONSE);
 		
-		Zmq.Msg message = application.message(request);
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
 		
 		// Set request in the next frame.
 		message.add(response);

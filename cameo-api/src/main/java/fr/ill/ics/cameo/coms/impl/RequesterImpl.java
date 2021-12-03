@@ -87,7 +87,8 @@ public class RequesterImpl {
 		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
-		Zmq.Msg message = application.message(request);
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
 		
 		// Set request in the next frame.
 		message.add(requestData);
@@ -109,7 +110,8 @@ public class RequesterImpl {
 		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
-		Zmq.Msg message = application.message(request);
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
 		
 		// Set request1 and request2 in the next frames.
 		message.add(requestData1);
@@ -173,9 +175,12 @@ public class RequesterImpl {
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
-		requestSocket.request(application.message(request));
+		requestSocket.request(message);
 		
 		// Terminate the socket.
 		requestSocket.terminate();
