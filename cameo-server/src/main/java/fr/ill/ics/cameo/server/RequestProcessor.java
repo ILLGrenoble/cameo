@@ -42,7 +42,7 @@ import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.PortInfo;
 import fr.ill.ics.cameo.manager.StatusInfo;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.server.Server.Version;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -78,14 +78,14 @@ public class RequestProcessor {
 		reply.add("OK");
 		
 		// Get the publisher.
-		Zmq.Socket publisher = manager.getStreamPublisher(JSON.getString(request, Message.SyncStreamRequest.NAME));
+		Zmq.Socket publisher = manager.getStreamPublisher(JSON.getString(request, Messages.SyncStreamRequest.NAME));
 		
 		// Publish a SYNCSTREAM event.
 		if (publisher != null) {
 			JSONObject event = new JSONObject();
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
-			Manager.publishSynchronized(publisher, Message.Event.SYNCSTREAM, Message.serialize(event));
+			Manager.publishSynchronized(publisher, Messages.Event.SYNCSTREAM, Messages.serialize(event));
 		}
 		
 		return reply;
@@ -104,7 +104,7 @@ public class RequestProcessor {
 		try {
 			// Convert the args.
 			String[] args = null;
-			JSONArray list = JSON.getArray(request, Message.StartRequest.ARGS);
+			JSONArray list = JSON.getArray(request, Messages.StartRequest.ARGS);
 			if (list != null) {
 				args = new String[list.size()];
 				for (int i = 0; i < list.size(); i++) {
@@ -112,13 +112,13 @@ public class RequestProcessor {
 				}
 			}
 			
-			JSONObject starterObject = JSON.getObject(request, Message.ApplicationIdentity.STARTER);
+			JSONObject starterObject = JSON.getObject(request, Messages.ApplicationIdentity.STARTER);
 			ApplicationIdentity starter = null;
 			if (starterObject != null) {
-				String endpoint = JSON.getString(starterObject, Message.ApplicationIdentity.SERVER);
+				String endpoint = JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER);
 				try {
-					starter = new ApplicationIdentity(JSON.getString(starterObject, Message.ApplicationIdentity.NAME),
-														JSON.getInt(starterObject, Message.ApplicationIdentity.ID),
+					starter = new ApplicationIdentity(JSON.getString(starterObject, Messages.ApplicationIdentity.NAME),
+														JSON.getInt(starterObject, Messages.ApplicationIdentity.ID),
 														Endpoint.parse(endpoint));
 				}
 				catch (Exception e) {
@@ -127,22 +127,22 @@ public class RequestProcessor {
 			}
 			
 			// Start the application.
-			Application application = manager.startApplication(JSON.getString(request, Message.StartRequest.NAME), 
+			Application application = manager.startApplication(JSON.getString(request, Messages.StartRequest.NAME), 
 																args,
 																starter);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, application.getId());
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, application.getId());
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, Long.valueOf(-1));
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, Long.valueOf(-1));
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 
 			return Converter.reply(response);
 		}
@@ -169,16 +169,16 @@ public class RequestProcessor {
 			ApplicationInfo application = it.next();
 			
 			JSONObject applicationInfo = new JSONObject();
-			applicationInfo.put(Message.ApplicationInfo.ID, application.getId());
-			applicationInfo.put(Message.ApplicationInfo.ARGS, application.getArgs());
-			applicationInfo.put(Message.ApplicationInfo.NAME, application.getName());
-			applicationInfo.put(Message.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-			applicationInfo.put(Message.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-			applicationInfo.put(Message.ApplicationInfo.PID, application.getPid());
+			applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
+			applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
+			applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
+			applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+			applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+			applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
 			
 			array.add(applicationInfo);
 		}
-		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
 		return Converter.reply(response);
 	}
@@ -188,20 +188,20 @@ public class RequestProcessor {
 		Log.logger().fine("Received SetStopHandler request");
 		
 		try {
-			manager.setApplicationStopHandler(JSON.getInt(request, Message.SetStopHandlerRequest.ID), JSON.getInt(request, Message.SetStopHandlerRequest.STOPPING_TIME));
+			manager.setApplicationStopHandler(JSON.getInt(request, Messages.SetStopHandlerRequest.ID), JSON.getInt(request, Messages.SetStopHandlerRequest.STOPPING_TIME));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -220,20 +220,20 @@ public class RequestProcessor {
 		Log.logger().fine("Received Stop request");
 		
 		try {
-			String applicationName = manager.stopApplication(JSON.getInt(request, Message.StopRequest.ID));
+			String applicationName = manager.stopApplication(JSON.getInt(request, Messages.StopRequest.ID));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, applicationName);
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -251,20 +251,20 @@ public class RequestProcessor {
 		Log.logger().fine("Received Kill request");
 		
 		try {
-			String applicationName = manager.killApplication(JSON.getInt(request, Message.StopRequest.ID));
+			String applicationName = manager.killApplication(JSON.getInt(request, Messages.StopRequest.ID));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, applicationName);
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -281,7 +281,7 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received Connect request");
 		
-		String applicationName = JSON.getString(request, Message.ConnectRequest.NAME);
+		String applicationName = JSON.getString(request, Messages.ConnectRequest.NAME);
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
@@ -296,17 +296,17 @@ public class RequestProcessor {
 			
 			// Filtering on the application name.
 			if (applicationName.equals(application.getName())) {
-				applicationInfo.put(Message.ApplicationInfo.ID, application.getId());
-				applicationInfo.put(Message.ApplicationInfo.ARGS, application.getArgs());
-				applicationInfo.put(Message.ApplicationInfo.NAME, application.getName());
-				applicationInfo.put(Message.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-				applicationInfo.put(Message.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-				applicationInfo.put(Message.ApplicationInfo.PID, application.getPid());
+				applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
+				applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
+				applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
+				applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+				applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+				applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
 				
 				array.add(applicationInfo);
 			}
 		}
-		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
 		return Converter.reply(response);
 	}
@@ -315,7 +315,7 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received ConnectWithId request");
 		
-		int applicationId = JSON.getInt(request, Message.ConnectWithIdRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.ConnectWithIdRequest.ID);
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
@@ -330,17 +330,17 @@ public class RequestProcessor {
 			
 			// Filtering on the application name.
 			if (applicationId == application.getId()) {
-				applicationInfo.put(Message.ApplicationInfo.ID, application.getId());
-				applicationInfo.put(Message.ApplicationInfo.ARGS, application.getArgs());
-				applicationInfo.put(Message.ApplicationInfo.NAME, application.getName());
-				applicationInfo.put(Message.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-				applicationInfo.put(Message.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-				applicationInfo.put(Message.ApplicationInfo.PID, application.getPid());
+				applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
+				applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
+				applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
+				applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+				applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+				applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
 				
 				array.add(applicationInfo);
 			}
 		}
-		response.put(Message.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
 		return Converter.reply(response);
 	}
@@ -357,20 +357,20 @@ public class RequestProcessor {
 		Log.logger().fine("Received OutputPortWithId request");
 				
 		try {
-			int port = manager.getStreamPort(JSON.getInt(request, Message.OutputPortWithIdRequest.ID));
+			int port = manager.getStreamPort(JSON.getInt(request, Messages.OutputPortWithIdRequest.ID));
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, port);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, port);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (java.lang.ArrayIndexOutOfBoundsException | IdNotFoundException | UnknownApplicationException | StreamNotPublishedException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -387,11 +387,11 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received IsAlive request");
 		
-		boolean isAlive = manager.isAlive(JSON.getInt(request, Message.IsAliveRequest.ID));
+		boolean isAlive = manager.isAlive(JSON.getInt(request, Messages.IsAliveRequest.ID));
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.IsAliveResponse.IS_ALIVE, isAlive);
+		response.put(Messages.IsAliveResponse.IS_ALIVE, isAlive);
 		
 		return Converter.reply(response);
 	}
@@ -408,7 +408,7 @@ public class RequestProcessor {
 		Log.logger().fine("Received WriteInput request");
 		
 		// Convert the parameters.
-		JSONArray list = JSON.getArray(request, Message.WriteInputRequest.PARAMETERS);
+		JSONArray list = JSON.getArray(request, Messages.WriteInputRequest.PARAMETERS);
 		
 		String[] inputArray = new String[list.size()];
 		
@@ -417,20 +417,20 @@ public class RequestProcessor {
 		}
 		
 		try {
-			manager.writeToInputStream((JSON.getInt(request, Message.WriteInputRequest.ID)), inputArray);
+			manager.writeToInputStream((JSON.getInt(request, Messages.WriteInputRequest.ID)), inputArray);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException | UnmanagedApplicationException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -449,8 +449,8 @@ public class RequestProcessor {
 				
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.RequestResponse.VALUE, port);
-		response.put(Message.RequestResponse.MESSAGE, "OK");
+		response.put(Messages.RequestResponse.VALUE, port);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
 		return Converter.reply(response);
 	}
@@ -469,17 +469,17 @@ public class RequestProcessor {
 			ApplicationConfig application = (ApplicationConfig) it.next();
 
 			JSONObject config = new JSONObject();
-			config.put(Message.ApplicationConfig.NAME, application.getName());
-			config.put(Message.ApplicationConfig.DESCRIPTION, application.getDescription());
-			config.put(Message.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
-			config.put(Message.ApplicationConfig.RESTART, application.isRestart());
-			config.put(Message.ApplicationConfig.STARTING_TIME, application.getStartingTime());
-			config.put(Message.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
+			config.put(Messages.ApplicationConfig.NAME, application.getName());
+			config.put(Messages.ApplicationConfig.DESCRIPTION, application.getDescription());
+			config.put(Messages.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
+			config.put(Messages.ApplicationConfig.RESTART, application.isRestart());
+			config.put(Messages.ApplicationConfig.STARTING_TIME, application.getStartingTime());
+			config.put(Messages.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
 			
 			array.add(config);
 		}
 		
-		response.put(Message.ApplicationConfigListResponse.APPLICATION_CONFIG, array);
+		response.put(Messages.ApplicationConfigListResponse.APPLICATION_CONFIG, array);
 		
 		return Converter.reply(response);
 	}
@@ -493,12 +493,12 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received OuputPort request");
 		
-		int port = manager.getApplicationStreamPort(JSON.getString(request, Message.OutputRequest.NAME));
+		int port = manager.getApplicationStreamPort(JSON.getString(request, Messages.OutputRequest.NAME));
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.RequestResponse.VALUE, port);
-		response.put(Message.RequestResponse.MESSAGE, "OK");
+		response.put(Messages.RequestResponse.VALUE, port);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
 		return Converter.reply(response);
 	}
@@ -507,8 +507,8 @@ public class RequestProcessor {
 
 		Log.logger().fine("Received SetStatus request");
 		
-		int applicationId = JSON.getInt(request, Message.SetStatusRequest.ID);
-		int state = JSON.getInt(request, Message.SetStatusRequest.APPLICATION_STATE);
+		int applicationId = JSON.getInt(request, Messages.SetStatusRequest.ID);
+		int state = JSON.getInt(request, Messages.SetStatusRequest.APPLICATION_STATE);
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
@@ -517,17 +517,17 @@ public class RequestProcessor {
 			boolean done = manager.setApplicationStateFromClient(applicationId, state);
 					
 			if (done) {
-				response.put(Message.RequestResponse.VALUE, 0);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, 0);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 			}
 			else {
-				response.put(Message.RequestResponse.VALUE, -1);
-				response.put(Message.RequestResponse.MESSAGE, "Cannot set the state");
+				response.put(Messages.RequestResponse.VALUE, -1);
+				response.put(Messages.RequestResponse.MESSAGE, "Cannot set the state");
 			}
 		}
 		catch (IdNotFoundException e) {
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 		}
 				
 		return Converter.reply(response);
@@ -537,16 +537,16 @@ public class RequestProcessor {
 
 		Log.logger().fine("Received GetStatus request");
 		
-		int applicationId = JSON.getInt(request, Message.GetStatusRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.GetStatusRequest.ID);
 		
 		StatusInfo status = manager.getApplicationState(applicationId);
 	
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.StatusEvent.ID, status.getId());
-		response.put(Message.StatusEvent.NAME, status.getName());
-		response.put(Message.StatusEvent.APPLICATION_STATE, status.getApplicationState());
-		response.put(Message.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
+		response.put(Messages.StatusEvent.ID, status.getId());
+		response.put(Messages.StatusEvent.NAME, status.getName());
+		response.put(Messages.StatusEvent.APPLICATION_STATE, status.getApplicationState());
+		response.put(Messages.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
 		
 		return Converter.reply(response);
 	}
@@ -556,23 +556,23 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received SetResult request");
 		
-		int applicationId = JSON.getInt(request, Message.SetResultRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.SetResultRequest.ID);
 
 		try {
 			manager.setApplicationResult(applicationId, data);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -583,24 +583,24 @@ public class RequestProcessor {
 
 		Log.logger().fine("Received RequestPortV0 request");
 		
-		int applicationId = JSON.getInt(request, Message.RequestPortV0Request.ID);
-		String portName = JSON.getString(request, Message.RequestPortV0Request.NAME);
+		int applicationId = JSON.getInt(request, Messages.RequestPortV0Request.ID);
+		String portName = JSON.getString(request, Messages.RequestPortV0Request.NAME);
 		
 		try {
 			int port = manager.requestPortForApplication(applicationId, portName);
 			if (port != -1) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, port);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, port);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -1);
-				response.put(Message.RequestResponse.MESSAGE, "The port already exists");
+				response.put(Messages.RequestResponse.VALUE, -1);
+				response.put(Messages.RequestResponse.MESSAGE, "The port already exists");
 				
 				return Converter.reply(response);
 			}
@@ -608,8 +608,8 @@ public class RequestProcessor {
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -619,24 +619,24 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received ConnectPortV0 request");
 		
-		int applicationId = JSON.getInt(request, Message.ConnectPortV0Request.ID);
-		String portName = JSON.getString(request, Message.ConnectPortV0Request.NAME);
+		int applicationId = JSON.getInt(request, Messages.ConnectPortV0Request.ID);
+		String portName = JSON.getString(request, Messages.ConnectPortV0Request.NAME);
 		
 		try {
 			int port = manager.connectPortForApplication(applicationId, portName);
 			if (port != -1) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, port);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, port);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -1);
-				response.put(Message.RequestResponse.MESSAGE, "The port does not exist");
+				response.put(Messages.RequestResponse.VALUE, -1);
+				response.put(Messages.RequestResponse.MESSAGE, "The port does not exist");
 				
 				return Converter.reply(response);
 			}
@@ -644,8 +644,8 @@ public class RequestProcessor {
 		} catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -655,24 +655,24 @@ public class RequestProcessor {
 
 		Log.logger().fine("Received RemovePortV0 request");
 		
-		int applicationId = JSON.getInt(request, Message.RemovePortV0Request.ID);
-		String portName = JSON.getString(request, Message.RemovePortV0Request.NAME);
+		int applicationId = JSON.getInt(request, Messages.RemovePortV0Request.ID);
+		String portName = JSON.getString(request, Messages.RemovePortV0Request.NAME);
 		
 		try {
 			boolean done = manager.removePortForApplication(applicationId, portName);
 			if (done) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, 0);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, 0);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -1);
-				response.put(Message.RequestResponse.MESSAGE, "Cannot remove the port");
+				response.put(Messages.RequestResponse.VALUE, -1);
+				response.put(Messages.RequestResponse.MESSAGE, "Cannot remove the port");
 				
 				return Converter.reply(response);
 			}
@@ -680,8 +680,8 @@ public class RequestProcessor {
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}	
@@ -691,28 +691,28 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received CreatePublisher request");
 		
-		int applicationId = JSON.getInt(request, Message.CreatePublisherRequest.ID);
-		String publisherName = JSON.getString(request, Message.CreatePublisherRequest.NAME);
+		int applicationId = JSON.getInt(request, Messages.CreatePublisherRequest.ID);
+		String publisherName = JSON.getString(request, Messages.CreatePublisherRequest.NAME);
 		
 		try {
-			int numberOfSubscribers = JSON.getInt(request, Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS);
+			int numberOfSubscribers = JSON.getInt(request, Messages.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS);
 			int[] ports = manager.createPublisherForApplication(applicationId, publisherName, numberOfSubscribers);
 			
 			if (ports[0] != -1) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.PublisherResponse.PUBLISHER_PORT, ports[0]);
-				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
-				response.put(Message.PublisherResponse.MESSAGE, "OK");
+				response.put(Messages.PublisherResponse.PUBLISHER_PORT, ports[0]);
+				response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
+				response.put(Messages.PublisherResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
-				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
-				response.put(Message.PublisherResponse.MESSAGE, "The publisher already exists");
+				response.put(Messages.PublisherResponse.PUBLISHER_PORT, -1);
+				response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, -1);
+				response.put(Messages.PublisherResponse.MESSAGE, "The publisher already exists");
 				
 				return Converter.reply(response);
 			}
@@ -720,9 +720,9 @@ public class RequestProcessor {
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
-			response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
-			response.put(Message.PublisherResponse.MESSAGE, e.getMessage());
+			response.put(Messages.PublisherResponse.PUBLISHER_PORT, -1);
+			response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, -1);
+			response.put(Messages.PublisherResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}	
@@ -732,24 +732,24 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received TerminatePublisher request");
 		
-		int applicationId = JSON.getInt(request, Message.TerminatePublisherRequest.ID);
-		String publisherName = JSON.getString(request, Message.TerminatePublisherRequest.NAME);
+		int applicationId = JSON.getInt(request, Messages.TerminatePublisherRequest.ID);
+		String publisherName = JSON.getString(request, Messages.TerminatePublisherRequest.NAME);
 		
 		try {
 			boolean done = manager.terminatePublisherForApplication(applicationId, publisherName);
 			if (done) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, 0);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, 0);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -1);
-				response.put(Message.RequestResponse.MESSAGE, "Cannot terminate the publisher");
+				response.put(Messages.RequestResponse.VALUE, -1);
+				response.put(Messages.RequestResponse.MESSAGE, "Cannot terminate the publisher");
 				
 				return Converter.reply(response);
 			}
@@ -757,8 +757,8 @@ public class RequestProcessor {
 		} catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}	
@@ -768,8 +768,8 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received ConnectPublisher request");
 		
-		int applicationId = JSON.getInt(request, Message.ConnectPublisherRequest.APPLICATION_ID);
-		String publisherName = JSON.getString(request, Message.ConnectPublisherRequest.PUBLISHER_NAME);
+		int applicationId = JSON.getInt(request, Messages.ConnectPublisherRequest.APPLICATION_ID);
+		String publisherName = JSON.getString(request, Messages.ConnectPublisherRequest.PUBLISHER_NAME);
 		
 		try {
 			 Application.Publisher publisher = manager.getPublisherForApplication(applicationId, publisherName);
@@ -778,20 +778,20 @@ public class RequestProcessor {
 			 if (ports[0] != -1) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.PublisherResponse.PUBLISHER_PORT, ports[0]);
-				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
-				response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, publisher.numberOfSubscribers);
-				response.put(Message.PublisherResponse.MESSAGE, "OK");
+				response.put(Messages.PublisherResponse.PUBLISHER_PORT, ports[0]);
+				response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, ports[1]);
+				response.put(Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS, publisher.numberOfSubscribers);
+				response.put(Messages.PublisherResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
-				response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
-				response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
-				response.put(Message.PublisherResponse.MESSAGE, "The publisher does not exist");
+				response.put(Messages.PublisherResponse.PUBLISHER_PORT, -1);
+				response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, -1);
+				response.put(Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
+				response.put(Messages.PublisherResponse.MESSAGE, "The publisher does not exist");
 				
 				return Converter.reply(response);
 			}
@@ -799,10 +799,10 @@ public class RequestProcessor {
 		catch (IdNotFoundException | UnknownPublisherException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.PublisherResponse.PUBLISHER_PORT, -1);
-			response.put(Message.PublisherResponse.SYNCHRONIZER_PORT, -1);
-			response.put(Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
-			response.put(Message.PublisherResponse.MESSAGE, e.getMessage());
+			response.put(Messages.PublisherResponse.PUBLISHER_PORT, -1);
+			response.put(Messages.PublisherResponse.SYNCHRONIZER_PORT, -1);
+			response.put(Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS, -1);
+			response.put(Messages.PublisherResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -813,12 +813,12 @@ public class RequestProcessor {
 		Log.logger().fine("Received StartedUnmanaged request");
 		
 		int applicationId = 0;
-		String name = JSON.getString(request, Message.AttachUnmanagedRequest.NAME);
+		String name = JSON.getString(request, Messages.AttachUnmanagedRequest.NAME);
 		
 		try {
 			// Set the PID if it is passed.
-			if (request.containsKey(Message.AttachUnmanagedRequest.PID)) {
-				int pid = JSON.getInt(request, Message.AttachUnmanagedRequest.PID);
+			if (request.containsKey(Messages.AttachUnmanagedRequest.PID)) {
+				int pid = JSON.getInt(request, Messages.AttachUnmanagedRequest.PID);
 				applicationId = manager.newStartedUnmanagedApplication(name, pid);
 			}
 			else {
@@ -827,16 +827,16 @@ public class RequestProcessor {
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, applicationId);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, applicationId);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);			
 		} 
@@ -846,23 +846,23 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received TerminatedUnmanaged request");
 		
-		int applicationId = JSON.getInt(request, Message.DetachUnmanagedRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.DetachUnmanagedRequest.ID);
 		
 		try {
 			String applicationName = manager.setUnmanagedApplicationTerminated(applicationId);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, applicationName);
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}		
@@ -874,9 +874,9 @@ public class RequestProcessor {
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.VersionResponse.MAJOR, version.major);
-		response.put(Message.VersionResponse.MINOR, version.minor);
-		response.put(Message.VersionResponse.REVISION, version.revision);
+		response.put(Messages.VersionResponse.MAJOR, version.major);
+		response.put(Messages.VersionResponse.MINOR, version.minor);
+		response.put(Messages.VersionResponse.REVISION, version.revision);
 		
 		return Converter.reply(response);
 	}
@@ -885,25 +885,25 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received StoreKeyValue request");
 		
-		int applicationId = JSON.getInt(request, Message.StoreKeyValueRequest.ID);
-		String key = JSON.getString(request, Message.StoreKeyValueRequest.KEY);
-		String value = JSON.getString(request, Message.StoreKeyValueRequest.VALUE);
+		int applicationId = JSON.getInt(request, Messages.StoreKeyValueRequest.ID);
+		String key = JSON.getString(request, Messages.StoreKeyValueRequest.KEY);
+		String value = JSON.getString(request, Messages.StoreKeyValueRequest.VALUE);
 		
 		try {
 			manager.storeKeyValue(applicationId, key, value);
 						
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}		
@@ -913,8 +913,8 @@ public class RequestProcessor {
 
 		Log.logger().fine("Received GetKeyValue request");
 		
-		int applicationId = JSON.getInt(request, Message.GetKeyValueRequest.ID);
-		String key = JSON.getString(request, Message.GetKeyValueRequest.KEY);
+		int applicationId = JSON.getInt(request, Messages.GetKeyValueRequest.ID);
+		String key = JSON.getString(request, Messages.GetKeyValueRequest.KEY);
 		
 		try {
 			String value = manager.getKeyValue(applicationId, key);
@@ -922,16 +922,16 @@ public class RequestProcessor {
 			if (value != null) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, 0);
-				response.put(Message.RequestResponse.MESSAGE, value);
+				response.put(Messages.RequestResponse.VALUE, 0);
+				response.put(Messages.RequestResponse.MESSAGE, value);
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -2);
-				response.put(Message.RequestResponse.MESSAGE, "Key is undefined");
+				response.put(Messages.RequestResponse.VALUE, -2);
+				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
 				return Converter.reply(response);
 			}
@@ -939,8 +939,8 @@ public class RequestProcessor {
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -950,8 +950,8 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received RemoveKey request");
 		
-		int applicationId = JSON.getInt(request, Message.RemoveKeyRequest.ID);
-		String key = JSON.getString(request, Message.RemoveKeyRequest.KEY);
+		int applicationId = JSON.getInt(request, Messages.RemoveKeyRequest.ID);
+		String key = JSON.getString(request, Messages.RemoveKeyRequest.KEY);
 		
 		try {
 			boolean exists = manager.removeKey(applicationId, key);
@@ -959,16 +959,16 @@ public class RequestProcessor {
 			if (exists) {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, 0);
-				response.put(Message.RequestResponse.MESSAGE, "OK");
+				response.put(Messages.RequestResponse.VALUE, 0);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
 				return Converter.reply(response);
 			}
 			else {
 				// Return the reply.
 				JSONObject response = new JSONObject();
-				response.put(Message.RequestResponse.VALUE, -2);
-				response.put(Message.RequestResponse.MESSAGE, "Key is undefined");
+				response.put(Messages.RequestResponse.VALUE, -2);
+				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
 				return Converter.reply(response);
 			}
@@ -976,8 +976,8 @@ public class RequestProcessor {
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -987,7 +987,7 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received RequestPort request");
 		
-		int applicationId = JSON.getInt(request, Message.RequestPortRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.RequestPortRequest.ID);
 		
 		try {
 			// Request a port.
@@ -995,16 +995,16 @@ public class RequestProcessor {
 
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, port);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, port);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -1014,8 +1014,8 @@ public class RequestProcessor {
 				
 		Log.logger().fine("Received PortUnavailable request");
 		
-		int applicationId = JSON.getInt(request, Message.PortUnavailableRequest.ID);
-		int port = JSON.getInt(request, Message.PortUnavailableRequest.PORT);
+		int applicationId = JSON.getInt(request, Messages.PortUnavailableRequest.ID);
+		int port = JSON.getInt(request, Messages.PortUnavailableRequest.PORT);
 
 		try {
 			// Set the port unavailable.
@@ -1023,16 +1023,16 @@ public class RequestProcessor {
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -1042,8 +1042,8 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received ReleasePort request");
 		
-		int applicationId = JSON.getInt(request, Message.ReleasePortRequest.ID);
-		int port = JSON.getInt(request, Message.ReleasePortRequest.PORT);
+		int applicationId = JSON.getInt(request, Messages.ReleasePortRequest.ID);
+		int port = JSON.getInt(request, Messages.ReleasePortRequest.PORT);
 		
 		try {
 			// Release the port.
@@ -1051,16 +1051,16 @@ public class RequestProcessor {
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, 0);
-			response.put(Message.RequestResponse.MESSAGE, "OK");
+			response.put(Messages.RequestResponse.VALUE, 0);
+			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
-			response.put(Message.RequestResponse.VALUE, -1);
-			response.put(Message.RequestResponse.MESSAGE, e.getMessage());
+			response.put(Messages.RequestResponse.VALUE, -1);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
 			return Converter.reply(response);
 		}
@@ -1080,14 +1080,14 @@ public class RequestProcessor {
 			PortInfo port = it.next();
 			
 			JSONObject portInfo = new JSONObject();
-			portInfo.put(Message.PortInfo.PORT, port.getPort());
-			portInfo.put(Message.PortInfo.STATUS, port.getStatus());
-			portInfo.put(Message.PortInfo.OWNER, port.getApplicationNameId());
+			portInfo.put(Messages.PortInfo.PORT, port.getPort());
+			portInfo.put(Messages.PortInfo.STATUS, port.getStatus());
+			portInfo.put(Messages.PortInfo.OWNER, port.getApplicationNameId());
 			
 			array.add(portInfo);
 		}
 		
-		response.put(Message.PortInfoListResponse.PORT_INFO, array);
+		response.put(Messages.PortInfoListResponse.PORT_INFO, array);
 		
 		return Converter.reply(response);
 	}

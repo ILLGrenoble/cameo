@@ -29,7 +29,7 @@ import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class SubscriberImpl {
@@ -64,9 +64,9 @@ public class SubscriberImpl {
 		subscriber = server.getContext().createSocket(Zmq.SUB);
 		
 		subscriber.connect(server.getEndpoint().withPort(publisherPort).toString());
-		subscriber.subscribe(Message.Event.SYNC);
-		subscriber.subscribe(Message.Event.STREAM);
-		subscriber.subscribe(Message.Event.ENDSTREAM);
+		subscriber.subscribe(Messages.Event.SYNC);
+		subscriber.subscribe(Messages.Event.STREAM);
+		subscriber.subscribe(Messages.Event.ENDSTREAM);
 		
 		// Create an endpoint that should be unique
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -77,11 +77,11 @@ public class SubscriberImpl {
 
 		// Subscribe to CANCEL
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(Message.Event.CANCEL);
+		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// Subscribe to STATUS
 		subscriber.connect(server.getStatusEndpoint().toString());
-		subscriber.subscribe(Message.Event.STATUS);
+		subscriber.subscribe(Messages.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
@@ -97,7 +97,7 @@ public class SubscriberImpl {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
 				try {
-					requestSocket.request(ServicesImpl.createSyncRequest());
+					requestSocket.request(Messages.createSyncRequest());
 
 				} catch (ConnectionTimeout e) {
 					// do nothing
@@ -111,7 +111,7 @@ public class SubscriberImpl {
 			
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
-			JSONObject request = ServerImpl.createSubscribePublisherRequest();
+			JSONObject request = Messages.createSubscribePublisherRequest();
 			requestSocket.request(request);
 			requestSocket.terminate();
 		}
@@ -150,18 +150,18 @@ public class SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(Message.Event.STREAM)) {
+			if (message.equals(Messages.Event.STREAM)) {
 				return subscriber.recv();
 				
-			} else if (message.equals(Message.Event.ENDSTREAM)) {
+			} else if (message.equals(Messages.Event.ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (message.equals(Message.Event.CANCEL)) {
+			} else if (message.equals(Messages.Event.CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (message.equals(Message.Event.STATUS)) {
+			} else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				try {
@@ -169,12 +169,12 @@ public class SubscriberImpl {
 					JSONObject status = server.parse(statusMessage);
 					
 					// Get the id.
-					int id = JSON.getInt(status, Message.StatusEvent.ID);
+					int id = JSON.getInt(status, Messages.StatusEvent.ID);
 										
 					if (instance.getId() == id) {
 						
 						// Get the state.
-						int state = JSON.getInt(status, Message.StatusEvent.APPLICATION_STATE);
+						int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
 						
 						// Test if the state is terminal
 						if (state == Application.State.SUCCESS 
@@ -202,22 +202,22 @@ public class SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(Message.Event.STREAM)) {
+			if (message.equals(Messages.Event.STREAM)) {
 				byte[][] result = new byte[2][];
 				result[0] = subscriber.recv();
 				result[1] = subscriber.recv();
 				
 				return result;
 				
-			} else if (message.equals(Message.Event.ENDSTREAM)) {
+			} else if (message.equals(Messages.Event.ENDSTREAM)) {
 				ended = true;
 				return null;
 				
-			} else if (message.equals(Message.Event.CANCEL)) {
+			} else if (message.equals(Messages.Event.CANCEL)) {
 				canceled = true;
 				return null;
 				
-			} else if (message.equals(Message.Event.STATUS)) {
+			} else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				try {
@@ -225,12 +225,12 @@ public class SubscriberImpl {
 					JSONObject request = server.parse(statusMessage);
 					
 					// Get the id.
-					int id = JSON.getInt(request, Message.StatusEvent.ID);
+					int id = JSON.getInt(request, Messages.StatusEvent.ID);
 					
 					if (instance.getId() == id) {
 						
 						// Get the state.
-						int state = JSON.getInt(request, Message.StatusEvent.APPLICATION_STATE);
+						int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);
 						
 						// Test if the state is terminal
 						if (state == Application.State.SUCCESS 
@@ -261,13 +261,13 @@ public class SubscriberImpl {
 			return null;
 		}
 		
-		return Message.parseString(data);
+		return Messages.parseString(data);
 	}
 	
 	public void cancel() {
 	
-		cancelPublisher.sendMore(Message.Event.CANCEL);
-		cancelPublisher.send(Message.Event.CANCEL);
+		cancelPublisher.sendMore(Messages.Event.CANCEL);
+		cancelPublisher.send(Messages.Event.CANCEL);
 	}
 	
 	public void terminate() {

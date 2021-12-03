@@ -26,7 +26,7 @@ import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherImpl {
@@ -93,16 +93,16 @@ public class PublisherImpl {
 					JSONObject request = application.parse(message);
 					
 					// Get the type.
-					long type = JSON.getLong(request, Message.TYPE);
+					long type = JSON.getLong(request, Messages.TYPE);
 					
-					if (type == Message.SYNC) {
+					if (type == Messages.SYNC) {
 						reply = processSyncRequest();						
 					}
-					else if (type == Message.SUBSCRIBE_PUBLISHER_v0) {
+					else if (type == Messages.SUBSCRIBE_PUBLISHER_v0) {
 						counter++;
 						reply = processSubscribePublisherRequest();
 					}
-					else if (type == Message.CANCEL) {
+					else if (type == Messages.CANCEL) {
 						canceled = true;
 						counter = numberOfSubscribers;
 						message.send(synchronizer);
@@ -146,7 +146,7 @@ public class PublisherImpl {
 		Endpoint endpoint = application.getEndpoint().withPort(publisherPort + 1);
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CANCEL);
+		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
@@ -158,22 +158,22 @@ public class PublisherImpl {
 
 	public void send(byte[] data) {
 		
-		publisher.sendMore(Message.Event.STREAM);
+		publisher.sendMore(Messages.Event.STREAM);
 		publisher.send(data, 0);
 	}
 	
 	public void send(String data) {
 		
-		byte[] result = Message.serialize(data);
+		byte[] result = Messages.serialize(data);
 		
-		publisher.sendMore(Message.Event.STREAM);
+		publisher.sendMore(Messages.Event.STREAM);
 		publisher.send(result, 0);
 	}
 	
 	
 	public void sendTwoParts(byte[] data1, byte[] data2) {
 		
-		publisher.sendMore(Message.Event.STREAM);
+		publisher.sendMore(Messages.Event.STREAM);
 		publisher.sendMore(data1);
 		publisher.send(data2, 0);
 	}
@@ -181,8 +181,8 @@ public class PublisherImpl {
 	public void sendEnd() {
 		
 		if (!ended) {
-			publisher.sendMore(Message.Event.ENDSTREAM);
-			publisher.send(Message.Event.ENDSTREAM);
+			publisher.sendMore(Messages.Event.ENDSTREAM);
+			publisher.send(Messages.Event.ENDSTREAM);
 			
 			ended = true;
 		}
@@ -192,16 +192,6 @@ public class PublisherImpl {
 		return ended;
 	}
 	
-	private static JSONObject createTerminatePublisherRequest(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.TERMINATE_PUBLISHER_v0);
-		request.put(Message.TerminatePublisherRequest.ID, id);
-		request.put(Message.TerminatePublisherRequest.NAME, name);
-
-		return request;
-	}
-	
 	public void terminate() {
 
 		waiting.remove();
@@ -209,10 +199,10 @@ public class PublisherImpl {
 		
 		this.application.getContext().destroySocket(publisher);
 		
-		JSONObject request = createTerminatePublisherRequest(This.getId(), name);
+		JSONObject request = Messages.createTerminatePublisherRequest(This.getId(), name);
 		JSONObject response = This.getCom().request(request);
 		
-		int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
 			System.err.println("Cannot terminate publisher");
 		}
@@ -220,8 +210,8 @@ public class PublisherImpl {
 	
 	private Zmq.Msg processSyncRequest() {
 		// send a dummy SYNC message by the publisher socket
-		publisher.sendMore(Message.Event.SYNC);
-		publisher.send(Message.Event.SYNC);
+		publisher.sendMore(Messages.Event.SYNC);
+		publisher.send(Messages.Event.SYNC);
 		
 		Zmq.Msg reply = new Zmq.Msg();
 		reply.add("Connection OK");
@@ -233,8 +223,8 @@ public class PublisherImpl {
 	
 		// Return the reply.
 		JSONObject response = new JSONObject();
-		response.put(Message.RequestResponse.VALUE, 0);
-		response.put(Message.RequestResponse.MESSAGE, "OK");
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
 		return application.message(response);
 	}

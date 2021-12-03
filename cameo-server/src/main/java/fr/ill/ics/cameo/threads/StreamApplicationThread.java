@@ -28,7 +28,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class getting the stream from the process input stream.
@@ -84,12 +84,12 @@ public class StreamApplicationThread extends ApplicationThread {
 		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
-			event.put(Message.ApplicationStream.ID, application.getId());
-			event.put(Message.ApplicationStream.MESSAGE, line);
-			event.put(Message.ApplicationStream.EOL, endOfLine);
+			event.put(Messages.ApplicationStream.ID, application.getId());
+			event.put(Messages.ApplicationStream.MESSAGE, line);
+			event.put(Messages.ApplicationStream.EOL, endOfLine);
 			
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, Message.Event.STREAM, Message.serialize(event));
+			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
 		}
 	}
 	
@@ -221,12 +221,12 @@ public class StreamApplicationThread extends ApplicationThread {
 		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
-			event.put(Message.ApplicationStream.ID, application.getId());
-			event.put(Message.ApplicationStream.MESSAGE, Message.Event.ENDSTREAM);
-			event.put(Message.ApplicationStream.EOL, true);
+			event.put(Messages.ApplicationStream.ID, application.getId());
+			event.put(Messages.ApplicationStream.MESSAGE, Messages.Event.ENDSTREAM);
+			event.put(Messages.ApplicationStream.EOL, true);
 
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, Message.Event.ENDSTREAM, Message.serialize(event));
+			Manager.publishSynchronized(publisher, Messages.Event.ENDSTREAM, Messages.serialize(event));
 		}
 	}
 	

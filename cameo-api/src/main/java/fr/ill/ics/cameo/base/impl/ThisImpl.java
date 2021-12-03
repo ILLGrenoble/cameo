@@ -35,7 +35,7 @@ import fr.ill.ics.cameo.base.WaitingSet;
 import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ThisImpl extends ServicesImpl {
@@ -80,7 +80,7 @@ public class ThisImpl extends ServicesImpl {
 		}
 
 		// Get the server endpoint.
-		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Message.ApplicationIdentity.SERVER));
+		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Messages.ApplicationIdentity.SERVER));
 		
 		// Init the context and socket.
 		init();
@@ -89,12 +89,12 @@ public class ThisImpl extends ServicesImpl {
 		retrieveServerVersion();
 
 		// Get the name present for both managed and unmanaged apps.
-		name = JSON.getString(infoObject, Message.ApplicationIdentity.NAME);
+		name = JSON.getString(infoObject, Messages.ApplicationIdentity.NAME);
 
 		// For managed apps, id is present in info.
-		if (infoObject.containsKey(Message.ApplicationIdentity.ID)) {
+		if (infoObject.containsKey(Messages.ApplicationIdentity.ID)) {
 			managed = true;
-			id = JSON.getInt(infoObject, Message.ApplicationIdentity.ID);
+			id = JSON.getInt(infoObject, Messages.ApplicationIdentity.ID);
 		}
 		else {
 			managed = false;
@@ -106,11 +106,11 @@ public class ThisImpl extends ServicesImpl {
 		}
 		
 		// Get the starter info if it is present.
-		if (infoObject.containsKey(Message.ApplicationIdentity.STARTER)) {
-			JSONObject starterObject = JSON.getObject(infoObject, Message.ApplicationIdentity.STARTER);
-			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Message.ApplicationIdentity.SERVER));
-			starterName = JSON.getString(starterObject, Message.ApplicationIdentity.NAME);
-			starterId = JSON.getInt(starterObject, Message.ApplicationIdentity.ID);
+		if (infoObject.containsKey(Messages.ApplicationIdentity.STARTER)) {
+			JSONObject starterObject = JSON.getObject(infoObject, Messages.ApplicationIdentity.STARTER);
+			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER));
+			starterName = JSON.getString(starterObject, Messages.ApplicationIdentity.NAME);
+			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
 		}
 				
 		// Init listener.
@@ -189,7 +189,7 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void setResult(byte[] data) {
 		
-		Zmq.Msg request = message(createSetResultRequest(id));
+		Zmq.Msg request = message(Messages.createSetResultRequest(id));
 		
 		// Add the data in a second frame.
 		request.add(data);
@@ -200,7 +200,7 @@ public class ThisImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
 				throw new UnexpectedException("Cannot set result");
 			}
@@ -211,7 +211,7 @@ public class ThisImpl extends ServicesImpl {
 	}
 	
 	public void setResult(String data) {
-		setResult(Message.serialize(data));		
+		setResult(Messages.serialize(data));		
 	}
 		
 	/**
@@ -221,7 +221,7 @@ public class ThisImpl extends ServicesImpl {
 	 */
 	public boolean setRunning() {
 		
-		JSONObject request = createSetStatusRequest(id, Application.State.RUNNING);
+		JSONObject request = Messages.createSetStatusRequest(id, Application.State.RUNNING);
 		
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -229,7 +229,7 @@ public class ThisImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
 				return false;
 			}
@@ -247,12 +247,12 @@ public class ThisImpl extends ServicesImpl {
 		long pid = ProcessHandlerImpl.pid();
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(createAttachUnmanagedRequest(name, pid));
+			Zmq.Msg reply = requestSocket.request(Messages.createAttachUnmanagedRequest(name, pid));
 			
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			return JSON.getInt(response, Message.RequestResponse.VALUE);
+			return JSON.getInt(response, Messages.RequestResponse.VALUE);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -260,11 +260,11 @@ public class ThisImpl extends ServicesImpl {
 	}
 	
 	private void terminateUnmanagedApplication() {
-		requestSocket.request(createDetachUnmanagedRequest(id));
+		requestSocket.request(Messages.createDetachUnmanagedRequest(id));
 	}
 	
 	private void setStopHandler(int stoppingTime) {
-		requestSocket.request(createSetStopHandlerRequest(id, stoppingTime));
+		requestSocket.request(Messages.createSetStopHandlerRequest(id, stoppingTime));
 	}
 	
 	/**
@@ -275,7 +275,7 @@ public class ThisImpl extends ServicesImpl {
 	private int getState(int id) {
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
+			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -286,7 +286,7 @@ public class ThisImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 			
-			return JSON.getInt(response, Message.StatusEvent.APPLICATION_STATE);
+			return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -364,7 +364,7 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void removePort(String name) {
 		
-		JSONObject request = createRemovePortV0Request(id, name);
+		JSONObject request = Messages.createRemovePortV0Request(id, name);
 
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -372,7 +372,7 @@ public class ThisImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 			
-			int port = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (port == -1) {
 				System.err.println("Cannot remove port " + name);
 			}
@@ -395,55 +395,6 @@ public class ThisImpl extends ServicesImpl {
 		}
 	}
 
-	private static JSONObject createSetStatusRequest(int id, int state) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SET_STATUS);
-		request.put(Message.SetStatusRequest.ID, id);
-		request.put(Message.SetStatusRequest.APPLICATION_STATE, state);
-
-		return request;
-	}
-	
-	public static JSONObject createRequestPortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REQUEST_PORT_v0);
-		request.put(Message.RequestPortV0Request.ID, id);
-		request.put(Message.RequestPortV0Request.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createConnectPortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_PORT_v0);
-		request.put(Message.ConnectPortV0Request.ID, id);
-		request.put(Message.ConnectPortV0Request.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createRemovePortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REMOVE_PORT_v0);
-		request.put(Message.RemovePortV0Request.ID, id);
-		request.put(Message.RemovePortV0Request.NAME, name);
-
-		return request;
-	}
-	
-	private static JSONObject createSetResultRequest(int id) {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SET_RESULT);
-		request.put(Message.SetResultRequest.ID, id);
-		
-		return request;
-	}
-	
 	@Override
 	public String toString() {
 		return name + "." + id + "@" + serverEndpoint;

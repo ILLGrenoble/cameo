@@ -27,7 +27,7 @@ import fr.ill.ics.cameo.base.EventStreamSocket;
 import fr.ill.ics.cameo.base.SocketException;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ServicesImpl {
@@ -86,11 +86,11 @@ public class ServicesImpl {
 	}
 	
 	public JSONObject parse(Zmq.Msg reply) throws ParseException {
-		return parser.parse(Message.parseString(reply.getFirstData()));
+		return parser.parse(Messages.parseString(reply.getFirstData()));
 	}
 	
 	public JSONObject parse(byte[] data) throws ParseException {
-		return parser.parse(Message.parseString(data));
+		return parser.parse(Messages.parseString(data));
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ServicesImpl {
 	public boolean isAvailable(int overrideTimeout) {
 
 		try {
-			requestSocket.request(createSyncRequest(), overrideTimeout);
+			requestSocket.request(Messages.createSyncRequest(), overrideTimeout);
 			return true;
 
 		} catch (ConnectionTimeout e) {
@@ -116,7 +116,7 @@ public class ServicesImpl {
 	protected void sendSync() {
 		
 		try {
-			requestSocket.request(createSyncRequest());
+			requestSocket.request(Messages.createSyncRequest());
 
 		} catch (ConnectionTimeout e) {
 			// do nothing
@@ -126,7 +126,7 @@ public class ServicesImpl {
 	protected void sendSyncStream(String name) {
 		
 		try {
-			requestSocket.request(createSyncStreamRequest(name));
+			requestSocket.request(Messages.createSyncStreamRequest(name));
 
 		} catch (ConnectionTimeout e) {
 			// do nothing
@@ -135,15 +135,15 @@ public class ServicesImpl {
 
 	protected void retrieveServerVersion() {
 		
-		Zmq.Msg reply = requestSocket.request(createVersionRequest());
+		Zmq.Msg reply = requestSocket.request(Messages.createVersionRequest());
 		
 		try {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			serverVersion[0] = JSON.getInt(response, Message.VersionResponse.MAJOR);
-			serverVersion[1] = JSON.getInt(response, Message.VersionResponse.MINOR);
-			serverVersion[2] = JSON.getInt(response, Message.VersionResponse.REVISION);
+			serverVersion[0] = JSON.getInt(response, Messages.VersionResponse.MAJOR);
+			serverVersion[1] = JSON.getInt(response, Messages.VersionResponse.MINOR);
+			serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -156,7 +156,7 @@ public class ServicesImpl {
 	 */
 	protected EventStreamSocket openEventStream() {
 
-		Zmq.Msg reply = requestSocket.request(createStreamStatusRequest());
+		Zmq.Msg reply = requestSocket.request(Messages.createStreamStatusRequest());
 		JSONObject response;
 		
 		try {
@@ -170,19 +170,19 @@ public class ServicesImpl {
 		// Prepare our subscriber.
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
-		statusPort = JSON.getInt(response, Message.RequestResponse.VALUE);
+		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
 		subscriber.connect(getStatusEndpoint().toString());
-		subscriber.subscribe(Message.Event.STATUS);
-		subscriber.subscribe(Message.Event.RESULT);
-		subscriber.subscribe(Message.Event.PUBLISHER);
-		subscriber.subscribe(Message.Event.PORT);
-		subscriber.subscribe(Message.Event.KEYVALUE);
+		subscriber.subscribe(Messages.Event.STATUS);
+		subscriber.subscribe(Messages.Event.RESULT);
+		subscriber.subscribe(Messages.Event.PUBLISHER);
+		subscriber.subscribe(Messages.Event.PORT);
+		subscriber.subscribe(Messages.Event.KEYVALUE);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(Message.Event.CANCEL);
+		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// polling to wait for connection
 		Zmq.Poller poller = context.createPoller(subscriber);
@@ -216,116 +216,9 @@ public class ServicesImpl {
 	public static Zmq.Msg message(JSONObject object) {
 		
 		Zmq.Msg message = new Zmq.Msg();
-		message.add(Message.serialize(object));
+		message.add(Messages.serialize(object));
 
 		return message;
-	}
-	
-	/**
-	 * create init request
-	 * 
-	 * @return
-	 */
-	public static JSONObject createSyncRequest() {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SYNC);
-		
-		return request;
-	}
-	
-
-	protected static JSONObject createSyncStreamRequest(String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SYNC_STREAM);
-		request.put(Message.SyncStreamRequest.NAME, name);
-		
-		return request;
-	}
-	
-	/**
-	 * create version request
-	 * 
-	 * @return request
-	 */
-	protected static JSONObject createVersionRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.IMPL_VERSION);
-
-		return request;
-	}
-	
-	/**
-	 * create show status request
-	 * 
-	 * @return request
-	 */
-	protected static JSONObject createStreamStatusRequest() {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.STATUS);
-
-		return request;
-	}
-	
-	/**
-	 * create getStatus request
-	 * 
-	 * @param text
-	 * @return
-	 */
-	protected static JSONObject createGetStatusRequest(int id) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.GET_STATUS);
-		request.put(Message.GetStatusRequest.ID, id);
-
-		return request;	
-	}
-	
-	/**
-	 * create startedUnmanaged request
-	 * @param pid 
-	 * 
-	 * @param text
-	 * @return
-	 */
-	protected static JSONObject createAttachUnmanagedRequest(String name, long pid) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.ATTACH_UNMANAGED);
-		request.put(Message.AttachUnmanagedRequest.NAME, name);
-		request.put(Message.AttachUnmanagedRequest.PID, pid);
-		
-		return request;
-	}
-	
-	/**
-	 * create terminatedUnmanaged request
-	 * 
-	 * @param text
-	 * @return
-	 */
-	protected static JSONObject createDetachUnmanagedRequest(int id) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.DETACH_UNMANAGED);
-		request.put(Message.DetachUnmanagedRequest.ID, id);
-		
-		return request;
-	}
-	
-	
-	protected static JSONObject createSetStopHandlerRequest(int id, int stoppingTime) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SET_STOP_HANDLER);
-		request.put(Message.SetStopHandlerRequest.ID, id);
-		request.put(Message.SetStopHandlerRequest.STOPPING_TIME, stoppingTime);
-		
-		return request;
 	}
 	
 }

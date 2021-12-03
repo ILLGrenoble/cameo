@@ -8,7 +8,7 @@ import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.RequestImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Responder.
@@ -25,13 +25,13 @@ public class Responder {
 	private static ResponderImpl createResponder(String name) throws ResponderCreationException {
 		
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
-		JSONObject request = ThisImpl.createRequestPortV0Request(This.getId(), portName);
+		JSONObject request = Messages.createRequestPortV0Request(This.getId(), portName);
 
 		JSONObject response = This.getCom().request(request);
 		
-		int port = JSON.getInt(response, Message.RequestResponse.VALUE);
+		int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (port == -1) {
-			throw new ResponderCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			throw new ResponderCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
 		return new ResponderImpl(This.getCom().getImpl(), port, name);

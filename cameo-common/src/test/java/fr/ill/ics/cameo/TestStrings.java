@@ -9,7 +9,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -61,9 +61,9 @@ public class TestStrings {
 		try {
 			JSONObject jsonIdentity = JSON.parse(jsonString);
 			
-			assertEquals("my-app", JSON.getString(jsonIdentity, Message.ApplicationIdentity.NAME));
-			assertEquals(31, JSON.getInt(jsonIdentity, Message.ApplicationIdentity.ID));
-			assertEquals("tcp://gamma75:9000", JSON.getString(jsonIdentity, Message.ApplicationIdentity.SERVER));
+			assertEquals("my-app", JSON.getString(jsonIdentity, Messages.ApplicationIdentity.NAME));
+			assertEquals(31, JSON.getInt(jsonIdentity, Messages.ApplicationIdentity.ID));
+			assertEquals("tcp://gamma75:9000", JSON.getString(jsonIdentity, Messages.ApplicationIdentity.SERVER));
 		}
 		catch (ParseException e) {
 			assertTrue(false);	
@@ -83,15 +83,15 @@ public class TestStrings {
 		try {
 			JSONObject jsonApplication = JSON.parse(jsonString);
 			
-			assertEquals("my-app", JSON.getString(jsonApplication, Message.ApplicationIdentity.NAME));
-			assertEquals(31, JSON.getInt(jsonApplication, Message.ApplicationIdentity.ID));
-			assertEquals("tcp://gamma75:9000", JSON.getString(jsonApplication, Message.ApplicationIdentity.SERVER));
+			assertEquals("my-app", JSON.getString(jsonApplication, Messages.ApplicationIdentity.NAME));
+			assertEquals(31, JSON.getInt(jsonApplication, Messages.ApplicationIdentity.ID));
+			assertEquals("tcp://gamma75:9000", JSON.getString(jsonApplication, Messages.ApplicationIdentity.SERVER));
 			
-			JSONObject jsonStarter = JSON.getObject(jsonApplication, Message.ApplicationIdentity.STARTER);
+			JSONObject jsonStarter = JSON.getObject(jsonApplication, Messages.ApplicationIdentity.STARTER);
 			
-			assertEquals("your-app", JSON.getString(jsonStarter, Message.ApplicationIdentity.NAME));
-			assertEquals(76, JSON.getInt(jsonStarter, Message.ApplicationIdentity.ID));
-			assertEquals("tcp://gamma57:7000", JSON.getString(jsonStarter, Message.ApplicationIdentity.SERVER));
+			assertEquals("your-app", JSON.getString(jsonStarter, Messages.ApplicationIdentity.NAME));
+			assertEquals(76, JSON.getInt(jsonStarter, Messages.ApplicationIdentity.ID));
+			assertEquals("tcp://gamma57:7000", JSON.getString(jsonStarter, Messages.ApplicationIdentity.SERVER));
 		}
 		catch (ParseException e) {
 			assertTrue(false);	
@@ -104,7 +104,7 @@ public class TestStrings {
 		try {
 			JSONObject jsonApplication = JSON.parse(jsonString);
 
-			assertFalse(jsonApplication.containsKey(Message.ApplicationIdentity.STARTER));
+			assertFalse(jsonApplication.containsKey(Messages.ApplicationIdentity.STARTER));
 		}
 		catch (ParseException e) {
 			assertTrue(false);	

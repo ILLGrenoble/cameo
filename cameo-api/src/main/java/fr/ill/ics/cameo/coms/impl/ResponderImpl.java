@@ -25,7 +25,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ResponderImpl {
@@ -75,15 +75,15 @@ public class ResponderImpl {
 			JSONObject request = application.parse(message);
 			
 			// Get the type.
-			long type = JSON.getLong(request, Message.TYPE);
+			long type = JSON.getLong(request, Messages.TYPE);
 			
-			if (type == Message.REQUEST) {
+			if (type == Messages.REQUEST) {
 
-				String name = JSON.getString(request, Message.Request.APPLICATION_NAME);
-				int id = JSON.getInt(request, Message.Request.APPLICATION_ID);
-				String serverUrl = JSON.getString(request, Message.Request.SERVER_URL);
-				int serverPort = JSON.getInt(request, Message.Request.SERVER_PORT);
-				int requesterPort = JSON.getInt(request, Message.Request.REQUESTER_PORT);
+				String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
+				int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
+				String serverUrl = JSON.getString(request, Messages.Request.SERVER_URL);
+				int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
+				int requesterPort = JSON.getInt(request, Messages.Request.REQUESTER_PORT);
 				
 				List<byte[]> data = message.getAllData();
 				
@@ -105,7 +105,7 @@ public class ResponderImpl {
 				
 				return impl;
 			}
-			else if (type == Message.CANCEL) {
+			else if (type == Messages.CANCEL) {
 				canceled = true;
 				
 				return null;
@@ -136,7 +136,7 @@ public class ResponderImpl {
 		Endpoint endpoint = application.getEndpoint().withPort(responderPort);
 
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CANCEL);
+		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());

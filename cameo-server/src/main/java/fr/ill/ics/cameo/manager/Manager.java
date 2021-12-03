@@ -37,7 +37,7 @@ import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
@@ -149,77 +149,77 @@ public class Manager extends ConfigLoader {
 	public synchronized void sendStatus(int id, String name, int state, int pastStates, int exitCode) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.StatusEvent.ID, id);
-		event.put(Message.StatusEvent.NAME, name);
-		event.put(Message.StatusEvent.APPLICATION_STATE, state);
-		event.put(Message.StatusEvent.PAST_APPLICATION_STATES, pastStates);
+		event.put(Messages.StatusEvent.ID, id);
+		event.put(Messages.StatusEvent.NAME, name);
+		event.put(Messages.StatusEvent.APPLICATION_STATE, state);
+		event.put(Messages.StatusEvent.PAST_APPLICATION_STATES, pastStates);
 		
 		if (exitCode != -1) {
-			event.put(Message.StatusEvent.EXIT_CODE, exitCode);
+			event.put(Messages.StatusEvent.EXIT_CODE, exitCode);
 		}
 		
-		eventPublisher.sendMore(Message.Event.STATUS);
-		eventPublisher.send(Message.serialize(event), 0);
+		eventPublisher.sendMore(Messages.Event.STATUS);
+		eventPublisher.send(Messages.serialize(event), 0);
 	}
 
 	public synchronized void sendResult(int id, String name, byte[] data) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.ResultEvent.ID, id);
-		event.put(Message.ResultEvent.NAME, name);
+		event.put(Messages.ResultEvent.ID, id);
+		event.put(Messages.ResultEvent.NAME, name);
 
 		// The result has 3 parts.
-		eventPublisher.sendMore(Message.Event.RESULT);
-		eventPublisher.sendMore(Message.serialize(event));
+		eventPublisher.sendMore(Messages.Event.RESULT);
+		eventPublisher.sendMore(Messages.serialize(event));
 		eventPublisher.send(data, 0);
 	}
 	
 	public synchronized void sendPublisher(int id, String name, String publisherName) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.PublisherEvent.ID, id);
-		event.put(Message.PublisherEvent.NAME, name);
-		event.put(Message.PublisherEvent.PUBLISHER_NAME, publisherName);
+		event.put(Messages.PublisherEvent.ID, id);
+		event.put(Messages.PublisherEvent.NAME, name);
+		event.put(Messages.PublisherEvent.PUBLISHER_NAME, publisherName);
 		
-		eventPublisher.sendMore(Message.Event.PUBLISHER);
-		eventPublisher.send(Message.serialize(event), 0);
+		eventPublisher.sendMore(Messages.Event.PUBLISHER);
+		eventPublisher.send(Messages.serialize(event), 0);
 	}
 	
 	public synchronized void sendPort(int id, String name, String portName) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.PortEvent.ID, id);
-		event.put(Message.PortEvent.NAME, name);
-		event.put(Message.PortEvent.PORT_NAME, portName);
+		event.put(Messages.PortEvent.ID, id);
+		event.put(Messages.PortEvent.NAME, name);
+		event.put(Messages.PortEvent.PORT_NAME, portName);
 		
-		eventPublisher.sendMore(Message.Event.PORT);
-		eventPublisher.send(Message.serialize(event), 0);
+		eventPublisher.sendMore(Messages.Event.PORT);
+		eventPublisher.send(Messages.serialize(event), 0);
 	}
 	
 	public synchronized void sendStoreKeyValue(int id, String name, String key, String value) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.KeyEvent.ID, id);
-		event.put(Message.KeyEvent.NAME, name);
-		event.put(Message.KeyEvent.STATUS, Message.STORE_KEY_VALUE);
-		event.put(Message.KeyEvent.KEY, key);
-		event.put(Message.KeyEvent.VALUE, value);
+		event.put(Messages.KeyEvent.ID, id);
+		event.put(Messages.KeyEvent.NAME, name);
+		event.put(Messages.KeyEvent.STATUS, Messages.STORE_KEY_VALUE);
+		event.put(Messages.KeyEvent.KEY, key);
+		event.put(Messages.KeyEvent.VALUE, value);
 		
-		eventPublisher.sendMore(Message.Event.KEYVALUE);
-		eventPublisher.send(Message.serialize(event), 0);
+		eventPublisher.sendMore(Messages.Event.KEYVALUE);
+		eventPublisher.send(Messages.serialize(event), 0);
 	}
 	
 	public synchronized void sendRemoveKeyValue(int id, String name, String key, String value) {
 		
 		JSONObject event = new JSONObject();
-		event.put(Message.KeyEvent.ID, id);
-		event.put(Message.KeyEvent.NAME, name);
-		event.put(Message.KeyEvent.STATUS, Message.REMOVE_KEY);
-		event.put(Message.KeyEvent.KEY, key);
-		event.put(Message.KeyEvent.VALUE, value);
+		event.put(Messages.KeyEvent.ID, id);
+		event.put(Messages.KeyEvent.NAME, name);
+		event.put(Messages.KeyEvent.STATUS, Messages.REMOVE_KEY);
+		event.put(Messages.KeyEvent.KEY, key);
+		event.put(Messages.KeyEvent.VALUE, value);
 		
-		eventPublisher.sendMore(Message.Event.KEYVALUE);
-		eventPublisher.send(Message.serialize(event), 0);
+		eventPublisher.sendMore(Messages.Event.KEYVALUE);
+		eventPublisher.send(Messages.serialize(event), 0);
 	}
 	
 	private int findFreeId(int begin, int end) {

@@ -2,7 +2,7 @@ package fr.ill.ics.cameo.strings;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class ApplicationWithStarterIdentity {
 
@@ -31,7 +31,7 @@ public class ApplicationWithStarterIdentity {
 		JSONObject result = application.toJSON();
 		
 		if (starter != null) {
-			result.put(Message.ApplicationIdentity.STARTER, starter.toJSON());
+			result.put(Messages.ApplicationIdentity.STARTER, starter.toJSON());
 		}
 		
 		return result;

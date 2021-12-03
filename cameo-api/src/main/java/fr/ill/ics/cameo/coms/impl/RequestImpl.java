@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestImpl {
 
@@ -58,13 +58,13 @@ public class RequestImpl {
 	}
 
 	public String getString() {
-		return Message.parseString(message);
+		return Messages.parseString(message);
 	}
 	
 	public void reply(byte[] response) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.RESPONSE);
+		request.put(Messages.TYPE, Messages.RESPONSE);
 		
 		Zmq.Msg message = application.message(request);
 		
@@ -79,7 +79,7 @@ public class RequestImpl {
 	}
 	
 	public void reply(String response) {
-		reply(Message.serialize(response));
+		reply(Messages.serialize(response));
 	}
 	
 	public String getRequesterApplicationName() {

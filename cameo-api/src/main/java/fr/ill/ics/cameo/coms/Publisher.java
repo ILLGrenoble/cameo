@@ -8,7 +8,7 @@ import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Publisher.
@@ -22,27 +22,16 @@ public class Publisher {
 		this.impl = impl;
 	}
 	
-	private static JSONObject createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CREATE_PUBLISHER_v0);
-		request.put(Message.CreatePublisherRequest.ID, id);
-		request.put(Message.CreatePublisherRequest.NAME, name);
-		request.put(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
-
-		return request;
-	}
-	
 	static PublisherImpl createPublisher(String name, int numberOfSubscribers) throws PublisherCreationException {
 	
-		JSONObject request = createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
+		JSONObject request = Messages.createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
 		JSONObject response = This.getCom().request(request);
 	
-		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
+		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		if (publisherPort == -1) {
-			throw new PublisherCreationException(JSON.getString(response, Message.PublisherResponse.MESSAGE));
+			throw new PublisherCreationException(JSON.getString(response, Messages.PublisherResponse.MESSAGE));
 		}
-		int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
+		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		
 		return new PublisherImpl(This.getCom().getImpl(), publisherPort, synchronizerPort, name, numberOfSubscribers);
 	}

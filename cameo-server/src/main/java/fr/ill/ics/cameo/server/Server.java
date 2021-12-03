@@ -32,7 +32,7 @@ import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class Server {
 
@@ -128,113 +128,113 @@ public class Server {
 				byte[] data = message.getFirstData();
 				
 				// Get the JSON request object.
-				JSONObject request = (JSONObject)parser.parse(Message.parseString(data));
+				JSONObject request = (JSONObject)parser.parse(Messages.parseString(data));
 				
 				// Get the type.
-				long type = JSON.getLong(request, Message.TYPE);
+				long type = JSON.getLong(request, Messages.TYPE);
 				
-				if (type == Message.SYNC) {
+				if (type == Messages.SYNC) {
 					reply = process.processSync(manager);
 				}
-				else if (type == Message.SYNC_STREAM) {
+				else if (type == Messages.SYNC_STREAM) {
 					reply = process.processSyncStream(request, manager);
 				}
-				else if (type == Message.START) {
+				else if (type == Messages.START) {
 					reply = process.processStartRequest(request, manager);
 				}
-				else if (type == Message.STOP) {
+				else if (type == Messages.STOP) {
 					reply = process.processStopRequest(request, manager);
 				}
-				else if (type == Message.KILL) {
+				else if (type == Messages.KILL) {
 					reply = process.processKillRequest(request, manager);
 				}
-				else if (type == Message.CONNECT) {
+				else if (type == Messages.CONNECT) {
 					reply = process.processConnectRequest(request, manager);
 				}
-				else if (type == Message.CONNECT_WITH_ID) {
+				else if (type == Messages.CONNECT_WITH_ID) {
 					reply = process.processConnectWithIdRequest(request, manager);
 				}
-				else if (type == Message.OUTPUT_PORT) {
+				else if (type == Messages.OUTPUT_PORT) {
 					reply = process.processOutputPortRequest(request, manager);
 				}
-				else if (type == Message.OUTPUT_PORT_WITH_ID) {
+				else if (type == Messages.OUTPUT_PORT_WITH_ID) {
 					reply = process.processOutputPortWithIdRequest(request, manager);
 				}
-				else if (type == Message.IS_ALIVE) {
+				else if (type == Messages.IS_ALIVE) {
 					reply = process.processIsAliveRequest(request, manager);
 				}
-				else if (type == Message.WRITE_INPUT) {
+				else if (type == Messages.WRITE_INPUT) {
 					reply = process.processWriteInputRequest(request, manager);
 				}
-				else if (type == Message.STATUS) {
+				else if (type == Messages.STATUS) {
 					reply = process.processStatusRequest();
 				}
-				else if (type == Message.APPS) {
+				else if (type == Messages.APPS) {
 					reply = process.processAppsRequest(request, manager);
 				}
-				else if (type == Message.LIST) {
+				else if (type == Messages.LIST) {
 					reply = process.processListRequest(request, manager);
 				}
-				else if (type == Message.SET_STATUS) {
+				else if (type == Messages.SET_STATUS) {
 					reply = process.processSetStatusRequest(request, manager);
 				}
-				else if (type == Message.GET_STATUS) {
+				else if (type == Messages.GET_STATUS) {
 					reply = process.processGetStatusRequest(request, manager);
 				}
-				else if (type == Message.SET_RESULT) {
+				else if (type == Messages.SET_RESULT) {
 					// The result data is in the second frame.
 					byte[] resultData = message.getLastData();
 					reply = process.processSetResultRequest(request, resultData, manager);
 				}
-				else if (type == Message.REQUEST_PORT_v0) {
+				else if (type == Messages.REQUEST_PORT_v0) {
 					reply = process.processRequestPortV0Request(request, manager);
 				}
-				else if (type == Message.CONNECT_PORT_v0) {
+				else if (type == Messages.CONNECT_PORT_v0) {
 					reply = process.processConnectPortV0Request(request, manager);
 				}
-				else if (type == Message.REMOVE_PORT_v0) {
+				else if (type == Messages.REMOVE_PORT_v0) {
 					reply = process.processRemovePortV0Request(request, manager);
 				}
-				else if (type == Message.CREATE_PUBLISHER_v0) {
+				else if (type == Messages.CREATE_PUBLISHER_v0) {
 					reply = process.processCreatePublisherRequest(request, manager);
 				}
-				else if (type == Message.TERMINATE_PUBLISHER_v0) {
+				else if (type == Messages.TERMINATE_PUBLISHER_v0) {
 					reply = process.processTerminatePublisherRequest(request, manager);
 				}
-				else if (type == Message.CONNECT_PUBLISHER_v0) {
+				else if (type == Messages.CONNECT_PUBLISHER_v0) {
 					reply = process.processConnectPublisherRequest(request, manager);
 				}
-				else if (type == Message.ATTACH_UNMANAGED) {
+				else if (type == Messages.ATTACH_UNMANAGED) {
 					reply = process.processAttachUnmanagedRequest(request, manager);
 				}
-				else if (type == Message.DETACH_UNMANAGED) {
+				else if (type == Messages.DETACH_UNMANAGED) {
 					reply = process.processDetachUnmanagedRequest(request, manager);
 				}
-				else if (type == Message.IMPL_VERSION) {
+				else if (type == Messages.IMPL_VERSION) {
 					reply = process.processVersion(version);
 				}
-				else if (type == Message.STORE_KEY_VALUE) {
+				else if (type == Messages.STORE_KEY_VALUE) {
 					reply = process.processStoreKeyValue(request, manager);
 				}
-				else if (type == Message.GET_KEY_VALUE) {
+				else if (type == Messages.GET_KEY_VALUE) {
 					reply = process.processGetKeyValue(request, manager);
 				}
-				else if (type == Message.REMOVE_KEY) {
+				else if (type == Messages.REMOVE_KEY) {
 					reply = process.processRemoveKeyValue(request, manager);
 				}
-				else if (type == Message.REQUEST_PORT) {
+				else if (type == Messages.REQUEST_PORT) {
 					reply = process.processRequestPortRequest(request, manager);
 				}
-				else if (type == Message.PORT_UNAVAILABLE) {
+				else if (type == Messages.PORT_UNAVAILABLE) {
 					reply = process.processPortUnavailableRequest(request, manager);
 				}
-				else if (type == Message.RELEASE_PORT) {
+				else if (type == Messages.RELEASE_PORT) {
 					reply = process.processReleasePortRequest(request, manager);
 				}
-				else if (type == Message.PORTS) {
+				else if (type == Messages.PORTS) {
 					reply = process.processPortsRequest(request, manager);
 				}
-				else if (type == Message.SET_STOP_HANDLER) {
+				else if (type == Messages.SET_STOP_HANDLER) {
 					reply = process.processSetStopHandlerRequest(request, manager);
 				}
 				else {

@@ -25,7 +25,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class RequesterImpl {
@@ -80,12 +80,12 @@ public class RequesterImpl {
 	public void send(byte[] requestData) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REQUEST);
-		request.put(Message.Request.APPLICATION_NAME, application.getName());
-		request.put(Message.Request.APPLICATION_ID, application.getId());
-		request.put(Message.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
-		request.put(Message.Request.SERVER_PORT, application.getEndpoint().getPort());
-		request.put(Message.Request.REQUESTER_PORT, requesterPort);
+		request.put(Messages.TYPE, Messages.REQUEST);
+		request.put(Messages.Request.APPLICATION_NAME, application.getName());
+		request.put(Messages.Request.APPLICATION_ID, application.getId());
+		request.put(Messages.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
+		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
+		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = application.message(request);
 		
@@ -96,18 +96,18 @@ public class RequesterImpl {
 	}
 	
 	public void send(String request) {
-		send(Message.serialize(request));
+		send(Messages.serialize(request));
 	}
 	
 	public void sendTwoParts(byte[] requestData1, byte[] requestData2) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REQUEST);
-		request.put(Message.Request.APPLICATION_NAME, application.getName());
-		request.put(Message.Request.APPLICATION_ID, application.getId());
-		request.put(Message.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
-		request.put(Message.Request.SERVER_PORT, application.getEndpoint().getPort());
-		request.put(Message.Request.REQUESTER_PORT, requesterPort);
+		request.put(Messages.TYPE, Messages.REQUEST);
+		request.put(Messages.Request.APPLICATION_NAME, application.getName());
+		request.put(Messages.Request.APPLICATION_ID, application.getId());
+		request.put(Messages.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
+		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
+		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = application.message(request);
 		
@@ -133,12 +133,12 @@ public class RequesterImpl {
 			JSONObject request = application.parse(message);
 			
 			// Get the type.
-			long type = JSON.getLong(request, Message.TYPE);
+			long type = JSON.getLong(request, Messages.TYPE);
 						
-			if (type == Message.RESPONSE) {
+			if (type == Messages.RESPONSE) {
 				return message.getLastData();
 			}
-			else if (type == Message.CANCEL) {
+			else if (type == Messages.CANCEL) {
 				canceled = true;
 				return null;
 			}
@@ -163,7 +163,7 @@ public class RequesterImpl {
 	}
 
 	public String receiveString() {
-		return Message.parseString(receive());
+		return Messages.parseString(receive());
 	}
 	
 	public void cancel() {
@@ -171,7 +171,7 @@ public class RequesterImpl {
 		Endpoint endpoint = application.getEndpoint().withPort(requesterPort);
 
 		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CANCEL);
+		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());

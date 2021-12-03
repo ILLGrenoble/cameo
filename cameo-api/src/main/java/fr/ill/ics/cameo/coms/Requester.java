@@ -10,7 +10,7 @@ import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Requester.
@@ -39,37 +39,37 @@ public class Requester {
 		RequestSocket responderSocket = This.getCom().getImpl().createRequestSocket(responderEndpoint);
 		
 		// First connect to the responder.
-		JSONObject request = ThisImpl.createConnectPortV0Request(responderId, responderPortName);
+		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);
 		Zmq.Msg reply = responderSocket.request(request);
 		
 		// Get the JSON response object.
 		JSONObject response = This.getCom().parse(reply);
 		
-		int responderPort = JSON.getInt(response, Message.RequestResponse.VALUE);
+		int responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responderPort == -1) {
 			
 			// Wait for the responder port.
 			application.waitFor(responderPortName);
 
 			// Retry to connect.
-			request = ThisImpl.createConnectPortV0Request(responderId, responderPortName);
+			request = Messages.createConnectPortV0Request(responderId, responderPortName);
 			reply = responderSocket.request(request);
 			response = This.getCom().parse(reply);
-			responderPort = JSON.getInt(response, Message.RequestResponse.VALUE);
+			responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			
 			if (responderPort == -1) {
-				throw new RequesterCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 		}
 		
 		// Request a requester port.
-		request = ThisImpl.createRequestPortV0Request(This.getId(), requesterPortName);
+		request = Messages.createRequestPortV0Request(This.getId(), requesterPortName);
 		
 		response = This.getCom().request(request);
-		int requesterPort = JSON.getInt(response, Message.RequestResponse.VALUE);
+		int requesterPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
 		if (requesterPort == -1) {
-			throw new RequesterCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
 		return new RequesterImpl(This.getCom().getImpl(), responderUrl, requesterPort, responderPort, name, responderId, requesterId);

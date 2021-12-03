@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.manager.ApplicationState;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class Converter {
 
@@ -55,7 +55,7 @@ public class Converter {
 	public static Msg reply(JSONObject response) {
 		
 		Zmq.Msg reply = new Zmq.Msg();
-		reply.add(Message.serialize(response));
+		reply.add(Messages.serialize(response));
 		
 		return reply;
 	}

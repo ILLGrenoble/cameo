@@ -30,7 +30,7 @@ import fr.ill.ics.cameo.base.PortEvent;
 import fr.ill.ics.cameo.base.PublisherEvent;
 import fr.ill.ics.cameo.base.ResultEvent;
 import fr.ill.ics.cameo.base.StatusEvent;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 
@@ -366,7 +366,7 @@ public class InstanceImpl extends EventListener {
 		if (result == null) {
 			return null;
 		}
-		return Message.parseString(result);
+		return Messages.parseString(result);
 	}
 		
 	public OutputStreamSocket getOutputStreamSocket() {

@@ -24,7 +24,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 
 public class EventStreamSocket {
 		
@@ -47,7 +47,7 @@ public class EventStreamSocket {
 		
 		// We can receive messages from the status publisher located in the server
 		// as well as messages from the cancel publisher located in the same process.
-		if (message.equals(Message.Event.STATUS)) {
+		if (message.equals(Messages.Event.STATUS)) {
 			
 			byte[] statusMessage = this.socket.recv();
 			
@@ -55,13 +55,13 @@ public class EventStreamSocket {
 				// Get the JSON object.
 				JSONObject jsonObject = services.parse(statusMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.StatusEvent.ID);
-				String name = JSON.getString(jsonObject, Message.StatusEvent.NAME);
-				int state = JSON.getInt(jsonObject, Message.StatusEvent.APPLICATION_STATE);
-				int pastStates = JSON.getInt(jsonObject, Message.StatusEvent.PAST_APPLICATION_STATES);
+				int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
+				String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
+				int state = JSON.getInt(jsonObject, Messages.StatusEvent.APPLICATION_STATE);
+				int pastStates = JSON.getInt(jsonObject, Messages.StatusEvent.PAST_APPLICATION_STATES);
 								
-				if (jsonObject.containsKey(Message.StatusEvent.EXIT_CODE)) {
-					int exitCode = JSON.getInt(jsonObject, Message.StatusEvent.EXIT_CODE);
+				if (jsonObject.containsKey(Messages.StatusEvent.EXIT_CODE)) {
+					int exitCode = JSON.getInt(jsonObject, Messages.StatusEvent.EXIT_CODE);
 					event = new StatusEvent(id, name, state, pastStates, exitCode);
 				}
 				else {
@@ -72,7 +72,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.RESULT)) {
+		else if (message.equals(Messages.Event.RESULT)) {
 				
 			byte[] resultMessage = this.socket.recv();
 			
@@ -80,8 +80,8 @@ public class EventStreamSocket {
 				// Get the JSON object.
 				JSONObject jsonObject = services.parse(resultMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.ResultEvent.ID);
-				String name = JSON.getString(jsonObject, Message.ResultEvent.NAME);
+				int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
+				String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
 				
 				// Get the next message to get the data.
 				byte[] data = this.socket.recv();
@@ -92,7 +92,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.PUBLISHER)) {
+		else if (message.equals(Messages.Event.PUBLISHER)) {
 			
 			byte[] publisherMessage = this.socket.recv();
 			
@@ -100,9 +100,9 @@ public class EventStreamSocket {
 				// Get the JSON object.
 				JSONObject jsonObject = services.parse(publisherMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.PublisherEvent.ID);
-				String name = JSON.getString(jsonObject, Message.PublisherEvent.NAME);
-				String publisherName = JSON.getString(jsonObject, Message.PublisherEvent.PUBLISHER_NAME);
+				int id = JSON.getInt(jsonObject, Messages.PublisherEvent.ID);
+				String name = JSON.getString(jsonObject, Messages.PublisherEvent.NAME);
+				String publisherName = JSON.getString(jsonObject, Messages.PublisherEvent.PUBLISHER_NAME);
 				
 				event = new PublisherEvent(id, name, publisherName);
 			}
@@ -110,7 +110,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.PORT)) {
+		else if (message.equals(Messages.Event.PORT)) {
 			
 			byte[] portMessage = this.socket.recv();
 			
@@ -118,9 +118,9 @@ public class EventStreamSocket {
 				// Get the JSON object.
 				JSONObject jsonObject = services.parse(portMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.PortEvent.ID);
-				String name = JSON.getString(jsonObject, Message.PortEvent.NAME);
-				String portName = JSON.getString(jsonObject, Message.PortEvent.PORT_NAME);
+				int id = JSON.getInt(jsonObject, Messages.PortEvent.ID);
+				String name = JSON.getString(jsonObject, Messages.PortEvent.NAME);
+				String portName = JSON.getString(jsonObject, Messages.PortEvent.PORT_NAME);
 				
 				event = new PortEvent(id, name, portName);
 			}
@@ -128,7 +128,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.KEYVALUE)) {
+		else if (message.equals(Messages.Event.KEYVALUE)) {
 			
 			byte[] keyValueMessage = this.socket.recv();
 			
@@ -136,13 +136,13 @@ public class EventStreamSocket {
 				// Get the JSON object.
 				JSONObject jsonObject = services.parse(keyValueMessage);
 				
-				int id = JSON.getInt(jsonObject, Message.KeyEvent.ID);
-				String name = JSON.getString(jsonObject, Message.KeyEvent.NAME);
-				long status = JSON.getLong(jsonObject, Message.KeyEvent.STATUS);
-				String key = JSON.getString(jsonObject, Message.KeyEvent.KEY);
-				String value = JSON.getString(jsonObject, Message.KeyEvent.VALUE);
+				int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
+				String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);
+				long status = JSON.getLong(jsonObject, Messages.KeyEvent.STATUS);
+				String key = JSON.getString(jsonObject, Messages.KeyEvent.KEY);
+				String value = JSON.getString(jsonObject, Messages.KeyEvent.VALUE);
 				
-				if (status == Message.STORE_KEY_VALUE) {
+				if (status == Messages.STORE_KEY_VALUE) {
 					event = new KeyEvent(id, name, KeyEvent.Status.STORED, key, value);
 				}
 				else {
@@ -153,7 +153,7 @@ public class EventStreamSocket {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Message.Event.CANCEL)) {
+		else if (message.equals(Messages.Event.CANCEL)) {
 			canceled = true;
 			return null;
 		}
@@ -166,8 +166,8 @@ public class EventStreamSocket {
 	}
 	
 	public void cancel() {
-		cancelSocket.sendMore(Message.Event.CANCEL);
-		cancelSocket.send(Message.Event.CANCEL);
+		cancelSocket.sendMore(Messages.Event.CANCEL);
+		cancelSocket.send(Messages.Event.CANCEL);
 	}
 
 	public void destroy() {

@@ -28,8 +28,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.Application.State;
+import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.EventListener;
 import fr.ill.ics.cameo.base.EventStreamSocket;
@@ -40,10 +41,8 @@ import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.WriteException;
-import fr.ill.ics.cameo.base.Application.State;
-import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
@@ -162,10 +161,10 @@ public class ServerImpl extends ServicesImpl {
 		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
-			request = createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
+			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
 		}
 		else {
-			request = createStartRequest(name, args, null, 0, null);
+			request = Messages.createStartRequest(name, args, null, 0, null);
 		}
 		Zmq.Msg reply = requestSocket.request(request);
 		
@@ -173,7 +172,7 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Message.RequestResponse.VALUE), JSON.getString(response, Message.RequestResponse.MESSAGE));
+			return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -182,14 +181,14 @@ public class ServerImpl extends ServicesImpl {
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
-		JSONObject request = createOutputPortRequest(name);
+		JSONObject request = Messages.createOutputPortRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			return JSON.getInt(response, Message.RequestResponse.VALUE);
+			return JSON.getInt(response, Messages.RequestResponse.VALUE);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -272,10 +271,10 @@ public class ServerImpl extends ServicesImpl {
 		JSONObject request;
 		
 		if (immediately) {
-			request = createKillRequest(id);
+			request = Messages.createKillRequest(id);
 		}
 		else {
-			request = createStopRequest(id);
+			request = Messages.createStopRequest(id);
 		}
 		
 		Zmq.Msg reply = requestSocket.request(request);
@@ -284,7 +283,7 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			return new fr.ill.ics.cameo.base.impl.Response(id, JSON.getString(response, Message.RequestResponse.MESSAGE));
+			return new fr.ill.ics.cameo.base.impl.Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -310,7 +309,7 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 			
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.ApplicationInfoListResponse.APPLICATION_INFO);
+			JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
 						
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject applicationInfo = (JSONObject)list.get(i);
@@ -319,20 +318,20 @@ public class ServerImpl extends ServicesImpl {
 				InstanceImpl instance = new InstanceImpl(this);
 			
 				// Get the name.
-				String name = JSON.getString(applicationInfo, Message.ApplicationInfo.NAME);
+				String name = JSON.getString(applicationInfo, Messages.ApplicationInfo.NAME);
 				
 				// We set the name of the application and register before starting because the id is not available.
 				instance.setName(name);
 				registerEventListener(instance);
 				
-				int applicationId = JSON.getInt(applicationInfo, Message.ApplicationInfo.ID);
+				int applicationId = JSON.getInt(applicationInfo, Messages.ApplicationInfo.ID);
 				
 				// Test if the application is still alive otherwise we could have missed a status message.
 				if (isAlive(applicationId)) {
 					
 					instance.setId(applicationId);
-					instance.setInitialState(JSON.getInt(applicationInfo, Message.ApplicationInfo.APPLICATION_STATE));
-					instance.setPastStates(JSON.getInt(applicationInfo, Message.ApplicationInfo.PAST_APPLICATION_STATES));
+					instance.setInitialState(JSON.getInt(applicationInfo, Messages.ApplicationInfo.APPLICATION_STATE));
+					instance.setPastStates(JSON.getInt(applicationInfo, Messages.ApplicationInfo.PAST_APPLICATION_STATES));
 					
 					if (outputStream) {
 						instance.setOutputStreamSocket(createOutputStreamSocket(name));
@@ -365,7 +364,7 @@ public class ServerImpl extends ServicesImpl {
 
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		JSONObject request = createConnectRequest(name);
+		JSONObject request = Messages.createConnectRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
 
 		return getInstancesFromApplicationInfos(reply, outputStream);
@@ -395,7 +394,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		JSONObject request = createConnectWithIdRequest(id);
+		JSONObject request = Messages.createConnectWithIdRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		List<InstanceImpl> instances = getInstancesFromApplicationInfos(reply, outputStream);
@@ -414,7 +413,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Configuration> getApplicationConfigurations() {
 
-		JSONObject request = createListRequest();
+		JSONObject request = Messages.createListRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
@@ -424,17 +423,17 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 						
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.ApplicationConfigListResponse.APPLICATION_CONFIG);
+			JSONArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
 			
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject config = (JSONObject)list.get(i);
 				
-				String name = JSON.getString(config, Message.ApplicationConfig.NAME);
-				String description = JSON.getString(config, Message.ApplicationConfig.DESCRIPTION);
-				boolean runsSingle = JSON.getBoolean(config, Message.ApplicationConfig.RUNS_SINGLE);
-				boolean restart = JSON.getBoolean(config, Message.ApplicationConfig.RESTART);
-				int startingTime = JSON.getInt(config, Message.ApplicationConfig.STARTING_TIME);
-				int stoppingTime = JSON.getInt(config, Message.ApplicationConfig.STOPPING_TIME);
+				String name = JSON.getString(config, Messages.ApplicationConfig.NAME);
+				String description = JSON.getString(config, Messages.ApplicationConfig.DESCRIPTION);
+				boolean runsSingle = JSON.getBoolean(config, Messages.ApplicationConfig.RUNS_SINGLE);
+				boolean restart = JSON.getBoolean(config, Messages.ApplicationConfig.RESTART);
+				int startingTime = JSON.getInt(config, Messages.ApplicationConfig.STARTING_TIME);
+				int stoppingTime = JSON.getInt(config, Messages.ApplicationConfig.STOPPING_TIME);
 			
 				applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, stoppingTime));
 			}
@@ -453,7 +452,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Info> getApplicationInfos() {
 
-		JSONObject request = createAppsRequest();
+		JSONObject request = Messages.createAppsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
@@ -463,17 +462,17 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 						
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.ApplicationInfoListResponse.APPLICATION_INFO);
+			JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
 			
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject info = (JSONObject)list.get(i);
 				
-				String name = JSON.getString(info, Message.ApplicationInfo.NAME);
-				int id = JSON.getInt(info, Message.ApplicationInfo.ID);
-				int pid = JSON.getInt(info, Message.ApplicationInfo.PID);
-				int state = JSON.getInt(info, Message.ApplicationInfo.APPLICATION_STATE);
-				int pastStates = JSON.getInt(info, Message.ApplicationInfo.PAST_APPLICATION_STATES);
-				String args = JSON.getString(info, Message.ApplicationInfo.ARGS);
+				String name = JSON.getString(info, Messages.ApplicationInfo.NAME);
+				int id = JSON.getInt(info, Messages.ApplicationInfo.ID);
+				int pid = JSON.getInt(info, Messages.ApplicationInfo.PID);
+				int state = JSON.getInt(info, Messages.ApplicationInfo.APPLICATION_STATE);
+				int pastStates = JSON.getInt(info, Messages.ApplicationInfo.PAST_APPLICATION_STATES);
+				String args = JSON.getString(info, Messages.ApplicationInfo.ARGS);
 			
 				applications.add(new Application.Info(name, id, pid, state, pastStates, args));
 			}
@@ -509,7 +508,7 @@ public class ServerImpl extends ServicesImpl {
 	public int getActualState(int id) {
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
+			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -520,7 +519,7 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 			
-			return JSON.getInt(response, Message.StatusEvent.APPLICATION_STATE);
+			return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -530,7 +529,7 @@ public class ServerImpl extends ServicesImpl {
 	public Set<Integer> getPastStates(int id) {
 		
 		try {
-			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
+			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -541,7 +540,7 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 			
-			int applicationStates = JSON.getInt(response, Message.StatusEvent.PAST_APPLICATION_STATES);
+			int applicationStates = JSON.getInt(response, Messages.StatusEvent.PAST_APPLICATION_STATES);
 			
 			Set<Integer> result = new HashSet<Integer>();
 			
@@ -600,14 +599,14 @@ public class ServerImpl extends ServicesImpl {
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(serverEndpoint.withPort(port).toString());
-		subscriber.subscribe(Message.Event.SYNCSTREAM);
-		subscriber.subscribe(Message.Event.STREAM);
-		subscriber.subscribe(Message.Event.ENDSTREAM);
+		subscriber.subscribe(Messages.Event.SYNCSTREAM);
+		subscriber.subscribe(Messages.Event.STREAM);
+		subscriber.subscribe(Messages.Event.ENDSTREAM);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(Message.Event.CANCEL);
+		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
@@ -638,14 +637,14 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private boolean isAlive(int id) {
 
-		JSONObject request = createIsAliveRequest(id);
+		JSONObject request = Messages.createIsAliveRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
 		
-			return JSON.getBoolean(response, Message.IsAliveResponse.IS_ALIVE);
+			return JSON.getBoolean(response, Messages.IsAliveResponse.IS_ALIVE);
 		}
 		catch (ParseException e) {
 			throw new UnexpectedException("Cannot parse response");
@@ -663,7 +662,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
-		JSONObject request = createWriteInputRequest(id, inputs);
+		JSONObject request = Messages.createWriteInputRequest(id, inputs);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -676,10 +675,10 @@ public class ServerImpl extends ServicesImpl {
 			throw new UnexpectedException("Cannot parse response");
 		}
 		
-		int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
 		if (value == -1) {
-			throw new WriteException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			throw new WriteException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 	}
 	
@@ -708,7 +707,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void storeKeyValue(int applicationId, String key, String value) {
 		
-		JSONObject request = createStoreKeyValueRequest(applicationId, key, value);
+		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -732,7 +731,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		JSONObject request = createGetKeyValueRequest(applicationId, key);
+		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -741,15 +740,15 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			response = parse(reply);
 			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == 0) {
-				return JSON.getString(response, Message.RequestResponse.MESSAGE);
+				return JSON.getString(response, Messages.RequestResponse.MESSAGE);
 			}
 			else if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 			else if (value == -2) {
-				throw new UndefinedKeyException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 			
 			return null;
@@ -768,7 +767,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		JSONObject request = createRemoveKeyRequest(applicationId, key);
+		JSONObject request = Messages.createRemoveKeyRequest(applicationId, key);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -777,12 +776,12 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			response = parse(reply);
 			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 			else if (value == -2) {
-				throw new UndefinedKeyException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 		}
 		catch (ParseException e) {
@@ -792,7 +791,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public int requestPort(int applicationId) throws UndefinedApplicationException {
 		
-		JSONObject request = createRequestPortRequest(applicationId);
+		JSONObject request = Messages.createRequestPortRequest(applicationId);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -801,9 +800,9 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			response = parse(reply);
 			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 			return value;
 		}
@@ -814,7 +813,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
 		
-		JSONObject request = createPortUnavailableRequest(applicationId, port);
+		JSONObject request = Messages.createPortUnavailableRequest(applicationId, port);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -823,9 +822,9 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			response = parse(reply);
 			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 		}
 		catch (ParseException e) {
@@ -835,7 +834,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public void releasePort(int applicationId, int port) throws UndefinedApplicationException {
 		
-		JSONObject request = createReleasePortRequest(applicationId, port);
+		JSONObject request = Messages.createReleasePortRequest(applicationId, port);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -844,9 +843,9 @@ public class ServerImpl extends ServicesImpl {
 			// Get the JSON response object.
 			response = parse(reply);
 			
-			int value = JSON.getInt(response, Message.RequestResponse.VALUE);
+			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 			}
 		}
 		catch (ParseException e) {
@@ -856,7 +855,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public List<Application.Port> getPorts() {
 		
-		JSONObject request = createPortsRequest();
+		JSONObject request = Messages.createPortsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Port> ports = new LinkedList<Application.Port>();
@@ -866,14 +865,14 @@ public class ServerImpl extends ServicesImpl {
 			JSONObject response = parse(reply);
 						
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Message.PortInfoListResponse.PORT_INFO);
+			JSONArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
 			
 			for (int i = 0; i < list.size(); ++i) {
 				JSONObject info = (JSONObject)list.get(i);
 								
-				int port = JSON.getInt(info, Message.PortInfo.PORT);
-				String status = JSON.getString(info, Message.PortInfo.STATUS);
-				String owner = JSON.getString(info, Message.PortInfo.OWNER);
+				int port = JSON.getInt(info, Messages.PortInfo.PORT);
+				String status = JSON.getString(info, Messages.PortInfo.STATUS);
+				String owner = JSON.getString(info, Messages.PortInfo.OWNER);
 			
 				ports.add(new Application.Port(port, status, owner));
 			}
@@ -884,265 +883,6 @@ public class ServerImpl extends ServicesImpl {
 		
 		
 		return ports;
-	}
-
-	/**
-	 * create isAlive request
-	 * 
-	 * @param text
-	 * @return
-	 */
-	private JSONObject createIsAliveRequest(int id) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.IS_ALIVE);
-		request.put(Message.IsAliveRequest.ID, id);
-
-		return request;
-	}
-	
-	/**
-	 * create start request with parameters
-	 * 
-	 * @param name
-	 * @param args
-	 * @param returnResult 
-	 * @return request
-	 */
-	private JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.START);
-		request.put(Message.StartRequest.NAME, name);
-		
-		// Add the starter object if This exists.
-		if (thisName != null) {
-			
-			JSONObject starter = new JSONObject();
-			starter.put(Message.ApplicationIdentity.NAME, thisName);
-			starter.put(Message.ApplicationIdentity.ID, thisId);
-			starter.put(Message.ApplicationIdentity.SERVER, thisEndpoint);
-			
-			request.put(Message.StartRequest.STARTER, starter);
-		}
-		
-		if (args != null) {
-			JSONArray list = new JSONArray();
-			for (int i = 0; i < args.length; i++) {
-				list.add(args[i]);
-			}
-			request.put(Message.StartRequest.ARGS, list);
-		}
-
-		return request;
-	}
-
-	/**
-	 * create stop request
-	 * 
-	 * @param id
-	 * @return request
-	 */
-	private JSONObject createStopRequest(int id) {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.STOP);
-		request.put(Message.StopRequest.ID, id);
-
-		return request;
-	}
-	
-	/**
-	 * create kill request
-	 * 
-	 * @param id
-	 * @return request
-	 */
-	private JSONObject createKillRequest(int id) {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.KILL);
-		request.put(Message.KillRequest.ID, id);
-
-		return request;
-	}
-
-	/**
-	 * create connect request
-	 * @return request
-	 */
-	private JSONObject createConnectRequest(String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT);
-		request.put(Message.ConnectRequest.NAME, name);
-
-		return request;
-	}
-
-	/**
-	 * create connect with id request
-	 * @return request
-	 */
-	private JSONObject createConnectWithIdRequest(int id) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_WITH_ID);
-		request.put(Message.ConnectWithIdRequest.ID, id);
-
-		return request;
-	}
-	
-	/**
-	 * create all available request
-	 * 
-	 * @return request
-	 */
-	private JSONObject createListRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.LIST);
-
-		return request;
-	}
-	
-	/**
-	 * create showall request
-	 * 
-	 * @return request
-	 */
-	private JSONObject createAppsRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.APPS);
-
-		return request;
-	}
-
-	/**
-	 * create showall request
-	 * 
-	 * @return request
-	 */
-	private JSONObject createOutputPortWithIdRequest(int id) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.OUTPUT_PORT_WITH_ID);
-		request.put(Message.OutputPortWithIdRequest.ID, id);
-
-		return request;
-	}
-	
-	/**
-	 * create WriteInput request
-	 * 
-	 * @param id
-	 * @param inputs
-	 * @return
-	 */
-	private JSONObject createWriteInputRequest(int id, String[] inputs) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.WRITE_INPUT);
-		request.put(Message.WriteInputRequest.ID, id);
-		
-		JSONArray list = new JSONArray();
-		for (int i = 0; i < inputs.length; i++) {
-			list.add(inputs[i]);
-		}
-		request.put(Message.WriteInputRequest.PARAMETERS, list);
-
-		return request;
-	}
-	
-	/**
-	 * create output request
-	 * 
-	 * @param name
-	 */
-	private JSONObject createOutputPortRequest(String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.OUTPUT_PORT);
-		request.put(Message.OutputRequest.NAME, name);
-
-		return request;
-	}
-	
-	public static JSONObject createSubscribePublisherRequest() {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER_v0);
-
-		return request;
-	}
-
-	private JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.STORE_KEY_VALUE);
-		request.put(Message.StoreKeyValueRequest.ID, applicationId);
-		request.put(Message.StoreKeyValueRequest.KEY, key);
-		request.put(Message.StoreKeyValueRequest.VALUE, value);
-
-		return request;
-	}
-
-	private JSONObject createGetKeyValueRequest(int applicationId, String key) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.GET_KEY_VALUE);
-		request.put(Message.GetKeyValueRequest.ID, applicationId);
-		request.put(Message.GetKeyValueRequest.KEY, key);
-
-		return request;
-	}
-	
-	private JSONObject createRemoveKeyRequest(int applicationId, String key) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REMOVE_KEY);
-		request.put(Message.RemoveKeyRequest.ID, applicationId);
-		request.put(Message.RemoveKeyRequest.KEY, key);
-
-		return request;
-	}
-
-	private JSONObject createRequestPortRequest(int applicationId) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.REQUEST_PORT);
-		request.put(Message.RequestPortRequest.ID, applicationId);
-
-		return request;	
-	}
-
-	private JSONObject createPortUnavailableRequest(int applicationId, int port) {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.PORT_UNAVAILABLE);
-		request.put(Message.PortUnavailableRequest.ID, applicationId);
-		request.put(Message.PortUnavailableRequest.PORT, port);
-
-		return request;
-	}
-
-	private JSONObject createReleasePortRequest(int applicationId, int port) {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.RELEASE_PORT);
-		request.put(Message.ReleasePortRequest.ID, applicationId);
-		request.put(Message.ReleasePortRequest.PORT, port);
-
-		return request;
-	}
-	
-	private JSONObject createPortsRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.PORTS);
-
-		return request;
 	}
 	
 	@Override

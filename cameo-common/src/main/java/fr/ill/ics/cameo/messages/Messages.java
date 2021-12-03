@@ -2,12 +2,13 @@ package fr.ill.ics.cameo.messages;
 
 import java.nio.charset.Charset;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
  * Definitions for the JSON objects. 
  */
-public class Message {
+public class Messages {
 	
 	public static Charset CHARSET = Charset.forName("UTF-8");
 	
@@ -321,4 +322,415 @@ public class Message {
 	public static byte[] serialize(JSONObject object) {
 		return serialize(object.toJSONString());
 	}
+	
+	public static JSONObject createSyncRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SYNC);
+		
+		return request;
+	}
+
+	public static JSONObject createSyncStreamRequest(String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SYNC_STREAM);
+		request.put(Messages.SyncStreamRequest.NAME, name);
+		
+		return request;
+	}
+	
+	public static JSONObject createVersionRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.IMPL_VERSION);
+
+		return request;
+	}
+	
+	public static JSONObject createStreamStatusRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.STATUS);
+
+		return request;
+	}
+	
+	public static JSONObject createGetStatusRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.GET_STATUS);
+		request.put(Messages.GetStatusRequest.ID, id);
+
+		return request;	
+	}
+	
+	public static JSONObject createAttachUnmanagedRequest(String name, long pid) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.ATTACH_UNMANAGED);
+		request.put(Messages.AttachUnmanagedRequest.NAME, name);
+		request.put(Messages.AttachUnmanagedRequest.PID, pid);
+		
+		return request;
+	}
+	
+	public static JSONObject createDetachUnmanagedRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.DETACH_UNMANAGED);
+		request.put(Messages.DetachUnmanagedRequest.ID, id);
+		
+		return request;
+	}
+	
+	public static JSONObject createSetStopHandlerRequest(int id, int stoppingTime) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SET_STOP_HANDLER);
+		request.put(Messages.SetStopHandlerRequest.ID, id);
+		request.put(Messages.SetStopHandlerRequest.STOPPING_TIME, stoppingTime);
+		
+		return request;
+	}
+	
+	/**
+	 * create isAlive request
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static JSONObject createIsAliveRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.IS_ALIVE);
+		request.put(Messages.IsAliveRequest.ID, id);
+
+		return request;
+	}
+	
+	/**
+	 * create start request with parameters
+	 * 
+	 * @param name
+	 * @param args
+	 * @param returnResult 
+	 * @return request
+	 */
+	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.START);
+		request.put(Messages.StartRequest.NAME, name);
+		
+		// Add the starter object if This exists.
+		if (thisName != null) {
+			
+			JSONObject starter = new JSONObject();
+			starter.put(Messages.ApplicationIdentity.NAME, thisName);
+			starter.put(Messages.ApplicationIdentity.ID, thisId);
+			starter.put(Messages.ApplicationIdentity.SERVER, thisEndpoint);
+			
+			request.put(Messages.StartRequest.STARTER, starter);
+		}
+		
+		if (args != null) {
+			JSONArray list = new JSONArray();
+			for (int i = 0; i < args.length; i++) {
+				list.add(args[i]);
+			}
+			request.put(Messages.StartRequest.ARGS, list);
+		}
+
+		return request;
+	}
+
+	/**
+	 * create stop request
+	 * 
+	 * @param id
+	 * @return request
+	 */
+	public static JSONObject createStopRequest(int id) {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.STOP);
+		request.put(Messages.StopRequest.ID, id);
+
+		return request;
+	}
+	
+	/**
+	 * create kill request
+	 * 
+	 * @param id
+	 * @return request
+	 */
+	public static JSONObject createKillRequest(int id) {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.KILL);
+		request.put(Messages.KillRequest.ID, id);
+
+		return request;
+	}
+
+	/**
+	 * create connect request
+	 * @return request
+	 */
+	public static JSONObject createConnectRequest(String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.CONNECT);
+		request.put(Messages.ConnectRequest.NAME, name);
+
+		return request;
+	}
+
+	/**
+	 * create connect with id request
+	 * @return request
+	 */
+	public static JSONObject createConnectWithIdRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.CONNECT_WITH_ID);
+		request.put(Messages.ConnectWithIdRequest.ID, id);
+
+		return request;
+	}
+	
+	/**
+	 * create all available request
+	 * 
+	 * @return request
+	 */
+	public static JSONObject createListRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.LIST);
+
+		return request;
+	}
+	
+	/**
+	 * create showall request
+	 * 
+	 * @return request
+	 */
+	public static JSONObject createAppsRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.APPS);
+
+		return request;
+	}
+
+	/**
+	 * create showall request
+	 * 
+	 * @return request
+	 */
+	public static JSONObject createOutputPortWithIdRequest(int id) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.OUTPUT_PORT_WITH_ID);
+		request.put(Messages.OutputPortWithIdRequest.ID, id);
+
+		return request;
+	}
+	
+	/**
+	 * create WriteInput request
+	 * 
+	 * @param id
+	 * @param inputs
+	 * @return
+	 */
+	public static JSONObject createWriteInputRequest(int id, String[] inputs) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.WRITE_INPUT);
+		request.put(Messages.WriteInputRequest.ID, id);
+		
+		JSONArray list = new JSONArray();
+		for (int i = 0; i < inputs.length; i++) {
+			list.add(inputs[i]);
+		}
+		request.put(Messages.WriteInputRequest.PARAMETERS, list);
+
+		return request;
+	}
+	
+	/**
+	 * create output request
+	 * 
+	 * @param name
+	 */
+	public static JSONObject createOutputPortRequest(String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.OUTPUT_PORT);
+		request.put(Messages.OutputRequest.NAME, name);
+
+		return request;
+	}
+	
+	public static JSONObject createSubscribePublisherRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SUBSCRIBE_PUBLISHER_v0);
+
+		return request;
+	}
+
+	public static JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.STORE_KEY_VALUE);
+		request.put(Messages.StoreKeyValueRequest.ID, applicationId);
+		request.put(Messages.StoreKeyValueRequest.KEY, key);
+		request.put(Messages.StoreKeyValueRequest.VALUE, value);
+
+		return request;
+	}
+
+	public static JSONObject createGetKeyValueRequest(int applicationId, String key) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.GET_KEY_VALUE);
+		request.put(Messages.GetKeyValueRequest.ID, applicationId);
+		request.put(Messages.GetKeyValueRequest.KEY, key);
+
+		return request;
+	}
+	
+	public static JSONObject createRemoveKeyRequest(int applicationId, String key) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.REMOVE_KEY);
+		request.put(Messages.RemoveKeyRequest.ID, applicationId);
+		request.put(Messages.RemoveKeyRequest.KEY, key);
+
+		return request;
+	}
+
+	public static JSONObject createRequestPortRequest(int applicationId) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.REQUEST_PORT);
+		request.put(Messages.RequestPortRequest.ID, applicationId);
+
+		return request;	
+	}
+
+	public static JSONObject createPortUnavailableRequest(int applicationId, int port) {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.PORT_UNAVAILABLE);
+		request.put(Messages.PortUnavailableRequest.ID, applicationId);
+		request.put(Messages.PortUnavailableRequest.PORT, port);
+
+		return request;
+	}
+
+	public static JSONObject createReleasePortRequest(int applicationId, int port) {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.RELEASE_PORT);
+		request.put(Messages.ReleasePortRequest.ID, applicationId);
+		request.put(Messages.ReleasePortRequest.PORT, port);
+
+		return request;
+	}
+	
+	public static JSONObject createPortsRequest() {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.PORTS);
+
+		return request;
+	}
+	
+	public static JSONObject createSetStatusRequest(int id, int state) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SET_STATUS);
+		request.put(Messages.SetStatusRequest.ID, id);
+		request.put(Messages.SetStatusRequest.APPLICATION_STATE, state);
+
+		return request;
+	}
+	
+	public static JSONObject createRequestPortV0Request(int id, String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.REQUEST_PORT_v0);
+		request.put(Messages.RequestPortV0Request.ID, id);
+		request.put(Messages.RequestPortV0Request.NAME, name);
+
+		return request;
+	}
+
+	public static JSONObject createConnectPortV0Request(int id, String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.CONNECT_PORT_v0);
+		request.put(Messages.ConnectPortV0Request.ID, id);
+		request.put(Messages.ConnectPortV0Request.NAME, name);
+
+		return request;
+	}
+
+	public static JSONObject createRemovePortV0Request(int id, String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.REMOVE_PORT_v0);
+		request.put(Messages.RemovePortV0Request.ID, id);
+		request.put(Messages.RemovePortV0Request.NAME, name);
+
+		return request;
+	}
+	
+	public static JSONObject createSetResultRequest(int id) {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SET_RESULT);
+		request.put(Messages.SetResultRequest.ID, id);
+		
+		return request;
+	}
+	
+	public static JSONObject createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.CREATE_PUBLISHER_v0);
+		request.put(Messages.CreatePublisherRequest.ID, id);
+		request.put(Messages.CreatePublisherRequest.NAME, name);
+		request.put(Messages.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+
+		return request;
+	}
+	
+	public static JSONObject createTerminatePublisherRequest(int id, String name) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.TERMINATE_PUBLISHER_v0);
+		request.put(Messages.TerminatePublisherRequest.ID, id);
+		request.put(Messages.TerminatePublisherRequest.NAME, name);
+
+		return request;
+	}
+	
+	public static JSONObject createConnectPublisherRequest(int applicationId, String publisherName) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.CONNECT_PUBLISHER_v0);
+		request.put(Messages.ConnectPublisherRequest.APPLICATION_ID, applicationId);
+		request.put(Messages.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
+
+		return request;
+	}
+	
 }

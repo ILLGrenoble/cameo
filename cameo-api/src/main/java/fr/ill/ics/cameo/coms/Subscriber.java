@@ -10,7 +10,7 @@ import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Message;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
@@ -25,29 +25,19 @@ public class Subscriber {
 		this.impl = impl;
 	}
 	
-	private static JSONObject createConnectPublisherRequest(int applicationId, String publisherName) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Message.TYPE, Message.CONNECT_PUBLISHER_v0);
-		request.put(Message.ConnectPublisherRequest.APPLICATION_ID, applicationId);
-		request.put(Message.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
-
-		return request;
-	}
-	
 	private static SubscriberImpl createSubscriber(int applicationId, String publisherName, Instance instance) throws SubscriberCreationException {
 		
-		JSONObject request = createConnectPublisherRequest(applicationId, publisherName);
+		JSONObject request = Messages.createConnectPublisherRequest(applicationId, publisherName);
 		JSONObject response = This.getCom().request(request);
 		
-		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
+		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		
 		if (publisherPort == -1) {
-			throw new SubscriberCreationException(JSON.getString(response, Message.RequestResponse.MESSAGE));
+			throw new SubscriberCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		int synchronizerPort = JSON.getInt(response, Message.PublisherResponse.SYNCHRONIZER_PORT);
-		int numberOfSubscribers = JSON.getInt(response, Message.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
+		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
+		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
 		SubscriberImpl subscriber = new SubscriberImpl(This.getCom().getServerImpl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
 		subscriber.init();
