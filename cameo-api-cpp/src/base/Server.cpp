@@ -29,8 +29,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 constexpr int defaultTimeout = 10000;
 	
@@ -52,7 +50,7 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 		Services::retrieveServerVersion();
 
 		// Start the event thread.
-		unique_ptr<EventStreamSocket> socket = openEventStream();
+		std::unique_ptr<EventStreamSocket> socket = openEventStream();
 		m_eventThread.reset(new EventThread(this, socket));
 		m_eventThread->start();
 	}
@@ -124,32 +122,32 @@ int Server::getAvailableTimeout() const {
 }
 
 std::unique_ptr<application::Instance> Server::makeInstance() {
-	return unique_ptr<application::Instance>(new application::Instance(this));
+	return std::unique_ptr<application::Instance>(new application::Instance(this));
 }
 
 std::unique_ptr<application::Instance> Server::start(const std::string& name, int options) {
-	return start(name, vector<string>(), options);
+	return start(name, std::vector<std::string>(), options);
 }
 
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	unique_ptr<application::Instance> instance = makeInstance();
+	std::unique_ptr<application::Instance> instance = makeInstance();
 
 	// Set the name and register the instance as event listener.
 	instance->setName(name);
 	registerEventListener(instance.get());
 
 	try {
-		unique_ptr<OutputStreamSocket> streamSocket;
+		std::unique_ptr<OutputStreamSocket> streamSocket;
 
 		if (outputStream) {
 			// Connect to the stream port. A sync is made to ensure that the subscriber is connected.
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
+		std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
 
 		// Get the JSON response.
 		json::Object response;
@@ -176,7 +174,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 
 Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 
-	string request;
+	std::string request;
 
 	if (immediately) {
 		request = createKillRequest(id);
@@ -185,14 +183,14 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 		request = createStopRequest(id);
 	}
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(request);
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(request);
 
 	// Get the JSON response.
 	json::Object response;
 	json::parse(response, reply.get());
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
-	string message = response[message::RequestResponse::MESSAGE].GetString();
+	std::string message = response[message::RequestResponse::MESSAGE].GetString();
 
 	return Response(value, message);
 }
@@ -201,7 +199,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectRequest(name));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectRequest(name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -221,10 +219,10 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 	for (int i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
-		unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<application::Instance> instance = makeInstance();
 
 		// Set the name and register the instance as event listener.
-		string name = info[message::ApplicationInfo::NAME].GetString();
+		std::string name = info[message::ApplicationInfo::NAME].GetString();
 		instance->setName(name);
 		registerEventListener(instance.get());
 
@@ -239,7 +237,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
 			if (outputStream) {
-				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
+				std::unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
 				instance->setOutputStreamSocket(streamSocket);
 			}
 
@@ -268,7 +266,7 @@ std::unique_ptr<application::Instance> Server::connect(const std::string& name, 
 	application::InstanceArray instances = connectAll(name, options);
 
 	if (instances.size() == 0) {
-		unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<application::Instance> instance = makeInstance();
 		return instance;
 	}
 
@@ -279,7 +277,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectWithIdRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectWithIdRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -292,10 +290,10 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 	if (size > 0) {
 		json::Value::Object info = array[0].GetObject();
 
-		unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<application::Instance> instance = makeInstance();
 
 		// Set the name and register the instance as event listener.
-		string name = info[message::ApplicationInfo::NAME].GetString();
+		std::string name = info[message::ApplicationInfo::NAME].GetString();
 		instance->setName(name);
 		registerEventListener(instance.get());
 
@@ -309,7 +307,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 			instance->setPastStates(info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt());
 
 			if (outputStream) {
-				unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
+				std::unique_ptr<OutputStreamSocket> streamSocket = createOutputStreamSocket(name);
 				instance->setOutputStreamSocket(streamSocket);
 			}
 
@@ -332,7 +330,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createIsAliveRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createIsAliveRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -343,9 +341,9 @@ bool Server::isAlive(int id) const {
 
 std::vector<application::Configuration> Server::getApplicationConfigurations() const {
 
-	vector<application::Configuration> configs;
+	std::vector<application::Configuration> configs;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createListRequest());
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createListRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -358,8 +356,8 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 	for (int i = 0; i < size; ++i) {
 		json::Value::Object config = array[i].GetObject();
 
-		string name = config[message::ApplicationConfig::NAME].GetString();
-		string description = config[message::ApplicationConfig::DESCRIPTION].GetString();
+		std::string name = config[message::ApplicationConfig::NAME].GetString();
+		std::string description = config[message::ApplicationConfig::DESCRIPTION].GetString();
 		bool runsSingle = config[message::ApplicationConfig::RUNS_SINGLE].GetBool();
 		bool restart = config[message::ApplicationConfig::RESTART].GetBool();
 		int startingTime = config[message::ApplicationConfig::STARTING_TIME].GetInt();
@@ -380,9 +378,9 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 std::vector<application::Info> Server::getApplicationInfos() const {
 
-	vector<application::Info> infos;
+	std::vector<application::Info> infos;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAppsRequest());
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAppsRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -395,12 +393,12 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 	for (int i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
-		string name = info[message::ApplicationInfo::NAME].GetString();
+		std::string name = info[message::ApplicationInfo::NAME].GetString();
 		int id = info[message::ApplicationInfo::ID].GetInt();
 		int pid = info[message::ApplicationInfo::PID].GetInt();
 		application::State state = info[message::ApplicationInfo::APPLICATION_STATE].GetInt();
 		application::State pastStates = info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt();
-		string args = info[message::ApplicationInfo::ARGS].GetString();
+		std::string args = info[message::ApplicationInfo::ARGS].GetString();
 
 		application::Info applicationInfo(name,
 						id,
@@ -417,10 +415,10 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 std::vector<application::Info> Server::getApplicationInfos(const std::string& name) const {
 
-	vector<application::Info> allInfos = getApplicationInfos();
-	vector<application::Info> infos;
+	std::vector<application::Info> allInfos = getApplicationInfos();
+	std::vector<application::Info> infos;
 
-	for (vector<application::Info>::const_iterator i = allInfos.begin(); i != allInfos.end(); ++i) {
+	for (std::vector<application::Info>::const_iterator i = allInfos.begin(); i != allInfos.end(); ++i) {
 		application::Info const & info = *i;
 		if (info.getName() == name) {
 			infos.push_back(info);
@@ -432,9 +430,9 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 
 std::vector<application::Port> Server::getPorts() const {
 
-	vector<application::Port> ports;
+	std::vector<application::Port> ports;
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortsRequest());
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortsRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -448,8 +446,8 @@ std::vector<application::Port> Server::getPorts() const {
 		json::Value::Object info = array[i].GetObject();
 
 		int port = info[message::PortInfo::PORT].GetInt();
-		string status = info[message::PortInfo::STATUS].GetString();
-		string owner = info[message::PortInfo::OWNER].GetString();
+		std::string status = info[message::PortInfo::STATUS].GetString();
+		std::string owner = info[message::PortInfo::OWNER].GetString();
 
 		application::Port portInfo(port, status, owner);
 
@@ -461,7 +459,7 @@ std::vector<application::Port> Server::getPorts() const {
 
 application::State Server::getActualState(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -472,7 +470,7 @@ application::State Server::getActualState(int id) const {
 
 std::set<application::State> Server::getPastStates(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -480,7 +478,7 @@ std::set<application::State> Server::getPastStates(int id) const {
 
 	application::State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
-	set<application::State> result;
+	std::set<application::State> result;
 
 	if ((applicationStates & application::STARTING) != 0) {
 		result.insert(application::STARTING);
@@ -527,7 +525,7 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
 
-	unique_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
+	std::unique_ptr<ConnectionChecker> connectionChecker(new ConnectionChecker(this, handler));
 	connectionChecker->startThread(getAvailableTimeout(), pollingTimeMs);
 
 	return connectionChecker;
@@ -535,7 +533,7 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStoreKeyValueRequest(id, key, value));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStoreKeyValueRequest(id, key, value));
 
 	// Get the JSON response.
 	json::Object response;
@@ -544,7 +542,7 @@ void Server::storeKeyValue(int id, const std::string& key, const std::string& va
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetKeyValueRequest(id, key));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetKeyValueRequest(id, key));
 
 	// Get the JSON response.
 	json::Object response;
@@ -566,7 +564,7 @@ std::string Server::getKeyValue(int id, const std::string& key) {
 
 void Server::removeKey(int id, const std::string& key) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemoveKeyRequest(id, key));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemoveKeyRequest(id, key));
 
 	// Get the JSON response.
 	json::Object response;
@@ -583,7 +581,7 @@ void Server::removeKey(int id, const std::string& key) {
 
 int Server::requestPort(int id) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRequestPortRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRequestPortRequest(id));
 
 	// Get the JSON response.
 	json::Object response;
@@ -599,7 +597,7 @@ int Server::requestPort(int id) {
 
 void Server::setPortUnavailable(int id, int port) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortUnavailableRequest(id, port));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortUnavailableRequest(id, port));
 
 	// Get the JSON response.
 	json::Object response;
@@ -613,7 +611,7 @@ void Server::setPortUnavailable(int id, int port) {
 
 void Server::releasePort(int id, int port) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createReleasePortRequest(id, port));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createReleasePortRequest(id, port));
 
 	// Get the JSON response.
 	json::Object response;
@@ -627,7 +625,7 @@ void Server::releasePort(int id, int port) {
 
 json::Object Server::request(const std::string& request, int overrideTimeout) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(request, overrideTimeout);
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(request, overrideTimeout);
 
 	// Get the JSON response.
 	json::Object response;

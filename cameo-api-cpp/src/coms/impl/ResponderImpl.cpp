@@ -25,8 +25,6 @@
 #include "../../base/Messages.h"
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -40,7 +38,7 @@ ResponderImpl::ResponderImpl(application::This * application, int responderPort,
 
 	// create a socket REP
 	m_responder.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
-	stringstream repEndpoint;
+	std::stringstream repEndpoint;
 	repEndpoint << "tcp://*:" << m_responderPort;
 
 	m_responder->bind(repEndpoint.str().c_str());
@@ -57,17 +55,17 @@ void ResponderImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
 	requestSocket->request(request.toString());
 }
 
 WaitingImpl * ResponderImpl::waiting() {
-	return new GenericWaitingImpl(bind(&ResponderImpl::cancel, this));
+	return new GenericWaitingImpl(std::bind(&ResponderImpl::cancel, this));
 }
 
 std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 
-	unique_ptr<zmq::message_t> message(new zmq::message_t);
+	std::unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_responder->recv(message.get(), 0);
 
 	// Get the JSON request.
@@ -77,28 +75,28 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	int type = request[message::TYPE].GetInt();
 
 	// Create the reply
-	string data = "OK";
+	std::string data = "OK";
 	size_t size = data.length();
-	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
+	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy(reply->data(), data.c_str(), size);
 
-	unique_ptr<RequestImpl> result;
+	std::unique_ptr<RequestImpl> result;
 
 	if (type == message::REQUEST) {
 
-		string name = request[message::Request::APPLICATION_NAME].GetString();
+		std::string name = request[message::Request::APPLICATION_NAME].GetString();
 		int id = request[message::Request::APPLICATION_ID].GetInt();
-		string serverUrl = request[message::Request::SERVER_URL].GetString();
+		std::string serverUrl = request[message::Request::SERVER_URL].GetString();
 		int serverPort = request[message::Request::SERVER_PORT].GetInt();
 		int requesterPort = request[message::Request::REQUESTER_PORT].GetInt();
 
 		// Get the second part for the message.
 		message.reset(new zmq::message_t);
 		m_responder->recv(message.get(), 0);
-		string message1(message->data<char>(), message->size());
+		std::string message1(message->data<char>(), message->size());
 
 		// Create the request.
-		result = unique_ptr<RequestImpl>(new RequestImpl(m_application,
+		result = std::unique_ptr<RequestImpl>(new RequestImpl(m_application,
 				name,
 				id,
 				message1,
@@ -110,14 +108,14 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 		if (message->more()) {
 			message.reset(new zmq::message_t);
 			m_responder->recv(message.get(), 0);
-			result->m_message2 = string(message->data<char>(), message->size());
+			result->m_message2 = std::string(message->data<char>(), message->size());
 		}
 	}
 	else if (type == message::CANCEL) {
 		m_canceled = true;
 	}
 	else {
-		cerr << "Unknown message type " << type << endl;
+		std::cerr << "Unknown message type " << type << std::endl;
 		m_responder->send(*message);
 	}
 
@@ -136,7 +134,7 @@ void ResponderImpl::terminate() {
 
 		bool success = m_application->removePort(RESPONDER_PREFIX + m_name);
 		if (!success) {
-			cerr << "server cannot destroy responder " << m_name << endl;
+			std::cerr << "server cannot destroy responder " << m_name << std::endl;
 		}
 	}
 }

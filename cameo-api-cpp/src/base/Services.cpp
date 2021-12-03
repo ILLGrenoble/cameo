@@ -26,8 +26,6 @@
 #include <sstream>
 #include <stdexcept>
 
-using namespace std;
-
 namespace cameo {
 
 Services::Services() :
@@ -65,11 +63,11 @@ void Services::initRequestSocket() {
 
 std::vector<std::string> Services::split(const std::string& info) {
 
-	vector<string> result;
+	std::vector<std::string> result;
 
 	int lastIndex = 0;
 	int index = info.find(':');
-	while (index != string::npos) {
+	while (index != std::string::npos) {
 		result.push_back(info.substr(lastIndex, index - lastIndex));
 		lastIndex = index + 1;
 		index = info.find(':', lastIndex);
@@ -110,7 +108,7 @@ bool Services::isAvailable(int timeout) const {
 void Services::retrieveServerVersion() {
 
 	// Get the version.
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createVersionRequest());
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createVersionRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -124,7 +122,7 @@ void Services::retrieveServerVersion() {
 void Services::initStatus() {
 
 	// Get the status port.
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStreamStatusRequest());
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStreamStatusRequest());
 
 	// Get the JSON response.
 	json::Object response;
@@ -148,7 +146,7 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 		initStatus();
 	}
 
-	stringstream cancelEndpoint;
+	std::stringstream cancelEndpoint;
 
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
@@ -161,12 +159,12 @@ std::unique_ptr<EventStreamSocket> Services::openEventStream() {
 	m_impl->waitForSubscriber(subscriber, m_requestSocket.get());
 
 	// Create the event stream socket.
-	return unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
+	return std::unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
 int Services::getStreamPort(const std::string& name) {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createOutputPortRequest(name));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createOutputPortRequest(name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -184,7 +182,7 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(const std
 	}
 
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	string cancelEndpoint = "inproc://cancel." + to_string(CancelIdGenerator::newId());
+	std::string cancelEndpoint = "inproc://cancel." + std::to_string(CancelIdGenerator::newId());
 
 	// Create the sockets.
 	zmq::socket_t * cancelPublisher = m_impl->createCancelPublisher(cancelEndpoint);
@@ -194,15 +192,15 @@ std::unique_ptr<OutputStreamSocket> Services::createOutputStreamSocket(const std
 	m_impl->waitForStreamSubscriber(subscriber, m_requestSocket.get(), name);
 
 	// Create the output stream socket.
-	return unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
+	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
 std::unique_ptr<RequestSocketImpl> Services::createRequestSocket(const std::string& endpoint) {
-	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, m_impl->getTimeout()));
+	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, m_impl->getTimeout()));
 }
 
 std::unique_ptr<RequestSocketImpl> Services::createRequestSocket(const std::string& endpoint, int timeout) {
-	return unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, timeout));
+	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_impl.get(), endpoint, timeout));
 }
 
 }

@@ -17,8 +17,6 @@
 
 #include "CancelEvent.h"
 
-using namespace std;
-
 namespace cameo {
 
 EventListener::EventListener() {
@@ -52,7 +50,7 @@ std::unique_ptr<Event> EventListener::popEvent() {
 }
 
 void EventListener::cancel(int id) {
-	unique_ptr<Event> event(new CancelEvent(id, m_name));
+	std::unique_ptr<Event> event(new CancelEvent(id, m_name));
 	m_eventQueue.push(event);
 }
 

@@ -23,8 +23,6 @@
 #include "Messages.h"
 #include <iostream>
 
-using namespace std;
-
 namespace cameo {
 
 Output::Output() :
@@ -61,8 +59,8 @@ std::optional<Output> OutputStreamSocket::receive() {
 
 	// Loop on receive() because in case of configuration multiple=yes, messages can come from different instances.
 	while (true) {
-		unique_ptr<zmq::message_t> message(m_impl->receive());
-		string messageType(message->data<char>(), message->size());
+		std::unique_ptr<zmq::message_t> message(m_impl->receive());
+		std::string messageType(message->data<char>(), message->size());
 
 		// Cancel can only come from this instance.
 		if (messageType == message::Event::CANCEL) {
@@ -95,7 +93,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 			}
 
 			// Here the type of message is STREAM.
-			string line = event[message::ApplicationStream::MESSAGE].GetString();
+			std::string line = event[message::ApplicationStream::MESSAGE].GetString();
 			bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
 
 			Output output;
@@ -103,7 +101,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 			output.m_message = line;
 			output.m_endOfLine = endOfLine;
 
-			return optional<Output>(output);
+			return std::optional<Output>(output);
 		}
 
 		// Here, the application id is different from id, then re-iterate.

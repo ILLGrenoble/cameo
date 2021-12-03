@@ -24,8 +24,6 @@
 #include "../../base/Messages.h"
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -36,11 +34,11 @@ RequestImpl::RequestImpl(application::This * application, const std::string & re
 	m_requesterApplicationId(requesterApplicationId),
 	m_timeout(0) {
 
-	stringstream requesterEndpoint;
+	std::stringstream requesterEndpoint;
 	requesterEndpoint << serverUrl << ":" << requesterPort;
 	m_requesterEndpoint = requesterEndpoint.str();
 
-	stringstream requesterServerEndpoint;
+	std::stringstream requesterServerEndpoint;
 	requesterServerEndpoint << serverUrl << ":" << serverPort;
 	m_requesterServerEndpoint = requesterServerEndpoint.str();
 }
@@ -59,7 +57,7 @@ bool RequestImpl::replyBinary(const std::string& response) {
 	request.pushInt(message::RESPONSE);
 
 	// Create a request socket. It is created for each request that could be optimized.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint);
+	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_requesterEndpoint);
 
 	try {
 		requestSocket->request(request.toString(), response);
@@ -74,7 +72,7 @@ bool RequestImpl::replyBinary(const std::string& response) {
 bool RequestImpl::reply(const std::string& response) {
 
 	// Encode the data.
-	string result;
+	std::string result;
 	serialize(response, result);
 
 	return replyBinary(result);

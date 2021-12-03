@@ -39,8 +39,6 @@
 #include <stdexcept>
 #include <vector>
 
-using namespace std;
-
 namespace cameo {
 namespace application {
 
@@ -149,7 +147,7 @@ void This::initApplication(int argc, char *argv[]) {
 		throw InvalidArgumentException("Missing info argument");
 	}
 
-	string info(argv[argc - 1]);
+	std::string info(argv[argc - 1]);
 
 	// Get the info object.
 	json::Object infoObject;
@@ -177,7 +175,7 @@ void This::initApplication(int argc, char *argv[]) {
 		m_managed = false;
 		int id = initUnmanagedApplication();
 		if (id == -1) {
-			throw UnmanagedApplicationException(string("Maximum number of applications ") + m_name + " reached");
+			throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
 		}
 		m_id = id;
 	}
@@ -194,21 +192,21 @@ void This::initApplication(int argc, char *argv[]) {
 	initStatus();
 
 	// Create the local server.
-	m_server = unique_ptr<Server>(new Server(m_serverEndpoint));
+	m_server = std::make_unique<Server>(m_serverEndpoint);
 
 	// Create the starter server.
 	if (m_starterEndpoint.getAddress() != "") {
-		m_starterServer = unique_ptr<Server>(new Server(m_starterEndpoint));
+		m_starterServer = std::make_unique<Server>(m_starterEndpoint);
 	}
 
-	m_waitingSet = unique_ptr<WaitingImplSet>(new WaitingImplSet());
+	m_waitingSet = std::make_unique<WaitingImplSet>();
 
 	// Init listener.
 	setName(m_name);
 	m_server->registerEventListener(this);
 
 	// Init com.
-	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
+	m_com.reset(new Com(m_server.get(), m_id));
 }
 
 void This::initApplication(const std::string& name, const std::string& endpoint) {
@@ -232,7 +230,7 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 
 	int id = initUnmanagedApplication();
 	if (id == -1) {
-		throw UnmanagedApplicationException(string("Maximum number of applications ") + m_name + " reached");
+		throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
 	}
 	m_id = id;
 
@@ -240,17 +238,17 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 	initStatus();
 
 	// Create the local server.
-	m_server = unique_ptr<Server>(new Server(m_serverEndpoint));
+	m_server = std::make_unique<Server>(m_serverEndpoint);
 
 	// Create the waiting set.
-	m_waitingSet = unique_ptr<WaitingImplSet>(new WaitingImplSet());
+	m_waitingSet = std::make_unique<WaitingImplSet>();
 
 	// Init listener.
 	setName(m_name);
 	m_server->registerEventListener(this);
 
 	// Init com.
-	m_com = unique_ptr<Com>(new Com(m_server.get(), m_id));
+	m_com = std::unique_ptr<Com>(new Com(m_server.get(), m_id));
 }
 
 This::~This() {
@@ -317,7 +315,7 @@ void This::cancelWaitings() {
 
 int This::initUnmanagedApplication() {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAttachUnmanagedRequest(m_name, m_instance.m_impl->getPid()));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAttachUnmanagedRequest(m_name, m_instance.m_impl->getPid()));
 
 	// Get the JSON response.
 	json::Object response;
@@ -333,7 +331,7 @@ void This::terminateUnmanagedApplication() {
 
 bool This::setRunning() {
 
-	unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(createSetStatusRequest(m_instance.m_id, RUNNING));
+	std::unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(createSetStatusRequest(m_instance.m_id, RUNNING));
 
 	// Get the JSON response.
 	json::Object response;
@@ -354,14 +352,14 @@ void This::setBinaryResult(const std::string& data) {
 
 void This::setResult(const std::string& data) {
 
-	string resultData;
+	std::string resultData;
 	serialize(data, resultData);
 	setBinaryResult(resultData);
 }
 
 State This::getState(int id) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
 
 	// Get the JSON response.
 	json::Object event;
@@ -372,7 +370,7 @@ State This::getState(int id) const {
 
 bool This::removePort(const std::string& name) const {
 
-	unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemovePortV0Request(m_id, name));
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemovePortV0Request(m_id, name));
 
 	// Get the JSON response.
 	json::Object response;
@@ -391,7 +389,7 @@ State This::waitForStop() {
 
 	while (true) {
 		// waits for a new incoming status
-		unique_ptr<Event> event = popEvent();
+		std::unique_ptr<Event> event = popEvent();
 
 		// The socket is canceled.
 		if (event.get() == nullptr) {
@@ -418,7 +416,7 @@ State This::waitForStop() {
 std::unique_ptr<Instance> This::connectToStarter() {
 
 	if (m_instance.m_starterServer.get() == nullptr) {
-		return unique_ptr<Instance>(nullptr);
+		return std::unique_ptr<Instance>(nullptr);
 	}
 
 	// Iterate the instances to find the id
@@ -426,11 +424,11 @@ std::unique_ptr<Instance> This::connectToStarter() {
 
 	for (int i = 0; i < instances.size(); i++) {
 		if (instances[i]->getId() == m_instance.m_starterId) {
-			return unique_ptr<Instance>(std::move(instances[i]));
+			return std::unique_ptr<Instance>(std::move(instances[i]));
 		}
 	}
 
-	return unique_ptr<Instance>(nullptr);
+	return std::unique_ptr<Instance>(nullptr);
 }
 
 void This::stoppingFunction(StopFunctionType stop) {
@@ -449,7 +447,7 @@ void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
 	m_requestSocket->request(createSetStopHandlerRequest(m_id, stoppingTime));
 
 	// Create the handler.
-	m_stopHandler = unique_ptr<HandlerImpl>(new HandlerImpl(bind(&This::stoppingFunction, this, function)));
+	m_stopHandler = std::make_unique<HandlerImpl>(bind(&This::stoppingFunction, this, function));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -479,7 +477,7 @@ Instance::Instance(Server * server) :
 	m_hasResult(false),
 	m_exitCode(-1) {
 
-	m_waiting.reset(new GenericWaitingImpl(bind(&Instance::cancelWaitFor, this)));
+	m_waiting.reset(new GenericWaitingImpl(std::bind(&Instance::cancelWaitFor, this)));
 }
 
 Instance::~Instance() {
@@ -533,7 +531,7 @@ Endpoint Instance::getStatusEndpoint() const {
 }
 
 std::string Instance::getNameId() const {
-	stringstream os;
+	std::stringstream os;
 	os << m_name << "." << m_id;
 
 	return os.str();
@@ -603,7 +601,7 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 
 	while (true) {
 		// Waits for a new incoming status
-		unique_ptr<Event> event = popEvent(blocking);
+		std::unique_ptr<Event> event = popEvent(blocking);
 
 		// The non-blocking call returns a null message.
 		if (event.get() == nullptr) {
@@ -852,7 +850,7 @@ const std::string& Port::getOwner() const {
 
 std::string toString(cameo::application::State applicationStates) {
 
-	vector<string> states;
+	std::vector<std::string> states;
 
 	if ((applicationStates & STARTING) != 0) {
 		states.push_back("STARTING");
@@ -898,7 +896,7 @@ std::string toString(cameo::application::State applicationStates) {
 		return states.front();
 	}
 
-	ostringstream result;
+	std::ostringstream result;
 
 	for (int i = 0; i < states.size() - 1; i++) {
 		result << states[i] << ", ";

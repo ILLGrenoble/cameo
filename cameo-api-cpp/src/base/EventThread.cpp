@@ -20,8 +20,6 @@
 #include "EventStreamSocket.h"
 #include "EventListener.h"
 
-using namespace std;
-
 namespace cameo {
 
 EventThread::EventThread(Server * server, std::unique_ptr<EventStreamSocket>& socket) :
@@ -38,10 +36,10 @@ EventThread::~EventThread() {
 
 void EventThread::start() {
 
-	m_thread.reset(new thread([this] {
+	m_thread.reset(new std::thread([this] {
 
 		while (true) {
-			unique_ptr<Event> event = m_socket->receive();
+			std::unique_ptr<Event> event = m_socket->receive();
 
 			if (event.get() == nullptr) {
 				// The stream is canceled.
@@ -58,7 +56,7 @@ void EventThread::start() {
 					|| listener->getName() == event->getName()) {
 
 					// Clone the event is necessary because the event is passed to different listeners working in different threads.
-					unique_ptr<Event> clonedEvent(event->clone());
+					std::unique_ptr<Event> clonedEvent(event->clone());
 
 					// Push the cloned event.
 					listener->pushEvent(clonedEvent);

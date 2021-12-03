@@ -22,17 +22,15 @@
 #include <regex>
 #include <ostream>
 
-using namespace std;
-
 namespace cameo {
 
 std::vector<std::string> split(const std::string& str, char c) {
 
-	vector<string> result;
+	std::vector<std::string> result;
 
-	string::size_type lastIndex = 0;
-	string::size_type index = str.find(c);
-	while (index != string::npos) {
+	std::string::size_type lastIndex = 0;
+	std::string::size_type index = str.find(c);
+	while (index != std::string::npos) {
 		result.push_back(str.substr(lastIndex, index - lastIndex));
 		lastIndex = index + 1;
 		index = str.find(c, lastIndex);
@@ -78,16 +76,16 @@ int Endpoint::getPort() const {
 
 Endpoint Endpoint::parse(const std::string& str) {
 
-	vector<string> tokens = split(str, ':');
+	std::vector<std::string> tokens = split(str, ':');
 
 	if (tokens.size() != 3) {
 		throw BadFormatException("Bad format for endpoint " + str);
 	}
 
-	string protocol = tokens[0];
-	string substr = tokens[1];
+	std::string protocol = tokens[0];
+	std::string substr = tokens[1];
 
-	string address = substr.substr(2);
+	std::string address = substr.substr(2);
 
 	try {
 		address = substr.substr(2);
@@ -114,7 +112,7 @@ Endpoint Endpoint::withPort(int port) const {
 
 std::string Endpoint::toString() const {
 	if (m_address != "") {
-		return m_protocol + "://" + m_address + ":" + to_string(m_port);
+		return m_protocol + "://" + m_address + ":" + std::to_string(m_port);
 	}
 	return "";
 }

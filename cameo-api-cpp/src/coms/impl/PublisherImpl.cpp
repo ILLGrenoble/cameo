@@ -24,8 +24,6 @@
 #include "../../base/Messages.h"
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -39,7 +37,7 @@ PublisherImpl::PublisherImpl(application::This * application, int publisherPort,
 
 	// create a socket for publishing
 	m_publisher.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_PUB));
-	stringstream pubEndpoint;
+	std::stringstream pubEndpoint;
 	pubEndpoint << "tcp://*:" << m_publisherPort;
 
 	m_publisher->bind(pubEndpoint.str().c_str());
@@ -74,8 +72,8 @@ bool PublisherImpl::waitForSubscribers() {
 	// Create a socket to receive the messages from the subscribers.
 	zmq::socket_t synchronizer(m_application->m_impl->m_context, ZMQ_REP);
 
-	stringstream syncEndpoint;
-	string url = "tcp://*";
+	std::stringstream syncEndpoint;
+	std::string url = "tcp://*";
 
 	syncEndpoint << url << ":" << m_synchronizerPort;
 	synchronizer.bind(syncEndpoint.str().c_str());
@@ -86,7 +84,7 @@ bool PublisherImpl::waitForSubscribers() {
 
 	while (counter < m_numberOfSubscribers) {
 
-		unique_ptr<zmq::message_t> message(new zmq::message_t);
+		std::unique_ptr<zmq::message_t> message(new zmq::message_t);
 		synchronizer.recv(message.get(), 0);
 
 		// Get the JSON request.
@@ -95,7 +93,7 @@ bool PublisherImpl::waitForSubscribers() {
 
 		int type = request[message::TYPE].GetInt();
 
-		unique_ptr<zmq::message_t> reply;
+		std::unique_ptr<zmq::message_t> reply;
 
 		if (type == message::SYNC) {
 			reply.reset(processInitCommand());
@@ -110,7 +108,7 @@ bool PublisherImpl::waitForSubscribers() {
 			reply.reset(processCancelPublisherSyncCommand());
 		}
 		else {
-			cerr << "Unknown message type " << type << endl;
+			std::cerr << "Unknown message type " << type << std::endl;
 			synchronizer.send(*message);
 		}
 
@@ -130,13 +128,13 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_publisherPort + 1).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_publisherPort + 1).toString());
 	requestSocket->request(request.toString());
 }
 
 WaitingImpl * PublisherImpl::waiting() {
 
-	return new GenericWaitingImpl(bind(&PublisherImpl::cancelWaitForSubscribers, this));
+	return new GenericWaitingImpl(std::bind(&PublisherImpl::cancelWaitForSubscribers, this));
 }
 
 void PublisherImpl::sendBinary(const std::string& data) {
@@ -148,7 +146,7 @@ void PublisherImpl::sendBinary(const std::string& data) {
 void PublisherImpl::send(const std::string& data) {
 
 	// encode the data
-	string result;
+	std::string result;
 	serialize(data, result);
 
 	// send a STREAM message by the publisher socket
@@ -165,7 +163,7 @@ void PublisherImpl::setEnd() {
 
 	if (!m_ended && m_publisher.get() != nullptr) {
 		// send a dummy ENDSTREAM message by the publisher socket
-		string data(message::Event::ENDSTREAM);
+		std::string data(message::Event::ENDSTREAM);
 		publish(message::Event::ENDSTREAM, data.c_str(), data.length());
 
 		m_ended = true;
@@ -182,7 +180,7 @@ void PublisherImpl::terminate() {
 		setEnd();
 		m_publisher.reset(nullptr);
 
-		unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
+		std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
 
 		// Get the JSON response.
 		json::Object response;
@@ -192,7 +190,7 @@ void PublisherImpl::terminate() {
 		bool success = (value != -1);
 
 		if (!success) {
-			cerr << "server cannot destroy publisher " << m_name << endl;
+			std::cerr << "server cannot destroy publisher " << m_name << std::endl;
 		}
 	}
 }
@@ -228,7 +226,7 @@ void PublisherImpl::publishTwoParts(const std::string& header, const char* data1
 zmq::message_t * PublisherImpl::processInitCommand() {
 
 	// send a dummy SYNC message by the publisher socket
-	string data(message::Event::SYNC);
+	std::string data(message::Event::SYNC);
 	publish(message::Event::SYNC, data.c_str(), data.length());
 
 	data = "Connection OK";
@@ -241,7 +239,7 @@ zmq::message_t * PublisherImpl::processInitCommand() {
 
 zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
-	string result = createRequestResponse(0, "OK");
+	std::string result = createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy(reply->data(), result.c_str(), result.length());
@@ -251,7 +249,7 @@ zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 
 zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 
-	string result = createRequestResponse(0, "OK");
+	std::string result = createRequestResponse(0, "OK");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy(reply->data(), result.c_str(), result.length());

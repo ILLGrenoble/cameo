@@ -16,8 +16,6 @@
 
 #include "Event.h"
 
-#include <iostream>
-
 namespace cameo {
 
 Event::Event(int id, const std::string& name) :

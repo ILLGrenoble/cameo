@@ -26,8 +26,6 @@
 #include "JSON.h"
 #include "Messages.h"
 
-using namespace std;
-
 namespace cameo {
 
 EventStreamSocket::EventStreamSocket(StreamSocketImpl * impl) : m_impl(impl) {
@@ -38,14 +36,14 @@ EventStreamSocket::~EventStreamSocket() {
 
 std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
-	unique_ptr<zmq::message_t> message(m_impl->receive(blocking));
+	std::unique_ptr<zmq::message_t> message(m_impl->receive(blocking));
 
 	// In case of non-blocking call, the message can be null.
 	if (message == nullptr) {
-		return unique_ptr<Event>(nullptr);
+		return std::unique_ptr<Event>(nullptr);
 	}
 
-	string response(static_cast<char*>(message->data()), message->size());
+	std::string response(static_cast<char*>(message->data()), message->size());
 
 	if (response == message::Event::STATUS) {
 
@@ -56,14 +54,14 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::parse(event, message.get());
 
 		int id = event[message::StatusEvent::ID].GetInt();
-		string name = event[message::StatusEvent::NAME].GetString();
+		std::string name = event[message::StatusEvent::NAME].GetString();
 		application::State state = event[message::StatusEvent::APPLICATION_STATE].GetInt();
 		application::State pastStates = event[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
 		if (event.HasMember(message::StatusEvent::EXIT_CODE)) {
-			return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates, event[message::StatusEvent::EXIT_CODE].GetInt()));
+			return std::make_unique<StatusEvent>(id, name, state, pastStates, event[message::StatusEvent::EXIT_CODE].GetInt());
 		}
-		return unique_ptr<Event>(new StatusEvent(id, name, state, pastStates));
+		return std::make_unique<StatusEvent>(id, name, state, pastStates);
 	}
 	else if (response == message::Event::RESULT) {
 
@@ -74,13 +72,13 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::parse(event, message.get());
 
 		int id = event[message::ResultEvent::ID].GetInt();
-		string name = event[message::ResultEvent::NAME].GetString();
+		std::string name = event[message::ResultEvent::NAME].GetString();
 
 		// Get the data in the next part.
 		message = m_impl->receive();
-		string data(message->data<char>(), message->size());
+		std::string data(message->data<char>(), message->size());
 
-		return unique_ptr<Event>(new ResultEvent(id, name, data));
+		return std::make_unique<ResultEvent>(id, name, data);
 	}
 	else if (response == message::Event::PUBLISHER) {
 
@@ -91,10 +89,10 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::parse(event, message.get());
 
 		int id = event[message::PublisherEvent::ID].GetInt();
-		string name = event[message::PublisherEvent::NAME].GetString();
-		string publisherName = event[message::PublisherEvent::PUBLISHER_NAME].GetString();
+		std::string name = event[message::PublisherEvent::NAME].GetString();
+		std::string publisherName = event[message::PublisherEvent::PUBLISHER_NAME].GetString();
 
-		return unique_ptr<Event>(new PublisherEvent(id, name, publisherName));
+		return std::make_unique<PublisherEvent>(id, name, publisherName);
 	}
 	else if (response == message::Event::PORT) {
 
@@ -105,10 +103,10 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::parse(event, message.get());
 
 		int id = event[message::PortEvent::ID].GetInt();
-		string name = event[message::PortEvent::NAME].GetString();
-		string portName = event[message::PortEvent::PORT_NAME].GetString();
+		std::string name = event[message::PortEvent::NAME].GetString();
+		std::string portName = event[message::PortEvent::PORT_NAME].GetString();
 
-		return unique_ptr<Event>(new PortEvent(id, name, portName));
+		return std::make_unique<PortEvent>(id, name, portName);
 	}
 	else if (response == message::Event::KEYVALUE) {
 
@@ -119,16 +117,16 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		json::parse(event, message.get());
 
 		int id = event[message::KeyEvent::ID].GetInt();
-		string name = event[message::KeyEvent::NAME].GetString();
+		std::string name = event[message::KeyEvent::NAME].GetString();
 		long status = event[message::KeyEvent::STATUS].GetInt64();
-		string key = event[message::KeyEvent::KEY].GetString();
-		string value = event[message::KeyEvent::VALUE].GetString();
+		std::string key = event[message::KeyEvent::KEY].GetString();
+		std::string value = event[message::KeyEvent::VALUE].GetString();
 
 		if (status == message::STORE_KEY_VALUE) {
-			return unique_ptr<Event>(new KeyEvent(id, name, KeyEvent::Status::STORED, key, value));
+			return std::make_unique<KeyEvent>(id, name, KeyEvent::Status::STORED, key, value);
 		}
 		else {
-			return unique_ptr<Event>(new KeyEvent(id, name, KeyEvent::Status::REMOVED, key, value));
+			return std::make_unique<KeyEvent>(id, name, KeyEvent::Status::REMOVED, key, value);
 		}
 	}
 	else if (response == message::Event::CANCEL) {
@@ -136,11 +134,11 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		message = m_impl->receive();
 
 		// Exit with a null event.
-		return unique_ptr<Event>(nullptr);
+		return std::unique_ptr<Event>(nullptr);
 	}
 
-	cerr << "Cannot process '" << response << "' event" << endl;
-	return unique_ptr<Event>(nullptr);
+	std::cerr << "Cannot process '" << response << "' event" << std::endl;
+	return std::unique_ptr<Event>(nullptr);
 }
 
 void EventStreamSocket::cancel() {

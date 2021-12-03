@@ -24,8 +24,6 @@
 #include "JSON.h"
 #include "Server.h"
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -44,7 +42,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
+	std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
 
 	// Get the JSON response.
 	json::Object response;
@@ -56,7 +54,7 @@ std::unique_ptr<Publisher> Publisher::create(const std::string& name, int number
 	}
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 
-	return unique_ptr<Publisher>(new Publisher(&application::This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
+	return std::unique_ptr<Publisher>(new Publisher(&application::This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
 }
 
 
@@ -151,7 +149,7 @@ std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
 	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	unique_ptr<Subscriber> subscriber(new Subscriber(instance.m_server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
+	std::unique_ptr<Subscriber> subscriber(new Subscriber(instance.m_server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
 	subscriber->init();
 
 	return subscriber;
@@ -173,7 +171,7 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance,
 		|| lastState == application::STOPPED
 		|| lastState == application::KILLED
 		|| lastState == application::FAILURE) {
-		return unique_ptr<Subscriber>(nullptr);
+		return std::unique_ptr<Subscriber>(nullptr);
 	}
 
 	try {
@@ -183,7 +181,7 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance,
 		// that should not happen
 	}
 
-	return unique_ptr<Subscriber>(nullptr);
+	return std::unique_ptr<Subscriber>(nullptr);
 }
 
 void Subscriber::init() {

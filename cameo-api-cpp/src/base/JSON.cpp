@@ -16,8 +16,6 @@
 
 #include "JSON.h"
 
-using namespace std;
-
 namespace cameo {
 namespace json {
 

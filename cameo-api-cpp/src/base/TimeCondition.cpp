@@ -19,8 +19,6 @@
 #include <chrono>
 #include <iostream>
 
-using namespace std;
-
 namespace cameo {
 	
 TimeCondition::TimeCondition() :
@@ -36,7 +34,7 @@ bool TimeCondition::wait(long timeMs) {
 
 	if (!m_notified) {
 		// Return true if the notification is occurring before the timeout.
-		return (m_condition.wait_for(lock, chrono::milliseconds(timeMs)) == cv_status::no_timeout);
+		return (m_condition.wait_for(lock, std::chrono::milliseconds(timeMs)) == std::cv_status::no_timeout);
 	}
 	
 	// The notification has occurred.

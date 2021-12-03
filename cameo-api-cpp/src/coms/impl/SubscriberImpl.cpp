@@ -25,8 +25,6 @@
 #include "../../base/Messages.h"
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -51,22 +49,22 @@ void SubscriberImpl::init() {
 
 	// Create a socket for publishing.
 	m_subscriber.reset(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_SUB));
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, string(message::Event::SYNC).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, string(message::Event::STREAM).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM, string(message::Event::ENDSTREAM).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, string(message::Event::CANCEL).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, string(message::Event::STATUS).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, std::string(message::Event::SYNC).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, std::string(message::Event::STREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM, std::string(message::Event::ENDSTREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 
 	m_subscriber->connect(m_server->getEndpoint().withPort(m_publisherPort).toString());
 
 	// We must first bind the cancel publisher before connecting the subscriber.
-	stringstream cancelEndpoint;
+	std::stringstream cancelEndpoint;
 
 	// We define a unique name.
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 	m_cancelEndpoint = cancelEndpoint.str();
 
-	m_cancelPublisher = unique_ptr<zmq::socket_t>(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_PUB));
+	m_cancelPublisher = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_PUB));
 	m_cancelPublisher->bind(m_cancelEndpoint.c_str());
 
 	m_subscriber->connect(m_cancelEndpoint.c_str());
@@ -76,7 +74,7 @@ void SubscriberImpl::init() {
 	if (m_numberOfSubscribers > 0) {
 
 		// Create a request socket.
-		unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(m_server->getEndpoint().withPort(m_synchronizerPort).toString());
+		std::unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(m_server->getEndpoint().withPort(m_synchronizerPort).toString());
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];
@@ -110,15 +108,15 @@ bool SubscriberImpl::isCanceled() const {
 std::optional<std::string> SubscriberImpl::receiveBinary() {
 
 	while (true) {
-		unique_ptr<zmq::message_t> message(new zmq::message_t());
+		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
 		m_subscriber->recv(message.get());
 
-		string response(static_cast<char*>(message->data()), message->size());
+		std::string response(static_cast<char*>(message->data()), message->size());
 
 		if (response == message::Event::STREAM) {
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
-			return string(static_cast<char*>(message->data()), message->size());
+			return std::string(static_cast<char*>(message->data()), message->size());
 
 		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
@@ -163,10 +161,10 @@ std::optional<std::string> SubscriberImpl::receive() {
 std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBinaryParts() {
 
 	while (true) {
-		unique_ptr<zmq::message_t> message(new zmq::message_t());
+		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
 		m_subscriber->recv(message.get());
 
-		string response(static_cast<char*>(message->data()), message->size());
+		std::string response(static_cast<char*>(message->data()), message->size());
 
 		if (response == message::Event::STREAM) {
 
@@ -174,13 +172,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBi
 
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
-			string data1 = string(static_cast<char*>(message->data()), message->size());
+			std::string data1 = std::string(static_cast<char*>(message->data()), message->size());
 
 			message.reset(new zmq::message_t());
 			m_subscriber->recv(message.get());
-			string data2 = string(static_cast<char*>(message->data()), message->size());
+			std::string data2 = std::string(static_cast<char*>(message->data()), message->size());
 
-			return make_tuple(data1, data2);
+			return std::make_tuple(data1, data2);
 
 		} else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;

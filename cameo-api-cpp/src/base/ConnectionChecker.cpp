@@ -19,8 +19,6 @@
 #include "Server.h"
 #include "TimeCondition.h"
 
-using namespace std;
-
 namespace cameo {
 
 ConnectionChecker::ConnectionChecker(Server * server, ConnectionChecker::FunctionType handler) : m_server(server), m_function(handler) {
@@ -54,7 +52,7 @@ void ConnectionChecker::startThread(int timeoutMs, int pollingTimeMs) {
 	stopThread();
 
 	// Start the thread.
-	m_thread = unique_ptr<thread>(new thread(bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs)));
+	m_thread = std::unique_ptr<std::thread>(new std::thread(std::bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs)));
 }
 
 void ConnectionChecker::stopThread() {

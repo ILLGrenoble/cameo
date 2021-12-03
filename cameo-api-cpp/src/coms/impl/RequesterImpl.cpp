@@ -24,8 +24,6 @@
 #include "../../base/Messages.h"
 #include <sstream>
 
-using namespace std;
-
 namespace cameo {
 namespace coms {
 
@@ -41,7 +39,7 @@ RequesterImpl::RequesterImpl(application::This * application, const std::string&
 	m_requesterId(requesterId),
 	m_canceled(false) {
 
-	stringstream repEndpoint;
+	std::stringstream repEndpoint;
 	repEndpoint << url << ":" << responderPort;
 	m_responderEndpoint = repEndpoint.str();
 
@@ -50,7 +48,7 @@ RequesterImpl::RequesterImpl(application::This * application, const std::string&
 
 	// Create a socket REP.
 	m_repSocket.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
-	stringstream reqEndpoint;
+	std::stringstream reqEndpoint;
 	reqEndpoint << "tcp://*:" << m_requesterPort;
 
 	m_repSocket->bind(reqEndpoint.str().c_str());
@@ -62,7 +60,7 @@ RequesterImpl::~RequesterImpl() {
 
 int RequesterImpl::newRequesterId() {
 
-	lock_guard<mutex> lock(m_mutex);
+	std::lock_guard<std::mutex> lock(m_mutex);
 	m_requesterCounter++;
 
 	return m_requesterCounter;
@@ -70,14 +68,14 @@ int RequesterImpl::newRequesterId() {
 
 std::string RequesterImpl::getRequesterPortName(const std::string& name, int responderId, int requesterId) {
 
-	stringstream requesterPortName;
+	std::stringstream requesterPortName;
 	requesterPortName << REQUESTER_PREFIX << name << "." << responderId << "." << requesterId;
 
 	return requesterPortName.str();
 }
 
 WaitingImpl * RequesterImpl::waiting() {
-	return new GenericWaitingImpl(bind(&RequesterImpl::cancel, this));
+	return new GenericWaitingImpl(std::bind(&RequesterImpl::cancel, this));
 }
 
 void RequesterImpl::sendBinary(const std::string& requestData) {
@@ -107,7 +105,7 @@ void RequesterImpl::sendBinary(const std::string& requestData) {
 void RequesterImpl::send(const std::string& requestData) {
 
 	// encode the data
-	string result;
+	std::string result;
 	serialize(requestData, result);
 	sendBinary(result);
 }
@@ -142,7 +140,7 @@ std::optional<std::string> RequesterImpl::receiveBinary() {
 		return {};
 	}
 
-	unique_ptr<zmq::message_t> message(new zmq::message_t);
+	std::unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_repSocket->recv(message.get(), 0);
 
 	// Get the JSON request.
@@ -156,19 +154,19 @@ std::optional<std::string> RequesterImpl::receiveBinary() {
 		return {};
 	}
 
-	optional<string> result;
+	std::optional<std::string> result;
 
 	if (type == message::RESPONSE) {
 		// Get the second part for the message.
 		message.reset(new zmq::message_t);
 		m_repSocket->recv(message.get(), 0);
-		result = string(message->data<char>(), message->size());
+		result = std::string(message->data<char>(), message->size());
 	}
 
 	// Create the reply.
-	string data = "OK";
+	std::string data = "OK";
 	size_t size = data.length();
-	unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
+	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy(reply->data(), data.c_str(), size);
 
 	m_repSocket->send(*reply);
@@ -187,7 +185,7 @@ void RequesterImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->request(request.toString());
 }
 
@@ -198,7 +196,7 @@ void RequesterImpl::terminate() {
 
 		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 		if (!success) {
-			cerr << "Server cannot destroy requester " << m_name << endl;
+			std::cerr << "Server cannot destroy requester " << m_name << std::endl;
 		}
 	}
 
