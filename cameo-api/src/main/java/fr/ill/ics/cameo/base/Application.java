@@ -111,7 +111,7 @@ public class Application {
 				}
 			}
 
-			public JSONObject request(Msg request) {
+			public JSONObject request(JSONObject request) {
 				return thisImpl.request(request);
 			}
 			

@@ -96,12 +96,8 @@ public class SubscriberImpl {
 			while (!ready) {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
-				Zmq.Msg request = ServicesImpl.createSyncRequest();
-				Zmq.Msg reply = null;
 				try {
-					reply = requestSocket.request(request);
-					reply.destroy();
-					request.destroy();
+					requestSocket.request(ServicesImpl.createSyncRequest());
 
 				} catch (ConnectionTimeout e) {
 					// do nothing
@@ -115,7 +111,7 @@ public class SubscriberImpl {
 			
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
-			Zmq.Msg request = ServerImpl.createSubscribePublisherRequest();
+			JSONObject request = ServerImpl.createSubscribePublisherRequest();
 			requestSocket.request(request);
 			requestSocket.terminate();
 		}

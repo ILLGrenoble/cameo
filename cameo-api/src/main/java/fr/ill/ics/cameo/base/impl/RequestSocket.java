@@ -1,5 +1,7 @@
 package fr.ill.ics.cameo.base.impl;
 
+import org.json.simple.JSONObject;
+
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.SocketException;
@@ -72,6 +74,14 @@ public class RequestSocket {
 	
 	public Zmq.Msg request(Zmq.Msg request) throws ConnectionTimeout {
 		return request(request, -1);
+	}
+	
+	public Zmq.Msg request(JSONObject request, int overrideTimeout) throws ConnectionTimeout {
+		return request(ServicesImpl.message(request), overrideTimeout);
+	}
+	
+	public Zmq.Msg request(JSONObject request) throws ConnectionTimeout {
+		return request(ServicesImpl.message(request), -1);
 	}
 	
 	public void terminate() {

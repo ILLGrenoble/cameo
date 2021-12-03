@@ -189,7 +189,10 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void setResult(byte[] data) {
 		
-		Zmq.Msg request = createSetResultRequest(id, data);
+		Zmq.Msg request = message(createSetResultRequest(id));
+		
+		// Add the data in a second frame.
+		request.add(data);
 		
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -218,7 +221,7 @@ public class ThisImpl extends ServicesImpl {
 	 */
 	public boolean setRunning() {
 		
-		Zmq.Msg request = createSetStatusRequest(id, Application.State.RUNNING);
+		JSONObject request = createSetStatusRequest(id, Application.State.RUNNING);
 		
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -243,10 +246,8 @@ public class ThisImpl extends ServicesImpl {
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		Zmq.Msg request = createAttachUnmanagedRequest(name, pid);
-		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(createAttachUnmanagedRequest(name, pid));
 			
 			// Get the JSON response object.
 			JSONObject response = parse(reply);
@@ -259,17 +260,11 @@ public class ThisImpl extends ServicesImpl {
 	}
 	
 	private void terminateUnmanagedApplication() {
-		
-		Zmq.Msg request = createDetachUnmanagedRequest(id);
-		
-		requestSocket.request(request);
+		requestSocket.request(createDetachUnmanagedRequest(id));
 	}
 	
 	private void setStopHandler(int stoppingTime) {
-		
-		Zmq.Msg request = createSetStopHandlerRequest(id, stoppingTime);
-		
-		requestSocket.request(request);
+		requestSocket.request(createSetStopHandlerRequest(id, stoppingTime));
 	}
 	
 	/**
@@ -279,10 +274,8 @@ public class ThisImpl extends ServicesImpl {
 	 */
 	private int getState(int id) {
 		
-		Zmq.Msg request = createGetStatusRequest(id);
-		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -371,7 +364,7 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void removePort(String name) {
 		
-		Zmq.Msg request = createRemovePortV0Request(id, name);
+		JSONObject request = createRemovePortV0Request(id, name);
 
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -389,7 +382,7 @@ public class ThisImpl extends ServicesImpl {
 		}
 	}
 
-	public JSONObject request(Msg request) {
+	public JSONObject request(JSONObject request) {
 		
 		try {
 			Zmq.Msg reply = requestSocket.request(request);
@@ -402,58 +395,53 @@ public class ThisImpl extends ServicesImpl {
 		}
 	}
 
-	private static Zmq.Msg createSetStatusRequest(int id, int state) {
+	private static JSONObject createSetStatusRequest(int id, int state) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SET_STATUS);
 		request.put(Message.SetStatusRequest.ID, id);
 		request.put(Message.SetStatusRequest.APPLICATION_STATE, state);
 
-		return message(request);
+		return request;
 	}
 	
-	public static Zmq.Msg createRequestPortV0Request(int id, String name) {
+	public static JSONObject createRequestPortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REQUEST_PORT_v0);
 		request.put(Message.RequestPortV0Request.ID, id);
 		request.put(Message.RequestPortV0Request.NAME, name);
 
-		return message(request);
+		return request;
 	}
 
-	public static Zmq.Msg createConnectPortV0Request(int id, String name) {
+	public static JSONObject createConnectPortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CONNECT_PORT_v0);
 		request.put(Message.ConnectPortV0Request.ID, id);
 		request.put(Message.ConnectPortV0Request.NAME, name);
 
-		return message(request);
+		return request;
 	}
 
-	public static Zmq.Msg createRemovePortV0Request(int id, String name) {
+	public static JSONObject createRemovePortV0Request(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REMOVE_PORT_v0);
 		request.put(Message.RemovePortV0Request.ID, id);
 		request.put(Message.RemovePortV0Request.NAME, name);
 
-		return message(request);
+		return request;
 	}
 	
-	private static Zmq.Msg createSetResultRequest(int id, byte[] result) {
+	private static JSONObject createSetResultRequest(int id) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SET_RESULT);
 		request.put(Message.SetResultRequest.ID, id);
-
-		Zmq.Msg messageResult = message(request);
-
-		// Add the result in a second frame.
-		messageResult.add(result);
 		
-		return messageResult;
+		return request;
 	}
 	
 	@Override

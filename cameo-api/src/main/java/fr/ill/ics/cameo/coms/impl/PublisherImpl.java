@@ -150,7 +150,7 @@ public class PublisherImpl {
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
-		requestSocket.request(application.message(request));
+		requestSocket.request(request);
 			
 		// Terminate the socket.
 		requestSocket.terminate();
@@ -192,14 +192,14 @@ public class PublisherImpl {
 		return ended;
 	}
 	
-	private static Zmq.Msg createTerminatePublisherRequest(int id, String name) {
+	private static JSONObject createTerminatePublisherRequest(int id, String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.TERMINATE_PUBLISHER_v0);
 		request.put(Message.TerminatePublisherRequest.ID, id);
 		request.put(Message.TerminatePublisherRequest.NAME, name);
 
-		return ServicesImpl.message(request);
+		return request;
 	}
 	
 	public void terminate() {
@@ -209,7 +209,7 @@ public class PublisherImpl {
 		
 		this.application.getContext().destroySocket(publisher);
 		
-		Zmq.Msg request = createTerminatePublisherRequest(This.getId(), name);
+		JSONObject request = createTerminatePublisherRequest(This.getId(), name);
 		JSONObject response = This.getCom().request(request);
 		
 		int value = JSON.getInt(response, Message.RequestResponse.VALUE);

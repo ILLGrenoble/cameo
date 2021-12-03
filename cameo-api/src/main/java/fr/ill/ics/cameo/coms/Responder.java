@@ -25,7 +25,7 @@ public class Responder {
 	private static ResponderImpl createResponder(String name) throws ResponderCreationException {
 		
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
-		Zmq.Msg request = ThisImpl.createRequestPortV0Request(This.getId(), portName);
+		JSONObject request = ThisImpl.createRequestPortV0Request(This.getId(), portName);
 
 		JSONObject response = This.getCom().request(request);
 		

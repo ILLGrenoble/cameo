@@ -39,7 +39,7 @@ public class Requester {
 		RequestSocket responderSocket = This.getCom().getImpl().createRequestSocket(responderEndpoint);
 		
 		// First connect to the responder.
-		Zmq.Msg request = ThisImpl.createConnectPortV0Request(responderId, responderPortName);
+		JSONObject request = ThisImpl.createConnectPortV0Request(responderId, responderPortName);
 		Zmq.Msg reply = responderSocket.request(request);
 		
 		// Get the JSON response object.

@@ -159,7 +159,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private fr.ill.ics.cameo.base.impl.Response startApplication(String name, String[] args) throws ConnectionTimeout {
 		
-		Zmq.Msg request;
+		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
 			request = createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
@@ -182,7 +182,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
-		Zmq.Msg request = createOutputPortRequest(name);
+		JSONObject request = createOutputPortRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
@@ -269,7 +269,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	fr.ill.ics.cameo.base.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
 
-		Zmq.Msg request;
+		JSONObject request;
 		
 		if (immediately) {
 			request = createKillRequest(id);
@@ -365,7 +365,7 @@ public class ServerImpl extends ServicesImpl {
 
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		Zmq.Msg request = createConnectRequest(name);
+		JSONObject request = createConnectRequest(name);
 		Zmq.Msg reply = requestSocket.request(request);
 
 		return getInstancesFromApplicationInfos(reply, outputStream);
@@ -395,7 +395,7 @@ public class ServerImpl extends ServicesImpl {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		Zmq.Msg request = createConnectWithIdRequest(id);
+		JSONObject request = createConnectWithIdRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		List<InstanceImpl> instances = getInstancesFromApplicationInfos(reply, outputStream);
@@ -414,7 +414,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Configuration> getApplicationConfigurations() {
 
-		Zmq.Msg request = createListRequest();
+		JSONObject request = createListRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
@@ -453,7 +453,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public List<Application.Info> getApplicationInfos() {
 
-		Zmq.Msg request = createAppsRequest();
+		JSONObject request = createAppsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
@@ -508,10 +508,8 @@ public class ServerImpl extends ServicesImpl {
 
 	public int getActualState(int id) {
 		
-		Zmq.Msg request = createGetStatusRequest(id);
-		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -531,10 +529,8 @@ public class ServerImpl extends ServicesImpl {
 
 	public Set<Integer> getPastStates(int id) {
 		
-		Zmq.Msg request = createGetStatusRequest(id);
-		
 		try {
-			Zmq.Msg reply = requestSocket.request(request);
+			Zmq.Msg reply = requestSocket.request(createGetStatusRequest(id));
 			
 			byte[] messageData = reply.getFirstData();
 			
@@ -642,7 +638,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	private boolean isAlive(int id) {
 
-		Zmq.Msg request = createIsAliveRequest(id);
+		JSONObject request = createIsAliveRequest(id);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		try {
@@ -667,7 +663,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
-		Zmq.Msg request = createWriteInputRequest(id, inputs);
+		JSONObject request = createWriteInputRequest(id, inputs);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -712,7 +708,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void storeKeyValue(int applicationId, String key, String value) {
 		
-		Zmq.Msg request = createStoreKeyValueRequest(applicationId, key, value);
+		JSONObject request = createStoreKeyValueRequest(applicationId, key, value);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -736,7 +732,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		Zmq.Msg request = createGetKeyValueRequest(applicationId, key);
+		JSONObject request = createGetKeyValueRequest(applicationId, key);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -772,7 +768,7 @@ public class ServerImpl extends ServicesImpl {
 	 */
 	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		Zmq.Msg request = createRemoveKeyRequest(applicationId, key);
+		JSONObject request = createRemoveKeyRequest(applicationId, key);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -796,7 +792,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public int requestPort(int applicationId) throws UndefinedApplicationException {
 		
-		Zmq.Msg request = createRequestPortRequest(applicationId);
+		JSONObject request = createRequestPortRequest(applicationId);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -818,7 +814,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
 		
-		Zmq.Msg request = createPortUnavailableRequest(applicationId, port);
+		JSONObject request = createPortUnavailableRequest(applicationId, port);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -839,7 +835,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public void releasePort(int applicationId, int port) throws UndefinedApplicationException {
 		
-		Zmq.Msg request = createReleasePortRequest(applicationId, port);
+		JSONObject request = createReleasePortRequest(applicationId, port);
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		JSONObject response;
@@ -860,7 +856,7 @@ public class ServerImpl extends ServicesImpl {
 	
 	public List<Application.Port> getPorts() {
 		
-		Zmq.Msg request = createPortsRequest();
+		JSONObject request = createPortsRequest();
 		Zmq.Msg reply = requestSocket.request(request);
 		
 		LinkedList<Application.Port> ports = new LinkedList<Application.Port>();
@@ -896,13 +892,13 @@ public class ServerImpl extends ServicesImpl {
 	 * @param text
 	 * @return
 	 */
-	private Zmq.Msg createIsAliveRequest(int id) {
+	private JSONObject createIsAliveRequest(int id) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.IS_ALIVE);
 		request.put(Message.IsAliveRequest.ID, id);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -913,7 +909,7 @@ public class ServerImpl extends ServicesImpl {
 	 * @param returnResult 
 	 * @return request
 	 */
-	private Zmq.Msg createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
+	private JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.START);
@@ -938,7 +934,7 @@ public class ServerImpl extends ServicesImpl {
 			request.put(Message.StartRequest.ARGS, list);
 		}
 
-		return message(request);
+		return request;
 	}
 
 	/**
@@ -947,13 +943,13 @@ public class ServerImpl extends ServicesImpl {
 	 * @param id
 	 * @return request
 	 */
-	private Zmq.Msg createStopRequest(int id) {
+	private JSONObject createStopRequest(int id) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.STOP);
 		request.put(Message.StopRequest.ID, id);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -962,39 +958,39 @@ public class ServerImpl extends ServicesImpl {
 	 * @param id
 	 * @return request
 	 */
-	private Zmq.Msg createKillRequest(int id) {
+	private JSONObject createKillRequest(int id) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.KILL);
 		request.put(Message.KillRequest.ID, id);
 
-		return message(request);
+		return request;
 	}
 
 	/**
 	 * create connect request
 	 * @return request
 	 */
-	private Zmq.Msg createConnectRequest(String name) {
+	private JSONObject createConnectRequest(String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CONNECT);
 		request.put(Message.ConnectRequest.NAME, name);
 
-		return message(request);
+		return request;
 	}
 
 	/**
 	 * create connect with id request
 	 * @return request
 	 */
-	private Zmq.Msg createConnectWithIdRequest(int id) {
+	private JSONObject createConnectWithIdRequest(int id) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CONNECT_WITH_ID);
 		request.put(Message.ConnectWithIdRequest.ID, id);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -1002,12 +998,12 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createListRequest() {
+	private JSONObject createListRequest() {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.LIST);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -1015,12 +1011,12 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createAppsRequest() {
+	private JSONObject createAppsRequest() {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.APPS);
 
-		return message(request);
+		return request;
 	}
 
 	/**
@@ -1028,13 +1024,13 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @return request
 	 */
-	private Zmq.Msg createOutputPortWithIdRequest(int id) {
+	private JSONObject createOutputPortWithIdRequest(int id) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.OUTPUT_PORT_WITH_ID);
 		request.put(Message.OutputPortWithIdRequest.ID, id);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -1044,7 +1040,7 @@ public class ServerImpl extends ServicesImpl {
 	 * @param inputs
 	 * @return
 	 */
-	private Zmq.Msg createWriteInputRequest(int id, String[] inputs) {
+	private JSONObject createWriteInputRequest(int id, String[] inputs) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.WRITE_INPUT);
@@ -1056,7 +1052,7 @@ public class ServerImpl extends ServicesImpl {
 		}
 		request.put(Message.WriteInputRequest.PARAMETERS, list);
 
-		return message(request);
+		return request;
 	}
 	
 	/**
@@ -1064,24 +1060,24 @@ public class ServerImpl extends ServicesImpl {
 	 * 
 	 * @param name
 	 */
-	private Zmq.Msg createOutputPortRequest(String name) {
+	private JSONObject createOutputPortRequest(String name) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.OUTPUT_PORT);
 		request.put(Message.OutputRequest.NAME, name);
 
-		return message(request);
+		return request;
 	}
 	
-	public static Zmq.Msg createSubscribePublisherRequest() {
+	public static JSONObject createSubscribePublisherRequest() {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.SUBSCRIBE_PUBLISHER_v0);
 
-		return message(request);
+		return request;
 	}
 
-	private Msg createStoreKeyValueRequest(int applicationId, String key, String value) {
+	private JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.STORE_KEY_VALUE);
@@ -1089,64 +1085,64 @@ public class ServerImpl extends ServicesImpl {
 		request.put(Message.StoreKeyValueRequest.KEY, key);
 		request.put(Message.StoreKeyValueRequest.VALUE, value);
 
-		return message(request);
+		return request;
 	}
 
-	private Msg createGetKeyValueRequest(int applicationId, String key) {
+	private JSONObject createGetKeyValueRequest(int applicationId, String key) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.GET_KEY_VALUE);
 		request.put(Message.GetKeyValueRequest.ID, applicationId);
 		request.put(Message.GetKeyValueRequest.KEY, key);
 
-		return message(request);
+		return request;
 	}
 	
-	private Msg createRemoveKeyRequest(int applicationId, String key) {
+	private JSONObject createRemoveKeyRequest(int applicationId, String key) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REMOVE_KEY);
 		request.put(Message.RemoveKeyRequest.ID, applicationId);
 		request.put(Message.RemoveKeyRequest.KEY, key);
 
-		return message(request);
+		return request;
 	}
 
-	private Msg createRequestPortRequest(int applicationId) {
+	private JSONObject createRequestPortRequest(int applicationId) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.REQUEST_PORT);
 		request.put(Message.RequestPortRequest.ID, applicationId);
 
-		return message(request);	
+		return request;	
 	}
 
-	private Msg createPortUnavailableRequest(int applicationId, int port) {
+	private JSONObject createPortUnavailableRequest(int applicationId, int port) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.PORT_UNAVAILABLE);
 		request.put(Message.PortUnavailableRequest.ID, applicationId);
 		request.put(Message.PortUnavailableRequest.PORT, port);
 
-		return message(request);
+		return request;
 	}
 
-	private Msg createReleasePortRequest(int applicationId, int port) {
+	private JSONObject createReleasePortRequest(int applicationId, int port) {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.RELEASE_PORT);
 		request.put(Message.ReleasePortRequest.ID, applicationId);
 		request.put(Message.ReleasePortRequest.PORT, port);
 
-		return message(request);
+		return request;
 	}
 	
-	private Zmq.Msg createPortsRequest() {
+	private JSONObject createPortsRequest() {
 
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.PORTS);
 
-		return message(request);
+		return request;
 	}
 	
 	@Override

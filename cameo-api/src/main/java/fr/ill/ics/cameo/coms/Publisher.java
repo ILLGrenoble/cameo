@@ -22,7 +22,7 @@ public class Publisher {
 		this.impl = impl;
 	}
 	
-	private static Zmq.Msg createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
+	private static JSONObject createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Message.TYPE, Message.CREATE_PUBLISHER_v0);
@@ -30,13 +30,12 @@ public class Publisher {
 		request.put(Message.CreatePublisherRequest.NAME, name);
 		request.put(Message.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
 
-		return ServicesImpl.message(request);
+		return request;
 	}
 	
 	static PublisherImpl createPublisher(String name, int numberOfSubscribers) throws PublisherCreationException {
 	
-		Zmq.Msg request = createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
-		
+		JSONObject request = createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
 		JSONObject response = This.getCom().request(request);
 	
 		int publisherPort = JSON.getInt(response, Message.PublisherResponse.PUBLISHER_PORT);
