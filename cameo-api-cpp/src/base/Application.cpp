@@ -39,6 +39,17 @@
 #include <stdexcept>
 #include <vector>
 
+// Using Visual Studio preprocessor.
+// It must be improved in case of other compilers.
+#ifdef _WIN32
+	#include <process.h>
+	#define GET_PROCESS_PID() _getpid()
+#else
+	#include <unistd.h>
+
+	#define GET_PROCESS_PID() ::getpid()
+#endif
+
 namespace cameo {
 namespace application {
 
@@ -48,6 +59,10 @@ const std::string This::RUNNING_STATE = "RUNNING";
 This::Com::Com(Server * server, int applicationId) :
 	m_server(server),
 	m_applicationId(applicationId) {
+}
+
+Context* This::Com::getContext() const {
+	return m_server->m_impl.get();
 }
 
 void This::Com::storeKeyValue(const std::string& key, const std::string& value) const {
@@ -71,6 +86,18 @@ void This::Com::setPortUnavailable(int port) const {
 
 void This::Com::releasePort(int port) const {
 	m_server->releasePort(m_applicationId, port);
+}
+
+json::Object This::Com::request(const std::string& request, int overrideTimeout) const {
+	return m_server->request(request, overrideTimeout);
+}
+
+std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::string& endpoint) const {
+	return m_server->createRequestSocket(endpoint);
+}
+
+std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::string& endpoint, int timeout) const {
+	return m_server->createRequestSocket(endpoint, timeout);
 }
 
 State This::parseState(const std::string& value) {
@@ -101,13 +128,13 @@ State This::parseState(const std::string& value) {
 }
 
 void This::init(int argc, char *argv[]) {
-	if (m_instance.m_impl == nullptr) {
+	if (!m_instance.m_inited) {
 		m_instance.initApplication(argc, argv);
 	}
 }
 
 void This::init(const std::string& name, const std::string& endpoint) {
-	if (m_instance.m_impl == nullptr) {
+	if (!m_instance.m_inited) {
 		m_instance.initApplication(name, endpoint);
 	}
 }
@@ -115,7 +142,7 @@ void This::init(const std::string& name, const std::string& endpoint) {
 void This::terminate() {
 
 	// Test if termination is already done.
-	if (m_instance.m_impl == nullptr) {
+	if (!m_instance.m_inited) {
 		return;
 	}
 
@@ -124,19 +151,17 @@ void This::terminate() {
 		m_instance.terminateUnmanagedApplication();
 	}
 
-	// Terminate the services.
-	m_instance.Services::terminate();
-
-	// Ensure that it won't be done twice.
-	m_instance.m_impl = nullptr;
+	// Inited.
+	m_instance.m_inited = false;
 }
 
 
 This::This() :
-	Services(),
+	//Services(),
 	m_id(-1),
 	m_managed(false),
-	m_starterId(0) {
+	m_starterId(0),
+	m_inited(false) {
 }
 
 void This::initApplication(int argc, char *argv[]) {
@@ -191,13 +216,8 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 
 void This::initApplication() {
 
-	Services::init();
-
-	// Create the request socket. The server endpoint has been defined.
-	Services::initRequestSocket();
-
-	// Retrieve the server version.
-	Services::retrieveServerVersion();
+	// Create the local server.
+	m_server = std::make_unique<Server>(m_serverEndpoint);
 
 	// Managed apps have the id key.
 	if (!m_managed) {
@@ -207,12 +227,6 @@ void This::initApplication() {
 		}
 		m_id = id;
 	}
-
-	// Must be here because the server endpoint is required.
-	initStatus();
-
-	// Create the local server.
-	m_server = std::make_unique<Server>(m_serverEndpoint);
 
 	// Create the starter server.
 	if (m_starterEndpoint.getAddress() != "") {
@@ -227,13 +241,16 @@ void This::initApplication() {
 
 	// Init com.
 	m_com = std::unique_ptr<Com>(new Com(m_server.get(), m_id));
+
+	// Inited.
+	m_inited = true;
 }
 
 This::~This() {
 	// Do not delete the impl here because there will be order trouble.
 
 	// Terminate the unmanaged application.
-	if (m_impl != nullptr && !m_managed) {
+	if (m_inited && !m_managed) {
 		terminateUnmanagedApplication();
 	}
 }
@@ -247,17 +264,19 @@ int This::getId() {
 }
 
 void This::setTimeout(int value) {
-	m_instance.Services::setTimeout(value);
+	m_instance.m_server->setTimeout(value);
 }
 
 int This::getTimeout() {
-	return m_instance.Services::getTimeout();
+	return m_instance.m_server->getTimeout();
 }
 
 const Endpoint& This::getEndpoint() {
-	if (m_instance.m_impl != nullptr) {
+
+	if (m_instance.m_inited) {
 		return m_instance.m_serverEndpoint;
 	}
+
 	static Endpoint result;
 	return result;
 }
@@ -280,7 +299,7 @@ Server& This::getStarterServer() {
 }
 
 bool This::isAvailable(int timeout) {
-	return m_instance.Services::isAvailable(timeout);
+	return m_instance.m_server->isAvailable(timeout);
 }
 
 bool This::isStopping() {
@@ -292,28 +311,17 @@ void This::cancelWaitings() {
 }
 
 int This::initUnmanagedApplication() {
-
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAttachUnmanagedRequest(m_name, m_instance.m_impl->getPid()));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_server->request(createAttachUnmanagedRequest(m_name, GET_PROCESS_PID()));
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 void This::terminateUnmanagedApplication() {
-
-	m_requestSocket->request(createDetachUnmanagedRequest(m_id));
+	m_server->request(createDetachUnmanagedRequest(m_id));
 }
 
 bool This::setRunning() {
-
-	std::unique_ptr<zmq::message_t> reply = m_instance.m_requestSocket->request(createSetStatusRequest(m_instance.m_id, RUNNING));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_instance.m_server->request(createSetStatusRequest(m_instance.m_id, RUNNING));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -324,8 +332,7 @@ bool This::setRunning() {
 }
 
 void This::setBinaryResult(const std::string& data) {
-
-	m_instance.m_requestSocket->request(createSetResultRequest(m_instance.m_id), data);
+	m_instance.m_server->request(createSetResultRequest(m_instance.m_id), data);
 }
 
 void This::setResult(const std::string& data) {
@@ -337,23 +344,14 @@ void This::setResult(const std::string& data) {
 
 State This::getState(int id) const {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
-
-	// Get the JSON response.
-	json::Object event;
-	json::parse(event, reply.get());
+	json::Object event = m_server->request(createGetStatusRequest(id));
 
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
 bool This::removePort(const std::string& name) const {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemovePortV0Request(m_id, name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
+	json::Object response = m_server->request(createRemovePortV0Request(m_id, name));
 	int value = response[message::RequestResponse::VALUE].GetInt();
 
 	return (value != -1);
@@ -422,7 +420,7 @@ void This::stoppingFunction(StopFunctionType stop) {
 void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
-	m_requestSocket->request(createSetStopHandlerRequest(m_id, stoppingTime));
+	m_server->request(createSetStopHandlerRequest(m_id, stoppingTime));
 
 	// Create the handler.
 	m_stopHandler = std::make_unique<HandlerImpl>(bind(&This::stoppingFunction, this, function));

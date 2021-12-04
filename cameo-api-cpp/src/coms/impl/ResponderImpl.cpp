@@ -37,7 +37,8 @@ ResponderImpl::ResponderImpl(application::This * application, int responderPort,
 	m_canceled(false) {
 
 	// create a socket REP
-	m_responder.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
+	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	m_responder.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
 	std::stringstream repEndpoint;
 	repEndpoint << "tcp://*:" << m_responderPort;
 
@@ -55,7 +56,7 @@ void ResponderImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket.
-	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
 	requestSocket->request(request.toString());
 }
 

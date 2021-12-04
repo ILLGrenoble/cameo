@@ -148,6 +148,7 @@ private:
 	void releasePort(int id, int port);
 
 	json::Object request(const std::string& request, int overrideTimeout = -1);
+	json::Object request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;

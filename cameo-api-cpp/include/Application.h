@@ -31,6 +31,7 @@
 #include "Response.h"
 #include "Serializer.h"
 #include "Services.h"
+#include "Context.h"
 #include "TimeCondition.h"
 #include "EventListener.h"
 #include "JSON.h"
@@ -94,7 +95,7 @@ const State KILLED           = 256;
  * \details The application has to be launched by CAMEO command line or another CAMEO app
  * \todo why this does not inherit from the Instance class?
  */
-class This : private Services, private EventListener {
+class This : private EventListener {
 
 	friend class cameo::coms::Publisher;
 	friend class cameo::coms::Responder;
@@ -119,6 +120,8 @@ public:
 		friend class This;
 
 	public:
+		Context* getContext() const;
+
 		void storeKeyValue(const std::string& key, const std::string& value) const;
 		std::string getKeyValue(const std::string& key) const;
 		void removeKey(const std::string& key) const;
@@ -126,6 +129,11 @@ public:
 		int requestPort() const;
 		void setPortUnavailable(int port) const;
 		void releasePort(int port) const;
+
+		json::Object request(const std::string& request, int overrideTimeout = -1) const;
+
+		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint) const;
+		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout) const;
 
 	private:
 		Com(Server* server, int applicationId);
@@ -209,6 +217,7 @@ private:
 	int m_id;
 	bool m_managed;
 
+	Endpoint m_serverEndpoint;
 	Endpoint m_starterEndpoint;
 	std::string m_starterName;
 	int m_starterId;
@@ -219,6 +228,8 @@ private:
 
 	std::unique_ptr<WaitingImplSet> m_waitingSet;
 	std::unique_ptr<HandlerImpl> m_stopHandler;
+
+	bool m_inited;
 
 	static This m_instance;
 	static const std::string RUNNING_STATE;

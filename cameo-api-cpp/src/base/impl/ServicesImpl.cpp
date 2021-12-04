@@ -25,23 +25,11 @@
 #include <iostream>
 #include <sstream>
 
-// Using Visual Studio preprocessor.
-// It must be improved in case of other compilers.
-#ifdef _WIN32
-	#include <process.h>
-	#define GET_PROCESS_PID() _getpid()
-#else
-	#include <unistd.h>
-
-	#define GET_PROCESS_PID() ::getpid()
-#endif
-
-
 using namespace std;
 
 namespace cameo {
 
-ServicesImpl::ServicesImpl() :
+ServicesImpl::ServicesImpl() : Context(),
 	m_context(1), m_timeout(0) {
 }
 
@@ -54,10 +42,6 @@ void ServicesImpl::setTimeout(int timeout) {
 
 int ServicesImpl::getTimeout() const {
 	return m_timeout;
-}
-
-long ServicesImpl::getPid() const {
-	return GET_PROCESS_PID();
 }
 
 zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {

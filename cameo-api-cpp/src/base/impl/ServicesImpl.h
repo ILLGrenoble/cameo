@@ -17,6 +17,7 @@
 #ifndef CAMEO_SERVICESIMPL_H_
 #define CAMEO_SERVICESIMPL_H_
 
+#include "Context.h"
 #include "zmq.hpp"
 #include <vector>
 #include <memory>
@@ -25,7 +26,7 @@ namespace cameo {
 
 class RequestSocketImpl;
 
-class ServicesImpl {
+class ServicesImpl : public Context {
 
 public:
 	ServicesImpl();
@@ -33,7 +34,6 @@ public:
 
 	void setTimeout(int timeout);
 	int getTimeout() const;
-	long getPid() const;
 
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);

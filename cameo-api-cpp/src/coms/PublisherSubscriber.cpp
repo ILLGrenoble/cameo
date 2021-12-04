@@ -42,11 +42,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = application::This::getCom().request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
 
 	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {

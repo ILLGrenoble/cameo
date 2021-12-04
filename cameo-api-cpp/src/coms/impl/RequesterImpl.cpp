@@ -44,10 +44,11 @@ RequesterImpl::RequesterImpl(application::This * application, const std::string&
 	m_responderEndpoint = repEndpoint.str();
 
 	// Create the request socket.
-	m_requestSocket = m_application->createRequestSocket(m_responderEndpoint);
+	m_requestSocket = application::This::getCom().createRequestSocket(m_responderEndpoint);
 
 	// Create a socket REP.
-	m_repSocket.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_REP));
+	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	m_repSocket.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
 	std::stringstream reqEndpoint;
 	reqEndpoint << "tcp://*:" << m_requesterPort;
 
@@ -185,7 +186,7 @@ void RequesterImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->request(request.toString());
 }
 

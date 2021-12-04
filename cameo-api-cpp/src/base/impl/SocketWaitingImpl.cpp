@@ -28,7 +28,7 @@ SocketWaitingImpl::SocketWaitingImpl(zmq::socket_t* socket, const std::string& m
 	m_socket(socket), m_message(message) {
 
 	// Add the object in the waiting set if This exists.
-	if (application::This::m_instance.m_impl != nullptr) {
+	if (application::This::m_instance.m_inited) {
 		application::This::m_instance.m_waitingSet->add(this);
 	}
 }
@@ -36,7 +36,7 @@ SocketWaitingImpl::SocketWaitingImpl(zmq::socket_t* socket, const std::string& m
 SocketWaitingImpl::~SocketWaitingImpl() {
 
 	// Remove the object in the waiting set if This exists.
-	if (application::This::m_instance.m_impl != nullptr) {
+	if (application::This::m_instance.m_inited) {
 		application::This::m_instance.m_waitingSet->remove(this);
 	}
 

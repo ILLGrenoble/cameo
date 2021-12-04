@@ -122,11 +122,13 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
 
-	std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
+//	std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+//	json::Object response;
+//	json::parse(response, reply.get());
+
+	json::Object response = application::This::getCom().request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
@@ -177,7 +179,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	std::string responderEndpoint = instance.getEndpoint().toString();
 
 	// Create a request socket to the server of the instance.
-	std::unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::m_instance.createRequestSocket(responderEndpoint);
+	std::unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::getCom().createRequestSocket(responderEndpoint);
 
 	std::string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
@@ -211,8 +213,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// Request a requester port.
-	reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
-	json::parse(response, reply.get());
+	response = application::This::getCom().request(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
 	if (requesterPort == -1) {

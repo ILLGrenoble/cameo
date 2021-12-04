@@ -36,7 +36,8 @@ PublisherImpl::PublisherImpl(application::This * application, int publisherPort,
 	m_ended(false) {
 
 	// create a socket for publishing
-	m_publisher.reset(new zmq::socket_t(m_application->m_impl->m_context, ZMQ_PUB));
+	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	m_publisher.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_PUB));
 	std::stringstream pubEndpoint;
 	pubEndpoint << "tcp://*:" << m_publisherPort;
 
@@ -70,7 +71,8 @@ bool PublisherImpl::waitForSubscribers() {
 	}
 
 	// Create a socket to receive the messages from the subscribers.
-	zmq::socket_t synchronizer(m_application->m_impl->m_context, ZMQ_REP);
+	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	zmq::socket_t synchronizer(contextImpl->m_context, ZMQ_REP);
 
 	std::stringstream syncEndpoint;
 	std::string url = "tcp://*";
@@ -128,7 +130,7 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocketImpl> requestSocket = m_application->createRequestSocket(m_application->getEndpoint().withPort(m_publisherPort + 1).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_publisherPort + 1).toString());
 	requestSocket->request(request.toString());
 }
 
@@ -180,11 +182,7 @@ void PublisherImpl::terminate() {
 		setEnd();
 		m_publisher.reset(nullptr);
 
-		std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
-
-		// Get the JSON response.
-		json::Object response;
-		json::parse(response, reply.get());
+		json::Object response = application::This::getCom().request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		bool success = (value != -1);

@@ -634,6 +634,17 @@ json::Object Server::request(const std::string& request, int overrideTimeout) {
 	return response;
 }
 
+json::Object Server::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestPart1, requestPart2, overrideTimeout);
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response;
+}
+
 std::vector<EventListener *> Server::getEventListeners() {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
 	return m_eventListeners;
