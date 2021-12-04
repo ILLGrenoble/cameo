@@ -17,9 +17,9 @@
 #include "OutputStreamSocket.h"
 
 #include "JSON.h"
-#include "impl/ServicesImpl.h"
 #include "impl/SocketWaitingImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/ContextImpl.h"
 #include "Messages.h"
 #include <iostream>
 

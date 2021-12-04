@@ -20,7 +20,7 @@
 #include "Serializer.h"
 #include "JSON.h"
 #include "../../base/impl/RequestSocketImpl.h"
-#include "../../base/impl/ServicesImpl.h"
+#include "../../base/impl/ContextImpl.h"
 #include "../../base/Messages.h"
 #include <sstream>
 

@@ -18,8 +18,8 @@
 
 #include "impl/CancelIdGenerator.h"
 #include "impl/RequestSocketImpl.h"
-#include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/ContextImpl.h"
 #include "JSON.h"
 #include "Messages.h"
 #include <iostream>
@@ -53,7 +53,7 @@ void Services::terminate() {
 
 void Services::init() {
 	// Set the impl.
-	m_impl.reset(new ServicesImpl());
+	m_impl.reset(new ContextImpl());
 }
 
 void Services::initRequestSocket() {

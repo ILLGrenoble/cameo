@@ -17,18 +17,17 @@
 #include "RequestSocketImpl.h"
 
 #include "ConnectionTimeout.h"
-#include "ServicesImpl.h"
-
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include "ContextImpl.h"
 
 using namespace std;
 
 namespace cameo {
 
-RequestSocketImpl::RequestSocketImpl(ServicesImpl * services, const std::string& endpoint, int timeout) :
-	m_services(services), m_endpoint(endpoint) {
+RequestSocketImpl::RequestSocketImpl(ContextImpl * context, const std::string& endpoint, int timeout) :
+	m_services(context), m_endpoint(endpoint) {
 
 	init();
 

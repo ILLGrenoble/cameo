@@ -26,7 +26,7 @@
 
 namespace cameo {
 
-class ServicesImpl;
+class ContextImpl;
 class RequestSocketImpl;
 
 class Services {
@@ -59,7 +59,7 @@ public:
 	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
 	int m_statusPort;
-	std::unique_ptr<ServicesImpl> m_impl;
+	std::unique_ptr<ContextImpl> m_impl;
 	std::unique_ptr<RequestSocketImpl> m_requestSocket;
 };
 

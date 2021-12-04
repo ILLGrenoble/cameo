@@ -21,7 +21,7 @@
 #include "Serializer.h"
 #include "JSON.h"
 #include "../../base/impl/RequestSocketImpl.h"
-#include "../../base/impl/ServicesImpl.h"
+#include "../../base/impl/ContextImpl.h"
 #include "../../base/Messages.h"
 #include <sstream>
 
@@ -37,7 +37,7 @@ ResponderImpl::ResponderImpl(application::This * application, int responderPort,
 	m_canceled(false) {
 
 	// create a socket REP
-	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
 	m_responder.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
 	std::stringstream repEndpoint;
 	repEndpoint << "tcp://*:" << m_responderPort;

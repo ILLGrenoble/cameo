@@ -14,8 +14,6 @@
  * limitations under the Licence.
  */
 
-#include "ServicesImpl.h"
-
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "JSON.h"
@@ -24,27 +22,28 @@
 
 #include <iostream>
 #include <sstream>
+#include "ContextImpl.h"
 
 using namespace std;
 
 namespace cameo {
 
-ServicesImpl::ServicesImpl() : Context(),
+ContextImpl::ContextImpl() : Context(),
 	m_context(1), m_timeout(0) {
 }
 
-ServicesImpl::~ServicesImpl() {
+ContextImpl::~ContextImpl() {
 }
 
-void ServicesImpl::setTimeout(int timeout) {
+void ContextImpl::setTimeout(int timeout) {
 	m_timeout = timeout;
 }
 
-int ServicesImpl::getTimeout() const {
+int ContextImpl::getTimeout() const {
 	return m_timeout;
 }
 
-zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
+zmq::socket_t * ContextImpl::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
@@ -66,7 +65,7 @@ zmq::socket_t * ServicesImpl::createEventSubscriber(const std::string& endpoint,
 	return subscriber;
 }
 
-zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
+zmq::socket_t * ContextImpl::createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
 	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
 
@@ -86,7 +85,7 @@ zmq::socket_t * ServicesImpl::createOutputStreamSubscriber(const std::string& en
 	return subscriber;
 }
 
-zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint) {
+zmq::socket_t * ContextImpl::createCancelPublisher(const std::string& endpoint) {
 
 	zmq::socket_t * publisher = new zmq::socket_t(m_context, ZMQ_PUB);
 	publisher->bind(endpoint.c_str());
@@ -94,7 +93,7 @@ zmq::socket_t * ServicesImpl::createCancelPublisher(const std::string& endpoint)
 	return publisher;
 }
 
-zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
+zmq::socket_t * ContextImpl::createRequestSocket(const std::string& endpoint) {
 
 	zmq::socket_t* socket = new zmq::socket_t(m_context, ZMQ_REQ);
 
@@ -113,7 +112,7 @@ zmq::socket_t * ServicesImpl::createRequestSocket(const std::string& endpoint) {
 	return socket;
 }
 
-bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
+bool ContextImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 
 	string request = createSyncRequest();
 
@@ -134,7 +133,7 @@ bool ServicesImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 	return false;
 }
 
-void ServicesImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
+void ContextImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
 
 	string request = createSyncStreamRequest(name);
 
@@ -149,7 +148,7 @@ void ServicesImpl::sendSyncStream(RequestSocketImpl * socket, const std::string&
 	}
 }
 
-void ServicesImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name) {
+void ContextImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name) {
 
 	// Poll subscriber.
 	zmq_pollitem_t items[1];
@@ -169,7 +168,7 @@ void ServicesImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSo
 	}
 }
 
-void ServicesImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {
+void ContextImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {
 
 	// Poll subscriber.
 	zmq_pollitem_t items[1];

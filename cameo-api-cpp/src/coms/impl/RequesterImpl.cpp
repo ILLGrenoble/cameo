@@ -20,7 +20,7 @@
 #include "Serializer.h"
 #include "JSON.h"
 #include "../../base/impl/RequestSocketImpl.h"
-#include "../../base/impl/ServicesImpl.h"
+#include "../../base/impl/ContextImpl.h"
 #include "../../base/Messages.h"
 #include <sstream>
 
@@ -47,7 +47,7 @@ RequesterImpl::RequesterImpl(application::This * application, const std::string&
 	m_requestSocket = application::This::getCom().createRequestSocket(m_responderEndpoint);
 
 	// Create a socket REP.
-	ServicesImpl* contextImpl = dynamic_cast<ServicesImpl *>(application::This::getCom().getContext());
+	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
 	m_repSocket.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
 	std::stringstream reqEndpoint;
 	reqEndpoint << "tcp://*:" << m_requesterPort;

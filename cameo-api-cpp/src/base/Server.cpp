@@ -22,8 +22,8 @@
 #include "UndefinedKeyException.h"
 #include "EventThread.h"
 #include "impl/RequestSocketImpl.h"
-#include "impl/ServicesImpl.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/ContextImpl.h"
 #include "JSON.h"
 #include "Messages.h"
 #include <iostream>
