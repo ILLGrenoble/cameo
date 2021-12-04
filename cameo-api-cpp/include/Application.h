@@ -189,6 +189,9 @@ public:
 private:
 	void initApplication(int argc, char* argv[]);
 	void initApplication(const std::string& name, const std::string& endpoint);
+	void initApplication();
+
+	//bool inited() const;
 
 	static State parseState(const std::string& value);
 	State getState(int id) const;

@@ -141,8 +141,6 @@ This::This() :
 
 void This::initApplication(int argc, char *argv[]) {
 
-	Services::init();
-
 	if (argc == 0) {
 		throw InvalidArgumentException("Missing info argument");
 	}
@@ -155,29 +153,13 @@ void This::initApplication(int argc, char *argv[]) {
 		throw InvalidArgumentException("Bad format for info argument");
 	}
 
-	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
-
-	// Create the request socket. The server endpoint has been defined.
-	Services::initRequestSocket();
-
-	// Retrieve the server version.
-	Services::retrieveServerVersion();
-
-	// Get the name.
 	m_name = infoObject[message::ApplicationIdentity::NAME].GetString();
+	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 
 	// Managed apps have the id key.
 	if (infoObject.HasMember(message::ApplicationIdentity::ID)) {
 		m_managed = true;
 		m_id = infoObject[message::ApplicationIdentity::ID].GetInt();
-	}
-	else {
-		m_managed = false;
-		int id = initUnmanagedApplication();
-		if (id == -1) {
-			throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
-		}
-		m_id = id;
 	}
 
 	// Get the starter info if it is present.
@@ -186,6 +168,44 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterEndpoint = Endpoint::parse(starterValue[message::ApplicationIdentity::SERVER].GetString());
 		m_starterName = starterValue[message::ApplicationIdentity::NAME].GetString();
 		m_starterId = starterValue[message::ApplicationIdentity::ID].GetInt();
+	}
+
+	// Init the app.
+	initApplication();
+}
+
+void This::initApplication(const std::string& name, const std::string& endpoint) {
+
+	// Get the name.
+	m_name = name;
+
+	// Get the server endpoint.
+	m_serverEndpoint = Endpoint::parse(endpoint);
+
+	// The application is de-facto unmanaged.
+	m_managed = false;
+
+	// Init the app.
+	initApplication();
+}
+
+void This::initApplication() {
+
+	Services::init();
+
+	// Create the request socket. The server endpoint has been defined.
+	Services::initRequestSocket();
+
+	// Retrieve the server version.
+	Services::retrieveServerVersion();
+
+	// Managed apps have the id key.
+	if (!m_managed) {
+		int id = initUnmanagedApplication();
+		if (id == -1) {
+			throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
+		}
+		m_id = id;
 	}
 
 	// Must be here because the server endpoint is required.
@@ -199,48 +219,6 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterServer = std::make_unique<Server>(m_starterEndpoint);
 	}
 
-	m_waitingSet = std::make_unique<WaitingImplSet>();
-
-	// Init listener.
-	setName(m_name);
-	m_server->registerEventListener(this);
-
-	// Init com.
-	m_com.reset(new Com(m_server.get(), m_id));
-}
-
-void This::initApplication(const std::string& name, const std::string& endpoint) {
-
-	Services::init();
-
-	// Get the server endpoint.
-	m_serverEndpoint = Endpoint::parse(endpoint);
-
-	// Create the request socket. The server endpoint has been defined.
-	Services::initRequestSocket();
-
-	// Retrieve the server version.
-	Services::retrieveServerVersion();
-
-	// Get the name.
-	m_name = name;
-
-	// The application is de-facto unmanaged.
-	m_managed = false;
-
-	int id = initUnmanagedApplication();
-	if (id == -1) {
-		throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
-	}
-	m_id = id;
-
-	// Must be here because the server endpoint is required.
-	initStatus();
-
-	// Create the local server.
-	m_server = std::make_unique<Server>(m_serverEndpoint);
-
-	// Create the waiting set.
 	m_waitingSet = std::make_unique<WaitingImplSet>();
 
 	// Init listener.
