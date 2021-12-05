@@ -21,8 +21,9 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.Application.Handler;
+import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.CancelEvent;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Event;
@@ -32,8 +33,6 @@ import fr.ill.ics.cameo.base.StatusEvent;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.UnmanagedApplicationException;
 import fr.ill.ics.cameo.base.WaitingSet;
-import fr.ill.ics.cameo.base.Application.Handler;
-import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -47,6 +46,8 @@ public class ThisImpl extends ServicesImpl {
 	private Endpoint starterEndpoint;
 	private String starterName;
 	private int starterId;
+	
+	private ServerImpl server;
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
@@ -81,12 +82,6 @@ public class ThisImpl extends ServicesImpl {
 
 		// Get the server endpoint.
 		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Messages.ApplicationIdentity.SERVER));
-		
-		// Init the context and socket.
-		init();
-		
-		// Retrieve the server version.
-		retrieveServerVersion();
 
 		// Get the name present for both managed and unmanaged apps.
 		name = JSON.getString(infoObject, Messages.ApplicationIdentity.NAME);
@@ -98,11 +93,6 @@ public class ThisImpl extends ServicesImpl {
 		}
 		else {
 			managed = false;
-			id = initUnmanagedApplication();
-			
-			if (id == -1) {
-				throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
-			}
 		}
 		
 		// Get the starter info if it is present.
@@ -111,10 +101,10 @@ public class ThisImpl extends ServicesImpl {
 			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER));
 			starterName = JSON.getString(starterObject, Messages.ApplicationIdentity.NAME);
 			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
-		}
-				
-		// Init listener.
-		eventListener.setName(name);
+		}		
+		
+		// Init.
+		initApplication();
 	}
 	
 	public ThisImpl(String name, String endpoint) {
@@ -122,23 +112,36 @@ public class ThisImpl extends ServicesImpl {
 		// Get the server endpoint.
 		serverEndpoint = Endpoint.parse(endpoint);
 		
+		// Get the name.
+		this.name = name; 
+		
+		// This is de-facto an unmanaged application.		
+		managed = false;
+		
+		// Init.
+		initApplication();
+	}
+	
+	private void initApplication() {
+	
 		// Init the context and socket.
 		init();
 		
 		// Retrieve the server version.
 		retrieveServerVersion();
 
-		// Get the name.
-		this.name = name; 
-		
-		// This is de-facto an unmanaged application.		
-		managed = false;
-		id = initUnmanagedApplication();
-		
-		if (id == -1) {
-			throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
+		// Init the unmanaged application.
+		if (!managed) {
+			id = initUnmanagedApplication();
+			
+			if (id == -1) {
+				throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
+			}
 		}
-						
+		
+		// Create the server.
+		server = new ServerImpl(serverEndpoint, 0);
+		
 		// Init listener.
 		eventListener.setName(name);
 	}
@@ -166,7 +169,11 @@ public class ThisImpl extends ServicesImpl {
 	public int getStarterId() {
 		return starterId;
 	}
-		
+	
+	public ServerImpl getServer() {
+		return server;
+	}
+	
 	public WaitingSet getWaitingSet() {
 		return waitingSet;
 	}

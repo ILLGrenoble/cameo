@@ -41,7 +41,6 @@ public class Application {
 	public static class This {
 		
 		static ThisImpl impl;
-		private static ServerImpl serverImpl;
 		private static Server server;
 		private static Server starterServer;
 		
@@ -144,14 +143,13 @@ public class Application {
 		private static Com com;
 		
 		static private void initServer() {
-			serverImpl = new ServerImpl(impl.getEndpoint(), 0);
-			server = new Server(serverImpl);
+			server = new Server(impl.getServer());
 			server.registerEventListener(impl.getEventListener());
 			
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());
 			}
-			com = new Com(new ComImpl(serverImpl, impl.getId()), impl);
+			com = new Com(new ComImpl(impl.getServer(), impl.getId()), impl);
 		}
 		
 		static public void init(String[] args) {
