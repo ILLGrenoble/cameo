@@ -52,7 +52,7 @@ private:
 
 class OutputStreamSocket {
 
-	friend class Services;
+	friend class Server;
 	friend class application::Instance;
 
 	void setApplicationId(int id);

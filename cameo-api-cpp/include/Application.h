@@ -17,11 +17,6 @@
 #ifndef CAMEO_APPLICATION_H_
 #define CAMEO_APPLICATION_H_
 
-#include <functional>
-#include <vector>
-#include <set>
-#include <memory>
-#include <optional>
 #include "InvalidArgumentException.h"
 #include "UnmanagedApplicationException.h"
 #include "SocketException.h"
@@ -30,12 +25,17 @@
 #include "UndefinedKeyException.h"
 #include "Response.h"
 #include "Serializer.h"
-#include "Services.h"
 #include "Context.h"
 #include "TimeCondition.h"
 #include "EventListener.h"
 #include "JSON.h"
 #include "KeyValue.h"
+#include "Strings.h"
+#include <functional>
+#include <vector>
+#include <set>
+#include <memory>
+#include <optional>
 
 namespace cameo {
 
@@ -52,7 +52,7 @@ class SocketWaitingImpl;
 class GenericWaitingImpl;
 class WaitingImplSet;
 class HandlerImpl;
-
+class RequestSocketImpl;
 
 namespace coms {
 

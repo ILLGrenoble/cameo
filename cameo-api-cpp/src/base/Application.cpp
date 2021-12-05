@@ -62,7 +62,7 @@ This::Com::Com(Server * server, int applicationId) :
 }
 
 Context* This::Com::getContext() const {
-	return m_server->m_impl.get();
+	return m_server->m_contextImpl.get();
 }
 
 void This::Com::storeKeyValue(const std::string& key, const std::string& value) const {

@@ -17,14 +17,17 @@
 #ifndef CAMEO_SERVER_H_
 #define CAMEO_SERVER_H_
 
-#include <vector>
-#include <memory>
-#include <mutex>
 #include "Application.h"
 #include "ConnectionChecker.h"
 #include "ConnectionTimeout.h"
 #include "Response.h"
-#include "Services.h"
+#include "Strings.h"
+#include "EventStreamSocket.h"
+#include "OutputStreamSocket.h"
+#include <vector>
+#include <memory>
+#include <mutex>
+#include <array>
 
 namespace cameo {
 
@@ -34,8 +37,10 @@ namespace application {
 
 class EventListener;
 class EventThread;
+class ContextImpl;
+class RequestSocketImpl;
 
-class Server : private Services {
+class Server {
 
 	friend class application::Instance;
 	friend class application::This;
@@ -149,6 +154,25 @@ private:
 
 	json::Object request(const std::string& request, int overrideTimeout = -1);
 	json::Object request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+
+	void initContext();
+	void initRequestSocket();
+
+	Endpoint getStatusEndpoint() const;
+
+	void retrieveServerVersion();
+	void initStatus();
+	int getStreamPort(const std::string& name);
+	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
+	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint);
+	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
+
+
+	Endpoint m_serverEndpoint;
+	std::array<int, 3> m_serverVersion;
+	int m_statusPort;
+	std::unique_ptr<ContextImpl> m_contextImpl;
+	std::unique_ptr<RequestSocketImpl> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;

@@ -21,6 +21,7 @@
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "EventThread.h"
+#include "impl/CancelIdGenerator.h"
 #include "impl/RequestSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/ContextImpl.h"
@@ -28,26 +29,27 @@
 #include "Messages.h"
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 namespace cameo {
 constexpr int defaultTimeout = 10000;
 	
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
-	Services::init();
+	initContext();
 
 	m_serverEndpoint = endpoint;
 
 	// Set the timeout.
-	Services::setTimeout(timeoutMs);
+	setTimeout(timeoutMs);
 
 	// Create the request socket. The server endpoint has been defined.
-	Services::initRequestSocket();
+	initRequestSocket();
 
 	// Manage the ConnectionTimeout exception that can occur.
 	try {
 		// Retrieve the server version.
-		Services::retrieveServerVersion();
+		retrieveServerVersion();
 
 		// Start the event thread.
 		std::unique_ptr<EventStreamSocket> socket = openEventStream();
@@ -60,17 +62,28 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 }
 
 Server::Server(const Endpoint& endpoint, int timeoutMs) :
-	Services() {
+	m_statusPort(0),
+	m_contextImpl(nullptr) {
 
-	Services::init();
+	m_serverVersion[0] = 0;
+	m_serverVersion[1] = 0;
+	m_serverVersion[2] = 0;
+
+	initContext();
 
 	initServer(endpoint, timeoutMs);
 }
 
 Server::Server(const std::string& endpoint, int timeoutMs) :
-	Services() {
+	m_statusPort(0),
+	m_contextImpl(nullptr) {
 
-	Services::init();
+	m_serverVersion[0] = 0;
+	m_serverVersion[1] = 0;
+	m_serverVersion[2] = 0;
+
+
+	initContext();
 
 	try {
 		initServer(Endpoint::parse(endpoint), timeoutMs);
@@ -81,30 +94,43 @@ Server::Server(const std::string& endpoint, int timeoutMs) :
 }
 
 Server::~Server() {
+
 	// Stop the event thread.
 	if (m_eventThread.get() != nullptr) {
 		m_eventThread->cancel();
 	}
+	m_eventThread.reset();
+
+	// Reset the request socket before the impl, otherwise reset context will block.
+	m_requestSocket.reset();
+
+	// Reset the context.
+	m_contextImpl.reset();
 }
 
-void Server::setTimeout(int value) {
-	Services::setTimeout(value);
+void Server::setTimeout(int timeout) {
+
+	m_contextImpl->setTimeout(timeout);
+
+	if (m_requestSocket.get() != nullptr) {
+		m_requestSocket->setTimeout(timeout);
+	}
 }
 
 int Server::getTimeout() const {
-	return Services::getTimeout();
+	return m_contextImpl->getTimeout();
 }
 
 const Endpoint& Server::getEndpoint() const {
-	return Services::getEndpoint();
+	return m_serverEndpoint;
 }
 
 std::array<int, 3> Server::getVersion() const {
-	return Services::getVersion();
+	return m_serverVersion;
 }
 
 bool Server::isAvailable(int timeout) const {
-	return Services::isAvailable(timeout);
+	return m_contextImpl->isAvailable(m_requestSocket.get(), timeout);
 }
 
 bool Server::isAvailable() const {
@@ -520,7 +546,26 @@ std::set<application::State> Server::getPastStates(int id) const {
 }
 
 std::unique_ptr<EventStreamSocket> Server::openEventStream() {
-	return Services::openEventStream();
+
+	// Init the status port if necessary.
+	if (m_statusPort == 0) {
+		initStatus();
+	}
+
+	std::stringstream cancelEndpoint;
+
+	// We define a unique name that depends on the event stream socket object because there can be many (instances).
+	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
+
+	// Create the sockets.
+	zmq::socket_t * cancelPublisher = m_contextImpl->createCancelPublisher(cancelEndpoint.str());
+	zmq::socket_t * subscriber = m_contextImpl->createEventSubscriber(getStatusEndpoint().toString(), cancelEndpoint.str());
+
+	// Wait for the connection to be ready.
+	m_contextImpl->waitForSubscriber(subscriber, m_requestSocket.get());
+
+	// Create the event stream socket.
+	return std::unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
 std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
@@ -665,6 +710,95 @@ void Server::unregisterEventListener(EventListener * listener) {
 			break;
 		}
 	}
+}
+
+void Server::initContext() {
+	// Set the impl.
+	m_contextImpl.reset(new ContextImpl());
+}
+
+void Server::initRequestSocket() {
+	// Create the request socket. The server endpoint must have been initialized.
+	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_contextImpl->getTimeout()));
+}
+
+Endpoint Server::getStatusEndpoint() const {
+	return m_serverEndpoint.withPort(m_statusPort);
+}
+
+void Server::retrieveServerVersion() {
+
+	// Get the version.
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createVersionRequest());
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	m_serverVersion[0] = response[message::VersionResponse::MAJOR].GetInt();
+	m_serverVersion[1] = response[message::VersionResponse::MINOR].GetInt();
+	m_serverVersion[2] = response[message::VersionResponse::REVISION].GetInt();
+}
+
+void Server::initStatus() {
+
+	// Get the status port.
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStreamStatusRequest());
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	int value = response[message::RequestResponse::VALUE].GetInt();
+
+	// Check response.
+	if (value == -1) {
+		return;
+	}
+
+	// Get the status port.
+	m_statusPort = value;
+}
+
+int Server::getStreamPort(const std::string& name) {
+
+	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createOutputPortRequest(name));
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response[message::RequestResponse::VALUE].GetInt();
+}
+
+std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::string& name) {
+
+	int port = getStreamPort(name);
+
+	if (port == -1) {
+		return nullptr;
+	}
+
+	// We define a unique name that depends on the event stream socket object because there can be many (instances).
+	std::string cancelEndpoint = "inproc://cancel." + std::to_string(CancelIdGenerator::newId());
+
+	// Create the sockets.
+	zmq::socket_t * cancelPublisher = m_contextImpl->createCancelPublisher(cancelEndpoint);
+	zmq::socket_t * subscriber = m_contextImpl->createOutputStreamSubscriber(m_serverEndpoint.withPort(port).toString(), cancelEndpoint);
+
+	// Wait for the connection to be ready.
+	m_contextImpl->waitForStreamSubscriber(subscriber, m_requestSocket.get(), name);
+
+	// Create the output stream socket.
+	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
+}
+
+std::unique_ptr<RequestSocketImpl> Server::createRequestSocket(const std::string& endpoint) {
+	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_contextImpl.get(), endpoint, m_contextImpl->getTimeout()));
+}
+
+std::unique_ptr<RequestSocketImpl> Server::createRequestSocket(const std::string& endpoint, int timeout) {
+	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_contextImpl.get(), endpoint, timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

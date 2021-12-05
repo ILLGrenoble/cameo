@@ -33,7 +33,7 @@ class Instance;
 
 class EventStreamSocket {
 
-	friend class Services;
+	friend class Server;
 	friend class application::Instance;
 
 public:

@@ -48,7 +48,8 @@ SubscriberImpl::~SubscriberImpl() {
 void SubscriberImpl::init() {
 
 	// Create a socket for publishing.
-	m_subscriber.reset(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_SUB));
+	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
+	m_subscriber.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_SUB));
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, std::string(message::Event::SYNC).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, std::string(message::Event::STREAM).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM, std::string(message::Event::ENDSTREAM).length());
@@ -64,7 +65,7 @@ void SubscriberImpl::init() {
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 	m_cancelEndpoint = cancelEndpoint.str();
 
-	m_cancelPublisher = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_server->m_impl->m_context, ZMQ_PUB));
+	m_cancelPublisher = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(contextImpl->m_context, ZMQ_PUB));
 	m_cancelPublisher->bind(m_cancelEndpoint.c_str());
 
 	m_subscriber->connect(m_cancelEndpoint.c_str());
@@ -84,7 +85,7 @@ void SubscriberImpl::init() {
 		items[0].revents = 0;
 
 		while (true) {
-			m_server->m_impl->isAvailable(requestSocket.get(), 100);
+			contextImpl->isAvailable(requestSocket.get(), 100);
 
 			// Wait for 100ms.
 			int rc = zmq::poll(items, 1, 100);
