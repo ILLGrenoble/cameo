@@ -36,7 +36,7 @@ public class Requester {
 		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
 
 		// Create the responder socket that will be called twice.
-		RequestSocket responderSocket = This.getCom().getImpl().createRequestSocket(responderEndpoint);
+		RequestSocket responderSocket = This.getCom().createRequestSocket(responderEndpoint);
 		
 		// First connect to the responder.
 		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);

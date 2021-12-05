@@ -24,10 +24,11 @@ import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.Application.Instance;
+import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
+import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServerImpl;
-import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -37,6 +38,7 @@ public class SubscriberImpl {
 	private ServerImpl server; // server of instance
 	private int publisherPort;
 	private int synchronizerPort;
+	private Zmq.Context context;
 	private Zmq.Socket subscriber;
 	private String cancelEndpoint;
 	private Zmq.Socket cancelPublisher;
@@ -54,6 +56,7 @@ public class SubscriberImpl {
 		this.publisherName = publisherName;
 		this.numberOfSubscribers = numberOfSubscribers;
 		this.instance = instance;
+		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
 		
 		waiting.add();
 	}
@@ -61,7 +64,7 @@ public class SubscriberImpl {
 	public void init() throws ConnectionTimeout {
 		
 		// Create the subscriber
-		subscriber = server.getContext().createSocket(Zmq.SUB);
+		subscriber = context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(server.getEndpoint().withPort(publisherPort).toString());
 		subscriber.subscribe(Messages.Event.SYNC);
@@ -72,7 +75,7 @@ public class SubscriberImpl {
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
 		// Create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
-		cancelPublisher = server.getContext().createSocket(Zmq.PUB);
+		cancelPublisher = context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 
 		// Subscribe to CANCEL
@@ -90,7 +93,7 @@ public class SubscriberImpl {
 			RequestSocket requestSocket = server.createRequestSocket(server.getEndpoint().withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
-			Zmq.Poller poller = server.getContext().createPoller(subscriber);
+			Zmq.Poller poller = context.createPoller(subscriber);
 			
 			boolean ready = false;
 			while (!ready) {
@@ -274,8 +277,8 @@ public class SubscriberImpl {
 		
 		waiting.remove();
 		
-		server.getContext().destroySocket(subscriber);
-		server.getContext().destroySocket(cancelPublisher);
+		context.destroySocket(subscriber);
+		context.destroySocket(cancelPublisher);
 	}
 
 	@Override

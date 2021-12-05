@@ -28,15 +28,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
+import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.EventListener;
 import fr.ill.ics.cameo.base.EventStreamSocket;
 import fr.ill.ics.cameo.base.InvalidArgumentException;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
+import fr.ill.ics.cameo.base.SocketException;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.base.UnexpectedException;
@@ -51,31 +54,18 @@ import fr.ill.ics.cameo.strings.Endpoint;
  * @author legoc
  *
  */
-public class ServerImpl extends ServicesImpl {
+public class ServerImpl {
 
+	private Endpoint serverEndpoint;
+	private int[] serverVersion = new int[3];
+	private int statusPort;
+	private Zmq.Context context;
+	private ContextImpl contextImpl;
+	private int timeout = 0; // default value because of ZeroMQ design
+	private RequestSocket requestSocket;
+	private JSON.ConcurrentParser parser = new JSON.ConcurrentParser();
 	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
 	private EventThread eventThread;
-		
-	private void initServer(Endpoint endpoint, int timeout) {
-		
-		this.timeout = timeout;
-		
-		serverEndpoint = endpoint;
-				
-		// Init the context and socket.
-		init();
-		
-		// Retrieve the server version.
-		retrieveServerVersion();
-				
-		// Start the status thread if it is possible.
-		EventStreamSocket streamSocket = openEventStream();
-		
-		if (streamSocket != null) {
-			eventThread = new EventThread(this, streamSocket);
-			eventThread.start();
-		}
-	}
 	
 	/**
 	 * Constructor with endpoint.
@@ -98,13 +88,145 @@ public class ServerImpl extends ServicesImpl {
 		}
 	}
 	
+	private void initServer(Endpoint endpoint, int timeout) {
+		
+		this.timeout = timeout;
+		
+		serverEndpoint = endpoint;
+				
+		// Init the context and socket.
+		init();
+		
+		// Retrieve the server version.
+		retrieveServerVersion();
+				
+		// Start the status thread if it is possible.
+		EventStreamSocket streamSocket = openEventStream();
+		
+		if (streamSocket != null) {
+			eventThread = new EventThread(this, streamSocket);
+			eventThread.start();
+		}
+	}
+	
+	
+	/**
+	 * Initializes the context and the request socket. The serverEndpoint must have been set.
+	 */
+	final private void init() {
+		context = new Zmq.Context();
+		contextImpl = new ContextImpl(context);
+		requestSocket = this.createRequestSocket(serverEndpoint.toString());
+	}
+	
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+	
+	public Endpoint getEndpoint() {
+		return serverEndpoint;
+	}
+		
+	public int[] getVersion() {
+		return serverVersion;
+	}
+	
+	public Endpoint getStatusEndpoint() {
+		return serverEndpoint.withPort(statusPort);
+	}
+	
+	public Context getContext() {
+		return contextImpl;
+	}
+	
+	public void destroySocket(Socket socket) {
+		context.destroySocket(socket);
+	}
+	
+	public JSONObject parse(Zmq.Msg reply) throws ParseException {
+		return parser.parse(Messages.parseString(reply.getFirstData()));
+	}
+	
+	public JSONObject parse(byte[] data) throws ParseException {
+		return parser.parse(Messages.parseString(data));
+	}
+	
+	/**
+	 * test connection with server
+	 * @param timeout
+	 * 
+	 */
+	private boolean isConnected(int timeout) {
+
+		try {
+			requestSocket.request(Messages.createSyncRequest(), timeout);
+			return true;
+
+		} catch (ConnectionTimeout e) {
+			// do nothing, timeout
+		} catch (Exception e) {
+			// do nothing
+		}
+		
+		return false;
+	}
+	
+	private void sendSync() {
+		
+		try {
+			requestSocket.request(Messages.createSyncRequest());
+
+		} catch (ConnectionTimeout e) {
+			// do nothing
+		}
+	}
+	
+	private void sendSyncStream(String name) {
+		
+		try {
+			requestSocket.request(Messages.createSyncStreamRequest(name));
+
+		} catch (ConnectionTimeout e) {
+			// do nothing
+		}
+	}
+
+	private void retrieveServerVersion() {
+		
+		Zmq.Msg reply = requestSocket.request(Messages.createVersionRequest());
+		
+		try {
+			// Get the JSON response object.
+			JSONObject response = parse(reply);
+		
+			serverVersion[0] = JSON.getInt(response, Messages.VersionResponse.MAJOR);
+			serverVersion[1] = JSON.getInt(response, Messages.VersionResponse.MINOR);
+			serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	public RequestSocket createRequestSocket(String endpoint) throws SocketException {
+		
+		RequestSocket requestSocket = new RequestSocket(context, timeout);
+		requestSocket.connect(endpoint);
+		
+		return requestSocket;
+	}
+	
 	/**
 	 * Connects to the server. Returns false if there is no connection.
 	 * It must be called to initialize the receiving status.
 	 */
 	public boolean isAvailable(int timeout) {
 
-		boolean connected = super.isAvailable(timeout);
+		boolean connected = isConnected(timeout);
 		
 		if (connected && eventThread == null) {
 			// start the status thread
@@ -132,7 +254,8 @@ public class ServerImpl extends ServicesImpl {
 	public void terminate() {
 
 		terminateStatusThread();
-		super.terminate();
+		requestSocket.terminate();
+		context.destroy();
 	}
 	
 	public void registerEventListener(EventListener listener) {
@@ -145,6 +268,80 @@ public class ServerImpl extends ServicesImpl {
 	
 	ConcurrentLinkedDeque<EventListener> getEventListeners() {
 		return eventListeners;
+	}
+	
+	//TODO Remove Zmq
+	public JSONObject request(Zmq.Msg message) {
+		try {
+			return parse(requestSocket.request(message));
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}	
+	}
+
+	public JSONObject request(JSONObject request) {
+		try {
+			return parse(requestSocket.request(request));
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @throws ConnectionTimeout 
+	 */
+	private EventStreamSocket openEventStream() {
+
+		Zmq.Msg reply = requestSocket.request(Messages.createStreamStatusRequest());
+		JSONObject response;
+		
+		try {
+			// Get the JSON response object.
+			response = parse(reply);
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+		
+		// Prepare our subscriber.
+		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
+		
+		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		
+		subscriber.connect(getStatusEndpoint().toString());
+		subscriber.subscribe(Messages.Event.STATUS);
+		subscriber.subscribe(Messages.Event.RESULT);
+		subscriber.subscribe(Messages.Event.PUBLISHER);
+		subscriber.subscribe(Messages.Event.PORT);
+		subscriber.subscribe(Messages.Event.KEYVALUE);
+		
+		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
+		
+		subscriber.connect(cancelEndpoint);
+		subscriber.subscribe(Messages.Event.CANCEL);
+		
+		// polling to wait for connection
+		Zmq.Poller poller = context.createPoller(subscriber);
+		
+		while (true) {
+			
+			// the server returns a STATUS message that is used to synchronize the subscriber
+			sendSync();
+
+			// return at the first response.
+			if (poller.poll(100)) {
+				break;
+			}
+		}
+		
+		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
+		cancelPublisher.bind(cancelEndpoint);
+		
+		return new EventStreamSocket(this, subscriber, cancelPublisher);
 	}
 	
 	/**
@@ -889,4 +1086,5 @@ public class ServerImpl extends ServicesImpl {
 	public String toString() {
 		return "server@" + serverEndpoint;
 	}
+
 }

@@ -21,21 +21,20 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Socket;
-import fr.ill.ics.cameo.base.impl.ServicesImpl;
+import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class EventStreamSocket {
 		
-	private ServicesImpl services;
+	private ServerImpl server;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
 	private boolean canceled = false;
 	
-	public EventStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public EventStreamSocket(ServerImpl server, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
-		this.services = services;
+		this.server = server;
 		this.socket = subscriber;
 		this.cancelSocket = cancelPublisher;
 	}
@@ -53,7 +52,7 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(statusMessage);
+				JSONObject jsonObject = server.parse(statusMessage);
 				
 				int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
@@ -78,7 +77,7 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(resultMessage);
+				JSONObject jsonObject = server.parse(resultMessage);
 				
 				int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
@@ -98,7 +97,7 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(publisherMessage);
+				JSONObject jsonObject = server.parse(publisherMessage);
 				
 				int id = JSON.getInt(jsonObject, Messages.PublisherEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.PublisherEvent.NAME);
@@ -116,7 +115,7 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(portMessage);
+				JSONObject jsonObject = server.parse(portMessage);
 				
 				int id = JSON.getInt(jsonObject, Messages.PortEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.PortEvent.NAME);
@@ -134,7 +133,7 @@ public class EventStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = services.parse(keyValueMessage);
+				JSONObject jsonObject = server.parse(keyValueMessage);
 				
 				int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);
@@ -171,6 +170,6 @@ public class EventStreamSocket {
 	}
 
 	public void destroy() {
-		services.destroySocket(socket);
+		server.destroySocket(socket);
 	}
 }

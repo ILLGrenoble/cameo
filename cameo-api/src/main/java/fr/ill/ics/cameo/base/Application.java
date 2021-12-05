@@ -28,6 +28,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.base.impl.ComImpl;
 import fr.ill.ics.cameo.base.impl.InstanceImpl;
+import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -46,21 +47,23 @@ public class Application {
 		
 		public static class Com {
 			
-			private ComImpl impl;
+			private ServerImpl server;
+			private int applicationId;
 			private ThisImpl thisImpl;
 			
-			Com(ComImpl impl, ThisImpl thisImpl) {
-				this.impl = impl;
+			Com(ServerImpl server, int applicationId, ThisImpl thisImpl) {
+				this.server = server;
+				this.applicationId = applicationId;
 				this.thisImpl = thisImpl;
 			}
 			
 			public void storeKeyValue(String key, String value) {
-				impl.storeKeyValue(key, value);
+				server.storeKeyValue(applicationId, key, value);
 			}
 			
 			public String getKeyValue(String key) throws UndefinedKeyException {
 				try {
-					return impl.getKeyValue(key);
+					return server.getKeyValue(applicationId, key);
 				}
 				catch (UndefinedApplicationException e) {
 					// Should not happen in This.
@@ -71,7 +74,7 @@ public class Application {
 			
 			public void removeKey(String key) throws UndefinedKeyException {
 				try {
-					impl.removeKey(key);
+					server.removeKey(applicationId, key);
 				}
 				catch (UndefinedApplicationException e) {
 					// Should not happen in This.
@@ -81,7 +84,7 @@ public class Application {
 			
 			public int requestPort() {
 				try {
-					return impl.requestPort();
+					return server.requestPort(applicationId);
 				}
 				catch (UndefinedApplicationException e) {
 					// Should not happen in This.
@@ -92,7 +95,7 @@ public class Application {
 			
 			public void setPortUnavailable(int port) {
 				try {
-					impl.setPortUnavailable(port);
+					server.setPortUnavailable(applicationId, port);
 				}
 				catch (UndefinedApplicationException e) {
 					// Should not happen in This.
@@ -102,7 +105,7 @@ public class Application {
 			
 			public void releasePort(int port) {
 				try {
-					impl.releasePort(port);
+					server.releasePort(applicationId, port);
 				}
 				catch (UndefinedApplicationException e) {
 					// Should not happen in This.
@@ -113,10 +116,18 @@ public class Application {
 			public JSONObject request(JSONObject request) {
 				return thisImpl.request(request);
 			}
+
+			public RequestSocket createRequestSocket(String endpoint) {
+				return server.createRequestSocket(endpoint);
+			}
 			
-			public JSONObject parse(Msg message) {
+			public Context getContext() {
+				return server.getContext();
+			}
+			
+			public JSONObject parse(Zmq.Msg message) {
 				try {
-					return thisImpl.parse(message);
+					return server.parse(message);
 				}
 				catch (ParseException e) {
 					throw new UnexpectedException("Cannot parse message");
@@ -138,6 +149,7 @@ public class Application {
 			public ServerImpl getServerImpl() {
 				return impl.getServer();
 			}
+
 		}
 		
 		private static Com com;
@@ -149,7 +161,7 @@ public class Application {
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());
 			}
-			com = new Com(new ComImpl(impl.getServer(), impl.getId()), impl);
+			com = new Com(impl.getServer(), impl.getId(), impl);
 		}
 		
 		static public void init(String[] args) {

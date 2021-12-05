@@ -21,23 +21,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Socket;
-import fr.ill.ics.cameo.base.impl.ServicesImpl;
+import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class OutputStreamSocket {
 	
-	private ServicesImpl services;
+	private ServerImpl server;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
 	private int applicationId = -1;
 	private boolean ended = false;
 	private boolean canceled = false;
 
-	public OutputStreamSocket(ServicesImpl services, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public OutputStreamSocket(ServerImpl server, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
-		this.services = services;
+		this.server = server;
 		this.socket = subscriber;
 		this.cancelSocket = cancelPublisher;		
 	}
@@ -72,7 +71,7 @@ public class OutputStreamSocket {
 			
 			try {
 				// Get the JSON object.
-				JSONObject stream = services.parse(messageValue);
+				JSONObject stream = server.parse(messageValue);
 				
 				int id = JSON.getInt(stream, Messages.ApplicationStream.ID);
 				
@@ -115,6 +114,6 @@ public class OutputStreamSocket {
 	}
 	
 	public void destroy() {
-		services.destroySocket(socket);
+		server.destroySocket(socket);
 	}
 }

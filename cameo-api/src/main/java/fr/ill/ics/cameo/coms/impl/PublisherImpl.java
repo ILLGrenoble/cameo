@@ -20,10 +20,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.UnexpectedException;
+import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ServicesImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -36,6 +36,7 @@ public class PublisherImpl {
 	private int synchronizerPort;
 	private String name;
 	private int numberOfSubscribers;
+	private Zmq.Context context;
 	private Zmq.Socket publisher = null;
 	private boolean ended = false;
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
@@ -46,9 +47,10 @@ public class PublisherImpl {
 		this.synchronizerPort = synchronizerPort;
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
-
+		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
+		
 		// create a socket for publishing
-		publisher = this.application.getContext().createSocket(Zmq.PUB);
+		publisher = context.createSocket(Zmq.PUB);
 		publisher.bind("tcp://*:" + publisherPort);
 		
 		waiting.add();
@@ -69,7 +71,7 @@ public class PublisherImpl {
 		
 		try {
 			// create a socket to receive the messages from the subscribers
-			synchronizer = this.application.getContext().createSocket(Zmq.REP);
+			synchronizer = context.createSocket(Zmq.REP);
 			String endpoint = "tcp://*:" + synchronizerPort;
 			
 			synchronizer.bind(endpoint);
@@ -90,7 +92,7 @@ public class PublisherImpl {
 					}
 							
 					// Get the JSON request object.
-					JSONObject request = application.parse(message);
+					JSONObject request = This.getCom().parse(message);
 					
 					// Get the type.
 					long type = JSON.getLong(request, Messages.TYPE);
@@ -117,9 +119,6 @@ public class PublisherImpl {
 						reply.send(synchronizer);
 					}
 				}
-				catch (ParseException e) {
-					throw new UnexpectedException("Cannot parse response");
-				}
 				finally {
 					
 					if (message != null) {
@@ -135,7 +134,7 @@ public class PublisherImpl {
 		} finally {
 			// destroy synchronizer socket as we do not need it anymore.
 			if (synchronizer != null) {
-				this.application.getContext().destroySocket(synchronizer);
+				context.destroySocket(synchronizer);
 			}	
 		}
 		
@@ -149,7 +148,7 @@ public class PublisherImpl {
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
+		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
 		requestSocket.request(request);
 			
 		// Terminate the socket.
@@ -197,7 +196,7 @@ public class PublisherImpl {
 		waiting.remove();
 		sendEnd();
 		
-		this.application.getContext().destroySocket(publisher);
+		context.destroySocket(publisher);
 		
 		JSONObject request = Messages.createTerminatePublisherRequest(This.getId(), name);
 		JSONObject response = This.getCom().request(request);

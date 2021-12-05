@@ -60,7 +60,7 @@ class EventThread extends Thread {
 			}
 			
 		} finally {
-			socket.destroy();	
+			socket.destroy();
 		}
 	}
 	

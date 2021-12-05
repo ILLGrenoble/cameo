@@ -22,6 +22,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
@@ -41,6 +43,7 @@ public class RequesterImpl {
 	private int requesterId;
 	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
+	private Zmq.Context context;
 	private Zmq.Socket requester;
 	private RequestSocket requestSocket;
 	
@@ -54,12 +57,13 @@ public class RequesterImpl {
 		this.name = name;
 		this.responderId = responderId;
 		this.requesterId = requesterId;
+		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
 
 		// Create the REQ socket.
-		requestSocket = application.createRequestSocket(responderEndpoint);
+		requestSocket = This.getCom().createRequestSocket(responderEndpoint);
 		
 		// Create the REP socket.
-		requester = this.application.getContext().createSocket(Zmq.REP);
+		requester = context.createSocket(Zmq.REP);
 		requester.bind("tcp://*:" + requesterPort);
 		
 		waiting.add();
@@ -132,7 +136,7 @@ public class RequesterImpl {
 			}
 			
 			// Get the JSON request object.
-			JSONObject request = application.parse(message);
+			JSONObject request = This.getCom().parse(message);
 			
 			// Get the type.
 			long type = JSON.getLong(request, Messages.TYPE);
@@ -147,10 +151,6 @@ public class RequesterImpl {
 			else {
 				return null;
 			}
-		}
-		catch (ParseException e) {
-			System.err.println("Cannot parse message");
-			return null;
 		}
 		finally {
 			if (message != null) {
@@ -179,7 +179,7 @@ public class RequesterImpl {
 		message.add(Messages.serialize(request));
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
+		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
 		requestSocket.request(message);
 		
 		// Terminate the socket.
@@ -197,7 +197,7 @@ public class RequesterImpl {
 		// Terminate the request socket.
 		requestSocket.terminate();
 		
-		this.application.getContext().destroySocket(requester);
+		context.destroySocket(requester);
 		
 		try {
 			application.removePort(getRequesterPortName(name, responderId, requesterId));

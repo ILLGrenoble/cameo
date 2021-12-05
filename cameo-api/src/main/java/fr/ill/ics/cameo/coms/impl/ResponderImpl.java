@@ -22,6 +22,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
@@ -35,6 +37,8 @@ public class ResponderImpl {
 	private ThisImpl application;
 	private int responderPort;
 	private String name;
+	
+	private Zmq.Context context;
 	private Zmq.Socket responder;
 	
 	private boolean ended = false;
@@ -45,9 +49,10 @@ public class ResponderImpl {
 		this.application = application;
 		this.responderPort = responderPort;
 		this.name = name;
+		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
 
 		// create a socket REP
-		responder = this.application.getContext().createSocket(Zmq.REP);
+		responder = context.createSocket(Zmq.REP);
 		responder.bind("tcp://*:" + responderPort);
 		
 		waiting.add();
@@ -72,7 +77,7 @@ public class ResponderImpl {
 			}
 			
 			// Get the JSON request object.
-			JSONObject request = application.parse(message);
+			JSONObject request = This.getCom().parse(message);
 			
 			// Get the type.
 			long type = JSON.getLong(request, Messages.TYPE);
@@ -111,9 +116,6 @@ public class ResponderImpl {
 				return null;
 			}
 		}
-		catch (ParseException e) {
-			System.err.println("Cannot parse message");
-		}
 		finally {
 			if (message != null) {
 				message.destroy();
@@ -142,7 +144,7 @@ public class ResponderImpl {
 		message.add(Messages.serialize(request));
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = application.createRequestSocket(endpoint.toString());
+		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
 		requestSocket.request(message);
 		
 		// Terminate the socket.
@@ -160,7 +162,7 @@ public class ResponderImpl {
 	public void terminate() {
 
 		waiting.remove();
-		this.application.getContext().destroySocket(responder);
+		context.destroySocket(responder);
 		
 		try {
 			application.removePort(RESPONDER_PREFIX + name);

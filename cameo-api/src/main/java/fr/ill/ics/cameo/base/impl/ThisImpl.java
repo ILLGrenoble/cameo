@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.base.impl;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
@@ -37,8 +38,9 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
-public class ThisImpl extends ServicesImpl {
-	
+public class ThisImpl {
+
+	private Endpoint serverEndpoint;
 	private String name;
 	private int id = -1;
 	private boolean managed = false;
@@ -73,8 +75,10 @@ public class ThisImpl extends ServicesImpl {
 		
 		// Parse the info.
 		JSONObject infoObject;
+		JSONParser parser = new JSONParser();
+		
 		try {
-			infoObject = parser.parse(info);
+			infoObject = (JSONObject)parser.parse(info);
 		}
 		catch (ParseException e) {
 			throw new InvalidArgumentException("Bad format for info argument");
@@ -123,13 +127,10 @@ public class ThisImpl extends ServicesImpl {
 	}
 	
 	private void initApplication() {
-	
-		// Init the context and socket.
-		init();
-		
-		// Retrieve the server version.
-		retrieveServerVersion();
 
+		// Create the server.
+		server = new ServerImpl(serverEndpoint, 0);
+		
 		// Init the unmanaged application.
 		if (!managed) {
 			id = initUnmanagedApplication();
@@ -138,9 +139,6 @@ public class ThisImpl extends ServicesImpl {
 				throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
 			}
 		}
-		
-		// Create the server.
-		server = new ServerImpl(serverEndpoint, 0);
 		
 		// Init listener.
 		eventListener.setName(name);
@@ -177,6 +175,18 @@ public class ThisImpl extends ServicesImpl {
 	public WaitingSet getWaitingSet() {
 		return waitingSet;
 	}
+
+	public int getTimeout() {
+		return server.getTimeout();
+	}
+
+	public void setTimeout(int timeout) {
+		server.setTimeout(timeout);
+	}
+
+	public boolean isAvailable(int timeout) {
+		return server.isAvailable(timeout);
+	}
 	
 	public void terminate() {
 		
@@ -190,8 +200,6 @@ public class ThisImpl extends ServicesImpl {
 		if (!managed) {
 			terminateUnmanagedApplication();
 		}
-		
-		super.terminate();
 	}
 	
 	public void setResult(byte[] data) {
@@ -202,19 +210,11 @@ public class ThisImpl extends ServicesImpl {
 		// Add the data in a second frame.
 		message.add(data);
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(message);
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new UnexpectedException("Cannot set result");
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		JSONObject response = server.request(message);
+	
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			throw new UnexpectedException("Cannot set result");
 		}
 	}
 	
@@ -231,21 +231,12 @@ public class ThisImpl extends ServicesImpl {
 		
 		JSONObject request = Messages.createSetStatusRequest(id, Application.State.RUNNING);
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				return false;
-			}
+		JSONObject response = server.request(request);
+	
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			return false;
 		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
-		
 		return true;
 	}
 
@@ -254,25 +245,17 @@ public class ThisImpl extends ServicesImpl {
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(Messages.createAttachUnmanagedRequest(name, pid));
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			return JSON.getInt(response, Messages.RequestResponse.VALUE);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}		
+		JSONObject response = server.request(Messages.createAttachUnmanagedRequest(name, pid));
+	
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	private void terminateUnmanagedApplication() {
-		requestSocket.request(Messages.createDetachUnmanagedRequest(id));
+		server.request(Messages.createDetachUnmanagedRequest(id));
 	}
 	
 	private void setStopHandler(int stoppingTime) {
-		requestSocket.request(Messages.createSetStopHandlerRequest(id, stoppingTime));
+		server.request(Messages.createSetStopHandlerRequest(id, stoppingTime));
 	}
 	
 	/**
@@ -282,23 +265,9 @@ public class ThisImpl extends ServicesImpl {
 	 */
 	private int getState(int id) {
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
+		JSONObject response = server.request(Messages.createGetStatusRequest(id));
 			
-			byte[] messageData = reply.getFirstData();
-			
-			if (messageData == null) {
-				return Application.State.UNKNOWN;
-			}
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
 	
 	
@@ -372,35 +341,16 @@ public class ThisImpl extends ServicesImpl {
 	
 	public void removePort(String name) {
 		
-		JSONObject request = Messages.createRemovePortV0Request(id, name);
-
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = server.request(Messages.createRemovePortV0Request(id, name));
 			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (port == -1) {
-				System.err.println("Cannot remove port " + name);
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (port == -1) {
+			System.err.println("Cannot remove port " + name);
 		}
 	}
 
 	public JSONObject request(JSONObject request) {
-		
-		try {
-			Zmq.Msg reply = requestSocket.request(request);
-			
-			// Get the JSON response object.
-			return parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return server.request(request);
 	}
 
 	@Override
