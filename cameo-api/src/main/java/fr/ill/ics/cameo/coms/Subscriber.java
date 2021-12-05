@@ -2,11 +2,8 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Application.Instance;
-import fr.ill.ics.cameo.base.Application.This;
-import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -27,7 +24,7 @@ public class Subscriber {
 	private static SubscriberImpl createSubscriber(int applicationId, String publisherName, Instance instance) throws SubscriberCreationException {
 		
 		JSONObject request = Messages.createConnectPublisherRequest(applicationId, publisherName);
-		JSONObject response = This.getCom().request(request);
+		JSONObject response = instance.getCom().request(request);
 		
 		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		
@@ -38,7 +35,7 @@ public class Subscriber {
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		SubscriberImpl subscriber = new SubscriberImpl(This.getCom().getServerImpl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
+		SubscriberImpl subscriber = new SubscriberImpl(instance.getCom().getServerImpl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
 		subscriber.init();
 		
 		return subscriber;

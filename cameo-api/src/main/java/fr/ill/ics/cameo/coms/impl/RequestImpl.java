@@ -21,7 +21,6 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestImpl {

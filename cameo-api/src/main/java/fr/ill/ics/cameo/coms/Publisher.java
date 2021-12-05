@@ -2,9 +2,7 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
-import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

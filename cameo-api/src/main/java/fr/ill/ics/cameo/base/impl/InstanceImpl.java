@@ -67,8 +67,8 @@ public class InstanceImpl extends EventListener {
 		this.id = id;
 	}
 	
-	public ComImpl createCom() {
-		return new ComImpl(server, id);
+	public ServerImpl getServer() {
+		return server;
 	}
 	
 	void setOutputStreamSocket(OutputStreamSocket outputSocket) {

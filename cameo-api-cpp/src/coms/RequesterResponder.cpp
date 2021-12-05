@@ -121,13 +121,6 @@ Responder::~Responder() {
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
-
-//	std::unique_ptr<zmq::message_t> reply = application::This::m_instance.m_requestSocket->request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
-
-	// Get the JSON response.
-//	json::Object response;
-//	json::parse(response, reply.get());
-
 	json::Object response = application::This::getCom().request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();

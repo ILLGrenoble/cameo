@@ -19,7 +19,6 @@ package fr.ill.ics.cameo.coms.impl;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;

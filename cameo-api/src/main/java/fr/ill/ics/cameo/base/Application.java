@@ -25,8 +25,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Msg;
-import fr.ill.ics.cameo.base.impl.ComImpl;
 import fr.ill.ics.cameo.base.impl.InstanceImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServerImpl;
@@ -134,14 +132,6 @@ public class Application {
 				catch (ParseException e) {
 					throw new UnexpectedException("Cannot parse message");
 				}
-			}
-			
-			/**
-			 * TODO Temporary access.
-			 * @return
-			 */
-			public ServerImpl getServerImpl() {
-				return impl.getServer();
 			}
 
 			public void removePort(String name) {
@@ -431,22 +421,34 @@ public class Application {
 		 */
 		public static class Com {
 			
-			private ComImpl impl;
+			private ServerImpl server;
+			private int applicationId;
 			
-			Com(ComImpl impl) {
-				this.impl = impl;
+			Com(ServerImpl server, int applicationId) {
+				this.server = server;
+				this.applicationId = applicationId;
 			}
 			
 			public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
-				return impl.getKeyValue(key);
+				return server.getKeyValue(applicationId, key);
 			}
+
+			public JSONObject request(JSONObject request) {
+				return server.request(request);
+			}
+
+			//TODO Temporary access
+			public ServerImpl getServerImpl() {
+				return server;
+			}
+			
 		}
 		
 		private Com com;
 		
 		Instance(InstanceImpl impl) {
 			this.impl = impl;
-			this.com = new Com(impl.createCom());
+			this.com = new Com(impl.getServer(), impl.getId());
 		}
 		
 		public String getName() {
