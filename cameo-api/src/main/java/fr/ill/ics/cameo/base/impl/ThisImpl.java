@@ -338,16 +338,6 @@ public class ThisImpl {
 	public void cancelWaitings() {
 		waitingSet.cancelAll();		
 	}
-	
-	public void removePort(String name) {
-		
-		JSONObject response = server.request(Messages.createRemovePortV0Request(id, name));
-			
-		int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		if (port == -1) {
-			System.err.println("Cannot remove port " + name);
-		}
-	}
 
 	public JSONObject request(JSONObject request) {
 		return server.request(request);

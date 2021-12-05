@@ -50,8 +50,7 @@ public class RequesterImpl {
 	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
-	public RequesterImpl(ThisImpl application, String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
-		this.application = application;
+	public RequesterImpl(String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.requesterPort = requesterPort;
 		String responderEndpoint = url + ":" + responderPort;
 		this.name = name;
@@ -85,10 +84,10 @@ public class RequesterImpl {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.REQUEST);
-		request.put(Messages.Request.APPLICATION_NAME, application.getName());
-		request.put(Messages.Request.APPLICATION_ID, application.getId());
-		request.put(Messages.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
-		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
+		request.put(Messages.Request.APPLICATION_NAME, This.getName());
+		request.put(Messages.Request.APPLICATION_ID, This.getId());
+		request.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
+		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = new Zmq.Msg();
@@ -108,10 +107,10 @@ public class RequesterImpl {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.REQUEST);
-		request.put(Messages.Request.APPLICATION_NAME, application.getName());
-		request.put(Messages.Request.APPLICATION_ID, application.getId());
-		request.put(Messages.Request.SERVER_URL, application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress());
-		request.put(Messages.Request.SERVER_PORT, application.getEndpoint().getPort());
+		request.put(Messages.Request.APPLICATION_NAME, This.getName());
+		request.put(Messages.Request.APPLICATION_ID, This.getId());
+		request.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
+		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
 		Zmq.Msg message = new Zmq.Msg();
@@ -170,7 +169,7 @@ public class RequesterImpl {
 	
 	public void cancel() {
 		
-		Endpoint endpoint = application.getEndpoint().withPort(requesterPort);
+		Endpoint endpoint = This.getEndpoint().withPort(requesterPort);
 
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
@@ -200,7 +199,7 @@ public class RequesterImpl {
 		context.destroySocket(requester);
 		
 		try {
-			application.removePort(getRequesterPortName(name, responderId, requesterId));
+			This.getCom().removePort(getRequesterPortName(name, responderId, requesterId));
 			
 		} catch (Exception e) {
 			System.err.println("Cannot terminate requester: " + e.getMessage());
@@ -209,7 +208,7 @@ public class RequesterImpl {
 	
 	@Override
 	public String toString() {
-		return REQUESTER_PREFIX + name + "." + requesterId + ":" + application.getName() + "." + application.getId() + "@" + application.getEndpoint();
+		return REQUESTER_PREFIX + name + "." + requesterId + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 	
 }

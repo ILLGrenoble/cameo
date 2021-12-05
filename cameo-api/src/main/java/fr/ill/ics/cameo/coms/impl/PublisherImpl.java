@@ -31,7 +31,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherImpl {
 
-	private ThisImpl application;
 	private int publisherPort;
 	private int synchronizerPort;
 	private String name;
@@ -41,8 +40,7 @@ public class PublisherImpl {
 	private boolean ended = false;
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
 	
-	public PublisherImpl(ThisImpl application, int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
-		this.application = application;
+	public PublisherImpl(int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
 		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.name = name;
@@ -142,7 +140,7 @@ public class PublisherImpl {
 	}
 	
 	public void cancelWaitForSubscribers() {
-		Endpoint endpoint = application.getEndpoint().withPort(publisherPort + 1);
+		Endpoint endpoint = This.getEndpoint().withPort(publisherPort + 1);
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
@@ -233,7 +231,7 @@ public class PublisherImpl {
 	
 	@Override
 	public String toString() {
-		return "pub." + name + ":" + application.getName() + "." + application.getId() + "@" + application.getEndpoint();
+		return "pub." + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 	
 }

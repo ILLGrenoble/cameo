@@ -34,7 +34,6 @@ public class ResponderImpl {
 
 	public static final String RESPONDER_PREFIX = "rep.";
 
-	private ThisImpl application;
 	private int responderPort;
 	private String name;
 	
@@ -45,8 +44,7 @@ public class ResponderImpl {
 	private boolean canceled = false;
 	private ResponderWaitingImpl waiting = new ResponderWaitingImpl(this);
 	
-	public ResponderImpl(ThisImpl application, int responderPort, String name) {
-		this.application = application;
+	public ResponderImpl(int responderPort, String name) {
 		this.responderPort = responderPort;
 		this.name = name;
 		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
@@ -95,8 +93,7 @@ public class ResponderImpl {
 				byte[] message1 = data.get(1);
 				
 				// Create the request implementation.
-				RequestImpl impl = new RequestImpl(application, 
-						name, 
+				RequestImpl impl = new RequestImpl(name, 
 						id, 
 						message1, 
 						serverUrl,
@@ -135,7 +132,7 @@ public class ResponderImpl {
 	}
 	
 	public void cancel() {
-		Endpoint endpoint = application.getEndpoint().withPort(responderPort);
+		Endpoint endpoint = This.getEndpoint().withPort(responderPort);
 
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
@@ -165,7 +162,7 @@ public class ResponderImpl {
 		context.destroySocket(responder);
 		
 		try {
-			application.removePort(RESPONDER_PREFIX + name);
+			This.getCom().removePort(RESPONDER_PREFIX + name);
 			
 		} catch (Exception e) {
 			System.err.println("Cannot terminate responder: " + e.getMessage());
@@ -174,7 +171,7 @@ public class ResponderImpl {
 	
 	@Override
 	public String toString() {
-		return RESPONDER_PREFIX + name + ":" + application.getName() + "." + application.getId() + "@" + application.getEndpoint();
+		return RESPONDER_PREFIX + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 	
 }

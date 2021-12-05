@@ -34,7 +34,7 @@ public class Responder {
 			throw new ResponderCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		return new ResponderImpl(This.getCom().getImpl(), port, name);
+		return new ResponderImpl(port, name);
 	}
 	
 	/**

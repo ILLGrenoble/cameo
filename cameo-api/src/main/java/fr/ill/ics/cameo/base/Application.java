@@ -31,6 +31,8 @@ import fr.ill.ics.cameo.base.impl.InstanceImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class Application {
@@ -138,16 +140,18 @@ public class Application {
 			 * TODO Temporary access.
 			 * @return
 			 */
-			public ThisImpl getImpl() {
-				return thisImpl;
-			}
-			
-			/**
-			 * TODO Temporary access.
-			 * @return
-			 */
 			public ServerImpl getServerImpl() {
 				return impl.getServer();
+			}
+
+			public void removePort(String name) {
+				
+				JSONObject response = server.request(Messages.createRemovePortV0Request(applicationId, name));
+					
+				int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
+				if (port == -1) {
+					System.err.println("Cannot remove port " + name);
+				}
 			}
 
 		}

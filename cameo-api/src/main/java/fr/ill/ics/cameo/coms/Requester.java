@@ -72,7 +72,7 @@ public class Requester {
 			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		return new RequesterImpl(This.getCom().getImpl(), responderUrl, requesterPort, responderPort, name, responderId, requesterId);
+		return new RequesterImpl(responderUrl, requesterPort, responderPort, name, responderId, requesterId);
 	}
 	
 	/**

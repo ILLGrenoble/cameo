@@ -26,7 +26,6 @@ import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestImpl {
 
-	private ThisImpl application;
 	private String requesterEndpoint;
 	private byte[] message;
 	private byte[] message2;
@@ -34,9 +33,8 @@ public class RequestImpl {
 	private int requesterApplicationId;
 	private String requesterServerEndpoint;
 	
-	public RequestImpl(ThisImpl application, String requesterApplicationName, int requesterApplicationId, byte[] message, String serverUrl, int serverPort, int requesterPort) {
+	public RequestImpl(String requesterApplicationName, int requesterApplicationId, byte[] message, String serverUrl, int serverPort, int requesterPort) {
 		
-		this.application = application;
 		this.requesterEndpoint = serverUrl + ":" + requesterPort;
 		this.message = message;
 		

@@ -32,7 +32,7 @@ public class Publisher {
 		}
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		
-		return new PublisherImpl(This.getCom().getImpl(), publisherPort, synchronizerPort, name, numberOfSubscribers);
+		return new PublisherImpl(publisherPort, synchronizerPort, name, numberOfSubscribers);
 	}
 	
 	/**
