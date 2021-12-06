@@ -105,7 +105,7 @@ void This::Com::removePort(const std::string& name) const {
 	json::Object response = m_server->request(createRemovePortV0Request(m_applicationId, name));
 	int value = response[message::RequestResponse::VALUE].GetInt();
 
-	if (value != -1) {
+	if (value == -1) {
 		std::cerr << "Cannot remove port " << name << std::endl;
 	}
 }
