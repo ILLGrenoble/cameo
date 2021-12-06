@@ -87,7 +87,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Responder(application::This *application, int responderPort, const std::string &name);
+	Responder(int responderPort, const std::string &name);
 
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -130,7 +130,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Requester(application::This *application, const Endpoint &endpoint, int requesterPort, int responderPort, const std::string &name, int responderId, int requesterId);
+	Requester(const Endpoint &endpoint, int requesterPort, int responderPort, const std::string &name, int responderId, int requesterId);
 
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;

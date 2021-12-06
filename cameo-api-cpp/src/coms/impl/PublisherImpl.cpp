@@ -27,8 +27,7 @@
 namespace cameo {
 namespace coms {
 
-PublisherImpl::PublisherImpl(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
-	m_application(application),
+PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
 	m_name(name),
@@ -53,15 +52,15 @@ const std::string& PublisherImpl::getName() const {
 }
 
 const std::string& PublisherImpl::getApplicationName() const {
-	return m_application->getName();
+	return application::This::getName();
 }
 
 int PublisherImpl::getApplicationId() const {
-	return m_application->getId();
+	return application::This::getId();
 }
 
 std::string PublisherImpl::getApplicationEndpoint() const {
-	return m_application->getEndpoint().toString();
+	return application::This::getEndpoint().toString();
 }
 
 bool PublisherImpl::waitForSubscribers() {

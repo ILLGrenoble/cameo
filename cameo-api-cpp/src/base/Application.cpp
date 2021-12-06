@@ -100,6 +100,16 @@ std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::str
 	return m_server->createRequestSocket(endpoint, timeout);
 }
 
+void This::Com::removePort(const std::string& name) const {
+
+	json::Object response = m_server->request(createRemovePortV0Request(m_applicationId, name));
+	int value = response[message::RequestResponse::VALUE].GetInt();
+
+	if (value != -1) {
+		std::cerr << "Cannot remove port " << name << std::endl;
+	}
+}
+
 State This::parseState(const std::string& value) {
 
 	if (value == "UNKNOWN") {
@@ -347,14 +357,6 @@ State This::getState(int id) const {
 	json::Object event = m_server->request(createGetStatusRequest(id));
 
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
-}
-
-bool This::removePort(const std::string& name) const {
-
-	json::Object response = m_server->request(createRemovePortV0Request(m_id, name));
-	int value = response[message::RequestResponse::VALUE].GetInt();
-
-	return (value != -1);
 }
 
 State This::waitForStop() {

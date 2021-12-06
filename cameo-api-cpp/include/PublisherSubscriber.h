@@ -62,7 +62,7 @@ public:
 	bool isEnded() const;
 
 private:
-	Publisher(application::This *application, int publisherPort, int synchronizerPort, const std::string &name, int numberOfSubscribers);
+	Publisher(int publisherPort, int synchronizerPort, const std::string &name, int numberOfSubscribers);
 
 	static std::string createCreatePublisherRequest(int id, const std::string &name, int numberOfSubscribers);
 

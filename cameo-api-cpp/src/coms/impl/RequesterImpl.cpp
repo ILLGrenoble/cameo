@@ -31,18 +31,12 @@ const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
 std::mutex RequesterImpl::m_mutex;
 int RequesterImpl::m_requesterCounter = 0;
 
-RequesterImpl::RequesterImpl(application::This * application, const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
-	m_application(application),
+RequesterImpl::RequesterImpl(const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
 	m_requesterPort(requesterPort),
 	m_name(name),
 	m_responderId(responderId),
 	m_requesterId(requesterId),
 	m_canceled(false) {
-
-//	std::stringstream repEndpoint;
-//	repEndpoint << url << ":" << responderPort;
-//	m_responderEndpoint = repEndpoint.str();
-//	m_responderEndpoint = endpoint.withPort(responderPort).toString();
 
 	// Create the request socket.
 	m_requestSocket = application::This::getCom().createRequestSocket(endpoint.withPort(responderPort).toString());
@@ -87,16 +81,16 @@ void RequesterImpl::sendBinary(const std::string& requestData) {
 	request.pushInt(message::REQUEST);
 
 	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushString(m_application->getName());
+	request.pushString(application::This::getName());
 
 	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushInt(m_application->getId());
+	request.pushInt(application::This::getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
+	request.pushString(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getEndpoint().getPort());
+	request.pushInt(application::This::getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);
@@ -119,16 +113,16 @@ void RequesterImpl::sendTwoBinaryParts(const std::string& requestData1, const st
 	request.pushInt(message::REQUEST);
 
 	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushString(m_application->getName());
+	request.pushString(application::This::getName());
 
 	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushInt(m_application->getId());
+	request.pushInt(application::This::getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(m_application->getEndpoint().getProtocol() + "://" + m_application->getEndpoint().getAddress());
+	request.pushString(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(m_application->getEndpoint().getPort());
+	request.pushInt(application::This::getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
 	request.pushInt(m_requesterPort);
@@ -187,7 +181,7 @@ void RequesterImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_application->getEndpoint().withPort(m_requesterPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->request(request.toString());
 }
 
@@ -196,10 +190,7 @@ void RequesterImpl::terminate() {
 	if (m_repSocket.get() != nullptr) {
 		m_repSocket.reset(nullptr);
 
-		bool success = m_application->removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
-		if (!success) {
-			std::cerr << "Server cannot destroy requester " << m_name << std::endl;
-		}
+		application::This::getCom().removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 	}
 
 	m_requestSocket.reset();

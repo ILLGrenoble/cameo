@@ -28,10 +28,6 @@
 
 namespace cameo {
 
-namespace application {
-	class This;
-}
-
 class RequestSocketImpl;
 
 namespace coms {
@@ -39,7 +35,7 @@ namespace coms {
 class RequesterImpl {
 
 public:
-	RequesterImpl(application::This * application, const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
+	RequesterImpl(const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 	~RequesterImpl();
 
 	static int newRequesterId();
@@ -57,7 +53,6 @@ public:
 	void cancel();
 	void terminate();
 
-	application::This * m_application;
 	int m_requesterPort;
 	std::string m_name;
 	int m_responderId;

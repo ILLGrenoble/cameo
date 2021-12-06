@@ -108,8 +108,8 @@ std::unique_ptr<Server> Request::getServer() {
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
-Responder::Responder(application::This * application, int responderPort, const std::string& name) :
-	m_impl(new ResponderImpl(application, responderPort, name)) {
+Responder::Responder(int responderPort, const std::string& name) :
+	m_impl(new ResponderImpl(responderPort, name)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -128,7 +128,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 		throw ResponderCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
-	return std::unique_ptr<Responder>(new Responder(&application::This::m_instance, responderPort, name));
+	return std::unique_ptr<Responder>(new Responder(responderPort, name));
 }
 
 const std::string& Responder::getName() const {
@@ -155,8 +155,8 @@ bool Responder::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(application::This * application, const Endpoint &endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
-	m_impl(new RequesterImpl(application, endpoint, requesterPort, responderPort, name, responderId, requesterId)) {
+Requester::Requester(const Endpoint &endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+	m_impl(new RequesterImpl(endpoint, requesterPort, responderPort, name, responderId, requesterId)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -168,12 +168,6 @@ Requester::~Requester() {
 std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
-//	std::string responderUrl = instance.getEndpoint().getProtocol() + "://" + instance.getEndpoint().getAddress();
-//	std::string responderEndpoint = instance.getEndpoint().toString();
-
-	// Create a request socket to the server of the instance.
-//	std::unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::getCom().createRequestSocket(responderEndpoint);
-
 	std::string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
 	std::string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
@@ -205,7 +199,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// TODO simplify the use of some variables: responderUrl.
-	return std::unique_ptr<Requester>(new Requester(&application::This::m_instance, instance.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId));
+	return std::unique_ptr<Requester>(new Requester(instance.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId));
 }
 
 const std::string& Requester::getName() const {
@@ -251,9 +245,9 @@ std::ostream& operator<<(std::ostream& os, const Request& request) {
 std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
 	os << "rep." << responder.getName()
-		<< ":" << responder.m_impl->m_application->getName()
-		<< "." << responder.m_impl->m_application->getId()
-		<< "@" << responder.m_impl->m_application->getEndpoint();
+		<< ":" << application::This::getName()
+		<< "." << application::This::getId()
+		<< "@" << application::This::getEndpoint();
 
 	return os;
 }
@@ -262,9 +256,9 @@ std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 	os << "req." << requester.getName()
 		<< "." << requester.m_impl->m_requesterId
-		<< ":" << requester.m_impl->m_application->getName()
-		<< "." << requester.m_impl->m_application->getId()
-		<< "@" << requester.m_impl->m_application->getEndpoint();
+		<< ":" << application::This::getName()
+		<< "." << application::This::getId()
+		<< "@" << application::This::getEndpoint();
 
 	return os;
 }

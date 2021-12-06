@@ -135,6 +135,8 @@ public:
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint) const;
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout) const;
 
+		void removePort(const std::string& name) const;
+
 	private:
 		Com(Server* server, int applicationId);
 
@@ -207,7 +209,6 @@ private:
 	int initUnmanagedApplication();
 	void terminateUnmanagedApplication();
 
-	bool removePort(const std::string& name) const;
 	State waitForStop();
 
 	void stoppingFunction(StopFunctionType stop);

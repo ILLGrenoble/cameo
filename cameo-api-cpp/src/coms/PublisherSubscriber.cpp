@@ -30,8 +30,8 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-Publisher::Publisher(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
-	m_impl(new PublisherImpl(application, publisherPort, synchronizerPort, name, numberOfSubscribers)) {
+Publisher::Publisher(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
+	m_impl(new PublisherImpl(publisherPort, synchronizerPort, name, numberOfSubscribers)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -50,7 +50,7 @@ std::unique_ptr<Publisher> Publisher::create(const std::string& name, int number
 	}
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 
-	return std::unique_ptr<Publisher>(new Publisher(&application::This::m_instance, publisherPort, synchronizerPort, name, numberOfSubscribers));
+	return std::unique_ptr<Publisher>(new Publisher(publisherPort, synchronizerPort, name, numberOfSubscribers));
 }
 
 

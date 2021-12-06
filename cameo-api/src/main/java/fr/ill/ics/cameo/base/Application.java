@@ -56,6 +56,10 @@ public class Application {
 				this.applicationId = applicationId;
 				this.thisImpl = thisImpl;
 			}
+
+			public Context getContext() {
+				return server.getContext();
+			}
 			
 			public void storeKeyValue(String key, String value) {
 				server.storeKeyValue(applicationId, key, value);
@@ -119,10 +123,6 @@ public class Application {
 
 			public RequestSocket createRequestSocket(String endpoint) {
 				return server.createRequestSocket(endpoint);
-			}
-			
-			public Context getContext() {
-				return server.getContext();
 			}
 			
 			public JSONObject parse(Zmq.Msg message) {

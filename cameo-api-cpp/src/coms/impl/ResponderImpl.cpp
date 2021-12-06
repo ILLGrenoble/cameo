@@ -30,8 +30,7 @@ namespace coms {
 
 const std::string ResponderImpl::RESPONDER_PREFIX = "rep.";
 
-ResponderImpl::ResponderImpl(application::This * application, int responderPort, const std::string& name) :
-	m_application(application),
+ResponderImpl::ResponderImpl(int responderPort, const std::string& name) :
 	m_responderPort(responderPort),
 	m_name(name),
 	m_canceled(false) {
@@ -56,7 +55,7 @@ void ResponderImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket.
-	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_application->getEndpoint().withPort(m_responderPort).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString());
 	requestSocket->request(request.toString());
 }
 
@@ -97,8 +96,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 		std::string message1(message->data<char>(), message->size());
 
 		// Create the request.
-		result = std::unique_ptr<RequestImpl>(new RequestImpl(m_application,
-				name,
+		result = std::unique_ptr<RequestImpl>(new RequestImpl(name,
 				id,
 				message1,
 				serverUrl,
@@ -133,10 +131,7 @@ void ResponderImpl::terminate() {
 	if (m_responder.get() != nullptr) {
 		m_responder.reset(nullptr);
 
-		bool success = m_application->removePort(RESPONDER_PREFIX + m_name);
-		if (!success) {
-			std::cerr << "server cannot destroy responder " << m_name << std::endl;
-		}
+		application::This::getCom().removePort(RESPONDER_PREFIX + m_name);
 	}
 }
 

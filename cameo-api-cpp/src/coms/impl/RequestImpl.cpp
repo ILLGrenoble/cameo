@@ -27,8 +27,7 @@
 namespace cameo {
 namespace coms {
 
-RequestImpl::RequestImpl(application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort) :
-	m_application(application),
+RequestImpl::RequestImpl(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort) :
 	m_message(message),
 	m_requesterApplicationName(requesterApplicationName),
 	m_requesterApplicationId(requesterApplicationId),

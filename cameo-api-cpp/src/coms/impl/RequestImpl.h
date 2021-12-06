@@ -22,17 +22,12 @@
 #include "zmq.hpp"
 
 namespace cameo {
-
-namespace application {
-	class This;
-}
-
 namespace coms {
 
 class RequestImpl {
 
 public:
-	RequestImpl(application::This * application, const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort);
+	RequestImpl(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& message, const std::string& serverUrl, int serverPort, int requesterPort);
 	~RequestImpl();
 
 	void setTimeout(int value);
@@ -40,7 +35,6 @@ public:
 	bool replyBinary(const std::string& response);
 	bool reply(const std::string& response);
 
-	application::This * m_application;
 	std::string m_requesterEndpoint;
 	std::string m_message;
 	std::string m_message2;

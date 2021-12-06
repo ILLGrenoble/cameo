@@ -34,7 +34,7 @@ namespace coms {
 class PublisherImpl {
 
 public:
-	PublisherImpl(application::This * application, int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
+	PublisherImpl(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
 	~PublisherImpl();
 
 	const std::string& getName() const;
@@ -62,7 +62,6 @@ public:
 
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
 
-	application::This * m_application;
 	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_name;

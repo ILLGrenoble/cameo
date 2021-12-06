@@ -25,11 +25,6 @@
 #include <memory>
 
 namespace cameo {
-
-namespace application {
-	class This;
-}
-
 namespace coms {
 
 class RequestImpl;
@@ -37,7 +32,7 @@ class RequestImpl;
 class ResponderImpl {
 
 public:
-	ResponderImpl(application::This * application, int responderPort, const std::string& name);
+	ResponderImpl(int responderPort, const std::string& name);
 	~ResponderImpl();
 
 	void cancel();
@@ -46,7 +41,6 @@ public:
 	std::unique_ptr<RequestImpl> receive();
 	void terminate();
 
-	application::This * m_application;
 	int m_responderPort;
 	std::string m_name;
 	std::unique_ptr<zmq::socket_t> m_responder;
