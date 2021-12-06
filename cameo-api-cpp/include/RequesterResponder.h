@@ -41,8 +41,8 @@ public:
 
 	void setTimeout(int value);
 
-	bool replyBinary(const std::string& response);
-	bool reply(const std::string& response);
+	bool replyBinary(const std::string &response);
+	bool reply(const std::string &response);
 
 	std::unique_ptr<application::Instance> connectToRequester();
 
@@ -52,7 +52,7 @@ public:
 	std::unique_ptr<Server> getServer();
 
 private:
-	Request(std::unique_ptr<RequestImpl>& impl);
+	Request(std::unique_ptr<RequestImpl> &impl);
 
 	std::unique_ptr<RequestImpl> m_impl;
 	std::unique_ptr<Server> m_requesterServer;
@@ -71,7 +71,7 @@ public:
 	/** \brief Returns the responder with name.
 	 * throws ResponderCreationException.
 	 */
-	static std::unique_ptr<Responder> create(const std::string& name);
+	static std::unique_ptr<Responder> create(const std::string &name);
 
 	/// Returns the name of the responder
 	const std::string& getName() const;
@@ -87,7 +87,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Responder(application::This* application, int responderPort, const std::string& name);
+	Responder(application::This *application, int responderPort, const std::string &name);
 
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;
@@ -107,13 +107,13 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::unique_ptr<Requester> create(application::Instance& instance, const std::string& name);
+	static std::unique_ptr<Requester> create(application::Instance &instance, const std::string &name);
 
 	const std::string& getName() const;
 
-	void sendBinary(const std::string& request);
-	void send(const std::string& request);
-	void sendTwoBinaryParts(const std::string& request1, const std::string& request2);
+	void sendBinary(const std::string &request);
+	void send(const std::string &request);
+	void sendTwoBinaryParts(const std::string &request1, const std::string &request2);
 
 	/**
 	 * Returns a string or nothing if the requester is canceled.
@@ -130,8 +130,7 @@ public:
 	bool isCanceled() const;
 
 private:
-	Requester(application::This* application, const std::string& url, int requesterPort,
-		  int responderPort, const std::string& name, int responderId, int requesterId);
+	Requester(application::This *application, const Endpoint &endpoint, int requesterPort, int responderPort, const std::string &name, int responderId, int requesterId);
 
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<WaitingImpl> m_waiting;

@@ -31,7 +31,7 @@ const std::string RequesterImpl::REQUESTER_PREFIX = "req.";
 std::mutex RequesterImpl::m_mutex;
 int RequesterImpl::m_requesterCounter = 0;
 
-RequesterImpl::RequesterImpl(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+RequesterImpl::RequesterImpl(application::This * application, const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
 	m_application(application),
 	m_requesterPort(requesterPort),
 	m_name(name),
@@ -39,12 +39,13 @@ RequesterImpl::RequesterImpl(application::This * application, const std::string&
 	m_requesterId(requesterId),
 	m_canceled(false) {
 
-	std::stringstream repEndpoint;
-	repEndpoint << url << ":" << responderPort;
-	m_responderEndpoint = repEndpoint.str();
+//	std::stringstream repEndpoint;
+//	repEndpoint << url << ":" << responderPort;
+//	m_responderEndpoint = repEndpoint.str();
+//	m_responderEndpoint = endpoint.withPort(responderPort).toString();
 
 	// Create the request socket.
-	m_requestSocket = application::This::getCom().createRequestSocket(m_responderEndpoint);
+	m_requestSocket = application::This::getCom().createRequestSocket(endpoint.withPort(responderPort).toString());
 
 	// Create a socket REP.
 	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());

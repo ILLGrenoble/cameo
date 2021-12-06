@@ -26,23 +26,14 @@ public class Requester {
 	private static RequesterImpl createRequester(Instance application, String name) throws RequesterCreationException {
 		
 		int responderId = application.getId();
-		String responderUrl = application.getEndpoint().getProtocol() + "://" + application.getEndpoint().getAddress();
-		String responderEndpoint = application.getEndpoint().toString();
-		
 		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
 		
 		int requesterId = RequesterImpl.newRequesterId();
 		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
-
-		// Create the responder socket that will be called twice.
-		RequestSocket responderSocket = This.getCom().createRequestSocket(responderEndpoint);
 		
 		// First connect to the responder.
 		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);
-		Zmq.Msg reply = responderSocket.request(request);
-		
-		// Get the JSON response object.
-		JSONObject response = This.getCom().parse(reply);
+		JSONObject response = application.getCom().request(request);
 		
 		int responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responderPort == -1) {
@@ -52,8 +43,7 @@ public class Requester {
 
 			// Retry to connect.
 			request = Messages.createConnectPortV0Request(responderId, responderPortName);
-			reply = responderSocket.request(request);
-			response = This.getCom().parse(reply);
+			response = application.getCom().request(request);
 			responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			
 			if (responderPort == -1) {
@@ -71,7 +61,7 @@ public class Requester {
 			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		return new RequesterImpl(responderUrl, requesterPort, responderPort, name, responderId, requesterId);
+		return new RequesterImpl(application.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId);
 	}
 	
 	/**

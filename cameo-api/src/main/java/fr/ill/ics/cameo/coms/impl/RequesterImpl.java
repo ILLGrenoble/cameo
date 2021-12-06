@@ -49,15 +49,15 @@ public class RequesterImpl {
 	private boolean canceled = false;
 	private RequesterWaitingImpl waiting = new RequesterWaitingImpl(this);
 		
-	public RequesterImpl(String url, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
+	public RequesterImpl(Endpoint endpoint, int requesterPort, int responderPort, String name, int responderId, int requesterId) {
 		this.requesterPort = requesterPort;
-		String responderEndpoint = url + ":" + responderPort;
 		this.name = name;
 		this.responderId = responderId;
 		this.requesterId = requesterId;
 		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
 
 		// Create the REQ socket.
+		String responderEndpoint = endpoint.withPort(responderPort).toString();
 		requestSocket = This.getCom().createRequestSocket(responderEndpoint);
 		
 		// Create the REP socket.

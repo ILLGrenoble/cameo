@@ -18,7 +18,7 @@
 #define CAMEO_REQUESTERIMPL_H_
 
 #include "../../base/impl/GenericWaitingImpl.h"
-
+#include "Strings.h"
 #include "zmq.hpp"
 #include <string>
 #include <vector>
@@ -39,7 +39,7 @@ namespace coms {
 class RequesterImpl {
 
 public:
-	RequesterImpl(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
+	RequesterImpl(application::This * application, const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId);
 	~RequesterImpl();
 
 	static int newRequesterId();
@@ -62,7 +62,6 @@ public:
 	std::string m_name;
 	int m_responderId;
 	int m_requesterId;
-	std::string m_responderEndpoint;
 	std::unique_ptr<RequestSocketImpl> m_requestSocket;
 	std::unique_ptr<zmq::socket_t> m_repSocket;
 	bool m_canceled;

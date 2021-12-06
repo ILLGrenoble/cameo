@@ -155,8 +155,8 @@ bool Responder::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(application::This * application, const std::string& url, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
-	m_impl(new RequesterImpl(application, url, requesterPort, responderPort, name, responderId, requesterId)) {
+Requester::Requester(application::This * application, const Endpoint &endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
+	m_impl(new RequesterImpl(application, endpoint, requesterPort, responderPort, name, responderId, requesterId)) {
 
 	// Create the waiting here.
 	m_waiting.reset(m_impl->waiting());
@@ -168,11 +168,11 @@ Requester::~Requester() {
 std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
-	std::string responderUrl = instance.getEndpoint().getProtocol() + "://" + instance.getEndpoint().getAddress();
-	std::string responderEndpoint = instance.getEndpoint().toString();
+//	std::string responderUrl = instance.getEndpoint().getProtocol() + "://" + instance.getEndpoint().getAddress();
+//	std::string responderEndpoint = instance.getEndpoint().toString();
 
 	// Create a request socket to the server of the instance.
-	std::unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::getCom().createRequestSocket(responderEndpoint);
+//	std::unique_ptr<RequestSocketImpl> instanceRequestSocket = application::This::getCom().createRequestSocket(responderEndpoint);
 
 	std::string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
@@ -180,13 +180,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 
 	std::string request = createConnectPortV0Request(responderId, responderPortName);
 
-	std::unique_ptr<zmq::message_t> reply = instanceRequestSocket->request(request);
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	reply.reset();
+	json::Object response = instance.getCom().request(request);
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
@@ -194,15 +188,12 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 		instance.waitFor(responderPortName);
 
 		// Retry to connect.
-		reply = instanceRequestSocket->request(request);
-		json::parse(response, reply.get());
+		response = instance.getCom().request(request);
 
 		responderPort = response[message::RequestResponse::VALUE].GetInt();
 		if (responderPort == -1) {
 			throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
 		}
-
-		reply.reset();
 	}
 
 	// Request a requester port.
@@ -214,7 +205,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// TODO simplify the use of some variables: responderUrl.
-	return std::unique_ptr<Requester>(new Requester(&application::This::m_instance, responderUrl, requesterPort, responderPort, name, responderId, requesterId));
+	return std::unique_ptr<Requester>(new Requester(&application::This::m_instance, instance.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId));
 }
 
 const std::string& Requester::getName() const {
