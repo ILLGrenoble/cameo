@@ -18,7 +18,7 @@
 #define CAMEO_SUBSCRIBERIMPL_H_
 
 #include "../../base/impl/SocketWaitingImpl.h"
-#include "Strings.h"
+#include "Application.h"
 #include "zmq.hpp"
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ namespace coms {
 class SubscriberImpl {
 
 public:
-	SubscriberImpl(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	SubscriberImpl(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance);
 	~SubscriberImpl();
 
 	void init();
@@ -57,7 +57,6 @@ public:
 	int m_numberOfSubscribers;
 	std::string m_instanceName;
 	int m_instanceId;
-	std::string m_instanceEndpoint;
 	std::string m_statusEndpoint;
 	std::unique_ptr<zmq::socket_t> m_subscriber;
 	std::string m_cancelEndpoint;

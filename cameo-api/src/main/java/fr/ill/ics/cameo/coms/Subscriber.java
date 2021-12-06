@@ -21,9 +21,9 @@ public class Subscriber {
 		this.impl = impl;
 	}
 	
-	private static SubscriberImpl createSubscriber(int applicationId, String publisherName, Instance instance) throws SubscriberCreationException {
+	private static SubscriberImpl createSubscriber(String publisherName, Instance instance) throws SubscriberCreationException {
 		
-		JSONObject request = Messages.createConnectPublisherRequest(applicationId, publisherName);
+		JSONObject request = Messages.createConnectPublisherRequest(instance.getId(), publisherName);
 		JSONObject response = instance.getCom().request(request);
 		
 		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
@@ -44,7 +44,7 @@ public class Subscriber {
 	static SubscriberImpl createSubscriber(Instance application, String publisherName) {
 		
 		try {
-			SubscriberImpl subscriber = createSubscriber(application.getId(), publisherName, application);
+			SubscriberImpl subscriber = createSubscriber(publisherName, application);
 			return subscriber;
 			
 		} catch (SubscriberCreationException e) {
@@ -63,7 +63,7 @@ public class Subscriber {
 		}
 		
 		try {
-			SubscriberImpl subscriber = createSubscriber(application.getId(), publisherName, application);
+			SubscriberImpl subscriber = createSubscriber(publisherName, application);
 			return subscriber;
 			
 		} catch (SubscriberCreationException e) {

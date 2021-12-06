@@ -28,16 +28,15 @@
 namespace cameo {
 namespace coms {
 
-SubscriberImpl::SubscriberImpl(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
-	m_serverEndpoint(serverEndpoint),
+SubscriberImpl::SubscriberImpl(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance) :
+	m_serverEndpoint(instance.getEndpoint()),
 	m_publisherName(publisherName),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
 	m_numberOfSubscribers(numberOfSubscribers),
-	m_instanceName(instanceName),
-	m_instanceId(instanceId),
-	m_instanceEndpoint(instanceEndpoint), // endpoint of server
-	m_statusEndpoint(statusEndpoint), // status endpoint of server
+	m_instanceName(instance.getName()),
+	m_instanceId(instance.getId()),
+	m_statusEndpoint(instance.getStatusEndpoint().toString()),
 	m_ended(false),
 	m_canceled(false) {
 }

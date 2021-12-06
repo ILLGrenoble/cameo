@@ -86,7 +86,7 @@ public:
 	const std::string& getPublisherName() const;
 	const std::string& getInstanceName() const;
 	int getInstanceId() const;
-	const std::string& getInstanceEndpoint() const;
+	std::string getInstanceEndpoint() const;
 
 	/**
 	 * Deprecated.
@@ -115,7 +115,7 @@ public:
 	void cancel();
 
 private:
-	Subscriber(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string &publisherName, int numberOfSubscribers, const std::string &instanceName, int instanceId, const std::string &instanceEndpoint, const std::string &statusEndpoint);
+	Subscriber(int publisherPort, int synchronizerPort, const std::string &publisherName, int numberOfSubscribers, application::Instance &instance);
 	void init();
 
 	static std::unique_ptr<Subscriber> createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);
