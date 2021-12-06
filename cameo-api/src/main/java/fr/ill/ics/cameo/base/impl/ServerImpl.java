@@ -197,24 +197,16 @@ public class ServerImpl {
 
 	private void retrieveServerVersion() {
 		
-		Zmq.Msg reply = requestSocket.request(Messages.createVersionRequest());
+		JSONObject response = requestSocket.requestJSON(Messages.createVersionRequest());
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			serverVersion[0] = JSON.getInt(response, Messages.VersionResponse.MAJOR);
-			serverVersion[1] = JSON.getInt(response, Messages.VersionResponse.MINOR);
-			serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		serverVersion[0] = JSON.getInt(response, Messages.VersionResponse.MAJOR);
+		serverVersion[1] = JSON.getInt(response, Messages.VersionResponse.MINOR);
+		serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
 	}
 	
 	public RequestSocket createRequestSocket(String endpoint) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(context, timeout);
+		RequestSocket requestSocket = new RequestSocket(context, timeout, parser);
 		requestSocket.connect(endpoint);
 		
 		return requestSocket;
@@ -281,12 +273,7 @@ public class ServerImpl {
 	}
 
 	public JSONObject request(JSONObject request) {
-		try {
-			return parse(requestSocket.request(request));
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return requestSocket.requestJSON(request);
 	}
 	
 	
@@ -296,16 +283,7 @@ public class ServerImpl {
 	 */
 	private EventStreamSocket openEventStream() {
 
-		Zmq.Msg reply = requestSocket.request(Messages.createStreamStatusRequest());
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		JSONObject response = requestSocket.requestJSON(Messages.createStreamStatusRequest());
 		
 		// Prepare our subscriber.
 		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
@@ -363,33 +341,18 @@ public class ServerImpl {
 		else {
 			request = Messages.createStartRequest(name, args, null, 0, null);
 		}
-		Zmq.Msg reply = requestSocket.request(request);
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-			return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
 	
 	private int getStreamPort(String name) throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createOutputPortRequest(name);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			return JSON.getInt(response, Messages.RequestResponse.VALUE);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	/**
@@ -474,17 +437,9 @@ public class ServerImpl {
 			request = Messages.createStopRequest(id);
 		}
 		
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			return new fr.ill.ics.cameo.base.impl.Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return new fr.ill.ics.cameo.base.impl.Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
 		
 	public void killAllAndWaitFor(String name) {
@@ -497,14 +452,11 @@ public class ServerImpl {
 		}
 	}
 	
-	private List<InstanceImpl> getInstancesFromApplicationInfos(Zmq.Msg reply, boolean outputStream) {
+	private List<InstanceImpl> getInstancesFromApplicationInfos(JSONObject response, boolean outputStream) {
 		
 		List<InstanceImpl> instances = new ArrayList<InstanceImpl>();
 		
 		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
 			// Get the list of application info.
 			JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
 						
@@ -542,9 +494,6 @@ public class ServerImpl {
 				}
 			}
 		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
 		catch (ConnectionTimeout e) {
 			return null;
 		}
@@ -562,9 +511,9 @@ public class ServerImpl {
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
 		JSONObject request = Messages.createConnectRequest(name);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 
-		return getInstancesFromApplicationInfos(reply, outputStream);
+		return getInstancesFromApplicationInfos(response, outputStream);
 	}
 	
 	/**
@@ -592,9 +541,9 @@ public class ServerImpl {
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
 		JSONObject request = Messages.createConnectWithIdRequest(id);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		List<InstanceImpl> instances = getInstancesFromApplicationInfos(reply, outputStream);
+		List<InstanceImpl> instances = getInstancesFromApplicationInfos(response, outputStream);
 
 		if (instances.size() == 0) {
 			return new InstanceImpl(this);
@@ -611,32 +560,24 @@ public class ServerImpl {
 	public List<Application.Configuration> getApplicationConfigurations() {
 
 		JSONObject request = Messages.createListRequest();
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
 
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-						
-			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
+		// Get the list of application info.
+		JSONArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
+		
+		for (int i = 0; i < list.size(); ++i) {
+			JSONObject config = (JSONObject)list.get(i);
 			
-			for (int i = 0; i < list.size(); ++i) {
-				JSONObject config = (JSONObject)list.get(i);
-				
-				String name = JSON.getString(config, Messages.ApplicationConfig.NAME);
-				String description = JSON.getString(config, Messages.ApplicationConfig.DESCRIPTION);
-				boolean runsSingle = JSON.getBoolean(config, Messages.ApplicationConfig.RUNS_SINGLE);
-				boolean restart = JSON.getBoolean(config, Messages.ApplicationConfig.RESTART);
-				int startingTime = JSON.getInt(config, Messages.ApplicationConfig.STARTING_TIME);
-				int stoppingTime = JSON.getInt(config, Messages.ApplicationConfig.STOPPING_TIME);
-			
-				applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, stoppingTime));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+			String name = JSON.getString(config, Messages.ApplicationConfig.NAME);
+			String description = JSON.getString(config, Messages.ApplicationConfig.DESCRIPTION);
+			boolean runsSingle = JSON.getBoolean(config, Messages.ApplicationConfig.RUNS_SINGLE);
+			boolean restart = JSON.getBoolean(config, Messages.ApplicationConfig.RESTART);
+			int startingTime = JSON.getInt(config, Messages.ApplicationConfig.STARTING_TIME);
+			int stoppingTime = JSON.getInt(config, Messages.ApplicationConfig.STOPPING_TIME);
+		
+			applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, stoppingTime));
 		}
 	
 		return applications;
@@ -650,32 +591,24 @@ public class ServerImpl {
 	public List<Application.Info> getApplicationInfos() {
 
 		JSONObject request = Messages.createAppsRequest();
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-						
-			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
+		// Get the list of application info.
+		JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
+		
+		for (int i = 0; i < list.size(); ++i) {
+			JSONObject info = (JSONObject)list.get(i);
 			
-			for (int i = 0; i < list.size(); ++i) {
-				JSONObject info = (JSONObject)list.get(i);
-				
-				String name = JSON.getString(info, Messages.ApplicationInfo.NAME);
-				int id = JSON.getInt(info, Messages.ApplicationInfo.ID);
-				int pid = JSON.getInt(info, Messages.ApplicationInfo.PID);
-				int state = JSON.getInt(info, Messages.ApplicationInfo.APPLICATION_STATE);
-				int pastStates = JSON.getInt(info, Messages.ApplicationInfo.PAST_APPLICATION_STATES);
-				String args = JSON.getString(info, Messages.ApplicationInfo.ARGS);
-			
-				applications.add(new Application.Info(name, id, pid, state, pastStates, args));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+			String name = JSON.getString(info, Messages.ApplicationInfo.NAME);
+			int id = JSON.getInt(info, Messages.ApplicationInfo.ID);
+			int pid = JSON.getInt(info, Messages.ApplicationInfo.PID);
+			int state = JSON.getInt(info, Messages.ApplicationInfo.APPLICATION_STATE);
+			int pastStates = JSON.getInt(info, Messages.ApplicationInfo.PAST_APPLICATION_STATES);
+			String args = JSON.getString(info, Messages.ApplicationInfo.ARGS);
+		
+			applications.add(new Application.Info(name, id, pid, state, pastStates, args));
 		}
 	
 		return applications;
@@ -704,84 +637,56 @@ public class ServerImpl {
 
 	public int getActualState(int id) {
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
-			
-			byte[] messageData = reply.getFirstData();
-			
-			if (messageData == null) {
-				return State.UNKNOWN;
-			}
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
+		
+		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
 
 	public Set<Integer> getPastStates(int id) {
 		
-		try {
-			Zmq.Msg reply = requestSocket.request(Messages.createGetStatusRequest(id));
-			
-			byte[] messageData = reply.getFirstData();
-			
-			if (messageData == null) {
-				return null;
-			}
-			
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-			
-			int applicationStates = JSON.getInt(response, Messages.StatusEvent.PAST_APPLICATION_STATES);
-			
-			Set<Integer> result = new HashSet<Integer>();
-			
-			if ((applicationStates & State.STARTING) != 0) {
-				result.add(State.STARTING);
-			}
-			
-			if ((applicationStates & State.RUNNING) != 0) {
-				result.add(State.RUNNING);
-			}
-			
-			if ((applicationStates & State.STOPPING) != 0) {
-				result.add(State.STOPPING);
-			}
-			
-			if ((applicationStates & State.KILLING) != 0) {
-				result.add(State.KILLING);
-			}
-			
-			if ((applicationStates & State.PROCESSING_ERROR) != 0) {
-				result.add(State.PROCESSING_ERROR);
-			}
-			
-			if ((applicationStates & State.ERROR) != 0) {
-				result.add(State.ERROR);
-			}
-			
-			if ((applicationStates & State.SUCCESS) != 0) {
-				result.add(State.SUCCESS);
-			}
-			
-			if ((applicationStates & State.STOPPED) != 0) {
-				result.add(State.STOPPED);
-			}
-			
-			if ((applicationStates & State.KILLED) != 0) {
-				result.add(State.KILLED);
-			}
-			
-			return result;
+		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
+		
+		int applicationStates = JSON.getInt(response, Messages.StatusEvent.PAST_APPLICATION_STATES);
+		
+		Set<Integer> result = new HashSet<Integer>();
+		
+		if ((applicationStates & State.STARTING) != 0) {
+			result.add(State.STARTING);
 		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		
+		if ((applicationStates & State.RUNNING) != 0) {
+			result.add(State.RUNNING);
 		}
+		
+		if ((applicationStates & State.STOPPING) != 0) {
+			result.add(State.STOPPING);
+		}
+		
+		if ((applicationStates & State.KILLING) != 0) {
+			result.add(State.KILLING);
+		}
+		
+		if ((applicationStates & State.PROCESSING_ERROR) != 0) {
+			result.add(State.PROCESSING_ERROR);
+		}
+		
+		if ((applicationStates & State.ERROR) != 0) {
+			result.add(State.ERROR);
+		}
+		
+		if ((applicationStates & State.SUCCESS) != 0) {
+			result.add(State.SUCCESS);
+		}
+		
+		if ((applicationStates & State.STOPPED) != 0) {
+			result.add(State.STOPPED);
+		}
+		
+		if ((applicationStates & State.KILLED) != 0) {
+			result.add(State.KILLED);
+		}
+		
+		return result;
 	}
 
 	private OutputStreamSocket createOutputStreamSocket(String name) {
@@ -835,17 +740,9 @@ public class ServerImpl {
 	private boolean isAlive(int id) {
 
 		JSONObject request = Messages.createIsAliveRequest(id);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-		
-			return JSON.getBoolean(response, Messages.IsAliveResponse.IS_ALIVE);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return JSON.getBoolean(response, Messages.IsAliveResponse.IS_ALIVE);
 	}
 	
 	/**
@@ -860,17 +757,7 @@ public class ServerImpl {
 	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
 		JSONObject request = Messages.createWriteInputRequest(id, inputs);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		JSONObject response = requestSocket.requestJSON(request);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
@@ -905,17 +792,7 @@ public class ServerImpl {
 	public void storeKeyValue(int applicationId, String key, String value) {
 		
 		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		JSONObject response = requestSocket.requestJSON(request);
 	}
 	
 	/**
@@ -929,30 +806,20 @@ public class ServerImpl {
 	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		JSONObject response;
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == 0) {
+			return JSON.getString(response, Messages.RequestResponse.MESSAGE);
+		}
+		else if (value == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		}
+		else if (value == -2) {
+			throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		}
 		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-			
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == 0) {
-				return JSON.getString(response, Messages.RequestResponse.MESSAGE);
-			}
-			else if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-			else if (value == -2) {
-				throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-			
-			return null;
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return null;
 	}
 	
 	/**
@@ -965,119 +832,70 @@ public class ServerImpl {
 	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createRemoveKeyRequest(applicationId, key);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-			
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-			else if (value == -2) {
-				throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		else if (value == -2) {
+			throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 	}
 	
 	public int requestPort(int applicationId) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createRequestPortRequest(applicationId);
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
-			
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-			return value;
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		return value;
 	}
 	
 	public void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createPortUnavailableRequest(applicationId, port);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
+		JSONObject response = requestSocket.requestJSON(request);
 			
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 	}
 	
 	public void releasePort(int applicationId, int port) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createReleasePortRequest(applicationId, port);
-		Zmq.Msg reply = requestSocket.request(request);
-		
-		JSONObject response;
-		
-		try {
-			// Get the JSON response object.
-			response = parse(reply);
+		JSONObject response = requestSocket.requestJSON(request);
 			
-			int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (value == -1) {
-				throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
+		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (value == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 	}
 	
 	public List<Application.Port> getPorts() {
 		
 		JSONObject request = Messages.createPortsRequest();
-		Zmq.Msg reply = requestSocket.request(request);
+		JSONObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<Application.Port> ports = new LinkedList<Application.Port>();
 		
-		try {
-			// Get the JSON response object.
-			JSONObject response = parse(reply);
-						
-			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
-			
-			for (int i = 0; i < list.size(); ++i) {
-				JSONObject info = (JSONObject)list.get(i);
-								
-				int port = JSON.getInt(info, Messages.PortInfo.PORT);
-				String status = JSON.getString(info, Messages.PortInfo.STATUS);
-				String owner = JSON.getString(info, Messages.PortInfo.OWNER);
-			
-				ports.add(new Application.Port(port, status, owner));
-			}
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}
+		// Get the list of application info.
+		JSONArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
 		
+		for (int i = 0; i < list.size(); ++i) {
+			JSONObject info = (JSONObject)list.get(i);
+							
+			int port = JSON.getInt(info, Messages.PortInfo.PORT);
+			String status = JSON.getString(info, Messages.PortInfo.STATUS);
+			String owner = JSON.getString(info, Messages.PortInfo.OWNER);
+		
+			ports.add(new Application.Port(port, status, owner));
+		}
 		
 		return ports;
 	}

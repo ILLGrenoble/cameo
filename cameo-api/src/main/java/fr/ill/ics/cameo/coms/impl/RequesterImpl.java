@@ -173,12 +173,9 @@ public class RequesterImpl {
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
-		requestSocket.request(message);
+		requestSocket.request(request);
 		
 		// Terminate the socket.
 		requestSocket.terminate();

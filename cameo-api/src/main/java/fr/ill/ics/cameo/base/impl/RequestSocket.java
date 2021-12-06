@@ -1,10 +1,13 @@
 package fr.ill.ics.cameo.base.impl;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.SocketException;
+import fr.ill.ics.cameo.base.UnexpectedException;
+import fr.ill.ics.cameo.messages.JSON.ConcurrentParser;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestSocket {
@@ -12,18 +15,22 @@ public class RequestSocket {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private int timeout = 0;
+	private ConcurrentParser parser;
 
+	public RequestSocket(Zmq.Context context, int timeout, ConcurrentParser parser) {
+		this.context = context;
+		this.socket = context.createSocket(Zmq.REQ);
+		this.timeout = timeout;
+		this.parser = parser;
+	}
+	
 	public RequestSocket(Zmq.Context context, int timeout) {
 		this.context = context;
 		this.socket = context.createSocket(Zmq.REQ);
 		this.timeout = timeout;
+		this.parser = null;
 	}
-	
-	public RequestSocket(Zmq.Context context) {
-		this.context = context;
-		this.socket = context.createSocket(Zmq.REQ);
-	}
-	
+		
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
@@ -41,7 +48,7 @@ public class RequestSocket {
 		}
 	}
 	
-	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
+	private Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
 		// send request, wait safely for reply
 		Zmq.Msg msg = request.duplicate();
@@ -77,20 +84,42 @@ public class RequestSocket {
 		return request(request, -1);
 	}
 	
-	public Zmq.Msg request(JSONObject request, int overrideTimeout) throws ConnectionTimeout {
+	//TODO Remove when possible: verify responses from server must always be JSON!!!
+	public void request(JSONObject request) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(request));
 		
-		return request(message, overrideTimeout);
+		request(message, -1);
 	}
 	
-	public Zmq.Msg request(JSONObject request) throws ConnectionTimeout {
+	//TODO Remove when possible: verify responses from server must always be JSON!!!
+	public void request(JSONObject request, int timeout) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(request));
 		
-		return request(message, -1);
+		request(message, timeout);
+	}
+	
+	
+	public JSONObject requestJSON(JSONObject request, int timeout) throws ConnectionTimeout {
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
+		Zmq.Msg reply = request(message, timeout);
+		
+		try {
+			return parser.parse(Messages.parseString(reply.getFirstData()));
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	public JSONObject requestJSON(JSONObject request) throws ConnectionTimeout {
+		return requestJSON(request, -1);
 	}
 	
 	public void terminate() {
