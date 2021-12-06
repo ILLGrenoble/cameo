@@ -28,8 +28,8 @@
 namespace cameo {
 namespace coms {
 
-SubscriberImpl::SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
-	m_server(server), // server associated with instance
+SubscriberImpl::SubscriberImpl(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
+	m_serverEndpoint(serverEndpoint),
 	m_publisherName(publisherName),
 	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
@@ -56,7 +56,7 @@ void SubscriberImpl::init() {
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 
-	m_subscriber->connect(m_server->getEndpoint().withPort(m_publisherPort).toString());
+	m_subscriber->connect(m_serverEndpoint.withPort(m_publisherPort).toString());
 
 	// We must first bind the cancel publisher before connecting the subscriber.
 	std::stringstream cancelEndpoint;
@@ -75,7 +75,7 @@ void SubscriberImpl::init() {
 	if (m_numberOfSubscribers > 0) {
 
 		// Create a request socket.
-		std::unique_ptr<RequestSocketImpl> requestSocket = m_server->createRequestSocket(m_server->getEndpoint().withPort(m_synchronizerPort).toString());
+		std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_serverEndpoint.withPort(m_synchronizerPort).toString());
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];

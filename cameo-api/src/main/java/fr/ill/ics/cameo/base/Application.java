@@ -134,6 +134,15 @@ public class Application {
 				}
 			}
 
+			public JSONObject parse(byte[] message) {
+				try {
+					return server.parse(message);
+				}
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse message");
+				}
+			}
+
 			public void removePort(String name) {
 				
 				JSONObject response = server.request(Messages.createRemovePortV0Request(applicationId, name));
@@ -462,6 +471,10 @@ public class Application {
 		public Endpoint getEndpoint() {
 			return impl.getEndpoint();
 		}
+
+		public Endpoint getStatusEndpoint() {
+			return impl.getStatusEndpoint();
+		}
 		
 		public String getNameId() {
 			return impl.getNameId();
@@ -594,6 +607,7 @@ public class Application {
 		public String toString() {
 			return impl.toString();
 		}
+
 	}
 	
 	public static class Configuration {

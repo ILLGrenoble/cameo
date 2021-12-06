@@ -35,7 +35,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class SubscriberImpl {
 	
-	private ServerImpl server; // server of instance
 	private int publisherPort;
 	private int synchronizerPort;
 	private Zmq.Context context;
@@ -49,8 +48,7 @@ public class SubscriberImpl {
 	private boolean canceled = false;
 	private SubscriberWaitingImpl waiting = new SubscriberWaitingImpl(this);
 	
-	public SubscriberImpl(ServerImpl server, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, Instance instance) {
-		this.server = server;
+	public SubscriberImpl(int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers, Instance instance) {
 		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.publisherName = publisherName;
@@ -66,7 +64,7 @@ public class SubscriberImpl {
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(server.getEndpoint().withPort(publisherPort).toString());
+		subscriber.connect(instance.getEndpoint().withPort(publisherPort).toString());
 		subscriber.subscribe(Messages.Event.SYNC);
 		subscriber.subscribe(Messages.Event.STREAM);
 		subscriber.subscribe(Messages.Event.ENDSTREAM);
@@ -83,14 +81,14 @@ public class SubscriberImpl {
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// Subscribe to STATUS
-		subscriber.connect(server.getStatusEndpoint().toString());
+		subscriber.connect(instance.getStatusEndpoint().toString());
 		subscriber.subscribe(Messages.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = server.createRequestSocket(server.getEndpoint().withPort(synchronizerPort).toString());
+			RequestSocket requestSocket = This.getCom().createRequestSocket(instance.getEndpoint().withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);
@@ -167,30 +165,25 @@ public class SubscriberImpl {
 			} else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
-				try {
-					// Get the JSON object.
-					JSONObject status = server.parse(statusMessage);
+				// Get the JSON object.
+				JSONObject status = This.getCom().parse(statusMessage);
+				
+				// Get the id.
+				int id = JSON.getInt(status, Messages.StatusEvent.ID);
+									
+				if (instance.getId() == id) {
 					
-					// Get the id.
-					int id = JSON.getInt(status, Messages.StatusEvent.ID);
-										
-					if (instance.getId() == id) {
-						
-						// Get the state.
-						int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
-						
-						// Test if the state is terminal
-						if (state == Application.State.SUCCESS 
-								|| state == Application.State.STOPPED
-								|| state == Application.State.KILLED
-								|| state == Application.State.ERROR) {
-							// Exit because the remote application has terminated.
-							return null;
-						}
+					// Get the state.
+					int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
+					
+					// Test if the state is terminal
+					if (state == Application.State.SUCCESS 
+							|| state == Application.State.STOPPED
+							|| state == Application.State.KILLED
+							|| state == Application.State.ERROR) {
+						// Exit because the remote application has terminated.
+						return null;
 					}
-				}
-				catch (ParseException e) {
-					throw new UnexpectedException("Cannot parse response");
 				}
 			}
 		}
@@ -223,30 +216,25 @@ public class SubscriberImpl {
 			} else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
-				try {
-					// Get the JSON request object.
-					JSONObject request = server.parse(statusMessage);
+				// Get the JSON request object.
+				JSONObject request =  This.getCom().parse(statusMessage);
+				
+				// Get the id.
+				int id = JSON.getInt(request, Messages.StatusEvent.ID);
+				
+				if (instance.getId() == id) {
 					
-					// Get the id.
-					int id = JSON.getInt(request, Messages.StatusEvent.ID);
+					// Get the state.
+					int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);
 					
-					if (instance.getId() == id) {
-						
-						// Get the state.
-						int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);
-						
-						// Test if the state is terminal
-						if (state == Application.State.SUCCESS 
-								|| state == Application.State.STOPPED
-								|| state == Application.State.KILLED
-								|| state == Application.State.ERROR) {
-							// Exit because the remote application has terminated.
-							return null;
-						}
+					// Test if the state is terminal
+					if (state == Application.State.SUCCESS 
+							|| state == Application.State.STOPPED
+							|| state == Application.State.KILLED
+							|| state == Application.State.ERROR) {
+						// Exit because the remote application has terminated.
+						return null;
 					}
-				}
-				catch (ParseException e) {
-					throw new UnexpectedException("Cannot parse response");
 				}
 			}
 		}

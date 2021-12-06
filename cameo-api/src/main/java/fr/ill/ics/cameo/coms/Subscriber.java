@@ -35,7 +35,7 @@ public class Subscriber {
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		SubscriberImpl subscriber = new SubscriberImpl(instance.getCom().getServerImpl(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
+		SubscriberImpl subscriber = new SubscriberImpl(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
 		subscriber.init();
 		
 		return subscriber;

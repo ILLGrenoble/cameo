@@ -18,7 +18,7 @@
 #define CAMEO_SUBSCRIBERIMPL_H_
 
 #include "../../base/impl/SocketWaitingImpl.h"
-
+#include "Strings.h"
 #include "zmq.hpp"
 #include <string>
 #include <vector>
@@ -34,7 +34,7 @@ namespace coms {
 class SubscriberImpl {
 
 public:
-	SubscriberImpl(Server * server, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
+	SubscriberImpl(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint);
 	~SubscriberImpl();
 
 	void init();
@@ -50,7 +50,7 @@ public:
 
 	std::string createSubscribePublisherRequest() const;
 
-	Server * m_server;
+	Endpoint m_serverEndpoint;
 	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_publisherName;

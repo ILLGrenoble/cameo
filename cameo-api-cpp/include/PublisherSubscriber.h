@@ -115,7 +115,7 @@ public:
 	void cancel();
 
 private:
-	Subscriber(Server *server, int publisherPort, int synchronizerPort, const std::string &publisherName, int numberOfSubscribers, const std::string &instanceName, int instanceId, const std::string &instanceEndpoint, const std::string &statusEndpoint);
+	Subscriber(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string &publisherName, int numberOfSubscribers, const std::string &instanceName, int instanceId, const std::string &instanceEndpoint, const std::string &statusEndpoint);
 	void init();
 
 	static std::unique_ptr<Subscriber> createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);

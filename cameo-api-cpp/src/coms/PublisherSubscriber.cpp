@@ -124,8 +124,8 @@ std::string Publisher::createCreatePublisherRequest(int id, const std::string& n
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(Server * server, int publisherPort, int synchronizerPort, const std::string & publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
-	m_impl(new SubscriberImpl(server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instanceId, instanceEndpoint, statusEndpoint)) {
+Subscriber::Subscriber(const Endpoint& serverEndpoint, int publisherPort, int synchronizerPort, const std::string & publisherName, int numberOfSubscribers, const std::string& instanceName, int instanceId, const std::string& instanceEndpoint, const std::string& statusEndpoint) :
+	m_impl(new SubscriberImpl(serverEndpoint, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instanceId, instanceEndpoint, statusEndpoint)) {
 }
 
 Subscriber::~Subscriber() {
@@ -145,7 +145,7 @@ std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
 	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	std::unique_ptr<Subscriber> subscriber(new Subscriber(instance.m_server, publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
+	std::unique_ptr<Subscriber> subscriber(new Subscriber(instance.getEndpoint(), publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instanceName, instance.m_id, instance.getEndpoint().toString(), instance.getStatusEndpoint().toString()));
 	subscriber->init();
 
 	return subscriber;
