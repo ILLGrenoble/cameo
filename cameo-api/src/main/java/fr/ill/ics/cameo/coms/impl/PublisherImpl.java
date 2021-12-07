@@ -87,7 +87,7 @@ public class PublisherImpl {
 					}
 							
 					// Get the JSON request object.
-					JSONObject request = This.getCom().parse(message);
+					JSONObject request = This.getCom().parse(message.getFirstData());
 					
 					// Get the type.
 					long type = JSON.getLong(request, Messages.TYPE);

@@ -125,17 +125,11 @@ public class Application {
 				return server.createRequestSocket(endpoint);
 			}
 			
-			//public 
-			
-			public JSONObject parse(Zmq.Msg message) {
-				try {
-					return server.parse(message);
-				}
-				catch (ParseException e) {
-					throw new UnexpectedException("Cannot parse message");
-				}
-			}
-
+			/**
+			 * Method provided by convenience to simplify the parsing of JSON messages.
+			 * @param message
+			 * @return
+			 */
 			public JSONObject parse(byte[] message) {
 				try {
 					return server.parse(message);
