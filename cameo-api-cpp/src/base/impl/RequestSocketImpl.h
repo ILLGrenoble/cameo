@@ -17,6 +17,7 @@
 #ifndef CAMEO_REQUESTSOCKETIMPL_H_
 #define CAMEO_REQUESTSOCKETIMPL_H_
 
+#include "JSON.h"
 #include <string>
 #include <memory>
 #include "zmq.hpp"
@@ -40,6 +41,10 @@ public:
 	std::unique_ptr<zmq::message_t> request(const std::string& request, int overrideTimeout = -1);
 	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
 	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
+
+	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
+	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 	ContextImpl * m_services;
 	std::string m_endpoint;

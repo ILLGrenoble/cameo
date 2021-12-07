@@ -170,4 +170,37 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	return receive(overrideTimeout);
 }
 
+json::Object RequestSocketImpl::requestJSON(const std::string& request, int overrideTimeout) {
+
+	std::unique_ptr<zmq::message_t> reply = this->request(request, overrideTimeout);
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response;
+}
+
+json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+
+	std::unique_ptr<zmq::message_t> reply = this->request(requestPart1, requestPart2, overrideTimeout);
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response;
+}
+
+json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+
+	std::unique_ptr<zmq::message_t> reply = this->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
+
+	// Get the JSON response.
+	json::Object response;
+	json::parse(response, reply.get());
+
+	return response;
+}
+
 }
