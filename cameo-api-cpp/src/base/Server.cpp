@@ -668,7 +668,7 @@ void Server::releasePort(int id, int port) {
 	}
 }
 
-json::Object Server::request(const std::string& request, int overrideTimeout) {
+json::Object Server::requestJSON(const std::string& request, int overrideTimeout) {
 
 	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(request, overrideTimeout);
 
@@ -679,7 +679,7 @@ json::Object Server::request(const std::string& request, int overrideTimeout) {
 	return response;
 }
 
-json::Object Server::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+json::Object Server::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
 
 	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestPart1, requestPart2, overrideTimeout);
 

@@ -89,7 +89,7 @@ void This::Com::releasePort(int port) const {
 }
 
 json::Object This::Com::request(const std::string& request, int overrideTimeout) const {
-	return m_server->request(request, overrideTimeout);
+	return m_server->requestJSON(request, overrideTimeout);
 }
 
 std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::string& endpoint) const {
@@ -102,7 +102,7 @@ std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::str
 
 void This::Com::removePort(const std::string& name) const {
 
-	json::Object response = m_server->request(createRemovePortV0Request(m_applicationId, name));
+	json::Object response = m_server->requestJSON(createRemovePortV0Request(m_applicationId, name));
 	int value = response[message::RequestResponse::VALUE].GetInt();
 
 	if (value == -1) {
@@ -321,17 +321,17 @@ void This::cancelWaitings() {
 }
 
 int This::initUnmanagedApplication() {
-	json::Object response = m_server->request(createAttachUnmanagedRequest(m_name, GET_PROCESS_PID()));
+	json::Object response = m_server->requestJSON(createAttachUnmanagedRequest(m_name, GET_PROCESS_PID()));
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 void This::terminateUnmanagedApplication() {
-	m_server->request(createDetachUnmanagedRequest(m_id));
+	m_server->requestJSON(createDetachUnmanagedRequest(m_id));
 }
 
 bool This::setRunning() {
-	json::Object response = m_instance.m_server->request(createSetStatusRequest(m_instance.m_id, RUNNING));
+	json::Object response = m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, RUNNING));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -342,7 +342,7 @@ bool This::setRunning() {
 }
 
 void This::setBinaryResult(const std::string& data) {
-	m_instance.m_server->request(createSetResultRequest(m_instance.m_id), data);
+	m_instance.m_server->requestJSON(createSetResultRequest(m_instance.m_id), data);
 }
 
 void This::setResult(const std::string& data) {
@@ -354,7 +354,7 @@ void This::setResult(const std::string& data) {
 
 State This::getState(int id) const {
 
-	json::Object event = m_server->request(createGetStatusRequest(id));
+	json::Object event = m_server->requestJSON(createGetStatusRequest(id));
 
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
@@ -422,7 +422,7 @@ void This::stoppingFunction(StopFunctionType stop) {
 void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
-	m_server->request(createSetStopHandlerRequest(m_id, stoppingTime));
+	m_server->requestJSON(createSetStopHandlerRequest(m_id, stoppingTime));
 
 	// Create the handler.
 	m_stopHandler = std::make_unique<HandlerImpl>(bind(&This::stoppingFunction, this, function));
@@ -442,7 +442,7 @@ std::string Instance::Com::getKeyValue(const std::string& key) const {
 }
 
 json::Object Instance::Com::request(const std::string& request, int overrideTimeout) const {
-	return m_server->request(request, overrideTimeout);
+	return m_server->requestJSON(request, overrideTimeout);
 }
 
 Instance::Instance(Server * server) :
