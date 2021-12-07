@@ -61,21 +61,20 @@ public class RequestProcessor {
 		
 		Log.logger().fine("Received Sync message");
 		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add("OK");
-		
 		// Send sync message for synchronizing subscribers.
 		manager.sendStatus(-1, "", ApplicationState.UNKNOWN, ApplicationState.UNKNOWN, -1);
 		
-		return reply;
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		return Converter.reply(response);
 	}
 	
 	public Msg processSyncStream(JSONObject request, Manager manager) {
 
 		Log.logger().fine("Received SyncStream message");
-		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add("OK");
 		
 		// Get the publisher.
 		Zmq.Socket publisher = manager.getStreamPublisher(JSON.getString(request, Messages.SyncStreamRequest.NAME));
@@ -88,7 +87,12 @@ public class RequestProcessor {
 			Manager.publishSynchronized(publisher, Messages.Event.SYNCSTREAM, Messages.serialize(event));
 		}
 		
-		return reply;
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		return Converter.reply(response);
 	}
 
 	/**
