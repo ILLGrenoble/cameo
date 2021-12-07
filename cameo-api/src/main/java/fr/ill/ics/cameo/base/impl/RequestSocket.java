@@ -48,7 +48,7 @@ public class RequestSocket {
 		}
 	}
 	
-	private Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
+	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
 		// send request, wait safely for reply
 		Zmq.Msg msg = request.duplicate();

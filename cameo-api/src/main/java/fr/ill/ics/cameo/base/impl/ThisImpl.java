@@ -204,13 +204,7 @@ public class ThisImpl {
 	
 	public void setResult(byte[] data) {
 		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createSetResultRequest(id)));
-		
-		// Add the data in a second frame.
-		message.add(data);
-		
-		JSONObject response = server.request(message);
+		JSONObject response = server.requestJSON(Messages.createSetResultRequest(id), data);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -231,7 +225,7 @@ public class ThisImpl {
 		
 		JSONObject request = Messages.createSetStatusRequest(id, Application.State.RUNNING);
 		
-		JSONObject response = server.request(request);
+		JSONObject response = server.requestJSON(request);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -245,17 +239,17 @@ public class ThisImpl {
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		JSONObject response = server.request(Messages.createAttachUnmanagedRequest(name, pid));
+		JSONObject response = server.requestJSON(Messages.createAttachUnmanagedRequest(name, pid));
 	
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	private void terminateUnmanagedApplication() {
-		server.request(Messages.createDetachUnmanagedRequest(id));
+		server.requestJSON(Messages.createDetachUnmanagedRequest(id));
 	}
 	
 	private void setStopHandler(int stoppingTime) {
-		server.request(Messages.createSetStopHandlerRequest(id, stoppingTime));
+		server.requestJSON(Messages.createSetStopHandlerRequest(id, stoppingTime));
 	}
 	
 	/**
@@ -265,7 +259,7 @@ public class ThisImpl {
 	 */
 	private int getState(int id) {
 		
-		JSONObject response = server.request(Messages.createGetStatusRequest(id));
+		JSONObject response = server.requestJSON(Messages.createGetStatusRequest(id));
 			
 		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
@@ -340,7 +334,7 @@ public class ThisImpl {
 	}
 
 	public JSONObject request(JSONObject request) {
-		return server.request(request);
+		return server.requestJSON(request);
 	}
 
 	@Override

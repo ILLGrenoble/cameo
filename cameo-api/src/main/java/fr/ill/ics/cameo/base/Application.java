@@ -145,7 +145,7 @@ public class Application {
 
 			public void removePort(String name) {
 				
-				JSONObject response = server.request(Messages.createRemovePortV0Request(applicationId, name));
+				JSONObject response = server.requestJSON(Messages.createRemovePortV0Request(applicationId, name));
 					
 				int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
 				if (port == -1) {
@@ -443,14 +443,9 @@ public class Application {
 			}
 
 			public JSONObject request(JSONObject request) {
-				return server.request(request);
+				return server.requestJSON(request);
 			}
-
-			//TODO Temporary access
-			public ServerImpl getServerImpl() {
-				return server;
-			}
-			
+		
 		}
 		
 		private Com com;

@@ -261,9 +261,19 @@ public class ServerImpl {
 	ConcurrentLinkedDeque<EventListener> getEventListeners() {
 		return eventListeners;
 	}
+
+	public JSONObject requestJSON(JSONObject request) {
+		return requestSocket.requestJSON(request);
+	}
 	
-	//TODO Remove Zmq
-	public JSONObject request(Zmq.Msg message) {
+	public JSONObject requestJSON(JSONObject request, byte[] data) {
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
+		// Add the data in a second frame.
+		message.add(data);
+		
 		try {
 			return parse(requestSocket.request(message));
 		}
@@ -271,11 +281,6 @@ public class ServerImpl {
 			throw new UnexpectedException("Cannot parse response");
 		}	
 	}
-
-	public JSONObject request(JSONObject request) {
-		return requestSocket.requestJSON(request);
-	}
-	
 	
 	/**
 	 * 
