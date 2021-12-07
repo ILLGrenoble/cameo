@@ -173,11 +173,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
-
-		// Get the JSON response.
-		json::Object response;
-		json::parse(response, reply.get());
+		json::Object response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		if (value == -1) {
@@ -209,11 +205,7 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 		request = createStopRequest(id);
 	}
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(request);
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(request);
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	std::string message = response[message::RequestResponse::MESSAGE].GetString();
@@ -225,11 +217,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectRequest(name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createConnectRequest(name));
 
 	application::InstanceArray instances;
 
@@ -303,11 +291,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createConnectWithIdRequest(id));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createConnectWithIdRequest(id));
 
 	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
 	json::Value::Array array = applicationInfo.GetArray();
@@ -356,11 +340,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createIsAliveRequest(id));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createIsAliveRequest(id));
 
 	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
@@ -369,11 +349,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 
 	std::vector<application::Configuration> configs;
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createListRequest());
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createListRequest());
 
 	json::Value& applicationConfigs = response[message::ApplicationConfigListResponse::APPLICATION_CONFIG];
 	json::Value::Array array = applicationConfigs.GetArray();
@@ -406,11 +382,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 
 	std::vector<application::Info> infos;
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createAppsRequest());
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createAppsRequest());
 
 	json::Value& applicationInfos = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
 	json::Value::Array array = applicationInfos.GetArray();
@@ -458,11 +430,7 @@ std::vector<application::Port> Server::getPorts() const {
 
 	std::vector<application::Port> ports;
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortsRequest());
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createPortsRequest());
 
 	json::Value& portInfos = response[message::PortInfoListResponse::PORT_INFO];
 	json::Value::Array array = portInfos.GetArray();
@@ -485,22 +453,14 @@ std::vector<application::Port> Server::getPorts() const {
 
 application::State Server::getActualState(int id) const {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createGetStatusRequest(id));
 
 	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
 std::set<application::State> Server::getPastStates(int id) const {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetStatusRequest(id));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createGetStatusRequest(id));
 
 	application::State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
@@ -578,20 +538,12 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStoreKeyValueRequest(id, key, value));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createStoreKeyValueRequest(id, key, value));
 }
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createGetKeyValueRequest(id, key));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createGetKeyValueRequest(id, key));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == 0) {
@@ -609,11 +561,7 @@ std::string Server::getKeyValue(int id, const std::string& key) {
 
 void Server::removeKey(int id, const std::string& key) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRemoveKeyRequest(id, key));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createRemoveKeyRequest(id, key));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -626,11 +574,7 @@ void Server::removeKey(int id, const std::string& key) {
 
 int Server::requestPort(int id) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createRequestPortRequest(id));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createRequestPortRequest(id));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -642,11 +586,7 @@ int Server::requestPort(int id) {
 
 void Server::setPortUnavailable(int id, int port) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createPortUnavailableRequest(id, port));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createPortUnavailableRequest(id, port));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -656,11 +596,7 @@ void Server::setPortUnavailable(int id, int port) {
 
 void Server::releasePort(int id, int port) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createReleasePortRequest(id, port));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createReleasePortRequest(id, port));
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -669,25 +605,11 @@ void Server::releasePort(int id, int port) {
 }
 
 json::Object Server::requestJSON(const std::string& request, int overrideTimeout) {
-
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(request, overrideTimeout);
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	return response;
+	return m_requestSocket->requestJSON(request, overrideTimeout);
 }
 
 json::Object Server::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
-
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(requestPart1, requestPart2, overrideTimeout);
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
-
-	return response;
+	return m_requestSocket->requestJSON(requestPart1, requestPart2, overrideTimeout);
 }
 
 std::vector<EventListener *> Server::getEventListeners() {
@@ -728,12 +650,7 @@ Endpoint Server::getStatusEndpoint() const {
 
 void Server::retrieveServerVersion() {
 
-	// Get the version.
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createVersionRequest());
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createVersionRequest());
 
 	m_serverVersion[0] = response[message::VersionResponse::MAJOR].GetInt();
 	m_serverVersion[1] = response[message::VersionResponse::MINOR].GetInt();
@@ -743,11 +660,7 @@ void Server::retrieveServerVersion() {
 void Server::initStatus() {
 
 	// Get the status port.
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createStreamStatusRequest());
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createStreamStatusRequest());
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 
@@ -762,11 +675,7 @@ void Server::initStatus() {
 
 int Server::getStreamPort(const std::string& name) {
 
-	std::unique_ptr<zmq::message_t> reply = m_requestSocket->request(createOutputPortRequest(name));
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply.get());
+	json::Object response = m_requestSocket->requestJSON(createOutputPortRequest(name));
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
