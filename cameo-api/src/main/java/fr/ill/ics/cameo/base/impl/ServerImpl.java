@@ -163,7 +163,7 @@ public class ServerImpl {
 	private boolean isConnected(int timeout) {
 
 		try {
-			requestSocket.request(Messages.createSyncRequest(), timeout);
+			requestSocket.requestJSON(Messages.createSyncRequest(), timeout);
 			return true;
 
 		} catch (ConnectionTimeout e) {
@@ -178,7 +178,7 @@ public class ServerImpl {
 	private void sendSync() {
 		
 		try {
-			requestSocket.request(Messages.createSyncRequest());
+			requestSocket.requestJSON(Messages.createSyncRequest());
 
 		} catch (ConnectionTimeout e) {
 			// do nothing
@@ -188,7 +188,7 @@ public class ServerImpl {
 	private void sendSyncStream(String name) {
 		
 		try {
-			requestSocket.request(Messages.createSyncStreamRequest(name));
+			requestSocket.requestJSON(Messages.createSyncStreamRequest(name));
 
 		} catch (ConnectionTimeout e) {
 			// do nothing

@@ -84,7 +84,7 @@ public class RequestSocket {
 		return request(request, -1);
 	}
 	
-	//TODO Remove when possible: verify responses from server must always be JSON!!!
+	//TODO Remove when possible
 	public void request(JSONObject request) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();
@@ -93,7 +93,7 @@ public class RequestSocket {
 		request(message, -1);
 	}
 	
-	//TODO Remove when possible: verify responses from server must always be JSON!!!
+	//TODO Remove when possible
 	public void request(JSONObject request, int timeout) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();
