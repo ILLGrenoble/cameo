@@ -7,7 +7,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.SocketException;
 import fr.ill.ics.cameo.base.UnexpectedException;
-import fr.ill.ics.cameo.messages.JSON.ConcurrentParser;
+import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestSocket {
@@ -15,9 +15,9 @@ public class RequestSocket {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private int timeout = 0;
-	private ConcurrentParser parser;
+	private Parser parser;
 
-	public RequestSocket(Zmq.Context context, int timeout, ConcurrentParser parser) {
+	public RequestSocket(Zmq.Context context, int timeout, Parser parser) {
 		this.context = context;
 		this.socket = context.createSocket(Zmq.REQ);
 		this.timeout = timeout;
@@ -102,7 +102,6 @@ public class RequestSocket {
 		request(message, timeout);
 	}
 	
-	
 	public JSONObject requestJSON(JSONObject request, int timeout) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();
@@ -120,6 +119,28 @@ public class RequestSocket {
 	
 	public JSONObject requestJSON(JSONObject request) throws ConnectionTimeout {
 		return requestJSON(request, -1);
+	}
+	
+	public JSONObject requestJSON(JSONObject request, byte[] data, int timeout) throws ConnectionTimeout {
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(request));
+		
+		// Add the data in a second frame.
+		message.add(data);
+		
+		Zmq.Msg reply = request(message, timeout);
+		
+		try {
+			return parser.parse(Messages.parseString(reply.getFirstData()));
+		}
+		catch (ParseException e) {
+			throw new UnexpectedException("Cannot parse response");
+		}
+	}
+	
+	public JSONObject requestJSON(JSONObject request, byte[] data) throws ConnectionTimeout {
+		return requestJSON(request, data, -1);
 	}
 	
 	public void terminate() {

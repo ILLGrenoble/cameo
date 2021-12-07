@@ -125,6 +125,8 @@ public class Application {
 				return server.createRequestSocket(endpoint);
 			}
 			
+			//public 
+			
 			public JSONObject parse(Zmq.Msg message) {
 				try {
 					return server.parse(message);

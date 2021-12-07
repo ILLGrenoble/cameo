@@ -39,7 +39,7 @@ public class JSON {
 	 * The parser may be used by concurrent threads.
 	 *
 	 */
-	public static class ConcurrentParser {
+	public static class Parser {
 		
 		private JSONParser parser = new JSONParser();
 		

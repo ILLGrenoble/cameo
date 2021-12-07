@@ -21,7 +21,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.base.Application.State;

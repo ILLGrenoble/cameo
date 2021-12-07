@@ -63,7 +63,7 @@ public class ServerImpl {
 	private ContextImpl contextImpl;
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
-	private JSON.ConcurrentParser parser = new JSON.ConcurrentParser();
+	private JSON.Parser parser = new JSON.Parser();
 	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
 	private EventThread eventThread;
 	
@@ -267,19 +267,7 @@ public class ServerImpl {
 	}
 	
 	public JSONObject requestJSON(JSONObject request, byte[] data) {
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
-		// Add the data in a second frame.
-		message.add(data);
-		
-		try {
-			return parse(requestSocket.request(message));
-		}
-		catch (ParseException e) {
-			throw new UnexpectedException("Cannot parse response");
-		}	
+		return requestSocket.requestJSON(request, data);
 	}
 	
 	/**
