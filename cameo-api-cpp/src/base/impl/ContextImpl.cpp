@@ -114,14 +114,9 @@ zmq::socket_t * ContextImpl::createRequestSocket(const std::string& endpoint) {
 
 bool ContextImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 
-	string request = createSyncRequest();
-
 	try {
-		unique_ptr<zmq::message_t> reply = socket->request(request, timeout);
-
-		if (reply.get() != nullptr) {
-			return true;
-		}
+		socket->requestJSON(createSyncRequest(), timeout);
+		return true;
 	}
 	catch (const ConnectionTimeout&) {
 		// The server is not accessible.
@@ -135,10 +130,8 @@ bool ContextImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 
 void ContextImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
 
-	string request = createSyncStreamRequest(name);
-
 	try {
-		unique_ptr<zmq::message_t> reply = socket->request(request);
+		socket->requestJSON(createSyncStreamRequest(name));
 	}
 	catch (const ConnectionTimeout&) {
 		// The server is not accessible.
