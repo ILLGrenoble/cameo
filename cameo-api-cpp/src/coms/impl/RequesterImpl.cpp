@@ -160,7 +160,7 @@ std::optional<std::string> RequesterImpl::receiveBinary() {
 	}
 
 	// Create the reply.
-	std::string data = "OK";
+	std::string data = createRequestResponse(0, "OK");
 	size_t size = data.length();
 	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy(reply->data(), data.c_str(), size);
@@ -182,7 +182,7 @@ void RequesterImpl::cancel() {
 
 	// Create a request socket only for the request.
 	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());
-	requestSocket->request(request.toString());
+	requestSocket->requestJSON(request.toString());
 }
 
 void RequesterImpl::terminate() {

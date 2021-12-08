@@ -59,6 +59,7 @@ public:
 	zmq::message_t * processInitCommand();
 	zmq::message_t * processSubscribePublisherCommand();
 	zmq::message_t * processCancelPublisherSyncCommand();
+	zmq::message_t * processUnknownCommand();
 
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
 

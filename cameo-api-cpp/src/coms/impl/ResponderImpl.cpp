@@ -56,7 +56,7 @@ void ResponderImpl::cancel() {
 
 	// Create a request socket.
 	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString());
-	requestSocket->request(request.toString());
+	requestSocket->requestJSON(request.toString());
 }
 
 WaitingImpl * ResponderImpl::waiting() {
@@ -75,11 +75,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	int type = request[message::TYPE].GetInt();
 
 	// Create the reply
-	std::string data = "OK";
-	size_t size = data.length();
-	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
-	memcpy(reply->data(), data.c_str(), size);
-
+	std::unique_ptr<zmq::message_t> reply;
 	std::unique_ptr<RequestImpl> result;
 
 	if (type == message::REQUEST) {
@@ -109,13 +105,14 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 			m_responder->recv(message.get(), 0);
 			result->m_message2 = std::string(message->data<char>(), message->size());
 		}
+		reply.reset(processRequest());
 	}
 	else if (type == message::CANCEL) {
 		m_canceled = true;
+		reply.reset(processCancelResponder());
 	}
 	else {
-		std::cerr << "Unknown message type " << type << std::endl;
-		m_responder->send(*message);
+		reply.reset(processUnknownRequest());
 	}
 
 	// send to the client
@@ -124,6 +121,36 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	}
 
 	return result;
+}
+
+zmq::message_t * ResponderImpl::processRequest() {
+
+	std::string result = createRequestResponse(0, "OK");
+
+	zmq::message_t * reply = new zmq::message_t(result.length());
+	memcpy(reply->data(), result.c_str(), result.length());
+
+	return reply;
+}
+
+zmq::message_t * ResponderImpl::processCancelResponder() {
+
+	std::string result = createRequestResponse(0, "OK");
+
+	zmq::message_t * reply = new zmq::message_t(result.length());
+	memcpy(reply->data(), result.c_str(), result.length());
+
+	return reply;
+}
+
+zmq::message_t * ResponderImpl::processUnknownRequest() {
+
+	std::string result = createRequestResponse(-1, "Unknown request");
+
+	zmq::message_t * reply = new zmq::message_t(result.length());
+	memcpy(reply->data(), result.c_str(), result.length());
+
+	return reply;
 }
 
 void ResponderImpl::terminate() {

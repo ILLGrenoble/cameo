@@ -93,7 +93,7 @@ void SubscriberImpl::init() {
 			}
 		}
 
-		requestSocket->request(createSubscribePublisherRequest());
+		requestSocket->requestJSON(createSubscribePublisherRequest());
 	}
 }
 

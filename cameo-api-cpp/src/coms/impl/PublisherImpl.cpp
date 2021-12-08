@@ -108,8 +108,7 @@ bool PublisherImpl::waitForSubscribers() {
 			reply.reset(processCancelPublisherSyncCommand());
 		}
 		else {
-			std::cerr << "Unknown message type " << type << std::endl;
-			synchronizer.send(*message);
+			reply.reset(processUnknownCommand());
 		}
 
 		// send to the client
@@ -129,7 +128,7 @@ void PublisherImpl::cancelWaitForSubscribers() {
 
 	// Create a request socket only for the request.
 	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_synchronizerPort).toString());
-	requestSocket->request(request.toString());
+	requestSocket->requestJSON(request.toString());
 }
 
 WaitingImpl * PublisherImpl::waiting() {
@@ -225,10 +224,11 @@ zmq::message_t * PublisherImpl::processInitCommand() {
 	std::string data(message::Event::SYNC);
 	publish(message::Event::SYNC, data.c_str(), data.length());
 
-	data = "Connection OK";
-	size_t size = data.length();
+	std::string result = createRequestResponse(0, "OK");
+
+	size_t size = result.length();
 	zmq::message_t * reply = new zmq::message_t(size);
-	memcpy((void *) reply->data(), data.c_str(), size);
+	memcpy((void *) reply->data(), result.c_str(), size);
 
 	return reply;
 }
@@ -246,6 +246,16 @@ zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 
 	std::string result = createRequestResponse(0, "OK");
+
+	zmq::message_t * reply = new zmq::message_t(result.length());
+	memcpy(reply->data(), result.c_str(), result.length());
+
+	return reply;
+}
+
+zmq::message_t * PublisherImpl::processUnknownCommand() {
+
+	std::string result = createRequestResponse(-1, "Unknown command");
 
 	zmq::message_t * reply = new zmq::message_t(result.length());
 	memcpy(reply->data(), result.c_str(), result.length());

@@ -39,6 +39,11 @@ public:
 	WaitingImpl * waiting();
 
 	std::unique_ptr<RequestImpl> receive();
+
+	zmq::message_t * processRequest();
+	zmq::message_t * processCancelResponder();
+	zmq::message_t * processUnknownRequest();
+
 	void terminate();
 
 	int m_responderPort;

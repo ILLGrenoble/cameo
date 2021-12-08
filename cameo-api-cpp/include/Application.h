@@ -135,8 +135,6 @@ public:
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint) const;
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout) const;
 
-		std::string createJSONResponse(int value, const std::string& message) const;
-
 		void removePort(const std::string& name) const;
 
 	private:
@@ -253,8 +251,6 @@ public:
 	public:
 		std::string getKeyValue(const std::string& key) const;
 		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
-
-		std::string createJSONResponse(int value, const std::string& message) const;
 
 	private:
 		Com(Server* server);
