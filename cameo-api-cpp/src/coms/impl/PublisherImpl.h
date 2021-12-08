@@ -56,10 +56,10 @@ public:
 	void publish(const std::string& header, const char* data, std::size_t size);
 	void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2);
 
-	zmq::message_t * processInitCommand();
-	zmq::message_t * processSubscribePublisherCommand();
-	zmq::message_t * processCancelPublisherSyncCommand();
-	zmq::message_t * processUnknownCommand();
+	zmq::message_t * responseToSyncRequest();
+	zmq::message_t * responseToSubscribeRequest();
+	zmq::message_t * responseToCancelRequest();
+	zmq::message_t * responseToUnknownRequest();
 
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
 

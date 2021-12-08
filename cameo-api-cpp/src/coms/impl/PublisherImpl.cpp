@@ -96,19 +96,19 @@ bool PublisherImpl::waitForSubscribers() {
 		std::unique_ptr<zmq::message_t> reply;
 
 		if (type == message::SYNC) {
-			reply.reset(processInitCommand());
+			reply.reset(responseToSyncRequest());
 		}
 		else if (type == message::SUBSCRIBE_PUBLISHER_v0) {
 			counter++;
-			reply.reset(processSubscribePublisherCommand());
+			reply.reset(responseToSubscribeRequest());
 		}
 		else if (type == message::CANCEL) {
 			canceled = true;
 			counter = m_numberOfSubscribers;
-			reply.reset(processCancelPublisherSyncCommand());
+			reply.reset(responseToCancelRequest());
 		}
 		else {
-			reply.reset(processUnknownCommand());
+			reply.reset(responseToUnknownRequest());
 		}
 
 		// send to the client
@@ -218,7 +218,7 @@ void PublisherImpl::publishTwoParts(const std::string& header, const char* data1
 	m_publisher->send(requestData2);
 }
 
-zmq::message_t * PublisherImpl::processInitCommand() {
+zmq::message_t * PublisherImpl::responseToSyncRequest() {
 
 	// send a dummy SYNC message by the publisher socket
 	std::string data(message::Event::SYNC);
@@ -233,7 +233,7 @@ zmq::message_t * PublisherImpl::processInitCommand() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
+zmq::message_t * PublisherImpl::responseToSubscribeRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -243,7 +243,7 @@ zmq::message_t * PublisherImpl::processSubscribePublisherCommand() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
+zmq::message_t * PublisherImpl::responseToCancelRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -253,7 +253,7 @@ zmq::message_t * PublisherImpl::processCancelPublisherSyncCommand() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::processUnknownCommand() {
+zmq::message_t * PublisherImpl::responseToUnknownRequest() {
 
 	std::string result = createRequestResponse(-1, "Unknown command");
 

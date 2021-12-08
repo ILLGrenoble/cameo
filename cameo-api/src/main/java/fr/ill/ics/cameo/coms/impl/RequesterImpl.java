@@ -156,7 +156,7 @@ public class RequesterImpl {
 			}
 			
 			// Send to the responder
-			Zmq.Msg reply = processReplyRequest();
+			Zmq.Msg reply = responseToRequest();
 			reply.send(requester);
 		}
 	}
@@ -201,7 +201,7 @@ public class RequesterImpl {
 		}
 	}
 	
-	private Zmq.Msg processReplyRequest() {
+	private Zmq.Msg responseToRequest() {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));

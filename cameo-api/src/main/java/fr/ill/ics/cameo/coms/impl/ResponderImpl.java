@@ -117,7 +117,7 @@ public class ResponderImpl {
 			}	
 
 			// Send to the requester
-			reply = processReplyRequest();
+			reply = responseToRequest();
 			reply.send(responder);
 			
 			if (reply != null) {
@@ -142,7 +142,7 @@ public class ResponderImpl {
 		requestSocket.terminate();
 	}
 
-	private Zmq.Msg processReplyRequest() {
+	private Zmq.Msg responseToRequest() {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));

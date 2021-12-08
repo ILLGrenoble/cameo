@@ -105,14 +105,14 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 			m_responder->recv(message.get(), 0);
 			result->m_message2 = std::string(message->data<char>(), message->size());
 		}
-		reply.reset(processRequest());
+		reply.reset(responseToRequest());
 	}
 	else if (type == message::CANCEL) {
 		m_canceled = true;
-		reply.reset(processCancelResponder());
+		reply.reset(responseToCancelResponder());
 	}
 	else {
-		reply.reset(processUnknownRequest());
+		reply.reset(responseToUnknownRequest());
 	}
 
 	// send to the client
@@ -123,7 +123,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 	return result;
 }
 
-zmq::message_t * ResponderImpl::processRequest() {
+zmq::message_t * ResponderImpl::responseToRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -133,7 +133,7 @@ zmq::message_t * ResponderImpl::processRequest() {
 	return reply;
 }
 
-zmq::message_t * ResponderImpl::processCancelResponder() {
+zmq::message_t * ResponderImpl::responseToCancelResponder() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -143,7 +143,7 @@ zmq::message_t * ResponderImpl::processCancelResponder() {
 	return reply;
 }
 
-zmq::message_t * ResponderImpl::processUnknownRequest() {
+zmq::message_t * ResponderImpl::responseToUnknownRequest() {
 
 	std::string result = createRequestResponse(-1, "Unknown request");
 

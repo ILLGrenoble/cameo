@@ -91,19 +91,19 @@ public class PublisherImpl {
 					long type = JSON.getLong(request, Messages.TYPE);
 					
 					if (type == Messages.SYNC) {
-						reply = processSyncRequest();						
+						reply = responseToSyncRequest();						
 					}
 					else if (type == Messages.SUBSCRIBE_PUBLISHER_v0) {
 						counter++;
-						reply = processSubscribePublisherRequest();
+						reply = responseToSubscribeRequest();
 					}
 					else if (type == Messages.CANCEL) {
 						canceled = true;
 						counter = numberOfSubscribers;
-						reply = processCancelPublisherRequest();
+						reply = responseToCancelRequest();
 					}
 					else {
-						reply = processUnknownRequest();
+						reply = responseToUnknownRequest();
 					}
 					
 					// send to the client
@@ -199,7 +199,7 @@ public class PublisherImpl {
 		}
 	}
 	
-	private Zmq.Msg processSyncRequest() {
+	private Zmq.Msg responseToSyncRequest() {
 		
 		// send a dummy SYNC message by the publisher socket
 		publisher.sendMore(Messages.Event.SYNC);
@@ -211,7 +211,7 @@ public class PublisherImpl {
 		return message;
 	}
 	
-	private Zmq.Msg processSubscribePublisherRequest() {
+	private Zmq.Msg responseToSubscribeRequest() {
 	
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
@@ -219,7 +219,7 @@ public class PublisherImpl {
 		return message;
 	}
 	
-	private Zmq.Msg processCancelPublisherRequest() {
+	private Zmq.Msg responseToCancelRequest() {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
@@ -227,7 +227,7 @@ public class PublisherImpl {
 		return message;
 	}
 	
-	private Zmq.Msg processUnknownRequest() {
+	private Zmq.Msg responseToUnknownRequest() {
 	
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(-1, "Unknown request")));

@@ -40,9 +40,9 @@ public:
 
 	std::unique_ptr<RequestImpl> receive();
 
-	zmq::message_t * processRequest();
-	zmq::message_t * processCancelResponder();
-	zmq::message_t * processUnknownRequest();
+	zmq::message_t * responseToRequest();
+	zmq::message_t * responseToCancelResponder();
+	zmq::message_t * responseToUnknownRequest();
 
 	void terminate();
 
