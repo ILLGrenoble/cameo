@@ -84,15 +84,6 @@ public class RequestSocket {
 		return request(request, -1);
 	}
 	
-	//TODO Remove when possible
-	public void request(JSONObject request) throws ConnectionTimeout {
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
-		request(message, -1);
-	}
-		
 	public JSONObject requestJSON(JSONObject request, int timeout) throws ConnectionTimeout {
 		
 		Zmq.Msg message = new Zmq.Msg();

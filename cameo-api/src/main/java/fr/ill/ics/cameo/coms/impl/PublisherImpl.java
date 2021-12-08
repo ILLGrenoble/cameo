@@ -100,11 +100,10 @@ public class PublisherImpl {
 					else if (type == Messages.CANCEL) {
 						canceled = true;
 						counter = numberOfSubscribers;
-						message.send(synchronizer);
+						reply = processCancelPublisherRequest();
 					}
 					else {
-						System.err.println("Unknown message type " + type);
-						message.send(synchronizer);
+						reply = processUnknownRequest();
 					}
 					
 					// send to the client
@@ -142,8 +141,8 @@ public class PublisherImpl {
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
-		requestSocket.request(request);
-			
+		JSONObject response = requestSocket.requestJSON(request);
+		
 		// Terminate the socket.
 		requestSocket.terminate();
 	}
@@ -201,14 +200,19 @@ public class PublisherImpl {
 	}
 	
 	private Zmq.Msg processSyncRequest() {
+		
 		// send a dummy SYNC message by the publisher socket
 		publisher.sendMore(Messages.Event.SYNC);
 		publisher.send(Messages.Event.SYNC);
 		
-		Zmq.Msg reply = new Zmq.Msg();
-		reply.add("Connection OK");
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(response));
 				
-		return reply;
+		return message;
 	}
 	
 	private Zmq.Msg processSubscribePublisherRequest() {
@@ -223,6 +227,31 @@ public class PublisherImpl {
 		
 		return message;
 	}
+	
+	private Zmq.Msg processCancelPublisherRequest() {
+		
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(response));
+		
+		return message;
+	}
+	
+	private Zmq.Msg processUnknownRequest() {
+	
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, -1);
+		response.put(Messages.RequestResponse.MESSAGE, "Unknown request");
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(response));
+		
+		return message;
+	}
+	
 	
 	@Override
 	public String toString() {

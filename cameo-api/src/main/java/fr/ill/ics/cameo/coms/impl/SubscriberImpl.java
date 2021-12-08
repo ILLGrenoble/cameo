@@ -98,7 +98,7 @@ public class SubscriberImpl {
 				
 				// The subscriber sends init messages to the publisher that returns SYNC message
 				try {
-					requestSocket.request(Messages.createSyncRequest());
+					requestSocket.requestJSON(Messages.createSyncRequest());
 
 				} catch (ConnectionTimeout e) {
 					// do nothing
@@ -113,7 +113,7 @@ public class SubscriberImpl {
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
 			JSONObject request = Messages.createSubscribePublisherRequest();
-			requestSocket.request(request);
+			requestSocket.requestJSON(request);
 			requestSocket.terminate();
 		}
 	}

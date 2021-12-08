@@ -117,8 +117,7 @@ public class ResponderImpl {
 			}	
 
 			// Send to the requester
-			reply = new Zmq.Msg();
-			reply.add("OK");
+			reply = processReplyRequest();
 			reply.send(responder);
 			
 			if (reply != null) {
@@ -137,12 +136,25 @@ public class ResponderImpl {
 		
 		// Create the request socket. We can create it here because it should be called only once.
 		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
-		requestSocket.request(request);
+		requestSocket.requestJSON(request);
 		
 		// Terminate the socket.
 		requestSocket.terminate();
 	}
 
+	private Zmq.Msg processReplyRequest() {
+		
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		Zmq.Msg message = new Zmq.Msg();
+		message.add(Messages.serialize(response));
+		
+		return message;
+	}
+	
 	public boolean isEnded() {
 		return ended;
 	}
