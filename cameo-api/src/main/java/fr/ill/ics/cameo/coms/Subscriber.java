@@ -24,7 +24,7 @@ public class Subscriber {
 	private static SubscriberImpl createSubscriber(String publisherName, Instance instance) throws SubscriberCreationException {
 		
 		JSONObject request = Messages.createConnectPublisherRequest(instance.getId(), publisherName);
-		JSONObject response = instance.getCom().request(request);
+		JSONObject response = instance.getCom().requestJSON(request);
 		
 		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		

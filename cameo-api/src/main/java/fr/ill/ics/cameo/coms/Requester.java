@@ -33,7 +33,7 @@ public class Requester {
 		
 		// First connect to the responder.
 		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);
-		JSONObject response = application.getCom().request(request);
+		JSONObject response = application.getCom().requestJSON(request);
 		
 		int responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responderPort == -1) {
@@ -43,7 +43,7 @@ public class Requester {
 
 			// Retry to connect.
 			request = Messages.createConnectPortV0Request(responderId, responderPortName);
-			response = application.getCom().request(request);
+			response = application.getCom().requestJSON(request);
 			responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			
 			if (responderPort == -1) {
@@ -54,7 +54,7 @@ public class Requester {
 		// Request a requester port.
 		request = Messages.createRequestPortV0Request(This.getId(), requesterPortName);
 		
-		response = This.getCom().request(request);
+		response = This.getCom().requestJSON(request);
 		int requesterPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
 		if (requesterPort == -1) {

@@ -130,7 +130,7 @@ public:
 		void setPortUnavailable(int port) const;
 		void releasePort(int port) const;
 
-		json::Object request(const std::string& request, int overrideTimeout = -1) const;
+		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
 
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint) const;
 		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout) const;
@@ -252,7 +252,7 @@ public:
 
 	public:
 		std::string getKeyValue(const std::string& key) const;
-		json::Object request(const std::string& request, int overrideTimeout = -1) const;
+		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
 
 		std::string createJSONResponse(int value, const std::string& message) const;
 

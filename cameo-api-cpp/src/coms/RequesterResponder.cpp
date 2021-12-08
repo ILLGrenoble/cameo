@@ -121,7 +121,7 @@ Responder::~Responder() {
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
-	json::Object response = application::This::getCom().request(createRequestPortV0Request(application::This::m_instance.m_id, portName));
+	json::Object response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::m_instance.m_id, portName));
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
@@ -174,7 +174,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 
 	std::string request = createConnectPortV0Request(responderId, responderPortName);
 
-	json::Object response = instance.getCom().request(request);
+	json::Object response = instance.getCom().requestJSON(request);
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
@@ -182,7 +182,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 		instance.waitFor(responderPortName);
 
 		// Retry to connect.
-		response = instance.getCom().request(request);
+		response = instance.getCom().requestJSON(request);
 
 		responderPort = response[message::RequestResponse::VALUE].GetInt();
 		if (responderPort == -1) {
@@ -191,7 +191,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// Request a requester port.
-	response = application::This::getCom().request(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
+	response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
 	if (requesterPort == -1) {

@@ -42,7 +42,7 @@ Publisher::~Publisher() {
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
-	json::Object response = application::This::getCom().request(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
+	json::Object response = application::This::getCom().requestJSON(createCreatePublisherRequest(application::This::m_instance.m_id, name, numberOfSubscribers));
 
 	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {
@@ -134,7 +134,7 @@ Subscriber::~Subscriber() {
 std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
 
 	// Get the JSON response.
-	json::Object response = instance.getCom().request(createConnectPublisherRequest(instance.m_id, publisherName));
+	json::Object response = instance.getCom().requestJSON(createConnectPublisherRequest(instance.m_id, publisherName));
 
 	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {

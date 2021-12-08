@@ -22,7 +22,7 @@ public class Publisher {
 	static PublisherImpl createPublisher(String name, int numberOfSubscribers) throws PublisherCreationException {
 	
 		JSONObject request = Messages.createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
-		JSONObject response = This.getCom().request(request);
+		JSONObject response = This.getCom().requestJSON(request);
 	
 		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		if (publisherPort == -1) {

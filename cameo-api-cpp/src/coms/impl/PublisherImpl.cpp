@@ -180,7 +180,7 @@ void PublisherImpl::terminate() {
 		setEnd();
 		m_publisher.reset(nullptr);
 
-		json::Object response = application::This::getCom().request(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
+		json::Object response = application::This::getCom().requestJSON(createTerminatePublisherRequest(application::This::m_instance.m_id, m_name));
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		bool success = (value != -1);

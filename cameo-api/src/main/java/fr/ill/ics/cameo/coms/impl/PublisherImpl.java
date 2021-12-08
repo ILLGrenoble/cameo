@@ -192,7 +192,7 @@ public class PublisherImpl {
 		context.destroySocket(publisher);
 		
 		JSONObject request = Messages.createTerminatePublisherRequest(This.getId(), name);
-		JSONObject response = This.getCom().request(request);
+		JSONObject response = This.getCom().requestJSON(request);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {

@@ -25,7 +25,7 @@ public class Responder {
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
 		JSONObject request = Messages.createRequestPortV0Request(This.getId(), portName);
 
-		JSONObject response = This.getCom().request(request);
+		JSONObject response = This.getCom().requestJSON(request);
 		
 		int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (port == -1) {

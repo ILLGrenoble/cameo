@@ -88,7 +88,7 @@ void This::Com::releasePort(int port) const {
 	m_server->releasePort(m_applicationId, port);
 }
 
-json::Object This::Com::request(const std::string& request, int overrideTimeout) const {
+json::Object This::Com::requestJSON(const std::string& request, int overrideTimeout) const {
 	return m_server->requestJSON(request, overrideTimeout);
 }
 
@@ -454,7 +454,7 @@ std::string Instance::Com::getKeyValue(const std::string& key) const {
 	return m_server->getKeyValue(m_applicationId, key);
 }
 
-json::Object Instance::Com::request(const std::string& request, int overrideTimeout) const {
+json::Object Instance::Com::requestJSON(const std::string& request, int overrideTimeout) const {
 	return m_server->requestJSON(request, overrideTimeout);
 }
 

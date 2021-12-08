@@ -48,12 +48,10 @@ public class Application {
 			
 			private ServerImpl server;
 			private int applicationId;
-			private ThisImpl thisImpl;
 			
-			Com(ServerImpl server, int applicationId, ThisImpl thisImpl) {
+			Com(ServerImpl server, int applicationId) {
 				this.server = server;
 				this.applicationId = applicationId;
-				this.thisImpl = thisImpl;
 			}
 
 			public Context getContext() {
@@ -116,8 +114,8 @@ public class Application {
 				}
 			}
 
-			public JSONObject request(JSONObject request) {
-				return thisImpl.request(request);
+			public JSONObject requestJSON(JSONObject request) {
+				return server.requestJSON(request);
 			}
 
 			public RequestSocket createRequestSocket(String endpoint) {
@@ -175,7 +173,7 @@ public class Application {
 			if (impl.getStarterEndpoint() != null) {
 				starterServer = new Server(impl.getStarterEndpoint());
 			}
-			com = new Com(impl.getServer(), impl.getId(), impl);
+			com = new Com(impl.getServer(), impl.getId());
 		}
 		
 		static public void init(String[] args) {
@@ -453,7 +451,7 @@ public class Application {
 				return server.getKeyValue(applicationId, key);
 			}
 
-			public JSONObject request(JSONObject request) {
+			public JSONObject requestJSON(JSONObject request) {
 				return server.requestJSON(request);
 			}
 			
