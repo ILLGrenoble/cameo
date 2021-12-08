@@ -42,7 +42,6 @@ import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.SocketException;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.WriteException;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

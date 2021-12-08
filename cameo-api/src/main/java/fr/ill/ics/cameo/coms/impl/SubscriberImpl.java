@@ -17,18 +17,15 @@
 package fr.ill.ics.cameo.coms.impl;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Application.Instance;
 import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
 import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
