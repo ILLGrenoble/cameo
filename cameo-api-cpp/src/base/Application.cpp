@@ -100,6 +100,19 @@ std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::str
 	return m_server->createRequestSocket(endpoint, timeout);
 }
 
+std::string This::Com::createJSONResponse(int value, const std::string& message) const {
+
+	json::StringObject request;
+
+	request.pushKey(message::RequestResponse::VALUE);
+	request.pushInt64(value);
+
+	request.pushKey(message::RequestResponse::MESSAGE);
+	request.pushString(message);
+
+	return request.toString();
+}
+
 void This::Com::removePort(const std::string& name) const {
 
 	json::Object response = m_server->requestJSON(createRemovePortV0Request(m_applicationId, name));
@@ -443,6 +456,19 @@ std::string Instance::Com::getKeyValue(const std::string& key) const {
 
 json::Object Instance::Com::request(const std::string& request, int overrideTimeout) const {
 	return m_server->requestJSON(request, overrideTimeout);
+}
+
+std::string Instance::Com::createJSONResponse(int value, const std::string& message) const {
+
+	json::StringObject request;
+
+	request.pushKey(message::RequestResponse::VALUE);
+	request.pushInt64(value);
+
+	request.pushKey(message::RequestResponse::MESSAGE);
+	request.pushString(message);
+
+	return request.toString();
 }
 
 Instance::Instance(Server * server) :

@@ -138,7 +138,23 @@ public class Application {
 					throw new UnexpectedException("Cannot parse message");
 				}
 			}
-
+			
+			/**
+			 * Method provided by convenience to simplify the use of JSON messages.
+			 * @param value
+			 * @param message
+			 * @return
+			 */
+			public JSONObject createJSONResponse(int value, String message) {
+				
+				JSONObject response = new JSONObject();
+				response.put(Messages.RequestResponse.VALUE, value);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
+				
+				return response;
+			}
+			
+			//TODO Remove when use of key values is done.
 			public void removePort(String name) {
 				
 				JSONObject response = server.requestJSON(Messages.createRemovePortV0Request(applicationId, name));
@@ -440,6 +456,35 @@ public class Application {
 
 			public JSONObject request(JSONObject request) {
 				return server.requestJSON(request);
+			}
+			
+			/**
+			 * Method provided by convenience to simplify the parsing of JSON messages.
+			 * @param message
+			 * @return
+			 */
+			public JSONObject parse(byte[] message) {
+				try {
+					return server.parse(message);
+				}
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse message");
+				}
+			}
+			
+			/**
+			 * Method provided by convenience to simplify the use of JSON messages.
+			 * @param value
+			 * @param message
+			 * @return
+			 */
+			public JSONObject createJSONResponse(int value, String message) {
+				
+				JSONObject response = new JSONObject();
+				response.put(Messages.RequestResponse.VALUE, value);
+				response.put(Messages.RequestResponse.MESSAGE, "OK");
+				
+				return response;
 			}
 		
 		}
