@@ -54,21 +54,6 @@ class WaitingImplSet;
 class HandlerImpl;
 class RequestSocketImpl;
 
-namespace coms {
-
-// forward declarations
-class Publisher;
-class Subscriber;
-class Responder;
-class Requester;
-class PublisherImpl;
-class SubscriberImpl;
-class RequestImpl;
-class ResponderImpl;
-class RequesterImpl;
-
-}
-
 namespace application {
 
 class Instance;
@@ -97,13 +82,6 @@ const State KILLED           = 256;
  */
 class This : private EventListener {
 
-	friend class cameo::coms::Publisher;
-	friend class cameo::coms::Responder;
-	friend class cameo::coms::Requester;
-	friend class cameo::coms::PublisherImpl;
-	friend class cameo::coms::RequestImpl;
-	friend class cameo::coms::ResponderImpl;
-	friend class cameo::coms::RequesterImpl;
 	friend class cameo::SocketWaitingImpl;
 	friend class cameo::GenericWaitingImpl;
 	friend class cameo::Server;
@@ -238,7 +216,6 @@ private:
 class Instance : private EventListener {
 
 	friend class cameo::Server;
-	friend class cameo::coms::Subscriber;
 	friend std::ostream& operator<<(std::ostream&, const Instance&);
 
 public:

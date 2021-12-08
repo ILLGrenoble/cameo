@@ -21,6 +21,11 @@
 namespace cameo {
 namespace coms {
 
+class Responder;
+class RequestImpl;
+class ResponderImpl;
+class RequesterImpl;
+
 ///////////////////////////////////////////////////////////////////////////
 // Request
 

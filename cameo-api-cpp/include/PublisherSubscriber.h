@@ -21,6 +21,9 @@
 namespace cameo {
 namespace coms {
 
+class PublisherImpl;
+class SubscriberImpl;
+
 ///////////////////////////////////////////////////////////////////////////
 // Publisher
 

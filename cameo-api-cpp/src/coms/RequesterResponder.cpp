@@ -121,7 +121,7 @@ Responder::~Responder() {
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
 
 	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
-	json::Object response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::m_instance.m_id, portName));
+	json::Object response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::getId(), portName));
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
@@ -191,7 +191,7 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// Request a requester port.
-	response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::m_instance.m_id, requesterPortName));
+	response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::getId(), requesterPortName));
 
 	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
 	if (requesterPort == -1) {
