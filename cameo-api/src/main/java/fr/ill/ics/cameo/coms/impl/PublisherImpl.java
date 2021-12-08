@@ -137,7 +137,7 @@ public class PublisherImpl {
 	}
 	
 	public void cancelWaitForSubscribers() {
-		Endpoint endpoint = This.getEndpoint().withPort(publisherPort + 1);
+		Endpoint endpoint = This.getEndpoint().withPort(synchronizerPort);
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);

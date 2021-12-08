@@ -129,7 +129,7 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_publisherPort + 1).toString());
+	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_synchronizerPort).toString());
 	requestSocket->request(request.toString());
 }
 
