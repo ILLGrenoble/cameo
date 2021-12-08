@@ -62,7 +62,6 @@ public:
 
 	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
 
-	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_name;
 	int m_numberOfSubscribers;

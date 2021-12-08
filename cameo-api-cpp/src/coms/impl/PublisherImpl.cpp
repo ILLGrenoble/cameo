@@ -28,7 +28,6 @@ namespace cameo {
 namespace coms {
 
 PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
-	m_publisherPort(publisherPort),
 	m_synchronizerPort(synchronizerPort),
 	m_name(name),
 	m_numberOfSubscribers(numberOfSubscribers),
@@ -38,7 +37,7 @@ PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std:
 	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
 	m_publisher.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_PUB));
 	std::stringstream pubEndpoint;
-	pubEndpoint << "tcp://*:" << m_publisherPort;
+	pubEndpoint << "tcp://*:" << publisherPort;
 
 	m_publisher->bind(pubEndpoint.str().c_str());
 }

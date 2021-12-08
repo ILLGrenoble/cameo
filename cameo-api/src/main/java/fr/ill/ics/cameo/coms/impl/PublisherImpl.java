@@ -28,7 +28,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherImpl {
 
-	private int publisherPort;
 	private int synchronizerPort;
 	private String name;
 	private int numberOfSubscribers;
@@ -38,7 +37,6 @@ public class PublisherImpl {
 	private PublisherWaitingImpl waiting = new PublisherWaitingImpl(this);
 	
 	public PublisherImpl(int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
-		this.publisherPort = publisherPort;
 		this.synchronizerPort = synchronizerPort;
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
