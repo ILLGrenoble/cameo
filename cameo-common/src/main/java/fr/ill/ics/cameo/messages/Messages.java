@@ -585,6 +585,17 @@ public class Messages {
 		return request;
 	}
 
+	public static JSONObject createRequestResponse(int value, String message) {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.RESPONSE);
+		
+		request.put(Messages.RequestResponse.VALUE, value);
+		request.put(Messages.RequestResponse.MESSAGE, message);
+
+		return request;
+	}
+	
 	public static JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
 		
 		JSONObject request = new JSONObject();

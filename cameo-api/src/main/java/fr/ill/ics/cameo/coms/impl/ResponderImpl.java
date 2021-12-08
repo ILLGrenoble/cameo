@@ -144,13 +144,8 @@ public class ResponderImpl {
 
 	private Zmq.Msg processReplyRequest() {
 		
-		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, 0);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
-		
 		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(response));
+		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
 		
 		return message;
 	}

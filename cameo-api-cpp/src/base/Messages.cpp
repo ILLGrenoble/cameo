@@ -322,36 +322,20 @@ std::string createDetachUnmanagedRequest(int id) {
 	return request.toString();
 }
 
-std::string createRequestResponse(int64_t value) {
+std::string createRequestResponse(int32_t value, const std::string& message) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
 	request.pushInt(message::RESPONSE);
 
 	request.pushKey(message::RequestResponse::VALUE);
-	request.pushInt64(value);
-
-	request.pushKey(message::RequestResponse::MESSAGE);
-	request.pushString("");
-
-	return request.toString();
-}
-
-std::string createRequestResponse(int64_t value, const std::string& message) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushInt(message::RESPONSE);
-
-	request.pushKey(message::RequestResponse::VALUE);
-	request.pushInt64(value);
+	request.pushInt(value);
 
 	request.pushKey(message::RequestResponse::MESSAGE);
 	request.pushString(message);
 
 	return request.toString();
 }
-
 
 std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value) {
 
