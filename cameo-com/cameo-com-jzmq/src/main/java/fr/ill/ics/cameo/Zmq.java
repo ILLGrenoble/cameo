@@ -46,14 +46,15 @@ public class Zmq {
 			return message.getLast().getData();
 		}
 		
-		public List<byte[]> getAllData() {
+		public byte[][] getAllData() {
 			
-			ArrayList<byte[]> result = new ArrayList<byte[]>();
-			
+			byte[][] result = new byte[message.size()][];
 			Iterator<ZFrame> iterator = message.iterator();
+			int i = 0;
 			while (iterator.hasNext()) {
 				ZFrame frame = iterator.next();
-				result.add(frame.getData());
+				result[i] = frame.getData();
+				++i;
 			}
 			
 			return result;

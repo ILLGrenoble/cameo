@@ -18,9 +18,8 @@ package fr.ill.ics.cameo.coms.impl;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
-import fr.ill.ics.cameo.base.impl.RequestSocket;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestImpl {
@@ -63,17 +62,11 @@ public class RequestImpl {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.RESPONSE);
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
-		// Set request in the next frame.
-		message.add(response);
 
 		// Create a new socket.
 		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
 		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint);
-		requestSocket.request(message);
+		requestSocket.request(Messages.serialize(request), response);
 		requestSocket.terminate();
 	}
 	

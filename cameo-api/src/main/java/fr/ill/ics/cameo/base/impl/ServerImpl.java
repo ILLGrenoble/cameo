@@ -39,6 +39,7 @@ import fr.ill.ics.cameo.base.EventStreamSocket;
 import fr.ill.ics.cameo.base.InvalidArgumentException;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.SocketException;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -205,7 +206,7 @@ public class ServerImpl {
 	
 	public RequestSocket createRequestSocket(String endpoint) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(context, timeout, parser);
+		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
 		requestSocket.connect(endpoint);
 		
 		return requestSocket;

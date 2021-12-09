@@ -22,9 +22,8 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ContextImpl;
-import fr.ill.ics.cameo.base.impl.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -33,7 +32,6 @@ public class RequesterImpl {
 
 	public static final String REQUESTER_PREFIX = "req.";
 
-	private ThisImpl application;
 	private int requesterPort;
 	private String name;
 	private int responderId;
@@ -89,13 +87,7 @@ public class RequesterImpl {
 		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
-		// Set request in the next frame.
-		message.add(requestData);
-		
-		requestSocket.request(message);
+		requestSocket.request(Messages.serialize(request), requestData);
 	}
 	
 	public void send(String request) {
@@ -112,14 +104,7 @@ public class RequesterImpl {
 		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		request.put(Messages.Request.REQUESTER_PORT, requesterPort);
 		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(request));
-		
-		// Set request1 and request2 in the next frames.
-		message.add(requestData1);
-		message.add(requestData2);
-		
-		requestSocket.request(message);
+		requestSocket.request(Messages.serialize(request), requestData1, requestData2);
 	}
 
 	public byte[] receive() {

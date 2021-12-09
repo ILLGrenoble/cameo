@@ -16,14 +16,12 @@
 
 package fr.ill.ics.cameo.coms.impl;
 
-import java.util.List;
-
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.impl.ContextImpl;
-import fr.ill.ics.cameo.base.impl.RequestSocket;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -86,9 +84,9 @@ public class ResponderImpl {
 				int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
 				int requesterPort = JSON.getInt(request, Messages.Request.REQUESTER_PORT);
 				
-				List<byte[]> data = message.getAllData();
+				byte[][] data = message.getAllData();
 				
-				byte[] message1 = data.get(1);
+				byte[] message1 = data[1]; // OR 1?
 				
 				// Create the request implementation.
 				RequestImpl impl = new RequestImpl(name, 
@@ -99,8 +97,8 @@ public class ResponderImpl {
 						requesterPort);
 				
 				// Set the optional message 2.
-				if (data.size() > 2) {
-					impl.setMessage2(data.get(2));
+				if (data.length > 2) {
+					impl.setMessage2(data[2]);
 				}
 				
 				return impl;
