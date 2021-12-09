@@ -29,7 +29,7 @@
 #include "impl/StreamSocketImpl.h"
 #include "impl/WaitingImpl.h"
 #include "impl/WaitingImplSet.h"
-#include "impl/ContextImpl.h"
+#include "impl/zmq/ContextZmq.h"
 #include "Strings.h"
 #include "Server.h"
 #include "Messages.h"

@@ -14,23 +14,23 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_CONTEXTIMPL_H_
-#define CAMEO_CONTEXTIMPL_H_
+#ifndef CAMEO_CONTEXTZMQ_H_
+#define CAMEO_CONTEXTZMQ_H_
 
 #include "Context.h"
-#include "zmq.hpp"
 #include <vector>
 #include <memory>
+#include <zmq.hpp>
 
 namespace cameo {
 
 class RequestSocket;
 
-class ContextImpl : public Context {
+class ContextZmq : public Context {
 
 public:
-	ContextImpl();
-	virtual ~ContextImpl();
+	ContextZmq();
+	virtual ~ContextZmq();
 
 	void setTimeout(int timeout);
 	int getTimeout() const;

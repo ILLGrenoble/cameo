@@ -19,7 +19,7 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "../../base/impl/ContextImpl.h"
+#include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
 #include <sstream>
@@ -34,7 +34,7 @@ PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std:
 	m_ended(false) {
 
 	// create a socket for publishing
-	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_publisher.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_PUB));
 	std::stringstream pubEndpoint;
 	pubEndpoint << "tcp://*:" << publisherPort;
@@ -69,7 +69,7 @@ bool PublisherImpl::waitForSubscribers() {
 	}
 
 	// Create a socket to receive the messages from the subscribers.
-	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	zmq::socket_t synchronizer(contextImpl->m_context, ZMQ_REP);
 
 	std::stringstream syncEndpoint;

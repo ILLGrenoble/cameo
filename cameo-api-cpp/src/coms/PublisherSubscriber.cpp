@@ -16,13 +16,13 @@
 
 #include "PublisherSubscriber.h"
 
-#include "../base/impl/ContextImpl.h"
+#include "JSON.h"
+#include "Server.h"
+#include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
 #include "impl/PublisherImpl.h"
 #include "impl/SubscriberImpl.h"
-#include "JSON.h"
-#include "Server.h"
 
 namespace cameo {
 namespace coms {

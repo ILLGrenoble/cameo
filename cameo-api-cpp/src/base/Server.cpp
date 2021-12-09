@@ -23,7 +23,7 @@
 #include "EventThread.h"
 #include "impl/CancelIdGenerator.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/ContextImpl.h"
+#include "impl/zmq/ContextZmq.h"
 #include "JSON.h"
 #include "Messages.h"
 #include "RequestSocket.h"
@@ -636,7 +636,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 void Server::initContext() {
 	// Set the impl.
-	m_contextImpl.reset(new ContextImpl());
+	m_contextImpl.reset(new ContextZmq());
 }
 
 void Server::initRequestSocket() {

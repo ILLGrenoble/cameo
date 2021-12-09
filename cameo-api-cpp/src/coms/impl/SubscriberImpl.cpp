@@ -20,7 +20,7 @@
 #include "Server.h"
 #include "JSON.h"
 #include "../../base/impl/CancelIdGenerator.h"
-#include "../../base/impl/ContextImpl.h"
+#include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
 #include <sstream>
@@ -47,7 +47,7 @@ SubscriberImpl::~SubscriberImpl() {
 void SubscriberImpl::init() {
 
 	// Create a socket for publishing.
-	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_subscriber.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_SUB));
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, std::string(message::Event::SYNC).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, std::string(message::Event::STREAM).length());

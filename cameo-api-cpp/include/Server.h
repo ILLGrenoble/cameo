@@ -37,7 +37,7 @@ namespace application {
 
 class EventListener;
 class EventThread;
-class ContextImpl;
+class ContextZmq;
 class RequestSocket;
 
 class Server {
@@ -166,7 +166,7 @@ private:
 	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
 	int m_statusPort;
-	std::unique_ptr<ContextImpl> m_contextImpl;
+	std::unique_ptr<ContextZmq> m_contextImpl;
 	std::unique_ptr<RequestSocket> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;

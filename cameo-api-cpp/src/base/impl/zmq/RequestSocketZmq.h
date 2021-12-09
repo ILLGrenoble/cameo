@@ -24,7 +24,7 @@
 namespace cameo {
 
 class Context;
-class ContextImpl;
+class ContextZmq;
 
 class RequestSocketZmq : public RequestSocketImpl {
 
@@ -38,7 +38,7 @@ public:
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout);
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout);
 
-	ContextImpl * m_services;
+	ContextZmq * m_services;
 	std::string m_endpoint;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;

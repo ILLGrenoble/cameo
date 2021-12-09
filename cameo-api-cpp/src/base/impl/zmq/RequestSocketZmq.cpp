@@ -17,7 +17,7 @@
 #include "RequestSocketZmq.h"
 
 #include "ConnectionTimeout.h"
-#include "../ContextImpl.h"
+#include "ContextZmq.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -27,7 +27,7 @@ using namespace std;
 namespace cameo {
 
 RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint, int timeout) :
-	m_services(dynamic_cast<ContextImpl *>(context)), m_endpoint(endpoint) {
+	m_services(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint) {
 
 	init();
 

@@ -19,7 +19,7 @@
 #include "JSON.h"
 #include "impl/SocketWaitingImpl.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/ContextImpl.h"
+#include "impl/zmq/ContextZmq.h"
 #include "Messages.h"
 #include <iostream>
 

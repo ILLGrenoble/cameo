@@ -19,7 +19,7 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "../../base/impl/ContextImpl.h"
+#include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
 #include <sstream>

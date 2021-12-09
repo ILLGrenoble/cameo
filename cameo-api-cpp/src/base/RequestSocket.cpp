@@ -17,7 +17,6 @@
 #include "RequestSocket.h"
 
 #include "ConnectionTimeout.h"
-#include "impl/ContextImpl.h"
 #include "impl/zmq/RequestSocketZmq.h"
 #include <iostream>
 #include <chrono>

@@ -20,7 +20,7 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "../../base/impl/ContextImpl.h"
+#include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
 #include <sstream>
@@ -36,7 +36,7 @@ ResponderImpl::ResponderImpl(int responderPort, const std::string& name) :
 	m_canceled(false) {
 
 	// create a socket REP
-	ContextImpl* contextImpl = dynamic_cast<ContextImpl *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_responder.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
 	std::stringstream repEndpoint;
 	repEndpoint << "tcp://*:" << m_responderPort;
