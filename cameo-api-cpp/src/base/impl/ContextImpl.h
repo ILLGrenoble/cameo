@@ -24,7 +24,7 @@
 
 namespace cameo {
 
-class RequestSocketImpl;
+class RequestSocket;
 
 class ContextImpl : public Context {
 
@@ -40,10 +40,10 @@ public:
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
-	bool isAvailable(RequestSocketImpl * socket, int timeout);
-	void sendSyncStream(RequestSocketImpl * socket, const std::string& name);
-	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name);
-	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket);
+	bool isAvailable(RequestSocket * socket, int timeout);
+	void sendSyncStream(RequestSocket * socket, const std::string& name);
+	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocket * socket, const std::string& name);
+	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocket * socket);
 
 	zmq::context_t m_context;
 	int m_timeout;

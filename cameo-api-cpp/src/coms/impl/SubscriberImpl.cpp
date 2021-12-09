@@ -20,9 +20,9 @@
 #include "Server.h"
 #include "JSON.h"
 #include "../../base/impl/CancelIdGenerator.h"
-#include "../../base/impl/RequestSocketImpl.h"
 #include "../../base/impl/ContextImpl.h"
 #include "../../base/Messages.h"
+#include "../../base/RequestSocket.h"
 #include <sstream>
 
 namespace cameo {
@@ -74,7 +74,7 @@ void SubscriberImpl::init() {
 	if (m_numberOfSubscribers > 0) {
 
 		// Create a request socket.
-		std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(m_serverEndpoint.withPort(m_synchronizerPort).toString());
+		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_serverEndpoint.withPort(m_synchronizerPort).toString());
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];

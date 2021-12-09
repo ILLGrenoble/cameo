@@ -14,8 +14,8 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REQUESTSOCKETIMPL_H_
-#define CAMEO_REQUESTSOCKETIMPL_H_
+#ifndef CAMEO_REQUESTSOCKET_H_
+#define CAMEO_REQUESTSOCKET_H_
 
 #include "JSON.h"
 #include <string>
@@ -26,11 +26,11 @@ namespace cameo {
 
 class ContextImpl;
 
-class RequestSocketImpl {
+class RequestSocket {
 
 public:
-	RequestSocketImpl(ContextImpl * context, const std::string& endpoint, int timeout = 0);
-	virtual ~RequestSocketImpl();
+	RequestSocket(ContextImpl * context, const std::string& endpoint, int timeout = 0);
+	virtual ~RequestSocket();
 
 	void setTimeout(int timeout);
 	void setSocketLinger();

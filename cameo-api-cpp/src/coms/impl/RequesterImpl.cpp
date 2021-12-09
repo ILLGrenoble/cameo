@@ -19,9 +19,9 @@
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "../../base/impl/RequestSocketImpl.h"
 #include "../../base/impl/ContextImpl.h"
 #include "../../base/Messages.h"
+#include "../../base/RequestSocket.h"
 #include <sstream>
 
 namespace cameo {
@@ -181,7 +181,7 @@ void RequesterImpl::cancel() {
 	request.pushInt(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocketImpl> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());
 	requestSocket->requestJSON(request.toString());
 }
 

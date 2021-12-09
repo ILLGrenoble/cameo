@@ -14,19 +14,19 @@
  * limitations under the Licence.
  */
 
-#include "RequestSocketImpl.h"
+#include "RequestSocket.h"
 
 #include "ConnectionTimeout.h"
+#include "impl/ContextImpl.h"
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "ContextImpl.h"
 
 using namespace std;
 
 namespace cameo {
 
-RequestSocketImpl::RequestSocketImpl(ContextImpl * context, const std::string& endpoint, int timeout) :
+RequestSocket::RequestSocket(ContextImpl * context, const std::string& endpoint, int timeout) :
 	m_services(context), m_endpoint(endpoint) {
 
 	init();
@@ -34,17 +34,17 @@ RequestSocketImpl::RequestSocketImpl(ContextImpl * context, const std::string& e
 	setTimeout(timeout);
 }
 
-RequestSocketImpl::~RequestSocketImpl() {
+RequestSocket::~RequestSocket() {
 }
 
-void RequestSocketImpl::setTimeout(int timeout) {
+void RequestSocket::setTimeout(int timeout) {
 	m_timeout = timeout;
 
 	// Apply the linger to the socket.
 	setSocketLinger();
 }
 
-void RequestSocketImpl::setSocketLinger() {
+void RequestSocket::setSocketLinger() {
 	// Set the linger in case of timeout.
 	// If not, the context can block indefinitely.
 	// Does the value 100 can lead to a side-effect? A too small value like 1 has some side-effect.
@@ -56,7 +56,7 @@ void RequestSocketImpl::setSocketLinger() {
 	}
 }
 
-void RequestSocketImpl::init() {
+void RequestSocket::init() {
 
 	// Reset if the socket is null.
 	if (m_socket.get() == nullptr) {
@@ -67,11 +67,11 @@ void RequestSocketImpl::init() {
 	}
 }
 
-void RequestSocketImpl::reset() {
+void RequestSocket::reset() {
 	m_socket.reset();
 }
 
-std::unique_ptr<zmq::message_t> RequestSocketImpl::receive(int overrideTimeout) {
+std::unique_ptr<zmq::message_t> RequestSocket::receive(int overrideTimeout) {
 
 	int timeout = m_timeout;
 	if (overrideTimeout > -1) {
@@ -107,7 +107,7 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::receive(int overrideTimeout) 
 	return reply;
 }
 
-std::string RequestSocketImpl::request(const std::string& request, int overrideTimeout) {
+std::string RequestSocket::request(const std::string& request, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -126,7 +126,7 @@ std::string RequestSocketImpl::request(const std::string& request, int overrideT
 	return std::string(response->data<char>(), response->size());
 }
 
-std::string RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+std::string RequestSocket::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -149,7 +149,7 @@ std::string RequestSocketImpl::request(const std::string& requestPart1, const st
 	return std::string(response->data<char>(), response->size());
 }
 
-std::string RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+std::string RequestSocket::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -176,7 +176,7 @@ std::string RequestSocketImpl::request(const std::string& requestPart1, const st
 	return std::string(response->data<char>(), response->size());
 }
 
-json::Object RequestSocketImpl::requestJSON(const std::string& request, int overrideTimeout) {
+json::Object RequestSocket::requestJSON(const std::string& request, int overrideTimeout) {
 
 	std::string reply = this->request(request, overrideTimeout);
 
@@ -187,7 +187,7 @@ json::Object RequestSocketImpl::requestJSON(const std::string& request, int over
 	return response;
 }
 
-json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+json::Object RequestSocket::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
 
 	std::string reply = this->request(requestPart1, requestPart2, overrideTimeout);
 
@@ -198,7 +198,7 @@ json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, con
 	return response;
 }
 
-json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+json::Object RequestSocket::requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
 
 	std::string reply = this->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
 

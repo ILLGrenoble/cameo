@@ -17,8 +17,8 @@
 #include "RequesterResponder.h"
 
 #include "../base/impl/ContextImpl.h"
-#include "../base/impl/RequestSocketImpl.h"
 #include "../base/Messages.h"
+#include "../base/RequestSocket.h"
 #include "impl/RequesterImpl.h"
 #include "impl/RequestImpl.h"
 #include "impl/ResponderImpl.h"

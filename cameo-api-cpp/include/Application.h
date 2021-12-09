@@ -52,7 +52,7 @@ class SocketWaitingImpl;
 class GenericWaitingImpl;
 class WaitingImplSet;
 class HandlerImpl;
-class RequestSocketImpl;
+class RequestSocket;
 
 namespace application {
 
@@ -110,8 +110,8 @@ public:
 
 		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
 
-		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint) const;
-		std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout) const;
 
 		void removePort(const std::string& name) const;
 

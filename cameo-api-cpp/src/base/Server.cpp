@@ -22,11 +22,11 @@
 #include "UndefinedKeyException.h"
 #include "EventThread.h"
 #include "impl/CancelIdGenerator.h"
-#include "impl/RequestSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/ContextImpl.h"
 #include "JSON.h"
 #include "Messages.h"
+#include "RequestSocket.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -702,12 +702,12 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
 }
 
-std::unique_ptr<RequestSocketImpl> Server::createRequestSocket(const std::string& endpoint) {
-	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_contextImpl.get(), endpoint, m_contextImpl->getTimeout()));
+std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, m_contextImpl->getTimeout()));
 }
 
-std::unique_ptr<RequestSocketImpl> Server::createRequestSocket(const std::string& endpoint, int timeout) {
-	return std::unique_ptr<RequestSocketImpl>(new RequestSocketImpl(m_contextImpl.get(), endpoint, timeout));
+std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

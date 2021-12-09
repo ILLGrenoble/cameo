@@ -28,7 +28,7 @@
 
 namespace cameo {
 
-class RequestSocketImpl;
+class RequestSocket;
 
 namespace coms {
 
@@ -57,7 +57,7 @@ public:
 	std::string m_name;
 	int m_responderId;
 	int m_requesterId;
-	std::unique_ptr<RequestSocketImpl> m_requestSocket;
+	std::unique_ptr<RequestSocket> m_requestSocket;
 	std::unique_ptr<zmq::socket_t> m_repSocket;
 	bool m_canceled;
 

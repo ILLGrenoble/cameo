@@ -26,7 +26,6 @@
 #include "EventStreamSocket.h"
 #include "impl/GenericWaitingImpl.h"
 #include "impl/HandlerImpl.h"
-#include "impl/RequestSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/WaitingImpl.h"
 #include "impl/WaitingImplSet.h"
@@ -34,6 +33,7 @@
 #include "Strings.h"
 #include "Server.h"
 #include "Messages.h"
+#include "RequestSocket.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
@@ -92,11 +92,11 @@ json::Object This::Com::requestJSON(const std::string& request, int overrideTime
 	return m_server->requestJSON(request, overrideTimeout);
 }
 
-std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::string& endpoint) const {
+std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint) const {
 	return m_server->createRequestSocket(endpoint);
 }
 
-std::unique_ptr<RequestSocketImpl> This::Com::createRequestSocket(const std::string& endpoint, int timeout) const {
+std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint, int timeout) const {
 	return m_server->createRequestSocket(endpoint, timeout);
 }
 

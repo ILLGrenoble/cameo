@@ -17,12 +17,13 @@
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "JSON.h"
-#include "RequestSocketImpl.h"
 #include "../Messages.h"
 
 #include <iostream>
 #include <sstream>
 #include "ContextImpl.h"
+
+#include "../RequestSocket.h"
 
 using namespace std;
 
@@ -112,7 +113,7 @@ zmq::socket_t * ContextImpl::createRequestSocket(const std::string& endpoint) {
 	return socket;
 }
 
-bool ContextImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
+bool ContextImpl::isAvailable(RequestSocket * socket, int timeout) {
 
 	try {
 		socket->requestJSON(createSyncRequest(), timeout);
@@ -128,7 +129,7 @@ bool ContextImpl::isAvailable(RequestSocketImpl * socket, int timeout) {
 	return false;
 }
 
-void ContextImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& name) {
+void ContextImpl::sendSyncStream(RequestSocket * socket, const std::string& name) {
 
 	try {
 		socket->requestJSON(createSyncStreamRequest(name));
@@ -141,7 +142,7 @@ void ContextImpl::sendSyncStream(RequestSocketImpl * socket, const std::string& 
 	}
 }
 
-void ContextImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket, const std::string& name) {
+void ContextImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocket * socket, const std::string& name) {
 
 	// Poll subscriber.
 	zmq_pollitem_t items[1];
@@ -161,7 +162,7 @@ void ContextImpl::waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSoc
 	}
 }
 
-void ContextImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocketImpl * socket) {
+void ContextImpl::waitForSubscriber(zmq::socket_t * subscriber, RequestSocket * socket) {
 
 	// Poll subscriber.
 	zmq_pollitem_t items[1];

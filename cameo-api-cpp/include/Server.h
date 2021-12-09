@@ -38,7 +38,7 @@ namespace application {
 class EventListener;
 class EventThread;
 class ContextImpl;
-class RequestSocketImpl;
+class RequestSocket;
 
 class Server {
 
@@ -159,15 +159,15 @@ private:
 	void initStatus();
 	int getStreamPort(const std::string& name);
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
-	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint);
-	std::unique_ptr<RequestSocketImpl> createRequestSocket(const std::string& endpoint, int timeout);
+	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint);
+	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout);
 
 
 	Endpoint m_serverEndpoint;
 	std::array<int, 3> m_serverVersion;
 	int m_statusPort;
 	std::unique_ptr<ContextImpl> m_contextImpl;
-	std::unique_ptr<RequestSocketImpl> m_requestSocket;
+	std::unique_ptr<RequestSocket> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;

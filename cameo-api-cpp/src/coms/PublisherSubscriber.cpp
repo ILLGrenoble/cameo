@@ -17,8 +17,8 @@
 #include "PublisherSubscriber.h"
 
 #include "../base/impl/ContextImpl.h"
-#include "../base/impl/RequestSocketImpl.h"
 #include "../base/Messages.h"
+#include "../base/RequestSocket.h"
 #include "impl/PublisherImpl.h"
 #include "impl/SubscriberImpl.h"
 #include "JSON.h"
