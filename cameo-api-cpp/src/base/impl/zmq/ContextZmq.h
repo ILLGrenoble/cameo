@@ -20,7 +20,12 @@
 #include "Context.h"
 #include <vector>
 #include <memory>
-#include <zmq.hpp>
+
+namespace zmq {
+
+	class socket_t;
+	class context_t;
+}
 
 namespace cameo {
 
@@ -35,6 +40,8 @@ public:
 	void setTimeout(int timeout);
 	int getTimeout() const;
 
+	zmq::context_t& getContext();
+
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
@@ -45,7 +52,8 @@ public:
 	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocket * socket, const std::string& name);
 	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocket * socket);
 
-	zmq::context_t m_context;
+private:
+	std::unique_ptr<zmq::context_t> m_context;
 	int m_timeout;
 };
 

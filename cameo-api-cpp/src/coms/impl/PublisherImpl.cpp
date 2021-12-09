@@ -22,6 +22,7 @@
 #include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
+#include <zmq.hpp>
 #include <sstream>
 
 namespace cameo {
@@ -35,7 +36,7 @@ PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std:
 
 	// create a socket for publishing
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_publisher.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_PUB));
+	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_PUB));
 	std::stringstream pubEndpoint;
 	pubEndpoint << "tcp://*:" << publisherPort;
 
@@ -70,7 +71,7 @@ bool PublisherImpl::waitForSubscribers() {
 
 	// Create a socket to receive the messages from the subscribers.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	zmq::socket_t synchronizer(contextImpl->m_context, ZMQ_REP);
+	zmq::socket_t synchronizer(contextImpl->getContext(), ZMQ_REP);
 
 	std::stringstream syncEndpoint;
 	std::string url = "tcp://*";

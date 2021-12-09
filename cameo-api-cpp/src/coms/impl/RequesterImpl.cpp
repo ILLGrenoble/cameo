@@ -22,6 +22,7 @@
 #include "../../base/impl/zmq/ContextZmq.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
+#include <zmq.hpp>
 #include <sstream>
 
 namespace cameo {
@@ -43,7 +44,7 @@ RequesterImpl::RequesterImpl(const Endpoint& endpoint, int requesterPort, int re
 
 	// Create a socket REP.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_repSocket.reset(new zmq::socket_t(contextImpl->m_context, ZMQ_REP));
+	m_repSocket.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
 	std::stringstream reqEndpoint;
 	reqEndpoint << "tcp://*:" << m_requesterPort;
 

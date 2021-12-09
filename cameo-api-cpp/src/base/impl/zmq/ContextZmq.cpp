@@ -21,6 +21,7 @@
 #include "JSON.h"
 #include "../../Messages.h"
 #include "../../RequestSocket.h"
+#include <zmq.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -29,7 +30,7 @@ using namespace std;
 namespace cameo {
 
 ContextZmq::ContextZmq() : Context(),
-	m_context(1), m_timeout(0) {
+	m_context(new zmq::context_t(1)), m_timeout(0) {
 }
 
 ContextZmq::~ContextZmq() {
@@ -43,9 +44,13 @@ int ContextZmq::getTimeout() const {
 	return m_timeout;
 }
 
+zmq::context_t& ContextZmq::getContext() {
+	return *m_context.get();
+}
+
 zmq::socket_t * ContextZmq::createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
-	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
+	zmq::socket_t * subscriber = new zmq::socket_t(*m_context.get(), ZMQ_SUB);
 
 	vector<string> streamList;
 	streamList.push_back(message::Event::STATUS);
@@ -67,7 +72,7 @@ zmq::socket_t * ContextZmq::createEventSubscriber(const std::string& endpoint, c
 
 zmq::socket_t * ContextZmq::createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint) {
 
-	zmq::socket_t * subscriber = new zmq::socket_t(m_context, ZMQ_SUB);
+	zmq::socket_t * subscriber = new zmq::socket_t(*m_context.get(), ZMQ_SUB);
 
 	vector<string> streamList;
 	streamList.push_back(message::Event::SYNCSTREAM);
@@ -87,7 +92,7 @@ zmq::socket_t * ContextZmq::createOutputStreamSubscriber(const std::string& endp
 
 zmq::socket_t * ContextZmq::createCancelPublisher(const std::string& endpoint) {
 
-	zmq::socket_t * publisher = new zmq::socket_t(m_context, ZMQ_PUB);
+	zmq::socket_t * publisher = new zmq::socket_t(*m_context.get(), ZMQ_PUB);
 	publisher->bind(endpoint.c_str());
 
 	return publisher;
@@ -95,7 +100,7 @@ zmq::socket_t * ContextZmq::createCancelPublisher(const std::string& endpoint) {
 
 zmq::socket_t * ContextZmq::createRequestSocket(const std::string& endpoint) {
 
-	zmq::socket_t* socket = new zmq::socket_t(m_context, ZMQ_REQ);
+	zmq::socket_t* socket = new zmq::socket_t(*m_context.get(), ZMQ_REQ);
 
 	try {
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
