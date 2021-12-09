@@ -86,7 +86,7 @@ public class ResponderImpl {
 				
 				byte[][] data = message.getAllData();
 				
-				byte[] message1 = data[1]; // OR 1?
+				byte[] message1 = data[1];
 				
 				// Create the request implementation.
 				RequestImpl impl = new RequestImpl(name, 
