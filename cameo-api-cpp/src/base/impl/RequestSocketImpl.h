@@ -38,9 +38,9 @@ public:
 	void init();
 	void reset();
 
-	std::unique_ptr<zmq::message_t> request(const std::string& request, int overrideTimeout = -1);
-	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
-	std::unique_ptr<zmq::message_t> request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
+	std::string request(const std::string& request, int overrideTimeout = -1);
+	std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+	std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
 	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);

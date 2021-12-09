@@ -107,7 +107,7 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::receive(int overrideTimeout) 
 	return reply;
 }
 
-std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& request, int overrideTimeout) {
+std::string RequestSocketImpl::request(const std::string& request, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -121,10 +121,12 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->send(requestMessage);
 
 	// Receive and return the response.
-	return receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+
+	return std::string(response->data<char>(), response->size());
 }
 
-std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+std::string RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -142,10 +144,12 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->send(requestPart2Message);
 
 	// Receive and return the response.
-	return receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+
+	return std::string(response->data<char>(), response->size());
 }
 
-std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+std::string RequestSocketImpl::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
 
 	// Init if not already done or if a timeout occurred.
 	init();
@@ -167,38 +171,40 @@ std::unique_ptr<zmq::message_t> RequestSocketImpl::request(const std::string& re
 	m_socket->send(requestPart3Message);
 
 	// Receive and return the response.
-	return receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+
+	return std::string(response->data<char>(), response->size());
 }
 
 json::Object RequestSocketImpl::requestJSON(const std::string& request, int overrideTimeout) {
 
-	std::unique_ptr<zmq::message_t> reply = this->request(request, overrideTimeout);
+	std::string reply = this->request(request, overrideTimeout);
 
 	// Get the JSON response.
 	json::Object response;
-	json::parse(response, reply.get());
+	json::parse(response, reply);
 
 	return response;
 }
 
 json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
 
-	std::unique_ptr<zmq::message_t> reply = this->request(requestPart1, requestPart2, overrideTimeout);
+	std::string reply = this->request(requestPart1, requestPart2, overrideTimeout);
 
 	// Get the JSON response.
 	json::Object response;
-	json::parse(response, reply.get());
+	json::parse(response, reply);
 
 	return response;
 }
 
 json::Object RequestSocketImpl::requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
 
-	std::unique_ptr<zmq::message_t> reply = this->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
+	std::string reply = this->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
 
 	// Get the JSON response.
 	json::Object response;
-	json::parse(response, reply.get());
+	json::parse(response, reply);
 
 	return response;
 }

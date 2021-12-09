@@ -69,15 +69,6 @@ std::string StringObject::toString() {
 	return m_buffer.GetString();
 }
 
-bool parse(Object & object, zmq::message_t * message) {
-
-	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
-	if (!ok) {
-		return false;
-	}
-	return true;
-}
-
 bool parse(Object & object, const std::string& string) {
 
 	rapidjson::ParseResult ok = object.Parse(static_cast<const char *>(string.c_str()), string.size());

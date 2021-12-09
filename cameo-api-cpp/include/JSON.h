@@ -59,7 +59,19 @@ private:
 typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
 
-bool parse(Object & object, zmq::message_t * message);
+template<typename T>
+bool parse(Object & object, T message);
+
+template<typename Message>
+bool parse(Object & object, Message * message) {
+
+	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
+	if (!ok) {
+		return false;
+	}
+	return true;
+}
+
 bool parse(Object & object, const std::string& string);
 
 }
