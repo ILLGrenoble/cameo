@@ -25,7 +25,7 @@ import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
-import fr.ill.ics.cameo.base.impl.ContextImpl;
+import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -51,7 +51,7 @@ public class SubscriberImpl {
 		this.publisherName = publisherName;
 		this.numberOfSubscribers = numberOfSubscribers;
 		this.instance = instance;
-		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
+		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
 		waiting.add();
 	}

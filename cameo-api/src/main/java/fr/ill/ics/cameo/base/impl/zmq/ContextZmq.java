@@ -1,13 +1,13 @@
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base.impl.zmq;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Context;
 
-public class ContextImpl implements Context {
+public class ContextZmq implements Context {
 	
 	private Zmq.Context context;
 	
-	ContextImpl(Zmq.Context context) {
+	public ContextZmq(Zmq.Context context) {
 		this.context = context;
 	}
 	

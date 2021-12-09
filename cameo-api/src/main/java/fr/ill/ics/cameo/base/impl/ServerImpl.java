@@ -32,6 +32,7 @@ import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.EventListener;
@@ -60,7 +61,7 @@ public class ServerImpl {
 	private int[] serverVersion = new int[3];
 	private int statusPort;
 	private Zmq.Context context;
-	private ContextImpl contextImpl;
+	private ContextZmq contextImpl;
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
 	private JSON.Parser parser = new JSON.Parser();
@@ -115,7 +116,7 @@ public class ServerImpl {
 	 */
 	final private void init() {
 		context = new Zmq.Context();
-		contextImpl = new ContextImpl(context);
+		contextImpl = new ContextZmq(context);
 		requestSocket = this.createRequestSocket(serverEndpoint.toString());
 	}
 	

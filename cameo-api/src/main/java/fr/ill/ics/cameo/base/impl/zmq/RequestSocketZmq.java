@@ -4,7 +4,6 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.SocketException;
-import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.base.impl.RequestSocketImpl;
 
 public class RequestSocketZmq implements RequestSocketImpl {
@@ -15,7 +14,7 @@ public class RequestSocketZmq implements RequestSocketImpl {
 
 	public RequestSocketZmq(Context context, int timeout) {
 		// Get the Zmq context.
-		this.context = ((ContextImpl)context).getContext();
+		this.context = ((ContextZmq)context).getContext();
 		this.socket = this.context.createSocket(Zmq.REQ);
 		this.timeout = timeout;
 	}

@@ -20,8 +20,8 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.base.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -43,7 +43,7 @@ public class ResponderImpl {
 	public ResponderImpl(int responderPort, String name) {
 		this.responderPort = responderPort;
 		this.name = name;
-		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
+		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
 		// create a socket REP
 		responder = context.createSocket(Zmq.REP);

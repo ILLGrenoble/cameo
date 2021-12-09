@@ -22,8 +22,8 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application.This;
+import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.base.RequestSocket;
-import fr.ill.ics.cameo.base.impl.ContextImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -52,7 +52,7 @@ public class RequesterImpl {
 		this.name = name;
 		this.responderId = responderId;
 		this.requesterId = requesterId;
-		this.context = ((ContextImpl)This.getCom().getContext()).getContext();
+		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
 		// Create the REQ socket.
 		String responderEndpoint = endpoint.withPort(responderPort).toString();
