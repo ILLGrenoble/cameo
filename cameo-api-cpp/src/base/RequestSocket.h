@@ -20,23 +20,19 @@
 #include "JSON.h"
 #include <string>
 #include <memory>
-#include "zmq.hpp"
 
 namespace cameo {
 
-class ContextImpl;
+class Context;
+class RequestSocketImpl;
 
 class RequestSocket {
 
 public:
-	RequestSocket(ContextImpl * context, const std::string& endpoint, int timeout = 0);
+	RequestSocket(Context * context, const std::string& endpoint, int timeout = 0);
 	virtual ~RequestSocket();
 
 	void setTimeout(int timeout);
-	void setSocketLinger();
-
-	void init();
-	void reset();
 
 	std::string request(const std::string& request, int overrideTimeout = -1);
 	std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
@@ -46,13 +42,8 @@ public:
 	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
 	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
-	ContextImpl * m_services;
-	std::string m_endpoint;
-	std::unique_ptr<zmq::socket_t> m_socket;
-	int m_timeout;
-
 private:
-	std::unique_ptr<zmq::message_t> receive(int overrideTimeout);
+	std::unique_ptr<RequestSocketImpl> m_impl;
 };
 
 }
