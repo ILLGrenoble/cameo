@@ -15,7 +15,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class This {
 	
-	static This impl;
+	static This instance;
 	
 	private Endpoint serverEndpoint;
 	private String name;
@@ -142,71 +142,71 @@ public class This {
 	private static Com com;
 	
 	void initServer() {
-		server.registerEventListener(impl.getEventListener());
+		server.registerEventListener(instance.getEventListener());
 		
-		if (impl.getStarterEndpoint() != null) {
-			starterServer = new Server(impl.getStarterEndpoint());
+		if (instance.getStarterEndpoint() != null) {
+			starterServer = new Server(instance.getStarterEndpoint());
 		}
-		com = new Com(impl.getServer(), impl.getId());
+		com = new Com(instance.getServer(), instance.getId());
 	}
 	
 	static public void init(String[] args) {
-		impl = new This(args);
-		impl.initServer();
+		instance = new This(args);
+		instance.initServer();
 	}
 	
 	static public void init(String name, String endpoint) {
-		impl = new This(name, endpoint);
-		impl.initServer();
+		instance = new This(name, endpoint);
+		instance.initServer();
 	}
 			
 	static public String getName() {
-		if (impl == null) {
+		if (instance == null) {
 			return null;		
 		}
-		return impl.name;
+		return instance.name;
 	}
 
 	static public int getId() {
-		if (impl == null) {
+		if (instance == null) {
 			return 0;		
 		}
-		return impl.id;
+		return instance.id;
 	}
 	
 	public int getTimeout() {
-		if (impl == null) {
+		if (instance == null) {
 			return 0;		
 		}
-		return impl.server.getTimeout();
+		return instance.server.getTimeout();
 	}
 
 	public void setTimeout(int timeout) {
-		if (impl == null) {
+		if (instance == null) {
 			return;		
 		}
-		impl.server.setTimeout(timeout);
+		instance.server.setTimeout(timeout);
 	}
 	
 	static public Endpoint getEndpoint() {
-		if (impl == null) {
+		if (instance == null) {
 			return null;		
 		}
-		return impl.serverEndpoint;
+		return instance.serverEndpoint;
 	}
 	
 	static public Server getServer() {
-		if (impl == null) {
+		if (instance == null) {
 			return null;		
 		}
-		return impl.server;
+		return instance.server;
 	}
 	
 	static public Server getStarterServer() {
-		if (impl == null) {
+		if (instance == null) {
 			return null;		
 		}
-		return impl.starterServer;
+		return instance.starterServer;
 	}
 	
 	static public Com getCom() {
@@ -214,10 +214,10 @@ public class This {
 	}
 	
 	static public boolean isAvailable(int timeout) {
-		if (impl == null) {
+		if (instance == null) {
 			return false;		
 		}
-		return impl.server.isAvailable(timeout);
+		return instance.server.isAvailable(timeout);
 	}
 	
 	static public boolean isAvailable() {
@@ -225,18 +225,18 @@ public class This {
 	}
 	
 	static public void cancelWaitings() {
-		if (impl == null) {
+		if (instance == null) {
 			return;		
 		}
-		impl.waitingSet.cancelAll();
+		instance.waitingSet.cancelAll();
 	}
 	
 	static public void terminate() {
-		impl.terminateAll();
+		instance.terminateAll();
 	}
 
 	static public void setResult(byte[] data) {
-		JSONObject response = impl.server.requestJSON(Messages.createSetResultRequest(getId()), data);
+		JSONObject response = instance.server.requestJSON(Messages.createSetResultRequest(getId()), data);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -255,7 +255,7 @@ public class This {
 	 */
 	static public boolean setRunning() {
 		JSONObject request = Messages.createSetStatusRequest(getId(), Application.State.RUNNING);
-		JSONObject response = impl.server.requestJSON(request);
+		JSONObject response = instance.server.requestJSON(request);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -269,7 +269,7 @@ public class This {
 	 * @return
 	 */
 	static public boolean isStopping() {
-		return (impl.getState(getId()) == Application.State.STOPPING);
+		return (instance.getState(getId()) == Application.State.STOPPING);
 	}
 	
 	/**
@@ -277,7 +277,7 @@ public class This {
 	 * @param handler
 	 */
 	static public void handleStop(final Handler handler, int stoppingTime) {
-		impl.createStopHandler(handler, stoppingTime);
+		instance.createStopHandler(handler, stoppingTime);
 	}
 	
 	/**
@@ -293,14 +293,14 @@ public class This {
 	 * @return
 	 */
 	static public Instance connectToStarter(int options) {
-		if (impl.starterServer == null) {
+		if (instance.starterServer == null) {
 			return null;
 		}
 		
 		// Iterate the instances to find the id
-		List<Instance> instances = impl.starterServer.connectAll(impl.getStarterName(), 0);
+		List<Instance> instances = instance.starterServer.connectAll(instance.getStarterName(), 0);
 		for (Instance i : instances) {
-			if (i.getId() == impl.getStarterId()) {
+			if (i.getId() == instance.getStarterId()) {
 				return i;
 			}
 		}

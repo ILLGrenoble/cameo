@@ -23,15 +23,15 @@ public abstract class Waiting {
 
 	public void add() {
 		// Add the waiting if This exists.
-		if (This.impl != null) {
-			This.impl.getWaitingSet().add(this);
+		if (This.instance != null) {
+			This.instance.getWaitingSet().add(this);
 		}	
 	}
 	
 	public void remove() {
 		// Remove the waiting if This exists.
-		if (This.impl != null) {
-			This.impl.getWaitingSet().remove(this);
+		if (This.instance != null) {
+			This.instance.getWaitingSet().remove(this);
 		}
 	}
 	
