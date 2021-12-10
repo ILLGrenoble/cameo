@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
+import fr.ill.ics.cameo.coms.impl.zmq.PublisherZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -14,12 +15,16 @@ import fr.ill.ics.cameo.messages.Messages;
 public class Publisher {
 
 	private PublisherImpl impl;
+	private PublisherWaiting waiting = new PublisherWaiting(this);
 	
-	private Publisher(PublisherImpl impl) {
-		this.impl = impl;
+	private Publisher() {
+		//TODO Replace with factory.
+		this.impl = new PublisherZmq();
+		
+		waiting.add();
 	}
 	
-	static PublisherImpl createPublisher(String name, int numberOfSubscribers) throws PublisherCreationException {
+	private void init(String name, int numberOfSubscribers) throws PublisherCreationException {
 	
 		JSONObject request = Messages.createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
 		JSONObject response = This.getCom().requestJSON(request);
@@ -30,7 +35,7 @@ public class Publisher {
 		}
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		
-		return new PublisherImpl(publisherPort, synchronizerPort, name, numberOfSubscribers);
+		impl.init(publisherPort, synchronizerPort, name, numberOfSubscribers);
 	}
 	
 	/**
@@ -40,7 +45,11 @@ public class Publisher {
 	 * @throws PublisherCreationException, ConnectionTimeout
 	 */
 	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
-		return new Publisher(createPublisher(name, numberOfSubscribers));
+		
+		Publisher publisher = new Publisher();
+		publisher.init(name, numberOfSubscribers);
+		
+		return publisher;
 	}
 	
 	/**
@@ -50,7 +59,7 @@ public class Publisher {
 	 * @throws PublisherCreationException, ConnectionTimeout
 	 */
 	static public Publisher create(String name) throws PublisherCreationException {
-		return new Publisher(createPublisher(name, 0));
+		return create(name, 0);
 	}
 	
 	public String getName() {
@@ -93,11 +102,12 @@ public class Publisher {
 	}
 	
 	public void terminate() {
+		waiting.remove();
 		impl.terminate();
 	}
 		
 	@Override
 	public String toString() {
-		return impl.toString();
+		return "pub." + getName() + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 }

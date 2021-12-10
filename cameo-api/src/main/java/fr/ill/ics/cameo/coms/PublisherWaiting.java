@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
-public class PublisherWaitingImpl extends Waiting {
+public class PublisherWaiting extends Waiting {
 
-	private PublisherImpl publisher;
+	private Publisher publisher;
 	
-	public PublisherWaitingImpl(PublisherImpl publisher) {
+	public PublisherWaiting(Publisher publisher) {
 		this.publisher = publisher;
 	}
 	
