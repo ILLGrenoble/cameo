@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
 public class Response {
 

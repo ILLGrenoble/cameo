@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
 public class CancelIdGenerator {
 

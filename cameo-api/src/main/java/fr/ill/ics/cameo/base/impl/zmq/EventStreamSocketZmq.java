@@ -21,6 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.CancelIdGenerator;
 import fr.ill.ics.cameo.base.Event;
 import fr.ill.ics.cameo.base.KeyEvent;
 import fr.ill.ics.cameo.base.PortEvent;
@@ -29,7 +30,6 @@ import fr.ill.ics.cameo.base.ResultEvent;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.StatusEvent;
 import fr.ill.ics.cameo.base.UnexpectedException;
-import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
 import fr.ill.ics.cameo.base.impl.EventStreamSocketImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

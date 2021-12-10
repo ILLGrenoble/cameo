@@ -22,9 +22,9 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.CancelIdGenerator;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.UnexpectedException;
-import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

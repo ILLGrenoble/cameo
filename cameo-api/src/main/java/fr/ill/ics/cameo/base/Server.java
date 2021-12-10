@@ -29,7 +29,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.base.Application.State;
-import fr.ill.ics.cameo.base.impl.Response;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -296,7 +295,7 @@ public class Server {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	private fr.ill.ics.cameo.base.impl.Response startApplication(String name, String[] args) throws ConnectionTimeout {
+	private Response startApplication(String name, String[] args) throws ConnectionTimeout {
 		
 		JSONObject request;
 		
@@ -309,7 +308,7 @@ public class Server {
 		
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		return new Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
 	
 	public int getStreamPort(String name) throws ConnectionTimeout {
@@ -391,8 +390,7 @@ public class Server {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	//TODO remove public
-	public fr.ill.ics.cameo.base.impl.Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
+	Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
 
 		JSONObject request;
 		
@@ -405,7 +403,7 @@ public class Server {
 		
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		return new fr.ill.ics.cameo.base.impl.Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		return new Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
 		
 	public void killAllAndWaitFor(String name) {
@@ -847,13 +845,6 @@ public class Server {
 		return ports;
 	}
 	
-	@Override
-	public String toString() {
-		return "server@" + serverEndpoint;
-	}
-		
-	
-	
 	/**
 	 * Creates a connection checker.
 	 * @param handler
@@ -880,5 +871,10 @@ public class Server {
 		
 		return connectionChecker;
 	}
-		
+
+	@Override
+	public String toString() {
+		return "server@" + serverEndpoint;
+	}
+
 }
