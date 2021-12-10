@@ -14,16 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.Waiting;
-
-public class InstanceWaitingImpl extends Waiting {
+public class InstanceWaiting extends Waiting {
 
 	private Instance instance;
 	
-	public InstanceWaitingImpl(Instance instance) {
+	public InstanceWaiting(Instance instance) {
 		this.instance = instance;
 	}
 	

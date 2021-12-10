@@ -5,7 +5,6 @@ import java.util.Set;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.impl.InstanceWaitingImpl;
 import fr.ill.ics.cameo.base.impl.Response;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -28,7 +27,7 @@ public class Instance extends EventListener {
 	private int initialState = Application.State.UNKNOWN;
 	private int lastState = Application.State.UNKNOWN;
 	private byte[] resultData;
-	private InstanceWaitingImpl waiting = new InstanceWaitingImpl(this);
+	private InstanceWaiting waiting = new InstanceWaiting(this);
 	private Integer exitCode;
 	
 	
