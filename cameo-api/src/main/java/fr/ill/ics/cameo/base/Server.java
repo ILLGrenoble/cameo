@@ -194,7 +194,7 @@ public class Server {
 		}
 	}
 	
-	private void sendSyncStream(String name) {
+	public void sendSyncStream(String name) {
 		
 		try {
 			requestSocket.requestJSON(Messages.createSyncStreamRequest(name));
@@ -292,10 +292,10 @@ public class Server {
 		JSONObject response = requestSocket.requestJSON(Messages.createStreamStatusRequest());
 		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 
-		EventStreamSocket streamSocket = new EventStreamSocket(this);
-		streamSocket.init();
+		EventStreamSocket eventStreamSocket = new EventStreamSocket(this);
+		eventStreamSocket.init();
 		
-		return streamSocket; 
+		return eventStreamSocket; 
 	}
 	
 	/**
@@ -323,7 +323,7 @@ public class Server {
 		return new fr.ill.ics.cameo.base.impl.Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
 	
-	private int getStreamPort(String name) throws ConnectionTimeout {
+	public int getStreamPort(String name) throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createOutputPortRequest(name);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -682,43 +682,10 @@ public class Server {
 
 	private OutputStreamSocket createOutputStreamSocket(String name) {
 		
-		int port = getStreamPort(name);
+		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(this, name);
+		outputStreamSocket.init();
 		
-		if (port == -1) {
-			return null;
-		}
-		
-		// Prepare our context and subscriber
-		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
-		
-		subscriber.connect(serverEndpoint.withPort(port).toString());
-		subscriber.subscribe(Messages.Event.SYNCSTREAM);
-		subscriber.subscribe(Messages.Event.STREAM);
-		subscriber.subscribe(Messages.Event.ENDSTREAM);
-		
-		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
-		
-		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(Messages.Event.CANCEL);
-		
-		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
-		cancelPublisher.bind(cancelEndpoint);
-		
-		// Polling to wait for connection.
-		Zmq.Poller poller = context.createPoller(subscriber);
-		
-		while (true) {
-			
-			// the server returns a SYNCSTREAM message that is used to synchronize the subscriber
-			sendSyncStream(name);
-
-			// return at the first response.
-			if (poller.poll(100)) {
-				break;
-			}
-		}
-		
-		return new OutputStreamSocket(this, subscriber, cancelPublisher);
+		return outputStreamSocket; 
 	}
 	
 	/**

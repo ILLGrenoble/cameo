@@ -44,8 +44,8 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
 	public EventStreamSocketZmq(Server server) {
 		super();
-		this.context = ((ContextZmq)server.getContext()).getContext();
 		this.server = server;
+		this.context = ((ContextZmq)server.getContext()).getContext();
 	}
 	
 	public void init() {
