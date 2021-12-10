@@ -18,15 +18,14 @@ package fr.ill.ics.cameo.base;
 
 import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.base.Application.State;
-import fr.ill.ics.cameo.base.impl.ThisImpl;
 
 public class HandlerRunner {
 
-	private ThisImpl application;
+	private This application;
 	private Handler handler;
 	private Thread thread = null;
 		
-	public HandlerRunner(ThisImpl application, Handler handler) {
+	public HandlerRunner(This application, Handler handler) {
 		this.application = application;
 		this.handler = handler;
 	}

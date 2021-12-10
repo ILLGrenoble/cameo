@@ -18,8 +18,8 @@ package fr.ill.ics.cameo.coms.impl;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.RequestSocket;
+import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.messages.Messages;
 
 public class RequestImpl {

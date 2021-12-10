@@ -2,8 +2,8 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;

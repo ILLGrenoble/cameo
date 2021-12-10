@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.coms.impl;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.RequestSocket;
+import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

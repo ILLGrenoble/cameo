@@ -15,10 +15,6 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
-
-
-import fr.ill.ics.cameo.base.Application.This;
-
 /**
  * The class implementation must be here to access the package protected member of This.
  * The class enables to cancel waitings and terminate the execution (used by This.terminate). 

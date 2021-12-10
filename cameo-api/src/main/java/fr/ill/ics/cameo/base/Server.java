@@ -29,7 +29,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.base.Application.State;
-import fr.ill.ics.cameo.base.Application.This;
 import fr.ill.ics.cameo.base.impl.Response;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.messages.JSON;
