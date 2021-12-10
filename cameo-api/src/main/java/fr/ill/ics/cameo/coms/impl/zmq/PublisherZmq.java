@@ -36,21 +36,20 @@ public class PublisherZmq implements PublisherImpl {
 	private Zmq.Socket publisher = null;
 	private boolean ended = false;
 	
-	public void init(int publisherPort, int synchronizerPort, String name, int numberOfSubscribers) {
-		this.synchronizerPort = synchronizerPort;
+	public PublisherZmq(String name, int numberOfSubscribers) {
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
+	}
+	
+	public void init(int publisherPort, int synchronizerPort) {
+		this.synchronizerPort = synchronizerPort;
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
 		// create a socket for publishing
 		publisher = context.createSocket(Zmq.PUB);
 		publisher.bind("tcp://*:" + publisherPort);
 	}
-	
-	public String getName() {
-		return name;
-	}
-		
+			
 	public boolean waitForSubscribers() {
 				
 		if (numberOfSubscribers <= 0) {

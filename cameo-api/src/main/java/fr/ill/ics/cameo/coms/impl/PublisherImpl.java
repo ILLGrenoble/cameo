@@ -18,8 +18,7 @@ package fr.ill.ics.cameo.coms.impl;
 
 public interface PublisherImpl {
 
-	void init(int publisherPort, int synchronizerPort, String name, int numberOfSubscribers);
-	String getName();
+	void init(int publisherPort, int synchronizerPort);
 	boolean waitForSubscribers();
 	void cancelWaitForSubscribers();
 	void send(byte[] data);

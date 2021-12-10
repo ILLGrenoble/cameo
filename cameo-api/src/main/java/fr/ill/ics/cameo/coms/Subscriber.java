@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
+import fr.ill.ics.cameo.coms.impl.zmq.SubscriberZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -16,12 +17,16 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class Subscriber {
 	
 	private SubscriberImpl impl;
+	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	
-	private Subscriber(SubscriberImpl impl) {
-		this.impl = impl;
+	private Subscriber() {
+		//TODO Replace with factory.
+		this.impl = new SubscriberZmq();
+		
+		waiting.add();
 	}
 	
-	private static SubscriberImpl createSubscriber(String publisherName, Instance instance) throws SubscriberCreationException {
+	private void initSubscriber(Instance instance, String publisherName) throws SubscriberCreationException {
 		
 		JSONObject request = Messages.createConnectPublisherRequest(instance.getId(), publisherName);
 		JSONObject response = instance.getCom().requestJSON(request);
@@ -35,19 +40,16 @@ public class Subscriber {
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		SubscriberImpl subscriber = new SubscriberImpl(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
-		subscriber.init();
-		
-		return subscriber;
+		impl.init(instance, publisherPort, synchronizerPort, publisherName, numberOfSubscribers);
 	}
 	
-	static SubscriberImpl createSubscriber(Instance application, String publisherName) {
+	private boolean init(Instance application, String publisherName) {
 		
 		try {
-			SubscriberImpl subscriber = createSubscriber(publisherName, application);
-			return subscriber;
-			
-		} catch (SubscriberCreationException e) {
+			initSubscriber(application, publisherName);
+			return true;
+		}
+		catch (SubscriberCreationException e) {
 			// the publisher does not exist, so we are waiting for it
 		}
 		
@@ -59,19 +61,19 @@ public class Subscriber {
 			|| lastState == Application.State.STOPPED
 			|| lastState == Application.State.KILLED					
 			|| lastState == Application.State.ERROR) {
-			return null;
+			return false;
 		}
 		
 		try {
-			SubscriberImpl subscriber = createSubscriber(publisherName, application);
-			return subscriber;
-			
-		} catch (SubscriberCreationException e) {
+			initSubscriber(application, publisherName);
+			return true;
+		}
+		catch (SubscriberCreationException e) {
 			// that should not happen
 			System.err.println("the publisher " + publisherName + " does not exist but should");
 		}
 		
-		return null;
+		return false;
 	}
 	
 	/**
@@ -80,7 +82,11 @@ public class Subscriber {
 	 * @return
 	 */
 	public static Subscriber create(Instance application, String publisherName) {
-		return new Subscriber(createSubscriber(application, publisherName));
+		
+		Subscriber subscriber = new Subscriber();
+		subscriber.init(application, publisherName);
+		
+		return subscriber;
 	}
 			
 	public String getPublisherName() { 
@@ -136,11 +142,13 @@ public class Subscriber {
 	}
 	
 	public void terminate() {
+		
+		waiting.remove();
 		impl.terminate();
 	}
 
 	@Override
 	public String toString() {
-		return impl.toString();
+		return "sub." + getPublisherName() + ":" + getInstanceName() + "." + getInstanceId() + "@" + getInstanceEndpoint();
 	}
 }

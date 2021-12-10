@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
-public class SubscriberWaitingImpl extends Waiting {
+public class SubscriberWaiting extends Waiting {
 
-	private SubscriberImpl subscriber;
+	private Subscriber subscriber;
 	
-	public SubscriberWaitingImpl(SubscriberImpl subscriber) {
+	public SubscriberWaiting(Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}
 	

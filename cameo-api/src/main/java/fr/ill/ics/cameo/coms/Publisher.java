@@ -14,12 +14,15 @@ import fr.ill.ics.cameo.messages.Messages;
  */
 public class Publisher {
 
+	private String name;
 	private PublisherImpl impl;
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	
-	private Publisher() {
+	private Publisher(String name, int numberOfSubscribers) {
+		
+		this.name = name;
 		//TODO Replace with factory.
-		this.impl = new PublisherZmq();
+		this.impl = new PublisherZmq(name, numberOfSubscribers);
 		
 		waiting.add();
 	}
@@ -35,7 +38,7 @@ public class Publisher {
 		}
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		
-		impl.init(publisherPort, synchronizerPort, name, numberOfSubscribers);
+		impl.init(publisherPort, synchronizerPort);
 	}
 	
 	/**
@@ -46,7 +49,7 @@ public class Publisher {
 	 */
 	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
 		
-		Publisher publisher = new Publisher();
+		Publisher publisher = new Publisher(name, numberOfSubscribers);
 		publisher.init(name, numberOfSubscribers);
 		
 		return publisher;
@@ -63,7 +66,7 @@ public class Publisher {
 	}
 	
 	public String getName() {
-		return impl.getName();
+		return name;
 	}
 	
 	/**
