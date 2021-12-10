@@ -7,7 +7,6 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.base.impl.InstanceWaitingImpl;
 import fr.ill.ics.cameo.base.impl.Response;
-import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 

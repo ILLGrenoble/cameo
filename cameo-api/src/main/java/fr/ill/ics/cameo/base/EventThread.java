@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.base;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import fr.ill.ics.cameo.base.impl.ServerImpl;
-
 /**
  * The EventThread class forwards the events from the EventStreamSocket socket to the registered listeners.
  */
