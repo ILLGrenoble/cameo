@@ -1,38 +1,15 @@
-/*
- * Copyright 2015 Institut Laue-Langevin
- *
- * Licensed under the EUPL, Version 1.1 only (the "License");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at:
- *
- * http://joinup.ec.europa.eu/software/page/eupl
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the Licence is distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and
- * limitations under the Licence.
- */
-
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
 import java.util.Set;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.CancelEvent;
-import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.Event;
-import fr.ill.ics.cameo.base.EventListener;
-import fr.ill.ics.cameo.base.KeyEvent;
-import fr.ill.ics.cameo.base.KeyValue;
-import fr.ill.ics.cameo.base.OutputStreamSocket;
-import fr.ill.ics.cameo.base.PortEvent;
-import fr.ill.ics.cameo.base.PublisherEvent;
-import fr.ill.ics.cameo.base.ResultEvent;
-import fr.ill.ics.cameo.base.StatusEvent;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+
+import fr.ill.ics.cameo.base.impl.InstanceWaitingImpl;
+import fr.ill.ics.cameo.base.impl.Response;
+import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
-
 
 /**
  * Class that implements simple asynchronous programming model.
@@ -42,12 +19,11 @@ import fr.ill.ics.cameo.strings.Endpoint;
  * @author legoc
  *
  */
-public class InstanceImpl extends EventListener {
+public class Instance extends EventListener {
 
-	private ServerImpl server;
+	private Server server;
 	private int id = -1;
 	private OutputStreamSocket outputSocket;
-	
 	private String errorMessage;
 	private int pastStates = 0;
 	private int initialState = Application.State.UNKNOWN;
@@ -56,7 +32,48 @@ public class InstanceImpl extends EventListener {
 	private InstanceWaitingImpl waiting = new InstanceWaitingImpl(this);
 	private Integer exitCode;
 	
-	InstanceImpl(ServerImpl server) {
+	
+	/**
+	 * Class defining the Communication Operations Manager (COM).
+	 */
+	public static class Com {
+		
+		private Server server;
+		private int applicationId;
+		
+		Com(Server server, int applicationId) {
+			this.server = server;
+			this.applicationId = applicationId;
+		}
+		
+		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
+			return server.getKeyValue(applicationId, key);
+		}
+
+		public JSONObject requestJSON(JSONObject request) {
+			return server.requestJSON(request);
+		}
+		
+		/**
+		 * Method provided by convenience to simplify the parsing of JSON messages.
+		 * @param message
+		 * @return
+		 */
+		public JSONObject parse(byte[] message) {
+			try {
+				return server.parse(message);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse message");
+			}
+		}
+		
+	}
+	
+	private Com com;
+		
+	
+	Instance(Server server) {
 		this.server = server;
 		
 		// Register the waiting
@@ -67,8 +84,15 @@ public class InstanceImpl extends EventListener {
 		this.id = id;
 	}
 	
-	public ServerImpl getServer() {
+	public Server getServer() {
 		return server;
+	}
+	
+	public Com getCom() {
+		if (com == null) {
+			com = new Com(server, id);
+		}
+		return com;
 	}
 	
 	void setOutputStreamSocket(OutputStreamSocket outputSocket) {

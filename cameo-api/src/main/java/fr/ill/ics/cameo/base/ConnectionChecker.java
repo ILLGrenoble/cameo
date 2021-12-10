@@ -26,12 +26,12 @@ public class ConnectionChecker {
 		void handle(boolean available);
 	}
 	
-	private ServerImpl server;
+	private Server server;
 	private Handler handler;
 	private Thread thread = null;
 	private TimeCondition waitCondition = new TimeCondition();
 		
-	public ConnectionChecker(ServerImpl server, Handler handler) {
+	public ConnectionChecker(Server server, Handler handler) {
 		this.server = server;
 		this.handler = handler;
 	}

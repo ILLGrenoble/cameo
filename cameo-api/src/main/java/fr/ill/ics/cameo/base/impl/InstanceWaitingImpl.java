@@ -16,13 +16,14 @@
 
 package fr.ill.ics.cameo.base.impl;
 
+import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Waiting;
 
 public class InstanceWaitingImpl extends Waiting {
 
-	private InstanceImpl instance;
+	private Instance instance;
 	
-	public InstanceWaitingImpl(InstanceImpl instance) {
+	public InstanceWaitingImpl(Instance instance) {
 		this.instance = instance;
 	}
 	

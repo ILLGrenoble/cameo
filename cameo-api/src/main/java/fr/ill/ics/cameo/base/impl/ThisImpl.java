@@ -29,6 +29,7 @@ import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Event;
 import fr.ill.ics.cameo.base.EventListener;
 import fr.ill.ics.cameo.base.InvalidArgumentException;
+import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.StatusEvent;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.UnmanagedApplicationException;
@@ -48,7 +49,7 @@ public class ThisImpl {
 	private String starterName;
 	private int starterId;
 	
-	private ServerImpl server;
+	private Server server;
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
@@ -128,7 +129,7 @@ public class ThisImpl {
 	private void initApplication() {
 
 		// Create the server.
-		server = new ServerImpl(serverEndpoint, 0);
+		server = new Server(serverEndpoint, 0);
 		
 		// Init the unmanaged application.
 		if (!managed) {
@@ -167,7 +168,7 @@ public class ThisImpl {
 		return starterId;
 	}
 	
-	public ServerImpl getServer() {
+	public Server getServer() {
 		return server;
 	}
 	

@@ -3,7 +3,7 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Application.Instance;
+import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;

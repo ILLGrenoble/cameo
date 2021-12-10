@@ -27,12 +27,12 @@ import fr.ill.ics.cameo.messages.Messages;
 
 public class EventStreamSocket {
 		
-	private ServerImpl server;
+	private Server server;
 	private Zmq.Socket socket;
 	private Zmq.Socket cancelSocket;
 	private boolean canceled = false;
 	
-	public EventStreamSocket(ServerImpl server, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public EventStreamSocket(Server server, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
 		super();
 		this.server = server;
 		this.socket = subscriber;

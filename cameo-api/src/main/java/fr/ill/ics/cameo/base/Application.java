@@ -19,13 +19,10 @@ package fr.ill.ics.cameo.base;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.impl.InstanceImpl;
-import fr.ill.ics.cameo.base.impl.ServerImpl;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -45,10 +42,10 @@ public class Application {
 		
 		public static class Com {
 			
-			private ServerImpl server;
+			private Server server;
 			private int applicationId;
 			
-			Com(ServerImpl server, int applicationId) {
+			Com(Server server, int applicationId) {
 				this.server = server;
 				this.applicationId = applicationId;
 			}
@@ -151,7 +148,7 @@ public class Application {
 		private static Com com;
 		
 		static private void initServer() {
-			server = new Server(impl.getServer());
+			server = impl.getServer();
 			server.registerEventListener(impl.getEventListener());
 			
 			if (impl.getStarterEndpoint() != null) {
@@ -284,7 +281,7 @@ public class Application {
 			}
 			
 			// Iterate the instances to find the id
-			List<Instance> instances = starterServer.connectAll(impl.getStarterName());
+			List<Instance> instances = starterServer.connectAll(impl.getStarterName(), 0);
 			for (Instance i : instances) {
 				if (i.getId() == impl.getStarterId()) {
 					return i;
@@ -404,212 +401,6 @@ public class Application {
 			
 			return result;
 		}
-	}
-	
-	
-	/**
-	 * Class that implements simple asynchronous programming model.
-	 * There is no connection timeout as they are hidden as bad results.
-	 * The class is not thread safe and should be used in a single thread.
-	 * Question? stop/kill can be called concurrently 
-	 *
-	 */
-	public static class Instance {
-
-		private InstanceImpl impl;
-		
-		/**
-		 * Class defining the Communication Operations Manager (COM).
-		 */
-		public static class Com {
-			
-			private ServerImpl server;
-			private int applicationId;
-			
-			Com(ServerImpl server, int applicationId) {
-				this.server = server;
-				this.applicationId = applicationId;
-			}
-			
-			public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
-				return server.getKeyValue(applicationId, key);
-			}
-
-			public JSONObject requestJSON(JSONObject request) {
-				return server.requestJSON(request);
-			}
-			
-			/**
-			 * Method provided by convenience to simplify the parsing of JSON messages.
-			 * @param message
-			 * @return
-			 */
-			public JSONObject parse(byte[] message) {
-				try {
-					return server.parse(message);
-				}
-				catch (ParseException e) {
-					throw new UnexpectedException("Cannot parse message");
-				}
-			}
-		
-		}
-		
-		private Com com;
-		
-		Instance(InstanceImpl impl) {
-			this.impl = impl;
-			this.com = new Com(impl.getServer(), impl.getId());
-		}
-		
-		public String getName() {
-			return impl.getName();
-		}
-		
-		public int getId() {
-			return impl.getId();
-		}
-		
-		public Endpoint getEndpoint() {
-			return impl.getEndpoint();
-		}
-
-		public Endpoint getStatusEndpoint() {
-			return impl.getStatusEndpoint();
-		}
-		
-		public String getNameId() {
-			return impl.getNameId();
-		}
-		
-		public Com getCom() {
-			return com;
-		}
-		
-		public boolean hasResult() {
-			return impl.hasResult();
-		}
-		
-		/**
-		 * 
-		 * @return true if the instance exists, i.e. the task is executed, otherwise false. 
-		 */
-		public boolean exists() {
-			return impl.exists();
-		}
-		
-		/**
-		 * Returns the error message.
-		 * @return
-		 */
-		public String getErrorMessage() {
-			return impl.getErrorMessage();
-		}
-		
-		/**
-		 * Requests the stop of the application.
-		 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
-		 * Or it can be called in parallel with waitFor.
-		 * @return false if it does not succeed, the error message is then set.
-		 */
-		public boolean stop() {
-			return impl.stop();	
-		}
-		
-		/**
-		 * Requests the kill of the application.
-		 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
-		 * Or it can be called in parallel with waitFor. 
-		 * @return false if it does not succeed, the error message is then set.
-		 */
-		public boolean kill() {
-			return impl.kill();		
-		}
-			
-		public int waitFor(int states) {
-			return impl.waitFor(states);
-		}
-		
-		/**
-		 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
-		 */
-		public int waitFor() {
-			return impl.waitFor(0);
-		}
-		
-		/**
-		 * TODO Temporary access.
-		 * @param eventName
-		 * @return
-		 */
-		public int waitFor(String eventName) {
-			return impl.waitFor(eventName);
-		}
-		
-		public int waitFor(KeyValue keyValue) {
-			return impl.waitFor(keyValue);
-		}
-		
-		public void cancelWaitFor() {
-			impl.cancelWaitFor();
-		}
-		
-		public int getLastState() {
-			// The call is not blocking but pops the entire content of the queue and returns the last received state, i.e. the current state. 
-			return impl.waitFor(0, false);
-		}
-		
-		public int getActualState() {
-			return impl.getActualState();
-		}
-		
-		public Set<Integer> getPastStates() {
-			return impl.getPastStates();
-		}
-		
-		/**
-		 * Returns the exit code.
-		 * @return null if is not assigned, the exit code otherwise
-		 */
-		public Integer getExitCode() {
-			return impl.getExitCode();
-		}
-		
-		/**
-		 * Terminates the local instances by removing the status listener.
-		 * Does not kill nor stop the execution application instance.
-		 * It terminates the local object.
-		 */
-		public void terminate() {
-			impl.terminate();
-		}
-					
-		/**
-		 * Returns the result of the Instance.
-		 * @return
-		 */
-		public byte[] getBinaryResult() {
-			return impl.getResult();
-		}
-		
-		/**
-		 * Returns the result of the Instance. Provided by convenience for string results.
-		 * Returns always null when the Instance was created by a connect call.
-		 * @return
-		 */
-		public String getStringResult() {
-			return impl.getStringResult();
-		}
-				
-		public OutputStreamSocket getOutputStreamSocket() {
-			return impl.getOutputStreamSocket();
-		}
-		
-		@Override
-		public String toString() {
-			return impl.toString();
-		}
-
 	}
 	
 	public static class Configuration {

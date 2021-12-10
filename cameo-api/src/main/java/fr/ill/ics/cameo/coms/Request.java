@@ -2,7 +2,7 @@ package fr.ill.ics.cameo.coms;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.Application.Instance;
+import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.coms.impl.RequestImpl;
 

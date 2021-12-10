@@ -14,23 +14,21 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import fr.ill.ics.cameo.base.Event;
-import fr.ill.ics.cameo.base.EventListener;
-import fr.ill.ics.cameo.base.EventStreamSocket;
+import fr.ill.ics.cameo.base.impl.ServerImpl;
 
 /**
  * The EventThread class forwards the events from the EventStreamSocket socket to the registered listeners.
  */
 class EventThread extends Thread {
 
-	private ServerImpl server;
+	private Server server;
 	private EventStreamSocket socket;
-	
-	EventThread(ServerImpl server, EventStreamSocket socket) {
+		
+	EventThread(Server server, EventStreamSocket socket) {
 		this.server = server;
 		this.socket = socket;
 	}

@@ -27,6 +27,7 @@ import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
+import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
@@ -458,8 +459,8 @@ public class Console {
 			// Do nothing.
 		}
 				
-		List<Application.Instance> applications = server.connectAll(applicationName);
-		for (Application.Instance application : applications) {
+		List<Instance> applications = server.connectAll(applicationName);
+		for (Instance application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
 			
@@ -493,8 +494,8 @@ public class Console {
 			// Do nothing.
 		}
 		
-		List<Application.Instance> applications = server.connectAll(applicationName);
-		for (Application.Instance application : applications) {
+		List<Instance> applications = server.connectAll(applicationName);
+		for (Instance application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
 			
@@ -514,7 +515,7 @@ public class Console {
 			System.exit(1);
 		}
 		
-		Application.Instance result = server.start(applicationName, applicationArgs);
+		Instance result = server.start(applicationName, applicationArgs);
 
 		if (result.exists()) {
 			System.out.println("Started " + result.getNameId() + ".");			
@@ -524,7 +525,7 @@ public class Console {
 		}
 	}
 
-	private int waitFor(Application.Instance app) {
+	private int waitFor(Instance app) {
 		
 		int state = app.waitFor(Application.State.SUCCESS 
 				| Application.State.STOPPED 
@@ -544,7 +545,7 @@ public class Console {
 		return state;
 	}
 	
-	private int startThreadsAndWaitFor(Application.Instance app, Thread shutdownHook) {
+	private int startThreadsAndWaitFor(Instance app, Thread shutdownHook) {
 		
 		final String appName = app.getName();
 		int appId = app.getId();
@@ -578,8 +579,8 @@ public class Console {
 						Server server = new Server(endpoint);
 						server.isAvailable();
 						
-						List<Application.Instance> applications = server.connectAll(appName);
-						for (Application.Instance application : applications) {
+						List<Instance> applications = server.connectAll(appName);
+						for (Instance application : applications) {
 							if (application.getId() == appId) {
 								application.stop();
 								System.out.println("Stopping " + appNameId + ".");
@@ -648,7 +649,7 @@ public class Console {
 		}
 		
 		// then start the application
-		final Application.Instance app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
+		final Instance app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
 		final String appName = app.getName();
 		int appId = app.getId();
 		final String appNameId = app.getNameId();
@@ -669,8 +670,8 @@ public class Console {
 				Server server = new Server(endpoint);
 				server.isAvailable();
 				
-				List<Application.Instance> applications = server.connectAll(appName);
-				for (Application.Instance application : applications) {
+				List<Instance> applications = server.connectAll(appName);
+				for (Instance application : applications) {
 					if (application.getId() == appId) {
 						application.kill();
 						application.waitFor();
@@ -700,7 +701,7 @@ public class Console {
 			System.exit(1);
 		}
 		
-		Application.Instance app = null;
+		Instance app = null;
 		
 		// Test if an id is provided.
 		try {
@@ -722,7 +723,7 @@ public class Console {
 		if (applicationId == -1) {
 				
 			// Connect all the apps.
-			List<Application.Instance> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
+			List<Instance> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
 			
 			if (apps.size() > 1) {
 				System.out.println("More than one application " + applicationName + " is executing, please select one.");
