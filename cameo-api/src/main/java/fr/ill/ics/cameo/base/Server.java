@@ -159,11 +159,7 @@ public class Server {
 	public void destroySocket(Socket socket) {
 		context.destroySocket(socket);
 	}
-	
-	public JSONObject parse(Zmq.Msg reply) throws ParseException {
-		return parser.parse(Messages.parseString(reply.getFirstData()));
-	}
-	
+		
 	public JSONObject parse(byte[] data) throws ParseException {
 		return parser.parse(Messages.parseString(data));
 	}
