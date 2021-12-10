@@ -14,18 +14,19 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.base.impl;
+package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.Application.Handler;
+import fr.ill.ics.cameo.base.Application.Handle;
 import fr.ill.ics.cameo.base.Application.State;
+import fr.ill.ics.cameo.base.impl.ThisImpl;
 
-public class HandlerImpl {
+public class Handler {
 
 	private ThisImpl application;
-	private Handler handler;
+	private Handle handler;
 	private Thread thread = null;
 		
-	public HandlerImpl(ThisImpl application, Handler handler) {
+	public Handler(ThisImpl application, Handle handler) {
 		this.application = application;
 		this.handler = handler;
 	}

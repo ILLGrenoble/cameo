@@ -30,7 +30,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class Application {
 	
-	public static interface Handler {
+	public static interface Handle {
 		void handle();
 	}
 	
@@ -259,7 +259,7 @@ public class Application {
 		 * Sets the stop handler with stopping time that overrides the one that may be defined in the configuration of the server.
 		 * @param handler
 		 */
-		static public void handleStop(final Handler handler, int stoppingTime) {
+		static public void handleStop(final Handle handler, int stoppingTime) {
 			impl.createStopHandler(handler, stoppingTime);
 		}
 		
@@ -267,7 +267,7 @@ public class Application {
 		 * Sets the stop handler with default stopping time.
 		 * @param handler
 		 */
-		static public void handleStop(final Handler handler) {
+		static public void handleStop(final Handle handler) {
 			handleStop(handler, -1);
 		}
 		
