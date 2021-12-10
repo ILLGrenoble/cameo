@@ -2,9 +2,13 @@ package fr.ill.ics.cameo.coms;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.coms.impl.RequestImpl;
+import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Request.
@@ -12,50 +16,71 @@ import fr.ill.ics.cameo.coms.impl.RequestImpl;
  */
 public class Request {
 	
-	private RequestImpl impl;
 	private Server requesterServer = null;
-	
-	Request(RequestImpl impl) {
-		this.impl = impl;
+	private String requesterEndpoint;
+	private byte[] messagePart1;
+	private byte[] messagePart2;
+	private String requesterApplicationName;
+	private int requesterApplicationId;
+	private String requesterServerEndpoint;
+		
+	public Request(String requesterApplicationName, int requesterApplicationId, String serverUrl, int serverPort, int requesterPort, byte[] messagePart1, byte[] messagePart2) {
+		
+		this.requesterEndpoint = serverUrl + ":" + requesterPort;
+		this.messagePart1 = messagePart1;
+		this.messagePart2 = messagePart2;
+		
+		this.requesterApplicationName = requesterApplicationName;
+		this.requesterApplicationId = requesterApplicationId;
+		
+		this.requesterServerEndpoint = serverUrl + ":" + serverPort;
 	}
 	
 	public byte[] getBinary() {
-		return impl.get();
+		return messagePart1;
 	}
 	
 	public String get() {
-		return impl.getString();
+		return Messages.parseString(messagePart1);
 	}
 	
 	public byte[][] getTwoBinaryParts() {
 		
 		byte[][] result = new byte[2][];
-		result[0] = impl.get();
-		result[1] = impl.get2();
+		result[0] = messagePart1;
+		result[1] = messagePart2;
 		
 		return result;
 	}
 	
 	public void reply(byte[] response) {
-		impl.reply(response);
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.RESPONSE);
+
+		// Create a new socket.
+		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
+		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint);
+		requestSocket.request(Messages.serialize(request), response);
+		requestSocket.terminate();
 	}
 	
 	public void reply(String response) {
-		impl.reply(response);
+		reply(Messages.serialize(response));
 	}
 	
 	public Instance connectToRequester() {
 		
 		// Instantiate the requester server if it is null.
 		if (requesterServer == null) {
-			requesterServer = new Server(impl.getRequesterServerEndpoint());
+			requesterServer = new Server(requesterServerEndpoint);
 		}	
 		
 		// Connect and find the instance.
-		List<Instance> instances = requesterServer.connectAll(impl.getRequesterApplicationName());
+		List<Instance> instances = requesterServer.connectAll(requesterApplicationName);
 		
 		for (Instance instance : instances) {
-			if (instance.getId() == impl.getRequesterApplicationId()) {
+			if (instance.getId() == requesterApplicationId) {
 				return instance;
 			}
 		}
@@ -83,9 +108,12 @@ public class Request {
 			requesterServer.terminate();
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return impl.toString();
+		return "Request [endpoint=" + requesterEndpoint + ", id=" + requesterApplicationId + "]";
 	}
+
+	
+	
 }

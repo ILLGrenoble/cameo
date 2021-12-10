@@ -16,12 +16,14 @@
 
 package fr.ill.ics.cameo.coms.impl;
 
+import fr.ill.ics.cameo.coms.Request;
+
 public interface ResponderImpl {
 
 	public static final String RESPONDER_PREFIX = "rep.";
 	
 	void init(int responderPort, String name);
-	RequestImpl receive();
+	Request receive();
 	void cancel();
 	boolean isEnded();
 	boolean isCanceled();

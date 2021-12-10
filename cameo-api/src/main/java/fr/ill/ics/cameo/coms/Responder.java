@@ -3,7 +3,6 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.impl.RequestImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.ResponderZmq;
 import fr.ill.ics.cameo.messages.JSON;
@@ -60,11 +59,7 @@ public class Responder {
 	}
 	
 	public Request receive() {
-		RequestImpl requestImpl = impl.receive();
-		if (requestImpl == null) {
-			return null;
-		}
-		return new Request(requestImpl);
+		return impl.receive();
 	}
 
 	public void cancel() {

@@ -22,7 +22,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.coms.impl.RequestImpl;
+import fr.ill.ics.cameo.coms.Request;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -49,7 +49,7 @@ public class ResponderZmq implements ResponderImpl {
 		responder.bind("tcp://*:" + responderPort);
 	}
 
-	public RequestImpl receive() {
+	public Request receive() {
 		
 		Zmq.Msg message = null;
 		Zmq.Msg reply = null;
@@ -78,23 +78,14 @@ public class ResponderZmq implements ResponderImpl {
 				int requesterPort = JSON.getInt(request, Messages.Request.REQUESTER_PORT);
 				
 				byte[][] data = message.getAllData();
-				
-				byte[] message1 = data[1];
-				
-				// Create the request implementation.
-				RequestImpl impl = new RequestImpl(name, 
-						id, 
-						message1, 
-						serverUrl,
-						serverPort,
-						requesterPort);
-				
-				// Set the optional message 2.
+				byte[] messagePart1 = data[1];
+				byte[] messagePart2 = null;
 				if (data.length > 2) {
-					impl.setMessage2(data[2]);
+					messagePart2 = data[2];
 				}
 				
-				return impl;
+				// Return the request.				
+				return new Request(name, id, serverUrl, serverPort, requesterPort, messagePart1, messagePart2);
 			}
 			else if (type == Messages.CANCEL) {
 				canceled = true;
