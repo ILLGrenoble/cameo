@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.RequestImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
+import fr.ill.ics.cameo.coms.impl.zmq.ResponderZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -13,14 +14,19 @@ import fr.ill.ics.cameo.messages.Messages;
  *
  */
 public class Responder {
-
-	private ResponderImpl impl;
 	
-	private Responder(ResponderImpl impl) {
-		this.impl = impl;
+	private String name;
+	private ResponderImpl impl;
+	private ResponderWaiting waiting = new ResponderWaiting(this);
+	
+	private Responder(String name) {
+		this.name = name;
+		//TODO Replace with factory.
+		this.impl = new ResponderZmq();
+		waiting.add();
 	}
 	
-	private static ResponderImpl createResponder(String name) throws ResponderCreationException {
+	private void init(String name) throws ResponderCreationException {
 		
 		String portName = ResponderImpl.RESPONDER_PREFIX + name;
 		JSONObject request = Messages.createRequestPortV0Request(This.getId(), portName);
@@ -32,7 +38,7 @@ public class Responder {
 			throw new ResponderCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		return new ResponderImpl(port, name);
+		impl.init(port, name);
 	}
 	
 	/**
@@ -42,11 +48,15 @@ public class Responder {
 	 * @throws ResponderCreationException, ConnectionTimeout
 	 */
 	static public Responder create(String name) throws ResponderCreationException {
-		return new Responder(createResponder(name));
+		
+		Responder responder = new Responder(name);
+		responder.init(name);
+		
+		return responder;
 	}
 	
 	public String getName() {
-		return impl.getName();
+		return name;
 	}
 	
 	public Request receive() {
@@ -70,11 +80,12 @@ public class Responder {
 	}
 			
 	public void terminate() {
+		waiting.remove();
 		impl.terminate();
 	}
-		
+
 	@Override
 	public String toString() {
-		return impl.toString();
+		return ResponderImpl.RESPONDER_PREFIX + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 }
