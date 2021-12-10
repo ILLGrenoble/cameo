@@ -16,17 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.Application.Handle;
+import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.impl.ThisImpl;
 
-public class Handler {
+public class HandlerRunner {
 
 	private ThisImpl application;
-	private Handle handler;
+	private Handler handler;
 	private Thread thread = null;
 		
-	public Handler(ThisImpl application, Handle handler) {
+	public HandlerRunner(ThisImpl application, Handler handler) {
 		this.application = application;
 		this.handler = handler;
 	}

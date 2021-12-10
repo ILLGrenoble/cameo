@@ -22,13 +22,13 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Application.Handle;
+import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.CancelEvent;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Event;
 import fr.ill.ics.cameo.base.EventListener;
-import fr.ill.ics.cameo.base.Handler;
+import fr.ill.ics.cameo.base.HandlerRunner;
 import fr.ill.ics.cameo.base.InvalidArgumentException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.StatusEvent;
@@ -54,7 +54,7 @@ public class ThisImpl {
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
-	private Handler stopHandler;
+	private HandlerRunner stopHandler;
 	private WaitingSet waitingSet = new WaitingSet();
 	
 	/**
@@ -312,7 +312,7 @@ public class ThisImpl {
 	/**
 	 * 
 	 */
-	public void createStopHandler(Handle handler, int stoppingTime) {
+	public void createStopHandler(Handler handler, int stoppingTime) {
 		
 		if (handler == null) {
 			return;
@@ -321,7 +321,7 @@ public class ThisImpl {
 		// Notify the server.
 		setStopHandler(stoppingTime);
 		
-		stopHandler = new Handler(this, handler);
+		stopHandler = new HandlerRunner(this, handler);
 		stopHandler.start();
 	}
 	
