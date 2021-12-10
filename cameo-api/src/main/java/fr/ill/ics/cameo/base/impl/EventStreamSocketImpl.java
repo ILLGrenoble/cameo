@@ -4,6 +4,7 @@ import fr.ill.ics.cameo.base.Event;
 
 public interface EventStreamSocketImpl {
 
+	void init();
 	Event receive();
 	boolean isCanceled();
 	void cancel();

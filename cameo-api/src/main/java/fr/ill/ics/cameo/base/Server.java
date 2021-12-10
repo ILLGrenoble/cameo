@@ -184,7 +184,7 @@ public class Server {
 		return false;
 	}
 	
-	private void sendSync() {
+	public void sendSync() {
 		
 		try {
 			requestSocket.requestJSON(Messages.createSyncRequest());
@@ -290,42 +290,12 @@ public class Server {
 	private EventStreamSocket openEventStream() {
 
 		JSONObject response = requestSocket.requestJSON(Messages.createStreamStatusRequest());
-		
-		// Prepare our subscriber.
-		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
-		
 		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		
-		subscriber.connect(getStatusEndpoint().toString());
-		subscriber.subscribe(Messages.Event.STATUS);
-		subscriber.subscribe(Messages.Event.RESULT);
-		subscriber.subscribe(Messages.Event.PUBLISHER);
-		subscriber.subscribe(Messages.Event.PORT);
-		subscriber.subscribe(Messages.Event.KEYVALUE);
-		
-		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
-		
-		subscriber.connect(cancelEndpoint);
-		subscriber.subscribe(Messages.Event.CANCEL);
-		
-		// polling to wait for connection
-		Zmq.Poller poller = context.createPoller(subscriber);
-		
-		while (true) {
-			
-			// the server returns a STATUS message that is used to synchronize the subscriber
-			sendSync();
 
-			// return at the first response.
-			if (poller.poll(100)) {
-				break;
-			}
-		}
+		EventStreamSocket streamSocket = new EventStreamSocket(this);
+		streamSocket.init();
 		
-		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
-		cancelPublisher.bind(cancelEndpoint);
-		
-		return new EventStreamSocket(this, subscriber, cancelPublisher);
+		return streamSocket; 
 	}
 	
 	/**

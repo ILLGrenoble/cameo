@@ -17,7 +17,6 @@ package fr.ill.ics.cameo.base;
 
 
 
-import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.impl.EventStreamSocketImpl;
 import fr.ill.ics.cameo.base.impl.zmq.EventStreamSocketZmq;
 
@@ -25,9 +24,13 @@ public class EventStreamSocket {
 	
 	private EventStreamSocketImpl impl;
 	
-	public EventStreamSocket(Server server, Zmq.Socket subscriber, Zmq.Socket cancelPublisher) {
+	public EventStreamSocket(Server server) {
 		//TODO Replace with factory.
-		this.impl = new EventStreamSocketZmq(server, subscriber, cancelPublisher);
+		this.impl = new EventStreamSocketZmq(server);
+	}
+
+	public void init() {
+		impl.init();
 	}
 	
 	public Event receive() {
