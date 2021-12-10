@@ -7,11 +7,15 @@ public class ContextZmq implements Context {
 	
 	private Zmq.Context context;
 	
-	public ContextZmq(Zmq.Context context) {
-		this.context = context;
+	public ContextZmq() {
+		context = new Zmq.Context();
 	}
 	
 	public Zmq.Context getContext() {
 		return context;
+	}
+	
+	public void terminate() {
+		context.destroy();
 	}
 }

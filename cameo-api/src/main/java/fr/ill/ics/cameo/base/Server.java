@@ -28,11 +28,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Socket;
 import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.base.Application.This;
-import fr.ill.ics.cameo.base.impl.CancelIdGenerator;
 import fr.ill.ics.cameo.base.impl.Response;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.messages.JSON;
@@ -50,8 +47,7 @@ public class Server {
 	private Endpoint serverEndpoint;
 	private int[] serverVersion = new int[3];
 	private int statusPort;
-	private Zmq.Context context;
-	private ContextZmq contextImpl;
+	private Context contextImpl;
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
 	private JSON.Parser parser = new JSON.Parser();
@@ -116,12 +112,10 @@ public class Server {
 	 * Initializes the context and the request socket. The serverEndpoint must have been set.
 	 */
 	final private void init() {
-		context = new Zmq.Context();
-		contextImpl = new ContextZmq(context);
+		//TODO Replace with factory.
+		contextImpl = new ContextZmq();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString());
 	}
-	
-	
 	
 	private int getAvailableTimeout() {
 		int timeout = getTimeout();
@@ -155,11 +149,7 @@ public class Server {
 	public Context getContext() {
 		return contextImpl;
 	}
-	
-	public void destroySocket(Socket socket) {
-		context.destroySocket(socket);
-	}
-		
+			
 	public JSONObject parse(byte[] data) throws ParseException {
 		return parser.parse(Messages.parseString(data));
 	}
@@ -260,7 +250,7 @@ public class Server {
 
 		terminateStatusThread();
 		requestSocket.terminate();
-		context.destroy();
+		contextImpl.terminate();
 	}
 	
 	public void registerEventListener(EventListener listener) {

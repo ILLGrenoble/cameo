@@ -162,6 +162,6 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	}
 	
 	public void destroy() {
-		server.destroySocket(subscriberSocket);
+		context.destroySocket(subscriberSocket);
 	}
 }

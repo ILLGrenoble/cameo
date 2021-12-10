@@ -217,6 +217,6 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	}
 
 	public void destroy() {
-		server.destroySocket(subscriberSocket);
+		context.destroySocket(subscriberSocket);
 	}
 }
