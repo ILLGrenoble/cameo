@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.impl.TimeCondition;
-
 public class ConnectionChecker {
 
 	public static interface Handler {
