@@ -42,9 +42,6 @@ public:
 
 	zmq::context_t& getContext();
 
-	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
-	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
-
 private:
 	std::unique_ptr<zmq::context_t> m_context;
 	int m_timeout;

@@ -51,7 +51,20 @@ void OutputStreamSocketZmq::init() {
 	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_PUB));
 	m_cancelSocket->bind(cancelEndpoint.str());
 
-	m_socket.reset(m_context->createOutputStreamSubscriber(m_server->getEndpoint().withPort(port).toString(), cancelEndpoint.str()));
+	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_SUB));
+
+	vector<string> streamList;
+	streamList.push_back(message::Event::SYNCSTREAM);
+	streamList.push_back(message::Event::STREAM);
+	streamList.push_back(message::Event::ENDSTREAM);
+	streamList.push_back(message::Event::CANCEL);
+
+	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
+		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
+	}
+
+	m_socket->connect(m_server->getEndpoint().withPort(port).toString().c_str());
+	m_socket->connect(cancelEndpoint.str().c_str());
 
 	// Wait for the connection to be ready.
 	// Poll subscriber.
