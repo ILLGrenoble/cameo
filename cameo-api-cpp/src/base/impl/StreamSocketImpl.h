@@ -14,28 +14,23 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_STREAMSOCKETIMPL_H_
-#define CAMEO_STREAMSOCKETIMPL_H_
+#ifndef CAMEO_EVENTSTREAMSOCKETIMPL_H_
+#define CAMEO_EVENTSTREAMSOCKETIMPL_H_
 
 #include <string>
-#include <memory>
-#include "zmq.hpp"
 
 namespace cameo {
 
 class StreamSocketImpl {
 
 public:
-	StreamSocketImpl(zmq::socket_t * socket, zmq::socket_t * cancelSocket = nullptr);
-	virtual ~StreamSocketImpl();
+	virtual ~StreamSocketImpl() {}
 
-	void send(const std::string& data);
-	std::unique_ptr<zmq::message_t> receive(bool blocking = true);
-	void cancel();
-	void close();
-
-	std::unique_ptr<zmq::socket_t> m_socket;
-	std::unique_ptr<zmq::socket_t> m_cancelSocket;
+	virtual void init() = 0;
+	virtual void send(const std::string& data) = 0;
+	virtual std::string receive(bool blocking = true) = 0;
+	virtual void cancel() = 0;
+	virtual void close() = 0;
 };
 
 }

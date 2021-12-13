@@ -23,7 +23,7 @@
 #include "UndefinedKeyException.h"
 #include "EventThread.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/EventStreamSocketImpl.h"
+#include "impl/StreamSocketImpl.h"
 #include "impl/zmq/ContextZmq.h"
 #include "JSON.h"
 #include "Messages.h"

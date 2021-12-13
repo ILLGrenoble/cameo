@@ -17,7 +17,7 @@
 #ifndef CAMEO_EVENTSTREAMSOCKETZMQ_H_
 #define CAMEO_EVENTSTREAMSOCKETZMQ_H_
 
-#include "../EventStreamSocketImpl.h"
+#include "../StreamSocketImpl.h"
 #include <string>
 #include <memory>
 #include <zmq.hpp>
@@ -27,7 +27,7 @@ namespace cameo {
 class Server;
 class ContextZmq;
 
-class EventStreamSocketZmq : public EventStreamSocketImpl {
+class EventStreamSocketZmq : public StreamSocketImpl {
 
 public:
 	EventStreamSocketZmq(Server * server);

@@ -23,7 +23,7 @@
 namespace cameo {
 
 class Server;
-class EventStreamSocketImpl;
+class StreamSocketImpl;
 
 namespace application {
 
@@ -45,7 +45,7 @@ public:
 private:
 	EventStreamSocket(Server * server);
 
-	std::unique_ptr<EventStreamSocketImpl> m_impl;
+	std::unique_ptr<StreamSocketImpl> m_impl;
 };
 
 }
