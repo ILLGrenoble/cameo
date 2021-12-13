@@ -14,27 +14,34 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_GENERICWAITINGIMPL_H_
-#define CAMEO_GENERICWAITINGIMPL_H_
+#ifndef CAMEO_WAITINGSET_H_
+#define CAMEO_WAITINGSET_H_
 
-#include "WaitingImpl.h"
-
-#include <functional>
+#include <set>
+#include <thread>
+#include <mutex>
 
 namespace cameo {
 
-class GenericWaitingImpl : public WaitingImpl {
+class Waiting;
+
+/**
+ * Class containing a set of Waiting objects.
+ * It is protected with a mutex because the class must be thread-safe.
+ */
+class WaitingSet {
 
 public:
-	typedef std::function<void ()> Function;
+	WaitingSet();
 
-	GenericWaitingImpl(Function function);
-	virtual ~GenericWaitingImpl();
+	void add(Waiting * waiting);
+	void remove(Waiting * waiting);
 
-	virtual void cancel();
+	void cancelAll();
 
 private:
-	Function m_function;
+	std::mutex m_mutex;
+	std::set<Waiting *> m_set;
 };
 
 }

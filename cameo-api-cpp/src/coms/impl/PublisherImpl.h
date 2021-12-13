@@ -17,8 +17,7 @@
 #ifndef CAMEO_PUBLISHERIMPL_H_
 #define CAMEO_PUBLISHERIMPL_H_
 
-#include "../../base/impl/GenericWaitingImpl.h"
-
+#include "../../base/Waiting.h"
 #include "zmq.hpp"
 #include <memory>
 #include <string>
@@ -44,7 +43,7 @@ public:
 
 	bool waitForSubscribers();
 	void cancelWaitForSubscribers();
-	WaitingImpl * waiting();
+	Waiting * waiting();
 
 	void sendBinary(const std::string& data);
 	void send(const std::string& data);

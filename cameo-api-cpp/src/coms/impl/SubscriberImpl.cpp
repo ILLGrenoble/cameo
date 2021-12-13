@@ -23,7 +23,7 @@
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
 #include "../../base/impl/zmq/ContextZmq.h"
-#include "../../base/impl/GenericWaitingImpl.h"
+#include "../../base/Waiting.h"
 #include <sstream>
 
 namespace cameo {
@@ -229,10 +229,10 @@ void SubscriberImpl::cancel() {
 	m_cancelPublisher->send(requestData);
 }
 
-WaitingImpl * SubscriberImpl::waiting() {
+Waiting * SubscriberImpl::waiting() {
 
 	// Waiting gets the cancel publisher.
-	return new GenericWaitingImpl(std::bind(&SubscriberImpl::cancel, this));
+	return new Waiting(std::bind(&SubscriberImpl::cancel, this));
 }
 
 std::string SubscriberImpl::createSubscribePublisherRequest() const {

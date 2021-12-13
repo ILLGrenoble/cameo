@@ -17,8 +17,7 @@
 #ifndef CAMEO_RESPONDERIMPL_H_
 #define CAMEO_RESPONDERIMPL_H_
 
-#include "../../base/impl/GenericWaitingImpl.h"
-
+#include "../../base/Waiting.h"
 #include "zmq.hpp"
 #include <string>
 #include <vector>
@@ -36,7 +35,7 @@ public:
 	~ResponderImpl();
 
 	void cancel();
-	WaitingImpl * waiting();
+	Waiting * waiting();
 
 	std::unique_ptr<RequestImpl> receive();
 

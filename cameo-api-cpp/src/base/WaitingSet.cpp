@@ -14,36 +14,44 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_WAITINGIMPLSET_H_
-#define CAMEO_WAITINGIMPLSET_H_
+#include "WaitingSet.h"
 
-#include <set>
-#include <thread>
-#include <mutex>
+#include "Waiting.h"
+
+using namespace std;
 
 namespace cameo {
 
-class WaitingImpl;
-
-/**
- * Class containing a set of WaitingImpl objects.
- * It is protected with a mutex because the class must be thread-safe.
- */
-class WaitingImplSet {
-
-public:
-	WaitingImplSet();
-
-	void add(WaitingImpl * waiting);
-	void remove(WaitingImpl * waiting);
-
-	void cancelAll();
-
-private:
-	std::mutex m_mutex;
-	std::set<WaitingImpl *> m_set;
-};
+WaitingSet::WaitingSet() {
 
 }
 
-#endif
+void WaitingSet::add(Waiting * waiting) {
+
+	lock_guard<mutex> lock(m_mutex);
+
+	m_set.insert(waiting);
+}
+
+void WaitingSet::remove(Waiting * waiting) {
+
+	lock_guard<mutex> lock(m_mutex);
+
+	set<Waiting *>::iterator it = m_set.find(waiting);
+
+	if (it != m_set.end()) {
+		m_set.erase(it);
+	}
+}
+
+void WaitingSet::cancelAll() {
+
+	lock_guard<mutex> lock(m_mutex);
+
+	for (set<Waiting *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
+		(*it)->cancel();
+	}
+
+}
+
+}

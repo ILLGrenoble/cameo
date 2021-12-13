@@ -27,7 +27,7 @@
 namespace cameo {
 
 class Server;
-class WaitingImpl;
+class Waiting;
 
 namespace coms {
 
@@ -47,7 +47,7 @@ public:
 	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
 
 	void cancel();
-	WaitingImpl * waiting();
+	Waiting * waiting();
 
 	std::string createSubscribePublisherRequest() const;
 

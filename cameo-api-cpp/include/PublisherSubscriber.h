@@ -70,7 +70,7 @@ private:
 	static std::string createCreatePublisherRequest(int id, const std::string &name, int numberOfSubscribers);
 
 	std::unique_ptr<PublisherImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<Waiting> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ private:
 	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
 	std::unique_ptr<SubscriberImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<Waiting> m_waiting;
 };
 
 std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);

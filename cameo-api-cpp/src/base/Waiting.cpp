@@ -14,44 +14,35 @@
  * limitations under the Licence.
  */
 
-#include "WaitingImplSet.h"
+#include "Waiting.h"
+#include "WaitingSet.h"
+#include "Application.h"
 
-#include "WaitingImpl.h"
+#include <iostream>
 
 using namespace std;
 
 namespace cameo {
 
-WaitingImplSet::WaitingImplSet() {
+Waiting::Waiting(Waiting::Function function)
+: m_function(function) {
 
-}
-
-void WaitingImplSet::add(WaitingImpl * waiting) {
-
-	lock_guard<mutex> lock(m_mutex);
-
-	m_set.insert(waiting);
-}
-
-void WaitingImplSet::remove(WaitingImpl * waiting) {
-
-	lock_guard<mutex> lock(m_mutex);
-
-	set<WaitingImpl *>::iterator it = m_set.find(waiting);
-
-	if (it != m_set.end()) {
-		m_set.erase(it);
+	// Add the object in the waiting set if This exists.
+	if (application::This::m_instance.m_inited) {
+		application::This::m_instance.m_waitingSet->add(this);
 	}
 }
 
-void WaitingImplSet::cancelAll() {
+Waiting::~Waiting() {
 
-	lock_guard<mutex> lock(m_mutex);
-
-	for (set<WaitingImpl *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
-		(*it)->cancel();
+	// Remove the object in the waiting set if This exists.
+	if (application::This::m_instance.m_inited) {
+		application::This::m_instance.m_waitingSet->remove(this);
 	}
+}
 
+void Waiting::cancel() {
+	m_function();
 }
 
 }

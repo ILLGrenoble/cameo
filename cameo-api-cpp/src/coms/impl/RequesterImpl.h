@@ -17,7 +17,7 @@
 #ifndef CAMEO_REQUESTERIMPL_H_
 #define CAMEO_REQUESTERIMPL_H_
 
-#include "../../base/impl/GenericWaitingImpl.h"
+#include "../../base/Waiting.h"
 #include "Strings.h"
 #include "zmq.hpp"
 #include <string>
@@ -41,7 +41,7 @@ public:
 	static int newRequesterId();
 	static std::string getRequesterPortName(const std::string& name, int responderId, int requesterId);
 
-	WaitingImpl * waiting();
+	Waiting * waiting();
 
 	void sendBinary(const std::string& requestData);
 	void send(const std::string& requestData);

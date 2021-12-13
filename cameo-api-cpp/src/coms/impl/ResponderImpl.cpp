@@ -59,8 +59,8 @@ void ResponderImpl::cancel() {
 	requestSocket->requestJSON(request.toString());
 }
 
-WaitingImpl * ResponderImpl::waiting() {
-	return new GenericWaitingImpl(std::bind(&ResponderImpl::cancel, this));
+Waiting * ResponderImpl::waiting() {
+	return new Waiting(std::bind(&ResponderImpl::cancel, this));
 }
 
 std::unique_ptr<RequestImpl> ResponderImpl::receive() {

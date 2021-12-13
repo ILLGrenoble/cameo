@@ -14,17 +14,25 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_WAITINGIMPL_H_
-#define CAMEO_WAITINGIMPL_H_
+#ifndef CAMEO_GENERICWAITINGIMPL_H_
+#define CAMEO_GENERICWAITINGIMPL_H_
+
+#include <functional>
 
 namespace cameo {
 
-class WaitingImpl {
+class Waiting {
 
 public:
-	virtual ~WaitingImpl() {}
+	typedef std::function<void ()> Function;
 
-	virtual void cancel() = 0;
+	Waiting(Function function);
+	~Waiting();
+
+	void cancel();
+
+private:
+	Function m_function;
 };
 
 }

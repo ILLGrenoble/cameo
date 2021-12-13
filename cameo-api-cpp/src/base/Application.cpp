@@ -24,16 +24,15 @@
 #include "StarterServerException.h"
 #include "StatusEvent.h"
 #include "EventStreamSocket.h"
-#include "impl/GenericWaitingImpl.h"
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/WaitingImpl.h"
-#include "impl/WaitingImplSet.h"
 #include "impl/zmq/ContextZmq.h"
 #include "Strings.h"
 #include "Server.h"
 #include "Messages.h"
 #include "RequestSocket.h"
+#include "Waiting.h"
+#include "WaitingSet.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
@@ -243,7 +242,7 @@ void This::initApplication() {
 		m_starterServer = std::make_unique<Server>(m_starterEndpoint);
 	}
 
-	m_waitingSet = std::make_unique<WaitingImplSet>();
+	m_waitingSet = std::make_unique<WaitingSet>();
 
 	// Init listener.
 	setName(m_name);
@@ -455,7 +454,7 @@ Instance::Instance(Server * server) :
 	m_hasResult(false),
 	m_exitCode(-1) {
 
-	m_waiting.reset(new GenericWaitingImpl(std::bind(&Instance::cancelWaitFor, this)));
+	m_waiting.reset(new Waiting(std::bind(&Instance::cancelWaitFor, this)));
 }
 
 Instance::~Instance() {

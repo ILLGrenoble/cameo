@@ -71,8 +71,8 @@ std::string RequesterImpl::getRequesterPortName(const std::string& name, int res
 	return requesterPortName.str();
 }
 
-WaitingImpl * RequesterImpl::waiting() {
-	return new GenericWaitingImpl(std::bind(&RequesterImpl::cancel, this));
+Waiting * RequesterImpl::waiting() {
+	return new Waiting(std::bind(&RequesterImpl::cancel, this));
 }
 
 void RequesterImpl::sendBinary(const std::string& requestData) {

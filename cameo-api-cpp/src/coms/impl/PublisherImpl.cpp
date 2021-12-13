@@ -132,9 +132,9 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	requestSocket->requestJSON(request.toString());
 }
 
-WaitingImpl * PublisherImpl::waiting() {
+Waiting * PublisherImpl::waiting() {
 
-	return new GenericWaitingImpl(std::bind(&PublisherImpl::cancelWaitForSubscribers, this));
+	return new Waiting(std::bind(&PublisherImpl::cancelWaitForSubscribers, this));
 }
 
 void PublisherImpl::sendBinary(const std::string& data) {

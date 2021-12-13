@@ -47,10 +47,10 @@ const int OUTPUTSTREAM = 1;
 class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
-class WaitingImpl;
+class Waiting;
 class SocketWaitingImpl;
-class GenericWaitingImpl;
-class WaitingImplSet;
+class Waiting;
+class WaitingSet;
 class HandlerImpl;
 class RequestSocket;
 
@@ -83,7 +83,7 @@ const State KILLED           = 256;
 class This : private EventListener {
 
 	friend class cameo::SocketWaitingImpl;
-	friend class cameo::GenericWaitingImpl;
+	friend class cameo::Waiting;
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 
@@ -203,7 +203,7 @@ private:
 	std::unique_ptr<Server> m_starterServer;
 	std::unique_ptr<Com> m_com;
 
-	std::unique_ptr<WaitingImplSet> m_waitingSet;
+	std::unique_ptr<WaitingSet> m_waitingSet;
 	std::unique_ptr<HandlerImpl> m_stopHandler;
 
 	bool m_inited;
@@ -313,7 +313,7 @@ private:
 	bool m_hasResult;
 	std::string m_resultData;
 	int m_exitCode;
-	std::unique_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<Waiting> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////

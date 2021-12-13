@@ -95,7 +95,7 @@ private:
 	Responder(int responderPort, const std::string &name);
 
 	std::unique_ptr<ResponderImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<Waiting> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ private:
 	Requester(const Endpoint &endpoint, int requesterPort, int responderPort, const std::string &name, int responderId, int requesterId);
 
 	std::unique_ptr<RequesterImpl> m_impl;
-	std::unique_ptr<WaitingImpl> m_waiting;
+	std::unique_ptr<Waiting> m_waiting;
 };
 
 std::ostream& operator<<(std::ostream&, const cameo::coms::Request&);
