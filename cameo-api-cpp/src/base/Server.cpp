@@ -17,11 +17,11 @@
 #include "Server.h"
 
 #include "Application.h"
+#include "CancelIdGenerator.h"
 #include "ConnectionChecker.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "EventThread.h"
-#include "impl/CancelIdGenerator.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/EventStreamSocketImpl.h"
 #include "impl/zmq/ContextZmq.h"

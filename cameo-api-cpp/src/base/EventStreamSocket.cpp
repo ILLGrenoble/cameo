@@ -21,15 +21,15 @@
 #include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
-#include "impl/SocketWaitingImpl.h"
-#include "impl/EventStreamSocketImpl.h"
 #include "JSON.h"
 #include "Messages.h"
+#include "impl/zmq/EventStreamSocketZmq.h"
 
 namespace cameo {
 
 EventStreamSocket::EventStreamSocket(Server * server) {
-	m_impl = std::unique_ptr<EventStreamSocketImpl>(new EventStreamSocketImpl(server));
+	//TODO Replace with a factory.
+	m_impl = std::unique_ptr<EventStreamSocketImpl>(new EventStreamSocketZmq(server));
 	m_impl->init();
 }
 
@@ -142,11 +142,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 void EventStreamSocket::cancel() {
 	m_impl->cancel();
-}
-
-WaitingImpl * EventStreamSocket::waiting() {
-	// We transfer the ownership of cancel socket to WaitingImpl
-	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), message::Event::CANCEL);
 }
 
 }

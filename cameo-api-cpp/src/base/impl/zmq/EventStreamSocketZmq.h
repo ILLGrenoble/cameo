@@ -14,39 +14,36 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_EVENTSTREAMSOCKET_H_
-#define CAMEO_EVENTSTREAMSOCKET_H_
+#ifndef CAMEO_EVENTSTREAMSOCKETZMQ_H_
+#define CAMEO_EVENTSTREAMSOCKETZMQ_H_
 
+#include "../EventStreamSocketImpl.h"
+#include <string>
 #include <memory>
-#include "Event.h"
+#include <zmq.hpp>
 
 namespace cameo {
 
 class Server;
-class WaitingImpl;
-class EventStreamSocketImpl;
+class ContextZmq;
 
-namespace application {
-
-class Instance;
-
-}
-
-class EventStreamSocket {
-
-	friend class Server;
-	friend class application::Instance;
+class EventStreamSocketZmq : public EventStreamSocketImpl {
 
 public:
-	~EventStreamSocket();
+	EventStreamSocketZmq(Server * server);
+	virtual ~EventStreamSocketZmq();
 
-	std::unique_ptr<Event> receive(bool blocking = true);
+	void init();
+	void send(const std::string& data);
+	std::string receive(bool blocking);
 	void cancel();
+	void close();
 
 private:
-	EventStreamSocket(Server * server);
-
-	std::unique_ptr<EventStreamSocketImpl> m_impl;
+	Server * m_server;
+	ContextZmq * m_context;
+	std::unique_ptr<zmq::socket_t> m_socket;
+	std::unique_ptr<zmq::socket_t> m_cancelSocket;
 };
 
 }

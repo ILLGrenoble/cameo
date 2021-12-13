@@ -14,27 +14,26 @@
  * limitations under the Licence.
  */
 
-#include "EventStreamSocketImpl.h"
-
-#include "CancelIdGenerator.h"
+#include "EventStreamSocketZmq.h"
 #include "Server.h"
-#include "zmq/ContextZmq.h"
-#include "../Messages.h"
+#include "ContextZmq.h"
+#include "../../Messages.h"
+#include "../../CancelIdGenerator.h"
 
 using namespace std;
 
 namespace cameo {
 
-EventStreamSocketImpl::EventStreamSocketImpl(Server * server) :
+EventStreamSocketZmq::EventStreamSocketZmq(Server * server) :
 	m_server(server) {
 	m_context = dynamic_cast<ContextZmq *>(server->getContext());
 }
 
-EventStreamSocketImpl::~EventStreamSocketImpl() {
+EventStreamSocketZmq::~EventStreamSocketZmq() {
 	close();
 }
 
-void EventStreamSocketImpl::init() {
+void EventStreamSocketZmq::init() {
 
 	std::stringstream cancelEndpoint;
 
@@ -46,8 +45,6 @@ void EventStreamSocketImpl::init() {
 	m_socket.reset(m_context->createEventSubscriber(m_server->getStatusEndpoint().toString(), cancelEndpoint.str()));
 
 	// Wait for the connection to be ready.
-	//m_context->waitForSubscriber(subscriber, m_requestSocket.get());
-
 	// Poll subscriber.
 	zmq_pollitem_t items[1];
 	items[0].socket = static_cast<void *>(*(m_socket.get()));
@@ -56,7 +53,6 @@ void EventStreamSocketImpl::init() {
 	items[0].revents = 0;
 
 	while (true) {
-		//isAvailable(socket, 100);
 		m_server->sendSync();
 
 		// Wait for 100ms.
@@ -67,14 +63,14 @@ void EventStreamSocketImpl::init() {
 	}
 }
 
-void EventStreamSocketImpl::send(const std::string& data) {
+void EventStreamSocketZmq::send(const std::string& data) {
 
 	zmq::message_t messageData(data.size());
 	memcpy((void *) messageData.data(), data.c_str(), data.size());
 	m_socket->send(messageData);
 }
 
-std::string EventStreamSocketImpl::receive(bool blocking) {
+std::string EventStreamSocketZmq::receive(bool blocking) {
 
 	// Use the message interface.
 	unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -86,7 +82,7 @@ std::string EventStreamSocketImpl::receive(bool blocking) {
 	return "";
 }
 
-void EventStreamSocketImpl::cancel() {
+void EventStreamSocketZmq::cancel() {
 
 	if (m_cancelSocket.get() != nullptr) {
 		string data(message::Event::CANCEL);
@@ -99,7 +95,7 @@ void EventStreamSocketImpl::cancel() {
 	}
 }
 
-void EventStreamSocketImpl::close() {
+void EventStreamSocketZmq::close() {
 	m_socket->close();
 }
 

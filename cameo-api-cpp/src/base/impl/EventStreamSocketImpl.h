@@ -18,31 +18,19 @@
 #define CAMEO_EVENTSTREAMSOCKETIMPL_H_
 
 #include <string>
-#include <memory>
-#include "Strings.h"
-#include <zmq.hpp>
 
 namespace cameo {
-
-class Server;
-class ContextZmq;
 
 class EventStreamSocketImpl {
 
 public:
-	EventStreamSocketImpl(Server * server);
-	virtual ~EventStreamSocketImpl();
+	virtual ~EventStreamSocketImpl() {}
 
-	void init();
-	void send(const std::string& data);
-	std::string receive(bool blocking = true);
-	void cancel();
-	void close();
-
-	Server * m_server;
-	ContextZmq * m_context;
-	std::unique_ptr<zmq::socket_t> m_socket;
-	std::unique_ptr<zmq::socket_t> m_cancelSocket;
+	virtual void init() = 0;
+	virtual void send(const std::string& data) = 0;
+	virtual std::string receive(bool blocking = true) = 0;
+	virtual void cancel() = 0;
+	virtual void close() = 0;
 };
 
 }
