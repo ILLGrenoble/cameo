@@ -17,7 +17,6 @@
 #ifndef CAMEO_SUBSCRIBERIMPL_H_
 #define CAMEO_SUBSCRIBERIMPL_H_
 
-#include "../../base/impl/SocketWaitingImpl.h"
 #include "Application.h"
 #include "zmq.hpp"
 #include <string>
@@ -28,6 +27,7 @@
 namespace cameo {
 
 class Server;
+class WaitingImpl;
 
 namespace coms {
 
@@ -46,6 +46,7 @@ public:
 	std::optional<std::string> receive();
 	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
 
+	void cancel();
 	WaitingImpl * waiting();
 
 	std::string createSubscribePublisherRequest() const;

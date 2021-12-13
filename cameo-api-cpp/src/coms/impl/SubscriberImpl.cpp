@@ -16,13 +16,14 @@
 
 #include "SubscriberImpl.h"
 
-#include "../../base/CancelIdGenerator.h"
 #include "Serializer.h"
 #include "Server.h"
 #include "JSON.h"
-#include "../../base/impl/zmq/ContextZmq.h"
+#include "../../base/CancelIdGenerator.h"
 #include "../../base/Messages.h"
 #include "../../base/RequestSocket.h"
+#include "../../base/impl/zmq/ContextZmq.h"
+#include "../../base/impl/GenericWaitingImpl.h"
 #include <sstream>
 
 namespace cameo {
@@ -215,10 +216,23 @@ std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBi
 	return {};
 }
 
+void SubscriberImpl::cancel() {
+
+	std::string m_message = message::Event::CANCEL;
+
+	zmq::message_t requestType(m_message.length());
+	std::string data(message::Event::CANCEL);
+	zmq::message_t requestData(data.length());
+	memcpy(requestType.data(), m_message.c_str(), m_message.length());
+	memcpy(requestData.data(), data.c_str(), data.length());
+	m_cancelPublisher->send(requestType, ZMQ_SNDMORE);
+	m_cancelPublisher->send(requestData);
+}
+
 WaitingImpl * SubscriberImpl::waiting() {
 
 	// Waiting gets the cancel publisher.
-	return new SocketWaitingImpl(m_cancelPublisher.get(), message::Event::CANCEL);
+	return new GenericWaitingImpl(std::bind(&SubscriberImpl::cancel, this));
 }
 
 std::string SubscriberImpl::createSubscribePublisherRequest() const {
