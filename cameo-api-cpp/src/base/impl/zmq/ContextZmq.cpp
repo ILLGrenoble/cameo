@@ -117,20 +117,4 @@ zmq::socket_t * ContextZmq::createRequestSocket(const std::string& endpoint) {
 	return socket;
 }
 
-bool ContextZmq::isAvailable(RequestSocket * socket, int timeout) {
-
-	try {
-		socket->requestJSON(createSyncRequest(), timeout);
-		return true;
-	}
-	catch (const ConnectionTimeout&) {
-		// The server is not accessible.
-	}
-	catch (...) {
-		// Should not happen.
-	}
-
-	return false;
-}
-
 }

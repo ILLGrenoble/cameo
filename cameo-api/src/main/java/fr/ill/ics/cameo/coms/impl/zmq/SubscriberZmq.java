@@ -83,7 +83,7 @@ public class SubscriberZmq implements SubscriberImpl {
 			boolean ready = false;
 			while (!ready) {
 				
-				// The subscriber sends init messages to the publisher that returns SYNC message
+				// The subscriber sends SYNC messages to the publisher that returns SYNC message.
 				try {
 					requestSocket.requestJSON(Messages.createSyncRequest());
 

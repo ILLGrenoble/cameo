@@ -131,7 +131,16 @@ std::array<int, 3> Server::getVersion() const {
 }
 
 bool Server::isAvailable(int timeout) const {
-	return m_contextImpl->isAvailable(m_requestSocket.get(), timeout);
+
+	try {
+		m_requestSocket->requestJSON(createSyncRequest(), timeout);
+		return true;
+	}
+	catch (const ConnectionTimeout&) {
+		// The server is not accessible.
+	}
+
+	return false;
 }
 
 bool Server::isAvailable() const {

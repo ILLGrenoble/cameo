@@ -47,8 +47,6 @@ public:
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
-	bool isAvailable(RequestSocket * socket, int timeout);
-
 private:
 	std::unique_ptr<zmq::context_t> m_context;
 	int m_timeout;

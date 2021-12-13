@@ -85,7 +85,14 @@ void SubscriberImpl::init() {
 		items[0].revents = 0;
 
 		while (true) {
-			contextImpl->isAvailable(requestSocket.get(), 100);
+
+			// The subscriber sends SYNC messages to the publisher that returns SYNC message.
+			try {
+				requestSocket->requestJSON(createSyncRequest());
+			}
+			catch (const ConnectionTimeout&) {
+				// The server is not accessible.
+			}
 
 			// Wait for 100ms.
 			int rc = zmq::poll(items, 1, 100);
