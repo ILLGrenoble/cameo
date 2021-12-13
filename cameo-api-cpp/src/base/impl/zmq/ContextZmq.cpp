@@ -90,12 +90,4 @@ zmq::socket_t * ContextZmq::createOutputStreamSubscriber(const std::string& endp
 	return subscriber;
 }
 
-zmq::socket_t * ContextZmq::createCancelPublisher(const std::string& endpoint) {
-
-	zmq::socket_t * publisher = new zmq::socket_t(*m_context.get(), ZMQ_PUB);
-	publisher->bind(endpoint.c_str());
-
-	return publisher;
-}
-
 }

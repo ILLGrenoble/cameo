@@ -48,7 +48,9 @@ void OutputStreamSocketZmq::init() {
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 
 	// Create the sockets.
-	m_cancelSocket.reset(m_context->createCancelPublisher(cancelEndpoint.str()));
+	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_PUB));
+	m_cancelSocket->bind(cancelEndpoint.str());
+
 	m_socket.reset(m_context->createOutputStreamSubscriber(m_server->getEndpoint().withPort(port).toString(), cancelEndpoint.str()));
 
 	// Wait for the connection to be ready.
