@@ -48,9 +48,6 @@ public:
 	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
 	bool isAvailable(RequestSocket * socket, int timeout);
-	void sendSyncStream(RequestSocket * socket, const std::string& name);
-	void waitForStreamSubscriber(zmq::socket_t * subscriber, RequestSocket * socket, const std::string& name);
-	void waitForSubscriber(zmq::socket_t * subscriber, RequestSocket * socket);
 
 private:
 	std::unique_ptr<zmq::context_t> m_context;
