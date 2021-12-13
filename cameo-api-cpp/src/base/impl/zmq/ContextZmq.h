@@ -45,7 +45,6 @@ public:
 	zmq::socket_t * createEventSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createOutputStreamSubscriber(const std::string& endpoint, const std::string& cancelEndpoint);
 	zmq::socket_t * createCancelPublisher(const std::string& endpoint);
-	zmq::socket_t * createRequestSocket(const std::string& endpoint);
 
 private:
 	std::unique_ptr<zmq::context_t> m_context;

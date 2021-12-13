@@ -16,6 +16,7 @@
 
 #include "RequestSocketZmq.h"
 
+#include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "ContextZmq.h"
 #include <iostream>
@@ -30,7 +31,6 @@ RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoin
 	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint) {
 
 	init();
-
 	setTimeout(timeout);
 }
 
@@ -60,7 +60,21 @@ void RequestSocketZmq::init() {
 
 	// Reset if the socket is null.
 	if (m_socket.get() == nullptr) {
-		m_socket.reset(m_context->createRequestSocket(m_endpoint));
+		//m_socket.reset(m_context->createRequestSocket(m_endpoint));
+
+		m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_REQ));
+
+		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
+		int value = 0;
+		m_socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
+
+		try {
+			// Connect to the endpoint.
+			m_socket->connect(m_endpoint.c_str());
+		}
+		catch (exception const & e) {
+			throw SocketException(e.what());
+		}
 
 		// Apply the linger to the socket.
 		setSocketLinger();
