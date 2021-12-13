@@ -131,6 +131,13 @@ public:
 	 */
 	void unregisterEventListener(EventListener * listener);
 
+
+	Context * getContext();
+
+	Endpoint getStatusEndpoint() const;
+
+	void sendSync();
+
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
 	std::unique_ptr<application::Instance> makeInstance();
@@ -152,8 +159,6 @@ private:
 
 	void initContext();
 	void initRequestSocket();
-
-	Endpoint getStatusEndpoint() const;
 
 	void retrieveServerVersion();
 	void initStatus();

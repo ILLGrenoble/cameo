@@ -27,7 +27,7 @@ using namespace std;
 namespace cameo {
 
 RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint, int timeout) :
-	m_services(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint) {
+	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint) {
 
 	init();
 
@@ -60,7 +60,7 @@ void RequestSocketZmq::init() {
 
 	// Reset if the socket is null.
 	if (m_socket.get() == nullptr) {
-		m_socket.reset(m_services->createRequestSocket(m_endpoint));
+		m_socket.reset(m_context->createRequestSocket(m_endpoint));
 
 		// Apply the linger to the socket.
 		setSocketLinger();

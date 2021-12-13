@@ -23,6 +23,7 @@
 #include "EventThread.h"
 #include "impl/CancelIdGenerator.h"
 #include "impl/StreamSocketImpl.h"
+#include "impl/EventStreamSocketImpl.h"
 #include "impl/zmq/ContextZmq.h"
 #include "JSON.h"
 #include "Messages.h"
@@ -512,20 +513,8 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 		initStatus();
 	}
 
-	std::stringstream cancelEndpoint;
-
-	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
-
-	// Create the sockets.
-	zmq::socket_t * cancelPublisher = m_contextImpl->createCancelPublisher(cancelEndpoint.str());
-	zmq::socket_t * subscriber = m_contextImpl->createEventSubscriber(getStatusEndpoint().toString(), cancelEndpoint.str());
-
-	// Wait for the connection to be ready.
-	m_contextImpl->waitForSubscriber(subscriber, m_requestSocket.get());
-
 	// Create the event stream socket.
-	return std::unique_ptr<EventStreamSocket>(new EventStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
+	return std::unique_ptr<EventStreamSocket>(new EventStreamSocket(this));
 }
 
 std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
@@ -644,6 +633,10 @@ void Server::initRequestSocket() {
 	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_contextImpl->getTimeout()));
 }
 
+Context * Server::getContext() {
+	return m_contextImpl.get();
+}
+
 Endpoint Server::getStatusEndpoint() const {
 	return m_serverEndpoint.withPort(m_statusPort);
 }
@@ -700,6 +693,8 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 
 	// Create the output stream socket.
 	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
+
+	return nullptr;
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
@@ -708,6 +703,16 @@ std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& en
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {
 	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, timeout));
+}
+
+void Server::sendSync() {
+
+	try {
+		m_requestSocket->requestJSON(createSyncRequest());
+	}
+	catch (const ConnectionTimeout& e) {
+		// do nothing
+	}
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

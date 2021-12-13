@@ -22,13 +22,15 @@
 #include "ResultEvent.h"
 #include "StatusEvent.h"
 #include "impl/SocketWaitingImpl.h"
-#include "impl/StreamSocketImpl.h"
+#include "impl/EventStreamSocketImpl.h"
 #include "JSON.h"
 #include "Messages.h"
 
 namespace cameo {
 
-EventStreamSocket::EventStreamSocket(StreamSocketImpl * impl) : m_impl(impl) {
+EventStreamSocket::EventStreamSocket(Server * server) {
+	m_impl = std::unique_ptr<EventStreamSocketImpl>(new EventStreamSocketImpl(server));
+	m_impl->init();
 }
 
 EventStreamSocket::~EventStreamSocket() {
@@ -36,22 +38,20 @@ EventStreamSocket::~EventStreamSocket() {
 
 std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
-	std::unique_ptr<zmq::message_t> message(m_impl->receive(blocking));
+	std::string message(m_impl->receive(blocking));
 
 	// In case of non-blocking call, the message can be null.
-	if (message == nullptr) {
+	if (message == "") {
 		return std::unique_ptr<Event>(nullptr);
 	}
 
-	std::string response(static_cast<char*>(message->data()), message->size());
-
-	if (response == message::Event::STATUS) {
+	if (message == message::Event::STATUS) {
 
 		message = m_impl->receive();
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::StatusEvent::ID].GetInt();
 		std::string name = event[message::StatusEvent::NAME].GetString();
@@ -63,30 +63,29 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		}
 		return std::make_unique<StatusEvent>(id, name, state, pastStates);
 	}
-	else if (response == message::Event::RESULT) {
+	else if (message == message::Event::RESULT) {
 
 		message = m_impl->receive();
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::ResultEvent::ID].GetInt();
 		std::string name = event[message::ResultEvent::NAME].GetString();
 
 		// Get the data in the next part.
 		message = m_impl->receive();
-		std::string data(message->data<char>(), message->size());
 
-		return std::make_unique<ResultEvent>(id, name, data);
+		return std::make_unique<ResultEvent>(id, name, message);
 	}
-	else if (response == message::Event::PUBLISHER) {
+	else if (message == message::Event::PUBLISHER) {
 
 		message = m_impl->receive();
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::PublisherEvent::ID].GetInt();
 		std::string name = event[message::PublisherEvent::NAME].GetString();
@@ -94,13 +93,13 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return std::make_unique<PublisherEvent>(id, name, publisherName);
 	}
-	else if (response == message::Event::PORT) {
+	else if (message == message::Event::PORT) {
 
 		message = m_impl->receive();
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::PortEvent::ID].GetInt();
 		std::string name = event[message::PortEvent::NAME].GetString();
@@ -108,13 +107,13 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		return std::make_unique<PortEvent>(id, name, portName);
 	}
-	else if (response == message::Event::KEYVALUE) {
+	else if (message == message::Event::KEYVALUE) {
 
 		message = m_impl->receive();
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::KeyEvent::ID].GetInt();
 		std::string name = event[message::KeyEvent::NAME].GetString();
@@ -129,7 +128,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 			return std::make_unique<KeyEvent>(id, name, KeyEvent::Status::REMOVED, key, value);
 		}
 	}
-	else if (response == message::Event::CANCEL) {
+	else if (message == message::Event::CANCEL) {
 
 		message = m_impl->receive();
 
@@ -137,7 +136,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		return std::unique_ptr<Event>(nullptr);
 	}
 
-	std::cerr << "Cannot process '" << response << "' event" << std::endl;
+	std::cerr << "Cannot process '" << message << "' event" << std::endl;
 	return std::unique_ptr<Event>(nullptr);
 }
 

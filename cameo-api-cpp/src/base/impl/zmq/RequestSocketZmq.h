@@ -38,7 +38,7 @@ public:
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout);
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout);
 
-	ContextZmq * m_services;
+	ContextZmq * m_context;
 	std::string m_endpoint;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;
