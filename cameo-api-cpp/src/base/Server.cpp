@@ -63,6 +63,7 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 }
 
 Server::Server(const Endpoint& endpoint, int timeoutMs) :
+	m_timeout(0),
 	m_statusPort(0),
 	m_contextImpl(nullptr) {
 
@@ -76,6 +77,7 @@ Server::Server(const Endpoint& endpoint, int timeoutMs) :
 }
 
 Server::Server(const std::string& endpoint, int timeoutMs) :
+	m_timeout(0),
 	m_statusPort(0),
 	m_contextImpl(nullptr) {
 
@@ -111,7 +113,7 @@ Server::~Server() {
 
 void Server::setTimeout(int timeout) {
 
-	m_contextImpl->setTimeout(timeout);
+	m_timeout = timeout;
 
 	if (m_requestSocket.get() != nullptr) {
 		m_requestSocket->setTimeout(timeout);
@@ -119,7 +121,7 @@ void Server::setTimeout(int timeout) {
 }
 
 int Server::getTimeout() const {
-	return m_contextImpl->getTimeout();
+	return m_timeout;
 }
 
 const Endpoint& Server::getEndpoint() const {
@@ -639,7 +641,7 @@ void Server::initContext() {
 
 void Server::initRequestSocket() {
 	// Create the request socket. The server endpoint must have been initialized.
-	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_contextImpl->getTimeout()));
+	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_timeout));
 }
 
 Context * Server::getContext() {
@@ -688,7 +690,7 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
-	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, m_contextImpl->getTimeout()));
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, m_timeout));
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {

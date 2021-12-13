@@ -16,32 +16,15 @@
 
 #include "ContextZmq.h"
 
-#include "SocketException.h"
-#include "ConnectionTimeout.h"
-#include "JSON.h"
-#include "../../Messages.h"
-#include "../../RequestSocket.h"
 #include <zmq.hpp>
-#include <iostream>
-#include <sstream>
-
-using namespace std;
 
 namespace cameo {
 
 ContextZmq::ContextZmq() : Context(),
-	m_context(new zmq::context_t(1)), m_timeout(0) {
+	m_context(new zmq::context_t(1)) {
 }
 
 ContextZmq::~ContextZmq() {
-}
-
-void ContextZmq::setTimeout(int timeout) {
-	m_timeout = timeout;
-}
-
-int ContextZmq::getTimeout() const {
-	return m_timeout;
 }
 
 zmq::context_t& ContextZmq::getContext() {

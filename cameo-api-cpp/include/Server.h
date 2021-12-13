@@ -131,14 +131,15 @@ public:
 	 */
 	void unregisterEventListener(EventListener * listener);
 
-
+	//TODO private?
 	Context * getContext();
-
+	//TODO private?
 	Endpoint getStatusEndpoint() const;
-
+	//TODO private?
 	void sendSync();
+	//TODO private?
 	void sendSyncStream(const std::string& name);
-
+	//TODO private?
 	int getStreamPort(const std::string& name);
 
 private:
@@ -169,8 +170,8 @@ private:
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout);
 
-
 	Endpoint m_serverEndpoint;
+	int m_timeout;
 	std::array<int, 3> m_serverVersion;
 	int m_statusPort;
 	std::unique_ptr<ContextZmq> m_contextImpl;

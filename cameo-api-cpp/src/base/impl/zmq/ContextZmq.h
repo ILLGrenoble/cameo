@@ -23,13 +23,10 @@
 
 namespace zmq {
 
-	class socket_t;
 	class context_t;
 }
 
 namespace cameo {
-
-class RequestSocket;
 
 class ContextZmq : public Context {
 
@@ -37,14 +34,10 @@ public:
 	ContextZmq();
 	virtual ~ContextZmq();
 
-	void setTimeout(int timeout);
-	int getTimeout() const;
-
 	zmq::context_t& getContext();
 
 private:
 	std::unique_ptr<zmq::context_t> m_context;
-	int m_timeout;
 };
 
 }
