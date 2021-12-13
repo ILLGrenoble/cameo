@@ -17,10 +17,8 @@
 #include "OutputStreamSocket.h"
 
 #include "JSON.h"
-#include "impl/SocketWaitingImpl.h"
-#include "impl/StreamSocketImpl.h"
-#include "impl/zmq/ContextZmq.h"
 #include "Messages.h"
+#include "impl/zmq/OutputStreamSocketZmq.h"
 #include <iostream>
 
 namespace cameo {
@@ -41,11 +39,13 @@ bool Output::isEndOfLine() const {
 	return m_endOfLine;
 }
 
-OutputStreamSocket::OutputStreamSocket(StreamSocketImpl * impl) :
+OutputStreamSocket::OutputStreamSocket(Server * server, const std::string& name) :
 	m_applicationId(-1),
 	m_ended(false),
-	m_canceled(false),
-	m_impl(impl) {
+	m_canceled(false) {
+
+	//TODO Replace with factory.
+	m_impl = std::unique_ptr<EventStreamSocketImpl>(new OutputStreamSocketZmq(server, name));
 }
 
 OutputStreamSocket::~OutputStreamSocket() {
@@ -59,8 +59,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 
 	// Loop on receive() because in case of configuration multiple=yes, messages can come from different instances.
 	while (true) {
-		std::unique_ptr<zmq::message_t> message(m_impl->receive());
-		std::string messageType(message->data<char>(), message->size());
+		std::string messageType(m_impl->receive());
 
 		// Cancel can only come from this instance.
 		if (messageType == message::Event::CANCEL) {
@@ -69,7 +68,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 		}
 
 		// Get the second part of the message.
-		message = m_impl->receive();
+		std::string message = m_impl->receive();
 
 		// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
 		if (messageType == message::Event::SYNCSTREAM) {
@@ -78,7 +77,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 
 		// Get the JSON event.
 		json::Object event;
-		json::parse(event, message.get());
+		json::parse(event, message);
 
 		int id = event[message::ApplicationStream::ID].GetInt();
 

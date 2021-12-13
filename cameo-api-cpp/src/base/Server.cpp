@@ -674,27 +674,8 @@ int Server::getStreamPort(const std::string& name) {
 }
 
 std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::string& name) {
-
-	int port = getStreamPort(name);
-
-	if (port == -1) {
-		return nullptr;
-	}
-
-	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	std::string cancelEndpoint = "inproc://cancel." + std::to_string(CancelIdGenerator::newId());
-
-	// Create the sockets.
-	zmq::socket_t * cancelPublisher = m_contextImpl->createCancelPublisher(cancelEndpoint);
-	zmq::socket_t * subscriber = m_contextImpl->createOutputStreamSubscriber(m_serverEndpoint.withPort(port).toString(), cancelEndpoint);
-
-	// Wait for the connection to be ready.
-	m_contextImpl->waitForStreamSubscriber(subscriber, m_requestSocket.get(), name);
-
-	// Create the output stream socket.
-	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(new StreamSocketImpl(subscriber, cancelPublisher)));
-
-	return nullptr;
+	// Create the event stream socket.
+	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(this, name));
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
@@ -711,7 +692,17 @@ void Server::sendSync() {
 		m_requestSocket->requestJSON(createSyncRequest());
 	}
 	catch (const ConnectionTimeout& e) {
-		// do nothing
+		// The server is not accessible.
+	}
+}
+
+void Server::sendSyncStream(const std::string& name) {
+
+	try {
+		m_requestSocket->requestJSON(createSyncStreamRequest(name));
+	}
+	catch (const ConnectionTimeout&) {
+		// The server is not accessible.
 	}
 }
 

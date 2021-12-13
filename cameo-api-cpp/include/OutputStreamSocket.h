@@ -23,8 +23,8 @@
 
 namespace cameo {
 
-class StreamSocketImpl;
-class WaitingImpl;
+class Server;
+class EventStreamSocketImpl;
 
 namespace application {
 
@@ -66,13 +66,13 @@ public:
 	bool isCanceled() const;
 
 private:
-	OutputStreamSocket(StreamSocketImpl * impl);
+	OutputStreamSocket(Server * server, const std::string& name);
 
 	int m_applicationId;
 	bool m_ended;
 	bool m_canceled;
 
-	std::unique_ptr<StreamSocketImpl> m_impl;
+	std::unique_ptr<EventStreamSocketImpl> m_impl;
 };
 
 }

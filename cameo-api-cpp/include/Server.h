@@ -137,6 +137,9 @@ public:
 	Endpoint getStatusEndpoint() const;
 
 	void sendSync();
+	void sendSyncStream(const std::string& name);
+
+	int getStreamPort(const std::string& name);
 
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
@@ -162,7 +165,6 @@ private:
 
 	void retrieveServerVersion();
 	void initStatus();
-	int getStreamPort(const std::string& name);
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout);
