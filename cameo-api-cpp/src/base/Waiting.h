@@ -14,8 +14,8 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_GENERICWAITINGIMPL_H_
-#define CAMEO_GENERICWAITINGIMPL_H_
+#ifndef CAMEO_WAITING_H_
+#define CAMEO_WAITING_H_
 
 #include <functional>
 

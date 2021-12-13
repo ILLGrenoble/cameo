@@ -48,8 +48,6 @@ class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
 class Waiting;
-class SocketWaitingImpl;
-class Waiting;
 class WaitingSet;
 class HandlerImpl;
 class RequestSocket;
@@ -57,7 +55,6 @@ class RequestSocket;
 namespace application {
 
 class Instance;
-class Waiting;
 
 typedef int32_t State;
 
@@ -82,7 +79,6 @@ const State KILLED           = 256;
  */
 class This : private EventListener {
 
-	friend class cameo::SocketWaitingImpl;
 	friend class cameo::Waiting;
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const cameo::application::This&);
