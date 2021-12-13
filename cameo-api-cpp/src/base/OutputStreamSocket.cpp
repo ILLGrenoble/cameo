@@ -46,6 +46,7 @@ OutputStreamSocket::OutputStreamSocket(Server * server, const std::string& name)
 
 	//TODO Replace with factory.
 	m_impl = std::unique_ptr<StreamSocketImpl>(new OutputStreamSocketZmq(server, name));
+	m_impl->init();
 }
 
 OutputStreamSocket::~OutputStreamSocket() {

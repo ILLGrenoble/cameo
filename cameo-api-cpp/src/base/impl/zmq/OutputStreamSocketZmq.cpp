@@ -37,8 +37,8 @@ OutputStreamSocketZmq::~OutputStreamSocketZmq() {
 void OutputStreamSocketZmq::init() {
 
 	int port = m_server->getStreamPort(m_name);
-
 	if (port == -1) {
+		std::cerr << "No stream port for " << m_name << std::endl;
 		return;
 	}
 
@@ -49,7 +49,7 @@ void OutputStreamSocketZmq::init() {
 
 	// Create the sockets.
 	m_cancelSocket.reset(m_context->createCancelPublisher(cancelEndpoint.str()));
-	m_socket.reset(m_context->createEventSubscriber(m_server->getEndpoint().withPort(port).toString(), cancelEndpoint.str()));
+	m_socket.reset(m_context->createOutputStreamSubscriber(m_server->getEndpoint().withPort(port).toString(), cancelEndpoint.str()));
 
 	// Wait for the connection to be ready.
 	// Poll subscriber.
@@ -81,6 +81,7 @@ std::string OutputStreamSocketZmq::receive(bool blocking) {
 
 	// Use the message interface.
 	unique_ptr<zmq::message_t> message(new zmq::message_t());
+
 	if (m_socket->recv(message.get(), (blocking ? 0 : ZMQ_DONTWAIT))) {
 		// The message exists.
 		return std::string(message->data<char>(), message->size());
