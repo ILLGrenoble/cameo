@@ -68,8 +68,6 @@ public:
 private:
 	OutputStreamSocket(StreamSocketImpl * impl);
 
-	WaitingImpl * waiting();
-
 	int m_applicationId;
 	bool m_ended;
 	bool m_canceled;

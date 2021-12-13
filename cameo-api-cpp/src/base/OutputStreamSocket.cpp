@@ -122,9 +122,4 @@ bool OutputStreamSocket::isCanceled() const {
 	return m_canceled;
 }
 
-WaitingImpl * OutputStreamSocket::waiting() {
-	// We transfer the ownership of cancel socket to WaitingImpl
-	return new SocketWaitingImpl(m_impl->m_cancelSocket.get(), message::Event::CANCEL);
-}
-
 }
