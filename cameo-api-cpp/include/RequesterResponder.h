@@ -22,7 +22,6 @@ namespace cameo {
 namespace coms {
 
 class Responder;
-class RequestImpl;
 class ResponderImpl;
 class RequesterImpl;
 
@@ -100,6 +99,7 @@ public:
 private:
 	Responder(int responderPort, const std::string &name);
 
+	std::string m_name;
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };

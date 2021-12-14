@@ -14,29 +14,40 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_RESPONDERIMPL_H_
-#define CAMEO_RESPONDERIMPL_H_
+#ifndef CAMEO_RESPONDERZMQ_H_
+#define CAMEO_RESPONDERZMQ_H_
 
-#include <string>
-#include <memory>
+#include "../ResponderImpl.h"
+#include <zmq.hpp>
 
 namespace cameo {
 namespace coms {
 
 class Request;
 
-class ResponderImpl {
+class ResponderZmq : public ResponderImpl {
 
 public:
-	virtual ~ResponderImpl() {}
+	ResponderZmq();
+	~ResponderZmq();
 
-	virtual void init(int responderPort) = 0;
-	virtual void cancel() = 0;
-	virtual bool isCanceled() = 0;
+	void init(int responderPort);
 
-	virtual std::unique_ptr<Request> receive() = 0;
+	void cancel();
+	bool isCanceled();
 
-	static const std::string RESPONDER_PREFIX;
+	std::unique_ptr<Request> receive();
+
+private:
+	zmq::message_t * responseToRequest();
+	zmq::message_t * responseToCancelResponder();
+	zmq::message_t * responseToUnknownRequest();
+
+	void terminate();
+
+	int m_responderPort;
+	std::unique_ptr<zmq::socket_t> m_responder;
+	bool m_canceled;
 };
 
 }

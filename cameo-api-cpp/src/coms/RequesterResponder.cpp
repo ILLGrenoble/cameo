@@ -22,7 +22,7 @@
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
 #include "impl/RequesterImpl.h"
-#include "impl/ResponderImpl.h"
+#include "impl/zmq/ResponderZmq.h"
 
 namespace cameo {
 namespace coms {
@@ -140,13 +140,18 @@ std::unique_ptr<Server> Request::getServer() {
 // Responder
 
 Responder::Responder(int responderPort, const std::string& name) :
-	m_impl(new ResponderImpl(responderPort, name)) {
+	m_name(name) {
+
+	//TODO Replace with a factory.
+	m_impl = std::unique_ptr<ResponderImpl>(new ResponderZmq());
+	m_impl->init(responderPort);
 
 	// Create the waiting here.
-	m_waiting.reset(m_impl->waiting());
+	m_waiting.reset(new Waiting(std::bind(&Responder::cancel, this)));
 }
 
 Responder::~Responder() {
+	application::This::getCom().removePort(ResponderImpl::RESPONDER_PREFIX + m_name);
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
@@ -163,7 +168,7 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 }
 
 const std::string& Responder::getName() const {
-	return m_impl->m_name;
+	return m_name;
 }
 
 void Responder::cancel() {
@@ -175,7 +180,7 @@ std::unique_ptr<Request> Responder::receive() {
 }
 
 bool Responder::isCanceled() const {
-	return m_impl->m_canceled;
+	return m_impl->isCanceled();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -194,7 +199,7 @@ Requester::~Requester() {
 std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
 
 	int responderId = instance.getId();
-	std::string responderPortName = ResponderImpl::RESPONDER_PREFIX + name;
+	std::string responderPortName = ResponderZmq::RESPONDER_PREFIX + name;
 	int requesterId = RequesterImpl::newRequesterId();
 	std::string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
 
