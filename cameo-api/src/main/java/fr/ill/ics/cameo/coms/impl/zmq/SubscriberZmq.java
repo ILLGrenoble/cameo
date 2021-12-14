@@ -252,10 +252,5 @@ public class SubscriberZmq implements SubscriberImpl {
 		context.destroySocket(subscriber);
 		context.destroySocket(cancelPublisher);
 	}
-
-	@Override
-	public String toString() {
-		return "sub." + publisherName + ":" + instance.getName() + "." + instance.getId() + "@" + instance.getEndpoint();
-	}
 	
 }
