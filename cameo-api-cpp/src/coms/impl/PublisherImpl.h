@@ -17,9 +17,6 @@
 #ifndef CAMEO_PUBLISHERIMPL_H_
 #define CAMEO_PUBLISHERIMPL_H_
 
-#include "../../base/Waiting.h"
-#include "zmq.hpp"
-#include <memory>
 #include <string>
 
 namespace cameo {
@@ -33,40 +30,22 @@ namespace coms {
 class PublisherImpl {
 
 public:
-	PublisherImpl(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers);
-	~PublisherImpl();
+	virtual ~PublisherImpl() {}
 
-	const std::string& getName() const;
-	const std::string& getApplicationName() const;
-	int getApplicationId() const;
-	std::string getApplicationEndpoint() const;
+	virtual void init(int publisherPort, int synchronizerPort) = 0;
 
-	bool waitForSubscribers();
-	void cancelWaitForSubscribers();
-	Waiting * waiting();
+	virtual bool waitForSubscribers() = 0;
+	virtual void cancelWaitForSubscribers() = 0;
 
-	void sendBinary(const std::string& data);
-	void send(const std::string& data);
-	void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
-	void setEnd();
-	bool isEnded();
-	void terminate();
+	virtual void sendBinary(const std::string& data) = 0;
+	virtual void send(const std::string& data) = 0;
+	virtual void sendTwoBinaryParts(const std::string& data1, const std::string& data2) = 0;
+	virtual void setEnd() = 0;
+	virtual bool isEnded() = 0;
+	virtual void terminate() = 0;
 
-	void publish(const std::string& header, const char* data, std::size_t size);
-	void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2);
-
-	zmq::message_t * responseToSyncRequest();
-	zmq::message_t * responseToSubscribeRequest();
-	zmq::message_t * responseToCancelRequest();
-	zmq::message_t * responseToUnknownRequest();
-
-	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
-
-	int m_synchronizerPort;
-	std::string m_name;
-	int m_numberOfSubscribers;
-	std::unique_ptr<zmq::socket_t> m_publisher;
-	bool m_ended;
+	virtual void publish(const std::string& header, const char* data, std::size_t size) = 0;
+	virtual void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) = 0;
 };
 
 }

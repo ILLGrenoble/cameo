@@ -14,25 +14,32 @@
  * limitations under the Licence.
  */
 
-#include "PublisherImpl.h"
-
+#include "PublisherZmq.h"
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
-#include "../../base/impl/zmq/ContextZmq.h"
-#include "../../base/Messages.h"
-#include "../../base/RequestSocket.h"
-#include <zmq.hpp>
+#include "../../../base/impl/zmq/ContextZmq.h"
+#include "../../../base/Messages.h"
+#include "../../../base/RequestSocket.h"
 #include <sstream>
 
 namespace cameo {
 namespace coms {
 
-PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
-	m_synchronizerPort(synchronizerPort),
+PublisherZmq::PublisherZmq(const std::string& name, int numberOfSubscribers) :
+	m_synchronizerPort(0),
 	m_name(name),
 	m_numberOfSubscribers(numberOfSubscribers),
 	m_ended(false) {
+}
+
+PublisherZmq::~PublisherZmq() {
+	terminate();
+}
+
+void PublisherZmq::init(int publisherPort, int synchronizerPort) {
+
+	m_synchronizerPort = synchronizerPort;
 
 	// create a socket for publishing
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
@@ -43,27 +50,7 @@ PublisherImpl::PublisherImpl(int publisherPort, int synchronizerPort, const std:
 	m_publisher->bind(pubEndpoint.str().c_str());
 }
 
-PublisherImpl::~PublisherImpl() {
-	terminate();
-}
-
-const std::string& PublisherImpl::getName() const {
-	return m_name;
-}
-
-const std::string& PublisherImpl::getApplicationName() const {
-	return application::This::getName();
-}
-
-int PublisherImpl::getApplicationId() const {
-	return application::This::getId();
-}
-
-std::string PublisherImpl::getApplicationEndpoint() const {
-	return application::This::getEndpoint().toString();
-}
-
-bool PublisherImpl::waitForSubscribers() {
+bool PublisherZmq::waitForSubscribers() {
 
 	if (m_numberOfSubscribers <= 0) {
 		return true;
@@ -121,7 +108,7 @@ bool PublisherImpl::waitForSubscribers() {
 	return !canceled;
 }
 
-void PublisherImpl::cancelWaitForSubscribers() {
+void PublisherZmq::cancelWaitForSubscribers() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -132,18 +119,13 @@ void PublisherImpl::cancelWaitForSubscribers() {
 	requestSocket->requestJSON(request.toString());
 }
 
-Waiting * PublisherImpl::waiting() {
-
-	return new Waiting(std::bind(&PublisherImpl::cancelWaitForSubscribers, this));
-}
-
-void PublisherImpl::sendBinary(const std::string& data) {
+void PublisherZmq::sendBinary(const std::string& data) {
 
 	// send a STREAM message by the publisher socket
 	publish(message::Event::STREAM, data.c_str(), data.length());
 }
 
-void PublisherImpl::send(const std::string& data) {
+void PublisherZmq::send(const std::string& data) {
 
 	// encode the data
 	std::string result;
@@ -153,13 +135,13 @@ void PublisherImpl::send(const std::string& data) {
 	publish(message::Event::STREAM, result.c_str(), result.length());
 }
 
-void PublisherImpl::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {
+void PublisherZmq::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {
 
 	// send a STREAM message by the publisher socket
 	publishTwoParts(message::Event::STREAM, data1.c_str(), data1.length(), data2.c_str(), data2.length());
 }
 
-void PublisherImpl::setEnd() {
+void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher.get() != nullptr) {
 		// send a dummy ENDSTREAM message by the publisher socket
@@ -170,11 +152,11 @@ void PublisherImpl::setEnd() {
 	}
 }
 
-bool PublisherImpl::isEnded() {
+bool PublisherZmq::isEnded() {
 	return m_ended;
 }
 
-void PublisherImpl::terminate() {
+void PublisherZmq::terminate() {
 
 	if (m_publisher.get() != nullptr) {
 		setEnd();
@@ -191,7 +173,7 @@ void PublisherImpl::terminate() {
 	}
 }
 
-void PublisherImpl::publish(const std::string& header, const char* data, std::size_t size) {
+void PublisherZmq::publish(const std::string& header, const char* data, std::size_t size) {
 
 	zmq::message_t requestType(header.length());
 	memcpy(requestType.data(), header.c_str(), header.length());
@@ -203,7 +185,7 @@ void PublisherImpl::publish(const std::string& header, const char* data, std::si
 	m_publisher->send(requestData);
 }
 
-void PublisherImpl::publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
+void PublisherZmq::publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
 
 	zmq::message_t requestType(header.length());
 	memcpy(requestType.data(), header.c_str(), header.length());
@@ -219,7 +201,7 @@ void PublisherImpl::publishTwoParts(const std::string& header, const char* data1
 	m_publisher->send(requestData2);
 }
 
-zmq::message_t * PublisherImpl::responseToSyncRequest() {
+zmq::message_t * PublisherZmq::responseToSyncRequest() {
 
 	// send a dummy SYNC message by the publisher socket
 	std::string data(message::Event::SYNC);
@@ -234,7 +216,7 @@ zmq::message_t * PublisherImpl::responseToSyncRequest() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::responseToSubscribeRequest() {
+zmq::message_t * PublisherZmq::responseToSubscribeRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -244,7 +226,7 @@ zmq::message_t * PublisherImpl::responseToSubscribeRequest() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::responseToCancelRequest() {
+zmq::message_t * PublisherZmq::responseToCancelRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
@@ -254,7 +236,7 @@ zmq::message_t * PublisherImpl::responseToCancelRequest() {
 	return reply;
 }
 
-zmq::message_t * PublisherImpl::responseToUnknownRequest() {
+zmq::message_t * PublisherZmq::responseToUnknownRequest() {
 
 	std::string result = createRequestResponse(-1, "Unknown command");
 
@@ -264,7 +246,7 @@ zmq::message_t * PublisherImpl::responseToUnknownRequest() {
 	return reply;
 }
 
-std::string PublisherImpl::createTerminatePublisherRequest(int id, const std::string& name) const {
+std::string PublisherZmq::createTerminatePublisherRequest(int id, const std::string& name) const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);

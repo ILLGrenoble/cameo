@@ -21,8 +21,9 @@
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
-#include "impl/PublisherImpl.h"
+#include "../base/Waiting.h"
 #include "impl/SubscriberImpl.h"
+#include "impl/zmq/PublisherZmq.h"
 
 namespace cameo {
 namespace coms {
@@ -30,17 +31,20 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-Publisher::Publisher(int publisherPort, int synchronizerPort, const std::string& name, int numberOfSubscribers) :
-	m_impl(new PublisherImpl(publisherPort, synchronizerPort, name, numberOfSubscribers)) {
+Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
+	m_name(name) {
+
+	//TODO Replace with factory.
+	m_impl = std::unique_ptr<PublisherImpl>(new PublisherZmq(name, numberOfSubscribers));
 
 	// Create the waiting here.
-	m_waiting.reset(m_impl->waiting());
+	m_waiting.reset(new Waiting(std::bind(&Publisher::cancelWaitForSubscribers, this)));
 }
 
 Publisher::~Publisher() {
 }
 
-std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
+void Publisher::init(const std::string& name, int numberOfSubscribers) {
 
 	json::Object response = application::This::getCom().requestJSON(createCreatePublisherRequest(application::This::getId(), name, numberOfSubscribers));
 
@@ -50,24 +54,19 @@ std::unique_ptr<Publisher> Publisher::create(const std::string& name, int number
 	}
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 
-	return std::unique_ptr<Publisher>(new Publisher(publisherPort, synchronizerPort, name, numberOfSubscribers));
+	m_impl->init(publisherPort, synchronizerPort);
 }
 
+std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
+
+	std::unique_ptr<Publisher> publisher = std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
+	publisher->init(name, numberOfSubscribers);
+
+	return publisher;
+}
 
 const std::string& Publisher::getName() const {
-	return m_impl->getName();
-}
-
-const std::string& Publisher::getApplicationName() const {
-	return m_impl->getApplicationName();
-}
-
-int Publisher::getApplicationId() const {
-	return m_impl->getApplicationId();
-}
-
-std::string Publisher::getApplicationEndpoint() const {
-	return m_impl->getApplicationEndpoint();
+	return m_name;
 }
 
 bool Publisher::waitForSubscribers() const {
@@ -75,7 +74,7 @@ bool Publisher::waitForSubscribers() const {
 }
 
 void Publisher::cancelWaitForSubscribers() {
-	m_waiting->cancel();
+	m_impl->cancelWaitForSubscribers();
 }
 
 void Publisher::sendBinary(const std::string& data) const {
@@ -119,7 +118,6 @@ std::string Publisher::createCreatePublisherRequest(int id, const std::string& n
 
 	return request.toString();
 }
-
 
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
@@ -249,9 +247,9 @@ std::string Subscriber::createConnectPublisherRequest(int id, const std::string&
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {
 
 	os << "pub." << publisher.getName()
-		<< ":" << publisher.getApplicationName()
-		<< "." << publisher.getApplicationId()
-		<< "@" << publisher.getApplicationEndpoint();
+		<< ":" << application::This::getName()
+		<< "." << application::This::getId()
+		<< "@" << application::This::getEndpoint().toString();
 
 	return os;
 }

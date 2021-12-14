@@ -137,9 +137,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"numberOfSubscribers"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &Publisher::getName)
-	    .def("getApplicationName", &Publisher::getApplicationName)
-	    .def("getApplicationId", &Publisher::getApplicationId)
-	    .def("getApplicationEndpoint", &Publisher::getApplicationEndpoint)
 	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitForSubscribers", &Publisher::cancelWaitForSubscribers, py::call_guard<py::gil_scoped_release>())
 	    .def("sendBinary", &Publisher::sendBinary,

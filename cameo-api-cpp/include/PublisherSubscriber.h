@@ -41,9 +41,6 @@ public:
 	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0);
 
 	const std::string& getName() const;
-	const std::string& getApplicationName() const;
-	int getApplicationId() const;
-	std::string getApplicationEndpoint() const;
 
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
@@ -65,10 +62,12 @@ public:
 	bool isEnded() const;
 
 private:
-	Publisher(int publisherPort, int synchronizerPort, const std::string &name, int numberOfSubscribers);
+	Publisher(const std::string &name, int numberOfSubscribers);
+	void init(const std::string &name, int numberOfSubscribers);
 
 	static std::string createCreatePublisherRequest(int id, const std::string &name, int numberOfSubscribers);
 
+	std::string m_name;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };
