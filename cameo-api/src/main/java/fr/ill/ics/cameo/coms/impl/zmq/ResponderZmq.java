@@ -31,7 +31,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class ResponderZmq implements ResponderImpl {
 
 	private int responderPort;
-	private String name;
 	
 	private Zmq.Context context;
 	private Zmq.Socket responder;
@@ -39,9 +38,8 @@ public class ResponderZmq implements ResponderImpl {
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int responderPort, String name) {
+	public void init(int responderPort) {
 		this.responderPort = responderPort;
-		this.name = name;
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
 		// create a socket REP
@@ -141,15 +139,7 @@ public class ResponderZmq implements ResponderImpl {
 	}
 	
 	public void terminate() {
-
 		context.destroySocket(responder);
-		
-		try {
-			This.getCom().removePort(RESPONDER_PREFIX + name);
-			
-		} catch (Exception e) {
-			System.err.println("Cannot terminate responder: " + e.getMessage());
-		}
 	}
 	
 	

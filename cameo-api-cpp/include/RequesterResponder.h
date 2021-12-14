@@ -97,7 +97,8 @@ public:
 	bool isCanceled() const;
 
 private:
-	Responder(int responderPort, const std::string &name);
+	Responder(const std::string &name);
+	void init(const std::string &name);
 
 	std::string m_name;
 	std::unique_ptr<ResponderImpl> m_impl;

@@ -139,12 +139,11 @@ std::unique_ptr<Server> Request::getServer() {
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
-Responder::Responder(int responderPort, const std::string& name) :
+Responder::Responder(const std::string& name) :
 	m_name(name) {
 
 	//TODO Replace with a factory.
 	m_impl = std::unique_ptr<ResponderImpl>(new ResponderZmq());
-	m_impl->init(responderPort);
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Responder::cancel, this)));
@@ -154,7 +153,7 @@ Responder::~Responder() {
 	application::This::getCom().removePort(ResponderImpl::RESPONDER_PREFIX + m_name);
 }
 
-std::unique_ptr<Responder> Responder::create(const std::string& name) {
+void Responder::init(const std::string &name) {
 
 	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
 	json::Object response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::getId(), portName));
@@ -164,7 +163,15 @@ std::unique_ptr<Responder> Responder::create(const std::string& name) {
 		throw ResponderCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
-	return std::unique_ptr<Responder>(new Responder(responderPort, name));
+	m_impl->init(responderPort);
+}
+
+std::unique_ptr<Responder> Responder::create(const std::string& name) {
+
+	std::unique_ptr<Responder> responder(new Responder(name));
+	responder->init(name);
+
+	return responder;
 }
 
 const std::string& Responder::getName() const {

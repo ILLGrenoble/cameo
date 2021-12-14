@@ -37,7 +37,7 @@ public class Responder {
 			throw new ResponderCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		impl.init(port, name);
+		impl.init(port);
 	}
 	
 	/**
@@ -77,6 +77,13 @@ public class Responder {
 	public void terminate() {
 		waiting.remove();
 		impl.terminate();
+		
+		try {
+			This.getCom().removePort(ResponderImpl.RESPONDER_PREFIX + name);
+			
+		} catch (Exception e) {
+			System.err.println("Cannot terminate responder: " + e.getMessage());
+		}
 	}
 
 	@Override

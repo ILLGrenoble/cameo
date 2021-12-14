@@ -22,7 +22,7 @@ public interface ResponderImpl {
 
 	public static final String RESPONDER_PREFIX = "rep.";
 	
-	void init(int responderPort, String name);
+	void init(int responderPort);
 	Request receive();
 	void cancel();
 	boolean isEnded();
