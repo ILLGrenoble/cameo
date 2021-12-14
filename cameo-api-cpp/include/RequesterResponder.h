@@ -35,6 +35,7 @@ class Request {
 	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
+	Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverUrl, int serverPort, int requesterPort, const std::string& messagePart1, const std::string& messagePart2);
 	~Request();
 
 	std::string getObjectId() const;
@@ -57,9 +58,14 @@ public:
 	std::unique_ptr<Server> getServer();
 
 private:
-	Request(std::unique_ptr<RequestImpl> &impl);
+	std::string m_requesterEndpoint;
+	std::string m_messagePart1;
+	std::string m_messagePart2;
+	std::string m_requesterApplicationName;
+	int m_requesterApplicationId;
+	std::string m_requesterServerEndpoint;
+	int m_timeout;
 
-	std::unique_ptr<RequestImpl> m_impl;
 	std::unique_ptr<Server> m_requesterServer;
 };
 

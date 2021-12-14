@@ -22,7 +22,6 @@
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
 #include "impl/RequesterImpl.h"
-#include "impl/RequestImpl.h"
 #include "impl/ResponderImpl.h"
 
 namespace cameo {
@@ -31,68 +30,100 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////
 // Request
 
-Request::Request(std::unique_ptr<RequestImpl> & impl) :
-	m_impl(std::move(impl)) {
+Request::~Request() {
 }
 
-Request::~Request() {
+void Request::setTimeout(int value) {
+	m_timeout = value;
 }
 
 std::string Request::getObjectId() const {
 
 	// Local id is missing.
 	return "request:"
-		+ m_impl->m_requesterApplicationName
+		+ m_requesterApplicationName
 		+ "."
-		+ std::to_string(m_impl->m_requesterApplicationId)
+		+ std::to_string(m_requesterApplicationId)
 		+ "@"
-		+ m_impl->m_requesterServerEndpoint;
+		+ m_requesterServerEndpoint;
 }
 
 std::string Request::getRequesterEndpoint() const {
-	return m_impl->m_requesterServerEndpoint;
-}
-
-void Request::setTimeout(int value) {
-	m_impl->setTimeout(value);
+	return m_requesterServerEndpoint;
 }
 
 const std::string& Request::getBinary() const {
-	return m_impl->m_message;
+	return m_messagePart1;
 }
 
 std::string Request::get() const {
 
 	std::string data;
-	parse(m_impl->m_message, data);
+	parse(m_messagePart1, data);
 
 	return data;
 }
 
 const std::string& Request::getSecondBinaryPart() const {
-	return m_impl->m_message2;
+	return m_messagePart2;
+}
+
+Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverUrl, int serverPort, int requesterPort, const std::string& messagePart1, const std::string& messagePart2) :
+	m_messagePart1(messagePart1),
+	m_messagePart2(messagePart2),
+	m_requesterApplicationName(requesterApplicationName),
+	m_requesterApplicationId(requesterApplicationId),
+	m_timeout(0) {
+
+	std::stringstream requesterEndpoint;
+	requesterEndpoint << serverUrl << ":" << requesterPort;
+	m_requesterEndpoint = requesterEndpoint.str();
+
+	std::stringstream requesterServerEndpoint;
+	requesterServerEndpoint << serverUrl << ":" << serverPort;
+	m_requesterServerEndpoint = requesterServerEndpoint.str();
 }
 
 bool Request::replyBinary(const std::string& response) {
-	return m_impl->replyBinary(response);
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushInt(message::RESPONSE);
+
+	// Create a request socket. It is created for each request that could be optimized.
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_requesterEndpoint);
+
+	try {
+		requestSocket->request(request.toString(), response);
+	}
+	catch (const ConnectionTimeout&) {
+		return false;
+	}
+
+	return true;
 }
 
 bool Request::reply(const std::string& response) {
-	return m_impl->reply(response);
+
+	// Encode the data.
+	std::string result;
+	serialize(response, result);
+
+	return replyBinary(result);
 }
 
 std::unique_ptr<application::Instance> Request::connectToRequester() {
 
 	// Instantiate the requester server if it does not exist.
 	if (m_requesterServer.get() == nullptr) {
-		m_requesterServer.reset(new Server(m_impl->m_requesterServerEndpoint, m_impl->m_timeout));
+		m_requesterServer.reset(new Server(m_requesterServerEndpoint, m_timeout));
 	}
 
 	// Connect and find the instance.
-	application::InstanceArray instances = m_requesterServer->connectAll(m_impl->m_requesterApplicationName);
+	application::InstanceArray instances = m_requesterServer->connectAll(m_requesterApplicationName);
 
 	for (int i = 0; i < instances.size(); i++) {
-		if (instances[i]->getId() == m_impl->m_requesterApplicationId) {
+		if (instances[i]->getId() == m_requesterApplicationId) {
 			return std::unique_ptr<application::Instance>(std::move(instances[i]));
 		}
 	}
@@ -140,12 +171,7 @@ void Responder::cancel() {
 }
 
 std::unique_ptr<Request> Responder::receive() {
-
-	std::unique_ptr<RequestImpl> requestImpl = m_impl->receive();
-	if (requestImpl.get() == nullptr) {
-		return std::unique_ptr<Request>(nullptr);
-	}
-	return std::unique_ptr<Request>(new Request(requestImpl));
+	return m_impl->receive();
 }
 
 bool Responder::isCanceled() const {
@@ -236,8 +262,8 @@ bool Requester::isCanceled() const {
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {
 
-	os << "[endpoint=" << request.m_impl->m_requesterEndpoint
-			<< ", id=" << request.m_impl->m_requesterApplicationId << "]";
+	os << "[endpoint=" << request.m_requesterEndpoint
+			<< ", id=" << request.m_requesterApplicationId << "]";
 
 	return os;
 }

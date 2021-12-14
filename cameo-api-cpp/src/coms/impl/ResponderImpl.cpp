@@ -16,7 +16,7 @@
 
 #include "ResponderImpl.h"
 
-#include "RequestImpl.h"
+#include "RequesterResponder.h"
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
@@ -63,7 +63,7 @@ Waiting * ResponderImpl::waiting() {
 	return new Waiting(std::bind(&ResponderImpl::cancel, this));
 }
 
-std::unique_ptr<RequestImpl> ResponderImpl::receive() {
+std::unique_ptr<Request> ResponderImpl::receive() {
 
 	std::unique_ptr<zmq::message_t> message(new zmq::message_t);
 	m_responder->recv(message.get(), 0);
@@ -76,7 +76,7 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 
 	// Create the reply
 	std::unique_ptr<zmq::message_t> reply;
-	std::unique_ptr<RequestImpl> result;
+	std::unique_ptr<Request> result;
 
 	if (type == message::REQUEST) {
 
@@ -90,21 +90,24 @@ std::unique_ptr<RequestImpl> ResponderImpl::receive() {
 		message.reset(new zmq::message_t);
 		m_responder->recv(message.get(), 0);
 		std::string message1(message->data<char>(), message->size());
-
-		// Create the request.
-		result = std::unique_ptr<RequestImpl>(new RequestImpl(name,
-				id,
-				message1,
-				serverUrl,
-				serverPort,
-				requesterPort));
+		std::string message2;
 
 		// Set message 2 if it exists.
 		if (message->more()) {
 			message.reset(new zmq::message_t);
 			m_responder->recv(message.get(), 0);
-			result->m_message2 = std::string(message->data<char>(), message->size());
+			message2 = std::string(message->data<char>(), message->size());
 		}
+
+		// Create the request.
+		result = std::unique_ptr<Request>(new Request(name,
+				id,
+				serverUrl,
+				serverPort,
+				requesterPort,
+				message1,
+				message2));
+
 		reply.reset(responseToRequest());
 	}
 	else if (type == message::CANCEL) {

@@ -26,7 +26,7 @@
 namespace cameo {
 namespace coms {
 
-class RequestImpl;
+class Request;
 
 class ResponderImpl {
 
@@ -37,7 +37,7 @@ public:
 	void cancel();
 	Waiting * waiting();
 
-	std::unique_ptr<RequestImpl> receive();
+	std::unique_ptr<Request> receive();
 
 	zmq::message_t * responseToRequest();
 	zmq::message_t * responseToCancelResponder();
