@@ -227,7 +227,7 @@ std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinary
 }
 
 void Subscriber::cancel() {
-	m_waiting->cancel();
+	m_impl->cancel();
 }
 
 std::string Subscriber::createConnectPublisherRequest(int id, const std::string& publisherName) {
