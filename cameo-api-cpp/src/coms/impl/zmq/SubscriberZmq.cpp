@@ -14,38 +14,44 @@
  * limitations under the Licence.
  */
 
-#include "SubscriberImpl.h"
-
+#include "SubscriberZmq.h"
 #include "Serializer.h"
 #include "Server.h"
 #include "JSON.h"
-#include "../../base/CancelIdGenerator.h"
-#include "../../base/Messages.h"
-#include "../../base/RequestSocket.h"
-#include "../../base/impl/zmq/ContextZmq.h"
-#include "../../base/Waiting.h"
+#include "../../../base/CancelIdGenerator.h"
+#include "../../../base/Messages.h"
+#include "../../../base/RequestSocket.h"
+#include "../../../base/impl/zmq/ContextZmq.h"
+#include "../../../base/Waiting.h"
 #include <sstream>
 
 namespace cameo {
 namespace coms {
 
-SubscriberImpl::SubscriberImpl(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance) :
-	m_serverEndpoint(instance.getEndpoint()),
-	m_publisherName(publisherName),
-	m_publisherPort(publisherPort),
-	m_synchronizerPort(synchronizerPort),
-	m_numberOfSubscribers(numberOfSubscribers),
-	m_instanceName(instance.getName()),
-	m_instanceId(instance.getId()),
-	m_statusEndpoint(instance.getStatusEndpoint().toString()),
+SubscriberZmq::SubscriberZmq() :
+	m_publisherPort(0),
+	m_synchronizerPort(0),
+	m_numberOfSubscribers(0),
+	m_instanceId(0),
 	m_ended(false),
 	m_canceled(false) {
 }
 
-SubscriberImpl::~SubscriberImpl() {
+SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberImpl::init() {
+void SubscriberZmq::init(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance) {
+
+	m_serverEndpoint = instance.getEndpoint();
+	m_publisherName = publisherName;
+	m_publisherPort = publisherPort;
+	m_synchronizerPort = synchronizerPort;
+	m_numberOfSubscribers = numberOfSubscribers;
+	m_instanceName = instance.getName();
+	m_instanceId = instance.getId();
+	m_statusEndpoint = instance.getStatusEndpoint().toString();
+	m_ended = false;
+	m_canceled = false;
 
 	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
@@ -105,15 +111,31 @@ void SubscriberImpl::init() {
 	}
 }
 
-bool SubscriberImpl::isEnded() const {
+const std::string& SubscriberZmq::getPublisherName() const {
+	return m_publisherName;
+}
+
+const std::string& SubscriberZmq::getInstanceName() const {
+	return m_instanceName;
+}
+
+int SubscriberZmq::getInstanceId() const {
+	return m_instanceId;
+}
+
+Endpoint SubscriberZmq::getInstanceEndpoint() const {
+	return m_serverEndpoint;
+}
+
+bool SubscriberZmq::isEnded() const {
 	return m_ended;
 }
 
-bool SubscriberImpl::isCanceled() const {
+bool SubscriberZmq::isCanceled() const {
 	return m_canceled;
 }
 
-std::optional<std::string> SubscriberImpl::receiveBinary() {
+std::optional<std::string> SubscriberZmq::receiveBinary() {
 
 	while (true) {
 		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -162,11 +184,11 @@ std::optional<std::string> SubscriberImpl::receiveBinary() {
 	return {};
 }
 
-std::optional<std::string> SubscriberImpl::receive() {
+std::optional<std::string> SubscriberZmq::receive() {
 	return receiveBinary();
 }
 
-std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBinaryParts() {
+std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBinaryParts() {
 
 	while (true) {
 		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
@@ -223,7 +245,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberImpl::receiveTwoBi
 	return {};
 }
 
-void SubscriberImpl::cancel() {
+void SubscriberZmq::cancel() {
 
 	std::string m_message = message::Event::CANCEL;
 
@@ -236,13 +258,7 @@ void SubscriberImpl::cancel() {
 	m_cancelPublisher->send(requestData);
 }
 
-Waiting * SubscriberImpl::waiting() {
-
-	// Waiting gets the cancel publisher.
-	return new Waiting(std::bind(&SubscriberImpl::cancel, this));
-}
-
-std::string SubscriberImpl::createSubscribePublisherRequest() const {
+std::string SubscriberZmq::createSubscribePublisherRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);

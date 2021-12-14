@@ -22,8 +22,8 @@
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
 #include "../base/Waiting.h"
-#include "impl/SubscriberImpl.h"
 #include "impl/zmq/PublisherZmq.h"
+#include "impl/zmq/SubscriberZmq.h"
 
 namespace cameo {
 namespace coms {
@@ -122,14 +122,17 @@ std::string Publisher::createCreatePublisherRequest(int id, const std::string& n
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(int publisherPort, int synchronizerPort, const std::string & publisherName, int numberOfSubscribers, application::Instance &instance) :
-	m_impl(new SubscriberImpl(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance)) {
+Subscriber::Subscriber() {
+	m_impl = std::unique_ptr<SubscriberImpl>(new SubscriberZmq());
+
+	// Create the waiting here.
+	m_waiting.reset(new Waiting(std::bind(&Subscriber::cancel, this)));
 }
 
 Subscriber::~Subscriber() {
 }
 
-std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
+void Subscriber::init(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
 
 	// Get the JSON response.
 	json::Object response = instance.getCom().requestJSON(createConnectPublisherRequest(instance.getId(), publisherName));
@@ -143,8 +146,13 @@ std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
 	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	std::unique_ptr<Subscriber> subscriber(new Subscriber(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance));
-	subscriber->init();
+	m_impl->init(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
+}
+
+std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName) {
+
+	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
+	subscriber->init(instance, publisherName, instanceName);
 
 	return subscriber;
 }
@@ -178,27 +186,20 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance,
 	return std::unique_ptr<Subscriber>(nullptr);
 }
 
-void Subscriber::init() {
-	m_impl->init();
-
-	// Create the waiting here.
-	m_waiting.reset(m_impl->waiting());
-}
-
 const std::string& Subscriber::getPublisherName() const {
-	return m_impl->m_publisherName;
+	return m_impl->getPublisherName();
 }
 
 const std::string& Subscriber::getInstanceName() const {
-	return m_impl->m_instanceName;
+	return m_impl->getInstanceName();
 }
 
 int Subscriber::getInstanceId() const {
-	return m_impl->m_instanceId;
+	return m_impl->getInstanceId();
 }
 
-std::string Subscriber::getInstanceEndpoint() const {
-	return m_impl->m_serverEndpoint.toString();
+Endpoint Subscriber::getInstanceEndpoint() const {
+	return m_impl->getInstanceEndpoint();
 }
 
 bool Subscriber::hasEnded() const {
