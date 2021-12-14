@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
-public class RequesterWaitingImpl extends Waiting {
+public class RequesterWaiting extends Waiting {
 
-	private RequesterImpl requester;
+	private Requester requester;
 	
-	public RequesterWaitingImpl(RequesterImpl requester) {
+	public RequesterWaiting(Requester requester) {
 		this.requester = requester;
 	}
 	

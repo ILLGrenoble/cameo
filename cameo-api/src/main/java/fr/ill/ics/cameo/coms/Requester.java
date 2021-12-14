@@ -1,11 +1,14 @@
 package fr.ill.ics.cameo.coms;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
+import fr.ill.ics.cameo.coms.impl.zmq.RequesterZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -15,19 +18,34 @@ import fr.ill.ics.cameo.messages.Messages;
  */
 public class Requester {
 
+	private String name;
+	private int requesterId;
+	private int responderId;
 	private RequesterImpl impl;
+	private RequesterWaiting waiting = new RequesterWaiting(this);
+	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
-	private Requester(RequesterImpl impl) {
-		this.impl = impl;
+	private Requester(String name) {
+		this.name = name;
+		this.impl = new RequesterZmq();
+		waiting.add();
+	}
+
+	private static int newRequesterId() {
+		return requesterCounter.incrementAndGet();
+	}
+
+	private static String getRequesterPortName(String name, int responderId, int requesterId) {
+		return RequesterImpl.REQUESTER_PREFIX + name + "." + responderId + "." + requesterId;
 	}
 	
-	private static RequesterImpl createRequester(Instance application, String name) throws RequesterCreationException {
+	private void init(Instance application, String name) throws RequesterCreationException {
 		
-		int responderId = application.getId();
+		responderId = application.getId();
 		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
 		
-		int requesterId = RequesterImpl.newRequesterId();
-		String requesterPortName = RequesterImpl.getRequesterPortName(name, responderId, requesterId);
+		requesterId = newRequesterId();
+		String requesterPortName = getRequesterPortName(name, responderId, requesterId);
 		
 		// First connect to the responder.
 		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);
@@ -59,7 +77,7 @@ public class Requester {
 			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		return new RequesterImpl(application.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId);
+		impl.init(application.getEndpoint(), requesterPort, responderPort, name);
 	}
 	
 	/**
@@ -69,7 +87,11 @@ public class Requester {
 	 * @throws RequesterCreationException, ConnectionTimeout
 	 */
 	static public Requester create(Instance application, String name) throws RequesterCreationException {
-		return new Requester(createRequester(application, name));
+		
+		Requester requester = new Requester(name);
+		requester.init(application, name);
+		
+		return requester;
 	}
 	
 	public String getName() {
@@ -105,11 +127,19 @@ public class Requester {
 	}
 	
 	public void terminate() {
+		waiting.remove();
 		impl.terminate();
+
+		try {
+			This.getCom().removePort(getRequesterPortName(name, responderId, requesterId));
+			
+		} catch (Exception e) {
+			System.err.println("Cannot terminate requester: " + e.getMessage());
+		}
 	}
-		
+	
 	@Override
 	public String toString() {
-		return impl.toString();
+		return RequesterImpl.REQUESTER_PREFIX + name + "." + requesterId + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 }
