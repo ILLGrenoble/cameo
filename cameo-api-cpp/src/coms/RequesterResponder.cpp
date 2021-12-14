@@ -21,7 +21,7 @@
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
-#include "impl/RequesterImpl.h"
+#include "impl/zmq/RequesterZmq.h"
 #include "impl/zmq/ResponderZmq.h"
 
 namespace cameo {
@@ -193,24 +193,50 @@ bool Responder::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(const Endpoint &endpoint, int requesterPort, int responderPort, const std::string& name, int responderId, int requesterId) :
-	m_impl(new RequesterImpl(endpoint, requesterPort, responderPort, name, responderId, requesterId)) {
+std::mutex Requester::m_mutex;
+int Requester::m_requesterCounter = 0;
+
+Requester::Requester(const std::string &name) :
+	m_name(name),
+	m_requesterId(0),
+	m_responderId(0) {
+
+	//TODO Replace with factory.
+	m_impl = std::unique_ptr<RequesterImpl>(new RequesterZmq());
 
 	// Create the waiting here.
-	m_waiting.reset(m_impl->waiting());
+	m_waiting.reset(new Waiting(std::bind(&Requester::cancel, this)));
 }
 
 Requester::~Requester() {
+
+	application::This::getCom().removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
 }
 
-std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
+int Requester::newRequesterId() {
 
-	int responderId = instance.getId();
+	std::lock_guard<std::mutex> lock(m_mutex);
+	m_requesterCounter++;
+
+	return m_requesterCounter;
+}
+
+std::string Requester::getRequesterPortName(const std::string& name, int responderId, int requesterId) {
+
+	std::stringstream requesterPortName;
+	requesterPortName << RequesterImpl::REQUESTER_PREFIX << name << "." << responderId << "." << requesterId;
+
+	return requesterPortName.str();
+}
+
+void Requester::init(application::Instance &instance, const std::string &name) {
+
+	m_responderId = instance.getId();
 	std::string responderPortName = ResponderZmq::RESPONDER_PREFIX + name;
-	int requesterId = RequesterImpl::newRequesterId();
-	std::string requesterPortName = RequesterImpl::getRequesterPortName(name, responderId, requesterId);
+	m_requesterId = newRequesterId();
+	std::string requesterPortName = getRequesterPortName(name, m_responderId, m_requesterId);
 
-	std::string request = createConnectPortV0Request(responderId, responderPortName);
+	std::string request = createConnectPortV0Request(m_responderId, responderPortName);
 
 	json::Object response = instance.getCom().requestJSON(request);
 
@@ -237,11 +263,19 @@ std::unique_ptr<Requester> Requester::create(application::Instance & instance, c
 	}
 
 	// TODO simplify the use of some variables: responderUrl.
-	return std::unique_ptr<Requester>(new Requester(instance.getEndpoint(), requesterPort, responderPort, name, responderId, requesterId));
+	m_impl->init(instance.getEndpoint(), requesterPort, responderPort, name);
+}
+
+std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
+
+	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester(name));
+	requester->init(instance, name);
+
+	return requester;
 }
 
 const std::string& Requester::getName() const {
-	return m_impl->m_name;
+	return m_name;
 }
 
 void Requester::sendBinary(const std::string& request) {
@@ -269,7 +303,7 @@ void Requester::cancel() {
 }
 
 bool Requester::isCanceled() const {
-	return m_impl->m_canceled;
+	return m_impl->isCanceled();
 }
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {
@@ -293,7 +327,7 @@ std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 	os << "req." << requester.getName()
-		<< "." << requester.m_impl->m_requesterId
+		<< "." << requester.m_requesterId
 		<< ":" << application::This::getName()
 		<< "." << application::This::getId()
 		<< "@" << application::This::getEndpoint();

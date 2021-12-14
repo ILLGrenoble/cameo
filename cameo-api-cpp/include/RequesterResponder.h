@@ -142,10 +142,20 @@ public:
 	bool isCanceled() const;
 
 private:
-	Requester(const Endpoint &endpoint, int requesterPort, int responderPort, const std::string &name, int responderId, int requesterId);
+	void init(application::Instance &instance, const std::string &name);
+	Requester(const std::string &name);
 
+	static int newRequesterId();
+	static std::string getRequesterPortName(const std::string& name, int responderId, int requesterId);
+
+	std::string m_name;
+	int m_requesterId;
+	int m_responderId;
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
+
+	static std::mutex m_mutex;
+	static int m_requesterCounter;
 };
 
 std::ostream& operator<<(std::ostream&, const cameo::coms::Request&);
