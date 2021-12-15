@@ -171,26 +171,6 @@ public class Server {
 		
 		return false;
 	}
-	
-	public void sendSync() {
-		
-		try {
-			requestSocket.requestJSON(Messages.createSyncRequest());
-
-		} catch (ConnectionTimeout e) {
-			// do nothing
-		}
-	}
-	
-	public void sendSyncStream(String name) {
-		
-		try {
-			requestSocket.requestJSON(Messages.createSyncStreamRequest(name));
-
-		} catch (ConnectionTimeout e) {
-			// do nothing
-		}
-	}
 
 	private void retrieveServerVersion() {
 		
@@ -309,14 +289,6 @@ public class Server {
 		JSONObject response = requestSocket.requestJSON(request);
 		
 		return new Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
-	}
-	
-	public int getStreamPort(String name) throws ConnectionTimeout {
-		
-		JSONObject request = Messages.createOutputPortRequest(name);
-		JSONObject response = requestSocket.requestJSON(request);
-		
-		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	/**
@@ -666,13 +638,21 @@ public class Server {
 		
 		return result;
 	}
+	
+
+	private int getStreamPort(String name) throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createOutputPortRequest(name);
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
 
 	private OutputStreamSocket createOutputStreamSocket(String name) {
 		
 		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(name);
 		
 		int port = getStreamPort(name);
-		
 		if (port == -1) {
 			return null;
 		}
