@@ -22,38 +22,43 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.CancelIdGenerator;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
+import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.Event;
 import fr.ill.ics.cameo.base.KeyEvent;
 import fr.ill.ics.cameo.base.PortEvent;
 import fr.ill.ics.cameo.base.PublisherEvent;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.ResultEvent;
-import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.StatusEvent;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.impl.EventStreamSocketImpl;
 import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
-	private Server server;
 	private Zmq.Context context;
+	private Parser parser;
 	private Zmq.Socket subscriberSocket;
 	private Zmq.Socket cancelSocket;
 	private boolean canceled = false;
 	
-	public EventStreamSocketZmq(Server server) {
+	public EventStreamSocketZmq() {
 		super();
-		this.server = server;
-		this.context = ((ContextZmq)server.getContext()).getContext();
 	}
 	
-	public void init() {
+	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
 		
+		this.context = ((ContextZmq)context).getContext();
+		this.parser = parser;
+				
 		// Prepare our subscriber.
-		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
+		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(server.getStatusEndpoint().toString());
+		subscriber.connect(endpoint.toString());
 		subscriber.subscribe(Messages.Event.STATUS);
 		subscriber.subscribe(Messages.Event.RESULT);
 		subscriber.subscribe(Messages.Event.PUBLISHER);
@@ -66,12 +71,17 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// polling to wait for connection
-		Zmq.Poller poller = context.createPoller(subscriber);
+		Zmq.Poller poller = this.context.createPoller(subscriber);
 		
 		while (true) {
 			
 			// the server returns a STATUS message that is used to synchronize the subscriber
-			server.sendSync();
+			try {
+				requestSocket.requestJSON(Messages.createSyncRequest());
+
+			} catch (ConnectionTimeout e) {
+				// do nothing
+			}
 
 			// return at the first response.
 			if (poller.poll(100)) {
@@ -79,7 +89,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			}
 		}
 		
-		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
+		Zmq.Socket cancelPublisher = this.context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 		
 		this.subscriberSocket = subscriber;
@@ -99,7 +109,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = server.parse(statusMessage);
+				JSONObject jsonObject = parser.parse(Messages.parseString(statusMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
@@ -124,7 +134,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = server.parse(resultMessage);
+				JSONObject jsonObject = parser.parse(Messages.parseString(resultMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
@@ -144,7 +154,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = server.parse(publisherMessage);
+				JSONObject jsonObject = parser.parse(Messages.parseString(publisherMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.PublisherEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.PublisherEvent.NAME);
@@ -162,7 +172,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = server.parse(portMessage);
+				JSONObject jsonObject = parser.parse(Messages.parseString(portMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.PortEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.PortEvent.NAME);
@@ -180,7 +190,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = server.parse(keyValueMessage);
+				JSONObject jsonObject = parser.parse(Messages.parseString(keyValueMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);

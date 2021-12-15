@@ -280,8 +280,8 @@ public class Server {
 		JSONObject response = requestSocket.requestJSON(Messages.createStreamStatusRequest());
 		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 
-		EventStreamSocket eventStreamSocket = new EventStreamSocket(this);
-		eventStreamSocket.init();
+		EventStreamSocket eventStreamSocket = new EventStreamSocket();
+		eventStreamSocket.init(contextImpl, serverEndpoint.withPort(statusPort), requestSocket, parser);
 		
 		return eventStreamSocket; 
 	}
@@ -669,8 +669,15 @@ public class Server {
 
 	private OutputStreamSocket createOutputStreamSocket(String name) {
 		
-		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(this, name);
-		outputStreamSocket.init();
+		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(name);
+		
+		int port = getStreamPort(name);
+		
+		if (port == -1) {
+			return null;
+		}
+		
+		outputStreamSocket.init(contextImpl, serverEndpoint.withPort(port), requestSocket, parser);
 		
 		return outputStreamSocket; 
 	}

@@ -23,42 +23,42 @@ import org.json.simple.parser.ParseException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.CancelIdGenerator;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
+import fr.ill.ics.cameo.base.Context;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.messages.JSON.Parser;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
-	private Server server;
 	private String name;
 	private Zmq.Context context;
+	private Parser parser;
 	private Zmq.Socket subscriberSocket;
 	private Zmq.Socket cancelSocket;
 	private int applicationId = -1;
 	private boolean ended = false;
 	private boolean canceled = false;
 
-	public OutputStreamSocketZmq(Server server, String name) {
+	public OutputStreamSocketZmq(String name) {
 		super();
-		this.server = server;
 		this.name = name;
-		this.context = ((ContextZmq)server.getContext()).getContext();
 	}
 	
-	public void init() {
+	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
 		
-		int port = server.getStreamPort(name);
-		
-		if (port == -1) {
-			return;
-		}
+		this.context = ((ContextZmq)context).getContext();
+		this.parser = parser;
 		
 		// Prepare our context and subscriber
-		Zmq.Socket subscriber = context.createSocket(Zmq.SUB);
+		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(server.getEndpoint().withPort(port).toString());
+		subscriber.connect(endpoint.toString());
 		subscriber.subscribe(Messages.Event.SYNCSTREAM);
 		subscriber.subscribe(Messages.Event.STREAM);
 		subscriber.subscribe(Messages.Event.ENDSTREAM);
@@ -68,16 +68,21 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
-		Zmq.Socket cancelPublisher = context.createSocket(Zmq.PUB);
+		Zmq.Socket cancelPublisher = this.context.createSocket(Zmq.PUB);
 		cancelPublisher.bind(cancelEndpoint);
 		
 		// Polling to wait for connection.
-		Zmq.Poller poller = context.createPoller(subscriber);
+		Zmq.Poller poller = this.context.createPoller(subscriber);
 		
 		while (true) {
 			
 			// the server returns a SYNCSTREAM message that is used to synchronize the subscriber
-			server.sendSyncStream(name);
+			try {
+				requestSocket.requestJSON(Messages.createSyncStreamRequest(name));
+			}
+			catch (ConnectionTimeout e) {
+				// do nothing
+			}
 
 			// return at the first response.
 			if (poller.poll(100)) {
@@ -119,7 +124,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject stream = server.parse(messageValue);
+				JSONObject stream = parser.parse(Messages.parseString(messageValue));
 				
 				int id = JSON.getInt(stream, Messages.ApplicationStream.ID);
 				

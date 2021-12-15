@@ -19,18 +19,20 @@ package fr.ill.ics.cameo.base;
 
 import fr.ill.ics.cameo.base.impl.EventStreamSocketImpl;
 import fr.ill.ics.cameo.base.impl.zmq.EventStreamSocketZmq;
+import fr.ill.ics.cameo.messages.JSON.Parser;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class EventStreamSocket {
 	
 	private EventStreamSocketImpl impl;
 	
-	public EventStreamSocket(Server server) {
+	public EventStreamSocket() {
 		//TODO Replace with factory.
-		this.impl = new EventStreamSocketZmq(server);
+		this.impl = new EventStreamSocketZmq();
 	}
 
-	public void init() {
-		impl.init();
+	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
+		impl.init(context, endpoint, requestSocket, parser);
 	}
 	
 	public Event receive() {

@@ -530,7 +530,7 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 	// Create the event stream socket.
 	std::unique_ptr<EventStreamSocket> eventStreamSocket = std::unique_ptr<EventStreamSocket>(new EventStreamSocket());
-	eventStreamSocket->init(m_contextImpl.get(), getStatusEndpoint(), m_requestSocket.get());
+	eventStreamSocket->init(m_contextImpl.get(), m_serverEndpoint.withPort(m_statusPort), m_requestSocket.get());
 
 	return eventStreamSocket;
 }
