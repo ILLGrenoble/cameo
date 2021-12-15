@@ -148,7 +148,7 @@ public class Server {
 		return contextImpl;
 	}
 			
-	public JSONObject parse(byte[] data) throws ParseException {
+	JSONObject parse(byte[] data) throws ParseException {
 		return parser.parse(Messages.parseString(data));
 	}
 	
@@ -181,7 +181,7 @@ public class Server {
 		serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
 	}
 	
-	public RequestSocket createRequestSocket(String endpoint) throws SocketException {
+	RequestSocket createRequestSocket(String endpoint) throws SocketException {
 		
 		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
 		requestSocket.connect(endpoint);
@@ -721,7 +721,7 @@ public class Server {
 	 * @param key
 	 * @param value
 	 */
-	public void storeKeyValue(int applicationId, String key, String value) {
+	void storeKeyValue(int applicationId, String key, String value) {
 		
 		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -735,7 +735,7 @@ public class Server {
 	 * @throws UndefinedApplicationException
 	 * @throws UndefinedKeyException
 	 */
-	public String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+	String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -761,7 +761,7 @@ public class Server {
 	 * @throws UndefinedApplicationException
 	 * @throws UndefinedKeyException
 	 */
-	public void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
+	void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createRemoveKeyRequest(applicationId, key);
 		JSONObject response = requestSocket.requestJSON(request);
