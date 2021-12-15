@@ -29,12 +29,7 @@ class SubscriberImpl {
 public:
 	virtual ~SubscriberImpl() {}
 
-	virtual void init(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance) = 0;
-
-	virtual const std::string& getPublisherName() const = 0;
-	virtual const std::string& getInstanceName() const = 0;
-	virtual int getInstanceId() const = 0;
-	virtual Endpoint getInstanceEndpoint() const = 0;
+	virtual void init(int instanceId, const Endpoint& instanceEndpoint, const Endpoint& instanceStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) = 0;
 
 	virtual bool isEnded() const = 0;
 	virtual bool isCanceled() const = 0;

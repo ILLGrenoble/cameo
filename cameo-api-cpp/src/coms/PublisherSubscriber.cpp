@@ -134,6 +134,11 @@ Subscriber::~Subscriber() {
 
 void Subscriber::init(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
 
+	m_publisherName = publisherName;
+	m_instanceName = instance.getName();
+	m_instanceId = instance.getId();
+	m_instanceEndpoint = instance.getEndpoint();
+
 	// Get the JSON response.
 	json::Object response = instance.getCom().requestJSON(createConnectPublisherRequest(instance.getId(), publisherName));
 
@@ -145,8 +150,7 @@ void Subscriber::init(application::Instance & instance, const std::string& publi
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
-	// TODO simplify the use of some variables: e.g. m_serverEndpoint accessible from this.
-	m_impl->init(publisherPort, synchronizerPort, publisherName, numberOfSubscribers, instance);
+	m_impl->init(m_instanceId, m_instanceEndpoint, instance.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 }
 
 std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName) {
@@ -187,19 +191,19 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance,
 }
 
 const std::string& Subscriber::getPublisherName() const {
-	return m_impl->getPublisherName();
+	return m_publisherName;
 }
 
 const std::string& Subscriber::getInstanceName() const {
-	return m_impl->getInstanceName();
+	return m_instanceName;
 }
 
 int Subscriber::getInstanceId() const {
-	return m_impl->getInstanceId();
+	return m_instanceId;
 }
 
 Endpoint Subscriber::getInstanceEndpoint() const {
-	return m_impl->getInstanceEndpoint();
+	return m_instanceEndpoint;
 }
 
 bool Subscriber::hasEnded() const {

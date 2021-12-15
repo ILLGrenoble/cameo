@@ -40,16 +40,12 @@ SubscriberZmq::SubscriberZmq() :
 SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberZmq::init(int publisherPort, int synchronizerPort, const std::string& publisherName, int numberOfSubscribers, application::Instance & instance) {
+void SubscriberZmq::init(int instanceId, const Endpoint& instanceEndpoint, const Endpoint& instanceStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
 
-	m_serverEndpoint = instance.getEndpoint();
-	m_publisherName = publisherName;
 	m_publisherPort = publisherPort;
 	m_synchronizerPort = synchronizerPort;
 	m_numberOfSubscribers = numberOfSubscribers;
-	m_instanceName = instance.getName();
-	m_instanceId = instance.getId();
-	m_statusEndpoint = instance.getStatusEndpoint().toString();
+	m_instanceId = instanceId;
 	m_ended = false;
 	m_canceled = false;
 
@@ -62,7 +58,7 @@ void SubscriberZmq::init(int publisherPort, int synchronizerPort, const std::str
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 
-	m_subscriber->connect(m_serverEndpoint.withPort(m_publisherPort).toString());
+	m_subscriber->connect(instanceEndpoint.withPort(m_publisherPort).toString());
 
 	// We must first bind the cancel publisher before connecting the subscriber.
 	std::stringstream cancelEndpoint;
@@ -75,13 +71,13 @@ void SubscriberZmq::init(int publisherPort, int synchronizerPort, const std::str
 	m_cancelPublisher->bind(m_cancelEndpoint.c_str());
 
 	m_subscriber->connect(m_cancelEndpoint.c_str());
-	m_subscriber->connect(m_statusEndpoint.c_str());
+	m_subscriber->connect(instanceStatusEndpoint.toString().c_str());
 
 	// Synchronize the subscriber only if the number of subscribers > 0.
 	if (m_numberOfSubscribers > 0) {
 
 		// Create a request socket.
-		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_serverEndpoint.withPort(m_synchronizerPort).toString());
+		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(instanceEndpoint.withPort(m_synchronizerPort).toString());
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];
@@ -109,22 +105,6 @@ void SubscriberZmq::init(int publisherPort, int synchronizerPort, const std::str
 
 		requestSocket->requestJSON(createSubscribePublisherRequest());
 	}
-}
-
-const std::string& SubscriberZmq::getPublisherName() const {
-	return m_publisherName;
-}
-
-const std::string& SubscriberZmq::getInstanceName() const {
-	return m_instanceName;
-}
-
-int SubscriberZmq::getInstanceId() const {
-	return m_instanceId;
-}
-
-Endpoint SubscriberZmq::getInstanceEndpoint() const {
-	return m_serverEndpoint;
 }
 
 bool SubscriberZmq::isEnded() const {

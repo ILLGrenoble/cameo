@@ -37,21 +37,19 @@ public class SubscriberZmq implements SubscriberImpl {
 	private Zmq.Socket subscriber;
 	private String cancelEndpoint;
 	private Zmq.Socket cancelPublisher;
-	private String publisherName;
-	private Instance instance;
+	private int instanceId;
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(Instance instance, int publisherPort, int synchronizerPort, String publisherName, int numberOfSubscribers) {
+	public void init(int instanceId, Endpoint instanceEndpoint, Endpoint instanceStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
 
-		this.instance = instance;
-		this.publisherName = publisherName;
+		this.instanceId = instanceId;
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(instance.getEndpoint().withPort(publisherPort).toString());
+		subscriber.connect(instanceEndpoint.withPort(publisherPort).toString());
 		subscriber.subscribe(Messages.Event.SYNC);
 		subscriber.subscribe(Messages.Event.STREAM);
 		subscriber.subscribe(Messages.Event.ENDSTREAM);
@@ -68,14 +66,14 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// Subscribe to STATUS
-		subscriber.connect(instance.getStatusEndpoint().toString());
+		subscriber.connect(instanceStatusEndpoint.toString());
 		subscriber.subscribe(Messages.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = This.getCom().createRequestSocket(instance.getEndpoint().withPort(synchronizerPort).toString());
+			RequestSocket requestSocket = This.getCom().createRequestSocket(instanceEndpoint.withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);
@@ -103,22 +101,6 @@ public class SubscriberZmq implements SubscriberImpl {
 			requestSocket.requestJSON(request);
 			requestSocket.terminate();
 		}
-	}
-	
-	public String getPublisherName() { 
-		return publisherName;
-	}
-	
-	public String getInstanceName() {
-		return instance.getName();
-	}
-	
-	public int getInstanceId() {
-		return instance.getId();
-	}
-	
-	public Endpoint getInstanceEndpoint() {
-		return instance.getEndpoint();
 	}
 	
 	public boolean isEnded() {
@@ -158,7 +140,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				// Get the id.
 				int id = JSON.getInt(status, Messages.StatusEvent.ID);
 									
-				if (instance.getId() == id) {
+				if (instanceId == id) {
 					
 					// Get the state.
 					int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
@@ -209,7 +191,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				// Get the id.
 				int id = JSON.getInt(request, Messages.StatusEvent.ID);
 				
-				if (instance.getId() == id) {
+				if (instanceId == id) {
 					
 					// Get the state.
 					int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);

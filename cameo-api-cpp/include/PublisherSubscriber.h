@@ -122,6 +122,10 @@ private:
 	static std::unique_ptr<Subscriber> createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);
 	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
+	std::string m_publisherName;
+	std::string m_instanceName;
+	int m_instanceId;
+	Endpoint m_instanceEndpoint;
 	std::unique_ptr<SubscriberImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };

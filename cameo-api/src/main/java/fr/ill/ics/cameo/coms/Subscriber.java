@@ -16,6 +16,10 @@ import fr.ill.ics.cameo.strings.Endpoint;
  */
 public class Subscriber {
 	
+	private String publisherName;
+	private String instanceName;
+	private int instanceId;
+	private Endpoint instanceEndpoint;
 	private SubscriberImpl impl;
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	
@@ -27,6 +31,11 @@ public class Subscriber {
 	}
 	
 	private void initSubscriber(Instance instance, String publisherName) throws SubscriberCreationException {
+		
+		this.publisherName = publisherName;
+		this.instanceName = instance.getName();
+		this.instanceId = instance.getId();
+		this.instanceEndpoint = instance.getEndpoint();
 		
 		JSONObject request = Messages.createConnectPublisherRequest(instance.getId(), publisherName);
 		JSONObject response = instance.getCom().requestJSON(request);
@@ -40,7 +49,7 @@ public class Subscriber {
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		impl.init(instance, publisherPort, synchronizerPort, publisherName, numberOfSubscribers);
+		impl.init(instanceId, instanceEndpoint, instance.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 	}
 	
 	private boolean init(Instance application, String publisherName) {
@@ -90,19 +99,19 @@ public class Subscriber {
 	}
 			
 	public String getPublisherName() { 
-		return impl.getPublisherName();
+		return publisherName;
 	}
 	
 	public String getInstanceName() {
-		return impl.getInstanceName();
+		return instanceName;
 	}
 	
 	public int getInstanceId() {
-		return impl.getInstanceId();
+		return instanceId;
 	}
 	
 	public Endpoint getInstanceEndpoint() {
-		return impl.getInstanceEndpoint();
+		return instanceEndpoint;
 	}
 	
 	public boolean isEnded() {
