@@ -72,9 +72,6 @@ public class Instance extends EventListener {
 	
 	Instance(Server server) {
 		this.server = server;
-		
-		// Register the waiting
-		waiting.add();
 	}
 
 	void setId(int id) {
@@ -231,107 +228,122 @@ public class Instance extends EventListener {
 	 */
 	private int waitFor(int states, String eventName, KeyValue keyValue, boolean blocking) {
 
-		if (!exists()) {
-			return lastState;
-		}
+		try {
+			// Register the waiting.
+			waiting.add();
 		
-		// test the terminal state
-		if (lastState == Application.State.SUCCESS
-				|| lastState == Application.State.STOPPED
-				|| lastState == Application.State.KILLED
-				|| lastState == Application.State.ERROR) {
-			// the application is already terminated
-			return lastState;
-		}
-		
-		// test the requested states
-		if ((states & pastStates) != 0) {
-			// the state is already received
-			return lastState;
-		}
-	
-		while (true) {
-			// waits for a new incoming status
-			Event event = popEvent(blocking);
-			
-			// If the event is null, then it is the result of non-blocking call.
-			if (event == null) {
-				break;
+			// Exit if the app does not exist.
+			if (!exists()) {
+				return lastState;
 			}
 			
-			if (event.getId() == id) {
+			// Test the terminal state.
+			if (lastState == Application.State.SUCCESS
+					|| lastState == Application.State.STOPPED
+					|| lastState == Application.State.KILLED
+					|| lastState == Application.State.ERROR) {
+				// The application is already terminated.
+				return lastState;
+			}
 			
-				if (event instanceof StatusEvent) {
+			// Test the requested states.
+			if ((states & pastStates) != 0) {
+				// The state is already received.
+				return lastState;
+			}
+		
+			while (true) {
+				// Wait for a new incoming status.
+				Event event = popEvent(blocking);
 				
-					StatusEvent status = (StatusEvent)event;
-					int state = status.getState();
-					pastStates = status.getPastStates();
-					lastState = state;
-					
-					// Assign the exit code.
-					if (status.getExitCode() != null) {
-						exitCode = status.getExitCode();
-					}
-					
-					// test the terminal state
-					if (state == Application.State.SUCCESS 
-						|| state == Application.State.STOPPED
-						|| state == Application.State.KILLED					
-						|| state == Application.State.ERROR) {
-						break;
-					}
-					
-					// test the requested states
-					if ((states & pastStates) != 0) {
-						return lastState;
-					}
-					
-				} else if (event instanceof ResultEvent) {
-					
-					ResultEvent result = (ResultEvent)event;
-					resultData = result.getData();
-					
-				} else if (event instanceof PublisherEvent) {
-					
-					PublisherEvent publisher = (PublisherEvent)event;
-					
-					if (publisher.getPublisherName().equals(eventName)) {
-						break;
-					}
-					
-				} else if (event instanceof PortEvent) {
-					
-					PortEvent port = (PortEvent)event;
-					
-					if (port.getPortName().equals(eventName)) {
-						break;
-					}
-					
-				} else if (event instanceof KeyEvent) {
-					
-					KeyEvent keyEvent = (KeyEvent)event;
-
-					// Check if it is the event that is waited for.
-					if (keyValue != null && keyEvent.getKey().equals(keyValue.getKey())) {
-						
-						// Set the status and value.
-						if (keyEvent.getStatus() == KeyEvent.Status.STORED) {
-							keyValue.setStatus(KeyValue.Status.STORED);
-						}
-						else {
-							keyValue.setStatus(KeyValue.Status.REMOVED);
-						}
-						keyValue.setValue(keyEvent.getValue());
-						break;
-					}
-					
-				} else if (event instanceof CancelEvent) {
+				// If the event is null, then it is the result of non-blocking call.
+				if (event == null) {
 					break;
 				}
-			}	
+				
+				if (event.getId() == id) {
+				
+					if (event instanceof StatusEvent) {
+					
+						StatusEvent status = (StatusEvent)event;
+						int state = status.getState();
+						pastStates = status.getPastStates();
+						lastState = state;
+						
+						// Assign the exit code.
+						if (status.getExitCode() != null) {
+							exitCode = status.getExitCode();
+						}
+						
+						// Test the terminal state.
+						if (state == Application.State.SUCCESS 
+							|| state == Application.State.STOPPED
+							|| state == Application.State.KILLED					
+							|| state == Application.State.ERROR) {
+							break;
+						}
+						
+						// Test the requested states.
+						if ((states & pastStates) != 0) {
+							return lastState;
+						}
+						
+					}
+					else if (event instanceof ResultEvent) {
+						
+						ResultEvent result = (ResultEvent)event;
+						resultData = result.getData();
+						
+					}
+					else if (event instanceof PublisherEvent) {
+						
+						PublisherEvent publisher = (PublisherEvent)event;
+						
+						if (publisher.getPublisherName().equals(eventName)) {
+							break;
+						}
+						
+					}
+					else if (event instanceof PortEvent) {
+						
+						PortEvent port = (PortEvent)event;
+						
+						if (port.getPortName().equals(eventName)) {
+							break;
+						}
+						
+					}
+					else if (event instanceof KeyEvent) {
+						
+						KeyEvent keyEvent = (KeyEvent)event;
+	
+						// Check if it is the event that is waited for.
+						if (keyValue != null && keyEvent.getKey().equals(keyValue.getKey())) {
+							
+							// Set the status and value.
+							if (keyEvent.getStatus() == KeyEvent.Status.STORED) {
+								keyValue.setStatus(KeyValue.Status.STORED);
+							}
+							else {
+								keyValue.setStatus(KeyValue.Status.REMOVED);
+							}
+							keyValue.setValue(keyEvent.getValue());
+							break;
+						}
+						
+					}
+					else if (event instanceof CancelEvent) {
+						break;
+					}
+				}	
+			}
+			
+			return lastState;
 		}
-		
-		return lastState;
+		finally {
+			// Unregister the waiting.
+			waiting.remove();
+		}
 	}
 	
 	public int waitFor(String eventName) {
@@ -372,9 +384,6 @@ public class Instance extends EventListener {
 	public void terminate() {
 		// Unregister the status.
 		server.unregisterEventListener(this);
-		
-		// Unregister the waiting.
-		waiting.remove();
 	}
 		
 	/**

@@ -142,7 +142,6 @@ public class Subscriber {
 	}
 	
 	public void terminate() {
-		
 		waiting.remove();
 		impl.terminate();
 	}

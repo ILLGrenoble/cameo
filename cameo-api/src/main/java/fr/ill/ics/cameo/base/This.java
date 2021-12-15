@@ -226,7 +226,7 @@ public class This {
 	
 	static public void cancelWaitings() {
 		if (instance == null) {
-			return;		
+			return;
 		}
 		instance.waitingSet.cancelAll();
 	}

@@ -453,8 +453,6 @@ Instance::Instance(Server * server) :
 	m_lastState(UNKNOWN),
 	m_hasResult(false),
 	m_exitCode(-1) {
-
-	m_waiting.reset(new Waiting(std::bind(&Instance::cancelWaitFor, this)));
 }
 
 Instance::~Instance() {
@@ -556,12 +554,15 @@ bool Instance::kill() {
 
 State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking) {
 
+	// Create a scoped waiting so that it is removed at the exit of the function.
+	Waiting scopedWaiting(std::bind(&Instance::cancelWaitFor, this));
+
 	if (!exists()) {
-		// The application was not launched
+		// The application was not launched.
 		return m_lastState;
 	}
 
-	// Test the terminal state
+	// Test the terminal state.
 	if (m_lastState == SUCCESS
 		|| m_lastState == STOPPED
 		|| m_lastState == KILLED
@@ -570,14 +571,14 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 		return m_lastState;
 	}
 
-	// Test the requested states
+	// Test the requested states.
 	if ((states & m_pastStates) != 0) {
-		// The state is already received
+		// The state is already received.
 		return m_lastState;
 	}
 
 	while (true) {
-		// Waits for a new incoming status
+		// Waits for a new incoming status.
 		std::unique_ptr<Event> event = popEvent(blocking);
 
 		// The non-blocking call returns a null message.
@@ -603,7 +604,7 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 					handler(state);
 				}
 
-				// test the terminal state
+				// Test the terminal state.
 				if (state == SUCCESS
 					|| state == STOPPED
 					|| state == KILLED
@@ -611,7 +612,7 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 					break;
 				}
 
-				// test the requested states
+				// Test the requested states.
 				if ((states & m_pastStates) != 0) {
 					return m_lastState;
 				}
@@ -641,7 +642,6 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 						else {
 							keyValue.setStatus(KeyValue::Status::REMOVED);
 						}
-						keyValue.setValue(keyEvent->getValue());
 						break;
 					}
 				}

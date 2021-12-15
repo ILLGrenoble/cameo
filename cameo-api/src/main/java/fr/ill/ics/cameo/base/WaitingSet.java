@@ -43,7 +43,8 @@ public class WaitingSet {
 			// The iteration must be in the synchronized block.
 			Iterator<Waiting> i = waitingSet.iterator();
 			while (i.hasNext()) {
-				i.next().cancel();
+				Waiting waiting = i.next();
+				waiting.cancel();
 			}
 		}
 	}

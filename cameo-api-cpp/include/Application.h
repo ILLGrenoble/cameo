@@ -309,7 +309,6 @@ private:
 	bool m_hasResult;
 	std::string m_resultData;
 	int m_exitCode;
-	std::unique_ptr<Waiting> m_waiting;
 };
 
 ///////////////////////////////////////////////////////////////////////////
