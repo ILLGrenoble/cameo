@@ -109,6 +109,7 @@ public:
 		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint) const;
 		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout) const;
 
+		//TODO Remove when use of key values is done.
 		void removePort(const std::string& name) const;
 
 	private:
