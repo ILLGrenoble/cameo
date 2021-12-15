@@ -17,16 +17,20 @@
 #ifndef CAMEO_EVENTSTREAMSOCKETIMPL_H_
 #define CAMEO_EVENTSTREAMSOCKETIMPL_H_
 
+#include "Strings.h"
+#include "../RequestSocket.h"
 #include <string>
 
 namespace cameo {
+
+class Context;
 
 class StreamSocketImpl {
 
 public:
 	virtual ~StreamSocketImpl() {}
 
-	virtual void init() = 0;
+	virtual void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) = 0;
 	virtual void send(const std::string& data) = 0;
 	virtual std::string receive(bool blocking = true) = 0;
 	virtual void cancel() = 0;

@@ -24,23 +24,18 @@ using namespace std;
 
 namespace cameo {
 
-OutputStreamSocketZmq::OutputStreamSocketZmq(Server * server, const std::string& name) :
-	m_server(server),
-	m_name(name) {
-	m_context = dynamic_cast<ContextZmq *>(server->getContext());
+OutputStreamSocketZmq::OutputStreamSocketZmq(const std::string& name) :
+	m_name(name),
+	m_context(nullptr) {
 }
 
 OutputStreamSocketZmq::~OutputStreamSocketZmq() {
 	close();
 }
 
-void OutputStreamSocketZmq::init() {
+void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
 
-	int port = m_server->getStreamPort(m_name);
-	if (port == -1) {
-		std::cerr << "No stream port for " << m_name << std::endl;
-		return;
-	}
+	m_context = dynamic_cast<ContextZmq *>(context);
 
 	std::stringstream cancelEndpoint;
 
@@ -63,7 +58,7 @@ void OutputStreamSocketZmq::init() {
 		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
-	m_socket->connect(m_server->getEndpoint().withPort(port).toString().c_str());
+	m_socket->connect(endpoint.toString().c_str());
 	m_socket->connect(cancelEndpoint.str().c_str());
 
 	// Wait for the connection to be ready.
@@ -75,7 +70,12 @@ void OutputStreamSocketZmq::init() {
 	items[0].revents = 0;
 
 	while (true) {
-		m_server->sendSyncStream(m_name);
+		try {
+			requestSocket->requestJSON(createSyncStreamRequest(m_name));
+		}
+		catch (const ConnectionTimeout&) {
+			// The server is not accessible.
+		}
 
 		// Wait for 100ms.
 		int rc = zmq::poll(items, 1, 100);

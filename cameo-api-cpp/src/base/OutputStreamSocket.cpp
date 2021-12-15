@@ -39,14 +39,17 @@ bool Output::isEndOfLine() const {
 	return m_endOfLine;
 }
 
-OutputStreamSocket::OutputStreamSocket(Server * server, const std::string& name) :
+OutputStreamSocket::OutputStreamSocket(const std::string& name) :
 	m_applicationId(-1),
 	m_ended(false),
 	m_canceled(false) {
 
 	//TODO Replace with factory.
-	m_impl = std::unique_ptr<StreamSocketImpl>(new OutputStreamSocketZmq(server, name));
-	m_impl->init();
+	m_impl = std::unique_ptr<StreamSocketImpl>(new OutputStreamSocketZmq(name));
+}
+
+void OutputStreamSocket::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
+	m_impl->init(context, endpoint, requestSocket);
 }
 
 OutputStreamSocket::~OutputStreamSocket() {

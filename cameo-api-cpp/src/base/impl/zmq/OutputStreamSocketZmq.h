@@ -30,17 +30,16 @@ class ContextZmq;
 class OutputStreamSocketZmq : public StreamSocketImpl {
 
 public:
-	OutputStreamSocketZmq(Server * server, const std::string& name);
+	OutputStreamSocketZmq(const std::string& name);
 	virtual ~OutputStreamSocketZmq();
 
-	void init();
+	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);
 	void send(const std::string& data);
 	std::string receive(bool blocking);
 	void cancel();
 	void close();
 
 private:
-	Server * m_server;
 	std::string m_name;
 	ContextZmq * m_context;
 	std::unique_ptr<zmq::socket_t> m_socket;

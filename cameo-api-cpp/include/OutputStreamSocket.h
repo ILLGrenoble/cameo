@@ -18,12 +18,14 @@
 #define CAMEO_OUTPUTSTREAMSOCKET_H_
 
 #include "Event.h"
+#include "Strings.h"
 #include <memory>
 #include <optional>
 
 namespace cameo {
 
-class Server;
+class Context;
+class RequestSocket;
 class StreamSocketImpl;
 
 namespace application {
@@ -66,7 +68,8 @@ public:
 	bool isCanceled() const;
 
 private:
-	OutputStreamSocket(Server * server, const std::string& name);
+	OutputStreamSocket(const std::string& name);
+	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);
 
 	int m_applicationId;
 	bool m_ended;

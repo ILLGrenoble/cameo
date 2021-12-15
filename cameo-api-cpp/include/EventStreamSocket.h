@@ -17,12 +17,14 @@
 #ifndef CAMEO_EVENTSTREAMSOCKET_H_
 #define CAMEO_EVENTSTREAMSOCKET_H_
 
-#include <memory>
 #include "Event.h"
+#include "Strings.h"
+#include <memory>
 
 namespace cameo {
 
-class Server;
+class Context;
+class RequestSocket;
 class StreamSocketImpl;
 
 namespace application {
@@ -43,7 +45,8 @@ public:
 	void cancel();
 
 private:
-	EventStreamSocket(Server * server);
+	EventStreamSocket();
+	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);
 
 	std::unique_ptr<StreamSocketImpl> m_impl;
 };

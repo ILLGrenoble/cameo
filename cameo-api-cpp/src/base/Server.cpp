@@ -124,8 +124,12 @@ int Server::getTimeout() const {
 	return m_timeout;
 }
 
-const Endpoint& Server::getEndpoint() const {
+Endpoint Server::getEndpoint() const {
 	return m_serverEndpoint;
+}
+
+Endpoint Server::getStatusEndpoint() const {
+	return m_serverEndpoint.withPort(m_statusPort);
 }
 
 std::array<int, 3> Server::getVersion() const {
@@ -525,7 +529,10 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 	}
 
 	// Create the event stream socket.
-	return std::unique_ptr<EventStreamSocket>(new EventStreamSocket(this));
+	std::unique_ptr<EventStreamSocket> eventStreamSocket = std::unique_ptr<EventStreamSocket>(new EventStreamSocket());
+	eventStreamSocket->init(m_contextImpl.get(), getStatusEndpoint(), m_requestSocket.get());
+
+	return eventStreamSocket;
 }
 
 std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs) {
@@ -644,14 +651,6 @@ void Server::initRequestSocket() {
 	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_timeout));
 }
 
-Context * Server::getContext() {
-	return m_contextImpl.get();
-}
-
-Endpoint Server::getStatusEndpoint() const {
-	return m_serverEndpoint.withPort(m_statusPort);
-}
-
 void Server::retrieveServerVersion() {
 
 	json::Object response = m_requestSocket->requestJSON(createVersionRequest());
@@ -685,8 +684,18 @@ int Server::getStreamPort(const std::string& name) {
 }
 
 std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::string& name) {
-	// Create the event stream socket.
-	return std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(this, name));
+	// Create the output stream socket.
+	std::unique_ptr<OutputStreamSocket> outputStreamSocket = std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(name));
+
+	int port = getStreamPort(name);
+	if (port == -1) {
+		std::cerr << "No stream port for " << name << std::endl;
+		return nullptr;
+	}
+
+	outputStreamSocket->init(m_contextImpl.get(), m_serverEndpoint.withPort(port), m_requestSocket.get());
+
+	return outputStreamSocket;
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
@@ -695,26 +704,6 @@ std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& en
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {
 	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, timeout));
-}
-
-void Server::sendSync() {
-
-	try {
-		m_requestSocket->requestJSON(createSyncRequest());
-	}
-	catch (const ConnectionTimeout& e) {
-		// The server is not accessible.
-	}
-}
-
-void Server::sendSyncStream(const std::string& name) {
-
-	try {
-		m_requestSocket->requestJSON(createSyncStreamRequest(name));
-	}
-	catch (const ConnectionTimeout&) {
-		// The server is not accessible.
-	}
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

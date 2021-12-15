@@ -44,6 +44,8 @@ class Server {
 
 	friend class application::Instance;
 	friend class application::This;
+	friend class EventStreamSocket;
+	friend class OutputStreamSocket;
 	friend std::ostream& operator<<(std::ostream&, const Server&);
 
 public:
@@ -56,7 +58,8 @@ public:
 	void setTimeout(int value);
 
 	int getTimeout() const;
-	const Endpoint& getEndpoint() const;
+	Endpoint getEndpoint() const;
+	Endpoint getStatusEndpoint() const;
 	std::array<int, 3> getVersion() const;
 	bool isAvailable(int timeout) const;
 
@@ -131,17 +134,6 @@ public:
 	 */
 	void unregisterEventListener(EventListener * listener);
 
-	//TODO private?
-	Context * getContext();
-	//TODO private?
-	Endpoint getStatusEndpoint() const;
-	//TODO private?
-	void sendSync();
-	//TODO private?
-	void sendSyncStream(const std::string& name);
-	//TODO private?
-	int getStreamPort(const std::string& name);
-
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
 	std::unique_ptr<application::Instance> makeInstance();
@@ -166,6 +158,7 @@ private:
 
 	void retrieveServerVersion();
 	void initStatus();
+	int getStreamPort(const std::string& name);
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout);

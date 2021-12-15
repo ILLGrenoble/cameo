@@ -27,13 +27,16 @@
 
 namespace cameo {
 
-EventStreamSocket::EventStreamSocket(Server * server) {
+EventStreamSocket::EventStreamSocket() {
 	//TODO Replace with a factory.
-	m_impl = std::unique_ptr<StreamSocketImpl>(new EventStreamSocketZmq(server));
-	m_impl->init();
+	m_impl = std::unique_ptr<StreamSocketImpl>(new EventStreamSocketZmq());
 }
 
 EventStreamSocket::~EventStreamSocket() {
+}
+
+void EventStreamSocket::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
+	m_impl->init(context, endpoint, requestSocket);
 }
 
 std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {

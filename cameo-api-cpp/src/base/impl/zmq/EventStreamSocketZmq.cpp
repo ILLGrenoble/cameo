@@ -24,16 +24,17 @@ using namespace std;
 
 namespace cameo {
 
-EventStreamSocketZmq::EventStreamSocketZmq(Server * server) :
-	m_server(server) {
-	m_context = dynamic_cast<ContextZmq *>(server->getContext());
+EventStreamSocketZmq::EventStreamSocketZmq() : m_context(nullptr) {
+
 }
 
 EventStreamSocketZmq::~EventStreamSocketZmq() {
 	close();
 }
 
-void EventStreamSocketZmq::init() {
+void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
+
+	m_context = dynamic_cast<ContextZmq *>(context);
 
 	std::stringstream cancelEndpoint;
 
@@ -58,7 +59,7 @@ void EventStreamSocketZmq::init() {
 		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
-	m_socket->connect(m_server->getStatusEndpoint().toString().c_str());
+	m_socket->connect(endpoint.toString().c_str());
 	m_socket->connect(cancelEndpoint.str().c_str());
 
 
@@ -71,7 +72,12 @@ void EventStreamSocketZmq::init() {
 	items[0].revents = 0;
 
 	while (true) {
-		m_server->sendSync();
+		try {
+			requestSocket->requestJSON(createSyncRequest());
+		}
+		catch (const ConnectionTimeout& e) {
+			// The server is not accessible.
+		}
 
 		// Wait for 100ms.
 		int rc = zmq::poll(items, 1, 100);

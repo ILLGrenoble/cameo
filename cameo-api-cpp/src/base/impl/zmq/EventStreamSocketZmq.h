@@ -24,23 +24,22 @@
 
 namespace cameo {
 
-class Server;
+
 class ContextZmq;
 
 class EventStreamSocketZmq : public StreamSocketImpl {
 
 public:
-	EventStreamSocketZmq(Server * server);
+	EventStreamSocketZmq();
 	virtual ~EventStreamSocketZmq();
 
-	void init();
+	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);
 	void send(const std::string& data);
 	std::string receive(bool blocking);
 	void cancel();
 	void close();
 
 private:
-	Server * m_server;
 	ContextZmq * m_context;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	std::unique_ptr<zmq::socket_t> m_cancelSocket;
