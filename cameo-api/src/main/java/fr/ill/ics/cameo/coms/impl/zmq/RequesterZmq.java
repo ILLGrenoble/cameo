@@ -32,16 +32,14 @@ public class RequesterZmq implements RequesterImpl {
 	public static final String REQUESTER_PREFIX = "req.";
 
 	private int requesterPort;
-	private String name;
 	private Zmq.Context context;
 	private Zmq.Socket requester;
 	private RequestSocket requestSocket;
 	
 	private boolean canceled = false;
 		
-	public void init(Endpoint endpoint, int requesterPort, int responderPort, String name) {
+	public void init(Endpoint endpoint, int requesterPort, int responderPort) {
 		this.requesterPort = requesterPort;
-		this.name = name;
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
 		// Create the REQ socket.
@@ -51,10 +49,6 @@ public class RequesterZmq implements RequesterImpl {
 		// Create the REP socket.
 		requester = context.createSocket(Zmq.REP);
 		requester.bind("tcp://*:" + requesterPort);
-	}
-	
-	public String getName() {
-		return name;
 	}
 	
 	public void send(byte[] requestData) {

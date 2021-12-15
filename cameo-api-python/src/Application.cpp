@@ -200,7 +200,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"instance"_a,
 				"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getName", &Requester::getName)
+	    .def("getName", &Requester::getResponderName)
+		.def("getAppName", &Requester::getAppName)
+		.def("getAppId", &Requester::getAppId)
+		.def("getAppEndpoint", &Requester::getAppEndpoint)
 	    .def("sendBinary", &Requester::sendBinary,
 	    		"request"_a,
 	    		py::call_guard<py::gil_scoped_release>())

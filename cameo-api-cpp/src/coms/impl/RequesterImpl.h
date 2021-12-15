@@ -31,7 +31,7 @@ public:
 
 	virtual ~RequesterImpl() {}
 
-	virtual void init(const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name) = 0;
+	virtual void init(const Endpoint& endpoint, int requesterPort, int responderPort) = 0;
 	virtual void sendBinary(const std::string& requestData) = 0;
 	virtual void send(const std::string& requestData) = 0;
 	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) = 0;

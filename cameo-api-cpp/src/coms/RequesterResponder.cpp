@@ -196,10 +196,9 @@ bool Responder::isCanceled() const {
 std::mutex Requester::m_mutex;
 int Requester::m_requesterCounter = 0;
 
-Requester::Requester(const std::string &name) :
-	m_name(name),
+Requester::Requester() :
 	m_requesterId(0),
-	m_responderId(0) {
+	m_appId(0) {
 
 	//TODO Replace with factory.
 	m_impl = std::unique_ptr<RequesterImpl>(new RequesterZmq());
@@ -210,7 +209,7 @@ Requester::Requester(const std::string &name) :
 
 Requester::~Requester() {
 
-	application::This::getCom().removePort(getRequesterPortName(m_name, m_responderId, m_requesterId));
+	application::This::getCom().removePort(getRequesterPortName(m_responderName, m_appId, m_requesterId));
 }
 
 int Requester::newRequesterId() {
@@ -221,32 +220,36 @@ int Requester::newRequesterId() {
 	return m_requesterCounter;
 }
 
-std::string Requester::getRequesterPortName(const std::string& name, int responderId, int requesterId) {
+std::string Requester::getRequesterPortName(const std::string& responderName, int responderId, int requesterId) {
 
 	std::stringstream requesterPortName;
-	requesterPortName << RequesterImpl::REQUESTER_PREFIX << name << "." << responderId << "." << requesterId;
+	requesterPortName << RequesterImpl::REQUESTER_PREFIX << responderName << "." << responderId << "." << requesterId;
 
 	return requesterPortName.str();
 }
 
-void Requester::init(application::Instance &instance, const std::string &name) {
+void Requester::init(application::Instance & app, const std::string &responderName) {
 
-	m_responderId = instance.getId();
-	std::string responderPortName = ResponderZmq::RESPONDER_PREFIX + name;
+	m_responderName = responderName;
+	m_appName = app.getName();
+	m_appId = app.getId();
+	m_appEndpoint = app.getEndpoint();
+
+	std::string responderPortName = ResponderZmq::RESPONDER_PREFIX + responderName;
 	m_requesterId = newRequesterId();
-	std::string requesterPortName = getRequesterPortName(name, m_responderId, m_requesterId);
+	std::string requesterPortName = getRequesterPortName(responderName, m_appId, m_requesterId);
 
-	std::string request = createConnectPortV0Request(m_responderId, responderPortName);
+	std::string request = createConnectPortV0Request(m_appId, responderPortName);
 
-	json::Object response = instance.getCom().requestJSON(request);
+	json::Object response = app.getCom().requestJSON(request);
 
 	int responderPort = response[message::RequestResponse::VALUE].GetInt();
 	if (responderPort == -1) {
 		// Wait for the responder port.
-		instance.waitFor(responderPortName);
+		app.waitFor(responderPortName);
 
 		// Retry to connect.
-		response = instance.getCom().requestJSON(request);
+		response = app.getCom().requestJSON(request);
 
 		responderPort = response[message::RequestResponse::VALUE].GetInt();
 		if (responderPort == -1) {
@@ -262,20 +265,31 @@ void Requester::init(application::Instance &instance, const std::string &name) {
 		throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 
-	// TODO simplify the use of some variables: responderUrl.
-	m_impl->init(instance.getEndpoint(), requesterPort, responderPort, name);
+	m_impl->init(app.getEndpoint(), requesterPort, responderPort);
 }
 
-std::unique_ptr<Requester> Requester::create(application::Instance & instance, const std::string& name) {
+std::unique_ptr<Requester> Requester::create(application::Instance & app, const std::string& responderName) {
 
-	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester(name));
-	requester->init(instance, name);
+	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester());
+	requester->init(app, responderName);
 
 	return requester;
 }
 
-const std::string& Requester::getName() const {
-	return m_name;
+const std::string& Requester::getResponderName() const {
+	return m_responderName;
+}
+
+const std::string& Requester::getAppName() const {
+	return m_appName;
+}
+
+int Requester::getAppId() const {
+	return m_appId;
+}
+
+Endpoint Requester::getAppEndpoint() const {
+	return m_appEndpoint;
 }
 
 void Requester::sendBinary(const std::string& request) {
@@ -316,7 +330,7 @@ std::ostream& operator<<(std::ostream& os, const Request& request) {
 
 std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
-	os << "rep." << responder.getName()
+	os << "rep." << responder.m_name
 		<< ":" << application::This::getName()
 		<< "." << application::This::getId()
 		<< "@" << application::This::getEndpoint();
@@ -326,11 +340,11 @@ std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
 std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
-	os << "req." << requester.getName()
+	os << "req." << requester.m_responderName
 		<< "." << requester.m_requesterId
-		<< ":" << application::This::getName()
-		<< "." << application::This::getId()
-		<< "@" << application::This::getEndpoint();
+		<< ":" << requester.m_appName
+		<< "." << requester.m_appId
+		<< "@" << requester.m_appEndpoint;
 
 	return os;
 }

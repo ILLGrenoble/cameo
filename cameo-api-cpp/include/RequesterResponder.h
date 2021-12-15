@@ -119,9 +119,12 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::unique_ptr<Requester> create(application::Instance &instance, const std::string &name);
+	static std::unique_ptr<Requester> create(application::Instance &app, const std::string &name);
 
-	const std::string& getName() const;
+	const std::string& getResponderName() const;
+	const std::string& getAppName() const;
+	int getAppId() const;
+	Endpoint getAppEndpoint() const;
 
 	void sendBinary(const std::string &request);
 	void send(const std::string &request);
@@ -142,15 +145,17 @@ public:
 	bool isCanceled() const;
 
 private:
-	void init(application::Instance &instance, const std::string &name);
-	Requester(const std::string &name);
+	void init(application::Instance & app, const std::string & responderName);
+	Requester();
 
 	static int newRequesterId();
-	static std::string getRequesterPortName(const std::string& name, int responderId, int requesterId);
+	static std::string getRequesterPortName(const std::string& responderName, int responderId, int requesterId);
 
-	std::string m_name;
+	std::string m_responderName;
 	int m_requesterId;
-	int m_responderId;
+	std::string m_appName;
+	int m_appId;
+	Endpoint m_appEndpoint;
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 

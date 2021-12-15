@@ -11,6 +11,7 @@ import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.RequesterZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * Class Requester.
@@ -18,15 +19,16 @@ import fr.ill.ics.cameo.messages.Messages;
  */
 public class Requester {
 
-	private String name;
+	private String responderName;
 	private int requesterId;
-	private int responderId;
+	private String appName;
+	private int appId;
+	private Endpoint appEndpoint;
 	private RequesterImpl impl;
 	private RequesterWaiting waiting = new RequesterWaiting(this);
 	private static AtomicInteger requesterCounter = new AtomicInteger();
 	
-	private Requester(String name) {
-		this.name = name;
+	private Requester() {
 		this.impl = new RequesterZmq();
 		waiting.add();
 	}
@@ -35,31 +37,35 @@ public class Requester {
 		return requesterCounter.incrementAndGet();
 	}
 
-	private static String getRequesterPortName(String name, int responderId, int requesterId) {
-		return RequesterImpl.REQUESTER_PREFIX + name + "." + responderId + "." + requesterId;
+	private static String getRequesterPortName(String responderName, int responderId, int requesterId) {
+		return RequesterImpl.REQUESTER_PREFIX + responderName + "." + responderId + "." + requesterId;
 	}
 	
-	private void init(Instance application, String name) throws RequesterCreationException {
+	private void init(Instance app, String responderName) throws RequesterCreationException {
 		
-		responderId = application.getId();
-		String responderPortName = ResponderImpl.RESPONDER_PREFIX + name;
+		this.responderName = responderName;
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		
+		String responderPortName = ResponderImpl.RESPONDER_PREFIX + responderName;
 		
 		requesterId = newRequesterId();
-		String requesterPortName = getRequesterPortName(name, responderId, requesterId);
+		String requesterPortName = getRequesterPortName(responderName, appId, requesterId);
 		
 		// First connect to the responder.
-		JSONObject request = Messages.createConnectPortV0Request(responderId, responderPortName);
-		JSONObject response = application.getCom().requestJSON(request);
+		JSONObject request = Messages.createConnectPortV0Request(appId, responderPortName);
+		JSONObject response = app.getCom().requestJSON(request);
 		
 		int responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responderPort == -1) {
 			
 			// Wait for the responder port.
-			application.waitFor(responderPortName);
+			app.waitFor(responderPortName);
 
 			// Retry to connect.
-			request = Messages.createConnectPortV0Request(responderId, responderPortName);
-			response = application.getCom().requestJSON(request);
+			request = Messages.createConnectPortV0Request(appId, responderPortName);
+			response = app.getCom().requestJSON(request);
 			responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
 			
 			if (responderPort == -1) {
@@ -77,25 +83,37 @@ public class Requester {
 			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
-		impl.init(application.getEndpoint(), requesterPort, responderPort, name);
+		impl.init(app.getEndpoint(), requesterPort, responderPort);
 	}
 	
 	/**
 	 * 
-	 * @param name
+	 * @param responderName
 	 * @return
 	 * @throws RequesterCreationException, ConnectionTimeout
 	 */
-	static public Requester create(Instance application, String name) throws RequesterCreationException {
+	static public Requester create(Instance app, String responderName) throws RequesterCreationException {
 		
-		Requester requester = new Requester(name);
-		requester.init(application, name);
+		Requester requester = new Requester();
+		requester.init(app, responderName);
 		
 		return requester;
 	}
 	
-	public String getName() {
-		return impl.getName();
+	public String getResponderName() {
+		return responderName;
+	}
+	
+	public String getAppName() {
+		return appName;
+	}
+	
+	public int getAppId() {
+		return appId;
+	}
+	
+	public Endpoint getAppEndpoint() {
+		return appEndpoint;
 	}
 	
 	public void send(byte[] request) {
@@ -131,7 +149,7 @@ public class Requester {
 		impl.terminate();
 
 		try {
-			This.getCom().removePort(getRequesterPortName(name, responderId, requesterId));
+			This.getCom().removePort(getRequesterPortName(responderName, appId, requesterId));
 			
 		} catch (Exception e) {
 			System.err.println("Cannot terminate requester: " + e.getMessage());
@@ -140,6 +158,6 @@ public class Requester {
 	
 	@Override
 	public String toString() {
-		return RequesterImpl.REQUESTER_PREFIX + name + "." + requesterId + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		return RequesterImpl.REQUESTER_PREFIX + responderName + ":" + appName + "." + appId + "@" + appEndpoint;
 	}
 }

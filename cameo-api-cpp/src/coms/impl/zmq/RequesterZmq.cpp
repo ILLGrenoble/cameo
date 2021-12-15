@@ -29,9 +29,8 @@ namespace coms {
 
 const std::string RequesterZmq::REQUESTER_PREFIX = "req.";
 
-void RequesterZmq::init(const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name) {
+void RequesterZmq::init(const Endpoint& endpoint, int requesterPort, int responderPort) {
 	m_requesterPort = requesterPort;
-	m_name = name;
 	m_canceled = false;
 
 	// Create the request socket.

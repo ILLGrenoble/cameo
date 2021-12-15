@@ -157,6 +157,6 @@ public class Subscriber {
 
 	@Override
 	public String toString() {
-		return "sub." + getPublisherName() + ":" + getAppName() + "." + getAppId() + "@" + getAppEndpoint();
+		return "sub." + publisherName + ":" + appName + "." + appId + "@" + appEndpoint;
 	}
 }

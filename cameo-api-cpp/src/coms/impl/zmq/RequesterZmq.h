@@ -37,7 +37,7 @@ public:
 
 	virtual ~RequesterZmq();
 
-	void init(const Endpoint& endpoint, int requesterPort, int responderPort, const std::string& name);
+	void init(const Endpoint& endpoint, int requesterPort, int responderPort);
 	void sendBinary(const std::string& requestData);
 	void send(const std::string& requestData);
 	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
