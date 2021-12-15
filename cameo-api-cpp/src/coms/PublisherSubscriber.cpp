@@ -132,7 +132,7 @@ Subscriber::Subscriber() {
 Subscriber::~Subscriber() {
 }
 
-void Subscriber::init(application::Instance & app, const std::string& publisherName, const std::string& instanceName) {
+void Subscriber::init(application::Instance & app, const std::string& publisherName, const std::string& appName) {
 
 	m_publisherName = publisherName;
 	m_appName = app.getName();
@@ -153,10 +153,10 @@ void Subscriber::init(application::Instance & app, const std::string& publisherN
 	m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 }
 
-std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &instanceName) {
+std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &appName) {
 
 	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(app, publisherName, instanceName);
+	subscriber->init(app, publisherName, appName);
 
 	return subscriber;
 }
