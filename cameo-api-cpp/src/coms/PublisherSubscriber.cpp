@@ -132,15 +132,15 @@ Subscriber::Subscriber() {
 Subscriber::~Subscriber() {
 }
 
-void Subscriber::init(application::Instance & instance, const std::string& publisherName, const std::string& instanceName) {
+void Subscriber::init(application::Instance & app, const std::string& publisherName, const std::string& instanceName) {
 
 	m_publisherName = publisherName;
-	m_instanceName = instance.getName();
-	m_instanceId = instance.getId();
-	m_instanceEndpoint = instance.getEndpoint();
+	m_appName = app.getName();
+	m_appId = app.getId();
+	m_appEndpoint = app.getEndpoint();
 
 	// Get the JSON response.
-	json::Object response = instance.getCom().requestJSON(createConnectPublisherRequest(instance.getId(), publisherName));
+	json::Object response = app.getCom().requestJSON(createConnectPublisherRequest(app.getId(), publisherName));
 
 	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
 	if (publisherPort == -1) {
@@ -150,27 +150,27 @@ void Subscriber::init(application::Instance & instance, const std::string& publi
 	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
 	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
 
-	m_impl->init(m_instanceId, m_instanceEndpoint, instance.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
+	m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 }
 
-std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName) {
+std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &instanceName) {
 
 	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(instance, publisherName, instanceName);
+	subscriber->init(app, publisherName, instanceName);
 
 	return subscriber;
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance, const std::string& publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string& publisherName) {
 	try {
-		return createSubscriber(instance, publisherName, instance.getName());
+		return createSubscriber(app, publisherName, app.getName());
 
 	} catch (const SubscriberCreationException& e) {
 		// the publisher does not exist, so we are waiting for it
 	}
 
 	// waiting for the publisher
-	application::State lastState = instance.waitFor(publisherName);
+	application::State lastState = app.waitFor(publisherName);
 
 	// state cannot be terminal or it means that the application has terminated that is not planned.
 	if (lastState == application::SUCCESS
@@ -181,7 +181,7 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & instance,
 	}
 
 	try {
-		return createSubscriber(instance, publisherName, instance.getName());
+		return createSubscriber(app, publisherName, app.getName());
 
 	} catch (const SubscriberCreationException& e) {
 		// that should not happen
@@ -194,16 +194,16 @@ const std::string& Subscriber::getPublisherName() const {
 	return m_publisherName;
 }
 
-const std::string& Subscriber::getInstanceName() const {
-	return m_instanceName;
+const std::string& Subscriber::getAppName() const {
+	return m_appName;
 }
 
-int Subscriber::getInstanceId() const {
-	return m_instanceId;
+int Subscriber::getAppId() const {
+	return m_appId;
 }
 
-Endpoint Subscriber::getInstanceEndpoint() const {
-	return m_instanceEndpoint;
+Endpoint Subscriber::getAppEndpoint() const {
+	return m_appEndpoint;
 }
 
 bool Subscriber::hasEnded() const {
@@ -262,9 +262,9 @@ std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publish
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Subscriber& subscriber) {
 
 	os << "sub." << subscriber.getPublisherName()
-		<< ":" << subscriber.getInstanceName()
-		<< "." << subscriber.getInstanceId()
-		<< "@" << subscriber.getInstanceEndpoint();
+		<< ":" << subscriber.getAppName()
+		<< "." << subscriber.getAppId()
+		<< "@" << subscriber.getAppEndpoint();
 
 	return os;
 }

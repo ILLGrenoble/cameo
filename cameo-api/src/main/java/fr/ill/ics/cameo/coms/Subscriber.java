@@ -17,9 +17,9 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class Subscriber {
 	
 	private String publisherName;
-	private String instanceName;
-	private int instanceId;
-	private Endpoint instanceEndpoint;
+	private String appName;
+	private int appId;
+	private Endpoint appEndpoint;
 	private SubscriberImpl impl;
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	
@@ -30,15 +30,15 @@ public class Subscriber {
 		waiting.add();
 	}
 	
-	private void initSubscriber(Instance instance, String publisherName) throws SubscriberCreationException {
+	private void initSubscriber(Instance app, String publisherName) throws SubscriberCreationException {
 		
 		this.publisherName = publisherName;
-		this.instanceName = instance.getName();
-		this.instanceId = instance.getId();
-		this.instanceEndpoint = instance.getEndpoint();
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
 		
-		JSONObject request = Messages.createConnectPublisherRequest(instance.getId(), publisherName);
-		JSONObject response = instance.getCom().requestJSON(request);
+		JSONObject request = Messages.createConnectPublisherRequest(app.getId(), publisherName);
+		JSONObject response = app.getCom().requestJSON(request);
 		
 		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
 		
@@ -49,13 +49,13 @@ public class Subscriber {
 		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
 		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
 		
-		impl.init(instanceId, instanceEndpoint, instance.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
+		impl.init(appId, appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 	}
 	
-	private boolean init(Instance application, String publisherName) {
+	private boolean init(Instance app, String publisherName) {
 		
 		try {
-			initSubscriber(application, publisherName);
+			initSubscriber(app, publisherName);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
@@ -63,7 +63,7 @@ public class Subscriber {
 		}
 		
 		// waiting for the publisher
-		int lastState = application.waitFor(publisherName);
+		int lastState = app.waitFor(publisherName);
 		
 		// state cannot be terminal or it means that the application has terminated that is not planned.
 		if (lastState == Application.State.SUCCESS 
@@ -74,7 +74,7 @@ public class Subscriber {
 		}
 		
 		try {
-			initSubscriber(application, publisherName);
+			initSubscriber(app, publisherName);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
@@ -90,10 +90,10 @@ public class Subscriber {
 	 * @param publisherName
 	 * @return
 	 */
-	public static Subscriber create(Instance application, String publisherName) {
+	public static Subscriber create(Instance app, String publisherName) {
 		
 		Subscriber subscriber = new Subscriber();
-		subscriber.init(application, publisherName);
+		subscriber.init(app, publisherName);
 		
 		return subscriber;
 	}
@@ -102,16 +102,16 @@ public class Subscriber {
 		return publisherName;
 	}
 	
-	public String getInstanceName() {
-		return instanceName;
+	public String getAppName() {
+		return appName;
 	}
 	
-	public int getInstanceId() {
-		return instanceId;
+	public int getAppId() {
+		return appId;
 	}
 	
-	public Endpoint getInstanceEndpoint() {
-		return instanceEndpoint;
+	public Endpoint getAppEndpoint() {
+		return appEndpoint;
 	}
 	
 	public boolean isEnded() {
@@ -157,6 +157,6 @@ public class Subscriber {
 
 	@Override
 	public String toString() {
-		return "sub." + getPublisherName() + ":" + getInstanceName() + "." + getInstanceId() + "@" + getInstanceEndpoint();
+		return "sub." + getPublisherName() + ":" + getAppName() + "." + getAppId() + "@" + getAppEndpoint();
 	}
 }

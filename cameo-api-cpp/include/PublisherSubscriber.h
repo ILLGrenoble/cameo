@@ -83,12 +83,12 @@ class Subscriber {
 public:
 	~Subscriber();
 
-	static std::unique_ptr<Subscriber> create(application::Instance &instance, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(application::Instance & app, const std::string &publisherName);
 
 	const std::string& getPublisherName() const;
-	const std::string& getInstanceName() const;
-	int getInstanceId() const;
-	Endpoint getInstanceEndpoint() const;
+	const std::string& getAppName() const;
+	int getAppId() const;
+	Endpoint getAppEndpoint() const;
 
 	/**
 	 * Deprecated.
@@ -119,13 +119,13 @@ public:
 private:
 	Subscriber();
 	void init(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);
-	static std::unique_ptr<Subscriber> createSubscriber(application::Instance &instance, const std::string &publisherName, const std::string &instanceName);
+	static std::unique_ptr<Subscriber> createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &instanceName);
 	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
 	std::string m_publisherName;
-	std::string m_instanceName;
-	int m_instanceId;
-	Endpoint m_instanceEndpoint;
+	std::string m_appName;
+	int m_appId;
+	Endpoint m_appEndpoint;
 	std::unique_ptr<SubscriberImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };

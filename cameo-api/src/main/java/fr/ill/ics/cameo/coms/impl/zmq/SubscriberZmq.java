@@ -37,19 +37,19 @@ public class SubscriberZmq implements SubscriberImpl {
 	private Zmq.Socket subscriber;
 	private String cancelEndpoint;
 	private Zmq.Socket cancelPublisher;
-	private int instanceId;
+	private int appId;
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int instanceId, Endpoint instanceEndpoint, Endpoint instanceStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
+	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
 
-		this.instanceId = instanceId;
+		this.appId = appId;
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(instanceEndpoint.withPort(publisherPort).toString());
+		subscriber.connect(appEndpoint.withPort(publisherPort).toString());
 		subscriber.subscribe(Messages.Event.SYNC);
 		subscriber.subscribe(Messages.Event.STREAM);
 		subscriber.subscribe(Messages.Event.ENDSTREAM);
@@ -66,14 +66,14 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// Subscribe to STATUS
-		subscriber.connect(instanceStatusEndpoint.toString());
+		subscriber.connect(appStatusEndpoint.toString());
 		subscriber.subscribe(Messages.Event.STATUS);
 		
 		// Synchronize the subscriber only if the number of subscribers > 0
 		if (numberOfSubscribers > 0) {
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = This.getCom().createRequestSocket(instanceEndpoint.withPort(synchronizerPort).toString());
+			RequestSocket requestSocket = This.getCom().createRequestSocket(appEndpoint.withPort(synchronizerPort).toString());
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);
@@ -140,7 +140,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				// Get the id.
 				int id = JSON.getInt(status, Messages.StatusEvent.ID);
 									
-				if (instanceId == id) {
+				if (appId == id) {
 					
 					// Get the state.
 					int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
@@ -191,7 +191,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				// Get the id.
 				int id = JSON.getInt(request, Messages.StatusEvent.ID);
 				
-				if (instanceId == id) {
+				if (appId == id) {
 					
 					// Get the state.
 					int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);

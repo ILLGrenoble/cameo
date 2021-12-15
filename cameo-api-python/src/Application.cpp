@@ -157,9 +157,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"publisherName"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("getPublisherName", &Subscriber::getPublisherName)
-	    .def("getInstanceName", &Subscriber::getInstanceName)
-	    .def("getInstanceId", &Subscriber::getInstanceId)
-	    .def("getInstanceEndpoint", &Subscriber::getInstanceEndpoint)
+	    .def("getAppName", &Subscriber::getAppName)
+	    .def("getAppId", &Subscriber::getAppId)
+	    .def("getAppEndpoint", &Subscriber::getAppEndpoint)
 	    .def("isEnded", &Subscriber::isEnded)
 	    .def("isCanceled", &Subscriber::isCanceled)
 	    .def("receiveBinary", &Subscriber::receiveBinary, py::call_guard<py::gil_scoped_release>())
