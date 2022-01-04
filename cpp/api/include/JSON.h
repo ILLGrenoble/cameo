@@ -20,7 +20,6 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/document.h>
-#include "zmq.hpp"
 #include <string>
 #include <cstdint>
 
