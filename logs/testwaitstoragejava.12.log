@@ -1,5 +1,0 @@
-Storage event STORED {"x":12}
-Key value {"x":12}
-Storage event REMOVED {"x":12}
-Finished application waitstoragejava.13@tcp://gamma36:10000
-Finished the application after 407ms

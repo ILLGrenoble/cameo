@@ -229,87 +229,87 @@
 		<!-- Python apps -->
 		
 		<application name="simplepy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/simple.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/simple.py"/>
 		</application>
 		
 		<application name="testsimplepy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testsimple.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/testsimple.py"/>
 		</application>
 		
 		<application name="veryfastpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/veryfast.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/veryfast.py"/>
 		</application>
 		
 		<application name="testveryfastpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testveryfast.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/testveryfast.py"/>
 		</application>
 		
 		<application name="teststoppy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/teststop.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/teststop.py"/>
 		</application>
 		
 		<application name="resultpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/result.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/result.py"/>
 		</application>
 		
 		<application name="testresultpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testresult.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/testresult.py"/>
 		</application>
 		
 		<application name="errorpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/error.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/error.py"/>
 		</application>
 		
 		<application name="testerrorpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testerror.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/testerror.py"/>
 		</application>
 
 		<application name="publisherpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/publisher.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/publisher.py"/>
 		</application>
 		
 		<application name="testpublisherpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testpublisher.py publisherpy"/>
+			<start executable="python3" args="-u python/tests/src/tests/testpublisher.py publisherpy"/>
 		</application>
 
 		<application name="subscriberpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="yes" restart="no">
-			<start executable="python3" args="-u python/tests/subscriber.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/subscriber.py"/>
 		</application>
 		
 		<application name="testsubscriberpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testsubscriber.py subscriberpy"/>
+			<start executable="python3" args="-u python/tests/src/tests/testsubscriber.py subscriberpy"/>
 		</application>
 
 		<application name="responderpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="yes" restart="no">
-			<start executable="python3" args="-u python/tests/responder.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/responder.py"/>
 		</application>
 		
 		<application name="testresponderpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testresponder.py responderpy"/>
+			<start executable="python3" args="-u python/tests/src/tests/testresponder.py responderpy"/>
 		</application>
 
 		<application name="requesterpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="yes" restart="no">
-			<start executable="python3" args="-u python/tests/requester.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/requester.py"/>
 		</application>
 		
 		<application name="testrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testrequester.py requesterpy"/>
+			<start executable="python3" args="-u python/tests/src/tests/testrequester.py requesterpy"/>
 		</application>
 		
 		<application name="publisherlooppy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/publisherloop.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/publisherloop.py"/>
 		</application>
 		
 		<application name="testcancelpy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/testcancel.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/testcancel.py"/>
 		</application>
 		
 		<application name="streampy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/stream.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/stream.py"/>
 		</application>
 
 		<application name="teststreampy" starting_time="0" stopping_time="1" output_stream="yes" log_directory="logs" multiple="no" restart="no">
-			<start executable="python3" args="-u python/tests/teststream.py"/>
+			<start executable="python3" args="-u python/tests/src/tests/teststream.py"/>
 		</application>
 				
 	</applications>

@@ -6,19 +6,19 @@
 		
 		<!-- Python -->
 		<application name="responderpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
-			<start executable="python3" args="-u python/examples/responderapp.py"/>
+			<start executable="python3" args="-u python/tests/src/examples/responderapp.py"/>
 		</application>
 		
 		<application name="requesterpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
-			<start executable="python3" args="-u python/examples/requesterapp.py"/>
+			<start executable="python3" args="-u python/tests/src/examples/requesterapp.py"/>
 		</application>
 		
 		<application name="publisherpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
-			<start executable="python3" args="-u python/examples/publisherapp.py"/>
+			<start executable="python3" args="-u python/tests/src/examples/publisherapp.py"/>
 		</application>
 		
 		<application name="subscriberpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
-			<start executable="python3" args="-u python/examples/subscriberapp.py"/>
+			<start executable="python3" args="-u python/tests/src/examples/subscriberapp.py"/>
 		</application>
 		
 	</applications>
