@@ -15,6 +15,7 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
   list(APPEND APIs cpp/api)
+  list(APPEND Tests cpp/tests)
 endif()
 if(${CAMEO_API_PYTHON})
   list(APPEND APIs cpp/api)
@@ -41,7 +42,7 @@ endmacro()
 
 
 foreach(package java/server-jzmq java/console-jzmq
-    ${APIs})
+    ${APIs} ${Tests})
   add_subdirectory(${package})
 endforeach()
 
