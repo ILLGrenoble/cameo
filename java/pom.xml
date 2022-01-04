@@ -42,5 +42,6 @@
 		<module>api</module>
 		<module>console</module>
 		<module>console-jzmq</module>
+		<module>tests</module>
 	</modules>
 </project>
