@@ -35,17 +35,17 @@ public class RequesterApp {
 		Server server = null;
 		
 		// The request message is the first argument.
-		if (args.length > 0) {
+		if (args.length > 1) {
 			requestMessage = args[0];
 		}
 		
 		// The number of requests is the second argument.
-		if (args.length > 1) {
+		if (args.length > 2) {
 			N = Integer.parseInt(args[1]);
 		}
 		
 		// The server endpoint is the third argument.
-		if (args.length > 2) {
+		if (args.length > 3) {
 			server = new Server(args[2]);
 		}
 		else {	
