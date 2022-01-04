@@ -34,13 +34,13 @@
 	</repositories>
 	
 	<modules>
-		<module>cameo-process-handle</module>
-		<module>cameo-common</module>
-		<module>cameo-com</module>
-		<module>cameo-server</module>
-		<module>cameo-server-jzmq</module>
-		<module>cameo-api</module>
-		<module>cameo-console</module>
-		<module>cameo-console-jzmq</module>
+		<module>process-handle</module>
+		<module>common</module>
+		<module>com</module>
+		<module>server</module>
+		<module>server-jzmq</module>
+		<module>api</module>
+		<module>console</module>
+		<module>console-jzmq</module>
 	</modules>
 </project>

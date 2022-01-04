@@ -40,7 +40,7 @@ endmacro()
 #endforeach()
 
 
-foreach(package java/cameo-server-jzmq java/cameo-console-jzmq
+foreach(package java/server-jzmq java/console-jzmq
     ${APIs})
   add_subdirectory(${package})
 endforeach()
