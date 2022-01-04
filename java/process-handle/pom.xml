@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>cameo-process-handle-default</module>
-		<module>cameo-process-handle-null</module>
+		<module>default</module>
+		<module>null</module>
 	</modules>
 </project>

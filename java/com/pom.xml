@@ -9,8 +9,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>cameo-com-jzmq</module>
-		<module>cameo-com-jeromq</module>
+		<module>jzmq</module>
+		<module>jeromq</module>
 	</modules>
 
 </project>
