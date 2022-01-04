@@ -1,0 +1,7 @@
+Creating responder
+Received request [endpoint=tcp://gamma36:10077, id=22]
+Received request first second
+Received request request
+received request [endpoint=tcp://gamma36:10077, id=22]
+Requester testrespondercpp.22@tcp://gamma36:10000
+Finished the application

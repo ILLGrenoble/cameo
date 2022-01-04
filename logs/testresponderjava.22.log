@@ -1,0 +1,10 @@
+Responder application is responderjava
+Started application responderjava.23@tcp://gamma36:10000 with state STARTING
+Created requester req.responder:responderjava.23@tcp://gamma36:10000
+Application responderjava.23@tcp://gamma36:10000 has state RUNNING
+Response is 1st response
+Response is 2nd response
+Response is 3rd response
+Response is 4th response
+Responder application terminated with state SUCCESS
+Finished the application

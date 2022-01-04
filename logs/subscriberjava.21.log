@@ -1,0 +1,21 @@
+Publisher application is testsubscriberjava
+Subscribing publisher...
+Synchronized with 1 publisher
+Received {4, 16}
+Received {5, 25}
+Received {6, 36}
+Received {7, 49}
+Received {8, 64}
+Received {9, 81}
+Received {10, 100}
+Received {11, 121}
+Received {12, 144}
+Received {13, 169}
+Received {14, 196}
+Received {15, 225}
+Received {16, 256}
+Received {17, 289}
+Received {18, 324}
+Received {19, 361}
+Finished stream
+Finished the application

@@ -158,8 +158,16 @@ public class TestSelector {
 		// Define the server process.
 		Process serverProcess = null;
 		
+		String testsPath = "java/tests/tests.xml";
+		File testsFile = new File(testsPath);
+		
+		if (!testsFile.exists()) {
+			System.out.println("*** Config tests file is not accessible, go to the Cameo root directory ***");
+			return;
+		}
+		
 		// Start the server.
-		serverProcess = startServer("tests.xml");
+		serverProcess = startServer(testsPath);
 				
 		Server server = new Server("tcp://localhost:10000");
 	

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config port="12000" max_applications="20" log_directory="logs" log_level="fine" polling_time="100">
+
+	<applications>
+		
+		<!-- Python -->
+		<application name="responderpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
+			<start executable="python3" args="-u python/examples/responderapp.py"/>
+		</application>
+		
+		<application name="requesterpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
+			<start executable="python3" args="-u python/examples/requesterapp.py"/>
+		</application>
+		
+		<application name="publisherpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
+			<start executable="python3" args="-u python/examples/publisherapp.py"/>
+		</application>
+		
+		<application name="subscriberpy" starting_time="0" retries="0" stopping_time="1" output_stream="yes" multiple="no" restart="no">
+			<start executable="python3" args="-u python/examples/subscriberapp.py"/>
+		</application>
+		
+	</applications>
+	
+</config>

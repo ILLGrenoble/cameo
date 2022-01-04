@@ -1,0 +1,62 @@
+Requester application is requesterjava
+Started application requesterjava.25@tcp://gamma36:10000
+Started application requesterjava.26@tcp://gamma36:10000
+Started application requesterjava.27@tcp://gamma36:10000
+Started application requesterjava.28@tcp://gamma36:10000
+Started application requesterjava.29@tcp://gamma36:10000
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10077, id=25]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Processed Request [endpoint=tcp://gamma36:10078, id=26]
+Processed Request [endpoint=tcp://gamma36:10081, id=29]
+Processed Request [endpoint=tcp://gamma36:10080, id=27]
+Processed Request [endpoint=tcp://gamma36:10079, id=28]
+Finished application requesterjava.25@tcp://gamma36:10000
+Finished application requesterjava.26@tcp://gamma36:10000
+Finished application requesterjava.27@tcp://gamma36:10000
+Finished application requesterjava.28@tcp://gamma36:10000
+Finished application requesterjava.29@tcp://gamma36:10000
+Finished the application

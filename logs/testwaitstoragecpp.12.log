@@ -1,0 +1,4 @@
+storage event 1 
+key value {"x":12}
+storage event 2 
+finished the application waitstoragecpp.13@tcp://gamma36:10000 with state SUCCESS
