@@ -26,12 +26,11 @@ import fr.ill.ics.cameo.base.CancelIdGenerator;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.RequestSocket;
-import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.messages.JSON.Parser;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {

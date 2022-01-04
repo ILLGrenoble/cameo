@@ -17,7 +17,6 @@
 package fr.ill.ics.cameo.coms.impl;
 
 import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public interface SubscriberImpl {

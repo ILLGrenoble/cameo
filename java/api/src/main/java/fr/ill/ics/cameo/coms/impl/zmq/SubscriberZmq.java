@@ -22,7 +22,6 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.CancelIdGenerator;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
