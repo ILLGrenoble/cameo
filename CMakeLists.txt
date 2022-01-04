@@ -19,7 +19,7 @@ endif()
 if(${CAMEO_API_PYTHON})
   list(APPEND APIs cpp/api)
   mark_as_advanced(CAMEO_API_CPP)
-  list(APPEND APIs cameo-api-python)
+  list(APPEND APIs python/api)
 endif()
 list(REMOVE_DUPLICATES APIs)
 #------------------------------------------------------------
