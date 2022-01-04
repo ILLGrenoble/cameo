@@ -37,7 +37,7 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
   )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../cameo-server/scripts/cameo-server.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../server/scripts/cameo-server.in
   ${CMAKE_CURRENT_BINARY_DIR}/cameo-server)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
