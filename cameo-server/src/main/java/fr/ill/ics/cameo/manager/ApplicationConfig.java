@@ -338,14 +338,9 @@ public class ApplicationConfig {
 			FileInputStream input = new FileInputStream(file);
 			Properties variables = new Properties();
 			variables.load(input);
-
-			// Copying the content to the hash map.
-			for (Entry<Object, Object> e : variables.entrySet()) {
-				
-				if (e.getKey() instanceof String && e.getValue() instanceof String) {
-					environmentVariables.put((String) e.getKey(), (String) e.getValue());		
-				}
-			}
+			
+			// Load the variables with string replacement.
+			environmentVariables = Environment.loadVariables(variables);
 			
 			System.out.println("Loaded environment file " + file);
 			
