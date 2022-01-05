@@ -341,10 +341,8 @@ public class ApplicationConfig {
 			
 			// Load the variables with string replacement.
 			environmentVariables = Environment.loadVariables(variables);
-			
-			System.out.println("Loaded environment file " + file);
-			
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			// Do nothing.
 		}
 	}
