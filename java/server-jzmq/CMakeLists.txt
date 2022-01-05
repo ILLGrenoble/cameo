@@ -7,10 +7,6 @@ project(cameo-server-jzmq
 
 include(GNUInstallDirs)
 
-if(NOT DEFINED CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Relase)
-endif()
-
 # find the jar file produced by MAVEN
 set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
 set(PROJECT_TARGET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/target")
@@ -27,7 +23,7 @@ add_custom_command(
   VERBATIM
   )
 
-add_custom_target(server
+add_custom_target(server-jzmq
   ALL
   DEPENDS ${PROJECT_JAR}
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_JAR} ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}

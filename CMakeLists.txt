@@ -8,6 +8,8 @@ project(cameo
 
 option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
 option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
+option(CAMEO_TESTS "Compile the tests and examples" OFF)
+
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
 endif()
@@ -15,8 +17,14 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
   list(APPEND APIs cpp/api)
+endif()
+
+if(${CAMEO_TESTS})
+  list(APPEND Tests java/tests/jeromq)
+  list(APPEND Tests java/tests/jzmq)
   list(APPEND Tests cpp/tests)
 endif()
+
 if(${CAMEO_API_PYTHON})
   list(APPEND APIs cpp/api)
   mark_as_advanced(CAMEO_API_CPP)
