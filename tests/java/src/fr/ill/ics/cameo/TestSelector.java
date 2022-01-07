@@ -158,7 +158,7 @@ public class TestSelector {
 		// Define the server process.
 		Process serverProcess = null;
 		
-		String testsPath = "java/tests/tests.xml";
+		String testsPath = "tests/java/tests.xml";
 		File testsFile = new File(testsPath);
 		
 		if (!testsFile.exists()) {
