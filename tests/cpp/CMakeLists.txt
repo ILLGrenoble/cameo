@@ -23,101 +23,87 @@ endif()
 
 # Tests
 
-add_executable(simple src/tests/Simple.cpp)
+add_executable(simple src/Simple.cpp)
 target_link_libraries(simple PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testsimple src/tests/TestSimple.cpp)
+add_executable(testsimple src/TestSimple.cpp)
 target_link_libraries(testsimple PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(veryfast src/tests/VeryFast.cpp)
+add_executable(veryfast src/VeryFast.cpp)
 target_link_libraries(veryfast PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testveryfast src/tests/TestVeryFast.cpp)
+add_executable(testveryfast src/TestVeryFast.cpp)
 target_link_libraries(testveryfast PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(stop src/tests/Stop.cpp)
+add_executable(stop src/Stop.cpp)
 target_link_libraries(stop PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(teststop src/tests/TestStop.cpp)
+add_executable(teststop src/TestStop.cpp)
 target_link_libraries(teststop PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(result src/tests/Result.cpp)
+add_executable(result src/Result.cpp)
 target_link_libraries(result PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testresult src/tests/TestResult.cpp)
+add_executable(testresult src/TestResult.cpp)
 target_link_libraries(testresult PRIVATE Cameo::cameo-api-cpp)	
 
-add_executable(error src/tests/Error.cpp)
+add_executable(error src/Error.cpp)
 target_link_libraries(error PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testerror src/tests/TestError.cpp)
+add_executable(testerror src/TestError.cpp)
 target_link_libraries(testerror PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(teststorage src/tests/TestStorage.cpp)
+add_executable(teststorage src/TestStorage.cpp)
 target_link_libraries(teststorage PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(waitstorage src/tests/WaitStorage.cpp)
+add_executable(waitstorage src/WaitStorage.cpp)
 target_link_libraries(waitstorage PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testwaitstorage src/tests/TestWaitStorage.cpp)
+add_executable(testwaitstorage src/TestWaitStorage.cpp)
 target_link_libraries(testwaitstorage PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(publisher src/tests/Publisher.cpp)
+add_executable(publisher src/Publisher.cpp)
 target_link_libraries(publisher PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testpublisher src/tests/TestPublisher.cpp)
+add_executable(testpublisher src/TestPublisher.cpp)
 target_link_libraries(testpublisher PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(subscriber src/tests/Subscriber.cpp)
+add_executable(subscriber src/Subscriber.cpp)
 target_link_libraries(subscriber PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testsubscriber src/tests/TestSubscriber.cpp)
+add_executable(testsubscriber src/TestSubscriber.cpp)
 target_link_libraries(testsubscriber PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(responder src/tests/Responder.cpp)
+add_executable(responder src/Responder.cpp)
 target_link_libraries(responder PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testresponder src/tests/TestResponder.cpp)
+add_executable(testresponder src/TestResponder.cpp)
 target_link_libraries(testresponder PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(requester src/tests/Requester.cpp)
+add_executable(requester src/Requester.cpp)
 target_link_libraries(requester PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testrequester src/tests/TestRequester.cpp)
+add_executable(testrequester src/TestRequester.cpp)
 target_link_libraries(testrequester PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(publisherloop src/tests/PublisherLoop.cpp)
+add_executable(publisherloop src/PublisherLoop.cpp)
 target_link_libraries(publisherloop PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testcancel src/tests/TestCancel.cpp)
+add_executable(testcancel src/TestCancel.cpp)
 target_link_libraries(testcancel PRIVATE Cameo::cameo-api-cpp  pthread)
 
-add_executable(openport src/tests/OpenPort.cpp)
+add_executable(openport src/OpenPort.cpp)
 target_link_libraries(openport PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(comport src/tests/ComPort.cpp)
+add_executable(comport src/ComPort.cpp)
 target_link_libraries(comport PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(testcomport src/tests/TestComPort.cpp)
+add_executable(testcomport src/TestComPort.cpp)
 target_link_libraries(testcomport PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(stream src/tests/Stream.cpp)
+add_executable(stream src/Stream.cpp)
 target_link_libraries(stream PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(teststream src/tests/TestStream.cpp)
+add_executable(teststream src/TestStream.cpp)
 target_link_libraries(teststream PRIVATE Cameo::cameo-api-cpp  pthread)
 
-
-# Examples
-
-add_executable(responderapp src/examples/ResponderApp.cpp)
-target_link_libraries(responderapp PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(requesterapp src/examples/RequesterApp.cpp)
-target_link_libraries(requesterapp PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(publisherapp src/examples/PublisherApp.cpp)
-target_link_libraries(publisherapp PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(subscriberapp src/examples/SubscriberApp.cpp)
-target_link_libraries(subscriberapp PRIVATE Cameo::cameo-api-cpp)

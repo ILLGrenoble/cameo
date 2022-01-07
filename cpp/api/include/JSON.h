@@ -58,8 +58,8 @@ private:
 typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
 
-template<typename T>
-bool parse(Object & object, T message);
+//template<typename T>
+//bool parse(Object & object, T message);
 
 template<typename Message>
 bool parse(Object & object, Message * message) {
