@@ -88,7 +88,7 @@ bool Request::replyBinary(const std::string& response) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::RESPONSE);
+	request.pushValue(message::RESPONSE);
 
 	// Create a request socket. It is created for each request that could be optimized.
 	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_requesterEndpoint);

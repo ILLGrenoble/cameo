@@ -15,9 +15,6 @@
  */
 
 #include <cameo/api/cameo.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/document.h>
 #include <iostream>
 
 using namespace std;
@@ -67,11 +64,11 @@ int main(int argc, char *argv[]) {
 			string value = message.value();
 			cout << "Received " << value << endl;
 
-			rapidjson::Document object;
-			object.Parse(static_cast<const char *>(value.c_str()), value.size());
-
-			cout << "\tmessage : " << object["message"].GetString() << endl;
-			cout << "\tvalue : " << object["value"].GetInt() << endl;
+			json::Object object;
+			if (json::parse(object, value)) {
+				cout << "\tmessage : " << object["message"].GetString() << endl;
+				cout << "\tvalue : " << object["value"].GetInt() << endl;
+			}
 		}
 
 		cout << "Finished the application" << endl;

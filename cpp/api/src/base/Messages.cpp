@@ -23,7 +23,7 @@ std::string createSyncRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SYNC);
+	request.pushValue(message::SYNC);
 
 	return request.toString();
 }
@@ -32,10 +32,10 @@ std::string createSyncStreamRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SYNC_STREAM);
+	request.pushValue(message::SYNC_STREAM);
 
 	request.pushKey(message::SyncStreamRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -44,7 +44,7 @@ std::string createVersionRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::IMPL_VERSION);
+	request.pushValue(message::IMPL_VERSION);
 
 	return request.toString();
 }
@@ -53,10 +53,10 @@ std::string createIsAliveRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::IS_ALIVE);
+	request.pushValue(message::IS_ALIVE);
 
 	request.pushKey(message::IsAliveRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -65,15 +65,15 @@ std::string createStartRequest(const std::string& name, const std::vector<std::s
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::START);
+	request.pushValue(message::START);
 
 	request.pushKey(message::StartRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	request.pushKey(message::StartRequest::ARGS);
 	request.startArray();
 	for (auto& a : args) {
-		request.pushString(a);
+		request.pushValue(a);
 	}
 	request.endArray();
 
@@ -83,13 +83,13 @@ std::string createStartRequest(const std::string& name, const std::vector<std::s
 		request.startObject();
 
 		request.pushKey(message::ApplicationIdentity::NAME);
-		request.pushString(thisName);
+		request.pushValue(thisName);
 
 		request.pushKey(message::ApplicationIdentity::ID);
-		request.pushInt(thisId);
+		request.pushValue(thisId);
 
 		request.pushKey(message::ApplicationIdentity::SERVER);
-		request.pushString(thisEndpoint);
+		request.pushValue(thisEndpoint);
 
 		request.endObject();
 	}
@@ -101,13 +101,13 @@ std::string createSetStopHandlerRequest(int id, int stoppingTime) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SET_STOP_HANDLER);
+	request.pushValue(message::SET_STOP_HANDLER);
 
 	request.pushKey(message::SetStopHandlerRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::SetStopHandlerRequest::STOPPING_TIME);
-	request.pushInt(stoppingTime);
+	request.pushValue(stoppingTime);
 
 	return request.toString();
 }
@@ -116,10 +116,10 @@ std::string createStopRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::STOP);
+	request.pushValue(message::STOP);
 
 	request.pushKey(message::StopRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -128,10 +128,10 @@ std::string createKillRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::KILL);
+	request.pushValue(message::KILL);
 
 	request.pushKey(message::KillRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -140,10 +140,10 @@ std::string createConnectRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT);
+	request.pushValue(message::CONNECT);
 
 	request.pushKey(message::ConnectRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -152,10 +152,10 @@ std::string createConnectWithIdRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_WITH_ID);
+	request.pushValue(message::CONNECT_WITH_ID);
 
 	request.pushKey(message::ConnectWithIdRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -164,7 +164,7 @@ std::string createListRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::LIST);
+	request.pushValue(message::LIST);
 
 	return request.toString();
 }
@@ -173,7 +173,7 @@ std::string createAppsRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::APPS);
+	request.pushValue(message::APPS);
 
 	return request.toString();
 }
@@ -182,7 +182,7 @@ std::string createStreamStatusRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::STATUS);
+	request.pushValue(message::STATUS);
 
 	return request.toString();
 }
@@ -191,10 +191,10 @@ std::string createOutputPortWithIdRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::OUTPUT_PORT_WITH_ID);
+	request.pushValue(message::OUTPUT_PORT_WITH_ID);
 
 	request.pushKey(message::OutputPortWithIdRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -203,10 +203,10 @@ std::string createOutputPortRequest(const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::OUTPUT_PORT);
+	request.pushValue(message::OUTPUT_PORT);
 
 	request.pushKey(message::OutputPortRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -215,13 +215,13 @@ std::string createSetStatusRequest(int id, int32_t state) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SET_STATUS);
+	request.pushValue(message::SET_STATUS);
 
 	request.pushKey(message::SetStatusRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::SetStatusRequest::APPLICATION_STATE);
-	request.pushInt(state);
+	request.pushValue(state);
 
 	return request.toString();
 }
@@ -230,10 +230,10 @@ std::string createGetStatusRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::GET_STATUS);
+	request.pushValue(message::GET_STATUS);
 
 	request.pushKey(message::GetStatusRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -242,10 +242,10 @@ std::string createSetResultRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SET_RESULT);
+	request.pushValue(message::SET_RESULT);
 
 	request.pushKey(message::SetResultRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -254,13 +254,13 @@ std::string createRequestPortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST_PORT_v0);
+	request.pushValue(message::REQUEST_PORT_v0);
 
 	request.pushKey(message::RequestPortV0Request::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::RequestPortV0Request::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -269,13 +269,13 @@ std::string createConnectPortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PORT_v0);
+	request.pushValue(message::CONNECT_PORT_v0);
 
 	request.pushKey(message::ConnectPortV0Request::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::ConnectPortV0Request::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -284,13 +284,13 @@ std::string createRemovePortV0Request(int id, const std::string& name) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REMOVE_PORT_v0);
+	request.pushValue(message::REMOVE_PORT_v0);
 
 	request.pushKey(message::RemovePortV0Request::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::RemovePortV0Request::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }
@@ -299,13 +299,13 @@ std::string createAttachUnmanagedRequest(const std::string& name, long pid) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::ATTACH_UNMANAGED);
+	request.pushValue(message::ATTACH_UNMANAGED);
 
 	request.pushKey(message::AttachUnmanagedRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	request.pushKey(message::AttachUnmanagedRequest::PID);
-	request.pushInt64(pid);
+	request.pushValue(pid);
 
 	return request.toString();
 }
@@ -314,10 +314,10 @@ std::string createDetachUnmanagedRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::DETACH_UNMANAGED);
+	request.pushValue(message::DETACH_UNMANAGED);
 
 	request.pushKey(message::DetachUnmanagedRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -326,13 +326,13 @@ std::string createRequestResponse(int32_t value, const std::string& message) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::RESPONSE);
+	request.pushValue(message::RESPONSE);
 
 	request.pushKey(message::RequestResponse::VALUE);
-	request.pushInt(value);
+	request.pushValue(value);
 
 	request.pushKey(message::RequestResponse::MESSAGE);
-	request.pushString(message);
+	request.pushValue(message);
 
 	return request.toString();
 }
@@ -341,16 +341,16 @@ std::string createStoreKeyValueRequest(int id, const std::string& key, const std
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::STORE_KEY_VALUE);
+	request.pushValue(message::STORE_KEY_VALUE);
 
 	request.pushKey(message::StoreKeyValueRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::StoreKeyValueRequest::KEY);
-	request.pushString(key);
+	request.pushValue(key);
 
 	request.pushKey(message::StoreKeyValueRequest::VALUE);
-	request.pushString(value);
+	request.pushValue(value);
 
 	return request.toString();
 }
@@ -359,13 +359,13 @@ std::string createGetKeyValueRequest(int id, const std::string& key) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::GET_KEY_VALUE);
+	request.pushValue(message::GET_KEY_VALUE);
 
 	request.pushKey(message::GetKeyValueRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::GetKeyValueRequest::KEY);
-	request.pushString(key);
+	request.pushValue(key);
 
 	return request.toString();
 }
@@ -374,13 +374,13 @@ std::string createRemoveKeyRequest(int id, const std::string& key) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REMOVE_KEY);
+	request.pushValue(message::REMOVE_KEY);
 
 	request.pushKey(message::RemoveKeyRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::RemoveKeyRequest::KEY);
-	request.pushString(key);
+	request.pushValue(key);
 
 	return request.toString();
 }
@@ -389,10 +389,10 @@ std::string createRequestPortRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST_PORT);
+	request.pushValue(message::REQUEST_PORT);
 
 	request.pushKey(message::RequestPortRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	return request.toString();
 }
@@ -401,13 +401,13 @@ std::string createPortUnavailableRequest(int id, int port) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::PORT_UNAVAILABLE);
+	request.pushValue(message::PORT_UNAVAILABLE);
 
 	request.pushKey(message::PortUnavailableRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::PortUnavailableRequest::PORT);
-	request.pushInt(port);
+	request.pushValue(port);
 
 	return request.toString();
 }
@@ -416,13 +416,13 @@ std::string createReleasePortRequest(int id, int port) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::RELEASE_PORT);
+	request.pushValue(message::RELEASE_PORT);
 
 	request.pushKey(message::ReleasePortRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::ReleasePortRequest::PORT);
-	request.pushInt(port);
+	request.pushValue(port);
 
 	return request.toString();
 }
@@ -431,7 +431,7 @@ std::string createPortsRequest() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::PORTS);
+	request.pushValue(message::PORTS);
 
 	return request.toString();
 }

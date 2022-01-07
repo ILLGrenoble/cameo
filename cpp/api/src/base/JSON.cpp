@@ -28,23 +28,27 @@ void StringObject::pushKey(const char* key) {
 	m_writer.Key(key);
 }
 
-void StringObject::pushInt(int value) {
+void StringObject::pushNull() {
+	m_writer.Null();
+}
+
+void StringObject::pushValue(int value) {
 	m_writer.Int(value);
 }
 
-void StringObject::pushInt64(int64_t value) {
+void StringObject::pushValue(int64_t value) {
 	m_writer.Int64(value);
 }
 
-void StringObject::pushBool(bool value) {
+void StringObject::pushValue(bool value) {
 	m_writer.Bool(value);
 }
 
-void StringObject::pushDouble(double value) {
+void StringObject::pushValue(double value) {
 	m_writer.Double(value);
 }
 
-void StringObject::pushString(const std::string& value) {
+void StringObject::pushValue(const std::string& value) {
 	m_writer.String(value.c_str());
 }
 

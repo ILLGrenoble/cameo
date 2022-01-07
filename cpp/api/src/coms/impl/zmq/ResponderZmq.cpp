@@ -53,7 +53,7 @@ void ResponderZmq::cancel() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CANCEL);
+	request.pushValue(message::CANCEL);
 
 	// Create a request socket.
 	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString());

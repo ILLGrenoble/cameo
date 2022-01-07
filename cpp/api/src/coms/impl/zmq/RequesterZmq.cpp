@@ -53,22 +53,22 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST);
+	request.pushValue(message::REQUEST);
 
 	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushString(application::This::getName());
+	request.pushValue(application::This::getName());
 
 	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushInt(application::This::getId());
+	request.pushValue(application::This::getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	request.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(application::This::getEndpoint().getPort());
+	request.pushValue(application::This::getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
-	request.pushInt(m_requesterPort);
+	request.pushValue(m_requesterPort);
 
 	m_requestSocket->request(request.toString(), requestData);
 }
@@ -85,22 +85,22 @@ void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::REQUEST);
+	request.pushValue(message::REQUEST);
 
 	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushString(application::This::getName());
+	request.pushValue(application::This::getName());
 
 	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushInt(application::This::getId());
+	request.pushValue(application::This::getId());
 
 	request.pushKey(message::Request::SERVER_URL);
-	request.pushString(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	request.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
 	request.pushKey(message::Request::SERVER_PORT);
-	request.pushInt(application::This::getEndpoint().getPort());
+	request.pushValue(application::This::getEndpoint().getPort());
 
 	request.pushKey(message::Request::REQUESTER_PORT);
-	request.pushInt(m_requesterPort);
+	request.pushValue(m_requesterPort);
 
 	m_requestSocket->request(request.toString(), requestData1, requestData2);
 }
@@ -153,7 +153,7 @@ void RequesterZmq::cancel() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CANCEL);
+	request.pushValue(message::CANCEL);
 
 	// Create a request socket only for the request.
 	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());

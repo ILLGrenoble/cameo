@@ -242,7 +242,7 @@ std::string SubscriberZmq::createSubscribePublisherRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::SUBSCRIBE_PUBLISHER_v0);
+	request.pushValue(message::SUBSCRIBE_PUBLISHER_v0);
 
 	return request.toString();
 }

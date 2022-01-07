@@ -112,7 +112,7 @@ void PublisherZmq::cancelWaitForSubscribers() {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CANCEL);
+	request.pushValue(message::CANCEL);
 
 	// Create a request socket only for the request.
 	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_synchronizerPort).toString());
@@ -250,13 +250,13 @@ std::string PublisherZmq::createTerminatePublisherRequest(int id, const std::str
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::TERMINATE_PUBLISHER_v0);
+	request.pushValue(message::TERMINATE_PUBLISHER_v0);
 
 	request.pushKey(message::TerminatePublisherRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::TerminatePublisherRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	return request.toString();
 }

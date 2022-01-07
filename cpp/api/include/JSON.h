@@ -36,11 +36,12 @@ public:
 
 	void pushKey(const char* key);
 
-	void pushInt(int value);
-	void pushInt64(int64_t value);
-	void pushBool(bool value);
-	void pushDouble(double value);
-	void pushString(const std::string& value);
+	void pushNull();
+	void pushValue(int value);
+	void pushValue(int64_t value);
+	void pushValue(bool value);
+	void pushValue(double value);
+	void pushValue(const std::string& value);
 
 	void startObject();
 	void endObject();
@@ -57,9 +58,6 @@ private:
 
 typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
-
-//template<typename T>
-//bool parse(Object & object, T message);
 
 template<typename Message>
 bool parse(Object & object, Message * message) {

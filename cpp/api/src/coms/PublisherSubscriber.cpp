@@ -105,16 +105,16 @@ std::string Publisher::createCreatePublisherRequest(int id, const std::string& n
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CREATE_PUBLISHER_v0);
+	request.pushValue(message::CREATE_PUBLISHER_v0);
 
 	request.pushKey(message::CreatePublisherRequest::ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::CreatePublisherRequest::NAME);
-	request.pushString(name);
+	request.pushValue(name);
 
 	request.pushKey(message::CreatePublisherRequest::NUMBER_OF_SUBSCRIBERS);
-	request.pushInt(numberOfSubscribers);
+	request.pushValue(numberOfSubscribers);
 
 	return request.toString();
 }
@@ -238,13 +238,13 @@ std::string Subscriber::createConnectPublisherRequest(int id, const std::string&
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushInt(message::CONNECT_PUBLISHER_v0);
+	request.pushValue(message::CONNECT_PUBLISHER_v0);
 
 	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
-	request.pushInt(id);
+	request.pushValue(id);
 
 	request.pushKey(message::ConnectPublisherRequest::PUBLISHER_NAME);
-	request.pushString(publisherName);
+	request.pushValue(publisherName);
 
 	return request.toString();
 }

@@ -15,9 +15,6 @@
  */
 
 #include <cameo/api/cameo.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/document.h>
 #include <iostream>
 
 using namespace std;
@@ -25,20 +22,15 @@ using namespace cameo;
 
 std::string serializeToJSON(const std::string& message, int i) {
 
-	rapidjson::StringBuffer buffer;
-	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	json::StringObject object;
 
-	writer.StartObject();
+	object.pushKey("message");
+	object.pushValue("message");
 
-	writer.Key("message");
-	writer.String("message");
+	object.pushKey("value");
+	object.pushValue(i);
 
-	writer.Key("value");
-	writer.Int(i);
-
-	writer.EndObject();
-
-	return buffer.GetString();
+	return object.toString();
 }
 
 int main(int argc, char *argv[]) {
