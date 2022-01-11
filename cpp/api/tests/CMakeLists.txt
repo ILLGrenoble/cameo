@@ -6,7 +6,8 @@ target_link_libraries(testendpoint PRIVATE
 	cameo
 	)
 target_include_directories(testendpoint
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include/
+  
   )
 	
 add_test(endpoint testendpoint)
@@ -17,7 +18,7 @@ target_link_libraries(testapplicationidentity
   PRIVATE cameo
   )
 target_include_directories(testapplicationidentity
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include/
   )
 target_include_directories(testapplicationidentity
     SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
@@ -32,7 +33,7 @@ target_link_libraries(testapplicationwithstarteridentity PRIVATE
 	cameo
 	)
 target_include_directories(testapplicationwithstarteridentity
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src/
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include/
   )
 target_include_directories(testapplicationwithstarteridentity
     SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
