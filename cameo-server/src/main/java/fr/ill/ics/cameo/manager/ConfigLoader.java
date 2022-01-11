@@ -163,8 +163,6 @@ public abstract class ConfigLoader {
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
 		
-		
-		
 		// Sleep time.
 		int sleepTime = 5;
 		String sleepTimeString = root.getAttributeValue(SLEEP_TIME);
@@ -183,7 +181,6 @@ public abstract class ConfigLoader {
 			pollingTime = Integer.parseInt(pollingTimeString);
 		} catch (NumberFormatException e) {
 			// Set default value
-			Log.logger().severe("Error while parsing '" + POLLING_TIME + "'");
 		}
 		
 		ConfigManager.getInstance().setPollingTime(pollingTime);
@@ -242,7 +239,6 @@ public abstract class ConfigLoader {
 			// Start command
 			Element startItem = item.getChild(START);
 			if (startItem == null) {
-				Log.logger().severe("Application node must contain a '" + START + "' node");
 				continue;
 			}
 			application.setStartExecutable(startItem.getAttributeValue(EXECUTABLE));
