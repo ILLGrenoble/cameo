@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.examples;
 
-import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Request;
@@ -33,12 +32,8 @@ public class ResponderApp {
 			System.out.println("Connected");
 		}
 				
-		This.handleStop(new Application.Handler() {
-			
-			@Override
-			public void handle() {
-				This.cancelWaitings();				
-			}
+		This.handleStop(() -> {
+			This.cancelWaitings();				
 		});
 		
 		Responder responder = null;

@@ -15,28 +15,13 @@
  */
 
 #include <cameo/api/cameo.h>
+#include <atomic>
 #include <iostream>
 
 using namespace std;
 using namespace cameo;
 
-struct StopState {
-	bool stopping;
-
-	StopState() : stopping(false) {}
-};
-
-struct Stop {
-
-	shared_ptr<StopState> data;
-
-	Stop(shared_ptr<StopState> sharedData) : data(sharedData) {}
-
-	void operator()() {
-		cout << "Stop handler executed" << endl;
-		data->stopping = true;
-	}
-};
+std::atomic_bool stopping(false);
 
 int main(int argc, char *argv[]) {
 
@@ -46,12 +31,14 @@ int main(int argc, char *argv[]) {
 	{
 		application::This::setRunning();
 
-		// Define an object StopState that is shared with the handler.
-		shared_ptr<StopState> state(new StopState());
-		application::This::handleStop(Stop(state));
+		// Define a stop handler.
+		application::This::handleStop([&] {
+			cout << "Stop handler executed" << endl;
+			stopping.store(true);
+		});
 
 		int i = 0;
-		while (!state->stopping) {
+		while (!stopping.load()) {
 			cout << "Waiting " << i << "..." << endl;
 			this_thread::sleep_for(chrono::milliseconds(100));
 			i++;

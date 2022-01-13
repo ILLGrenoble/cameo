@@ -17,14 +17,14 @@
 package fr.ill.ics.cameo.test;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.This;
 
 
 public class Stop {
 
-	public static boolean stopping = false;
+	public static AtomicBoolean stopping = new AtomicBoolean(false);
 	
 	public static void main(String[] args) {
 
@@ -33,17 +33,13 @@ public class Stop {
 		try {
 			Date begin = new Date();
 			
-			This.handleStop(new Application.Handler() {
-				
-				@Override
-				public void handle() {
-					stopping = true;
-					System.out.println("Stop handler executed");
-				}
+			This.handleStop(() -> {
+				System.out.println("Stop handler executed");
+				stopping.set(true);
 			});
 			
 			int i = 0;
-			while (!stopping) {
+			while (!stopping.get()) {
 				System.out.println("Waiting " + i + "...");
 				Thread.sleep(100);
 				i++;

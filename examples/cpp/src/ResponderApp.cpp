@@ -20,13 +20,6 @@
 using namespace std;
 using namespace cameo;
 
-struct Stop {
-
-	void operator()() {
-		application::This::cancelWaitings();
-	}
-};
-
 int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
@@ -37,7 +30,9 @@ int main(int argc, char *argv[]) {
 			cout << "Connected" << endl;
 		}
 
-		application::This::handleStop(Stop());
+		application::This::handleStop([] {
+			application::This::cancelWaitings();
+		});
 
 		unique_ptr<coms::Responder> responder;
 
