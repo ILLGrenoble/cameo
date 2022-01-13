@@ -315,6 +315,10 @@ bool This::isStopping() {
 	return m_instance.getState(m_instance.m_id) == STOPPING;
 }
 
+void This::handleStop(StopFunctionType function, int stoppingTime) {
+	m_instance.handleStopImpl(function, stoppingTime);
+}
+
 void This::cancelWaitings() {
 	m_instance.m_waitingSet->cancelAll();
 }

@@ -16,8 +16,9 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-namespace py = pybind11;
+#include <pybind11/functional.h> // Necessary for This::handleStop()
 
+namespace py = pybind11;
 using namespace pybind11::literals;
 
 #include <cameo/api/cameo.h>
@@ -74,7 +75,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"timeout"_a = 10000,
 	    		py::call_guard<py::gil_scoped_release>()) //, py::arg("timeout") = 1000) // this does not work!
 	    .def_static("isStopping", &This::isStopping, py::call_guard<py::gil_scoped_release>())
-	    //	    .def("handleStop", &This::handleStop)
+	    .def_static("handleStop", &This::handleStop,
+	    		"function"_a,
+				"stoppingTime"_a = -1,
+				py::call_guard<py::gil_scoped_release>())
 	    .def_static("cancelWaitings", &This::cancelWaitings, py::call_guard<py::gil_scoped_release>())
 	    .def_static("setRunning", &This::setRunning, py::call_guard<py::gil_scoped_release>())
 	    .def_static("setBinaryResult", &This::setBinaryResult,
