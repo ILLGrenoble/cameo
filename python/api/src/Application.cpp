@@ -61,6 +61,11 @@ PYBIND11_MODULE(cameopy, m) {
 			This::init(args.size(), cstrs.data());
 		}, py::call_guard<py::gil_scoped_release>(),
 		"initialize the application")
+
+		.def_static("init", py::overload_cast<const std::string&, const std::string&>(&This::init),
+	    		"name"_a, "endpoint"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+
 	    .def_static("terminate", &This::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def_static("getName", &This::getName)
 	    .def_static("getId", &This::getId)
