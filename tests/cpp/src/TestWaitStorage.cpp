@@ -33,37 +33,34 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// The start function must be called into a block to ensure the destructor of Instance is called before This::terminate()
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		// Define the shared key.
-		string key = "fr.ill.ics.cameo.test.testkey";
+	// Define the shared key.
+	string key = "fr.ill.ics.cameo.test.testkey";
 
-		// loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
+	// loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
 
-			// start the application.
-			unique_ptr<application::Instance> app = server.start("waitstoragecpp");
+		// start the application.
+		unique_ptr<application::Instance> app = server.start("waitstoragecpp");
 
-			// Define a KeyValue.
-			KeyValue keyValue(key);
+		// Define a KeyValue.
+		KeyValue keyValue(key);
 
-			// waitFor blocks.
-			app->waitFor(keyValue);
-			cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
+		// waitFor blocks.
+		app->waitFor(keyValue);
+		cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
 
-			// Get the key value.
-			cout << "key value " << app->getCom().getKeyValue(key) << endl;
+		// Get the key value.
+		cout << "key value " << app->getCom().getKeyValue(key) << endl;
 
-			// waitFor blocks.
-			app->waitFor(keyValue);
-			cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
+		// waitFor blocks.
+		app->waitFor(keyValue);
+		cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
 
-			application::State state = app->waitFor();
+		application::State state = app->waitFor();
 
-			cout << "finished the application " << *app << " with state " << application::toString(state) << endl;
-		}
+		cout << "finished the application " << *app << " with state " << application::toString(state) << endl;
 	}
 
 	return 0;

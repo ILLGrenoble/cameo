@@ -27,24 +27,22 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	{
-		int port1 = application::This::getCom().requestPort();
-		cout << "Received port1 " << port1 << endl;
+	int port1 = application::This::getCom().requestPort();
+	cout << "Received port1 " << port1 << endl;
 
-		application::This::getCom().setPortUnavailable(port1);
-		cout << "Set port " << port1 << " unavailable" << endl;
+	application::This::getCom().setPortUnavailable(port1);
+	cout << "Set port " << port1 << " unavailable" << endl;
 
-		int port2 = application::This::getCom().requestPort();
-		cout << "Received port2 " << port2 << endl;
+	int port2 = application::This::getCom().requestPort();
+	cout << "Received port2 " << port2 << endl;
 
-		application::This::getCom().releasePort(port2);
-		cout << "Released port2 " << port2 << endl;
+	application::This::getCom().releasePort(port2);
+	cout << "Released port2 " << port2 << endl;
 
-		port2 = application::This::getCom().requestPort();
-		cout << "Received port2 " << port2 << endl;
+	port2 = application::This::getCom().requestPort();
+	cout << "Received port2 " << port2 << endl;
 
-		cout << "Finished the application" << endl;
-	}
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

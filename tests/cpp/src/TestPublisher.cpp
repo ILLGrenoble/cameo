@@ -25,62 +25,59 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		string applicationName;
+	string applicationName;
 
-		int numberOfTimes = 1;
+	int numberOfTimes = 1;
 
-		if (argc > 2) {
-			applicationName = argv[1];
-			cout << "Publisher application is " + applicationName << endl;
+	if (argc > 2) {
+		applicationName = argv[1];
+		cout << "Publisher application is " + applicationName << endl;
 
-			if (argc > 3) {
-				numberOfTimes = stoi(argv[2]);
-			}
+		if (argc > 3) {
+			numberOfTimes = stoi(argv[2]);
+		}
 
-		} else {
-			cerr << "Arguments: [application name]" << endl;
+	} else {
+		cerr << "Arguments: [application name]" << endl;
+		return -1;
+	}
+
+	Server& server = application::This::getServer();
+
+	// Loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
+
+		// Start the application.
+		unique_ptr<application::Instance> publisherApplication = server.start(applicationName);
+
+		cout << "Started application " << *publisherApplication << endl;
+
+		// Create a subscriber to the application
+		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
+
+		cout << "Created subscriber " << *subscriber << endl;
+
+		if (subscriber.get() == 0) {
+			cout << "Subscriber error" << endl;
 			return -1;
 		}
 
-		Server& server = application::This::getServer();
+		application::This::setRunning();
 
-		// Loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
-
-			// Start the application.
-			unique_ptr<application::Instance> publisherApplication = server.start(applicationName);
-
-			cout << "Started application " << *publisherApplication << endl;
-
-			// Create a subscriber to the application
-			unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
-
-			cout << "Created subscriber " << *subscriber << endl;
-
-			if (subscriber.get() == 0) {
-				cout << "Subscriber error" << endl;
-				return -1;
+		// Receiving data.
+		while (true) {
+			optional<string> data = subscriber->receive();
+			if (!data.has_value()) {
+				break;
 			}
-
-			application::This::setRunning();
-
-			// Receiving data.
-			while (true) {
-				optional<string> data = subscriber->receive();
-				if (!data.has_value()) {
-					break;
-				}
-				cout << "Received " << data.value() << endl;
-			}
-
-			cout << "Finished stream" << endl;
-
-			application::State state = publisherApplication->waitFor();
-
-			cout << "Publisher application terminated with state " << application::toString(state) << endl;
+			cout << "Received " << data.value() << endl;
 		}
+
+		cout << "Finished stream" << endl;
+
+		application::State state = publisherApplication->waitFor();
+
+		cout << "Publisher application terminated with state " << application::toString(state) << endl;
 	}
 
 	return 0;

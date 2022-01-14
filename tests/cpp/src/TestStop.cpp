@@ -36,33 +36,30 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		// Loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
+	// Loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
 
-			unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
 
-			cout << "Waiting 100ms..." << endl;
-			this_thread::sleep_for(chrono::milliseconds(100));
+		cout << "Waiting 100ms..." << endl;
+		this_thread::sleep_for(chrono::milliseconds(100));
 
-			cout << "Stopping application " << stopApplication->getNameId() << endl;
-			stopApplication->stop();
+		cout << "Stopping application " << stopApplication->getNameId() << endl;
+		stopApplication->stop();
 
-			//stopApplication->waitFor(StateHandler());
+		//stopApplication->waitFor(StateHandler());
 
-			optional<string> result = stopApplication->getResult();
-			if (result.has_value()) {
-				cout << "Stop application returned " << result.value() << endl;
+		optional<string> result = stopApplication->getResult();
+		if (result.has_value()) {
+			cout << "Stop application returned " << result.value() << endl;
 
-			} else {
-				cout << "Stop application has no result" << endl;
-			}
-
-			cout << "Finished the application " << *stopApplication << endl;
+		} else {
+			cout << "Stop application has no result" << endl;
 		}
+
+		cout << "Finished the application " << *stopApplication << endl;
 	}
 
 	return 0;

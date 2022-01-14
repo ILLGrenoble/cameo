@@ -25,63 +25,60 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		unique_ptr<coms::Responder> responder;
+	unique_ptr<coms::Responder> responder;
 
-		try {
-			cout << "Creating responder" << endl;
+	try {
+		cout << "Creating responder" << endl;
 
-			responder = coms::Responder::create("responder");
-
-		} catch (const coms::ResponderCreationException& e) {
-			cout << "Responder error" << endl;
-			return -1;
-		}
-
-		application::This::setRunning();
-
-		// Receive first request.
-		unique_ptr<coms::Request> request = responder->receive();
-		cout << "Received request " << *request << endl;
-
-		request->reply("1st response");
-
-		// Receive second request.
-		request = responder->receive();
-
-		string data1, data2;
-
-		parse(request->getBinary(), data1);
-		parse(request->getSecondBinaryPart(), data2);
-		cout << "Received request " << data1 << " " << data2 << endl;
-
-		request->reply("2nd response");
-
-		// Receive third request without receive on the requester side.
-		request = responder->receive();
-		cout << "Received request " << request->get() << endl;
-
-		// Reply with timeout
-		request->setTimeout(100);
-		bool res = request->reply("3rd response");
-
-		if (!res) {
-			cout << "Timeout with " << request->getObjectId() << endl;
-		}
-
-		// Receive request after timeout.
-		request = responder->receive();
-		cout << "received request " << *request << endl;
-
-		request->reply("4th response after timeout");
-
-
-		unique_ptr<application::Instance> requester = request->connectToRequester();
-		cout << "Requester " << *requester << endl;
-
-		cout << "Finished the application" << endl;
+		responder = coms::Responder::create("responder");
 	}
+	catch (const coms::ResponderCreationException& e) {
+		cout << "Responder error" << endl;
+		return -1;
+	}
+
+	application::This::setRunning();
+
+	// Receive first request.
+	unique_ptr<coms::Request> request = responder->receive();
+	cout << "Received request " << *request << endl;
+
+	request->reply("1st response");
+
+	// Receive second request.
+	request = responder->receive();
+
+	string data1, data2;
+
+	parse(request->getBinary(), data1);
+	parse(request->getSecondBinaryPart(), data2);
+	cout << "Received request " << data1 << " " << data2 << endl;
+
+	request->reply("2nd response");
+
+	// Receive third request without receive on the requester side.
+	request = responder->receive();
+	cout << "Received request " << request->get() << endl;
+
+	// Reply with timeout
+	request->setTimeout(100);
+	bool res = request->reply("3rd response");
+
+	if (!res) {
+		cout << "Timeout with " << request->getObjectId() << endl;
+	}
+
+	// Receive request after timeout.
+	request = responder->receive();
+	cout << "received request " << *request << endl;
+
+	request->reply("4th response after timeout");
+
+
+	unique_ptr<application::Instance> requester = request->connectToRequester();
+	cout << "Requester " << *requester << endl;
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

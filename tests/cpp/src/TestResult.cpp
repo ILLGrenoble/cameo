@@ -30,26 +30,23 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// The start function must be called into a block to ensure the destructor of Instance is called before This::terminate()
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		// Loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
+	// Loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
 
-			// Start the application.
-			unique_ptr<application::Instance> resultApplication = server.start("resultcpp");
+		// Start the application.
+		unique_ptr<application::Instance> resultApplication = server.start("resultcpp");
 
-			optional<string> result = resultApplication->getResult();
-			if (result.has_value()) {
-				cout << "Result " << result.value() << endl;
+		optional<string> result = resultApplication->getResult();
+		if (result.has_value()) {
+			cout << "Result " << result.value() << endl;
 
-			} else {
-				cout << "No result" << endl;
-			}
-
-			cout << "Finished the application " << *resultApplication << endl;
+		} else {
+			cout << "No result" << endl;
 		}
+
+		cout << "Finished the application " << *resultApplication << endl;
 	}
 
 	return 0;

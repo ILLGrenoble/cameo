@@ -20,37 +20,33 @@
 using namespace std;
 using namespace cameo;
 
-
 int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		unique_ptr<application::Instance> starter = application::This::connectToStarter();
+	unique_ptr<application::Instance> starter = application::This::connectToStarter();
 
-		// Create a requester.
-		unique_ptr<coms::Requester> requester = coms::Requester::create(*starter, "responder");
+	// Create a requester.
+	unique_ptr<coms::Requester> requester = coms::Requester::create(*starter, "responder");
 
-		application::This::setRunning();
+	application::This::setRunning();
 
-		// Send 10 requests.
-		int R = 10;
-		for (int i = 0; i < R; ++i) {
-			// Send and wait for the result.
-			requester->send("test");
+	// Send 10 requests.
+	int R = 10;
+	for (int i = 0; i < R; ++i) {
+		// Send and wait for the result.
+		requester->send("test");
 
-			optional<string> response = requester->receive();
+		std::optional<std::string> response = requester->receive();
 
-			if (response.has_value()) {
-				cout << "Received " << response.value() << endl;
-			}
-
-			this_thread::sleep_for(chrono::milliseconds(100));
+		if (response.has_value()) {
+			cout << "Received " << response.value() << endl;
 		}
 
-		cout << "Finished the application" << endl;
+		this_thread::sleep_for(chrono::milliseconds(100));
 	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

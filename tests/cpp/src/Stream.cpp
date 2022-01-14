@@ -27,19 +27,16 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		application::This::setRunning();
+	application::This::setRunning();
 
-		int i = 0;
-		while (i < 20) {
-			cout << "Printing " << i << endl;
-			this_thread::sleep_for(chrono::milliseconds(100));
-			i++;
-		}
-
-		cout << "Finished the application" << endl;
+	int i = 0;
+	while (i < 20) {
+		cout << "Printing " << i << endl;
+		this_thread::sleep_for(chrono::milliseconds(100));
+		i++;
 	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

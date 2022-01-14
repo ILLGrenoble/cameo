@@ -26,43 +26,40 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		int numberOfSubscribers = 1;
+	int numberOfSubscribers = 1;
 
-		if (argc > 2) {
-			istringstream is(argv[1]);
-			is >> numberOfSubscribers;
-		}
-
-		cout << "Number of subscribers is " << numberOfSubscribers << endl;
-
-		unique_ptr<coms::Publisher> publisher;
-
-		try {
-			cout << "Creating publisher and waiting for " << numberOfSubscribers << " subscriber(s)..." << endl;
-
-			publisher = coms::Publisher::create("publisher", numberOfSubscribers);
-			publisher->waitForSubscribers();
-
-		} catch (const coms::PublisherCreationException& e) {
-			cout << "Publisher error" << endl;
-			return -1;
-		}
-
-		application::This::setRunning();
-
-		cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
-
-		// Sending data.
-		for (int i = 0; i < 100; ++i) {
-			publisher->send("message " + to_string(i));
-		}
-
-		publisher->sendEnd();
-
-		cout << "Finished the application" << endl;
+	if (argc > 2) {
+		istringstream is(argv[1]);
+		is >> numberOfSubscribers;
 	}
+
+	cout << "Number of subscribers is " << numberOfSubscribers << endl;
+
+	unique_ptr<coms::Publisher> publisher;
+
+	try {
+		cout << "Creating publisher and waiting for " << numberOfSubscribers << " subscriber(s)..." << endl;
+
+		publisher = coms::Publisher::create("publisher", numberOfSubscribers);
+		publisher->waitForSubscribers();
+
+	} catch (const coms::PublisherCreationException& e) {
+		cout << "Publisher error" << endl;
+		return -1;
+	}
+
+	application::This::setRunning();
+
+	cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
+
+	// Sending data.
+	for (int i = 0; i < 100; ++i) {
+		publisher->send("message " + to_string(i));
+	}
+
+	publisher->sendEnd();
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

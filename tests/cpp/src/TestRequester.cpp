@@ -25,75 +25,72 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		string applicationName;
+	string applicationName;
 
-		int numberOfTimes = 1;
+	int numberOfTimes = 1;
 
-		if (argc > 2) {
-			applicationName = argv[1];
-			cout << "Requester application is " + applicationName << endl;
+	if (argc > 2) {
+		applicationName = argv[1];
+		cout << "Requester application is " + applicationName << endl;
 
-			if (argc > 3) {
-				numberOfTimes = stoi(argv[2]);
-			}
-
-		} else {
-			cerr << "Arguments: [application name] <number of times>" << endl;
-			return -1;
+		if (argc > 3) {
+			numberOfTimes = stoi(argv[2]);
 		}
 
-		unique_ptr<coms::Responder> responder;
-
-		try {
-			cout << "Creating responder" << endl;
-
-			responder = coms::Responder::create("responder");
-
-		} catch (const coms::ResponderCreationException& e) {
-			cout << "Responder error" << endl;
-			return -1;
-		}
-
-		Server& server = application::This::getServer();
-
-		application::This::setRunning();
-
-		int N = 5;
-
-		// loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
-
-			application::InstanceArray apps;
-
-			// Start the requester applications.
-			for (int j = 0; j < N; ++j) {
-
-				// Start the application.
-				apps.push_back(server.start(applicationName));
-				cout << "Started application " << *apps.back() << endl;
-			}
-
-			// Process the requests, the requester application sends 10 requests.
-			for (int j = 0; j < N * 10; ++j) {
-
-				// Receive the simple request.
-				unique_ptr<coms::Request> request = responder->receive();
-				request->reply("done");
-
-				cout << "Processed " << *request.get() << endl;
-			}
-
-			// Wait for the requester applications.
-			for (int j = 0; j < N; ++j) {
-				apps[j]->waitFor();
-				cout << "Finished application " << *apps[j].get() << endl;
-			}
-		}
-
-		cout << "Finished the application" << endl;
+	} else {
+		cerr << "Arguments: [application name] <number of times>" << endl;
+		return -1;
 	}
+
+	unique_ptr<coms::Responder> responder;
+
+	try {
+		cout << "Creating responder" << endl;
+
+		responder = coms::Responder::create("responder");
+
+	} catch (const coms::ResponderCreationException& e) {
+		cout << "Responder error" << endl;
+		return -1;
+	}
+
+	Server& server = application::This::getServer();
+
+	application::This::setRunning();
+
+	int N = 5;
+
+	// loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
+
+		application::InstanceArray apps;
+
+		// Start the requester applications.
+		for (int j = 0; j < N; ++j) {
+
+			// Start the application.
+			apps.push_back(server.start(applicationName));
+			cout << "Started application " << *apps.back() << endl;
+		}
+
+		// Process the requests, the requester application sends 10 requests.
+		for (int j = 0; j < N * 10; ++j) {
+
+			// Receive the simple request.
+			unique_ptr<coms::Request> request = responder->receive();
+			request->reply("done");
+
+			cout << "Processed " << *request.get() << endl;
+		}
+
+		// Wait for the requester applications.
+		for (int j = 0; j < N; ++j) {
+			apps[j]->waitFor();
+			cout << "Finished application " << *apps[j].get() << endl;
+		}
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

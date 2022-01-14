@@ -33,27 +33,24 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// The start function must be called into a block to ensure the destructor of Instance is called before This::terminate().
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		int port = application::This::getCom().requestPort();
-		cout << "Received port " << port << endl;
+	int port = application::This::getCom().requestPort();
+	cout << "Received port " << port << endl;
 
-		// Loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
+	// Loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
 
-			// Start the application.
-			unique_ptr<application::Instance> app = server.start("comportcpp");
+		// Start the application.
+		unique_ptr<application::Instance> app = server.start("comportcpp");
 
-			application::State state = app->waitFor();
+		application::State state = app->waitFor();
 
-			cout << "Finished the application " << *app << endl;
-		}
-
-		port = application::This::getCom().requestPort();
-		cout << "Received port " << port << " that must be greater than first port" << endl;
+		cout << "Finished the application " << *app << endl;
 	}
+
+	port = application::This::getCom().requestPort();
+	cout << "Received port " << port << " that must be greater than first port" << endl;
 
 	return 0;
 }

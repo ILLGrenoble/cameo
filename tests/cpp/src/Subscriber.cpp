@@ -24,51 +24,48 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		string applicationName;
+	string applicationName;
 
-		if (argc > 2) {
-			applicationName = argv[1];
+	if (argc > 2) {
+		applicationName = argv[1];
 
-			cout << "Publisher application is " + applicationName << endl;
+		cout << "Publisher application is " + applicationName << endl;
 
-		} else {
-			cerr << "Arguments: [application name]" << endl;
-			return -1;
-		}
-
-		Server& server = application::This::getServer();
-
-		unique_ptr<application::Instance> publisherApplication = server.connect(applicationName);
-		if (!publisherApplication->exists()) {
-			cout << "Publisher error" << endl;
-			return -1;
-		}
-
-		// Create a subscriber to the application applicationName.
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
-
-		if (subscriber.get() == 0) {
-			cout << "Subscriber error" << endl;
-			return -1;
-		}
-
-		cout << "Synchronized with 1 publisher" << endl;
-
-		application::This::setRunning();
-
-		// Receive data.
-		while (true) {
-			optional<string> data = subscriber->receive();
-			if (!data.has_value()) {
-				break;
-			}
-			cout << "Received " << data.value() << endl;
-		}
-
-		cout << "Finished the application" << endl;
+	} else {
+		cerr << "Arguments: [application name]" << endl;
+		return -1;
 	}
+
+	Server& server = application::This::getServer();
+
+	unique_ptr<application::Instance> publisherApplication = server.connect(applicationName);
+	if (!publisherApplication->exists()) {
+		cout << "Publisher error" << endl;
+		return -1;
+	}
+
+	// Create a subscriber to the application applicationName.
+	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
+
+	if (subscriber.get() == 0) {
+		cout << "Subscriber error" << endl;
+		return -1;
+	}
+
+	cout << "Synchronized with 1 publisher" << endl;
+
+	application::This::setRunning();
+
+	// Receive data.
+	while (true) {
+		optional<string> data = subscriber->receive();
+		if (!data.has_value()) {
+			break;
+		}
+		cout << "Received " << data.value() << endl;
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

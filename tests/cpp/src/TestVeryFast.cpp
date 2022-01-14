@@ -33,20 +33,17 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// The start function must be called into a block to ensure the destructor of Instance is called before This::terminate()
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		// loop the number of times.
-		for (int i = 0; i < numberOfTimes; ++i) {
+	// loop the number of times.
+	for (int i = 0; i < numberOfTimes; ++i) {
 
-			// start the application.
-			unique_ptr<application::Instance> app = server.start("veryfastcpp", OUTPUTSTREAM);
+		// start the application.
+		unique_ptr<application::Instance> app = server.start("veryfastcpp", OUTPUTSTREAM);
 
-			application::State state = app->waitFor();
+		application::State state = app->waitFor();
 
-			cout << "Finished the application " << *app << " with state " << application::toString(state) << " and code " << app->getExitCode() << endl;
-		}
+		cout << "Finished the application " << *app << " with state " << application::toString(state) << " and code " << app->getExitCode() << endl;
 	}
 
 	return 0;

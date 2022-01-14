@@ -24,33 +24,30 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		unique_ptr<coms::Publisher> publisher;
+	unique_ptr<coms::Publisher> publisher;
 
-		try {
-			cout << "Creating publisher and waiting for 1 subscriber..." << endl;
+	try {
+		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
-			publisher = coms::Publisher::create("publisher", 1);
-			publisher->waitForSubscribers();
-
-		} catch (const coms::PublisherCreationException& e) {
-			cout << "Publisher error" << endl;
-			return -1;
-		}
-
-		cout << "Synchronized with the subscriber" << endl;
-
-		application::This::setRunning();
-
-		// sending data
-		while (true) {
-			publisher->send("hello");
-			this_thread::sleep_for(chrono::milliseconds(100));
-		}
-
-		cout << "Finished the application" << endl;
+		publisher = coms::Publisher::create("publisher", 1);
+		publisher->waitForSubscribers();
 	}
+	catch (const coms::PublisherCreationException& e) {
+		cout << "Publisher error" << endl;
+		return -1;
+	}
+
+	cout << "Synchronized with the subscriber" << endl;
+
+	application::This::setRunning();
+
+	// sending data
+	while (true) {
+		publisher->send("hello");
+		this_thread::sleep_for(chrono::milliseconds(100));
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

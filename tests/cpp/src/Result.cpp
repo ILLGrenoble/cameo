@@ -24,15 +24,12 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		cout << "Waiting 1s..." << endl;
-		this_thread::sleep_for(chrono::seconds(1));
+	cout << "Waiting 1s..." << endl;
+	this_thread::sleep_for(chrono::seconds(1));
 
-		application::This::setResult("test result");
+	application::This::setResult("test result");
 
-		cout << "Finished the application" << endl;
-	}
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

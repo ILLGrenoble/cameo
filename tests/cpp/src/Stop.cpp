@@ -27,27 +27,24 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		application::This::setRunning();
+	application::This::setRunning();
 
-		// Define a stop handler.
-		application::This::handleStop([&] {
-			cout << "Stop handler executed" << endl;
-			stopping.store(true);
-		});
+	// Define a stop handler.
+	application::This::handleStop([&] {
+		cout << "Stop handler executed" << endl;
+		stopping.store(true);
+	});
 
-		int i = 0;
-		while (!stopping.load()) {
-			cout << "Waiting " << i << "..." << endl;
-			this_thread::sleep_for(chrono::milliseconds(100));
-			i++;
-		}
-
-		application::This::setResult("2189");
-
-		cout << "Finished the application" << endl;
+	int i = 0;
+	while (!stopping.load()) {
+		cout << "Waiting " << i << "..." << endl;
+		this_thread::sleep_for(chrono::milliseconds(100));
+		i++;
 	}
+
+	application::This::setResult("2189");
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

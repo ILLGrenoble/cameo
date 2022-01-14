@@ -24,36 +24,33 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		Server& server = application::This::getServer();
+	Server& server = application::This::getServer();
 
-		// Start the application.
-		unique_ptr<application::Instance> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
+	// Start the application.
+	unique_ptr<application::Instance> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
 
-		shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
-		std::thread outputThread([&] {
-			while (true) {
-				std::optional<Output> output = socket->receive();
-				if (output) {
-					cout << output.value().getMessage() << endl;
-				}
-				else {
-					return;
-				}
+	shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
+	std::thread outputThread([&] {
+		while (true) {
+			std::optional<Output> output = socket->receive();
+			if (output) {
+				cout << output.value().getMessage() << endl;
 			}
-		});
+			else {
+				return;
+			}
+		}
+	});
 
-		this_thread::sleep_for(chrono::seconds(1));
+	this_thread::sleep_for(chrono::seconds(1));
 
-		cout << "Canceling output" << endl;
-		socket->cancel();
-		outputThread.join();
+	cout << "Canceling output" << endl;
+	socket->cancel();
+	outputThread.join();
 
-		application::State state = app->waitFor();
+	application::State state = app->waitFor();
 
-		cout << "Finished the application" << endl;
-	}
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

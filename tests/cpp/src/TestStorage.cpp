@@ -26,40 +26,38 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	{
-		string key = "fr.ill.ics.cameo.test.testkey";
+	string key = "fr.ill.ics.cameo.test.testkey";
 
-		rapidjson::StringBuffer buffer;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-		writer.StartObject();
-		writer.Key("x");
-		writer.Int(12);
-		writer.EndObject();
+	rapidjson::StringBuffer buffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	writer.StartObject();
+	writer.Key("x");
+	writer.Int(12);
+	writer.EndObject();
 
-		application::This::getCom().storeKeyValue(key, buffer.GetString());
+	application::This::getCom().storeKeyValue(key, buffer.GetString());
 
-		try {
-			string valueString = application::This::getCom().getKeyValue(key);
+	try {
+		string valueString = application::This::getCom().getKeyValue(key);
 
-			rapidjson::Document value;
-			value.Parse(static_cast<const char *>(valueString.c_str()), valueString.size());
+		rapidjson::Document value;
+		value.Parse(static_cast<const char *>(valueString.c_str()), valueString.size());
 
-			cout << "x = " << value["x"].GetInt() << endl;
+		cout << "x = " << value["x"].GetInt() << endl;
 
-			application::This::getCom().removeKey(key);
-		}
-		catch (const UndefinedKeyException& e) {
-		}
-
-		try {
-			application::This::getCom().getKeyValue(key);
-		}
-		catch (const UndefinedKeyException& e) {
-			cout << "Cannot remove key : " << e.what() << endl;
-		}
-
-		cout << "Finished the application" << endl;
+		application::This::getCom().removeKey(key);
 	}
+	catch (const UndefinedKeyException& e) {
+	}
+
+	try {
+		application::This::getCom().getKeyValue(key);
+	}
+	catch (const UndefinedKeyException& e) {
+		cout << "Cannot remove key : " << e.what() << endl;
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

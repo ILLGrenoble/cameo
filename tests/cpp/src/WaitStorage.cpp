@@ -26,30 +26,28 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	{
-		string key = "fr.ill.ics.cameo.test.testkey";
+	string key = "fr.ill.ics.cameo.test.testkey";
 
-		rapidjson::StringBuffer buffer;
-		rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-		writer.StartObject();
-		writer.Key("x");
-		writer.Int(12);
-		writer.EndObject();
+	rapidjson::StringBuffer buffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	writer.StartObject();
+	writer.Key("x");
+	writer.Int(12);
+	writer.EndObject();
 
-		try {
-			// Sleep 100ms.
-			this_thread::sleep_for(chrono::milliseconds(100));
-			application::This::getCom().storeKeyValue(key, buffer.GetString());
+	try {
+		// Sleep 100ms.
+		this_thread::sleep_for(chrono::milliseconds(100));
+		application::This::getCom().storeKeyValue(key, buffer.GetString());
 
-			// Sleep 100ms.
-			this_thread::sleep_for(chrono::milliseconds(100));
-			application::This::getCom().removeKey(key);
-		}
-		catch (const UndefinedKeyException& e) {
-		}
-
-		cout << "Finished the application" << endl;
+		// Sleep 100ms.
+		this_thread::sleep_for(chrono::milliseconds(100));
+		application::This::getCom().removeKey(key);
 	}
+	catch (const UndefinedKeyException& e) {
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }
