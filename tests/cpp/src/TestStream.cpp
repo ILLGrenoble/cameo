@@ -20,19 +20,6 @@
 using namespace std;
 using namespace cameo;
 
-void printOutput(shared_ptr<OutputStreamSocket> socket) {
-
-	while (true) {
-		optional<Output> output = socket->receive();
-		if (output) {
-			cout << output.value().getMessage() << endl;
-		}
-		else {
-			return;
-		}
-	}
-}
-
 int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
@@ -45,7 +32,17 @@ int main(int argc, char *argv[]) {
 		unique_ptr<application::Instance> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
 
 		shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
-		std::thread outputThread(std::bind(printOutput, socket));
+		std::thread outputThread([&] {
+			while (true) {
+				std::optional<Output> output = socket->receive();
+				if (output) {
+					cout << output.value().getMessage() << endl;
+				}
+				else {
+					return;
+				}
+			}
+		});
 
 		this_thread::sleep_for(chrono::seconds(1));
 
