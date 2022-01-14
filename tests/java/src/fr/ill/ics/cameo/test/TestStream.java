@@ -37,19 +37,16 @@ public class TestStream {
 		OutputStreamSocket socket = app.getOutputStreamSocket();
 		
 		// Start thread.
-		Thread outputThread = new Thread(new Runnable() {
-			@Override
-		    public void run() {
-				while (true) {
-					Output output = socket.receive();
-			    	if (output != null) {
-			    		System.out.println(output.getMessage());
-			    	}
-			    	else {
-			    		return;
-			    	}
-				}
-		    }
+		Thread outputThread = new Thread(() -> {
+			while (true) {
+				Output output = socket.receive();
+		    	if (output != null) {
+		    		System.out.println(output.getMessage());
+		    	}
+		    	else {
+		    		return;
+		    	}
+			}
 		});
 		
 		outputThread.start();
