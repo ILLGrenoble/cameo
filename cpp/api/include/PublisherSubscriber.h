@@ -14,6 +14,9 @@
  * limitations under the Licence.
  */
 
+#ifndef CAMEO_PUBLISHERSUBSCRIBER_H_
+#define CAMEO_PUBLISHERSUBSCRIBER_H_
+
 #include "Application.h"
 #include "PublisherCreationException.h"
 #include "SubscriberCreationException.h"
@@ -136,3 +139,4 @@ std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 }
 }
 
+#endif

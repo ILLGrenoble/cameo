@@ -14,6 +14,9 @@
  * limitations under the Licence.
  */
 
+#ifndef CAMEO_REQUESTERRESPONDER_H_
+#define CAMEO_REQUESTERRESPONDER_H_
+
 #include "Application.h"
 #include "ResponderCreationException.h"
 #include "RequesterCreationException.h"
@@ -170,3 +173,4 @@ std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
 }
 }
 
+#endif
