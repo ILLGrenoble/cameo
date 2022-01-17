@@ -21,7 +21,11 @@ request = responder.receive();
 
 print("Received request with parts", request.get(), request.getSecondBinaryPart())
 
-request.reply("2nd response")
+res = request.reply("2nd response")
+
+if not res:
+    print("Error, no timeout expected with", request.getObjectId())    
+
 
 # Receive third request without receive on the requester side.
 request = responder.receive();
