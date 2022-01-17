@@ -112,6 +112,10 @@ public class This {
 			return server.createRequestSocket(endpoint);
 		}
 		
+		public RequestSocket createRequestSocket(String endpoint, int timeout) {
+			return server.createRequestSocket(endpoint, timeout);
+		}
+		
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
 		 * @param message

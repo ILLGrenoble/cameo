@@ -78,6 +78,7 @@ public class TestResponder {
 				requester.send("request");
 				
 				// Wait 1s.
+				System.out.println("Wait so that the responder has timed out");
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

@@ -189,6 +189,14 @@ public class Server {
 		return requestSocket;
 	}
 	
+	RequestSocket createRequestSocket(String endpoint, int timeout) throws SocketException {
+		
+		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
+		requestSocket.connect(endpoint);
+		
+		return requestSocket;
+	}
+	
 	/**
 	 * Connects to the server. Returns false if there is no connection.
 	 * It must be called to initialize the receiving status.

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.Server;
@@ -23,6 +24,7 @@ public class Request {
 	private String requesterApplicationName;
 	private int requesterApplicationId;
 	private String requesterServerEndpoint;
+	private int timeout = 0;
 		
 	public Request(String requesterApplicationName, int requesterApplicationId, String serverUrl, int serverPort, int requesterPort, byte[] messagePart1, byte[] messagePart2) {
 		
@@ -53,20 +55,34 @@ public class Request {
 		return result;
 	}
 	
-	public void reply(byte[] response) {
+	public void setTimeout(int value) {
+		timeout = value;
+	}
+	
+	public boolean reply(byte[] response) {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.RESPONSE);
 
 		// Create a new socket.
 		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
-		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint);
-		requestSocket.request(Messages.serialize(request), response);
-		requestSocket.terminate();
+		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint, timeout);
+		
+		try {
+			requestSocket.request(Messages.serialize(request), response);
+		}
+		catch (ConnectionTimeout e) {
+			return false;
+		}
+		finally {
+			requestSocket.terminate();
+		}
+		
+		return true;
 	}
 	
-	public void reply(String response) {
-		reply(Messages.serialize(response));
+	public boolean reply(String response) {
+		return reply(Messages.serialize(response));
 	}
 	
 	public Instance connectToRequester() {

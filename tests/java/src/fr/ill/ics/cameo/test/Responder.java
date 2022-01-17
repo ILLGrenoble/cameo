@@ -53,16 +53,23 @@ public class Responder {
 			System.out.println("Received request " + Messages.parseString(data[0]) + " " + Messages.parseString(data[1]));
 
 			// Reply.
-			request.reply("2nd response");
-			
+			boolean res = request.reply("2nd response");
+			if (!res) {
+				System.out.println("Error, no timeout expected");
+			}
 			
 			// Receive the third request.
 			request = responder.receive();
 			System.out.println("Received request " + request.get());
 
 			// Reply.
-			//request.setTimeout(100);
-			request.reply("3rd response");
+			request.setTimeout(100);
+			res = request.reply("3rd response");
+			
+			if (!res) {
+				System.out.println("Timeout with " + request.toString());
+			}
+			
 			request.terminate();
 			
 			
