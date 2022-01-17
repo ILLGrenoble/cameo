@@ -556,7 +556,7 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyValue, StateHandlerType handler, bool blocking) {
+State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting(std::bind(&Instance::cancelWaitFor, this));
@@ -601,11 +601,6 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 				// Assign the exit code.
 				if (status->getExitCode() != -1) {
 					m_exitCode = status->getExitCode();
-				}
-
-				// Call the state handler.
-				if (handler != nullptr) {
-					handler(state);
 				}
 
 				// Test the terminal state.
@@ -659,33 +654,23 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 	return m_lastState;
 }
 
-State Instance::waitFor(int states, StateHandlerType handler) {
-	KeyValue keyValue("");
-	return waitFor(states, "", keyValue, handler, true);
-}
-
 State Instance::waitFor(int states) {
 	KeyValue keyValue("");
-	return waitFor(states, "", keyValue, nullptr, true);
-}
-
-State Instance::waitFor(StateHandlerType handler) {
-	KeyValue keyValue("");
-	return waitFor(0, "", keyValue, handler, true);
+	return waitFor(states, "", keyValue, true);
 }
 
 State Instance::waitFor() {
 	KeyValue keyValue("");
-	return waitFor(0, "", keyValue, nullptr, true);
+	return waitFor(0, "", keyValue, true);
 }
 
 State Instance::waitFor(const std::string& eventName) {
 	KeyValue keyValue("");
-	return waitFor(0, eventName, keyValue, nullptr, true);
+	return waitFor(0, eventName, keyValue, true);
 }
 
 State Instance::waitFor(KeyValue& keyValue) {
-	return waitFor(0, "", keyValue, nullptr, true);
+	return waitFor(0, "", keyValue, true);
 }
 
 void Instance::cancelWaitFor() {
@@ -700,7 +685,7 @@ State Instance::now() {
 
 State Instance::getLastState() {
 	KeyValue keyValue("");
-	return waitFor(0, "", keyValue, nullptr, false);
+	return waitFor(0, "", keyValue, false);
 }
 
 State Instance::getActualState() const {
