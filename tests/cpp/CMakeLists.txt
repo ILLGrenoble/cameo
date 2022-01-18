@@ -23,6 +23,9 @@ endif()
 
 # Tests
 
+add_executable(badendpoint src/TestBadEndpoint.cpp)
+target_link_libraries(badendpoint PRIVATE Cameo::cameo-api-cpp)
+
 add_executable(simple src/Simple.cpp)
 target_link_libraries(simple PRIVATE Cameo::cameo-api-cpp)
 
