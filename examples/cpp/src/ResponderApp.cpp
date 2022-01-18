@@ -24,47 +24,44 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		if (application::This::isAvailable()) {
-			cout << "Connected" << endl;
-		}
-
-		application::This::handleStop([] {
-			application::This::cancelWaitings();
-		});
-
-		unique_ptr<coms::Responder> responder;
-
-		try {
-			responder = coms::Responder::create("the-responder");
-			cout << "Created responder " << *responder << endl;
-
-		} catch (const coms::ResponderCreationException& e) {
-			cout << "Responder error" << endl;
-			return -1;
-		}
-
-		application::This::setRunning();
-		
-		// Loop on the requests.
-		while (true) {
-			
-			// Receive the simple request.
-			unique_ptr<coms::Request> request = responder->receive();
-			if (!request) {
-				cout << "Responder is canceled" << endl;
-				break;
-			}
-
-			cout << "Received request " << request->get() << endl;
-
-			// Reply.
-			request->reply("done");
-		}
-
-		cout << "Finished the application" << endl;
+	if (application::This::isAvailable()) {
+		cout << "Connected" << endl;
 	}
+
+	application::This::handleStop([] {
+		application::This::cancelWaitings();
+	});
+
+	unique_ptr<coms::Responder> responder;
+
+	try {
+		responder = coms::Responder::create("the-responder");
+		cout << "Created responder " << *responder << endl;
+
+	} catch (const coms::ResponderCreationException& e) {
+		cout << "Responder error" << endl;
+		return -1;
+	}
+
+	application::This::setRunning();
+
+	// Loop on the requests.
+	while (true) {
+		
+		// Receive the simple request.
+		unique_ptr<coms::Request> request = responder->receive();
+		if (!request) {
+			cout << "Responder is canceled" << endl;
+			break;
+		}
+
+		cout << "Received request " << request->get() << endl;
+
+		// Reply.
+		request->reply("done");
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

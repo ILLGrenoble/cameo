@@ -37,48 +37,45 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		int numberOfSubscribers = 0;
-		if (argc > 2) {
-			numberOfSubscribers = stoi(argv[1]);
-		}
-
-		if (application::This::isAvailable()) {
-			cout << "Connected" << endl;
-		}
-
-		unique_ptr<coms::Publisher> publisher;
-
-		try {
-			publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
-			cout << "Created publisher " << *publisher << endl;
-
-			publisher->waitForSubscribers();
-
-		} catch (const coms::PublisherCreationException& e) {
-			cout << "Publisher error" << endl;
-			return -1;
-		}
-
-		application::This::setRunning();
-
-		cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
-		
-		// Loop on the events.
-		int i = 0;
-		while (true) {
-
-			// Send a message.
-			publisher->send(serializeToJSON("a message", i));
-			i++;
-			
-			// Sleep for 1s.
-			this_thread::sleep_for(chrono::seconds(1));
-		}
-
-		cout << "Finished the application" << endl;
+	int numberOfSubscribers = 0;
+	if (argc > 2) {
+		numberOfSubscribers = stoi(argv[1]);
 	}
+
+	if (application::This::isAvailable()) {
+		cout << "Connected" << endl;
+	}
+
+	unique_ptr<coms::Publisher> publisher;
+
+	try {
+		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
+		cout << "Created publisher " << *publisher << endl;
+
+		publisher->waitForSubscribers();
+
+	} catch (const coms::PublisherCreationException& e) {
+		cout << "Publisher error" << endl;
+		return -1;
+	}
+
+	application::This::setRunning();
+
+	cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
+
+	// Loop on the events.
+	int i = 0;
+	while (true) {
+
+		// Send a message.
+		publisher->send(serializeToJSON("a message", i));
+		i++;
+		
+		// Sleep for 1s.
+		this_thread::sleep_for(chrono::seconds(1));
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

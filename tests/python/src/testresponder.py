@@ -21,9 +21,8 @@ server = this.getServer()
 for i in range(numberOfTimes):
     
     app = server.start(applicationName)
-    
     print("Started application", applicationName)
-    
+
     requester = cameopy.Requester.create(app, "responder")
     
     # Send a simple message.

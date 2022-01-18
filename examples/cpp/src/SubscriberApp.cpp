@@ -24,55 +24,52 @@ int main(int argc, char *argv[]) {
 		
 	application::This::init(argc, argv);
 
-	// New block to ensure cameo objects are terminated before the application.
-	{
-		string serverEndpoint;
-		if (argc > 2) {
-			serverEndpoint = argv[1];
-		}
-
-		unique_ptr<Server> server;
-
-		if (serverEndpoint == "") {
-			server.reset(new Server(application::This::getServer().getEndpoint()));
-
-		} else {
-			server.reset(new Server(serverEndpoint));
-		}
-
-		
-		if (application::This::isAvailable() && server->isAvailable()) {
-			cout << "Connected server " << *server << endl;
-		}
-
-		// Connect to the server.
-		unique_ptr<application::Instance> publisherApp = server->connect("publisher");
-
-		cout << "Application " << *publisherApp << " has state " << application::toString(publisherApp->now()) << endl;
-
-		// Create a requester.
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
-
-		cout << "Created subscriber " << *subscriber << endl;
-
-		// Receive data.
-		while (true) {
-			optional<string> message = subscriber->receive();
-			if (!message.has_value()) {
-				break;
-			}
-			string value = message.value();
-			cout << "Received " << value << endl;
-
-			json::Object object;
-			if (json::parse(object, value)) {
-				cout << "\tmessage : " << object["message"].GetString() << endl;
-				cout << "\tvalue : " << object["value"].GetInt() << endl;
-			}
-		}
-
-		cout << "Finished the application" << endl;
+	string serverEndpoint;
+	if (argc > 2) {
+		serverEndpoint = argv[1];
 	}
+
+	unique_ptr<Server> server;
+
+	if (serverEndpoint == "") {
+		server.reset(new Server(application::This::getServer().getEndpoint()));
+
+	} else {
+		server.reset(new Server(serverEndpoint));
+	}
+
+
+	if (application::This::isAvailable() && server->isAvailable()) {
+		cout << "Connected server " << *server << endl;
+	}
+
+	// Connect to the server.
+	unique_ptr<application::Instance> publisherApp = server->connect("publisher");
+
+	cout << "Application " << *publisherApp << " has state " << application::toString(publisherApp->now()) << endl;
+
+	// Create a requester.
+	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
+
+	cout << "Created subscriber " << *subscriber << endl;
+
+	// Receive data.
+	while (true) {
+		optional<string> message = subscriber->receive();
+		if (!message.has_value()) {
+			break;
+		}
+		string value = message.value();
+		cout << "Received " << value << endl;
+
+		json::Object object;
+		if (json::parse(object, value)) {
+			cout << "\tmessage : " << object["message"].GetString() << endl;
+			cout << "\tvalue : " << object["value"].GetInt() << endl;
+		}
+	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }
