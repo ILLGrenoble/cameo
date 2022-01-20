@@ -66,12 +66,14 @@ bool ResponderZmq::isCanceled() {
 
 std::unique_ptr<Request> ResponderZmq::receive() {
 
-	std::unique_ptr<zmq::message_t> message(new zmq::message_t);
-	m_responder->recv(message.get(), 0);
+	zmq::message_t message;
+	if (!m_responder->recv(message, zmq::recv_flags::none).has_value()) {
+		return {};
+	}
 
 	// Get the JSON request.
 	json::Object request;
-	json::parse(request, message.get());
+	json::parse(request, &message);
 
 	int type = request[message::TYPE].GetInt();
 
@@ -88,16 +90,20 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 		int requesterPort = request[message::Request::REQUESTER_PORT].GetInt();
 
 		// Get the second part for the message.
-		message.reset(new zmq::message_t);
-		m_responder->recv(message.get(), 0);
-		std::string message1(message->data<char>(), message->size());
+		zmq::message_t secondPart;
+		if (!m_responder->recv(secondPart, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
+		std::string message1(secondPart.data<char>(), secondPart.size());
 		std::string message2;
 
 		// Set message 2 if it exists.
-		if (message->more()) {
-			message.reset(new zmq::message_t);
-			m_responder->recv(message.get(), 0);
-			message2 = std::string(message->data<char>(), message->size());
+		if (secondPart.more()) {
+			zmq::message_t thirdPart;
+			if (!m_responder->recv(thirdPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
+			message2 = std::string(thirdPart.data<char>(), thirdPart.size());
 		}
 
 		// Create the request.
@@ -121,7 +127,7 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 
 	// send to the client
 	if (reply != nullptr) {
-		m_responder->send(*reply);
+		m_responder->send(*reply, zmq::send_flags::none);
 	}
 
 	return result;

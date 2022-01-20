@@ -21,7 +21,7 @@
 using namespace std;
 using namespace cameo;
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 
 	this_thread::sleep_for(chrono::milliseconds(50));
 

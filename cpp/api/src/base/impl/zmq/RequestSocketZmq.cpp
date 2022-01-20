@@ -116,9 +116,11 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 
 	// Receive the response.
 	unique_ptr<zmq::message_t> reply(new zmq::message_t());
-	m_socket->recv(reply.get(), 0);
+	if (m_socket->recv(*reply.get(), zmq::recv_flags::none).has_value()) {
+		return reply;
+	}
 
-	return reply;
+	return {};
 }
 
 std::string RequestSocketZmq::request(const std::string& request, int overrideTimeout) {
@@ -132,7 +134,7 @@ std::string RequestSocketZmq::request(const std::string& request, int overrideTi
 	memcpy(static_cast<void *>(requestMessage.data()), request.c_str(), requestSize);
 
 	// Send the request in one part.
-	m_socket->send(requestMessage);
+	m_socket->send(requestMessage, zmq::send_flags::none);
 
 	// Receive and return the response.
 	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
@@ -154,8 +156,8 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	memcpy(static_cast<void *>(requestPart2Message.data()), requestPart2.c_str(), requestPart2Size);
 
 	// Send the request in two parts.
-	m_socket->send(requestPart1Message, ZMQ_SNDMORE);
-	m_socket->send(requestPart2Message);
+	m_socket->send(requestPart1Message, zmq::send_flags::sndmore);
+	m_socket->send(requestPart2Message, zmq::send_flags::none);
 
 	// Receive and return the response.
 	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
@@ -180,9 +182,9 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	memcpy(static_cast<void *>(requestPart3Message.data()), requestPart3.c_str(), requestPart3Size);
 
 	// Send the request in three parts.
-	m_socket->send(requestPart1Message, ZMQ_SNDMORE);
-	m_socket->send(requestPart2Message, ZMQ_SNDMORE);
-	m_socket->send(requestPart3Message);
+	m_socket->send(requestPart1Message, zmq::send_flags::sndmore);
+	m_socket->send(requestPart2Message, zmq::send_flags::sndmore);
+	m_socket->send(requestPart3Message, zmq::send_flags::none);
 
 	// Receive and return the response.
 	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);

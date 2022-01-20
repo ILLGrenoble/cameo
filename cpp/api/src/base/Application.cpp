@@ -403,9 +403,9 @@ std::unique_ptr<Instance> This::connectToStarter() {
 	// Iterate the instances to find the id
 	InstanceArray instances = m_instance.m_starterServer->connectAll(m_instance.m_starterName);
 
-	for (int i = 0; i < instances.size(); i++) {
-		if (instances[i]->getId() == m_instance.m_starterId) {
-			return std::unique_ptr<Instance>(std::move(instances[i]));
+	for (auto i = instances.begin(); i != instances.end(); ++i) {
+		if ((*i)->getId() == m_instance.m_starterId) {
+			return std::unique_ptr<Instance>(std::move(*i));
 		}
 	}
 
@@ -644,7 +644,7 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 						break;
 					}
 				}
-				else if (CancelEvent * cancel = dynamic_cast<CancelEvent *>(event.get())) {
+				else if (dynamic_cast<CancelEvent *>(event.get())) {
 					break;
 				}
 			}
@@ -864,7 +864,7 @@ std::string toString(cameo::application::State applicationStates) {
 
 	std::ostringstream result;
 
-	for (int i = 0; i < states.size() - 1; i++) {
+	for (size_t i = 0; i < states.size() - 1; i++) {
 		result << states[i] << ", ";
 	}
 	result << states.back();

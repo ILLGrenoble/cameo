@@ -25,7 +25,7 @@ std::string serializeToJSON(const std::string& message, int i) {
 	json::StringObject object;
 
 	object.pushKey("message");
-	object.pushValue("message");
+	object.pushValue(message);
 
 	object.pushKey("value");
 	object.pushValue(i);

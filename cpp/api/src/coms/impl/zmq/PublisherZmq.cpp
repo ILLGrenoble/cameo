@@ -72,12 +72,14 @@ bool PublisherZmq::waitForSubscribers() {
 
 	while (counter < m_numberOfSubscribers) {
 
-		std::unique_ptr<zmq::message_t> message(new zmq::message_t);
-		synchronizer.recv(message.get(), 0);
+		zmq::message_t message;
+		if (!synchronizer.recv(message, zmq::recv_flags::none).has_value()) {
+			return false;
+		}
 
 		// Get the JSON request.
 		json::Object request;
-		json::parse(request, message.get());
+		json::parse(request, &message);
 
 		int type = request[message::TYPE].GetInt();
 
@@ -101,7 +103,7 @@ bool PublisherZmq::waitForSubscribers() {
 
 		// send to the client
 		if (reply != nullptr) {
-			synchronizer.send(*reply);
+			synchronizer.send(*reply, zmq::send_flags::none);
 		}
 	}
 
@@ -181,8 +183,8 @@ void PublisherZmq::publish(const std::string& header, const char* data, std::siz
 	zmq::message_t requestData(size);
 	memcpy(requestData.data(), data, size);
 
-	m_publisher->send(requestType, ZMQ_SNDMORE);
-	m_publisher->send(requestData);
+	m_publisher->send(requestType, zmq::send_flags::sndmore);
+	m_publisher->send(requestData, zmq::send_flags::none);
 }
 
 void PublisherZmq::publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
@@ -196,9 +198,9 @@ void PublisherZmq::publishTwoParts(const std::string& header, const char* data1,
 	zmq::message_t requestData2(size2);
 	memcpy(requestData2.data(), data2, size2);
 
-	m_publisher->send(requestType, ZMQ_SNDMORE);
-	m_publisher->send(requestData1, ZMQ_SNDMORE);
-	m_publisher->send(requestData2);
+	m_publisher->send(requestType, zmq::send_flags::sndmore);
+	m_publisher->send(requestData1, zmq::send_flags::sndmore);
+	m_publisher->send(requestData2, zmq::send_flags::none);
 }
 
 zmq::message_t * PublisherZmq::responseToSyncRequest() {
@@ -211,7 +213,7 @@ zmq::message_t * PublisherZmq::responseToSyncRequest() {
 
 	size_t size = result.length();
 	zmq::message_t * reply = new zmq::message_t(size);
-	memcpy((void *) reply->data(), result.c_str(), size);
+	memcpy(static_cast<void *>(reply->data()), result.c_str(), size);
 
 	return reply;
 }

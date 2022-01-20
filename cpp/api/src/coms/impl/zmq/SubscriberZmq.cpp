@@ -118,31 +118,37 @@ bool SubscriberZmq::isCanceled() const {
 std::optional<std::string> SubscriberZmq::receiveBinary() {
 
 	while (true) {
-		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
-		m_subscriber->recv(message.get());
+		zmq::message_t message;
+		if (!m_subscriber->recv(message, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
 
-		std::string response(static_cast<char*>(message->data()), message->size());
+		std::string response(static_cast<char*>(message.data()), message.size());
 
 		if (response == message::Event::STREAM) {
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
-			return std::string(static_cast<char*>(message->data()), message->size());
-
-		} else if (response == message::Event::ENDSTREAM) {
+			zmq::message_t secondPart;
+			if (!m_subscriber->recv(secondPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
+			return std::string(static_cast<char*>(secondPart.data()), secondPart.size());
+		}
+		else if (response == message::Event::ENDSTREAM) {
 			m_ended = true;
 			return {};
-
-		} else if (response == message::Event::CANCEL) {
+		}
+		else if (response == message::Event::CANCEL) {
 			m_canceled = true;
 			return {};
-
-		} else if (response == message::Event::STATUS) {
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
+		}
+		else if (response == message::Event::STATUS) {
+			zmq::message_t secondPart;
+			if (!m_subscriber->recv(secondPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
 
 			// Get the JSON object.
 			json::Object status;
-			json::parse(status, message.get());
+			json::parse(status, &secondPart);
 
 			int id = status[message::StatusEvent::ID].GetInt();
 
@@ -171,22 +177,28 @@ std::optional<std::string> SubscriberZmq::receive() {
 std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBinaryParts() {
 
 	while (true) {
-		std::unique_ptr<zmq::message_t> message(new zmq::message_t());
-		m_subscriber->recv(message.get());
+		zmq::message_t message;
+		if (!m_subscriber->recv(message, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
 
-		std::string response(static_cast<char*>(message->data()), message->size());
+		std::string response(static_cast<char*>(message.data()), message.size());
 
 		if (response == message::Event::STREAM) {
 
 			std::tuple<std::string, std::string> result;
 
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
-			std::string data1 = std::string(static_cast<char*>(message->data()), message->size());
+			zmq::message_t secondPart;
+			if (!m_subscriber->recv(secondPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
+			std::string data1 = std::string(static_cast<char*>(secondPart.data()), secondPart.size());
 
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
-			std::string data2 = std::string(static_cast<char*>(message->data()), message->size());
+			zmq::message_t thirdPart;
+			if (!m_subscriber->recv(thirdPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
+			std::string data2 = std::string(static_cast<char*>(thirdPart.data()), thirdPart.size());
 
 			return std::make_tuple(data1, data2);
 
@@ -198,12 +210,14 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 			return {};
 
 		} else if (response == message::Event::STATUS) {
-			message.reset(new zmq::message_t());
-			m_subscriber->recv(message.get());
+			zmq::message_t secondPart;
+			if (!m_subscriber->recv(secondPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
 
 			// Get the JSON object.
 			json::Object status;
-			json::parse(status, message.get());
+			json::parse(status, &secondPart);
 
 			int id = status[message::StatusEvent::ID].GetInt();
 
@@ -234,8 +248,8 @@ void SubscriberZmq::cancel() {
 	zmq::message_t requestData(data.length());
 	memcpy(requestType.data(), m_message.c_str(), m_message.length());
 	memcpy(requestData.data(), data.c_str(), data.length());
-	m_cancelPublisher->send(requestType, ZMQ_SNDMORE);
-	m_cancelPublisher->send(requestData);
+	m_cancelPublisher->send(requestType, zmq::send_flags::sndmore);
+	m_cancelPublisher->send(requestData, zmq::send_flags::none);
 }
 
 std::string SubscriberZmq::createSubscribePublisherRequest() const {

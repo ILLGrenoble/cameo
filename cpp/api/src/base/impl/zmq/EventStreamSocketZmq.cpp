@@ -90,17 +90,19 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 void EventStreamSocketZmq::send(const std::string& data) {
 
 	zmq::message_t messageData(data.size());
-	memcpy((void *) messageData.data(), data.c_str(), data.size());
-	m_socket->send(messageData);
+	memcpy(static_cast<void *>(messageData.data()), data.c_str(), data.size());
+	m_socket->send(messageData, zmq::send_flags::none);
 }
 
 std::string EventStreamSocketZmq::receive(bool blocking) {
 
 	// Use the message interface.
-	unique_ptr<zmq::message_t> message(new zmq::message_t());
-	if (m_socket->recv(message.get(), (blocking ? 0 : ZMQ_DONTWAIT))) {
+	zmq::message_t message;
+
+	zmq::recv_flags flags = (blocking ? zmq::recv_flags::none : zmq::recv_flags::dontwait);
+	if (m_socket->recv(message, flags).has_value()) {
 		// The message exists.
-		return std::string(message->data<char>(), message->size());
+		return std::string(message.data<char>(), message.size());
 	}
 
 	return "";
@@ -114,8 +116,8 @@ void EventStreamSocketZmq::cancel() {
 		zmq::message_t requestData(data.length());
 		memcpy(requestType.data(), message::Event::CANCEL, data.length());
 		memcpy(requestData.data(), data.c_str(), data.length());
-		m_cancelSocket->send(requestType, ZMQ_SNDMORE);
-		m_cancelSocket->send(requestData);
+		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
+		m_cancelSocket->send(requestData, zmq::send_flags::none);
 	}
 }
 

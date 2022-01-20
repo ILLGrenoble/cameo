@@ -132,7 +132,7 @@ Subscriber::Subscriber() {
 Subscriber::~Subscriber() {
 }
 
-void Subscriber::init(application::Instance & app, const std::string& publisherName, const std::string& appName) {
+void Subscriber::init(application::Instance & app, const std::string& publisherName) {
 
 	m_publisherName = publisherName;
 	m_appName = app.getName();
@@ -153,17 +153,17 @@ void Subscriber::init(application::Instance & app, const std::string& publisherN
 	m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 }
 
-std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &appName) {
+std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName) {
 
 	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(app, publisherName, appName);
+	subscriber->init(app, publisherName);
 
 	return subscriber;
 }
 
 std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string& publisherName) {
 	try {
-		return createSubscriber(app, publisherName, app.getName());
+		return createSubscriber(app, publisherName);
 
 	} catch (const SubscriberCreationException& e) {
 		// the publisher does not exist, so we are waiting for it
@@ -181,7 +181,7 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, cons
 	}
 
 	try {
-		return createSubscriber(app, publisherName, app.getName());
+		return createSubscriber(app, publisherName);
 
 	} catch (const SubscriberCreationException& e) {
 		// that should not happen

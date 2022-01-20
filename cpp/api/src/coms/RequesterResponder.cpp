@@ -122,7 +122,7 @@ std::unique_ptr<application::Instance> Request::connectToRequester() {
 	// Connect and find the instance.
 	application::InstanceArray instances = m_requesterServer->connectAll(m_requesterApplicationName);
 
-	for (int i = 0; i < instances.size(); i++) {
+	for (size_t i = 0; i < instances.size(); i++) {
 		if (instances[i]->getId() == m_requesterApplicationId) {
 			return std::unique_ptr<application::Instance>(std::move(instances[i]));
 		}

@@ -23,7 +23,7 @@
 using namespace std;
 using namespace cameo;
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 
 	try {
 		Server server("tcp://ferrazpc.ill.fr:7000", 1000);

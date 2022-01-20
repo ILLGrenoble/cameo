@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	socket->cancel();
 	outputThread.join();
 
-	application::State state = app->waitFor();
+	app->waitFor();
 
 	cout << "Finished the application" << endl;
 

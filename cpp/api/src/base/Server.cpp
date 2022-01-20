@@ -246,7 +246,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 
 	int aliveInstancesCount = 0;
 
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
 		std::unique_ptr<application::Instance> instance = makeInstance();
@@ -279,12 +279,10 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 	application::InstanceArray aliveInstances;
 	aliveInstances.reserve(aliveInstancesCount);
 
-	int j = 0;
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 
 		if (instances[i].get() != nullptr) {
 			aliveInstances.push_back(std::move(instances[i]));
-			j++;
 		}
 	}
 
@@ -348,9 +346,9 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 	application::InstanceArray instances = connectAll(name);
 
-	for (int i = 0; i < instances.size(); ++i) {
-		instances[i]->kill();
-		instances[i]->waitFor();
+	for (auto i = instances.begin(); i != instances.end(); ++i) {
+		(*i)->kill();
+		(*i)->waitFor();
 	}
 }
 
@@ -371,7 +369,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 	json::Value::Array array = applicationConfigs.GetArray();
 	size_t size = array.Size();
 
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		json::Value::Object config = array[i].GetObject();
 
 		std::string name = config[message::ApplicationConfig::NAME].GetString();
@@ -404,7 +402,7 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 	json::Value::Array array = applicationInfos.GetArray();
 	size_t size = array.Size();
 
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
 		std::string name = info[message::ApplicationInfo::NAME].GetString();
@@ -452,7 +450,7 @@ std::vector<application::Port> Server::getPorts() const {
 	json::Value::Array array = portInfos.GetArray();
 	size_t size = array.Size();
 
-	for (int i = 0; i < size; ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
 		int port = info[message::PortInfo::PORT].GetInt();

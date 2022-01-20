@@ -121,8 +121,8 @@ public:
 
 private:
 	Subscriber();
-	void init(application::Instance &app, const std::string &publisherName, const std::string &appName);
-	static std::unique_ptr<Subscriber> createSubscriber(application::Instance & app, const std::string &publisherName, const std::string &appName);
+	void init(application::Instance &app, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> createSubscriber(application::Instance & app, const std::string &publisherName);
 	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
 	std::string m_publisherName;

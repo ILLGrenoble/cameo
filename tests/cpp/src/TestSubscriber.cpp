@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 		// Wait for the end of the applications.
 		application::InstanceArray instances = server.connectAll(applicationName);
 
-		for (int i = 0; i < instances.size(); i++) {
+		for (size_t i = 0; i < instances.size(); i++) {
 			instances[i]->waitFor();
 		}
 	}

@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 		// Start the application.
 		unique_ptr<application::Instance> app = server.start("comportcpp");
 
-		application::State state = app->waitFor();
+		app->waitFor();
 
 		cout << "Finished the application " << *app << endl;
 	}

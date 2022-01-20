@@ -111,12 +111,14 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 		return {};
 	}
 
-	std::unique_ptr<zmq::message_t> message(new zmq::message_t);
-	m_repSocket->recv(message.get(), 0);
+	zmq::message_t message;
+	if (!m_repSocket->recv(message, zmq::recv_flags::none).has_value()) {
+		return {};
+	}
 
 	// Get the JSON request.
 	json::Object request;
-	json::parse(request, message.get());
+	json::parse(request, &message);
 
 	int type = request[message::TYPE].GetInt();
 
@@ -129,9 +131,11 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 
 	if (type == message::RESPONSE) {
 		// Get the second part for the message.
-		message.reset(new zmq::message_t);
-		m_repSocket->recv(message.get(), 0);
-		result = std::string(message->data<char>(), message->size());
+		zmq::message_t secondPart;
+		if (!m_repSocket->recv(secondPart, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
+		result = std::string(secondPart.data<char>(), secondPart.size());
 	}
 
 	// Create the reply.
@@ -140,7 +144,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy(reply->data(), data.c_str(), size);
 
-	m_repSocket->send(*reply);
+	m_repSocket->send(*reply, zmq::send_flags::none);
 
 	return result;
 }
