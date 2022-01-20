@@ -148,7 +148,7 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 
 			// Get the JSON object.
 			json::Object status;
-			json::parse(status, &secondPart);
+			json::parse(status, secondPart);
 
 			int id = status[message::StatusEvent::ID].GetInt();
 
@@ -217,7 +217,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 
 			// Get the JSON object.
 			json::Object status;
-			json::parse(status, &secondPart);
+			json::parse(status, secondPart);
 
 			int id = status[message::StatusEvent::ID].GetInt();
 

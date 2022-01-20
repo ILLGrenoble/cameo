@@ -60,9 +60,9 @@ typedef rapidjson::Document Object;
 typedef rapidjson::Value Value;
 
 template<typename Message>
-bool parse(Object & object, Message * message) {
+bool parse(Object & object, const Message& message) {
 
-	rapidjson::ParseResult ok = object.Parse(static_cast<char *>(message->data()), message->size());
+	rapidjson::ParseResult ok = object.Parse(static_cast<const char *>(message.data()), message.size());
 	if (!ok) {
 		return false;
 	}

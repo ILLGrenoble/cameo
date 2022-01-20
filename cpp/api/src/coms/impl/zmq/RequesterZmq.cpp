@@ -118,7 +118,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 
 	// Get the JSON request.
 	json::Object request;
-	json::parse(request, &message);
+	json::parse(request, message);
 
 	int type = request[message::TYPE].GetInt();
 
