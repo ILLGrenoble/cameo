@@ -52,6 +52,7 @@ Possible options are:
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
  - CAMEO_TESTS=ON: to build the Java and C++ tests
+ - CAMEO_EXAMPLES=ON: to build the Java and C++ examples
  
 Install:
 
