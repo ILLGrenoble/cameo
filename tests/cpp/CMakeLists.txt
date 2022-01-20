@@ -1,0 +1,112 @@
+#------------------------------------------------------------
+# Project
+#------------------------------------------------------------
+
+cmake_minimum_required(VERSION 3.12.0)
+  
+# Project name and version
+project(cameo-tests VERSION 1.0.0 LANGUAGES CXX)
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(FetchContent)
+
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  # specify the C++ standard
+  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD_REQUIRED True)
+endif()
+
+#------------------------------------------------------------
+# Programs
+#------------------------------------------------------------
+
+# Tests
+
+add_executable(badendpoint src/TestBadEndpoint.cpp)
+target_link_libraries(badendpoint PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(simple src/Simple.cpp)
+target_link_libraries(simple PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testsimple src/TestSimple.cpp)
+target_link_libraries(testsimple PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(veryfast src/VeryFast.cpp)
+target_link_libraries(veryfast PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testveryfast src/TestVeryFast.cpp)
+target_link_libraries(testveryfast PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(stop src/Stop.cpp)
+target_link_libraries(stop PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(teststop src/TestStop.cpp)
+target_link_libraries(teststop PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(result src/Result.cpp)
+target_link_libraries(result PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testresult src/TestResult.cpp)
+target_link_libraries(testresult PRIVATE Cameo::cameo-api-cpp)	
+
+add_executable(error src/Error.cpp)
+target_link_libraries(error PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testerror src/TestError.cpp)
+target_link_libraries(testerror PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(teststorage src/TestStorage.cpp)
+target_link_libraries(teststorage PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(waitstorage src/WaitStorage.cpp)
+target_link_libraries(waitstorage PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testwaitstorage src/TestWaitStorage.cpp)
+target_link_libraries(testwaitstorage PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(publisher src/Publisher.cpp)
+target_link_libraries(publisher PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testpublisher src/TestPublisher.cpp)
+target_link_libraries(testpublisher PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(subscriber src/Subscriber.cpp)
+target_link_libraries(subscriber PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testsubscriber src/TestSubscriber.cpp)
+target_link_libraries(testsubscriber PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(responder src/Responder.cpp)
+target_link_libraries(responder PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testresponder src/TestResponder.cpp)
+target_link_libraries(testresponder PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(requester src/Requester.cpp)
+target_link_libraries(requester PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testrequester src/TestRequester.cpp)
+target_link_libraries(testrequester PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(publisherloop src/PublisherLoop.cpp)
+target_link_libraries(publisherloop PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testcancel src/TestCancel.cpp)
+target_link_libraries(testcancel PRIVATE Cameo::cameo-api-cpp  pthread)
+
+add_executable(openport src/OpenPort.cpp)
+target_link_libraries(openport PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(comport src/ComPort.cpp)
+target_link_libraries(comport PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testcomport src/TestComPort.cpp)
+target_link_libraries(testcomport PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(stream src/Stream.cpp)
+target_link_libraries(stream PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(teststream src/TestStream.cpp)
+target_link_libraries(teststream PRIVATE Cameo::cameo-api-cpp  pthread)
+

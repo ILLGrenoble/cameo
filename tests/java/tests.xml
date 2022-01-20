@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config port="10000" max_applications="200" polling_time="100" log_level="fine" log_directory="logs">
+
+	<applications>
+		
+		<!-- Java apps -->
+		
+		<application name="simplejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Simple"/>
+		</application>
+		
+		<application name="testsimplejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestSimple"/>
+		</application>
+		
+		<application name="veryfastjava" starting_time="0" stopping_time="0" output_stream="yes" multiple="no" restart="no" info_arg="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.VeryFast"/>
+		</application>
+		
+		<application name="testveryfastjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestVeryFast"/>
+		</application>
+		
+		<application name="stopjava" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
+		</application>
+		
+		<application name="teststopjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestStop"/>
+		</application>
+		
+		<application name="resultjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Result"/>
+		</application>
+		
+		<application name="testresultjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestResult"/>
+		</application>
+		
+		<application name="errorjava" starting_time="0" stopping_time="1" multiple="no" restart="no" info_arg="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Error"/>
+		</application>
+		
+		<application name="testerrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestError"/>
+		</application>
+								
+		<application name="teststoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestStorage"/>
+		</application>
+		
+		<application name="waitstoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.WaitStorage"/>
+		</application>
+		
+		<application name="testwaitstoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestWaitStorage"/>
+		</application>
+		
+		<application name="publisherjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Publisher"/>
+		</application>
+				
+		<application name="testpublisherjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisher publisherjava"/>
+		</application>
+		
+		<application name="subscriberjava" starting_time="0" stopping_time="1" multiple="yes" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Subscriber"/>
+		</application>
+		
+		<application name="testsubscriberjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestSubscriber subscriberjava"/>
+		</application>
+		
+		<application name="responderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Responder"/>
+		</application>
+		
+		<application name="testresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestResponder responderjava"/>
+		</application>
+		
+		<application name="requesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Requester"/>
+		</application>
+		
+		<application name="testrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestRequester requesterjava"/>
+		</application>
+		
+		<application name="publisherloopjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.PublisherLoop"/>
+		</application>
+						
+		<application name="testcanceljava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestCancel"/>
+		</application>
+		
+		<application name="comportjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.ComPort"/>
+		</application>
+		
+		<application name="testcomportjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestComPort"/>
+		</application>
+		
+		<application name="streamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Stream"/>
+		</application>
+		
+		<application name="teststreamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestStream"/>
+		</application>
+	
+
+		<!-- C++ apps -->
+		
+		<application name="simplecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="simple"/>
+		</application>
+		
+		<application name="testsimplecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testsimple"/>
+		</application>
+		
+		<application name="veryfastcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="veryfast"/>
+		</application>
+		
+		<application name="testveryfastcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testveryfast"/>
+		</application>
+		
+		<application name="stopcpp" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="stop"/>
+		</application>
+		
+		<application name="teststopcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="teststop"/>
+		</application>
+		
+		<application name="resultcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="result"/>
+		</application>
+
+		<application name="testresultcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testresult"/>
+		</application>
+
+		<application name="errorcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="error"/>
+		</application>
+		
+		<application name="testerrorcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testerror"/>
+		</application>
+		
+		<application name="teststoragecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="teststorage"/>
+		</application>
+		
+		<application name="waitstoragecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="waitstorage"/>
+		</application>
+		
+		<application name="testwaitstoragecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testwaitstorage"/>
+		</application>
+		
+		<application name="publishercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="publisher"/>
+		</application>
+		
+		<application name="testpublishercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testpublisher" args="publishercpp"/>
+		</application>
+		
+		<application name="subscribercpp" starting_time="0" stopping_time="1" output_stream="no" multiple="yes" restart="no" log_directory="logs">
+			<start executable="subscriber"/>
+		</application>
+		
+		<application name="testsubscribercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testsubscriber" args="subscribercpp"/>
+		</application>
+
+		<application name="respondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="responder"/>
+		</application>
+
+		<application name="testrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testresponder" args="respondercpp"/>
+		</application>
+
+		<application name="requestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="requester"/>
+		</application>
+
+		<application name="testrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testrequester" args="requestercpp"/>
+		</application>
+
+		<application name="publisherloopcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="publisherloop"/>
+		</application>
+
+		<application name="testcancelcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testcancel"/>
+		</application>
+
+		<application name="comportcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="comport"/>
+		</application>
+
+		<application name="testcomportcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testcomport"/>
+		</application>
+
+		<application name="streamcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="stream"/>
+		</application>
+
+		<application name="teststreamcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="teststream"/>
+		</application>
+		
+		
+		<!-- Python apps -->
+		
+		<application name="simplepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/simple.py"/>
+		</application>
+		
+		<application name="testsimplepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testsimple.py"/>
+		</application>
+		
+		<application name="veryfastpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/veryfast.py"/>
+		</application>
+		
+		<application name="testveryfastpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testveryfast.py"/>
+		</application>
+		
+		<application name="stoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/stop.py"/>
+		</application>
+		
+		<application name="teststoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/teststop.py"/>
+		</application>
+		
+		<application name="resultpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/result.py"/>
+		</application>
+		
+		<application name="testresultpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testresult.py"/>
+		</application>
+		
+		<application name="errorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/error.py"/>
+		</application>
+		
+		<application name="testerrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testerror.py"/>
+		</application>
+
+		<application name="publisherpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/publisher.py"/>
+		</application>
+		
+		<application name="testpublisherpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testpublisher.py publisherpy"/>
+		</application>
+
+		<application name="subscriberpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/subscriber.py"/>
+		</application>
+		
+		<application name="testsubscriberpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testsubscriber.py subscriberpy"/>
+		</application>
+
+		<application name="responderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/responder.py"/>
+		</application>
+		
+		<application name="testresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testresponder.py responderpy"/>
+		</application>
+
+		<application name="requesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/requester.py"/>
+		</application>
+		
+		<application name="testrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testrequester.py requesterpy"/>
+		</application>
+		
+		<application name="publisherlooppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/publisherloop.py"/>
+		</application>
+		
+		<application name="testcancelpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testcancel.py"/>
+		</application>
+		
+		<application name="streampy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/stream.py"/>
+		</application>
+
+		<application name="teststreampy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/teststream.py"/>
+		</application>
+				
+	</applications>
+	
+</config>
