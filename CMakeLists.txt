@@ -8,7 +8,8 @@ project(cameo
 
 option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
 option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
-option(CAMEO_TESTS "Compile the tests and examples" OFF)
+option(CAMEO_TESTS "Compile the tests" OFF)
+option(CAMEO_EXAMPLES "Compile the examples" OFF)
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
@@ -20,12 +21,14 @@ if(${CAMEO_API_CPP})
 endif()
 
 if(${CAMEO_TESTS})
-  list(APPEND Tests tests/java/jeromq)
-  list(APPEND Tests tests/java/jzmq)
-  list(APPEND Tests tests/cpp)
-  list(APPEND Tests examples/java/jeromq)
-  list(APPEND Tests examples/java/jzmq)
-  list(APPEND Tests examples/cpp)
+  list(APPEND TestsExamples tests/java/jeromq)
+  list(APPEND TestsExamples tests/java/jzmq)
+  list(APPEND TestsExamples tests/cpp)
+endif()
+if(${CAMEO_EXAMPLES})  
+  list(APPEND TestsExamples examples/java/jeromq)
+  list(APPEND TestsExamples examples/java/jzmq)
+  list(APPEND TestsExamples examples/cpp)
 endif()
 
 if(${CAMEO_API_PYTHON})
@@ -53,7 +56,7 @@ endmacro()
 
 
 foreach(package java/server-jzmq java/console-jzmq
-    ${APIs} ${Tests})
+    ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
 
