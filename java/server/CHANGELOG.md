@@ -1,3 +1,9 @@
+1.1.0
+-----
+
+* Added support for variables in environment files.
+
+
 1.0.3
 -----
 
