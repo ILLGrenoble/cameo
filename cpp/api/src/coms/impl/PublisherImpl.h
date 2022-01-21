@@ -32,7 +32,10 @@ class PublisherImpl {
 public:
 	virtual ~PublisherImpl() {}
 
-	virtual void init(int publisherPort, int synchronizerPort) = 0;
+	virtual void init() = 0;
+
+	virtual int getPublisherPort() const = 0;
+	virtual int getSynchronizerPort() const = 0;
 
 	virtual bool waitForSubscribers() = 0;
 	virtual void cancelWaitForSubscribers() = 0;

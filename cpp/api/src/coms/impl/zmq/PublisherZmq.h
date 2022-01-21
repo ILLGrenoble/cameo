@@ -36,17 +36,19 @@ public:
 	PublisherZmq(const std::string& name, int numberOfSubscribers);
 	~PublisherZmq();
 
-	void init(int publisherPort, int synchronizerPort);
+	virtual void init();
+	virtual int getPublisherPort() const;
+	virtual int getSynchronizerPort() const;
 
-	bool waitForSubscribers();
-	void cancelWaitForSubscribers();
+	virtual bool waitForSubscribers();
+	virtual void cancelWaitForSubscribers();
 
-	void sendBinary(const std::string& data);
-	void send(const std::string& data);
-	void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
-	void setEnd();
-	bool isEnded();
-	void terminate();
+	virtual void sendBinary(const std::string& data);
+	virtual void send(const std::string& data);
+	virtual void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
+	virtual void setEnd();
+	virtual bool isEnded();
+	virtual void terminate();
 
 	void publish(const std::string& header, const char* data, std::size_t size);
 	void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2);
@@ -57,12 +59,12 @@ private:
 	zmq::message_t * responseToCancelRequest();
 	zmq::message_t * responseToUnknownRequest();
 
-	std::string createTerminatePublisherRequest(int id, const std::string& name) const;
-
+	int m_publisherPort;
 	int m_synchronizerPort;
 	std::string m_name;
 	int m_numberOfSubscribers;
 	std::unique_ptr<zmq::socket_t> m_publisher;
+	std::unique_ptr<zmq::socket_t> m_synchronizer;
 	bool m_ended;
 };
 

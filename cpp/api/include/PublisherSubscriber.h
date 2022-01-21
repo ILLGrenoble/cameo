@@ -64,15 +64,20 @@ public:
 
 	bool isEnded() const;
 
+	static const std::string KEY;
+	static const std::string PUBLISHER_PORT;
+	static const std::string SYNCHRONIZER_PORT;
+	static const std::string NUMBER_OF_SUBSCRIBERS;
+
 private:
 	Publisher(const std::string &name, int numberOfSubscribers);
-	void init(const std::string &name, int numberOfSubscribers);
-
-	static std::string createCreatePublisherRequest(int id, const std::string &name, int numberOfSubscribers);
+	void init(const std::string &name);
 
 	std::string m_name;
+	int m_numberOfSubscribers;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
+	std::string m_key;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -123,7 +128,6 @@ private:
 	Subscriber();
 	void init(application::Instance &app, const std::string &publisherName);
 	static std::unique_ptr<Subscriber> createSubscriber(application::Instance & app, const std::string &publisherName);
-	static std::string createConnectPublisherRequest(int id, const std::string& publisherName);
 
 	std::string m_publisherName;
 	std::string m_appName;

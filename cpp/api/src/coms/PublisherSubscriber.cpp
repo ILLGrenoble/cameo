@@ -31,8 +31,13 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
+const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
+const std::string Publisher::PUBLISHER_PORT = "publisher_port";
+const std::string Publisher::SYNCHRONIZER_PORT = "synchronizer_port";
+const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
+
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
-	m_name(name) {
+	m_name(name), m_numberOfSubscribers(numberOfSubscribers) {
 
 	//TODO Replace with factory.
 	m_impl = std::unique_ptr<PublisherImpl>(new PublisherZmq(name, numberOfSubscribers));
@@ -42,25 +47,35 @@ Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
 }
 
 Publisher::~Publisher() {
+
+	application::This::getCom().removeKey(m_key);
 }
 
-void Publisher::init(const std::string& name, int numberOfSubscribers) {
+void Publisher::init(const std::string& name) {
 
-	json::Object response = application::This::getCom().requestJSON(createCreatePublisherRequest(application::This::getId(), name, numberOfSubscribers));
+	// Init the publisher and synchronizer sockets.
+	m_impl->init();
 
-	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
-	if (publisherPort == -1) {
-		throw PublisherCreationException(response[message::PublisherResponse::MESSAGE].GetString());
-	}
-	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
+	// Store the publisher data.
+	json::StringObject publisherData;
 
-	m_impl->init(publisherPort, synchronizerPort);
+	publisherData.pushKey(PUBLISHER_PORT);
+	publisherData.pushValue(m_impl->getPublisherPort());
+
+	publisherData.pushKey(SYNCHRONIZER_PORT);
+	publisherData.pushValue(m_impl->getSynchronizerPort());
+
+	publisherData.pushKey(NUMBER_OF_SUBSCRIBERS);
+	publisherData.pushValue(m_numberOfSubscribers);
+
+	m_key = KEY + "-" + name;
+	application::This::getCom().storeKeyValue(m_key, publisherData.toString());
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
 
 	std::unique_ptr<Publisher> publisher = std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
-	publisher->init(name, numberOfSubscribers);
+	publisher->init(name);
 
 	return publisher;
 }
@@ -101,24 +116,6 @@ void Publisher::sendEnd() const {
 	m_impl->setEnd();
 }
 
-std::string Publisher::createCreatePublisherRequest(int id, const std::string& name, int numberOfSubscribers) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::CREATE_PUBLISHER_v0);
-
-	request.pushKey(message::CreatePublisherRequest::ID);
-	request.pushValue(id);
-
-	request.pushKey(message::CreatePublisherRequest::NAME);
-	request.pushValue(name);
-
-	request.pushKey(message::CreatePublisherRequest::NUMBER_OF_SUBSCRIBERS);
-	request.pushValue(numberOfSubscribers);
-
-	return request.toString();
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
@@ -139,18 +136,23 @@ void Subscriber::init(application::Instance & app, const std::string& publisherN
 	m_appId = app.getId();
 	m_appEndpoint = app.getEndpoint();
 
-	// Get the JSON response.
-	json::Object response = app.getCom().requestJSON(createConnectPublisherRequest(app.getId(), publisherName));
+	// Get the publisher data.
+	try {
+		std::string key = Publisher::KEY + "-" + m_publisherName;
+		std::string jsonString = app.getCom().getKeyValue(key);
 
-	int publisherPort = response[message::PublisherResponse::PUBLISHER_PORT].GetInt();
-	if (publisherPort == -1) {
-		throw SubscriberCreationException(response[message::PublisherResponse::MESSAGE].GetString());
+		json::Object publisherData;
+		json::parse(publisherData, jsonString);
+
+		int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
+		int synchronizerPort = publisherData[Publisher::SYNCHRONIZER_PORT.c_str()].GetInt();
+		int numberOfSubscribers = publisherData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
+
+		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
 	}
-
-	int synchronizerPort = response[message::PublisherResponse::SYNCHRONIZER_PORT].GetInt();
-	int numberOfSubscribers = response[message::PublisherResponse::NUMBER_OF_SUBSCRIBERS].GetInt();
-
-	m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
+	catch (...) {
+		throw SubscriberCreationException("Cannot create subscriber");
+	}
 }
 
 std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName) {
@@ -162,17 +164,23 @@ std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance &
 }
 
 std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string& publisherName) {
+
+	// Try to create the subscriber.
+	// If the publisher does not exist, an exception is thrown.
 	try {
 		return createSubscriber(app, publisherName);
-
-	} catch (const SubscriberCreationException& e) {
-		// the publisher does not exist, so we are waiting for it
+	}
+	catch (const SubscriberCreationException& e) {
+		// The publisher does not exist, so we are waiting for it.
 	}
 
-	// waiting for the publisher
-	application::State lastState = app.waitFor(publisherName);
+	// Wait for the publisher.
+	std::string key = Publisher::KEY + "-" + publisherName;
+	KeyValue keyValue(key);
 
-	// state cannot be terminal or it means that the application has terminated that is not planned.
+	application::State lastState = app.waitFor(keyValue);
+
+	// The state cannot be terminal or it means that the application has terminated.
 	if (lastState == application::SUCCESS
 		|| lastState == application::STOPPED
 		|| lastState == application::KILLED
@@ -180,11 +188,12 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, cons
 		return std::unique_ptr<Subscriber>(nullptr);
 	}
 
+	// The subscriber can be created.
 	try {
 		return createSubscriber(app, publisherName);
-
-	} catch (const SubscriberCreationException& e) {
-		// that should not happen
+	}
+	catch (const SubscriberCreationException& e) {
+		// That should not happen.
 	}
 
 	return std::unique_ptr<Subscriber>(nullptr);
@@ -232,21 +241,6 @@ std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinary
 
 void Subscriber::cancel() {
 	m_impl->cancel();
-}
-
-std::string Subscriber::createConnectPublisherRequest(int id, const std::string& publisherName) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::CONNECT_PUBLISHER_v0);
-
-	request.pushKey(message::ConnectPublisherRequest::APPLICATION_ID);
-	request.pushValue(id);
-
-	request.pushKey(message::ConnectPublisherRequest::PUBLISHER_NAME);
-	request.pushValue(publisherName);
-
-	return request.toString();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {

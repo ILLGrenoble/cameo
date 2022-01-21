@@ -64,6 +64,9 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
+		// Sleep for 1s to let the subscribers wait.
+		this_thread::sleep_for(chrono::seconds(1));
+
 		// The publisher is created after the applications that will wait for it.
 		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
 

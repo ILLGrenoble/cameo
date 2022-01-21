@@ -35,6 +35,7 @@ public:
 	StringObject();
 
 	void pushKey(const char* key);
+	void pushKey(const std::string& key);
 
 	void pushNull();
 	void pushValue(int value);

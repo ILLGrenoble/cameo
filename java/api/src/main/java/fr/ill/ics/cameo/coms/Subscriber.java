@@ -4,6 +4,10 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.KeyValue;
+import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.UndefinedApplicationException;
+import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.SubscriberZmq;
 import fr.ill.ics.cameo.messages.JSON;
@@ -37,35 +41,42 @@ public class Subscriber {
 		this.appId = app.getId();
 		this.appEndpoint = app.getEndpoint();
 		
-		JSONObject request = Messages.createConnectPublisherRequest(app.getId(), publisherName);
-		JSONObject response = app.getCom().requestJSON(request);
-		
-		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
-		
-		if (publisherPort == -1) {
-			throw new SubscriberCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		// Get the publisher data.
+		try {
+			String key = Publisher.KEY + "-" + publisherName;
+			String jsonString = app.getCom().getKeyValue(key);
+			
+			JSONObject publisherData = This.getCom().parse(jsonString);
+			
+			int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
+			int synchronizerPort = JSON.getInt(publisherData, Publisher.SYNCHRONIZER_PORT);
+			int numberOfSubscribers = JSON.getInt(publisherData, Publisher.NUMBER_OF_SUBSCRIBERS);
+			
+			impl.init(appId, appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);	
 		}
-		
-		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
-		int numberOfSubscribers = JSON.getInt(response, Messages.PublisherResponse.NUMBER_OF_SUBSCRIBERS);
-		
-		impl.init(appId, appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
+		catch (UndefinedApplicationException | UndefinedKeyException e) {
+			throw new SubscriberCreationException("");
+		}
 	}
 	
 	private boolean init(Instance app, String publisherName) {
 		
+		// Try to create the subscriber.
+		// If the publisher does not exist, an exception is thrown.
 		try {
 			initSubscriber(app, publisherName);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
-			// the publisher does not exist, so we are waiting for it
+			// The publisher does not exist, so we are waiting for it.
 		}
+
+		// Wait for the publisher.
+		String key = Publisher.KEY + "-" + publisherName;
 		
-		// waiting for the publisher
-		int lastState = app.waitFor(publisherName);
+		int lastState = app.waitFor(new KeyValue(key));
 		
-		// state cannot be terminal or it means that the application has terminated that is not planned.
+		// The state cannot be terminal or it means that the application has terminated that is not planned.
 		if (lastState == Application.State.SUCCESS 
 			|| lastState == Application.State.STOPPED
 			|| lastState == Application.State.KILLED					
@@ -73,12 +84,13 @@ public class Subscriber {
 			return false;
 		}
 		
+		// The subscriber can be created.
 		try {
 			initSubscriber(app, publisherName);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
-			// that should not happen
+			// That should not happen.
 			System.err.println("the publisher " + publisherName + " does not exist but should");
 		}
 		

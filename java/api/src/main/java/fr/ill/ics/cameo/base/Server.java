@@ -152,6 +152,10 @@ public class Server {
 		return parser.parse(Messages.parseString(data));
 	}
 	
+	JSONObject parse(String data) throws ParseException {
+		return parser.parse(data);
+	}
+	
 	/**
 	 * test connection with server
 	 * @param timeout

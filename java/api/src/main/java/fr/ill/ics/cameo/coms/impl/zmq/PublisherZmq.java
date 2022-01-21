@@ -29,11 +29,13 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherZmq implements PublisherImpl {
 
+	private int publisherPort;
 	private int synchronizerPort;
 	private String name;
 	private int numberOfSubscribers;
 	private Zmq.Context context;
 	private Zmq.Socket publisher = null;
+	private Zmq.Socket synchronizer = null;
 	private boolean ended = false;
 	
 	public PublisherZmq(String name, int numberOfSubscribers) {
@@ -41,13 +43,57 @@ public class PublisherZmq implements PublisherImpl {
 		this.numberOfSubscribers = numberOfSubscribers;
 	}
 	
-	public void init(int publisherPort, int synchronizerPort) {
-		this.synchronizerPort = synchronizerPort;
+	public void init() {
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
-		
-		// create a socket for publishing
 		publisher = context.createSocket(Zmq.PUB);
-		publisher.bind("tcp://*:" + publisherPort);
+		
+		String endpointPrefix = "tcp://*:";	
+		
+		// Loop to find an available port for the publisher.
+		while (true) {
+		
+			int port = This.getCom().requestPort();
+			String pubEndpoint = endpointPrefix + port;
+
+			try {
+				publisher.bind(pubEndpoint);
+				publisherPort = port;
+				break;
+			}
+			catch (Exception e) {
+				This.getCom().setPortUnavailable(port);
+			}
+		}
+			
+		// Define the synchronizer if the number of subscribers is strictly positive.
+		if (numberOfSubscribers > 0) {
+
+			synchronizer = context.createSocket(Zmq.REP);
+
+			// Loop to find an available port for the synchronizer.
+			while (true) {
+		
+				int port = This.getCom().requestPort();
+				String pubEndpoint = endpointPrefix + port;
+		
+				try {
+					synchronizer.bind(pubEndpoint);
+					synchronizerPort = port;
+					break;
+				}
+				catch (Exception e) {
+					This.getCom().setPortUnavailable(port);
+				}
+			}
+		}	
+	}
+	
+	public int getPublisherPort() {
+		return publisherPort;
+	}
+	
+	public int getSynchronizerPort() {
+		return synchronizerPort; 	
 	}
 			
 	public boolean waitForSubscribers() {
@@ -56,17 +102,10 @@ public class PublisherZmq implements PublisherImpl {
 			return true;
 		}
 		
-		Zmq.Socket synchronizer = null;
 		boolean canceled = false;
 		
 		try {
-			// create a socket to receive the messages from the subscribers
-			synchronizer = context.createSocket(Zmq.REP);
-			String endpoint = "tcp://*:" + synchronizerPort;
-			
-			synchronizer.bind(endpoint);
-			
-			// loop until the number of subscribers is reached
+			// Loop until the number of subscribers is reached.
 			int counter = 0;
 			
 			while (counter < numberOfSubscribers) {
@@ -121,7 +160,7 @@ public class PublisherZmq implements PublisherImpl {
 			}
 			
 		} finally {
-			// destroy synchronizer socket as we do not need it anymore.
+			// Destroy synchronizer socket as we do not need it anymore.
 			if (synchronizer != null) {
 				context.destroySocket(synchronizer);
 			}	
@@ -186,12 +225,14 @@ public class PublisherZmq implements PublisherImpl {
 		
 		context.destroySocket(publisher);
 		
-		JSONObject request = Messages.createTerminatePublisherRequest(This.getId(), name);
-		JSONObject response = This.getCom().requestJSON(request);
+		// Release the publisher port.
+		This.getCom().releasePort(publisherPort);
 		
-		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		if (value == -1) {
-			System.err.println("Cannot terminate publisher");
+		if (synchronizer != null) {
+			context.destroySocket(synchronizer);
+			
+			// Release the publisher port.
+			This.getCom().releasePort(synchronizerPort);	
 		}
 	}
 	

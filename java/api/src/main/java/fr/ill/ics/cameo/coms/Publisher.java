@@ -3,6 +3,7 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.PublisherZmq;
 import fr.ill.ics.cameo.messages.JSON;
@@ -15,30 +16,41 @@ import fr.ill.ics.cameo.messages.Messages;
 public class Publisher {
 
 	private String name;
+	private int numberOfSubscribers;
 	private PublisherImpl impl;
 	private PublisherWaiting waiting = new PublisherWaiting(this);
+	private String key;
+	
+	public static String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
+	public static String PUBLISHER_PORT = "publisher_port";
+	public static String SYNCHRONIZER_PORT = "synchronizer_port";
+	public static String NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 	
 	private Publisher(String name, int numberOfSubscribers) {
 		
 		this.name = name;
+		this.numberOfSubscribers = numberOfSubscribers;
+		
 		//TODO Replace with factory.
 		this.impl = new PublisherZmq(name, numberOfSubscribers);
 		
 		waiting.add();
 	}
 	
-	private void init(String name, int numberOfSubscribers) throws PublisherCreationException {
-	
-		JSONObject request = Messages.createCreatePublisherRequest(This.getId(), name, numberOfSubscribers);
-		JSONObject response = This.getCom().requestJSON(request);
-	
-		int publisherPort = JSON.getInt(response, Messages.PublisherResponse.PUBLISHER_PORT);
-		if (publisherPort == -1) {
-			throw new PublisherCreationException(JSON.getString(response, Messages.PublisherResponse.MESSAGE));
-		}
-		int synchronizerPort = JSON.getInt(response, Messages.PublisherResponse.SYNCHRONIZER_PORT);
+	private void init(String name) throws PublisherCreationException {
 		
-		impl.init(publisherPort, synchronizerPort);
+		// Init the publisher and synchronizer sockets.
+		impl.init();
+		
+		// Store the publisher data.
+		JSONObject publisherData = new JSONObject();
+		publisherData.put(PUBLISHER_PORT, impl.getPublisherPort());
+		publisherData.put(SYNCHRONIZER_PORT, impl.getSynchronizerPort());
+		publisherData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+		
+		key = KEY + "-" + name;
+		
+		This.getCom().storeKeyValue(key, publisherData.toJSONString());
 	}
 	
 	/**
@@ -50,7 +62,7 @@ public class Publisher {
 	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
 		
 		Publisher publisher = new Publisher(name, numberOfSubscribers);
-		publisher.init(name, numberOfSubscribers);
+		publisher.init(name);
 		
 		return publisher;
 	}
@@ -105,6 +117,14 @@ public class Publisher {
 	}
 	
 	public void terminate() {
+		
+		try {
+			This.getCom().removeKey(key);
+		}
+		catch (UndefinedKeyException e) {
+			// No need to treat.
+		}
+		
 		waiting.remove();
 		impl.terminate();
 	}

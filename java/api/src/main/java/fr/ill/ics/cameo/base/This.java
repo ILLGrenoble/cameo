@@ -130,6 +130,16 @@ public class This {
 			}
 		}
 		
+		public JSONObject parse(String message) {
+		
+			try {
+				return server.parse(message);
+			}
+			catch (ParseException e) {
+				throw new UnexpectedException("Cannot parse message");
+			}
+		}
+		
 		//TODO Remove when use of key values is done.
 		public void removePort(String name) {
 			

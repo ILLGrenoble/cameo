@@ -27,6 +27,7 @@ namespace cameo {
 namespace coms {
 
 PublisherZmq::PublisherZmq(const std::string& name, int numberOfSubscribers) :
+	m_publisherPort(0),
 	m_synchronizerPort(0),
 	m_name(name),
 	m_numberOfSubscribers(numberOfSubscribers),
@@ -37,17 +38,59 @@ PublisherZmq::~PublisherZmq() {
 	terminate();
 }
 
-void PublisherZmq::init(int publisherPort, int synchronizerPort) {
+void PublisherZmq::init() {
 
-	m_synchronizerPort = synchronizerPort;
-
-	// create a socket for publishing
+	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_PUB));
-	std::stringstream pubEndpoint;
-	pubEndpoint << "tcp://*:" << publisherPort;
 
-	m_publisher->bind(pubEndpoint.str().c_str());
+	std::string endpointPrefix("tcp://*:");
+
+	// Loop to find an available port for the publisher.
+	while (true) {
+
+		int port = application::This::getCom().requestPort();
+		std::string pubEndpoint = endpointPrefix + std::to_string(port);
+
+		try {
+			m_publisher->bind(pubEndpoint.c_str());
+			m_publisherPort = port;
+			break;
+		}
+		catch (...) {
+			application::This::getCom().setPortUnavailable(port);
+		}
+	}
+
+	// Define the synchronizer if the number of subscribers is strictly positive.
+	if (m_numberOfSubscribers > 0) {
+
+		m_synchronizer.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
+
+		// Loop to find an available port for the synchronizer.
+		while (true) {
+
+			int port = application::This::getCom().requestPort();
+			std::string syncEndpoint = endpointPrefix + std::to_string(port);
+
+			try {
+				m_synchronizer->bind(syncEndpoint.c_str());
+				m_synchronizerPort = port;
+				break;
+			}
+			catch (...) {
+				application::This::getCom().setPortUnavailable(port);
+			}
+		}
+	}
+}
+
+int PublisherZmq::getPublisherPort() const {
+	return m_publisherPort;
+}
+
+int PublisherZmq::getSynchronizerPort() const {
+	return m_synchronizerPort;
 }
 
 bool PublisherZmq::waitForSubscribers() {
@@ -56,16 +99,6 @@ bool PublisherZmq::waitForSubscribers() {
 		return true;
 	}
 
-	// Create a socket to receive the messages from the subscribers.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	zmq::socket_t synchronizer(contextImpl->getContext(), ZMQ_REP);
-
-	std::stringstream syncEndpoint;
-	std::string url = "tcp://*";
-
-	syncEndpoint << url << ":" << m_synchronizerPort;
-	synchronizer.bind(syncEndpoint.str().c_str());
-
 	// Loop until the number of subscribers is reached.
 	int counter = 0;
 	bool canceled = false;
@@ -73,7 +106,7 @@ bool PublisherZmq::waitForSubscribers() {
 	while (counter < m_numberOfSubscribers) {
 
 		zmq::message_t message;
-		if (!synchronizer.recv(message, zmq::recv_flags::none).has_value()) {
+		if (!m_synchronizer->recv(message, zmq::recv_flags::none).has_value()) {
 			return false;
 		}
 
@@ -103,7 +136,7 @@ bool PublisherZmq::waitForSubscribers() {
 
 		// send to the client
 		if (reply != nullptr) {
-			synchronizer.send(*reply, zmq::send_flags::none);
+			m_synchronizer->send(*reply, zmq::send_flags::none);
 		}
 	}
 
@@ -145,7 +178,7 @@ void PublisherZmq::sendTwoBinaryParts(const std::string& data1, const std::strin
 
 void PublisherZmq::setEnd() {
 
-	if (!m_ended && m_publisher.get() != nullptr) {
+	if (!m_ended && m_publisher) {
 		// send a dummy ENDSTREAM message by the publisher socket
 		std::string data(message::Event::ENDSTREAM);
 		publish(message::Event::ENDSTREAM, data.c_str(), data.length());
@@ -160,18 +193,19 @@ bool PublisherZmq::isEnded() {
 
 void PublisherZmq::terminate() {
 
-	if (m_publisher.get() != nullptr) {
+	if (m_publisher) {
 		setEnd();
 		m_publisher.reset(nullptr);
 
-		json::Object response = application::This::getCom().requestJSON(createTerminatePublisherRequest(application::This::getId(), m_name));
+		// Release the publisher port.
+		application::This::getCom().releasePort(m_publisherPort);
+	}
 
-		int value = response[message::RequestResponse::VALUE].GetInt();
-		bool success = (value != -1);
+	if (m_synchronizer) {
+		m_synchronizer.reset(nullptr);
 
-		if (!success) {
-			std::cerr << "server cannot destroy publisher " << m_name << std::endl;
-		}
+		// Release the synchronizer port.
+		application::This::getCom().releasePort(m_synchronizerPort);
 	}
 }
 
@@ -205,7 +239,7 @@ void PublisherZmq::publishTwoParts(const std::string& header, const char* data1,
 
 zmq::message_t * PublisherZmq::responseToSyncRequest() {
 
-	// send a dummy SYNC message by the publisher socket
+	// Send a dummy SYNC message by the publisher socket.
 	std::string data(message::Event::SYNC);
 	publish(message::Event::SYNC, data.c_str(), data.length());
 
@@ -246,21 +280,6 @@ zmq::message_t * PublisherZmq::responseToUnknownRequest() {
 	memcpy(reply->data(), result.c_str(), result.length());
 
 	return reply;
-}
-
-std::string PublisherZmq::createTerminatePublisherRequest(int id, const std::string& name) const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::TERMINATE_PUBLISHER_v0);
-
-	request.pushKey(message::TerminatePublisherRequest::ID);
-	request.pushValue(id);
-
-	request.pushKey(message::TerminatePublisherRequest::NAME);
-	request.pushValue(name);
-
-	return request.toString();
 }
 
 }

@@ -62,10 +62,10 @@ public class TestSubscriber {
 				
 				// Create 5 subscribers.
 				for (int j = 0; j < 5; ++j) {
-					// pass the name of the application in argument
+					// Pass the name of the application in argument.
 					String[] applicationArgs = {This.getName()};
 					
-					// start the subscriber applications that can subscribe whereas the publisher is not created
+					// Start the subscriber applications that can subscribe whereas the publisher is not created.
 					Instance subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
 					
 					if (subscriberApplication.exists()) {
@@ -75,8 +75,11 @@ public class TestSubscriber {
 						System.out.println("Cannot start subscriber application");
 					}
 				}
-						
-				// the publisher is created after the applications that will wait for it
+				
+				// Sleep for 1s to let the subscribers wait.
+				wait(1000);
+				
+				// The publisher is created after the applications that will wait for it.
 				fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher");
 				
 				for (int k = 0; k < 20; ++k) {
@@ -89,29 +92,22 @@ public class TestSubscriber {
 					wait(100);
 				}		
 				
-				// The publisher must terminate so that the subscriber applications receive end of stream.
-				// However the subscribers may not be connected.
+				// The publisher sends end so that the subscriber applications receive end of stream.
+				publisher.sendEnd();
 				
-				System.out.println("Terminating the publisher");
-				
-				publisher.terminate();
-				
-				System.out.println("Terminated the publisher");
-				
-				// So we must kill all the subscribers
+				// So we must kill all the subscribers.
 				List<Instance> subscriberApplications = server.connectAll(subscriberApplicationName);
 				for (Instance subscriberApplication : subscriberApplications) {
-					subscriberApplication.kill();
 					subscriberApplication.waitFor();
-					
-					System.out.println("Killed " + subscriberApplication);
 				}
+				
+				publisher.terminate();
 			}
-			
-		} catch (PublisherCreationException e) {
+		}
+		catch (PublisherCreationException e) {
 			System.out.println("Publisher error");
-			
-		} finally {
+		}
+		finally {
 			This.terminate();
 		}
 		

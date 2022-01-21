@@ -28,6 +28,10 @@ void StringObject::pushKey(const char* key) {
 	m_writer.Key(key);
 }
 
+void StringObject::pushKey(const std::string& key) {
+	m_writer.Key(key.c_str());
+}
+
 void StringObject::pushNull() {
 	m_writer.Null();
 }
