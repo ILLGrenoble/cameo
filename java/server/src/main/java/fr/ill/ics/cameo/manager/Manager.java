@@ -32,6 +32,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
+import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
@@ -932,12 +933,14 @@ public class Manager extends ConfigLoader {
 		}
 	}
 
-	public void storeKeyValue(int id, String key, String value) throws IdNotFoundException {
+	public void storeKeyValue(int id, String key, String value) throws IdNotFoundException, KeyAlreadyExistsException {
 		
 		Application application = applicationMap.get(id);
 		
 		if (application != null) {
-			application.storeKeyValue(key, value);
+			if (!application.storeKeyValue(key, value)) {
+				throw new KeyAlreadyExistsException();
+			}
 			
 			// Send the event.
 			sendStoreKeyValue(id, application.getName(), key, value);

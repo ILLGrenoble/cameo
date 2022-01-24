@@ -69,7 +69,13 @@ void Publisher::init(const std::string& name) {
 	publisherData.pushValue(m_numberOfSubscribers);
 
 	m_key = KEY + "-" + name;
-	application::This::getCom().storeKeyValue(m_key, publisherData.toString());
+
+	try {
+		application::This::getCom().storeKeyValue(m_key, publisherData.toString());
+	}
+	catch (const KeyAlreadyExistsException& e) {
+		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+	}
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {

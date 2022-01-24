@@ -27,6 +27,7 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
+import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
@@ -902,6 +903,14 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
 			return Converter.reply(response);
+		}
+		catch (KeyAlreadyExistsException e) {
+			// Return the reply.
+			JSONObject response = new JSONObject();
+			response.put(Messages.RequestResponse.VALUE, -2);
+			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+						
+			return Converter.reply(response);	
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.

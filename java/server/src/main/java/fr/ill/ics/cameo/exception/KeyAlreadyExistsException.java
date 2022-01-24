@@ -16,24 +16,11 @@
 
 package fr.ill.ics.cameo.exception;
 
-public class StreamAlreadyWriteException extends Exception {
-	
-	private static final long serialVersionUID = -1067462047072637925L;
-	private String logPath;
-	
-	public StreamAlreadyWriteException(String logPath) {
-		this.logPath = logPath;
-	}
+public class KeyAlreadyExistsException extends Exception {
 
-	public String getLogPath() {
-		return logPath;
-	}
+	private static final long serialVersionUID = -1554083418570932263L;
 
-	public void setLogPath(String logPath) {
-		this.logPath = logPath;
-	}
-	
 	public String getMessage() {
-		return "Logs are already written at '" +this.getLogPath()+ "'";
+		return "The key already exists";
 	}
 }

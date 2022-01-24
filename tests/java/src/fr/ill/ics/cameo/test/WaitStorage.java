@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.test;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 
@@ -38,8 +39,12 @@ public class WaitStorage {
 		}
 		catch (InterruptedException e) {
 		}
-		
-		This.getCom().storeKeyValue(key, valueObject.toJSONString());
+	
+		try {
+			This.getCom().storeKeyValue(key, valueObject.toJSONString());
+		}
+		catch (KeyAlreadyExistsException e1) {
+		}
 		
 		// Sleep 100ms.
 		try {

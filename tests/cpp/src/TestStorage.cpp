@@ -35,7 +35,21 @@ int main(int argc, char *argv[]) {
 	writer.Int(12);
 	writer.EndObject();
 
+	try {
+		string valueString = application::This::getCom().getKeyValue(key);
+	}
+	catch (const UndefinedKeyException& e) {
+		cout << "Key is undefined: " << e.what() << endl;
+	}
+
 	application::This::getCom().storeKeyValue(key, buffer.GetString());
+
+	try {
+		application::This::getCom().storeKeyValue(key, buffer.GetString());
+	}
+	catch (const KeyAlreadyExistsException& e) {
+		cout << "Key already exists: " << e.what() << endl;
+	}
 
 	try {
 		string valueString = application::This::getCom().getKeyValue(key);

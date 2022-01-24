@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.messages.JSON;
@@ -35,7 +36,25 @@ public class TestStorage {
 		JSONObject valueObject = new JSONObject();
 		valueObject.put("x", 12);
 		
-		This.getCom().storeKeyValue(key, valueObject.toJSONString());
+		try {
+			This.getCom().getKeyValue(key);
+		}
+		catch (UndefinedKeyException e) {
+			System.out.println("Key is undefined: " + e.getMessage());
+		}
+		
+		try {
+			This.getCom().storeKeyValue(key, valueObject.toJSONString());
+		}
+		catch (KeyAlreadyExistsException e) {
+		}
+		
+		try {
+			This.getCom().storeKeyValue(key, valueObject.toJSONString());
+		}
+		catch (KeyAlreadyExistsException e) {
+			System.out.println("Key already exists: " + e.getMessage());
+		}
 		
 		try {
 			String valueString = This.getCom().getKeyValue(key);

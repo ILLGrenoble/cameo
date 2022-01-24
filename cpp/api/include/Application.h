@@ -23,6 +23,7 @@
 #include "ConnectionTimeout.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
+#include "KeyAlreadyExistsException.h"
 #include "Response.h"
 #include "Serializer.h"
 #include "Context.h"

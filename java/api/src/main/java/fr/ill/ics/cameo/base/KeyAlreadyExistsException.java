@@ -1,3 +1,4 @@
+package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,13 +15,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
 
-public class IdNotFoundException extends Exception {
 
-	private static final long serialVersionUID = -5038844210257342962L;
+public class KeyAlreadyExistsException extends RemoteException {
 
-	public String getMessage() {
-		return "The id does not exist";
+	private static final long serialVersionUID = -3629600566663993697L;
+
+	public KeyAlreadyExistsException(String message) {
+		super(message);
 	}
 }

@@ -2,6 +2,7 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
@@ -50,7 +51,12 @@ public class Publisher {
 		
 		key = KEY + "-" + name;
 		
-		This.getCom().storeKeyValue(key, publisherData.toJSONString());
+		try {
+			This.getCom().storeKeyValue(key, publisherData.toJSONString());
+		}
+		catch (KeyAlreadyExistsException e) {
+			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+		}
 	}
 	
 	/**

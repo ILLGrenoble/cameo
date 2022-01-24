@@ -48,8 +48,14 @@ public class This {
 			return server.getContext();
 		}
 		
-		public void storeKeyValue(String key, String value) {
-			server.storeKeyValue(applicationId, key, value);
+		public void storeKeyValue(String key, String value) throws KeyAlreadyExistsException {
+			try {
+				server.storeKeyValue(applicationId, key, value);
+			}
+			catch (UndefinedApplicationException e) {
+				// Should not happen in This.
+				e.printStackTrace();
+			}
 		}
 		
 		public String getKeyValue(String key) throws UndefinedKeyException {

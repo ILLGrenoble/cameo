@@ -21,6 +21,7 @@
 #include "ConnectionChecker.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
+#include "KeyAlreadyExistsException.h"
 #include "EventThread.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
@@ -544,20 +545,28 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
 	json::Object response = m_requestSocket->requestJSON(createStoreKeyValueRequest(id, key, value));
+
+	int responseValue = response[message::RequestResponse::VALUE].GetInt();
+	if (responseValue == -1) {
+		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
+	}
+	else if (responseValue == -2) {
+		throw KeyAlreadyExistsException(response[message::RequestResponse::MESSAGE].GetString());
+	}
 }
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
 	json::Object response = m_requestSocket->requestJSON(createGetKeyValueRequest(id, key));
 
-	int value = response[message::RequestResponse::VALUE].GetInt();
-	if (value == 0) {
+	int responseValue = response[message::RequestResponse::VALUE].GetInt();
+	if (responseValue == 0) {
 		return response[message::RequestResponse::MESSAGE].GetString();
 	}
-	else if (value == -1) {
+	else if (responseValue == -1) {
 		throw UndefinedApplicationException(response[message::RequestResponse::MESSAGE].GetString());
 	}
-	else if (value == -2) {
+	else if (responseValue == -2) {
 		throw UndefinedKeyException(response[message::RequestResponse::MESSAGE].GetString());
 	}
 

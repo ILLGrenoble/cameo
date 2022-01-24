@@ -149,8 +149,14 @@ public abstract class Application extends ApplicationConfig {
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Storage methods
 	
-	public void storeKeyValue(String key, String value) {
+	public boolean storeKeyValue(String key, String value) {
+		
+		if (keyValues.containsKey(key)) {
+			return false;
+		}
 		keyValues.put(key, value);
+		
+		return true;
 	}
 	
 	public String getKeyValue(String key) {

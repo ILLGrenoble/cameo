@@ -14,13 +14,19 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+#ifndef CAMEO_KEYALREADYEXISTSEXCEPTION_H_
+#define CAMEO_KEYALREADYEXISTSEXCEPTION_H_
 
-public class IdNotFoundException extends Exception {
+#include "RemoteException.h"
 
-	private static final long serialVersionUID = -5038844210257342962L;
+namespace cameo {
 
-	public String getMessage() {
-		return "The id does not exist";
-	}
+class KeyAlreadyExistsException : public RemoteException {
+
+public:
+	KeyAlreadyExistsException(const std::string& message);
+};
+
 }
+
+#endif

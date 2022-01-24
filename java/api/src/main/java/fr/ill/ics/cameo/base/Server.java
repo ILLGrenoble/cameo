@@ -732,11 +732,21 @@ public class Server {
 	 * @param applicationId
 	 * @param key
 	 * @param value
+	 * @throws UndefinedApplicationException 
+	 * @throws UndefinedKeyException 
 	 */
-	void storeKeyValue(int applicationId, String key, String value) {
+	void storeKeyValue(int applicationId, String key, String value) throws UndefinedApplicationException, KeyAlreadyExistsException {
 		
 		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
 		JSONObject response = requestSocket.requestJSON(request);
+		
+		int responseValue = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (responseValue == -1) {
+			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		}
+		else if (responseValue == -2) {
+			throw new KeyAlreadyExistsException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		}
 	}
 	
 	/**
@@ -752,14 +762,14 @@ public class Server {
 		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		if (value == 0) {
+		int responseValue = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		if (responseValue == 0) {
 			return JSON.getString(response, Messages.RequestResponse.MESSAGE);
 		}
-		else if (value == -1) {
+		else if (responseValue == -1) {
 			throw new UndefinedApplicationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
-		else if (value == -2) {
+		else if (responseValue == -2) {
 			throw new UndefinedKeyException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
 		}
 		
