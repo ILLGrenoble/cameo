@@ -64,7 +64,7 @@ public class Manager extends ConfigLoader {
 		
 		applicationMap = new ConcurrentHashMap<Integer, Application>();
 		
-		// security test
+		// Security test.
 		if (ConfigManager.getInstance().getMaxNumberOfApplications() > MAX_ID) {
 			MAX_ID = ConfigManager.getInstance().getMaxNumberOfApplications();
 		}
@@ -81,7 +81,7 @@ public class Manager extends ConfigLoader {
 		
 		applicationMap = new ConcurrentHashMap<Integer, Application>();
 		
-		// security test
+		// Security test.
 		if (ConfigManager.getInstance().getMaxNumberOfApplications() > MAX_ID) {
 			MAX_ID = ConfigManager.getInstance().getMaxNumberOfApplications();
 		}
@@ -118,7 +118,7 @@ public class Manager extends ConfigLoader {
 		
 		Log.logger().info("Status socket on port " + port);
 		
-		// iterate the application configurations
+		// Iterate the application configurations.
 		for (ApplicationConfig config : applicationList) {
 			
 			if (config.hasOutputStream()) {
@@ -235,16 +235,17 @@ public class Manager extends ConfigLoader {
 
 	private int findId() throws MaxNumberOfApplicationsReached {
 
-		// First iteration
+		// First iteration.
 		int id = findFreeId(maxId + 1, MAX_ID + 1);
 		if (id != -1) {
-			// Found an id
+			// Found an id.
 			maxId = id;
-		} else {
-			// Found no id, iterate from the beginning to maxId
+		}
+		else {
+			// Found no id, iterate from the beginning to maxId.
 			id = findFreeId(1, maxId + 1);
 			if (id != -1) {
-				// Found an id
+				// Found an id.
 				maxId = id;
 			}
 		}
@@ -289,30 +290,31 @@ public class Manager extends ConfigLoader {
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
 
-		// Verify if the application is already running
+		// Verify if the application is already running.
 		verifyNumberOfInstances(config.getName(), config.runsSingle());
 
 		// Find an id, throws an exception if there is no id available.
 		int id = findId();
 		
-		// Create application
+		// Create application.
 		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
-		// Threads
-		// Verifiy application thread
+		// Threads.
+		// Create the lifecyle application thread.
 		LifecycleApplicationThread lifecycleThread = new LifecycleApplicationThread(application, this, Log.logger());
 		lifecycleThread.start();
 		
-		// Stream thread
+		// Create the stream thread.
 		if (application.isWritingStream() || application.hasOutputStream()) {
 			if (application.getLogPath() != null) {
 				Log.logger().fine("Application " + application.getNameId() + " has stream to log file '" + application.getLogPath() + "'");
-			} else {
+			}
+			else {
 				Log.logger().fine("Application " + application.getNameId() + " has stream");
 			}
 
-			// The thread is built but not started here because it requires that the process is started
+			// The thread is built but not started here because it requires that the process is started.
 			StreamApplicationThread streamThread = new StreamApplicationThread(application, this);
 			application.setStreamThread(streamThread);
 		}
@@ -346,16 +348,17 @@ public class Manager extends ConfigLoader {
 			
 			String name = application.getName();
 			
-			// If the process is dead, there is no thread
+			// If the process is dead, there is no thread.
 			if (application.getProcessState().equals(ProcessState.DEAD)) {
 				removeApplication(application);
-			} else {
+			}
+			else {
 				// The following call will have no effect if it was already called.
 				application.setHasToStop(true, false);
 			}
 			return name;
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -374,15 +377,16 @@ public class Manager extends ConfigLoader {
 			
 			String name = application.getName();
 			
-			// if process is dead, there is not thread on it
+			// If process is dead, remove the application.
 			if (application.getProcessState().equals(ProcessState.DEAD)) {
 				removeApplication(application);
-			} else {
+			}
+			else {
 				application.setHasToStop(true, true);
 			}
 			return name;
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -399,10 +403,11 @@ public class Manager extends ConfigLoader {
 		
 			if (application != null) {
 				
-				// if process is dead, there is not thread on it
+				// If process is dead, remove the application.
 				if (application.getProcessState().equals(ProcessState.DEAD)) {
 					removeApplication(application);
-				} else {
+				}
+				else {
 					application.setHasToStop(true, true);
 				}
 				application.kill();
@@ -425,7 +430,8 @@ public class Manager extends ConfigLoader {
 			Application application = entry.getValue();
 			if (application.getArgs() == null) {
 				args = "";
-			} else {
+			}
+			else {
 				args = String.join(" ", application.getArgs());
 			}
 			
@@ -463,15 +469,15 @@ public class Manager extends ConfigLoader {
 	 */
 	public synchronized int getStreamPort(int id) throws IdNotFoundException, UnknownApplicationException, StreamNotPublishedException {
 		
-		// find application
+		// Find the application.
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
 						
 			Log.logger().fine("Application " + application.getNameId() + " has stream port " + application.getOutputStreamPort());
 			
 			return application.getOutputStreamPort();
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 
@@ -486,22 +492,22 @@ public class Manager extends ConfigLoader {
 	 */
 	private void verifyNumberOfInstances(String name, boolean single) throws ApplicationAlreadyExecuting, MaxNumberOfApplicationsReached {
 		
-		// count the application instances
+		// Count the application instances.
 		int counter = 0;
 		
-		// just check name
+		// Check the name.
 		for (java.util.Map.Entry<Integer, Application> entry : applicationMap.entrySet()) {
 		
 			Application application = entry.getValue();
 			
 			if (application.getName().equals(name)) {
 				
-				// check if application is dead
+				// Check if the process is dead.
 				if (application.getProcessState() == ProcessState.DEAD) {
 					removeApplication(application);
 				}
 				else {
-					// increment the counter
+					// Increment the counter.
 					++counter;
 					
 					if (single) {
@@ -537,8 +543,8 @@ public class Manager extends ConfigLoader {
 				return true;
 			}
 			return false;
-			
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -564,42 +570,43 @@ public class Manager extends ConfigLoader {
 			
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(application.getProcess().getOutputStream()));
 			
-			// build simple string from parameters
+			// Build simple string from parameters.
 			String inputString = "";
 			for (int i = 0; i < inputs.length - 1; i++) {
 				inputString += inputs[i] + " ";
 			}
 			inputString += inputs[inputs.length - 1];
 			
-			// send the parameters string
+			// Send the parameters string.
 			try {
 				writer.write(inputString);
 				writer.flush();
-				
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				Log.logger().severe("Enable to write to input for application " + application.getNameId());
 				try {
 					writer.close();
-				} catch (IOException ec) {
-					// do nothing
+				}
+				catch (IOException ec) {
+					// Do nothing.
 				}
 			}
-		
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
 	
 	public synchronized void setApplicationState(Application application, int applicationState, int exitValue) {
 		
-		// states are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED
-		// set the status of the application
+		// States are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED.
+		// Set the status of the application
 		application.setState(applicationState);
 		
-		// send the status
+		// Send the status.
 		sendStatus(application.getId(), application.getName(), applicationState, application.getPastApplicationStates(), exitValue);
 				
-		// remove the application for terminal states
+		// Remove the application for terminal states.
 		if (applicationState == ApplicationState.ERROR
 			|| applicationState == ApplicationState.STOPPED
 			|| applicationState == ApplicationState.KILLED
@@ -618,7 +625,7 @@ public class Manager extends ConfigLoader {
 	}
 			
 	public synchronized void startApplicationStreamThread(Application application) {
-		// process is alive
+		// Process is alive.
 		application.startStreamThread();			
 	}
 
@@ -635,17 +642,19 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		int currentState = application.getApplicationState();
 		
-		// states are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED
-		// state that can be set by the client : RUNNING
+		// States are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED.
+		// State that can be set by the client : RUNNING
 		if (state == ApplicationState.RUNNING) {
 			// current state can only be STARTING
 			if (currentState == ApplicationState.STARTING) {
 				setApplicationState(application, state);
 				return true;
-			} else if (currentState == ApplicationState.RUNNING) {
-				// do not change the state, but it is ok
+			}
+			else if (currentState == ApplicationState.RUNNING) {
+				// Do not change the state, but it is ok.
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -662,7 +671,7 @@ public class Manager extends ConfigLoader {
 		
 		Application application = applicationMap.get(id);
 
-		// send the result that is not stored
+		// Send the result that is not stored.
 		sendResult(application.getId(), application.getName(), data);
 		
 		return true;
@@ -768,7 +777,7 @@ public class Manager extends ConfigLoader {
 			return null;
 		}
 		
-		// create 2 new ports because we need:
+		// Create 2 new ports because we need:
 		// - publisher port
 		// - synchronizer port
 		int publisherPort = PortManager.getInstance().requestPort(application.getName(), id);
@@ -786,7 +795,7 @@ public class Manager extends ConfigLoader {
 
 		Log.logger().info("Application " + application.getNameId() + " has publisher socket on ports " + publisherPort + " and " + synchronizerPort);
 
-		// send the event
+		// Send the event.
 		sendPublisher(id, application.getName(), publisherName);
 		
 		int[] result = new int[2];
@@ -808,7 +817,7 @@ public class Manager extends ConfigLoader {
 		Application.Publisher publisher = publishers.get(publisherName);
 		
 		if (publisher != null) {
-			// Remove the two ports
+			// Remove the two ports.
 			HashMap<String, Integer> ports = application.getPorts();
 			
 			int publisherPort = ports.get(PUBLISHER_PREFIX + publisherName);
@@ -875,18 +884,18 @@ public class Manager extends ConfigLoader {
 
 	public int newStartedUnmanagedApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
-		// Verify if the application is already running
+		// Verify if the application is already running.
 		verifyNumberOfInstances(name, false);
 		
 		// Find an id, throws an exception if there is no id available.
 		int id = findId();
 		
-		// Create application
+		// Create the application.
 		Application application = new UnmanagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
-		// Threads
-		// Verifiy application thread
+		// Threads.
+		// Create the lifecycle application thread.
 		LifecycleApplicationThread verifyThread = new LifecycleApplicationThread(application, this, Log.logger());
 		verifyThread.start();
 		
@@ -917,8 +926,8 @@ public class Manager extends ConfigLoader {
 			Log.logger().info("Application " + application.getNameId() + " is terminated");
 			
 			return name;
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -932,8 +941,8 @@ public class Manager extends ConfigLoader {
 			
 			// Send the event.
 			sendStoreKeyValue(id, application.getName(), key, value);
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -944,8 +953,8 @@ public class Manager extends ConfigLoader {
 		
 		if (application != null) {
 			return application.getKeyValue(key);
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -964,8 +973,8 @@ public class Manager extends ConfigLoader {
 			}
 			
 			return removed;
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -980,8 +989,8 @@ public class Manager extends ConfigLoader {
 			Log.logger().fine("Application " + application.getNameId() + " has port " + port);
 			
 			return port;
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -994,8 +1003,8 @@ public class Manager extends ConfigLoader {
 			PortManager.getInstance().setPortUnavailable(port);
 			
 			Log.logger().fine("Application " + application.getNameId() + " has set port " + port + " unavailable");
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
@@ -1008,8 +1017,8 @@ public class Manager extends ConfigLoader {
 			boolean removed = PortManager.getInstance().removePort(port);
 			
 			Log.logger().fine("Application " + application.getNameId() + " has released port " + port);
-			
-		} else {
+		}
+		else {
 			throw new IdNotFoundException();
 		}
 	}
