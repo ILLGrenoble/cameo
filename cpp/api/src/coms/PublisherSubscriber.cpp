@@ -135,17 +135,11 @@ Subscriber::Subscriber() {
 Subscriber::~Subscriber() {
 }
 
-void Subscriber::init(application::Instance & app, const std::string& publisherName) {
-
-	m_publisherName = publisherName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
+void Subscriber::tryInit(application::Instance & app) {
 
 	// Get the publisher data.
 	try {
-		std::string key = Publisher::KEY + "-" + m_publisherName;
-		std::string jsonString = app.getCom().getKeyValue(key);
+		std::string jsonString = app.getCom().getKeyValue(m_key);
 
 		json::Object publisherData;
 		json::parse(publisherData, jsonString);
@@ -161,29 +155,23 @@ void Subscriber::init(application::Instance & app, const std::string& publisherN
 	}
 }
 
-std::unique_ptr<Subscriber> Subscriber::createSubscriber(application::Instance & app, const std::string &publisherName) {
+void Subscriber::init(application::Instance & app, const std::string& publisherName) {
 
-	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(app, publisherName);
+	m_publisherName = publisherName;
+	m_appName = app.getName();
+	m_appId = app.getId();
+	m_appEndpoint = app.getEndpoint();
+	m_key = Publisher::KEY + "-" + publisherName;
 
-	return subscriber;
-}
-
-std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string& publisherName) {
-
-	// Try to create the subscriber.
-	// If the publisher does not exist, an exception is thrown.
 	try {
-		return createSubscriber(app, publisherName);
+		return tryInit(app);
 	}
-	catch (const SubscriberCreationException& e) {
-		// The publisher does not exist, so we are waiting for it.
+	catch (...) {
+		// The publisher does not exist so we are waiting for it.
 	}
 
 	// Wait for the publisher.
-	std::string key = Publisher::KEY + "-" + publisherName;
-	KeyValue keyValue(key);
-
+	KeyValue keyValue(m_key);
 	application::State lastState = app.waitFor(keyValue);
 
 	// The state cannot be terminal or it means that the application has terminated.
@@ -191,18 +179,23 @@ std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, cons
 		|| lastState == application::STOPPED
 		|| lastState == application::KILLED
 		|| lastState == application::FAILURE) {
-		return std::unique_ptr<Subscriber>(nullptr);
+		throw SubscriberCreationException("Cannot create subscriber");
 	}
 
-	// The subscriber can be created.
 	try {
-		return createSubscriber(app, publisherName);
+		tryInit(app);
 	}
-	catch (const SubscriberCreationException& e) {
-		// That should not happen.
+	catch (...) {
+		// Should not happen.
 	}
+}
 
-	return std::unique_ptr<Subscriber>(nullptr);
+std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string &publisherName) {
+
+	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
+	subscriber->init(app, publisherName);
+
+	return subscriber;
 }
 
 const std::string& Subscriber::getPublisherName() const {

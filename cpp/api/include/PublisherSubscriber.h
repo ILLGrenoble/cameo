@@ -127,7 +127,7 @@ public:
 private:
 	Subscriber();
 	void init(application::Instance &app, const std::string &publisherName);
-	static std::unique_ptr<Subscriber> createSubscriber(application::Instance & app, const std::string &publisherName);
+	void tryInit(application::Instance & app);
 
 	std::string m_publisherName;
 	std::string m_appName;
@@ -135,6 +135,7 @@ private:
 	Endpoint m_appEndpoint;
 	std::unique_ptr<SubscriberImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
+	std::string m_key;
 };
 
 std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);

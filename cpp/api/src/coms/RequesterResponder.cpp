@@ -244,7 +244,7 @@ void Requester::init(application::Instance & app, const std::string &responderNa
 	m_appName = app.getName();
 	m_appId = app.getId();
 	m_appEndpoint = app.getEndpoint();
-	m_key = Responder::KEY + "-" + m_responderName;
+	m_key = Responder::KEY + "-" + responderName;
 
 	try {
 		return tryInit(app);
