@@ -45,7 +45,7 @@ namespace message {
 	const int CREATE_PUBLISHER_v0 = 17;
 	const int TERMINATE_PUBLISHER_v0 = 18;
 	const int CONNECT_PUBLISHER_v0 = 19;
-	const int SUBSCRIBE_PUBLISHER_v0 = 20;
+
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
 	const int REQUEST_PORT_v0 = 23;

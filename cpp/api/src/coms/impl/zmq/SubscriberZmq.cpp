@@ -22,6 +22,7 @@
 #include "../../../base/Messages.h"
 #include "../../../base/RequestSocket.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
+#include "../../../coms/impl/PublisherImpl.h"
 #include "../../../base/Waiting.h"
 #include <sstream>
 
@@ -256,7 +257,7 @@ std::string SubscriberZmq::createSubscribePublisherRequest() const {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushValue(message::SUBSCRIBE_PUBLISHER_v0);
+	request.pushValue(PublisherImpl::SUBSCRIBE_PUBLISHER);
 
 	return request.toString();
 }

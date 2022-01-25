@@ -30,6 +30,8 @@ namespace coms {
 class PublisherImpl {
 
 public:
+	static const int SUBSCRIBE_PUBLISHER = 100;
+
 	virtual ~PublisherImpl() {}
 
 	virtual void init() = 0;

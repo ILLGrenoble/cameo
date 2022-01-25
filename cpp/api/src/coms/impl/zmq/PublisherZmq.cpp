@@ -121,7 +121,7 @@ bool PublisherZmq::waitForSubscribers() {
 		if (type == message::SYNC) {
 			reply.reset(responseToSyncRequest());
 		}
-		else if (type == message::SUBSCRIBE_PUBLISHER_v0) {
+		else if (type == PublisherImpl::SUBSCRIBE_PUBLISHER) {
 			counter++;
 			reply.reset(responseToSubscribeRequest());
 		}
