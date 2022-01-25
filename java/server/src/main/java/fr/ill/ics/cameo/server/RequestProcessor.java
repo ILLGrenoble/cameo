@@ -31,7 +31,6 @@ import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationConfig;

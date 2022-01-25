@@ -36,7 +36,6 @@ import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.exception.UnknownPublisherException;
 import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
@@ -50,9 +49,6 @@ public class Manager extends ConfigLoader {
 	private int maxId = 0;
 	private Zmq.Socket eventPublisher;
 	private HashMap<String, Zmq.Socket> streamPublishers = new HashMap<String, Zmq.Socket>();
-
-	private final static String RESPONDER_PREFIX = "rep.";
-	private final static String REQUESTER_PREFIX = "req.";
 	
 	public Manager(String xmlPath) {
 		super(xmlPath);

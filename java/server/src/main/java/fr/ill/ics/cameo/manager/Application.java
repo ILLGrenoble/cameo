@@ -46,14 +46,7 @@ public abstract class Application extends ApplicationConfig {
 	protected StreamApplicationThread streamThread = null;
 	protected boolean streamThreadStarted = false;
 	private HashMap<String, String> keyValues = new HashMap<String, String>();
-	
-	public static class Publisher {
-		public int numberOfSubscribers;
-	}
-		
 	private HashMap<String, Integer> ports = new HashMap<String, Integer>();
-	private HashMap<String, Publisher> publishers = new HashMap<String, Publisher>();
-	private HashSet<String> responders = new HashSet<String>();
 	
 	public Application(Endpoint endpoint, int id) {
 		super();
@@ -132,14 +125,6 @@ public abstract class Application extends ApplicationConfig {
 	
 	synchronized public StreamApplicationThread getStreamThread() {
 		return this.streamThread;
-	}
-		
-	synchronized public HashMap<String, Publisher> getPublishers() {
-		return publishers;
-	}
-	
-	synchronized public HashSet<String> getResponders() {
-		return responders;
 	}
 
 	synchronized public HashMap<String, Integer> getPorts() {
