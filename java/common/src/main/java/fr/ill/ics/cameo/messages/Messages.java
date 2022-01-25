@@ -33,7 +33,7 @@ public class Messages {
 	public static final long CREATE_PUBLISHER_v0 = 17;
 	public static final long TERMINATE_PUBLISHER_v0 = 18;
 	public static final long CONNECT_PUBLISHER_v0 = 19;
-	public static final long SUBSCRIBE_PUBLISHER_v0 = 20;
+	
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
 	public static final long REQUEST_PORT_v0 = 23;
@@ -573,14 +573,6 @@ public class Messages {
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.OUTPUT_PORT);
 		request.put(Messages.OutputRequest.NAME, name);
-
-		return request;
-	}
-	
-	public static JSONObject createSubscribePublisherRequest() {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SUBSCRIBE_PUBLISHER_v0);
 
 		return request;
 	}

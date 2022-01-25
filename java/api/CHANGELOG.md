@@ -1,7 +1,7 @@
 1.1.0
 -----
 
-* Requester, Responder, Request classes out of Application.
+* Requester, Responder, Request classes out of Application, implemented with key values.
 
 1.0.0
 -----

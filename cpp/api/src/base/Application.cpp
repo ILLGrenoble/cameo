@@ -87,26 +87,12 @@ void This::Com::releasePort(int port) const {
 	m_server->releasePort(m_applicationId, port);
 }
 
-json::Object This::Com::requestJSON(const std::string& request, int overrideTimeout) const {
-	return m_server->requestJSON(request, overrideTimeout);
-}
-
 std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint) const {
 	return m_server->createRequestSocket(endpoint);
 }
 
 std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint, int timeout) const {
 	return m_server->createRequestSocket(endpoint, timeout);
-}
-
-void This::Com::removePort(const std::string& name) const {
-
-	json::Object response = m_server->requestJSON(createRemovePortV0Request(m_applicationId, name));
-	int value = response[message::RequestResponse::VALUE].GetInt();
-
-	if (value == -1) {
-		std::cerr << "Cannot remove port " << name << std::endl;
-	}
 }
 
 State This::parseState(const std::string& value) {
@@ -442,10 +428,6 @@ Instance::Com::Com(Server * server) :
 std::string Instance::Com::getKeyValue(const std::string& key) const {
 	// TODO catch exceptions and rethrow an exception: TerminatedException?
 	return m_server->getKeyValue(m_applicationId, key);
-}
-
-json::Object Instance::Com::requestJSON(const std::string& request, int overrideTimeout) const {
-	return m_server->requestJSON(request, overrideTimeout);
 }
 
 Instance::Instance(Server * server) :

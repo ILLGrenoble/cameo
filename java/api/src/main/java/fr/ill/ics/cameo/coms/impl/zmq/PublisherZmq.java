@@ -129,7 +129,7 @@ public class PublisherZmq implements PublisherImpl {
 					if (type == Messages.SYNC) {
 						reply = responseToSyncRequest();						
 					}
-					else if (type == Messages.SUBSCRIBE_PUBLISHER_v0) {
+					else if (type == SUBSCRIBE_PUBLISHER) {
 						counter++;
 						reply = responseToSubscribeRequest();
 					}

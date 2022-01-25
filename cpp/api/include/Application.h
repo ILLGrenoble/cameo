@@ -105,13 +105,8 @@ public:
 		void setPortUnavailable(int port) const;
 		void releasePort(int port) const;
 
-		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
-
 		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint) const;
 		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout) const;
-
-		//TODO Remove when use of key values is done.
-		void removePort(const std::string& name) const;
 
 	private:
 		Com(Server* server, int applicationId);
@@ -220,7 +215,6 @@ public:
 
 	public:
 		std::string getKeyValue(const std::string& key) const;
-		json::Object requestJSON(const std::string& request, int overrideTimeout = -1) const;
 
 	private:
 		Com(Server* server);

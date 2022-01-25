@@ -1,3 +1,8 @@
+1.1.0
+-----
+
+* Removing useless messages.
+
 1.0.0
 -----
 

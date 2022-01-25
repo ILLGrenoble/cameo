@@ -110,10 +110,6 @@ public class This {
 			}
 		}
 
-		public JSONObject requestJSON(JSONObject request) {
-			return server.requestJSON(request);
-		}
-
 		public RequestSocket createRequestSocket(String endpoint) {
 			return server.createRequestSocket(endpoint);
 		}
@@ -128,6 +124,7 @@ public class This {
 		 * @return
 		 */
 		public JSONObject parse(byte[] message) {
+			
 			try {
 				return server.parse(message);
 			}
@@ -145,18 +142,6 @@ public class This {
 				throw new UnexpectedException("Cannot parse message");
 			}
 		}
-		
-		//TODO Remove when use of key values is done.
-		public void removePort(String name) {
-			
-			JSONObject response = server.requestJSON(Messages.createRemovePortV0Request(applicationId, name));
-				
-			int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			if (port == -1) {
-				System.err.println("Cannot remove port " + name);
-			}
-		}
-
 	}
 	
 	private static Com com;

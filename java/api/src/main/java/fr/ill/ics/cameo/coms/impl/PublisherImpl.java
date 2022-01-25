@@ -18,6 +18,8 @@ package fr.ill.ics.cameo.coms.impl;
 
 public interface PublisherImpl {
 
+	static final long SUBSCRIBE_PUBLISHER = 100;
+	
 	void init();
 	
 	int getPublisherPort();

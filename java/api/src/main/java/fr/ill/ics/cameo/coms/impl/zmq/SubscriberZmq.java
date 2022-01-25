@@ -25,6 +25,7 @@ import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
+import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -96,7 +97,7 @@ public class SubscriberZmq implements SubscriberImpl {
 			
 			// The subscriber is connected and ready to receive data.
 			// Notify the publisher that it can send data.
-			JSONObject request = Messages.createSubscribePublisherRequest();
+			JSONObject request = createSubscribePublisherRequest();
 			requestSocket.requestJSON(request);
 			requestSocket.terminate();
 		}
@@ -223,10 +224,19 @@ public class SubscriberZmq implements SubscriberImpl {
 		return Messages.parseString(data);
 	}
 	
-	public void cancel() {
+	public void cancel() {	
+
 	
 		cancelPublisher.sendMore(Messages.Event.CANCEL);
 		cancelPublisher.send(Messages.Event.CANCEL);
+	}
+
+	public static JSONObject createSubscribePublisherRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, PublisherImpl.SUBSCRIBE_PUBLISHER);
+
+		return request;
 	}
 	
 	public void terminate() {

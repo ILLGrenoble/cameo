@@ -29,7 +29,6 @@ public class Instance extends EventListener {
 	private InstanceWaiting waiting = new InstanceWaiting(this);
 	private Integer exitCode;
 	
-	
 	/**
 	 * Class defining the Communication Operations Manager (COM).
 	 */
@@ -45,10 +44,6 @@ public class Instance extends EventListener {
 		
 		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
 			return server.getKeyValue(applicationId, key);
-		}
-
-		public JSONObject requestJSON(JSONObject request) {
-			return server.requestJSON(request);
 		}
 		
 		/**
