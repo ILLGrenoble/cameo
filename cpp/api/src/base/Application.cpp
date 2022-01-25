@@ -18,8 +18,6 @@
 
 #include "CancelEvent.h"
 #include "KeyEvent.h"
-#include "PortEvent.h"
-#include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StarterServerException.h"
 #include "StatusEvent.h"
@@ -538,7 +536,7 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyValue, bool blocking) {
+State Instance::waitFor(int states, const std::string&, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting(std::bind(&Instance::cancelWaitFor, this));
@@ -603,16 +601,6 @@ State Instance::waitFor(int states, const std::string& eventName, KeyValue& keyV
 				if (ResultEvent * result = dynamic_cast<ResultEvent *>(event.get())) {
 					m_hasResult = true;
 					m_resultData = result->getData();
-				}
-				else if (PublisherEvent * publisher = dynamic_cast<PublisherEvent *>(event.get())) {
-					if (publisher->getPublisherName() == eventName) {
-						break;
-					}
-				}
-				else if (PortEvent * port = dynamic_cast<PortEvent *>(event.get())) {
-					if (port->getPortName() == eventName) {
-						break;
-					}
 				}
 				else if (KeyEvent * keyEvent = dynamic_cast<KeyEvent *>(event.get())) {
 					if (keyEvent->getKey() == keyValue.getKey()) {

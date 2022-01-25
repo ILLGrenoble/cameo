@@ -17,8 +17,6 @@
 #include "EventStreamSocket.h"
 
 #include "KeyEvent.h"
-#include "PortEvent.h"
-#include "PublisherEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
 #include "JSON.h"
@@ -81,34 +79,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		message = m_impl->receive();
 
 		return std::make_unique<ResultEvent>(id, name, message);
-	}
-	else if (message == message::Event::PUBLISHER) {
-
-		message = m_impl->receive();
-
-		// Get the JSON event.
-		json::Object event;
-		json::parse(event, message);
-
-		int id = event[message::PublisherEvent::ID].GetInt();
-		std::string name = event[message::PublisherEvent::NAME].GetString();
-		std::string publisherName = event[message::PublisherEvent::PUBLISHER_NAME].GetString();
-
-		return std::make_unique<PublisherEvent>(id, name, publisherName);
-	}
-	else if (message == message::Event::PORT) {
-
-		message = m_impl->receive();
-
-		// Get the JSON event.
-		json::Object event;
-		json::parse(event, message);
-
-		int id = event[message::PortEvent::ID].GetInt();
-		std::string name = event[message::PortEvent::NAME].GetString();
-		std::string portName = event[message::PortEvent::PORT_NAME].GetString();
-
-		return std::make_unique<PortEvent>(id, name, portName);
 	}
 	else if (message == message::Event::KEYVALUE) {
 

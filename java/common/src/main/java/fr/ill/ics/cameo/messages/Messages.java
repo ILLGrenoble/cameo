@@ -30,11 +30,8 @@ public class Messages {
 	public static final long LIST = 14;
 	public static final long SET_STATUS = 15;
 	public static final long GET_STATUS = 16;
-	
-	
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
-	
 	public static final long REQUEST = 26;
 	public static final long RESPONSE = 27;
 	public static final long ATTACH_UNMANAGED = 28;
@@ -57,8 +54,6 @@ public class Messages {
 		public static final String SYNCSTREAM = "SYNCSTREAM";
 		public static final String STATUS = "STATUS";
 		public static final String RESULT = "RESULT";
-		public static final String PORT = "PORT";
-		public static final String PUBLISHER = "PUBLISHER";
 		public static final String KEYVALUE = "KEYVALUE";
 	}
 	
@@ -122,22 +117,10 @@ public class Messages {
 		public static final String EXIT_CODE = "exitCode"; // optional
 	}
 
-	public static class PublisherEvent {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-		public static final String PUBLISHER_NAME = "publisherName"; // required string publisherName = 3;
-	}
-
 	public static class ResultEvent {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String DATA = "data"; // required bytes data = 3;
-	}
-
-	public static class PortEvent {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-		public static final String PORT_NAME = "portName"; // required string portName = 3;
 	}
 	
 	public static class ApplicationInfo {

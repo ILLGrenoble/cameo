@@ -290,24 +290,6 @@ public class Instance extends EventListener {
 						resultData = result.getData();
 						
 					}
-					else if (event instanceof PublisherEvent) {
-						
-						PublisherEvent publisher = (PublisherEvent)event;
-						
-						if (publisher.getPublisherName().equals(eventName)) {
-							break;
-						}
-						
-					}
-					else if (event instanceof PortEvent) {
-						
-						PortEvent port = (PortEvent)event;
-						
-						if (port.getPortName().equals(eventName)) {
-							break;
-						}
-						
-					}
 					else if (event instanceof KeyEvent) {
 						
 						KeyEvent keyEvent = (KeyEvent)event;

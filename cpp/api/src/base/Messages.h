@@ -42,11 +42,8 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
-
-
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
-
 	const int REQUEST = 26;
 	const int RESPONSE = 27;
 	const int ATTACH_UNMANAGED = 28;
@@ -69,8 +66,6 @@ namespace message {
 		constexpr const char* SYNCSTREAM = "SYNCSTREAM";
 		constexpr const char* STATUS = "STATUS";
 		constexpr const char* RESULT = "RESULT";
-		constexpr const char* PORT = "PORT";
-		constexpr const char* PUBLISHER = "PUBLISHER";
 		constexpr const char* KEYVALUE = "KEYVALUE";
 	}
 
@@ -134,22 +129,10 @@ namespace message {
 		constexpr const char* EXIT_CODE = "exitCode"; // optional
 	}
 
-	namespace PublisherEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* PUBLISHER_NAME = "publisherName"; // required string publisherName = 3;
-	}
-
 	namespace ResultEvent {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* NAME = "name"; // required string name = 2;
 		constexpr const char* DATA = "data"; // required bytes data = 3;
-	}
-
-	namespace PortEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* PORT_NAME = "portName"; // required string portName = 3;
 	}
 
 	namespace ApplicationInfo {

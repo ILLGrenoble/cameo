@@ -26,8 +26,6 @@ import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.Event;
 import fr.ill.ics.cameo.base.KeyEvent;
-import fr.ill.ics.cameo.base.PortEvent;
-import fr.ill.ics.cameo.base.PublisherEvent;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.ResultEvent;
 import fr.ill.ics.cameo.base.StatusEvent;
@@ -61,8 +59,6 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.connect(endpoint.toString());
 		subscriber.subscribe(Messages.Event.STATUS);
 		subscriber.subscribe(Messages.Event.RESULT);
-		subscriber.subscribe(Messages.Event.PUBLISHER);
-		subscriber.subscribe(Messages.Event.PORT);
 		subscriber.subscribe(Messages.Event.KEYVALUE);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -143,42 +139,6 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 				byte[] data = this.subscriberSocket.recv();
 				
 				event = new ResultEvent(id, name, data);
-			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-		}
-		else if (message.equals(Messages.Event.PUBLISHER)) {
-			
-			byte[] publisherMessage = this.subscriberSocket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(publisherMessage));
-				
-				int id = JSON.getInt(jsonObject, Messages.PublisherEvent.ID);
-				String name = JSON.getString(jsonObject, Messages.PublisherEvent.NAME);
-				String publisherName = JSON.getString(jsonObject, Messages.PublisherEvent.PUBLISHER_NAME);
-				
-				event = new PublisherEvent(id, name, publisherName);
-			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-		}
-		else if (message.equals(Messages.Event.PORT)) {
-			
-			byte[] portMessage = this.subscriberSocket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(portMessage));
-				
-				int id = JSON.getInt(jsonObject, Messages.PortEvent.ID);
-				String name = JSON.getString(jsonObject, Messages.PortEvent.NAME);
-				String portName = JSON.getString(jsonObject, Messages.PortEvent.PORT_NAME);
-				
-				event = new PortEvent(id, name, portName);
 			}
 			catch (ParseException e) {
 				throw new UnexpectedException("Cannot parse response");

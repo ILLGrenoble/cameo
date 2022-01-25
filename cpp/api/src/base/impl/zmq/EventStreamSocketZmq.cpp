@@ -50,8 +50,6 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 	vector<string> streamList;
 	streamList.push_back(message::Event::STATUS);
 	streamList.push_back(message::Event::RESULT);
-	streamList.push_back(message::Event::PUBLISHER);
-	streamList.push_back(message::Event::PORT);
 	streamList.push_back(message::Event::KEYVALUE);
 	streamList.push_back(message::Event::CANCEL);
 
