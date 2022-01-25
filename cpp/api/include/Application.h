@@ -240,7 +240,6 @@ public:
 
 	State waitFor(int states);
 	State waitFor();
-	State waitFor(const std::string& eventName);
 	State waitFor(KeyValue& keyValue);
 
 	void cancelWaitFor(); // to unblock another instance
@@ -284,7 +283,7 @@ private:
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
-	State waitFor(int states, const std::string& eventName, KeyValue& keyValue, bool blocking);
+	State waitFor(int states, KeyValue& keyValue, bool blocking);
 
 	Server* m_server;
 	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;

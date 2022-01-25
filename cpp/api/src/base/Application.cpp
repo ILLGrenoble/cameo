@@ -536,7 +536,7 @@ bool Instance::kill() {
 	return true;
 }
 
-State Instance::waitFor(int states, const std::string&, KeyValue& keyValue, bool blocking) {
+State Instance::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting(std::bind(&Instance::cancelWaitFor, this));
@@ -626,21 +626,16 @@ State Instance::waitFor(int states, const std::string&, KeyValue& keyValue, bool
 
 State Instance::waitFor(int states) {
 	KeyValue keyValue("");
-	return waitFor(states, "", keyValue, true);
+	return waitFor(states, keyValue, true);
 }
 
 State Instance::waitFor() {
 	KeyValue keyValue("");
-	return waitFor(0, "", keyValue, true);
-}
-
-State Instance::waitFor(const std::string& eventName) {
-	KeyValue keyValue("");
-	return waitFor(0, eventName, keyValue, true);
+	return waitFor(0, keyValue, true);
 }
 
 State Instance::waitFor(KeyValue& keyValue) {
-	return waitFor(0, "", keyValue, true);
+	return waitFor(0, keyValue, true);
 }
 
 void Instance::cancelWaitFor() {
@@ -655,7 +650,7 @@ State Instance::now() {
 
 State Instance::getLastState() {
 	KeyValue keyValue("");
-	return waitFor(0, "", keyValue, false);
+	return waitFor(0, keyValue, false);
 }
 
 State Instance::getActualState() const {

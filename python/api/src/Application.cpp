@@ -120,9 +120,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("waitFor", py::overload_cast<int>(&Instance::waitFor),
 	    		"states"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("waitFor", py::overload_cast<const std::string&>(&Instance::waitFor),
-				"eventName"_a,
-	    		py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitFor", &Instance::cancelWaitFor, py::call_guard<py::gil_scoped_release>())
 	    .def("getLastState", &Instance::getLastState, py::call_guard<py::gil_scoped_release>())
 	    .def("getActualState", &Instance::getActualState, py::call_guard<py::gil_scoped_release>())

@@ -221,7 +221,7 @@ public class Instance extends EventListener {
 	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
 	 * The method is not thread-safe and must not be called concurrently.
 	 */
-	private int waitFor(int states, String eventName, KeyValue keyValue, boolean blocking) {
+	private int waitFor(int states, KeyValue keyValue, boolean blocking) {
 
 		try {
 			// Register the waiting.
@@ -323,20 +323,16 @@ public class Instance extends EventListener {
 		}
 	}
 	
-	public int waitFor(String eventName) {
-		return waitFor(0, eventName, null, true);
-	}
-	
 	public int waitFor(KeyValue keyValue) {
-		return waitFor(0, null, keyValue, true);
+		return waitFor(0, keyValue, true);
 	}
 	
 	public int waitFor(int states, boolean blocking) {
-		return waitFor(states, null, null, blocking);
+		return waitFor(states, null, blocking);
 	}
 	
 	public int waitFor(int states) {
-		return waitFor(states, null, null, true);
+		return waitFor(states, null, true);
 	}
 	
 	/**
