@@ -250,51 +250,6 @@ std::string createSetResultRequest(int id) {
 	return request.toString();
 }
 
-std::string createRequestPortV0Request(int id, const std::string& name) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::REQUEST_PORT_v0);
-
-	request.pushKey(message::RequestPortV0Request::ID);
-	request.pushValue(id);
-
-	request.pushKey(message::RequestPortV0Request::NAME);
-	request.pushValue(name);
-
-	return request.toString();
-}
-
-std::string createConnectPortV0Request(int id, const std::string& name) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::CONNECT_PORT_v0);
-
-	request.pushKey(message::ConnectPortV0Request::ID);
-	request.pushValue(id);
-
-	request.pushKey(message::ConnectPortV0Request::NAME);
-	request.pushValue(name);
-
-	return request.toString();
-}
-
-std::string createRemovePortV0Request(int id, const std::string& name) {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::REMOVE_PORT_v0);
-
-	request.pushKey(message::RemovePortV0Request::ID);
-	request.pushValue(id);
-
-	request.pushKey(message::RemovePortV0Request::NAME);
-	request.pushValue(name);
-
-	return request.toString();
-}
-
 std::string createAttachUnmanagedRequest(const std::string& name, long pid) {
 
 	json::StringObject request;

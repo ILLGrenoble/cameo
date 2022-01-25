@@ -46,9 +46,7 @@ namespace message {
 
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
-	const int REQUEST_PORT_v0 = 23;
-	const int CONNECT_PORT_v0 = 24;
-	const int REMOVE_PORT_v0 = 25;
+
 	const int REQUEST = 26;
 	const int RESPONSE = 27;
 	const int ATTACH_UNMANAGED = 28;
@@ -212,21 +210,6 @@ namespace message {
 		constexpr const char* DATA = "data"; // required bytes data = 2;
 	}
 
-	namespace RequestPortV0Request {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-	}
-
-	namespace ConnectPortV0Request {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-	}
-
-	namespace RemovePortV0Request {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-	}
-
 	namespace Request {
 		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
 		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
@@ -316,9 +299,6 @@ std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
 std::string createSetResultRequest(int id);
-std::string createRequestPortV0Request(int id, const std::string& name);
-std::string createConnectPortV0Request(int id, const std::string& name);
-std::string createRemovePortV0Request(int id, const std::string& name);
 std::string createAttachUnmanagedRequest(const std::string& name, long pid);
 std::string createDetachUnmanagedRequest(int id);
 std::string createOutputPortWithIdRequest(int id);

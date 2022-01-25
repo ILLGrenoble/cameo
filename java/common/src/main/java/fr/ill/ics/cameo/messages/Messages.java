@@ -34,9 +34,7 @@ public class Messages {
 	
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
-	public static final long REQUEST_PORT_v0 = 23;
-	public static final long CONNECT_PORT_v0 = 24;
-	public static final long REMOVE_PORT_v0 = 25;
+	
 	public static final long REQUEST = 26;
 	public static final long RESPONSE = 27;
 	public static final long ATTACH_UNMANAGED = 28;
@@ -198,21 +196,6 @@ public class Messages {
 	public static class SetResultRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String DATA = "data"; // required bytes data = 2;
-	}
-
-	public static class RequestPortV0Request {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-	}
-
-	public static class ConnectPortV0Request {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-	}
-
-	public static class RemovePortV0Request {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
 	}
 
 	public static class Request {
@@ -637,36 +620,6 @@ public class Messages {
 		request.put(Messages.TYPE, Messages.SET_STATUS);
 		request.put(Messages.SetStatusRequest.ID, id);
 		request.put(Messages.SetStatusRequest.APPLICATION_STATE, state);
-
-		return request;
-	}
-	
-	public static JSONObject createRequestPortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REQUEST_PORT_v0);
-		request.put(Messages.RequestPortV0Request.ID, id);
-		request.put(Messages.RequestPortV0Request.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createConnectPortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CONNECT_PORT_v0);
-		request.put(Messages.ConnectPortV0Request.ID, id);
-		request.put(Messages.ConnectPortV0Request.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createRemovePortV0Request(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REMOVE_PORT_v0);
-		request.put(Messages.RemovePortV0Request.ID, id);
-		request.put(Messages.RemovePortV0Request.NAME, name);
 
 		return request;
 	}

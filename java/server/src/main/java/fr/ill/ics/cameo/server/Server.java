@@ -186,15 +186,6 @@ public class Server {
 					byte[] resultData = message.getLastData();
 					reply = process.processSetResultRequest(request, resultData, manager);
 				}
-				else if (type == Messages.REQUEST_PORT_v0) {
-					reply = process.processRequestPortV0Request(request, manager);
-				}
-				else if (type == Messages.CONNECT_PORT_v0) {
-					reply = process.processConnectPortV0Request(request, manager);
-				}
-				else if (type == Messages.REMOVE_PORT_v0) {
-					reply = process.processRemovePortV0Request(request, manager);
-				}
 				else if (type == Messages.ATTACH_UNMANAGED) {
 					reply = process.processAttachUnmanagedRequest(request, manager);
 				}
