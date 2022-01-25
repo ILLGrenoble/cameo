@@ -42,9 +42,7 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
-	const int CREATE_PUBLISHER_v0 = 17;
-	const int TERMINATE_PUBLISHER_v0 = 18;
-	const int CONNECT_PUBLISHER_v0 = 19;
+
 
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
@@ -227,29 +225,6 @@ namespace message {
 	namespace RemovePortV0Request {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 		constexpr const char* NAME = "name"; // required string name = 2;
-	}
-
-	namespace CreatePublisherRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // required int32 numberOfSubscribers = 3;
-	}
-
-	namespace TerminatePublisherRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-	}
-
-	namespace ConnectPublisherRequest {
-		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 1;
-		constexpr const char* PUBLISHER_NAME = "publisherName"; // required string publisherName = 2;
-	}
-
-	namespace PublisherResponse {
-		constexpr const char* MESSAGE = "message"; // optional string message = 1;
-		constexpr const char* PUBLISHER_PORT = "publisherPort"; // required int32 publisherPort = 2;
-		constexpr const char* SYNCHRONIZER_PORT = "synchronizerPort"; // required int32 synchronizerPort = 3;
-		constexpr const char* NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // optional int32 numberOfSubscribers = 4;
 	}
 
 	namespace Request {

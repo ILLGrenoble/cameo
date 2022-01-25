@@ -195,15 +195,6 @@ public class Server {
 				else if (type == Messages.REMOVE_PORT_v0) {
 					reply = process.processRemovePortV0Request(request, manager);
 				}
-				else if (type == Messages.CREATE_PUBLISHER_v0) {
-					reply = process.processCreatePublisherRequest(request, manager);
-				}
-				else if (type == Messages.TERMINATE_PUBLISHER_v0) {
-					reply = process.processTerminatePublisherRequest(request, manager);
-				}
-				else if (type == Messages.CONNECT_PUBLISHER_v0) {
-					reply = process.processConnectPublisherRequest(request, manager);
-				}
 				else if (type == Messages.ATTACH_UNMANAGED) {
 					reply = process.processAttachUnmanagedRequest(request, manager);
 				}

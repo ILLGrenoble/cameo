@@ -30,9 +30,7 @@ public class Messages {
 	public static final long LIST = 14;
 	public static final long SET_STATUS = 15;
 	public static final long GET_STATUS = 16;
-	public static final long CREATE_PUBLISHER_v0 = 17;
-	public static final long TERMINATE_PUBLISHER_v0 = 18;
-	public static final long CONNECT_PUBLISHER_v0 = 19;
+	
 	
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
@@ -215,29 +213,6 @@ public class Messages {
 	public static class RemovePortV0Request {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
-	}
-
-	public static class CreatePublisherRequest {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-		public static final String NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // required int32 numberOfSubscribers = 3;
-	}
-
-	public static class TerminatePublisherRequest {
-		public static final String ID = "id"; // required int32 id = 1;
-		public static final String NAME = "name"; // required string name = 2;
-	}
-
-	public static class ConnectPublisherRequest {
-		public static final String APPLICATION_ID = "applicationId"; // required int32 applicationId = 1;
-		public static final String PUBLISHER_NAME = "publisherName"; // required string publisherName = 2;
-	}
-
-	public static class PublisherResponse {
-		public static final String MESSAGE = "message"; // optional string message = 1;
-		public static final String PUBLISHER_PORT = "publisherPort"; // required int32 publisherPort = 2;
-		public static final String SYNCHRONIZER_PORT = "synchronizerPort"; // required int32 synchronizerPort = 3;
-		public static final String NUMBER_OF_SUBSCRIBERS = "numberOfSubscribers"; // optional int32 numberOfSubscribers = 4;
 	}
 
 	public static class Request {
@@ -702,37 +677,6 @@ public class Messages {
 		request.put(Messages.TYPE, Messages.SET_RESULT);
 		request.put(Messages.SetResultRequest.ID, id);
 		
-		return request;
-	}
-	
-	public static JSONObject createCreatePublisherRequest(int id, String name, int numberOfSubscribers) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CREATE_PUBLISHER_v0);
-		request.put(Messages.CreatePublisherRequest.ID, id);
-		request.put(Messages.CreatePublisherRequest.NAME, name);
-		request.put(Messages.CreatePublisherRequest.NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
-
-		return request;
-	}
-	
-	public static JSONObject createTerminatePublisherRequest(int id, String name) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.TERMINATE_PUBLISHER_v0);
-		request.put(Messages.TerminatePublisherRequest.ID, id);
-		request.put(Messages.TerminatePublisherRequest.NAME, name);
-
-		return request;
-	}
-	
-	public static JSONObject createConnectPublisherRequest(int applicationId, String publisherName) {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CONNECT_PUBLISHER_v0);
-		request.put(Messages.ConnectPublisherRequest.APPLICATION_ID, applicationId);
-		request.put(Messages.ConnectPublisherRequest.PUBLISHER_NAME, publisherName);
-
 		return request;
 	}
 	
