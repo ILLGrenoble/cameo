@@ -20,9 +20,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public interface RequesterImpl {
 
-	public static final String REQUESTER_PREFIX = "req.";
-
-	void init(Endpoint endpoint, int requesterPort, int responderPort);
+	void init(Endpoint endpoint, int responderPort);
 	void send(byte[] requestData);
 	void send(String request);
 	void sendTwoParts(byte[] requestData1, byte[] requestData2);

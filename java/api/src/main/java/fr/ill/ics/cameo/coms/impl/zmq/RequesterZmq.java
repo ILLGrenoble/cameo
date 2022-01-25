@@ -29,8 +29,6 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class RequesterZmq implements RequesterImpl {
 
-	public static final String REQUESTER_PREFIX = "req.";
-
 	private int requesterPort;
 	private Zmq.Context context;
 	private Zmq.Socket requester;
@@ -38,17 +36,33 @@ public class RequesterZmq implements RequesterImpl {
 	
 	private boolean canceled = false;
 		
-	public void init(Endpoint endpoint, int requesterPort, int responderPort) {
-		this.requesterPort = requesterPort;
+	public void init(Endpoint endpoint, int responderPort) {
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
-		// Create the REQ socket.
+		// Create the request socket.
 		String responderEndpoint = endpoint.withPort(responderPort).toString();
 		requestSocket = This.getCom().createRequestSocket(responderEndpoint);
 		
 		// Create the REP socket.
 		requester = context.createSocket(Zmq.REP);
-		requester.bind("tcp://*:" + requesterPort);
+		
+		String endpointPrefix = "tcp://*:";	
+		
+		// Loop to find an available port for the responder.
+		while (true) {
+		
+			int port = This.getCom().requestPort();
+			String reqEndpoint = endpointPrefix + port;
+
+			try {
+				requester.bind(reqEndpoint);
+				requesterPort = port;
+				break;
+			}
+			catch (Exception e) {
+				This.getCom().setPortUnavailable(port);
+			}
+		}
 	}
 	
 	public void send(byte[] requestData) {
@@ -145,11 +159,13 @@ public class RequesterZmq implements RequesterImpl {
 	
 	public void terminate() {
 		
-		// Terminate the request socket.
-		requestSocket.terminate();
-		
 		context.destroySocket(requester);
 		
+		// Release the requester port.
+		This.getCom().releasePort(requesterPort);
+		
+		// Terminate the request socket.
+		requestSocket.terminate();
 	}
 	
 	private Zmq.Msg responseToRequest() {

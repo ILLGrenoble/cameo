@@ -172,8 +172,6 @@ void Responder::init(const std::string &name) {
 
 	try {
 		application::This::getCom().storeKeyValue(m_key, responderData.toString());
-
-		std::cout << "stored " << m_key << std::endl;
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");

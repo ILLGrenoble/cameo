@@ -2,11 +2,11 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.ResponderZmq;
-import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Responder.
@@ -17,6 +17,10 @@ public class Responder {
 	private String name;
 	private ResponderImpl impl;
 	private ResponderWaiting waiting = new ResponderWaiting(this);
+	private String key;
+	
+	public static String KEY = "responder-be30cdc9-dab5-45c1-88ed-27255a8b2a98";
+	public static String PORT = "port";
 	
 	private Responder(String name) {
 		this.name = name;
@@ -27,17 +31,20 @@ public class Responder {
 	
 	private void init(String name) throws ResponderCreationException {
 		
-		String portName = ResponderImpl.RESPONDER_PREFIX + name;
-		JSONObject request = Messages.createRequestPortV0Request(This.getId(), portName);
+		impl.init();
 
-		JSONObject response = This.getCom().requestJSON(request);
+		// Store the responder data.
+		JSONObject responderData = new JSONObject();
+		responderData.put(PORT, impl.getResponderPort());
 		
-		int port = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		if (port == -1) {
-			throw new ResponderCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		key = KEY + "-" + name;
+		
+		try {
+			This.getCom().storeKeyValue(key, responderData.toJSONString());
 		}
-		
-		impl.init(port);
+		catch (KeyAlreadyExistsException e) {
+			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+		}
 	}
 	
 	/**
@@ -75,19 +82,20 @@ public class Responder {
 	}
 			
 	public void terminate() {
-		waiting.remove();
-		impl.terminate();
 		
 		try {
-			This.getCom().removePort(ResponderImpl.RESPONDER_PREFIX + name);
-			
-		} catch (Exception e) {
-			System.err.println("Cannot terminate responder: " + e.getMessage());
+			This.getCom().removeKey(key);
 		}
+		catch (UndefinedKeyException e) {
+			// No need to treat.
+		}
+		
+		waiting.remove();
+		impl.terminate();
 	}
 
 	@Override
 	public String toString() {
-		return ResponderImpl.RESPONDER_PREFIX + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		return "req." + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
 	}
 }

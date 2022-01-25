@@ -31,7 +31,6 @@ public class Subscriber {
 	private Subscriber() {
 		//TODO Replace with factory.
 		this.impl = new SubscriberZmq();
-		
 		waiting.add();
 	}
 	

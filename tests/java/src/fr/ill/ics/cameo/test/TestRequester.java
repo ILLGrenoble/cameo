@@ -48,9 +48,6 @@ public class TestRequester {
 		Server server = This.getServer();
 		
 		try {
-			// Create the responder.
-			fr.ill.ics.cameo.coms.Responder responder = fr.ill.ics.cameo.coms.Responder.create("responder");
-			
 			// Set the state.
 			This.setRunning();
 			
@@ -68,6 +65,15 @@ public class TestRequester {
 					requesterApps[j] = server.start(applicationName);
 					System.out.println("Started application " + requesterApps[j]);
 				}
+				
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+				}
+				
+				// Create the responder.
+				fr.ill.ics.cameo.coms.Responder responder = fr.ill.ics.cameo.coms.Responder.create("responder");
 				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {
@@ -87,6 +93,8 @@ public class TestRequester {
 					requesterApps[j].waitFor();
 					System.out.println("Finished application " + requesterApps[j]);
 				}
+				
+				responder.terminate();
 			}
 			
 		} catch (RemoteException e) {

@@ -38,13 +38,33 @@ public class ResponderZmq implements ResponderImpl {
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int responderPort) {
-		this.responderPort = responderPort;
+	public void init() {
+		
+		// Create a socket REP.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
-
-		// create a socket REP
 		responder = context.createSocket(Zmq.REP);
-		responder.bind("tcp://*:" + responderPort);
+		
+		String endpointPrefix = "tcp://*:";	
+		
+		// Loop to find an available port for the responder.
+		while (true) {
+		
+			int port = This.getCom().requestPort();
+			String pubEndpoint = endpointPrefix + port;
+
+			try {
+				responder.bind(pubEndpoint);
+				responderPort = port;
+				break;
+			}
+			catch (Exception e) {
+				This.getCom().setPortUnavailable(port);
+			}
+		}
+	}
+	
+	public int getResponderPort() {
+		return responderPort;
 	}
 
 	public Request receive() {
@@ -140,6 +160,9 @@ public class ResponderZmq implements ResponderImpl {
 	
 	public void terminate() {
 		context.destroySocket(responder);
+		
+		// Release the responder port.
+		This.getCom().releasePort(responderPort);
 	}
 	
 	

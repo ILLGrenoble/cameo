@@ -1,16 +1,16 @@
 package fr.ill.ics.cameo.coms;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.KeyValue;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.UndefinedApplicationException;
+import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
-import fr.ill.ics.cameo.coms.impl.ResponderImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.RequesterZmq;
 import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
@@ -20,70 +20,75 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class Requester {
 
 	private String responderName;
-	private int requesterId;
 	private String appName;
 	private int appId;
 	private Endpoint appEndpoint;
 	private RequesterImpl impl;
 	private RequesterWaiting waiting = new RequesterWaiting(this);
-	private static AtomicInteger requesterCounter = new AtomicInteger();
+	private String key;
 	
 	private Requester() {
 		this.impl = new RequesterZmq();
 		waiting.add();
 	}
 
-	private static int newRequesterId() {
-		return requesterCounter.incrementAndGet();
-	}
-
-	private static String getRequesterPortName(String responderName, int responderId, int requesterId) {
-		return RequesterImpl.REQUESTER_PREFIX + responderName + "." + responderId + "." + requesterId;
+	private void tryInit(Instance app) throws RequesterCreationException {
+		
+		// Get the publisher data.
+		try {
+			String jsonString = app.getCom().getKeyValue(key);
+			
+			JSONObject responderData = This.getCom().parse(jsonString);
+			
+			int responderPort = JSON.getInt(responderData, Responder.PORT);
+			
+			impl.init(app.getEndpoint(), responderPort);	
+		}
+		catch (UndefinedApplicationException | UndefinedKeyException e) {
+			throw new RequesterCreationException("");
+		}
 	}
 	
-	private void init(Instance app, String responderName) throws RequesterCreationException {
+	private boolean init(Instance app, String responderName) throws RequesterCreationException {
 		
 		this.responderName = responderName;
 		this.appName = app.getName();
 		this.appId = app.getId();
 		this.appEndpoint = app.getEndpoint();
+		this.key = Responder.KEY + "-" + responderName;
 		
-		String responderPortName = ResponderImpl.RESPONDER_PREFIX + responderName;
-		
-		requesterId = newRequesterId();
-		String requesterPortName = getRequesterPortName(responderName, appId, requesterId);
-		
-		// First connect to the responder.
-		JSONObject request = Messages.createConnectPortV0Request(appId, responderPortName);
-		JSONObject response = app.getCom().requestJSON(request);
-		
-		int responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		if (responderPort == -1) {
-			
-			// Wait for the responder port.
-			app.waitFor(responderPortName);
-
-			// Retry to connect.
-			request = Messages.createConnectPortV0Request(appId, responderPortName);
-			response = app.getCom().requestJSON(request);
-			responderPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
-			
-			if (responderPort == -1) {
-				throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
-			}
+		// Try to create the requester.
+		// If the responder does not exist, an exception is thrown.
+		try {
+			tryInit(app);
+			return true;
+		}
+		catch (RequesterCreationException e) {
+			// The responder does not exist, so we are waiting for it.
 		}
 		
-		// Request a requester port.
-		request = Messages.createRequestPortV0Request(This.getId(), requesterPortName);
+		// Wait for the responder.
+		int lastState = app.waitFor(new KeyValue(key));
 		
-		response = This.getCom().requestJSON(request);
-		int requesterPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
-		
-		if (requesterPort == -1) {
-			throw new RequesterCreationException(JSON.getString(response, Messages.RequestResponse.MESSAGE));
+		// The state cannot be terminal or it means that the application has terminated that is not planned.
+		if (lastState == Application.State.SUCCESS 
+			|| lastState == Application.State.STOPPED
+			|| lastState == Application.State.KILLED					
+			|| lastState == Application.State.ERROR) {
+			return false;
 		}
 		
-		impl.init(app.getEndpoint(), requesterPort, responderPort);
+		// The requester can be created.
+		try {
+			tryInit(app);
+			return true;
+		}
+		catch (RequesterCreationException e) {
+			// That should not happen.
+			System.err.println("the responder " + responderName + " does not exist but should");
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -147,17 +152,10 @@ public class Requester {
 	public void terminate() {
 		waiting.remove();
 		impl.terminate();
-
-		try {
-			This.getCom().removePort(getRequesterPortName(responderName, appId, requesterId));
-			
-		} catch (Exception e) {
-			System.err.println("Cannot terminate requester: " + e.getMessage());
-		}
 	}
 	
 	@Override
 	public String toString() {
-		return RequesterImpl.REQUESTER_PREFIX + responderName + ":" + appName + "." + appId + "@" + appEndpoint;
+		return "req." + responderName + ":" + appName + "." + appId + "@" + appEndpoint;
 	}
 }

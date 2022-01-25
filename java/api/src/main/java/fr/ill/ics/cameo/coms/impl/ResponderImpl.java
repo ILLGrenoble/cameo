@@ -20,9 +20,8 @@ import fr.ill.ics.cameo.coms.Request;
 
 public interface ResponderImpl {
 
-	public static final String RESPONDER_PREFIX = "rep.";
-	
-	void init(int responderPort);
+	void init();
+	int getResponderPort();
 	Request receive();
 	void cancel();
 	boolean isEnded();

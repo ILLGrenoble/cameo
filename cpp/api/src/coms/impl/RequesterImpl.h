@@ -27,8 +27,6 @@ namespace coms {
 class RequesterImpl {
 
 public:
-	static const std::string REQUESTER_PREFIX;
-
 	virtual ~RequesterImpl() {}
 
 	virtual void init(const Endpoint& endpoint, int responderPort) = 0;
