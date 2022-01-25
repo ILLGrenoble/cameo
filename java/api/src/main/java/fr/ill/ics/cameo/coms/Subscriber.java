@@ -26,6 +26,7 @@ public class Subscriber {
 	private Endpoint appEndpoint;
 	private SubscriberImpl impl;
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
+	private String key;
 	
 	private Subscriber() {
 		//TODO Replace with factory.
@@ -34,16 +35,10 @@ public class Subscriber {
 		waiting.add();
 	}
 	
-	private void initSubscriber(Instance app, String publisherName) throws SubscriberCreationException {
-		
-		this.publisherName = publisherName;
-		this.appName = app.getName();
-		this.appId = app.getId();
-		this.appEndpoint = app.getEndpoint();
+	private void tryInit(Instance app) throws SubscriberCreationException {
 		
 		// Get the publisher data.
 		try {
-			String key = Publisher.KEY + "-" + publisherName;
 			String jsonString = app.getCom().getKeyValue(key);
 			
 			JSONObject publisherData = This.getCom().parse(jsonString);
@@ -61,10 +56,16 @@ public class Subscriber {
 	
 	private boolean init(Instance app, String publisherName) {
 		
+		this.publisherName = publisherName;
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		this.key = Publisher.KEY + "-" + publisherName;
+		
 		// Try to create the subscriber.
 		// If the publisher does not exist, an exception is thrown.
 		try {
-			initSubscriber(app, publisherName);
+			tryInit(app);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
@@ -72,8 +73,6 @@ public class Subscriber {
 		}
 
 		// Wait for the publisher.
-		String key = Publisher.KEY + "-" + publisherName;
-		
 		int lastState = app.waitFor(new KeyValue(key));
 		
 		// The state cannot be terminal or it means that the application has terminated that is not planned.
@@ -86,7 +85,7 @@ public class Subscriber {
 		
 		// The subscriber can be created.
 		try {
-			initSubscriber(app, publisherName);
+			tryInit(app);
 			return true;
 		}
 		catch (SubscriberCreationException e) {
