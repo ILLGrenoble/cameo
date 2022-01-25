@@ -32,21 +32,37 @@ ResponderZmq::ResponderZmq() :
 	m_canceled(false) {
 }
 
-void ResponderZmq::init(int responderPort) {
-
-	m_responderPort = responderPort;
-
-	// create a socket REP
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
-	std::stringstream repEndpoint;
-	repEndpoint << "tcp://*:" << m_responderPort;
-
-	m_responder->bind(repEndpoint.str().c_str());
-}
-
 ResponderZmq::~ResponderZmq() {
 	terminate();
+}
+
+void ResponderZmq::init() {
+
+	// Create a socket REP.
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
+
+	std::string endpointPrefix("tcp://*:");
+
+	// Loop to find an available port for the responder.
+	while (true) {
+
+		int port = application::This::getCom().requestPort();
+		std::string repEndpoint = endpointPrefix + std::to_string(port);
+
+		try {
+			m_responder->bind(repEndpoint.c_str());
+			m_responderPort = port;
+			break;
+		}
+		catch (...) {
+			application::This::getCom().setPortUnavailable(port);
+		}
+	}
+}
+
+int ResponderZmq::getResponderPort() {
+	return m_responderPort;
 }
 
 void ResponderZmq::cancel() {
@@ -167,6 +183,9 @@ void ResponderZmq::terminate() {
 
 	if (m_responder.get() != nullptr) {
 		m_responder.reset(nullptr);
+
+		// Release the responder port.
+		application::This::getCom().releasePort(m_responderPort);
 	}
 }
 

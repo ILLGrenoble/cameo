@@ -33,11 +33,9 @@ namespace coms {
 class RequesterZmq : public RequesterImpl {
 
 public:
-	static const std::string REQUESTER_PREFIX;
-
 	virtual ~RequesterZmq();
 
-	void init(const Endpoint& endpoint, int requesterPort, int responderPort);
+	void init(const Endpoint& endpoint, int responderPort);
 	void sendBinary(const std::string& requestData);
 	void send(const std::string& requestData);
 	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
@@ -53,7 +51,7 @@ private:
 	int m_requesterPort;
 	std::string m_name;
 	std::unique_ptr<RequestSocket> m_requestSocket;
-	std::unique_ptr<zmq::socket_t> m_repSocket;
+	std::unique_ptr<zmq::socket_t> m_requester;
 	bool m_canceled;
 };
 

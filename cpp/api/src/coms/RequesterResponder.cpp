@@ -139,6 +139,9 @@ std::unique_ptr<Server> Request::getServer() {
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
+const std::string Responder::KEY = "responder-be30cdc9-dab5-45c1-88ed-27255a8b2a98";
+const std::string Responder::PORT = "port";
+
 Responder::Responder(const std::string& name) :
 	m_name(name) {
 
@@ -150,20 +153,31 @@ Responder::Responder(const std::string& name) :
 }
 
 Responder::~Responder() {
-	application::This::getCom().removePort(ResponderImpl::RESPONDER_PREFIX + m_name);
+
+	application::This::getCom().removeKey(m_key);
 }
 
 void Responder::init(const std::string &name) {
 
-	std::string portName = ResponderImpl::RESPONDER_PREFIX + name;
-	json::Object response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::getId(), portName));
+	// Init the reponder socket.
+	m_impl->init();
 
-	int responderPort = response[message::RequestResponse::VALUE].GetInt();
-	if (responderPort == -1) {
-		throw ResponderCreationException(response[message::RequestResponse::MESSAGE].GetString());
+	// Store the responder data.
+	json::StringObject responderData;
+
+	responderData.pushKey(PORT);
+	responderData.pushValue(m_impl->getResponderPort());
+
+	m_key = KEY + "-" + name;
+
+	try {
+		application::This::getCom().storeKeyValue(m_key, responderData.toString());
+
+		std::cout << "stored " << m_key << std::endl;
 	}
-
-	m_impl->init(responderPort);
+	catch (const KeyAlreadyExistsException& e) {
+		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+	}
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
@@ -193,11 +207,7 @@ bool Responder::isCanceled() const {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-std::mutex Requester::m_mutex;
-int Requester::m_requesterCounter = 0;
-
 Requester::Requester() :
-	m_requesterId(0),
 	m_appId(0) {
 
 	//TODO Replace with factory.
@@ -208,24 +218,24 @@ Requester::Requester() :
 }
 
 Requester::~Requester() {
-
-	application::This::getCom().removePort(getRequesterPortName(m_responderName, m_appId, m_requesterId));
 }
 
-int Requester::newRequesterId() {
+void Requester::tryInit(application::Instance & app) {
 
-	std::lock_guard<std::mutex> lock(m_mutex);
-	m_requesterCounter++;
+	// Get the responder data.
+	try {
+		std::string jsonString = app.getCom().getKeyValue(m_key);
 
-	return m_requesterCounter;
-}
+		json::Object responderData;
+		json::parse(responderData, jsonString);
 
-std::string Requester::getRequesterPortName(const std::string& responderName, int responderId, int requesterId) {
+		int responderPort = responderData[Responder::PORT.c_str()].GetInt();
 
-	std::stringstream requesterPortName;
-	requesterPortName << RequesterImpl::REQUESTER_PREFIX << responderName << "." << responderId << "." << requesterId;
-
-	return requesterPortName.str();
+		m_impl->init(app.getEndpoint(), responderPort);
+	}
+	catch (...) {
+		throw RequesterCreationException("Cannot create requester");
+	}
 }
 
 void Requester::init(application::Instance & app, const std::string &responderName) {
@@ -234,38 +244,33 @@ void Requester::init(application::Instance & app, const std::string &responderNa
 	m_appName = app.getName();
 	m_appId = app.getId();
 	m_appEndpoint = app.getEndpoint();
+	m_key = Responder::KEY + "-" + m_responderName;
 
-	std::string responderPortName = ResponderZmq::RESPONDER_PREFIX + responderName;
-	m_requesterId = newRequesterId();
-	std::string requesterPortName = getRequesterPortName(responderName, m_appId, m_requesterId);
-
-	std::string request = createConnectPortV0Request(m_appId, responderPortName);
-
-	json::Object response = app.getCom().requestJSON(request);
-
-	int responderPort = response[message::RequestResponse::VALUE].GetInt();
-	if (responderPort == -1) {
-		// Wait for the responder port.
-		app.waitFor(responderPortName);
-
-		// Retry to connect.
-		response = app.getCom().requestJSON(request);
-
-		responderPort = response[message::RequestResponse::VALUE].GetInt();
-		if (responderPort == -1) {
-			throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
-		}
+	try {
+		return tryInit(app);
+	}
+	catch (...) {
+		// The responder does not exist so we are waiting for it.
 	}
 
-	// Request a requester port.
-	response = application::This::getCom().requestJSON(createRequestPortV0Request(application::This::getId(), requesterPortName));
+	// Wait for the responder.
+	KeyValue keyValue(m_key);
+	application::State lastState = app.waitFor(keyValue);
 
-	int requesterPort = response[message::RequestResponse::VALUE].GetInt();
-	if (requesterPort == -1) {
-		throw RequesterCreationException(response[message::RequestResponse::MESSAGE].GetString());
+	// The state cannot be terminal or it means that the application has terminated.
+	if (lastState == application::SUCCESS
+		|| lastState == application::STOPPED
+		|| lastState == application::KILLED
+		|| lastState == application::FAILURE) {
+		throw RequesterCreationException("Cannot create requester");
 	}
 
-	m_impl->init(app.getEndpoint(), requesterPort, responderPort);
+	try {
+		tryInit(app);
+	}
+	catch (...) {
+		// Should not happen.
+	}
 }
 
 std::unique_ptr<Requester> Requester::create(application::Instance & app, const std::string& responderName) {

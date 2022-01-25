@@ -42,17 +42,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	unique_ptr<coms::Responder> responder;
 
-	try {
-		cout << "Creating responder" << endl;
-
-		responder = coms::Responder::create("responder");
-
-	} catch (const coms::ResponderCreationException& e) {
-		cout << "Responder error" << endl;
-		return -1;
-	}
 
 	Server& server = application::This::getServer();
 
@@ -71,6 +61,21 @@ int main(int argc, char *argv[]) {
 			// Start the application.
 			apps.push_back(server.start(applicationName));
 			cout << "Started application " << *apps.back() << endl;
+		}
+
+		// Sleep 1s so that requester are waiting for the responder.
+		this_thread::sleep_for(chrono::seconds(1));
+
+		unique_ptr<coms::Responder> responder;
+
+		try {
+			cout << "Creating responder" << endl;
+
+			responder = coms::Responder::create("responder");
+		}
+		catch (const coms::ResponderCreationException& e) {
+			cout << "Responder error" << endl;
+			return -1;
 		}
 
 		// Process the requests, the requester application sends 10 requests.

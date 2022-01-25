@@ -26,8 +26,12 @@ int main(int argc, char *argv[]) {
 
 	unique_ptr<application::Instance> starter = application::This::connectToStarter();
 
+	cout << "Connected to started" << endl;
+
 	// Create a requester.
 	unique_ptr<coms::Requester> requester = coms::Requester::create(*starter, "responder");
+
+	cout << "Created requester" << endl;
 
 	application::This::setRunning();
 

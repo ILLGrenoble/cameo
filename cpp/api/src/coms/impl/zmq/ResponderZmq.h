@@ -31,12 +31,12 @@ public:
 	ResponderZmq();
 	~ResponderZmq();
 
-	void init(int responderPort);
+	virtual void init();
+	virtual int getResponderPort();
+	virtual void cancel();
+	virtual bool isCanceled();
 
-	void cancel();
-	bool isCanceled();
-
-	std::unique_ptr<Request> receive();
+	virtual std::unique_ptr<Request> receive();
 
 private:
 	zmq::message_t * responseToRequest();

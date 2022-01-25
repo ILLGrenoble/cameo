@@ -30,13 +30,12 @@ class ResponderImpl {
 public:
 	virtual ~ResponderImpl() {}
 
-	virtual void init(int responderPort) = 0;
+	virtual void init() = 0;
+	virtual int getResponderPort() = 0;
 	virtual void cancel() = 0;
 	virtual bool isCanceled() = 0;
 
 	virtual std::unique_ptr<Request> receive() = 0;
-
-	static const std::string RESPONDER_PREFIX;
 };
 
 }

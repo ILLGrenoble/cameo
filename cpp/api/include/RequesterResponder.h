@@ -99,6 +99,9 @@ public:
 	/** check if it has been canceled */
 	bool isCanceled() const;
 
+	static const std::string KEY;
+	static const std::string PORT;
+
 private:
 	Responder(const std::string &name);
 	void init(const std::string &name);
@@ -106,6 +109,7 @@ private:
 	std::string m_name;
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
+	std::string m_key;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -148,11 +152,9 @@ public:
 	bool isCanceled() const;
 
 private:
-	void init(application::Instance & app, const std::string & responderName);
 	Requester();
-
-	static int newRequesterId();
-	static std::string getRequesterPortName(const std::string& responderName, int responderId, int requesterId);
+	void init(application::Instance & app, const std::string & responderName);
+	void tryInit(application::Instance & app);
 
 	std::string m_responderName;
 	int m_requesterId;
@@ -161,9 +163,7 @@ private:
 	Endpoint m_appEndpoint;
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
-
-	static std::mutex m_mutex;
-	static int m_requesterCounter;
+	std::string m_key;
 };
 
 std::ostream& operator<<(std::ostream&, const cameo::coms::Request&);

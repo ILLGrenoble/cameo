@@ -27,10 +27,7 @@
 namespace cameo {
 namespace coms {
 
-const std::string RequesterZmq::REQUESTER_PREFIX = "req.";
-
-void RequesterZmq::init(const Endpoint& endpoint, int requesterPort, int responderPort) {
-	m_requesterPort = requesterPort;
+void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 	m_canceled = false;
 
 	// Create the request socket.
@@ -38,11 +35,25 @@ void RequesterZmq::init(const Endpoint& endpoint, int requesterPort, int respond
 
 	// Create a socket REP.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_repSocket.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
-	std::stringstream reqEndpoint;
-	reqEndpoint << "tcp://*:" << m_requesterPort;
+	m_requester.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
 
-	m_repSocket->bind(reqEndpoint.str().c_str());
+	std::string endpointPrefix("tcp://*:");
+
+	// Loop to find an available port for the requester.
+	while (true) {
+
+		int port = application::This::getCom().requestPort();
+		std::string reqEndpoint = endpointPrefix + std::to_string(port);
+
+		try {
+			m_requester->bind(reqEndpoint.c_str());
+			m_requesterPort = port;
+			break;
+		}
+		catch (...) {
+			application::This::getCom().setPortUnavailable(port);
+		}
+	}
 }
 
 RequesterZmq::~RequesterZmq() {
@@ -112,7 +123,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	}
 
 	zmq::message_t message;
-	if (!m_repSocket->recv(message, zmq::recv_flags::none).has_value()) {
+	if (!m_requester->recv(message, zmq::recv_flags::none).has_value()) {
 		return {};
 	}
 
@@ -132,7 +143,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	if (type == message::RESPONSE) {
 		// Get the second part for the message.
 		zmq::message_t secondPart;
-		if (!m_repSocket->recv(secondPart, zmq::recv_flags::none).has_value()) {
+		if (!m_requester->recv(secondPart, zmq::recv_flags::none).has_value()) {
 			return {};
 		}
 		result = std::string(secondPart.data<char>(), secondPart.size());
@@ -144,7 +155,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	std::unique_ptr<zmq::message_t> reply(new zmq::message_t(size));
 	memcpy(reply->data(), data.c_str(), size);
 
-	m_repSocket->send(*reply, zmq::send_flags::none);
+	m_requester->send(*reply, zmq::send_flags::none);
 
 	return result;
 }
@@ -170,8 +181,11 @@ bool RequesterZmq::isCanceled() {
 
 void RequesterZmq::terminate() {
 
-	if (m_repSocket.get() != nullptr) {
-		m_repSocket.reset(nullptr);
+	if (m_requester.get() != nullptr) {
+		m_requester.reset(nullptr);
+
+		// Release the requester port.
+		application::This::getCom().releasePort(m_requesterPort);
 	}
 
 	m_requestSocket.reset();
