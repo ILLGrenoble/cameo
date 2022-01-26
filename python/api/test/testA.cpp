@@ -107,9 +107,9 @@ TEST_CASE("requester") {
 	// why returning a smart pointer instead of an object?
 	// what is exactly an instance? what does it represent?
 
-	std::unique_ptr<cameo::coms::Requester> requester =
-	    //   cameo::coms::Requester::create( *responderServer, CAMEO_RESPONDER);
-	    cameo::coms::Requester::create(*responder_instance, CAMEO_RESPONDER);
+	std::unique_ptr<cameo::coms::legacy::Requester> requester =
+	    //   cameo::coms::legacy::Requester::create( *responderServer, CAMEO_RESPONDER);
+	    cameo::coms::legacy::Requester::create(*responder_instance, CAMEO_RESPONDER);
 
 
 	// requester->send(TEXT);
@@ -132,9 +132,9 @@ TEST_CASE("responder") {
 	std::cout << "Name: " << cameo::application::This::getName() << std::endl;
 	std::cout << "Id: " << cameo::application::This::getId() << std::endl;
 	std::cout << "Timeout: " << cameo::application::This::getTimeout() << std::endl;
-	std::unique_ptr<cameo::coms::Responder> responder;
+	std::unique_ptr<cameo::coms::legacy::Responder> responder;
 	try {
-		responder = cameo::coms::Responder::create(CAMEO_RESPONDER);
+		responder = cameo::coms::legacy::Responder::create(CAMEO_RESPONDER);
 		std::cout << "Created responder " << *responder << std::endl;
 	} catch (const cameo::ResponderCreationException& e) {
 		std::cout << "Responder error" << std::endl;
@@ -144,7 +144,7 @@ TEST_CASE("responder") {
 	// this ensures that both are at this stage: requester and responder
 	std::unique_ptr<cameo::application::Instance> starter = cameo::application::This::connectToStarter();
 
-	std::unique_ptr<cameo::coms::Request> request = responder->receive();
+	std::unique_ptr<cameo::coms::legacy::Request> request = responder->receive();
 	CHECK(request->getBinary() == TEXT);
 	//  CHECK(request->getObjectId() == " ");
 	request->replyBinary(TEXT);

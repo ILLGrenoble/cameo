@@ -14,8 +14,8 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REQUESTERRESPONDER_H_
-#define CAMEO_REQUESTERRESPONDER_H_
+#ifndef CAMEO_COMS_LEGACY_REQUESTERRESPONDER_H_
+#define CAMEO_COMS_LEGACY_REQUESTERRESPONDER_H_
 
 #include "Application.h"
 #include "ResponderCreationException.h"
@@ -23,6 +23,7 @@
 
 namespace cameo {
 namespace coms {
+namespace legacy {
 
 class Responder;
 class ResponderImpl;
@@ -33,7 +34,7 @@ class RequesterImpl;
 
 class Request {
 
-	friend class cameo::coms::Responder;
+	friend class Responder;
 	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
@@ -166,10 +167,11 @@ private:
 	std::string m_key;
 };
 
-std::ostream& operator<<(std::ostream&, const cameo::coms::Request&);
-std::ostream& operator<<(std::ostream&, const cameo::coms::Responder&);
-std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
+std::ostream& operator<<(std::ostream&, const Request&);
+std::ostream& operator<<(std::ostream&, const Responder&);
+std::ostream& operator<<(std::ostream&, const Requester&);
 
+}
 }
 }
 

@@ -14,14 +14,15 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_RESPONDERZMQ_H_
-#define CAMEO_RESPONDERZMQ_H_
+#ifndef CAMEO_COMS_LEGACY_RESPONDERZMQ_H_
+#define CAMEO_COMS_LEGACY_RESPONDERZMQ_H_
 
-#include "../ResponderImpl.h"
 #include <zmq.hpp>
+#include "../LegacyResponderImpl.h"
 
 namespace cameo {
 namespace coms {
+namespace legacy {
 
 class Request;
 
@@ -50,6 +51,7 @@ private:
 	bool m_canceled;
 };
 
+}
 }
 }
 

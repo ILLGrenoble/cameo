@@ -14,21 +14,22 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REQUESTERZMQ_H_
-#define CAMEO_REQUESTERZMQ_H_
+#ifndef CAMEO_COMS_LEGACY_REQUESTERZMQ_H_
+#define CAMEO_COMS_LEGACY_REQUESTERZMQ_H_
 
-#include "../RequesterImpl.h"
 #include "../../../base/Waiting.h"
 #include "Strings.h"
 #include <string>
 #include <optional>
 #include <zmq.hpp>
+#include "../LegacyRequesterImpl.h"
 
 namespace cameo {
 
 class RequestSocket;
 
 namespace coms {
+namespace legacy {
 
 class RequesterZmq : public RequesterImpl {
 
@@ -55,6 +56,7 @@ private:
 	bool m_canceled;
 };
 
+}
 }
 }
 

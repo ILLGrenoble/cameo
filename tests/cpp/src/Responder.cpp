@@ -25,12 +25,12 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	unique_ptr<coms::Responder> responder;
+	unique_ptr<coms::legacy::Responder> responder;
 
 	try {
 		cout << "Creating responder" << endl;
 
-		responder = coms::Responder::create("responder");
+		responder = coms::legacy::Responder::create("responder");
 	}
 	catch (const coms::ResponderCreationException& e) {
 		cout << "Responder error" << endl;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	application::This::setRunning();
 
 	// Receive first request.
-	unique_ptr<coms::Request> request = responder->receive();
+	unique_ptr<coms::legacy::Request> request = responder->receive();
 	cout << "Received request " << *request << endl;
 
 	request->reply("1st response");

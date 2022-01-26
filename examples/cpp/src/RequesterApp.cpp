@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	cout << "Application " << *responderServer << " has state " << application::toString(responderServer->now()) << endl;
 
 	// Create a requester.
-	unique_ptr<coms::Requester> requester = coms::Requester::create(*responderServer, "the-responder");
+	unique_ptr<coms::legacy::Requester> requester = coms::legacy::Requester::create(*responderServer, "the-responder");
 
 	cout << "Created requester " << *requester << endl;
 

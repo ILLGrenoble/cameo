@@ -14,34 +14,32 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REQUESTERIMPL_H_
-#define CAMEO_REQUESTERIMPL_H_
+#ifndef CAMEO_COMS_LEGACY_RESPONDERIMPL_H_
+#define CAMEO_COMS_LEGACY_RESPONDERIMPL_H_
 
-#include "../../base/Waiting.h"
-#include "Strings.h"
 #include <string>
+#include <memory>
 
 namespace cameo {
 namespace coms {
+namespace legacy {
 
-class RequesterImpl {
+class Request;
+
+class ResponderImpl {
 
 public:
-	virtual ~RequesterImpl() {}
+	virtual ~ResponderImpl() {}
 
-	virtual void init(const Endpoint& endpoint, int responderPort) = 0;
-	virtual void sendBinary(const std::string& requestData) = 0;
-	virtual void send(const std::string& requestData) = 0;
-	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) = 0;
-
-	virtual std::optional<std::string> receiveBinary() = 0;
-	virtual std::optional<std::string> receive() = 0;
-
+	virtual void init() = 0;
+	virtual int getResponderPort() = 0;
 	virtual void cancel() = 0;
 	virtual bool isCanceled() = 0;
-	virtual void terminate() = 0;
+
+	virtual std::unique_ptr<Request> receive() = 0;
 };
 
+}
 }
 }
 

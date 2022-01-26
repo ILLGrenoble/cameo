@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "RequesterZmq.h"
+#include "LegacyRequesterZmq.h"
 #include "Application.h"
 #include "Serializer.h"
 #include "JSON.h"
@@ -26,6 +26,7 @@
 
 namespace cameo {
 namespace coms {
+namespace legacy {
 
 void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 	m_canceled = false;
@@ -191,6 +192,7 @@ void RequesterZmq::terminate() {
 	m_requestSocket.reset();
 }
 
+}
 }
 }
 

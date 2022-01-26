@@ -66,12 +66,12 @@ int main(int argc, char *argv[]) {
 		// Sleep 1s so that requester are waiting for the responder.
 		this_thread::sleep_for(chrono::seconds(1));
 
-		unique_ptr<coms::Responder> responder;
+		unique_ptr<coms::legacy::Responder> responder;
 
 		try {
 			cout << "Creating responder" << endl;
 
-			responder = coms::Responder::create("responder");
+			responder = coms::legacy::Responder::create("responder");
 		}
 		catch (const coms::ResponderCreationException& e) {
 			cout << "Responder error" << endl;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 		for (int j = 0; j < N * 10; ++j) {
 
 			// Receive the simple request.
-			unique_ptr<coms::Request> request = responder->receive();
+			unique_ptr<coms::legacy::Request> request = responder->receive();
 			request->reply("done");
 
 			cout << "Processed " << *request.get() << endl;

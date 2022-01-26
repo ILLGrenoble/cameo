@@ -173,56 +173,56 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Request>(m, "Request")
-	    .def("getObjectId", &Request::getObjectId)
-	    .def("getRequesterEndpoint", &Request::getRequesterEndpoint)
-	    .def("getBinary", &Request::getBinary)
-	    .def("get", &Request::get)
-	    .def("getSecondBinaryPart", &Request::getSecondBinaryPart)
-	    .def("setTimeout", &Request::setTimeout,
+	py::class_<legacy::Request>(m, "Request")
+	    .def("getObjectId", &legacy::Request::getObjectId)
+	    .def("getRequesterEndpoint", &legacy::Request::getRequesterEndpoint)
+	    .def("getBinary", &legacy::Request::getBinary)
+	    .def("get", &legacy::Request::get)
+	    .def("getSecondBinaryPart", &legacy::Request::getSecondBinaryPart)
+	    .def("setTimeout", &legacy::Request::setTimeout,
 	    		"value"_a)
-	    .def("replyBinary", &Request::replyBinary,
+	    .def("replyBinary", &legacy::Request::replyBinary,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("reply", &Request::reply,
+	    .def("reply", &legacy::Request::reply,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connectToRequester", &Request::connectToRequester, py::call_guard<py::gil_scoped_release>())
+	    .def("connectToRequester", &legacy::Request::connectToRequester, py::call_guard<py::gil_scoped_release>())
 	    // the following require "Server.h"
-	    .def("getServer", &Request::getServer);
+	    .def("getServer", &legacy::Request::getServer);
 
-	py::class_<Responder>(m, "Responder")
-	    .def_static("create", &Responder::create,
+	py::class_<legacy::Responder>(m, "Responder")
+	    .def_static("create", &legacy::Responder::create,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getName", &Responder::getName)
-	    .def("cancel", &Responder::cancel, py::call_guard<py::gil_scoped_release>())
-	    .def("receive", &Responder::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("isCanceled", &Responder::isCanceled);
+	    .def("getName", &legacy::Responder::getName)
+	    .def("cancel", &legacy::Responder::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &legacy::Responder::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &legacy::Responder::isCanceled);
 
 
-	py::class_<Requester>(m, "Requester")
-	    .def_static("create", &Requester::create,
+	py::class_<legacy::Requester>(m, "Requester")
+	    .def_static("create", &legacy::Requester::create,
 	    		"instance"_a,
 				"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getName", &Requester::getResponderName)
-		.def("getAppName", &Requester::getAppName)
-		.def("getAppId", &Requester::getAppId)
-		.def("getAppEndpoint", &Requester::getAppEndpoint)
-	    .def("sendBinary", &Requester::sendBinary,
+	    .def("getName", &legacy::Requester::getResponderName)
+		.def("getAppName", &legacy::Requester::getAppName)
+		.def("getAppId", &legacy::Requester::getAppId)
+		.def("getAppEndpoint", &legacy::Requester::getAppEndpoint)
+	    .def("sendBinary", &legacy::Requester::sendBinary,
 	    		"request"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("send", &Requester::send,
+	    .def("send", &legacy::Requester::send,
 	    		"request"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("sendTwoBinaryParts", &Requester::sendTwoBinaryParts,
+	    .def("sendTwoBinaryParts", &legacy::Requester::sendTwoBinaryParts,
 	    		"request1"_a, "request2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("receiveBinary", &Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
-	    .def("receive", &Requester::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
-	    .def("isCanceled", &Requester::isCanceled);
+	    .def("receiveBinary", &legacy::Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &legacy::Requester::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("cancel", &legacy::Requester::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &legacy::Requester::isCanceled);
 
 
 	py::class_<Configuration>(m, "Configuration")

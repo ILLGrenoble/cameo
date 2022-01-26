@@ -32,10 +32,10 @@ int main(int argc, char *argv[]) {
 		application::This::cancelWaitings();
 	});
 
-	unique_ptr<coms::Responder> responder;
+	unique_ptr<coms::legacy::Responder> responder;
 
 	try {
-		responder = coms::Responder::create("the-responder");
+		responder = coms::legacy::Responder::create("the-responder");
 		cout << "Created responder " << *responder << endl;
 
 	} catch (const coms::ResponderCreationException& e) {
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	while (true) {
 		
 		// Receive the simple request.
-		unique_ptr<coms::Request> request = responder->receive();
+		unique_ptr<coms::legacy::Request> request = responder->receive();
 		if (!request) {
 			cout << "Responder is canceled" << endl;
 			break;

@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
 		cout << "Creating responder and waiting for requests" << endl;
 
 		// Create a responder.
-		unique_ptr<coms::Responder> responder = coms::Responder::create("responder");
+		unique_ptr<coms::legacy::Responder> responder = coms::legacy::Responder::create("responder");
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
 
 		cout << "Wait for requests" << endl;
 
-		unique_ptr<coms::Request> request = responder->receive();
+		unique_ptr<coms::legacy::Request> request = responder->receive();
 
 		if (request) {
 			cerr << "Responder error: receive should return null" << endl;

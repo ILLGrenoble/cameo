@@ -14,18 +14,18 @@
  * limitations under the Licence.
  */
 
-#include "RequesterResponder.h"
-
+#include "LegacyRequesterResponder.h"
 #include "JSON.h"
 #include "Server.h"
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
-#include "impl/zmq/RequesterZmq.h"
-#include "impl/zmq/ResponderZmq.h"
+#include "impl/zmq/LegacyRequesterZmq.h"
+#include "impl/zmq/LegacyResponderZmq.h"
 
 namespace cameo {
 namespace coms {
+namespace legacy {
 
 ///////////////////////////////////////////////////////////////////////////
 // Request
@@ -354,3 +354,5 @@ std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 }
 }
+}
+
