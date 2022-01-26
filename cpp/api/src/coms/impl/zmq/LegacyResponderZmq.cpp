@@ -94,7 +94,7 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 
 	int type = request[message::TYPE].GetInt();
 
-	// Create the reply
+	// Create the reply.
 	std::unique_ptr<zmq::message_t> reply;
 	std::unique_ptr<Request> result;
 
@@ -142,7 +142,7 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 		reply.reset(responseToUnknownRequest());
 	}
 
-	// send to the client
+	// Reply to the client.
 	if (reply != nullptr) {
 		m_responder->send(*reply, zmq::send_flags::none);
 	}

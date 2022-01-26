@@ -87,7 +87,6 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 
 void RequesterZmq::send(const std::string& requestData) {
 
-	// encode the data
 	std::string result;
 	serialize(requestData, result);
 	sendBinary(result);
