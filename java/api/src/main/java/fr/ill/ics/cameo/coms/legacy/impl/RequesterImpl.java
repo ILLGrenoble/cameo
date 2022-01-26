@@ -14,26 +14,20 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms;
+package fr.ill.ics.cameo.coms.legacy.impl;
 
-import fr.ill.ics.cameo.base.Waiting;
+import fr.ill.ics.cameo.strings.Endpoint;
 
-public class ResponderWaiting extends Waiting {
+public interface RequesterImpl {
 
-	private Responder responder;
-	
-	public ResponderWaiting(Responder responder) {
-		this.responder = responder;
-	}
-	
-	@Override
-	public void cancel() {
-		responder.cancel();
-	}
-
-	@Override
-	public void terminate() {
-		responder.terminate();
-	}
+	void init(Endpoint endpoint, int responderPort);
+	void send(byte[] requestData);
+	void send(String request);
+	void sendTwoParts(byte[] requestData1, byte[] requestData2);
+	byte[] receive();
+	String receiveString();
+	void cancel();
+	boolean isCanceled();
+	void terminate();
 	
 }

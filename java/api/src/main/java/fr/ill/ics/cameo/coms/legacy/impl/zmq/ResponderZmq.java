@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl.zmq;
+package fr.ill.ics.cameo.coms.legacy.impl.zmq;
 
 import org.json.simple.JSONObject;
 
@@ -22,8 +22,8 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.coms.Request;
-import fr.ill.ics.cameo.coms.impl.ResponderImpl;
+import fr.ill.ics.cameo.coms.legacy.Request;
+import fr.ill.ics.cameo.coms.legacy.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;

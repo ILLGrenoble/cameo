@@ -32,14 +32,14 @@ public class Responder {
 			System.out.println("Creating responder");
 			
 			// Create the responder.
-			fr.ill.ics.cameo.coms.Responder responder = fr.ill.ics.cameo.coms.Responder.create("responder");
+			fr.ill.ics.cameo.coms.legacy.Responder responder = fr.ill.ics.cameo.coms.legacy.Responder.create("responder");
 			
 			// Set the state.
 			This.setRunning();
 			
 			
 			// Receive the first request.
-			fr.ill.ics.cameo.coms.Request request = responder.receive();
+			fr.ill.ics.cameo.coms.legacy.Request request = responder.receive();
 			System.out.println("Received request " + request.get());
 
 			// Reply.

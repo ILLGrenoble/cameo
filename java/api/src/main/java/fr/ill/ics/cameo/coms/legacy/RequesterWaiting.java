@@ -14,18 +14,26 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+package fr.ill.ics.cameo.coms.legacy;
 
-import fr.ill.ics.cameo.coms.Request;
+import fr.ill.ics.cameo.base.Waiting;
 
-public interface ResponderImpl {
+public class RequesterWaiting extends Waiting {
 
-	void init();
-	int getResponderPort();
-	Request receive();
-	void cancel();
-	boolean isEnded();
-	boolean isCanceled();
-	void terminate();
+	private Requester requester;
+	
+	public RequesterWaiting(Requester requester) {
+		this.requester = requester;
+	}
+	
+	@Override
+	public void cancel() {
+		requester.cancel();
+	}
+
+	@Override
+	public void terminate() {
+		requester.terminate();
+	}
 	
 }

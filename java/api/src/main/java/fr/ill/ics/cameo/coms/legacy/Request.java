@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.coms;
+package fr.ill.ics.cameo.coms.legacy;
 
 import java.util.List;
 

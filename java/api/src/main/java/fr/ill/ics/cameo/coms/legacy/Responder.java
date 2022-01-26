@@ -1,12 +1,13 @@
-package fr.ill.ics.cameo.coms;
+package fr.ill.ics.cameo.coms.legacy;
 
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.impl.ResponderImpl;
-import fr.ill.ics.cameo.coms.impl.zmq.ResponderZmq;
+import fr.ill.ics.cameo.coms.ResponderCreationException;
+import fr.ill.ics.cameo.coms.legacy.impl.ResponderImpl;
+import fr.ill.ics.cameo.coms.legacy.impl.zmq.ResponderZmq;
 
 /**
  * Class Responder.

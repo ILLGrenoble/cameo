@@ -239,7 +239,7 @@ public class TestCancel {
 				System.out.println("Creating responder and waiting for requests");
 				
 				// Create the publisher.
-				final fr.ill.ics.cameo.coms.Responder responder = fr.ill.ics.cameo.coms.Responder.create("responder");
+				final fr.ill.ics.cameo.coms.legacy.Responder responder = fr.ill.ics.cameo.coms.legacy.Responder.create("responder");
 				
 				Thread cancel = new Thread(new Runnable() {
 					@Override
@@ -257,7 +257,7 @@ public class TestCancel {
 				
 				System.out.println("Wait for requests");
 				
-				fr.ill.ics.cameo.coms.Request request = responder.receive();
+				fr.ill.ics.cameo.coms.legacy.Request request = responder.receive();
 				
 				if (request != null) {
 					System.err.println("Responder error: receive should return null");		

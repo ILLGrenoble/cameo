@@ -73,13 +73,13 @@ public class TestRequester {
 				}
 				
 				// Create the responder.
-				fr.ill.ics.cameo.coms.Responder responder = fr.ill.ics.cameo.coms.Responder.create("responder");
+				fr.ill.ics.cameo.coms.legacy.Responder responder = fr.ill.ics.cameo.coms.legacy.Responder.create("responder");
 				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {
 					
 					// Receive the simple request.
-					fr.ill.ics.cameo.coms.Request request = responder.receive();
+					fr.ill.ics.cameo.coms.legacy.Request request = responder.receive();
 		    		request.reply("done");
 		    		
 		    		System.out.println("Processed " + request);

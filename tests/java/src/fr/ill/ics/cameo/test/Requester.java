@@ -34,7 +34,7 @@ public class Requester {
 			Instance starter = This.connectToStarter();
 			
 			// Create the requester.
-			fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(starter, "responder");
+			fr.ill.ics.cameo.coms.legacy.Requester requester = fr.ill.ics.cameo.coms.legacy.Requester.create(starter, "responder");
 			
 			// Set the state.
 			This.setRunning();

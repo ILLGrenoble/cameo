@@ -18,8 +18,8 @@ package fr.ill.ics.cameo.examples;
 
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Request;
-import fr.ill.ics.cameo.coms.Responder;
+import fr.ill.ics.cameo.coms.legacy.Request;
+import fr.ill.ics.cameo.coms.legacy.Responder;
 
 
 public class ResponderApp {

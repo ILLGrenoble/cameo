@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.coms;
+package fr.ill.ics.cameo.coms.legacy;
 
 import org.json.simple.JSONObject;
 
@@ -8,8 +8,9 @@ import fr.ill.ics.cameo.base.KeyValue;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.impl.RequesterImpl;
-import fr.ill.ics.cameo.coms.impl.zmq.RequesterZmq;
+import fr.ill.ics.cameo.coms.RequesterCreationException;
+import fr.ill.ics.cameo.coms.legacy.impl.RequesterImpl;
+import fr.ill.ics.cameo.coms.legacy.impl.zmq.RequesterZmq;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.strings.Endpoint;
 
