@@ -34,8 +34,8 @@ public class Messages {
 	public static final long SET_RESULT = 22;
 	public static final long REQUEST = 26;
 	public static final long RESPONSE = 27;
-	public static final long ATTACH_UNMANAGED = 28;
-	public static final long DETACH_UNMANAGED = 29;
+	public static final long ATTACH_UNREGISTERED = 28;
+	public static final long DETACH_UNREGISTERED = 29;
 	public static final long IMPL_VERSION = 30;
 	public static final long STORE_KEY_VALUE = 31;
 	public static final long GET_KEY_VALUE = 32;
@@ -189,12 +189,12 @@ public class Messages {
 		public static final String REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
-	public static class AttachUnmanagedRequest {
+	public static class AttachUnregisteredRequest {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String PID = "pid"; // optional int64 pid = 2;
 	}
 
-	public static class DetachUnmanagedRequest {
+	public static class DetachUnregisteredRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}
 	
@@ -306,21 +306,21 @@ public class Messages {
 		return request;	
 	}
 	
-	public static JSONObject createAttachUnmanagedRequest(String name, long pid) {
+	public static JSONObject createAttachUnregisteredRequest(String name, long pid) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.ATTACH_UNMANAGED);
-		request.put(Messages.AttachUnmanagedRequest.NAME, name);
-		request.put(Messages.AttachUnmanagedRequest.PID, pid);
+		request.put(Messages.TYPE, Messages.ATTACH_UNREGISTERED);
+		request.put(Messages.AttachUnregisteredRequest.NAME, name);
+		request.put(Messages.AttachUnregisteredRequest.PID, pid);
 		
 		return request;
 	}
 	
-	public static JSONObject createDetachUnmanagedRequest(int id) {
+	public static JSONObject createDetachUnregisteredRequest(int id) {
 		
 		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.DETACH_UNMANAGED);
-		request.put(Messages.DetachUnmanagedRequest.ID, id);
+		request.put(Messages.TYPE, Messages.DETACH_UNREGISTERED);
+		request.put(Messages.DetachUnregisteredRequest.ID, id);
 		
 		return request;
 	}

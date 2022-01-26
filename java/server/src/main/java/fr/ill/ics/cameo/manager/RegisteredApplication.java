@@ -10,13 +10,13 @@ import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 
-public class ManagedApplication extends Application {
+public class RegisteredApplication extends Application {
 
 	private java.lang.Process process;
 	protected String[] args;
 	protected ApplicationIdentity starter;
 	
-	public ManagedApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter) {
+	public RegisteredApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter) {
 		super(endpoint, id);
 		
 		// Set the config.
@@ -54,7 +54,7 @@ public class ManagedApplication extends Application {
 	}
 	
 	@Override
-	public boolean isManaged() {
+	public boolean isRegistered() {
 		return true;
 	}
 	

@@ -3,11 +3,11 @@ package fr.ill.ics.cameo.manager;
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.strings.Endpoint;
 
-public class UnmanagedApplication extends Application {
+public class UnregisteredApplication extends Application {
 
 	private boolean alive = true;
 	
-	public UnmanagedApplication(Endpoint endpoint, int id, String name, long pid) {
+	public UnregisteredApplication(Endpoint endpoint, int id, String name, long pid) {
 		super(endpoint, id);
 		
 		// Set config.
@@ -18,13 +18,13 @@ public class UnmanagedApplication extends Application {
 			try {
 				processHandle = ProcessHandlerImpl.ofPid(pid);
 				
-				Log.logger().info("Unmanaged application " + this.getNameId() + " has pid " + pid);
+				Log.logger().info("Unregistered application " + this.getNameId() + " has pid " + pid);
 				
 			} catch (Exception e) {
-				Log.logger().info("Unmanaged application " + this.getNameId() + " has no process handle");
+				Log.logger().info("Unregistered application " + this.getNameId() + " has no process handle");
 			}
 		} else {
-			Log.logger().info("Unmanaged application " + this.getNameId() + " has no pid");
+			Log.logger().info("Unregistered application " + this.getNameId() + " has no pid");
 		}
 	}
 	
@@ -33,7 +33,7 @@ public class UnmanagedApplication extends Application {
 	}
 	
 	@Override
-	public boolean isManaged() {
+	public boolean isRegistered() {
 		return false;
 	}
 	

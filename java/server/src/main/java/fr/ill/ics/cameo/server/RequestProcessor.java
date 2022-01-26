@@ -31,7 +31,7 @@ import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
+import fr.ill.ics.cameo.exception.UnregisteredApplicationException;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.ApplicationConfig;
 import fr.ill.ics.cameo.manager.ApplicationInfo;
@@ -430,7 +430,7 @@ public class RequestProcessor {
 			
 			return Converter.reply(response);
 		}
-		catch (IdNotFoundException | UnmanagedApplicationException e) {
+		catch (IdNotFoundException | UnregisteredApplicationException e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
 			response.put(Messages.RequestResponse.VALUE, -1);
@@ -582,21 +582,21 @@ public class RequestProcessor {
 		}
 	}
 
-	public Msg processAttachUnmanagedRequest(JSONObject request, Manager manager) {
+	public Msg processAttachUnregisteredRequest(JSONObject request, Manager manager) {
 
-		Log.logger().fine("Received StartedUnmanaged request");
+		Log.logger().fine("Received AttachUnregistered request");
 		
 		int applicationId = 0;
-		String name = JSON.getString(request, Messages.AttachUnmanagedRequest.NAME);
+		String name = JSON.getString(request, Messages.AttachUnregisteredRequest.NAME);
 		
 		try {
 			// Set the PID if it is passed.
-			if (request.containsKey(Messages.AttachUnmanagedRequest.PID)) {
-				int pid = JSON.getInt(request, Messages.AttachUnmanagedRequest.PID);
-				applicationId = manager.newStartedUnmanagedApplication(name, pid);
+			if (request.containsKey(Messages.AttachUnregisteredRequest.PID)) {
+				int pid = JSON.getInt(request, Messages.AttachUnregisteredRequest.PID);
+				applicationId = manager.newStartedUnregisteredApplication(name, pid);
 			}
 			else {
-				applicationId = manager.newStartedUnmanagedApplication(name);
+				applicationId = manager.newStartedUnregisteredApplication(name);
 			}
 			
 			// Return the reply.
@@ -616,14 +616,14 @@ public class RequestProcessor {
 		} 
 	}
 
-	public Msg processDetachUnmanagedRequest(JSONObject request, Manager manager) {
+	public Msg processDetachUnregisteredRequest(JSONObject request, Manager manager) {
 		
-		Log.logger().fine("Received TerminatedUnmanaged request");
+		Log.logger().fine("Received DetachUnregistered request");
 		
-		int applicationId = JSON.getInt(request, Messages.DetachUnmanagedRequest.ID);
+		int applicationId = JSON.getInt(request, Messages.DetachUnregisteredRequest.ID);
 		
 		try {
-			String applicationName = manager.setUnmanagedApplicationTerminated(applicationId);
+			String applicationName = manager.setUnregisteredApplicationTerminated(applicationId);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();

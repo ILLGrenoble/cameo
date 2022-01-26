@@ -36,7 +36,7 @@ import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.exception.UnmanagedApplicationException;
+import fr.ill.ics.cameo.exception.UnregisteredApplicationException;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
@@ -270,7 +270,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create application.
-		Application application = new ManagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
 		// Threads.
@@ -528,17 +528,17 @@ public class Manager extends ConfigLoader {
 	 * @param id
 	 * @param inputs
 	 * @throws IdNotFoundException
-	 * @throws UnmanagedApplicationException 
+	 * @throws UnregisteredApplicationException 
 	 */
-	public synchronized void writeToInputStream(int id, String[] inputs) throws IdNotFoundException, UnmanagedApplicationException {
+	public synchronized void writeToInputStream(int id, String[] inputs) throws IdNotFoundException, UnregisteredApplicationException {
 		
 		if (applicationMap.containsKey(id)) {
 			Application application = applicationMap.get(id);
 			
-			// The process can be null in case it is an unmanaged application.
+			// The process can be null in case it is an unregistered application.
 			if (application.getProcess() == null) {
 				// We should throw a specific exception.
-				throw new UnmanagedApplicationException();
+				throw new UnregisteredApplicationException();
 			}
 			
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(application.getProcess().getOutputStream()));
@@ -674,7 +674,7 @@ public class Manager extends ConfigLoader {
 		application.sendEndOfStream();
 	}
 
-	public int newStartedUnmanagedApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public int newStartedUnregisteredApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		// Verify if the application is already running.
 		verifyNumberOfInstances(name, false);
@@ -683,7 +683,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application.
-		Application application = new UnmanagedApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
+		Application application = new UnregisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
 		// Threads.
@@ -697,11 +697,11 @@ public class Manager extends ConfigLoader {
 		return id;
 	}
 	
-	public int newStartedUnmanagedApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
-		return newStartedUnmanagedApplication(name, 0);
+	public int newStartedUnregisteredApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+		return newStartedUnregisteredApplication(name, 0);
 	}
 
-	public String setUnmanagedApplicationTerminated(int id) throws IdNotFoundException {
+	public String setUnregisteredApplicationTerminated(int id) throws IdNotFoundException {
 		
 		Application application = applicationMap.get(id);
 		
@@ -709,8 +709,8 @@ public class Manager extends ConfigLoader {
 			
 			String name = application.getName();
 			
-			// Terminate the application that is unmanaged.
-			((UnmanagedApplication)application).terminate();
+			// Terminate the application that is unregistered.
+			((UnregisteredApplication)application).terminate();
 			
 			// Remove the application.
 			removeApplication(application);

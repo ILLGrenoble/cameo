@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +14,13 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.exception;
 
+public class UnregisteredApplicationException extends Exception {
 
-public class UnmanagedApplicationException extends RuntimeException {
+	private static final long serialVersionUID = 2994457373229964613L;
 
-	private static final long serialVersionUID = -4856229974519178147L;
-
-	public UnmanagedApplicationException(String message) {
-		super(message);
+	public String getMessage() {
+		return "The application is not registered" ;
 	}
 }

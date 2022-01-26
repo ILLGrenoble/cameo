@@ -1,3 +1,4 @@
+package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,13 +15,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
 
-public class UnmanagedApplicationException extends Exception {
 
-	private static final long serialVersionUID = 2994457373229964613L;
+public class UnregisteredApplicationException extends RuntimeException {
 
-	public String getMessage() {
-		return "The application is unmanaged" ;
+	private static final long serialVersionUID = -4856229974519178147L;
+
+	public UnregisteredApplicationException(String message) {
+		super(message);
 	}
 }

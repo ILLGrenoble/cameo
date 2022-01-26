@@ -186,11 +186,11 @@ public class Server {
 					byte[] resultData = message.getLastData();
 					reply = process.processSetResultRequest(request, resultData, manager);
 				}
-				else if (type == Messages.ATTACH_UNMANAGED) {
-					reply = process.processAttachUnmanagedRequest(request, manager);
+				else if (type == Messages.ATTACH_UNREGISTERED) {
+					reply = process.processAttachUnregisteredRequest(request, manager);
 				}
-				else if (type == Messages.DETACH_UNMANAGED) {
-					reply = process.processDetachUnmanagedRequest(request, manager);
+				else if (type == Messages.DETACH_UNREGISTERED) {
+					reply = process.processDetachUnregisteredRequest(request, manager);
 				}
 				else if (type == Messages.IMPL_VERSION) {
 					reply = process.processVersion(version);

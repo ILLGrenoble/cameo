@@ -69,8 +69,8 @@ public class LifecycleApplicationThread extends ApplicationThread {
 	 */
 	private boolean onTermination() {
 		
-		// If the application is unmanaged.
-		if (!application.isManaged()) {
+		// If the application is unregistered.
+		if (!application.isRegistered()) {
 			
 			// Wait for the termination.
 			application.waitFor();
@@ -89,7 +89,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			exitValue = application.getProcess().waitFor();
 			
 			// An exit value different from 0 indicates the process terminated with an error.
-			// If the cameo app was killed i.e. destroyForcibly() was called (ManagedApplication.kill() or UnmanagedApplication.kill()) the exit value is 0.
+			// If the cameo app was killed i.e. destroyForcibly() was called (RegisteredApplication.kill() or UnregisteredApplication.kill()) the exit value is 0.
 			// Thus we do not have to filter these cases.
 			// However for a manual kill using a system call, the exit value is not 0 but we can consider as an error.
 			if (exitValue != 0) {

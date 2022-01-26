@@ -20,7 +20,7 @@ public class This {
 	private Endpoint serverEndpoint;
 	private String name;
 	private int id = -1;
-	private boolean managed = false;
+	private boolean registered = false;
 
 	private Endpoint starterEndpoint;
 	private String starterName;
@@ -353,16 +353,16 @@ public class This {
 		// Get the server endpoint.
 		serverEndpoint = Endpoint.parse(JSON.getString(infoObject, Messages.ApplicationIdentity.SERVER));
 
-		// Get the name present for both managed and unmanaged apps.
+		// Get the name present for both registered and unregistered apps.
 		name = JSON.getString(infoObject, Messages.ApplicationIdentity.NAME);
 
-		// For managed apps, id is present in info.
+		// For registered apps, id is present in info.
 		if (infoObject.containsKey(Messages.ApplicationIdentity.ID)) {
-			managed = true;
+			registered = true;
 			id = JSON.getInt(infoObject, Messages.ApplicationIdentity.ID);
 		}
 		else {
-			managed = false;
+			registered = false;
 		}
 		
 		// Get the starter info if it is present.
@@ -385,8 +385,8 @@ public class This {
 		// Get the name.
 		this.name = name; 
 		
-		// This is de-facto an unmanaged application.		
-		managed = false;
+		// This is de-facto an unregistered application.		
+		registered = false;
 		
 		// Init.
 		initApplication();
@@ -397,12 +397,12 @@ public class This {
 		// Create the server.
 		server = new Server(serverEndpoint, 0);
 		
-		// Init the unmanaged application.
-		if (!managed) {
-			id = initUnmanagedApplication();
+		// Init the unregistered application.
+		if (!registered) {
+			id = initUnregisteredApplication();
 			
 			if (id == -1) {
-				throw new UnmanagedApplicationException("Maximum number of applications " + name + " reached");
+				throw new UnregisteredApplicationException("Maximum number of applications " + name + " reached");
 			}
 		}
 		
@@ -434,9 +434,9 @@ public class This {
 		
 		waitingSet.terminateAll();
 
-		// Tell the cameo server that the application is terminated if it is unmanaged.
-		if (!managed) {
-			terminateUnmanagedApplication();
+		// Tell the cameo server that the application is terminated if it is unregistered.
+		if (!registered) {
+			terminateUnregisteredApplication();
 		}
 		
 		server.terminate();
@@ -445,18 +445,18 @@ public class This {
 		}
 	}
 	
-	private int initUnmanagedApplication() {
+	private int initUnregisteredApplication() {
 		
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		JSONObject response = server.requestJSON(Messages.createAttachUnmanagedRequest(name, pid));
+		JSONObject response = server.requestJSON(Messages.createAttachUnregisteredRequest(name, pid));
 	
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
-	private void terminateUnmanagedApplication() {
-		server.requestJSON(Messages.createDetachUnmanagedRequest(id));
+	private void terminateUnregisteredApplication() {
+		server.requestJSON(Messages.createDetachUnregisteredRequest(id));
 	}
 	
 	private void setStopHandler(int stoppingTime) {
