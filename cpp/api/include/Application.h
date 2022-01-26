@@ -18,7 +18,7 @@
 #define CAMEO_APPLICATION_H_
 
 #include "InvalidArgumentException.h"
-#include "UnmanagedApplicationException.h"
+#include "UnregisteredApplicationException.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
 #include "UndefinedApplicationException.h"
@@ -172,8 +172,8 @@ private:
 	static State parseState(const std::string& value);
 	State getState(int id) const;
 
-	int initUnmanagedApplication();
-	void terminateUnmanagedApplication();
+	int initUnregisteredApplication();
+	void terminateUnregisteredApplication();
 
 	State waitForStop();
 
@@ -182,7 +182,7 @@ private:
 
 	std::string m_name;
 	int m_id;
-	bool m_managed;
+	bool m_registered;
 
 	Endpoint m_serverEndpoint;
 	Endpoint m_starterEndpoint;

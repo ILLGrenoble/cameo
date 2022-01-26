@@ -139,9 +139,9 @@ void This::terminate() {
 		return;
 	}
 
-	// Terminate the unmanaged application.
-	if (!m_instance.m_managed) {
-		m_instance.terminateUnmanagedApplication();
+	// Terminate the unregistered application.
+	if (!m_instance.m_registered) {
+		m_instance.terminateUnregisteredApplication();
 	}
 
 	// Inited.
@@ -152,7 +152,7 @@ void This::terminate() {
 This::This() :
 	//Services(),
 	m_id(-1),
-	m_managed(false),
+	m_registered(false),
 	m_starterId(0),
 	m_inited(false) {
 }
@@ -174,9 +174,9 @@ void This::initApplication(int argc, char *argv[]) {
 	m_name = infoObject[message::ApplicationIdentity::NAME].GetString();
 	m_serverEndpoint = Endpoint::parse(infoObject[message::ApplicationIdentity::SERVER].GetString());
 
-	// Managed apps have the id key.
+	// Registered apps have the id key.
 	if (infoObject.HasMember(message::ApplicationIdentity::ID)) {
-		m_managed = true;
+		m_registered = true;
 		m_id = infoObject[message::ApplicationIdentity::ID].GetInt();
 	}
 
@@ -200,8 +200,8 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 	// Get the server endpoint.
 	m_serverEndpoint = Endpoint::parse(endpoint);
 
-	// The application is de-facto unmanaged.
-	m_managed = false;
+	// The application is de-facto unregistered.
+	m_registered = false;
 
 	// Init the app.
 	initApplication();
@@ -212,11 +212,11 @@ void This::initApplication() {
 	// Create the local server.
 	m_server = std::make_unique<Server>(m_serverEndpoint);
 
-	// Managed apps have the id key.
-	if (!m_managed) {
-		int id = initUnmanagedApplication();
+	// Registered apps have the id key.
+	if (!m_registered) {
+		int id = initUnregisteredApplication();
 		if (id == -1) {
-			throw UnmanagedApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
+			throw UnregisteredApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
 		}
 		m_id = id;
 	}
@@ -242,9 +242,9 @@ void This::initApplication() {
 This::~This() {
 	// Do not delete the impl here because there will be order trouble.
 
-	// Terminate the unmanaged application.
-	if (m_inited && !m_managed) {
-		terminateUnmanagedApplication();
+	// Terminate the unregistered application.
+	if (m_inited && !m_registered) {
+		terminateUnregisteredApplication();
 	}
 }
 
@@ -307,14 +307,14 @@ void This::cancelWaitings() {
 	m_instance.m_waitingSet->cancelAll();
 }
 
-int This::initUnmanagedApplication() {
-	json::Object response = m_server->requestJSON(createAttachUnmanagedRequest(m_name, GET_PROCESS_PID()));
+int This::initUnregisteredApplication() {
+	json::Object response = m_server->requestJSON(createAttachUnregisteredRequest(m_name, GET_PROCESS_PID()));
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
-void This::terminateUnmanagedApplication() {
-	m_server->requestJSON(createDetachUnmanagedRequest(m_id));
+void This::terminateUnregisteredApplication() {
+	m_server->requestJSON(createDetachUnregisteredRequest(m_id));
 }
 
 bool This::setRunning() {

@@ -46,8 +46,8 @@ namespace message {
 	const int SET_RESULT = 22;
 	const int REQUEST = 26;
 	const int RESPONSE = 27;
-	const int ATTACH_UNMANAGED = 28;
-	const int DETACH_UNMANAGED = 29;
+	const int ATTACH_UNREGISTERED = 28;
+	const int DETACH_UNREGISTERED = 29;
 	const int IMPL_VERSION = 30;
 	const int STORE_KEY_VALUE = 31;
 	const int GET_KEY_VALUE = 32;
@@ -201,12 +201,12 @@ namespace message {
 		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
-	namespace AttachUnmanagedRequest {
+	namespace AttachUnregisteredRequest {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* PID = "pid"; // optional int64 pid = 2;
 	}
 
-	namespace DetachUnmanagedRequest {
+	namespace DetachUnregisteredRequest {
 		constexpr const char* ID = "id"; // required int32 id = 1;
 	}
 
@@ -282,8 +282,8 @@ std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
 std::string createSetResultRequest(int id);
-std::string createAttachUnmanagedRequest(const std::string& name, long pid);
-std::string createDetachUnmanagedRequest(int id);
+std::string createAttachUnregisteredRequest(const std::string& name, long pid);
+std::string createDetachUnregisteredRequest(int id);
 std::string createOutputPortWithIdRequest(int id);
 std::string createOutputPortRequest(const std::string& name);
 std::string createRequestResponse(int32_t value, const std::string& message);

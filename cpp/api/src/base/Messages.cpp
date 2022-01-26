@@ -250,28 +250,28 @@ std::string createSetResultRequest(int id) {
 	return request.toString();
 }
 
-std::string createAttachUnmanagedRequest(const std::string& name, long pid) {
+std::string createAttachUnregisteredRequest(const std::string& name, long pid) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushValue(message::ATTACH_UNMANAGED);
+	request.pushValue(message::ATTACH_UNREGISTERED);
 
-	request.pushKey(message::AttachUnmanagedRequest::NAME);
+	request.pushKey(message::AttachUnregisteredRequest::NAME);
 	request.pushValue(name);
 
-	request.pushKey(message::AttachUnmanagedRequest::PID);
+	request.pushKey(message::AttachUnregisteredRequest::PID);
 	request.pushValue(pid);
 
 	return request.toString();
 }
 
-std::string createDetachUnmanagedRequest(int id) {
+std::string createDetachUnregisteredRequest(int id) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
-	request.pushValue(message::DETACH_UNMANAGED);
+	request.pushValue(message::DETACH_UNREGISTERED);
 
-	request.pushKey(message::DetachUnmanagedRequest::ID);
+	request.pushKey(message::DetachUnregisteredRequest::ID);
 	request.pushValue(id);
 
 	return request.toString();

@@ -14,12 +14,19 @@
  * limitations under the Licence.
  */
 
-#include "UnmanagedApplicationException.h"
+#ifndef CAMEO_UNREGISTEREDAPPLICATIONEXCEPTION_H_
+#define CAMEO_UNREGISTEREDAPPLICATIONEXCEPTION_H_
+
+#include "RemoteException.h"
 
 namespace cameo {
 
-UnmanagedApplicationException::UnmanagedApplicationException(const std::string& message) :
-	RemoteException(message) {
-}
+class UnregisteredApplicationException : public RemoteException {
+
+public:
+	UnregisteredApplicationException(const std::string& message);
+};
 
 }
+
+#endif
