@@ -226,6 +226,15 @@
 		</application>
 		
 		
+		<application name="basicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="basicresponder"/>
+		</application>
+
+		<application name="testbasicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testbasicresponder" args="basicrespondercpp"/>
+		</application>
+		
+		
 		<!-- Python apps -->
 		
 		<application name="simplepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">

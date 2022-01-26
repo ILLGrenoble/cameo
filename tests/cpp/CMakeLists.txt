@@ -110,3 +110,8 @@ target_link_libraries(stream PRIVATE Cameo::cameo-api-cpp)
 add_executable(teststream src/TestStream.cpp)
 target_link_libraries(teststream PRIVATE Cameo::cameo-api-cpp  pthread)
 
+add_executable(basicresponder src/BasicResponder.cpp)
+target_link_libraries(basicresponder PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testbasicresponder src/TestBasicResponder.cpp)
+target_link_libraries(testbasicresponder PRIVATE Cameo::cameo-api-cpp)
