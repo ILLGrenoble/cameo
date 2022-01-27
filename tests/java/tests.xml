@@ -225,13 +225,20 @@
 			<start executable="teststream"/>
 		</application>
 		
-		
 		<application name="basicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="basicresponder"/>
 		</application>
 
 		<application name="testbasicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testbasicresponder" args="basicrespondercpp"/>
+		</application>
+
+		<application name="basicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="basicrequester"/>
+		</application>
+
+		<application name="testbasicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testbasicrequester" args="basicrequestercpp"/>
 		</application>
 		
 		
