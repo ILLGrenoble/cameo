@@ -50,7 +50,6 @@ public:
 
 private:
 	int m_requesterPort;
-	std::string m_name;
 	std::unique_ptr<RequestSocket> m_requestSocket;
 	std::unique_ptr<zmq::socket_t> m_requester;
 	bool m_canceled;

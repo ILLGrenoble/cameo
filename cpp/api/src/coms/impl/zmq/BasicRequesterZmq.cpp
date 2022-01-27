@@ -35,7 +35,12 @@ void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_requester.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::req));
 
+	// Connect to the endpoint.
 	m_requester->connect(endpoint.withPort(responderPort).toString());
+
+	// Configure the socket to not wait at close time.
+    int linger = 0;
+    m_requester->setsockopt(ZMQ_LINGER, &linger, sizeof(linger));
 }
 
 RequesterZmq::~RequesterZmq() {

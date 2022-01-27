@@ -50,7 +50,6 @@ private:
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2);
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3);
 
-	std::string m_name;
 	std::unique_ptr<zmq::socket_t> m_requester;
 	std::atomic_bool m_canceled;
 };
