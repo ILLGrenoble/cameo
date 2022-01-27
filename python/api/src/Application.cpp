@@ -200,7 +200,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("receive", &legacy::Responder::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &legacy::Responder::isCanceled);
 
-
 	py::class_<legacy::Requester>(m, "Requester")
 	    .def_static("create", &legacy::Requester::create,
 	    		"instance"_a,
@@ -224,6 +223,59 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("cancel", &legacy::Requester::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &legacy::Requester::isCanceled);
 
+	py::class_<basic::Request>(m, "BasicRequest")
+		.def("getObjectId", &basic::Request::getObjectId)
+	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
+	    .def("getBinary", &basic::Request::getBinary)
+	    .def("get", &basic::Request::get)
+	    .def("getSecondBinaryPart", &basic::Request::getSecondBinaryPart)
+	    .def("setTimeout", &basic::Request::setTimeout,
+	    		"value"_a)
+	    .def("replyBinary", &basic::Request::replyBinary,
+	    		"response"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("reply", &basic::Request::reply,
+	    		"response"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("connectToRequester", &basic::Request::connectToRequester, py::call_guard<py::gil_scoped_release>())
+	    // the following require "Server.h"
+	    .def("getServer", &basic::Request::getServer);
+
+	py::class_<basic::Responder>(m, "BasicResponder")
+	    .def_static("create", &basic::Responder::create,
+	    		"name"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &basic::Responder::getName)
+	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &basic::Responder::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &basic::Responder::isCanceled);
+
+	py::class_<basic::Requester>(m, "BasicRequester")
+	    .def_static("create", &basic::Requester::create,
+	    		"instance"_a,
+				"name"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+
+		.def("setTimeout", &basic::Requester::setTimeout)
+		.def("setPollingTime", &basic::Requester::setPollingTime)
+	    .def("getName", &basic::Requester::getResponderName)
+		.def("getAppName", &basic::Requester::getAppName)
+		.def("getAppId", &basic::Requester::getAppId)
+		.def("getAppEndpoint", &basic::Requester::getAppEndpoint)
+	    .def("sendBinary", &basic::Requester::sendBinary,
+	    		"request"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("send", &basic::Requester::send,
+	    		"request"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("sendTwoBinaryParts", &basic::Requester::sendTwoBinaryParts,
+	    		"request1"_a, "request2"_a,
+	    		py::call_guard<py::gil_scoped_release>())
+	    .def("receiveBinary", &basic::Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
+	    .def("receive", &basic::Requester::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("cancel", &basic::Requester::cancel, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &basic::Requester::isCanceled)
+        .def("hasTimedout", &basic::Requester::hasTimedout);
 
 	py::class_<Configuration>(m, "Configuration")
 	    .def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
