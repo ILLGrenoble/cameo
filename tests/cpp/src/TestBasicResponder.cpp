@@ -80,11 +80,11 @@ int main(int argc, char *argv[]) {
 
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;
-/*
+
 		// Send a simple message but do not receive the response immediately.
 		requester->send("request");
 
-		cout << "Wait so that the responder has timed out" << endl;
+		cout << "Wait so that the responder has replied" << endl;
 		this_thread::sleep_for(chrono::seconds(1));
 
 		response = requester->receive();
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;
-*/
+
 		// Wait for the end of the application.
 		application::State state = responderApplication->waitFor();
 

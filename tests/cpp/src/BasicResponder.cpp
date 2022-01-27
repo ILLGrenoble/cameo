@@ -36,7 +36,6 @@ int main(int argc, char *argv[]) {
 		cout << "Responder error" << endl;
 		return -1;
 	}
-	cout << "Created responder" << endl;
 
 	application::This::setRunning();
 
@@ -60,29 +59,25 @@ int main(int argc, char *argv[]) {
 		cout << "Error, no timeout expected" << endl;
 	}
 
-/*
+
 	// Receive third request without receive on the requester side.
 	request = responder->receive();
 	cout << "Received request " << request->get() << endl;
 
-	// Reply with timeout
-	request->setTimeout(100);
-	res = request->reply("3rd response");
+	// Reply.
+	request->reply("3rd response");
+	cout << "Replied 3rd response" << endl;
 
-	if (!res) {
-		cout << "Timeout with " << request->getObjectId() << endl;
-	}
-
-	// Receive request after timeout.
+	// Receive request.
 	request = responder->receive();
 	cout << "received request " << *request << endl;
 
-	request->reply("4th response after timeout");
+	request->reply("4th response");
 
 
 	unique_ptr<application::Instance> requester = request->connectToRequester();
 	cout << "Requester " << *requester << endl;
-*/
+
 	cout << "Finished the application" << endl;
 
 	return 0;
