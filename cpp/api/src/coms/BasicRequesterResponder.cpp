@@ -280,6 +280,14 @@ std::unique_ptr<Requester> Requester::create(application::Instance & app, const 
 	return requester;
 }
 
+void Requester::setPollingTime(int value) {
+	m_impl->setPollingTime(value);
+}
+
+void Requester::setTimeout(int value) {
+	m_impl->setTimeout(value);
+}
+
 const std::string& Requester::getResponderName() const {
 	return m_responderName;
 }
@@ -322,6 +330,10 @@ void Requester::cancel() {
 
 bool Requester::isCanceled() const {
 	return m_impl->isCanceled();
+}
+
+bool Requester::hasTimedout() const {
+	return m_impl->hasTimedout();
 }
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {

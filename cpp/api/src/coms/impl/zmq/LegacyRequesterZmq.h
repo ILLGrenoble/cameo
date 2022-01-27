@@ -36,17 +36,17 @@ class RequesterZmq : public RequesterImpl {
 public:
 	virtual ~RequesterZmq();
 
-	void init(const Endpoint& endpoint, int responderPort);
-	void sendBinary(const std::string& requestData);
-	void send(const std::string& requestData);
-	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
+	virtual void init(const Endpoint& endpoint, int responderPort);
+	virtual void sendBinary(const std::string& requestData);
+	virtual void send(const std::string& requestData);
+	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
 
-	std::optional<std::string> receiveBinary();
-	std::optional<std::string> receive();
+	virtual std::optional<std::string> receiveBinary();
+	virtual std::optional<std::string> receive();
 
-	void cancel();
-	bool isCanceled();
-	void terminate();
+	virtual void cancel();
+	virtual bool isCanceled();
+	virtual void terminate();
 
 private:
 	int m_requesterPort;

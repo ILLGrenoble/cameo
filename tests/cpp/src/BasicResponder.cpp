@@ -53,14 +53,9 @@ int main(int argc, char *argv[]) {
 	parse(request->getBinary(), data1);
 	parse(request->getSecondBinaryPart(), data2);
 	cout << "Received request " << data1 << " " << data2 << endl;
+	request->reply("2nd response");
 
-	bool res = request->reply("2nd response");
-	if (!res) {
-		cout << "Error, no timeout expected" << endl;
-	}
-
-
-	// Receive third request without receive on the requester side.
+	// Receive third request.
 	request = responder->receive();
 	cout << "Received request " << request->get() << endl;
 
@@ -71,6 +66,9 @@ int main(int argc, char *argv[]) {
 	// Receive request.
 	request = responder->receive();
 	cout << "received request " << *request << endl;
+
+	cout << "Wait so that the requester has timed out" << endl;
+	this_thread::sleep_for(chrono::seconds(1));
 
 	request->reply("4th response");
 

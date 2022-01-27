@@ -134,6 +134,9 @@ public:
 	 */
 	static std::unique_ptr<Requester> create(application::Instance &app, const std::string &name);
 
+	void setPollingTime(int value);
+	void setTimeout(int value);
+
 	const std::string& getResponderName() const;
 	const std::string& getAppName() const;
 	int getAppId() const;
@@ -144,18 +147,19 @@ public:
 	void sendTwoBinaryParts(const std::string &request1, const std::string &request2);
 
 	/**
-	 * Returns a string or nothing if the requester is canceled.
+	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
 	 */
 	std::optional<std::string> receiveBinary();
 
 	/**
-	 * Returns a string or nothing if the requester is canceled.
+	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
 	 */
 	std::optional<std::string> receive();
 
 	void cancel();
 
 	bool isCanceled() const;
+	bool hasTimedout() const;
 
 private:
 	Requester();

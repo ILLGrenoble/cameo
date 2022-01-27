@@ -92,9 +92,21 @@ int main(int argc, char *argv[]) {
 
 		// Send a new simple message.
 		requester->send("request after timeout");
+		requester->setTimeout(500);
 
 		response = requester->receive();
-		cout << "Response is " << response.value() << endl;
+
+		if (response.has_value()) {
+			cout << "Response is " << response.value() << endl;
+		}
+		else {
+			if (requester->hasTimedout()) {
+				cout << "Timeout" << endl;
+			}
+			else {
+				cout << "No response" << endl;
+			}
+		}
 
 		// Wait for the end of the application.
 		application::State state = responderApplication->waitFor();

@@ -32,26 +32,37 @@ namespace basic {
 class RequesterZmq : public RequesterImpl {
 
 public:
+	RequesterZmq();
 	virtual ~RequesterZmq();
 
-	void init(const Endpoint& endpoint, int responderPort);
-	void sendBinary(const std::string& requestData);
-	void send(const std::string& requestData);
-	void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
+	virtual void setPollingTime(int value);
+	virtual void setTimeout(int value);
 
-	std::optional<std::string> receiveBinary();
-	std::optional<std::string> receive();
+	virtual void init(const Endpoint& endpoint, int responderPort);
+	virtual void sendBinary(const std::string& requestData);
+	virtual void send(const std::string& requestData);
+	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
 
-	void cancel();
-	bool isCanceled();
-	void terminate();
+	virtual std::optional<std::string> receiveBinary();
+	virtual std::optional<std::string> receive();
+
+	virtual void cancel();
+	virtual bool isCanceled();
+
+	virtual bool hasTimedout();
+
+	virtual void terminate();
 
 private:
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2);
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3);
+	bool receiveMessage(zmq::message_t& message);
 
+	int m_pollingTime;
+	int m_timeout;
 	std::unique_ptr<zmq::socket_t> m_requester;
 	std::atomic_bool m_canceled;
+	std::atomic_bool m_timedout;
 };
 
 }

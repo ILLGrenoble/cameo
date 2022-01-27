@@ -30,6 +30,9 @@ class RequesterImpl {
 public:
 	virtual ~RequesterImpl() {}
 
+	virtual void setPollingTime(int value) = 0;
+	virtual void setTimeout(int value) = 0;
+
 	virtual void init(const Endpoint& endpoint, int responderPort) = 0;
 	virtual void sendBinary(const std::string& requestData) = 0;
 	virtual void send(const std::string& requestData) = 0;
@@ -40,6 +43,9 @@ public:
 
 	virtual void cancel() = 0;
 	virtual bool isCanceled() = 0;
+
+	virtual bool hasTimedout() = 0;
+
 	virtual void terminate() = 0;
 };
 

@@ -27,9 +27,23 @@ namespace cameo {
 namespace coms {
 namespace basic {
 
-void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
+RequesterZmq::RequesterZmq() :
+	m_pollingTime(100),
+	m_timeout(0) {
 
 	m_canceled.store(false);
+	m_timedout.store(false);
+}
+
+void RequesterZmq::setPollingTime(int value) {
+	m_pollingTime = value;
+}
+
+void RequesterZmq::setTimeout(int value) {
+	m_timeout = value;
+}
+
+void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 
 	// Create a socket REQ.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
@@ -49,6 +63,9 @@ RequesterZmq::~RequesterZmq() {
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2) {
 
+	// Reset timedout.
+	m_timedout.store(false);
+
 	// Prepare the request parts.
 	int requestPart1Size = requestPart1.length();
 	int requestPart2Size = requestPart2.length();
@@ -63,6 +80,9 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 }
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3) {
+
+	// Reset timedout.
+	m_timedout.store(false);
 
 	// Prepare the request parts.
 	int requestPart1Size = requestPart1.length();
@@ -132,14 +152,54 @@ void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std
 	sendRequest(request.toString(), requestData1, requestData2);
 }
 
+bool RequesterZmq::receiveMessage(zmq::message_t& message) {
+
+	// Define the number of iterations.
+	int n = 0;
+	if (m_pollingTime > 0) {
+		n = m_timeout / m_pollingTime + 1;
+	}
+
+	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
+	int i = 0;
+	while (i < n || m_timeout == 0) {
+
+		// Check if the requester has been canceled.
+		if (m_canceled) {
+			return false;
+		}
+
+		// Poll the requester.
+		zmq::pollitem_t items[] = {
+			{ *m_requester.get(), 0, ZMQ_POLLIN, 0 }
+		};
+		zmq::poll(&items[0], 1, m_pollingTime);
+
+		// Get a reply.
+		if (items[0].revents & ZMQ_POLLIN) {
+			if (!m_requester->recv(message, zmq::recv_flags::none).has_value()) {
+				return false;
+			}
+			return true;
+		}
+		i++;
+	}
+
+	// Timeout.
+	m_timedout.store(true);
+
+	return false;
+}
+
 std::optional<std::string> RequesterZmq::receiveBinary() {
 
 	if (m_canceled) {
 		return {};
 	}
 
+	// Receive the message.
 	zmq::message_t message;
-	if (!m_requester->recv(message, zmq::recv_flags::none).has_value()) {
+	if (!receiveMessage(message)) {
 		return {};
 	}
 
@@ -153,11 +213,12 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 
 	if (type == message::RESPONSE) {
 
-		// Get the second part for the message.
+		// Get the second part of the message.
 		zmq::message_t secondPart;
-		if (!m_requester->recv(secondPart, zmq::recv_flags::none).has_value()) {
+		if (!receiveMessage(secondPart)) {
 			return {};
 		}
+
 		result = std::string(secondPart.data<char>(), secondPart.size());
 	}
 
@@ -174,6 +235,10 @@ void RequesterZmq::cancel() {
 
 bool RequesterZmq::isCanceled() {
 	return m_canceled;
+}
+
+bool RequesterZmq::hasTimedout() {
+	return m_timedout;
 }
 
 void RequesterZmq::terminate() {
