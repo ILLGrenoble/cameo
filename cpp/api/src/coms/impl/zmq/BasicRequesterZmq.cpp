@@ -33,7 +33,7 @@ void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 
 	// Create a socket REQ.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_requester.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REQ));
+	m_requester.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::req));
 
 	m_requester->connect(endpoint.withPort(responderPort).toString());
 }

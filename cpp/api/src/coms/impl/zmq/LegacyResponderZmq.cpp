@@ -41,7 +41,7 @@ void ResponderZmq::init() {
 
 	// Create a socket REP.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
+	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::rep));
 
 	std::string endpointPrefix("tcp://*:");
 

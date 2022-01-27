@@ -62,7 +62,7 @@ void RequestSocketZmq::init() {
 	if (m_socket.get() == nullptr) {
 		//m_socket.reset(m_context->createRequestSocket(m_endpoint));
 
-		m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_REQ));
+		m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::req));
 
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
 		int value = 0;

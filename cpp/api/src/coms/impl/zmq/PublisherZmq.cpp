@@ -42,7 +42,7 @@ void PublisherZmq::init() {
 
 	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_PUB));
+	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
 
 	std::string endpointPrefix("tcp://*:");
 
@@ -65,7 +65,7 @@ void PublisherZmq::init() {
 	// Define the synchronizer if the number of subscribers is strictly positive.
 	if (m_numberOfSubscribers > 0) {
 
-		m_synchronizer.reset(new zmq::socket_t(contextImpl->getContext(), ZMQ_REP));
+		m_synchronizer.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::rep));
 
 		// Loop to find an available port for the synchronizer.
 		while (true) {

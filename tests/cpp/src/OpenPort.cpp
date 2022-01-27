@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
 	zmq::context_t context(1);
 
-	zmq::socket_t socket(context, ZMQ_REP);
+	zmq::socket_t socket(context, zmq::socket_type::rep);
 
 	string endpoint("tcp://*:");
 	endpoint += port;

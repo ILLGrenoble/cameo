@@ -42,10 +42,10 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
 
 	// Create the sockets.
-	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_PUB));
+	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::pub));
 	m_cancelSocket->bind(cancelEndpoint.str());
 
-	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), ZMQ_SUB));
+	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
 
 	vector<string> streamList;
 	streamList.push_back(message::Event::STATUS);
