@@ -111,6 +111,8 @@ public class TestSelector {
 		apps.add("testrequesterjava");
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");
+		apps.add("testbasicresponderjava");
+		apps.add("testbasicrequesterjava");
 		
 		return apps;
 	}

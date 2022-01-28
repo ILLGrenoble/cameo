@@ -46,8 +46,6 @@ int main(int argc, char *argv[]) {
 		if (response.has_value()) {
 			cout << "Received " << response.value() << endl;
 		}
-
-		this_thread::sleep_for(chrono::milliseconds(100));
 	}
 
 	cout << "Finished the application" << endl;

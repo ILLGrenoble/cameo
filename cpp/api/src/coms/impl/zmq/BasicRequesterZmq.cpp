@@ -182,6 +182,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 			}
 			return true;
 		}
+
 		i++;
 	}
 

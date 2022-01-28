@@ -129,8 +129,6 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 				serverPort,
 				message1,
 				message2));
-
-		reply.reset(responseToRequest());
 	}
 	else if (type == message::CANCEL) {
 		m_canceled = true;

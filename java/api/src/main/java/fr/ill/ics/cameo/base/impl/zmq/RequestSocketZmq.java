@@ -66,8 +66,8 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
 		// send request, wait safely for reply
-		Zmq.Msg msg = request.duplicate();
-		msg.send(socket);
+		Zmq.Msg message = request.duplicate();
+		message.send(socket);
 
 		int usedTimeout = timeout;
 		if (overrideTimeout > -1) {

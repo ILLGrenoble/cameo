@@ -113,6 +113,22 @@
 		<application name="teststreamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestStream"/>
 		</application>
+		
+		<application name="basicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.BasicResponder"/>
+		</application>
+		
+		<application name="testbasicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicResponder basicresponderjava"/>
+		</application>
+	
+		<application name="basicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.BasicRequester"/>
+		</application>
+		
+		<application name="testbasicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicRequester basicrequesterjava"/>
+		</application>
 	
 
 		<!-- C++ apps -->

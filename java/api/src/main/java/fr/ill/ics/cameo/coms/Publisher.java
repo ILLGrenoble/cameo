@@ -7,8 +7,6 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.coms.impl.zmq.PublisherZmq;
-import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
 
 /**
  * Class Publisher.
