@@ -68,8 +68,14 @@ public class Responder {
 	}
 	
 	public Request receive() {
+		
+		// Receive the request.
 		Request request = impl.receive();
-		request.setResponder(this);
+		
+		// Do not set the responder if the request is null which happens after a cancel.
+		if (request != null) {
+			request.setResponder(this);
+		}
 		
 		return request;
 	}

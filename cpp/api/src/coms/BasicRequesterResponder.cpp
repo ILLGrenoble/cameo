@@ -189,8 +189,14 @@ void Responder::cancel() {
 }
 
 std::unique_ptr<Request> Responder::receive() {
+
+	// Receive the request.
 	std::unique_ptr<Request> request = m_impl->receive();
-	request->setResponder(this);
+
+	// Do not set the responder if the request is null which happens after a cancel.
+	if (request) {
+		request->setResponder(this);
+	}
 
 	return request;
 }

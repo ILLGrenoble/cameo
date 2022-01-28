@@ -171,9 +171,9 @@ int main(int argc, char *argv[]) {
 		killThread.join();
 	}
 
-	// Test the Responder.
+	// Test the legacy Responder.
 	{
-		cout << "Creating responder and waiting for requests" << endl;
+		cout << "Creating legacy responder and waiting for requests" << endl;
 
 		// Create a responder.
 		unique_ptr<coms::legacy::Responder> responder = coms::legacy::Responder::create("responder");
@@ -190,6 +190,69 @@ int main(int argc, char *argv[]) {
 
 		if (request) {
 			cerr << "Responder error: receive should return null" << endl;
+		}
+
+		cancelThread.join();
+	}
+
+	// Test the basic Responder.
+	{
+		cout << "Creating basic responder and waiting for requests" << endl;
+
+		// Create a responder.
+		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+
+		// Start thread.
+		thread cancelThread([&] {
+			this_thread::sleep_for(chrono::seconds(1));
+			responder->cancel();
+		});
+
+		cout << "Wait for requests" << endl;
+
+		unique_ptr<coms::basic::Request> request = responder->receive();
+
+		if (request) {
+			cerr << "Responder error: receive should return null" << endl;
+		}
+
+		cancelThread.join();
+
+		responder.reset(nullptr);
+	}
+
+	// Test the basic Requester.
+	{
+		cout << "Creating basic responder and requester" << endl;
+
+		// Create a responder.
+		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+
+		// Get this app.
+		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
+
+		// Create a requester.
+		unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*thisApp, "responder");
+
+		// Start thread.
+		thread cancelThread([&] {
+			this_thread::sleep_for(chrono::seconds(1));
+			requester->cancel();
+		});
+
+		cout << "Sending request" << endl;
+
+		requester->send("request");
+
+		cout << "Receiving response" << endl;
+
+		requester->receive();
+
+		if (requester->isCanceled()) {
+			cout << "Requester is canceled" << endl;
+		}
+		else {
+			cout << "Requester is not canceled" << endl;
 		}
 
 		cancelThread.join();
