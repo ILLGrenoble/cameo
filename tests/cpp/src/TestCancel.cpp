@@ -217,8 +217,6 @@ int main(int argc, char *argv[]) {
 		}
 
 		cancelThread.join();
-
-		responder.reset(nullptr);
 	}
 
 	// Test the basic Requester.

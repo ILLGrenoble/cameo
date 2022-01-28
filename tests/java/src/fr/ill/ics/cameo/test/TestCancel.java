@@ -180,7 +180,7 @@ public class TestCancel {
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
 
-				// Start thread
+				// Start thread.
 				Thread cancel = new Thread(new Runnable() {
 					@Override
 				    public void run() {
@@ -209,7 +209,7 @@ public class TestCancel {
 				
 				System.out.println("Subscriber end of stream " + subscriber.isEnded());
 
-				// Start thread
+				// Start thread.
 				Thread kill = new Thread(new Runnable() {
 					@Override
 				    public void run() {
@@ -234,11 +234,11 @@ public class TestCancel {
 				subscriber.terminate();
 			}
 			
-			// Test the Responder.
+			// Test the legacy Responder.
 			{
-				System.out.println("Creating responder and waiting for requests");
+				System.out.println("Creating legacy responder and waiting for requests");
 				
-				// Create the publisher.
+				// Create the responder.
 				final fr.ill.ics.cameo.coms.legacy.Responder responder = fr.ill.ics.cameo.coms.legacy.Responder.create("responder");
 				
 				Thread cancel = new Thread(new Runnable() {
@@ -264,14 +264,100 @@ public class TestCancel {
 				}
 				
 				cancel.join();
+				
+				responder.terminate();
 			}
 			
-		} catch (RemoteException e) {
-			System.err.println("Publisher error");
+			// Test the basic Responder.
+			{
+				System.out.println("Creating basic responder and waiting for requests");
+				
+				// Create the responder.
+				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				
+				// Start thread.
+				Thread cancel = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+				    	try {
+				    		Thread.sleep(1000);
+				    		responder.cancel();	
+				    		
+				    	} catch (InterruptedException e) {
+						}
+				    }
+				});
+				
+				cancel.start();
+				
+				System.out.println("Wait for requests");
+				
+				fr.ill.ics.cameo.coms.basic.Request request = responder.receive();
+				
+				if (request != null) {
+					System.err.println("Responder error: receive should return null");		
+				}
+				
+				cancel.join();
+				
+				responder.terminate();
+			}
 			
-		} catch (InterruptedException e) {
+			// Test the basic Requester.
+			{
+				System.out.println("Creating basic responder and requester");
+				
+				// Create the responder.
+				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
 
-		} finally {
+				// Get this app.
+				final Instance thisApp = This.getServer().connect(This.getName());
+				
+				// Create the requester.
+				final fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(thisApp, "responder");
+				
+				// Start thread.
+				Thread cancel = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+				    	try {
+				    		Thread.sleep(1000);
+				    		requester.cancel();	
+				    		
+				    	} catch (InterruptedException e) {
+						}
+				    }
+				});
+				
+				cancel.start();
+				
+				System.out.println("Sending request");
+				
+				requester.send("request");
+				
+				System.out.println("Receiving response");
+				
+				requester.receive();
+				
+				if (requester.isCanceled()) {
+					System.out.println("Requester is canceled");	
+				}
+				else {
+					System.out.println("Requester is not canceled");	
+				}
+				
+				cancel.join();
+				
+				responder.terminate();
+				requester.terminate();
+			}
+		}
+		catch (RemoteException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		catch (InterruptedException e) {
+		}
+		finally {
 			This.terminate();			
 		}
 		

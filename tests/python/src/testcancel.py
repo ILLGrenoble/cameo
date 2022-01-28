@@ -19,6 +19,15 @@ def killApplication(app):
     time.sleep(1)
     app.kill()
 
+def cancelResponder(responder):
+    time.sleep(1)
+    responder.cancel()
+
+def cancelRequester(requester):
+    time.sleep(1)
+    requester.cancel()
+
+
 this = cameopy.This
 this.init(sys.argv)
 server = this.getServer()
@@ -148,11 +157,83 @@ def testCancelSubscriber():
     k.join()
     
 
+def testLegacyResponder():
+    
+    print("Creating legacy responder and waiting for requests")
+    
+    responder = cameopy.Responder.create("responder")
+    
+    # Start cancel thread.
+    t = threading.Thread(target=cancelResponder, args=(responder,))
+    t.start()
+
+    print("Wait for requests")
+
+    request = responder.receive()
+    
+    if request is not None:
+        print("Responder error: receive should return None")
+
+    t.join()
+
+
+def testBasicResponder():
+    
+    print("Creating basic responder and waiting for requests")
+    
+    responder = cameopy.BasicResponder.create("responder")
+    
+    # Start cancel thread.
+    t = threading.Thread(target=cancelResponder, args=(responder,))
+    t.start()
+
+    print("Wait for requests")
+
+    request = responder.receive()
+    
+    if request is not None:
+        print("Responder error: receive should return None")
+
+    t.join()
+    
+
+def testBasicRequester():
+    
+    print("Creating basic responder and requester")
+    
+    responder = cameopy.BasicResponder.create("responder")
+    
+    thisApp = server.connect(cameopy.This.getName())
+    
+    requester = cameopy.BasicRequester.create(thisApp, "responder")
+    
+    # Start cancel thread.
+    t = threading.Thread(target=cancelRequester, args=(requester,))
+    t.start()
+
+    print("Sending request")
+
+    requester.send("request")
+
+    print("Receiving response")
+    
+    requester.receive()
+    
+    if requester.isCanceled():
+        print("Requester is canceled")
+    else:
+        print("Requester is not canceled")
+
+    t.join()
+
     
 testCancelAll()
 testCancelWaitFor()
 testCancelWaitForSubscribers()
 testKillApplication()
 testCancelSubscriber()
+testLegacyResponder()
+testBasicResponder()
+testBasicRequester()
 
 print("Finished the application")
