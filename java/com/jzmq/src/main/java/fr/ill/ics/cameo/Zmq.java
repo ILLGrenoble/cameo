@@ -1,13 +1,14 @@
 package fr.ill.ics.cameo;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.PollItem;
+
+import fr.ill.ics.cameo.Zmq.Socket;
+
 import org.zeromq.ZMsg;
 
 
@@ -17,6 +18,8 @@ public class Zmq {
 	public static final int REQ = 2;
 	public static final int PUB = 3;
 	public static final int SUB = 4;
+	public static final int ROUTER = 5;
+	public static final int DEALER = 6;
 	
 	public static class Msg {
 		
@@ -89,6 +92,10 @@ public class Zmq {
 			this.socket = socket;
 		}
 
+		public void setIdentity(String identity) {
+			socket.setIdentity(identity.getBytes());
+		}
+		
 		public void bind(String endpoint) {
 			socket.bind(endpoint);
 		}
@@ -162,6 +169,10 @@ public class Zmq {
 				return new Socket(context.createSocket(ZMQ.PUB));
 			case SUB:
 				return new Socket(context.createSocket(ZMQ.SUB));
+			case ROUTER:
+				return new Socket(context.createSocket(ZMQ.ROUTER));
+			case DEALER:
+				return new Socket(context.createSocket(ZMQ.DEALER));
 			}
 						
 			return null;
