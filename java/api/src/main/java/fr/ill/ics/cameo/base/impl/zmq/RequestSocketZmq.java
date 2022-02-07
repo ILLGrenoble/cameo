@@ -65,9 +65,8 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	
 	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
-		// send request, wait safely for reply
-		Zmq.Msg message = request.duplicate();
-		message.send(socket);
+		// Send request.
+		request.send(socket);
 
 		int usedTimeout = timeout;
 		if (overrideTimeout > -1) {
@@ -86,9 +85,9 @@ public class RequestSocketZmq implements RequestSocketImpl {
 			}
 
 			return reply;
-
-		} else {
-			// direct receive
+		}
+		else {
+			// Direct receive.
 			Zmq.Msg reply = Zmq.Msg.recvMsg(socket);
 
 			return reply;
@@ -100,10 +99,8 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	}
 	
 	public void terminate() {
-		// it is better to call destroySocket rather than socket.close()
-		// it is really important to destroy the socket because Java will do
-		// it later
-		// with the garbage collector
+		// It is better to call destroySocket rather than socket.close().
+		// It is really important to destroy the socket because Java will do it later with the garbage collector
 		context.destroySocket(socket);
 	}
 }
