@@ -17,7 +17,7 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
-  list(APPEND APIs cpp/api)
+  list(APPEND APIs cpp/api cpp/proxy)
 endif()
 
 if(${CAMEO_TESTS})
