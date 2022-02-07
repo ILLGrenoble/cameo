@@ -33,6 +33,7 @@ public final class ConfigManager {
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
+	private String proxyPort;
 	
 	private ConfigManager() {
 		super();
@@ -81,6 +82,10 @@ public final class ConfigManager {
 	public int getPort() {
 		return endpoint.getPort();
 	}
+	
+	public String getProxyPort() {
+		return proxyPort;
+	}
 
 	public int getMaxNumberOfApplications() {
 		return maxNumberOfApplications;
@@ -90,15 +95,16 @@ public final class ConfigManager {
 		try {
 			if (number == null) {
 				maxNumberOfApplications = 65536;
-			} else {
+			}
+			else {
 				maxNumberOfApplications = Integer.parseInt(number);
 			}
 			
 			if (maxNumberOfApplications <= 0) {
 				throw new NumberFormatException("Error, the property 'max_applications' must be strictly positive");
 			}
-
-		} catch (java.lang.NumberFormatException e) {
+		}
+		catch (java.lang.NumberFormatException e) {
 			System.err.println("Error, the property 'max_applications' is required");
 			System.exit(-1);
 		}
@@ -147,8 +153,8 @@ public final class ConfigManager {
 
 			// Set the base port of the port manager.
 			PortManager.getInstance().setBasePort(port + 1);
-			
-		} catch (java.lang.NumberFormatException e) {
+		}
+		catch (java.lang.NumberFormatException e) {
 			System.err.println("Error, the property 'port' is required");
 			System.exit(-1);
 		}
@@ -165,25 +171,30 @@ public final class ConfigManager {
 			try {
 				// Otherwise try to get the hostname.
 				host = InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException e) {
+			}
+			catch (UnknownHostException e) {
 				try {
 					// Otherwise try to get the IP address.
 					host = InetAddress.getLocalHost().getHostAddress();
-				} catch (UnknownHostException e2) {
+				}
+				catch (UnknownHostException e2) {
 					// Otherwise set localhost.
 					host = "localhost";
 				}
 			}
-		// If host is IP
-		} else if (hostString.equals("IP")){
+		// If host is IP.
+		}
+		else if (hostString.equals("IP")) {
 			try {
 				// Try to get the IP address.
 				host = InetAddress.getLocalHost().getHostAddress();
-			} catch (UnknownHostException e) {
+			}
+			catch (UnknownHostException e) {
 				// Otherwise set localhost.
 				host = "localhost";
 			}
-		} else {
+		}
+		else {
 			host = hostString;
 		}
 		
@@ -203,6 +214,10 @@ public final class ConfigManager {
 		int port = defineBasePort(portString);
 
 		endpoint = new Endpoint(host, port);
+	}
+
+	public void setProxyPort(String value) {
+		proxyPort = value;
 	}
 
 }

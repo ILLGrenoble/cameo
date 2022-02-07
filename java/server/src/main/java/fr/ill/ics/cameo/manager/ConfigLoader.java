@@ -34,6 +34,7 @@ public abstract class ConfigLoader {
 	private final String MAX_APPLICATIONS = "max_applications";
 	private final String HOST = "host";
 	private final String PORT = "port";
+	private final String PROXY_PORT = "proxy_port";
 	private final String LOG_DIRECTORY = "log_directory";
 	private final String LOG_LEVEL = "log_level";
 	private final String SLEEP_TIME = "sleep_time";
@@ -159,7 +160,8 @@ public abstract class ConfigLoader {
 		
 		// Set the attributes
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
-		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT)); 
+		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
+		ConfigManager.getInstance().setProxyPort(root.getAttributeValue(PROXY_PORT));
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
 		
