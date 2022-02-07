@@ -125,7 +125,7 @@ with open('./requirements.txt') as f:
 setup(
     name='cameopy',
     # note PEP-440 syntax: x.y.zaN but x.y.z.devN
-    version='1.0.1',
+    version='2.0.0',
     author='Shervin Nourbakhsh, Yannick Le Goc',
     author_email='nourbakhsh@ill.fr, legoc@ill.fr',
     maintainer='Shervin Nourbakhsh',

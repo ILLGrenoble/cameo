@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12.0)
 
 project(cameo-console-jzmq
-  VERSION 1.0.1
+  VERSION 2.0.0
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
