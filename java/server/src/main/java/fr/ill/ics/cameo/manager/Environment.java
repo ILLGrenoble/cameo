@@ -1,8 +1,8 @@
 package fr.ill.ics.cameo.manager;
 
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 public class Environment {
 

@@ -10,7 +10,7 @@ import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.RequesterCreationException;
 import fr.ill.ics.cameo.coms.basic.impl.RequesterImpl;
-import fr.ill.ics.cameo.coms.basic.impl.zmq.RequesterZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.strings.Endpoint;
 
@@ -29,7 +29,7 @@ public class Requester {
 	private String key;
 	
 	private Requester() {
-		this.impl = new RequesterZmq();
+		this.impl = ImplFactory.createBasicRequester();
 		waiting.add();
 	}
 

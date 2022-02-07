@@ -6,9 +6,6 @@ import org.zeromq.ZContext;
 import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.PollItem;
-
-import fr.ill.ics.cameo.Zmq.Socket;
-
 import org.zeromq.ZMsg;
 
 

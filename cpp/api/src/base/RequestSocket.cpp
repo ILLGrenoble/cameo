@@ -29,7 +29,7 @@ namespace cameo {
 RequestSocket::RequestSocket(Context * context, const std::string& endpoint, int timeout) {
 
 	//TODO Replace with a factory.
-	m_impl = std::unique_ptr<RequestSocketImpl>(new RequestSocketZmq(context, endpoint, timeout));
+	m_impl = std::unique_ptr<RequestSocketImpl>(new RequestSocketZmq(context, endpoint));
 	m_impl->setTimeout(timeout);
 }
 

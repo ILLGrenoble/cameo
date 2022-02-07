@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.server.Converter;

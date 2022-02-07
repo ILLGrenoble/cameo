@@ -29,7 +29,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.base.Application.State;
-import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -110,8 +110,7 @@ public class Server {
 	 * Initializes the context and the request socket. The serverEndpoint must have been set.
 	 */
 	final private void init() {
-		//TODO Replace with factory.
-		contextImpl = new ContextZmq();
+		contextImpl = ImplFactory.createContext();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString());
 	}
 	

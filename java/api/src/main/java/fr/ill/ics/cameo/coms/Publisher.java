@@ -6,7 +6,7 @@ import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
-import fr.ill.ics.cameo.coms.impl.zmq.PublisherZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 
 /**
  * Class Publisher.
@@ -30,8 +30,7 @@ public class Publisher {
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
 		
-		//TODO Replace with factory.
-		this.impl = new PublisherZmq(name, numberOfSubscribers);
+		this.impl = ImplFactory.createPublisher(name, numberOfSubscribers);
 		
 		waiting.add();
 	}

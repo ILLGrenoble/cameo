@@ -9,7 +9,7 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
-import fr.ill.ics.cameo.coms.impl.zmq.SubscriberZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.strings.Endpoint;
 
@@ -28,8 +28,7 @@ public class Subscriber {
 	private String key;
 	
 	private Subscriber() {
-		//TODO Replace with factory.
-		this.impl = new SubscriberZmq();
+		this.impl = ImplFactory.createSubscriber();
 		waiting.add();
 	}
 	

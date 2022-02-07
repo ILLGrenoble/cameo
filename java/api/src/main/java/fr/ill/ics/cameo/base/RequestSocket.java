@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.base.impl.RequestSocketImpl;
-import fr.ill.ics.cameo.base.impl.zmq.RequestSocketZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -14,8 +14,7 @@ public class RequestSocket {
 	private Parser parser;
 
 	public RequestSocket(Context context, int timeout, Parser parser) {
-		//TODO replace with a factory call.
-		this.impl = new RequestSocketZmq(context, timeout);
+		this.impl = ImplFactory.createRequestSocket(context, timeout);
 		this.parser = parser;
 	}
 			

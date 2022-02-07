@@ -18,7 +18,7 @@ package fr.ill.ics.cameo.base;
 
 
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
-import fr.ill.ics.cameo.base.impl.zmq.OutputStreamSocketZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.strings.Endpoint;
 
@@ -27,7 +27,7 @@ public class OutputStreamSocket {
 	private OutputStreamSocketImpl impl;
 
 	public OutputStreamSocket(String name) {
-		impl = new OutputStreamSocketZmq(name);
+		impl = ImplFactory.createOutputStreamSocket(name);
 	}
 
 	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {

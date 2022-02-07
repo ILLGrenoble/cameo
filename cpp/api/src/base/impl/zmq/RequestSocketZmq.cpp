@@ -27,11 +27,10 @@ using namespace std;
 
 namespace cameo {
 
-RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint, int timeout) :
+RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint) :
 	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint) {
 
 	init();
-	setTimeout(timeout);
 }
 
 RequestSocketZmq::~RequestSocketZmq() {

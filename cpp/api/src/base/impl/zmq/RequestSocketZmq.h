@@ -29,7 +29,7 @@ class ContextZmq;
 class RequestSocketZmq : public RequestSocketImpl {
 
 public:
-	RequestSocketZmq(Context * context, const std::string& endpoint, int timeout = 0);
+	RequestSocketZmq(Context * context, const std::string& endpoint);
 	virtual ~RequestSocketZmq();
 
 	virtual void setTimeout(int timeout);

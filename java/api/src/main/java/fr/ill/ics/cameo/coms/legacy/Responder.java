@@ -7,7 +7,7 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.ResponderCreationException;
 import fr.ill.ics.cameo.coms.legacy.impl.ResponderImpl;
-import fr.ill.ics.cameo.coms.legacy.impl.zmq.ResponderZmq;
+import fr.ill.ics.cameo.factory.ImplFactory;
 
 /**
  * Class Responder.
@@ -25,8 +25,7 @@ public class Responder {
 	
 	private Responder(String name) {
 		this.name = name;
-		//TODO Replace with factory.
-		this.impl = new ResponderZmq();
+		this.impl = ImplFactory.createLegacyResponder();
 		waiting.add();
 	}
 	
