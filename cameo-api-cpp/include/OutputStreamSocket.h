@@ -17,8 +17,9 @@
 #ifndef CAMEO_OUTPUTSTREAMSOCKET_H_
 #define CAMEO_OUTPUTSTREAMSOCKET_H_
 
-#include <memory>
 #include "Event.h"
+#include <memory>
+#include <optional>
 
 namespace cameo {
 
@@ -54,12 +55,12 @@ class OutputStreamSocket {
 	friend class Services;
 	friend class application::Instance;
 
+	void setApplicationId(int id);
+
 public:
 	~OutputStreamSocket();
 
-	void setApplicationId(int id);
-
-	bool receive(Output& ouput);
+	std::optional<Output> receive();
 	void cancel();
 	bool isEnded() const;
 	bool isCanceled() const;

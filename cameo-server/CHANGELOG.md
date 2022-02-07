@@ -1,3 +1,13 @@
+1.0.3
+-----
+
+* Changed default value for log level from FINE to INFO.
+
+1.0.2
+-----
+
+* Removed useless and confusing test "application.hasToBeKilled()" in LifecycleApplicationThread.onTermination() when processing exit value: In some cases the error was not propagated.
+
 1.0.1
 -----
 

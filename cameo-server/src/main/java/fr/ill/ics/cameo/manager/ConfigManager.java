@@ -110,7 +110,8 @@ public final class ConfigManager {
 	
 	public void setLogLevel(String level) {
 		if (level == null) {
-			logLevel = "FINE";
+			// Default value.
+			logLevel = "INFO";
 		}
 		else if (level.equalsIgnoreCase("OFF")) {
 			logLevel = "OFF";

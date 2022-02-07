@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -lt 1 ]
 then
@@ -7,32 +7,31 @@ then
 fi
 
 version=$1
-libDir=$2
-binDir=$3
+libDir=${2:-/usr/share/java/}
+binDir=${3:-/usr/local/bin/}
+install_script_dir=`dirname $0`
 
-if [ "$libDir" = "" ]
-then
-	libDir="/usr/share/java/"
-fi
-
-if [ "$binDir" = "" ]
-then
-	binDir="/usr/local/bin/"
-fi
-
-mkdir -p "$libDir"
+mkdir -p "$libDir" || {
+    echo "[ERROR] Maybe you don't have the permission to create the directory" >> /dev/stderr
+    exit 1
+}
 mkdir -p "$binDir"
 
 libName="cameo-server-"$version"-full.jar"
-targetLibName="../target/$libName"
+targetLibName="${install_script_dir}/../target/$libName"
 
 if [ ! -e "$targetLibName" ]
 then
-	echo "The version $1 does not exist."
-	exit 1
+    echo "File $targetLibName not found" >> /dev/stderr
+    echo "The version $1 does not exist." >> /dev/stderr
+    exit 1
 fi
 
-cp "$targetLibName" "$libDir"
+cp "$targetLibName" "$libDir" ||{
+    echo "[ERROR] Maybe you don't have the permission to write in the $libDir directory" >> /dev/stderr
+    exit 1
+}
+
 
 libNoVersionName="cameo-server.jar"
 rm "$libDir/$libNoVersionName"

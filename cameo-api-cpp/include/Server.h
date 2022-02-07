@@ -52,23 +52,23 @@ public:
 	Server(const std::string& endpoint, int timeoutMs = 0);
 	~Server();
 
-	void setTimeout(int timeoutMs);
+	void setTimeout(int value);
 
 	int getTimeout() const;
 	const Endpoint& getEndpoint() const;
 	std::array<int, 3> getVersion() const;
-	bool isAvailable(int timeoutMs) const;
+	bool isAvailable(int timeout) const;
 
 	/**
 	 * Returns true if is available. Uses the timeout if set or 10000ms.
 	 */
 	bool isAvailable() const;
 
-	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, Option options = NONE);
-	std::unique_ptr<application::Instance> start(const std::string& name, Option options = NONE);
-	application::InstanceArray connectAll(const std::string& name, Option options = NONE);
-	std::unique_ptr<application::Instance> connect(const std::string& name, Option options = NONE);
-	std::unique_ptr<application::Instance> connect(int id, Option options = NONE);
+	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
+	std::unique_ptr<application::Instance> start(const std::string& name, int options = 0);
+	application::InstanceArray connectAll(const std::string& name, int options = 0);
+	std::unique_ptr<application::Instance> connect(const std::string& name, int options = 0);
+	std::unique_ptr<application::Instance> connect(int id, int options = 0);
 
 	/**
 	 * throws ConnectionTimeout

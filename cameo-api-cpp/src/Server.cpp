@@ -31,7 +31,8 @@
 using namespace std;
 
 namespace cameo {
-
+constexpr int defaultTimeout = 10000;
+	
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	Services::init();
@@ -87,8 +88,8 @@ Server::~Server() {
 	}
 }
 
-void Server::setTimeout(int timeoutMs) {
-	Services::setTimeout(timeoutMs);
+void Server::setTimeout(int value) {
+	Services::setTimeout(value);
 }
 
 int Server::getTimeout() const {
@@ -117,7 +118,7 @@ int Server::getAvailableTimeout() const {
 		return timeout;
 	}
 	else {
-		return 10000;
+		return defaultTimeout;
 	}
 }
 
@@ -125,11 +126,11 @@ std::unique_ptr<application::Instance> Server::makeInstance() {
 	return unique_ptr<application::Instance>(new application::Instance(this));
 }
 
-std::unique_ptr<application::Instance> Server::start(const std::string& name, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, int options) {
 	return start(name, vector<string>(), options);
 }
 
-std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, Option options) {
+std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
@@ -195,7 +196,7 @@ Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
 	return Response(value, message);
 }
 
-application::InstanceArray Server::connectAll(const std::string& name, Option options) {
+application::InstanceArray Server::connectAll(const std::string& name, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
@@ -212,7 +213,7 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 	size_t size = array.Size();
 
 	// Allocate the array.
-	instances.allocate(size);
+	instances.reserve(size);
 
 	int aliveInstancesCount = 0;
 
@@ -241,19 +242,19 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 				instance->setOutputStreamSocket(streamSocket);
 			}
 
-			instances.m_array[i] = std::move(instance);
+			instances.push_back(std::move(instance));
 		}
 	}
 
 	// Copy the alive instances.
 	application::InstanceArray aliveInstances;
-	aliveInstances.allocate(aliveInstancesCount);
+	aliveInstances.reserve(aliveInstancesCount);
 
 	int j = 0;
 	for (int i = 0; i < size; ++i) {
 
-		if (instances.m_array[i].get() != 0) {
-			aliveInstances[j] = std::move(instances.m_array[i]);
+		if (instances[i].get() != nullptr) {
+			aliveInstances.push_back(std::move(instances[i]));
 			j++;
 		}
 	}
@@ -261,7 +262,7 @@ application::InstanceArray Server::connectAll(const std::string& name, Option op
 	return aliveInstances;
 }
 
-std::unique_ptr<application::Instance> Server::connect(const std::string& name, Option options) {
+std::unique_ptr<application::Instance> Server::connect(const std::string& name, int options) {
 
 	application::InstanceArray instances = connectAll(name, options);
 
@@ -273,7 +274,7 @@ std::unique_ptr<application::Instance> Server::connect(const std::string& name, 
 	return std::move(instances[0]);
 }
 
-std::unique_ptr<application::Instance> Server::connect(int id, Option options) {
+std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 

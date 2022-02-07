@@ -25,6 +25,7 @@ git log --graph main_master cpp_master
 # we have to rewrite the history in the C++ API branch and rebase w.r.t. the main
 git rebase -i main_master cpp_master
 
+git checkout master
 git subtree merge -P cameo-api-cpp/ cpp_master
 # you need to solve few conflicts :-)
 
