@@ -21,13 +21,13 @@
 #include "StatusEvent.h"
 #include "JSON.h"
 #include "Messages.h"
+#include "../factory/ImplFactory.h"
 #include "impl/zmq/EventStreamSocketZmq.h"
 
 namespace cameo {
 
 EventStreamSocket::EventStreamSocket() {
-	//TODO Replace with a factory.
-	m_impl = std::unique_ptr<StreamSocketImpl>(new EventStreamSocketZmq());
+	m_impl = ImplFactory::createEventStreamSocket();
 }
 
 EventStreamSocket::~EventStreamSocket() {

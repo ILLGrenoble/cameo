@@ -20,6 +20,7 @@
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
+#include "../factory/ImplFactory.h"
 #include "impl/zmq/LegacyRequesterZmq.h"
 #include "impl/zmq/LegacyResponderZmq.h"
 
@@ -145,8 +146,7 @@ const std::string Responder::PORT = "port";
 Responder::Responder(const std::string& name) :
 	m_name(name) {
 
-	//TODO Replace with a factory.
-	m_impl = std::unique_ptr<ResponderImpl>(new ResponderZmq());
+	m_impl = ImplFactory::createLegacyResponder();
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Responder::cancel, this)));
@@ -208,8 +208,7 @@ bool Responder::isCanceled() const {
 Requester::Requester() :
 	m_appId(0) {
 
-	//TODO Replace with factory.
-	m_impl = std::unique_ptr<RequesterImpl>(new RequesterZmq());
+	m_impl = ImplFactory::createLegacyRequester();
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Requester::cancel, this)));

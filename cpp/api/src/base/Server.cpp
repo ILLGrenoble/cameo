@@ -23,9 +23,10 @@
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
 #include "EventThread.h"
+#include "../factory/ImplFactory.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/zmq/ContextZmq.h"
+#include "Context.h"
 #include "JSON.h"
 #include "Messages.h"
 #include "RequestSocket.h"
@@ -66,7 +67,7 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 Server::Server(const Endpoint& endpoint, int timeoutMs) :
 	m_timeout(0),
 	m_statusPort(0),
-	m_contextImpl(nullptr) {
+	m_context(nullptr) {
 
 	m_serverVersion[0] = 0;
 	m_serverVersion[1] = 0;
@@ -80,7 +81,7 @@ Server::Server(const Endpoint& endpoint, int timeoutMs) :
 Server::Server(const std::string& endpoint, int timeoutMs) :
 	m_timeout(0),
 	m_statusPort(0),
-	m_contextImpl(nullptr) {
+	m_context(nullptr) {
 
 	m_serverVersion[0] = 0;
 	m_serverVersion[1] = 0;
@@ -109,7 +110,7 @@ Server::~Server() {
 	m_requestSocket.reset();
 
 	// Reset the context.
-	m_contextImpl.reset();
+	m_context.reset();
 }
 
 void Server::setTimeout(int timeout) {
@@ -529,7 +530,7 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 	// Create the event stream socket.
 	std::unique_ptr<EventStreamSocket> eventStreamSocket = std::unique_ptr<EventStreamSocket>(new EventStreamSocket());
-	eventStreamSocket->init(m_contextImpl.get(), m_serverEndpoint.withPort(m_statusPort), m_requestSocket.get());
+	eventStreamSocket->init(m_context.get(), m_serverEndpoint.withPort(m_statusPort), m_requestSocket.get());
 
 	return eventStreamSocket;
 }
@@ -650,7 +651,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 void Server::initContext() {
 	// Set the impl.
-	m_contextImpl.reset(new ContextZmq());
+	m_context = ImplFactory::createContext();
 }
 
 void Server::initRequestSocket() {
@@ -700,17 +701,17 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 		return nullptr;
 	}
 
-	outputStreamSocket->init(m_contextImpl.get(), m_serverEndpoint.withPort(port), m_requestSocket.get());
+	outputStreamSocket->init(m_context.get(), m_serverEndpoint.withPort(port), m_requestSocket.get());
 
 	return outputStreamSocket;
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
-	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, m_timeout));
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, m_timeout));
 }
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {
-	return std::unique_ptr<RequestSocket>(new RequestSocket(m_contextImpl.get(), endpoint, timeout));
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

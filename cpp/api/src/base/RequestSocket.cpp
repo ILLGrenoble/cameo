@@ -17,6 +17,7 @@
 #include "RequestSocket.h"
 
 #include "ConnectionTimeout.h"
+#include "../factory/ImplFactory.h"
 #include "impl/zmq/RequestSocketZmq.h"
 #include <iostream>
 #include <chrono>
@@ -28,8 +29,7 @@ namespace cameo {
 
 RequestSocket::RequestSocket(Context * context, const std::string& endpoint, int timeout) {
 
-	//TODO Replace with a factory.
-	m_impl = std::unique_ptr<RequestSocketImpl>(new RequestSocketZmq(context, endpoint));
+	m_impl = ImplFactory::createRequestSocket(context, endpoint);
 	m_impl->setTimeout(timeout);
 }
 

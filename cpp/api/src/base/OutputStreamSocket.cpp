@@ -18,6 +18,7 @@
 
 #include "JSON.h"
 #include "Messages.h"
+#include "../factory/ImplFactory.h"
 #include "impl/zmq/OutputStreamSocketZmq.h"
 #include <iostream>
 
@@ -44,8 +45,7 @@ OutputStreamSocket::OutputStreamSocket(const std::string& name) :
 	m_ended(false),
 	m_canceled(false) {
 
-	//TODO Replace with factory.
-	m_impl = std::unique_ptr<StreamSocketImpl>(new OutputStreamSocketZmq(name));
+	m_impl = ImplFactory::createOutputStreamSocket(name);
 }
 
 void OutputStreamSocket::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {

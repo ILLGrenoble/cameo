@@ -18,6 +18,7 @@
 
 #include "JSON.h"
 #include "Server.h"
+#include "../factory/ImplFactory.h"
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
 #include "../base/RequestSocket.h"
@@ -39,8 +40,7 @@ const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
 	m_name(name), m_numberOfSubscribers(numberOfSubscribers) {
 
-	//TODO Replace with factory.
-	m_impl = std::unique_ptr<PublisherImpl>(new PublisherZmq(name, numberOfSubscribers));
+	m_impl = ImplFactory::createPublisher(name, numberOfSubscribers);
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Publisher::cancelWaitForSubscribers, this)));
@@ -126,7 +126,7 @@ void Publisher::sendEnd() const {
 // Subscriber
 
 Subscriber::Subscriber() {
-	m_impl = std::unique_ptr<SubscriberImpl>(new SubscriberZmq());
+	m_impl = ImplFactory::createSubscriber();
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Subscriber::cancel, this)));

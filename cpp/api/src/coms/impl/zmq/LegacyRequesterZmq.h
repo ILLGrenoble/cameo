@@ -18,6 +18,7 @@
 #define CAMEO_COMS_LEGACY_REQUESTERZMQ_H_
 
 #include "../../../base/Waiting.h"
+#include "../../../base/RequestSocket.h"
 #include "Strings.h"
 #include <string>
 #include <optional>
@@ -25,9 +26,6 @@
 #include "../LegacyRequesterImpl.h"
 
 namespace cameo {
-
-class RequestSocket;
-
 namespace coms {
 namespace legacy {
 
