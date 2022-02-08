@@ -29,7 +29,7 @@ class RequestSocketImpl;
 class RequestSocket {
 
 public:
-	RequestSocket(Context * context, const std::string& endpoint, int timeout = 0);
+	RequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity, int timeout = 0);
 	virtual ~RequestSocket();
 
 	void setTimeout(int timeout);

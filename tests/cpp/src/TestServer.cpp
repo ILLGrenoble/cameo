@@ -25,32 +25,33 @@ using namespace cameo;
 
 int main(int, char *[]) {
 
-	try {
-		Server server("tcp://ferrazpc.ill.fr:7000", 1000);
-	}
-	catch (SocketException const & e) {
-		cout << "Socket exception: " << e.what() << endl;
-	}
-	catch (exception const & e) {
-		cout << "The server has bad endpoint: " << e.what() << endl;
+	cout << "Create server" << endl;
+
+	Server server("tcp://localhost:10000");
+
+	cout << "Testing connection" << endl;
+
+	if (server.isAvailable()) {
+		cout << "Server available" << endl;
 	}
 
-	try {
-		Server server("tcp://localhost:9999", 1000);
-		cout << "server created" << endl;
-		if (server.isAvailable(1000)) {
-			cout << "server available" << endl;
-		}
-		else {
-			cout << "server not available" << endl;
-		}
+	cout << "Configs" << endl;
+
+	vector<application::Configuration> configs = server.getApplicationConfigurations();
+
+	for (auto c : configs) {
+		cout << c << endl;
 	}
-	catch (SocketException const & e) {
-		cout << "Socket exception: " << e.what() << endl;
+
+	unique_ptr<application::Instance> instance = server.start("simplecpp");
+
+	if (!instance->exists()) {
+		cout << "App does not exist" << endl;
 	}
-	catch (exception const & e) {
-		cout << "The server has bad endpoint: " << e.what() << endl;
-	}
+
+	application::State state = instance->waitFor();
+
+	cout << "Terminated simple with state " << application::toString(state) << endl;
 
 	return 0;
 }

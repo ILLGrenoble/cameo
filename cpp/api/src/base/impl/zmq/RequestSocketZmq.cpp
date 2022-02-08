@@ -27,8 +27,8 @@ using namespace std;
 
 namespace cameo {
 
-RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint) :
-	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint), m_timeout(0) {
+RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint, const std::string& responderIdentity) :
+	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint), m_responderIdentity(responderIdentity), m_timeout(0) {
 
 	init();
 }
@@ -59,8 +59,6 @@ void RequestSocketZmq::init() {
 
 	// Reset if the socket is null.
 	if (m_socket.get() == nullptr) {
-		//m_socket.reset(m_context->createRequestSocket(m_endpoint));
-
 		m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::req));
 
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
@@ -114,6 +112,16 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 	}
 
 	// Receive the response.
+	// Do not keep the first two parts as they contain the responder identity and an empty part.
+	zmq::message_t identity, empty;
+	if (!m_socket->recv(identity, zmq::recv_flags::none).has_value()) {
+		return {};
+	}
+
+	if (!m_socket->recv(empty, zmq::recv_flags::none).has_value()) {
+		return {};
+	}
+
 	unique_ptr<zmq::message_t> reply(new zmq::message_t());
 	if (m_socket->recv(*reply.get(), zmq::recv_flags::none).has_value()) {
 		return reply;
@@ -128,11 +136,13 @@ std::string RequestSocketZmq::request(const std::string& request, int overrideTi
 	init();
 
 	// Prepare the request parts.
-	int requestSize = request.length();
-	zmq::message_t requestMessage(requestSize);
-	memcpy(static_cast<void *>(requestMessage.data()), request.c_str(), requestSize);
+	zmq::message_t responderMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_socket->send(responderMessage, zmq::send_flags::sndmore);
 
-	// Send the request in one part.
+	zmq::message_t empty;
+	m_socket->send(empty, zmq::send_flags::sndmore);
+
+	zmq::message_t requestMessage(request.c_str(), request.length());
 	m_socket->send(requestMessage, zmq::send_flags::none);
 
 	// Receive and return the response.
@@ -147,15 +157,16 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	init();
 
 	// Prepare the request parts.
-	int requestPart1Size = requestPart1.length();
-	int requestPart2Size = requestPart2.length();
-	zmq::message_t requestPart1Message(requestPart1Size);
-	zmq::message_t requestPart2Message(requestPart2Size);
-	memcpy(static_cast<void *>(requestPart1Message.data()), requestPart1.c_str(), requestPart1Size);
-	memcpy(static_cast<void *>(requestPart2Message.data()), requestPart2.c_str(), requestPart2Size);
+	zmq::message_t responderMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_socket->send(responderMessage, zmq::send_flags::sndmore);
 
-	// Send the request in two parts.
+	zmq::message_t empty;
+	m_socket->send(empty, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart1Message(requestPart1.c_str(), requestPart1.length());
 	m_socket->send(requestPart1Message, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart2Message(requestPart2.c_str(), requestPart2.length());
 	m_socket->send(requestPart2Message, zmq::send_flags::none);
 
 	// Receive and return the response.
@@ -170,19 +181,19 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	init();
 
 	// Prepare the request parts.
-	int requestPart1Size = requestPart1.length();
-	int requestPart2Size = requestPart2.length();
-	int requestPart3Size = requestPart3.length();
-	zmq::message_t requestPart1Message(requestPart1Size);
-	zmq::message_t requestPart2Message(requestPart2Size);
-	zmq::message_t requestPart3Message(requestPart3Size);
-	memcpy(static_cast<void *>(requestPart1Message.data()), requestPart1.c_str(), requestPart1Size);
-	memcpy(static_cast<void *>(requestPart2Message.data()), requestPart2.c_str(), requestPart2Size);
-	memcpy(static_cast<void *>(requestPart3Message.data()), requestPart3.c_str(), requestPart3Size);
+	zmq::message_t responderMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_socket->send(responderMessage, zmq::send_flags::sndmore);
 
-	// Send the request in three parts.
+	zmq::message_t empty;
+	m_socket->send(empty, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart1Message(requestPart1.c_str(), requestPart1.length());
 	m_socket->send(requestPart1Message, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart2Message(requestPart2.c_str(), requestPart2.length());
 	m_socket->send(requestPart2Message, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart3Message(requestPart3.c_str(), requestPart3.length());
 	m_socket->send(requestPart3Message, zmq::send_flags::none);
 
 	// Receive and return the response.

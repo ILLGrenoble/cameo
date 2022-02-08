@@ -27,9 +27,9 @@ using namespace std;
 
 namespace cameo {
 
-RequestSocket::RequestSocket(Context * context, const std::string& endpoint, int timeout) {
+RequestSocket::RequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity, int timeout) {
 
-	m_impl = ImplFactory::createRequestSocket(context, endpoint);
+	m_impl = ImplFactory::createRequestSocket(context, endpoint, responderIdentity);
 	m_impl->setTimeout(timeout);
 }
 

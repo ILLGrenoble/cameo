@@ -29,7 +29,7 @@ class ContextZmq;
 class RequestSocketZmq : public RequestSocketImpl {
 
 public:
-	RequestSocketZmq(Context * context, const std::string& endpoint);
+	RequestSocketZmq(Context * context, const std::string& endpoint, const std::string& responderIdentity);
 	virtual ~RequestSocketZmq();
 
 	virtual void setTimeout(int timeout);
@@ -46,6 +46,7 @@ private:
 
 	ContextZmq * m_context;
 	std::string m_endpoint;
+	std::string m_responderIdentity;
 	std::unique_ptr<zmq::socket_t> m_socket;
 	int m_timeout;
 };

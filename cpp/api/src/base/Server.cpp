@@ -35,8 +35,11 @@
 #include <stdexcept>
 
 namespace cameo {
+
 constexpr int defaultTimeout = 10000;
-	
+
+const std::string Server::CAMEO_SERVER = "0:0";
+
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	initContext();
@@ -656,7 +659,7 @@ void Server::initContext() {
 
 void Server::initRequestSocket() {
 	// Create the request socket. The server endpoint must have been initialized.
-	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), m_timeout));
+	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
 }
 
 void Server::retrieveServerVersion() {
@@ -706,12 +709,12 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 	return outputStreamSocket;
 }
 
-std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint) {
-	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, m_timeout));
+std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity) {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, responderIdentity, m_timeout));
 }
 
-std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, int timeout) {
-	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, timeout));
+std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, responderIdentity, timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

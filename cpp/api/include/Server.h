@@ -160,8 +160,8 @@ private:
 	void initStatus();
 	int getStreamPort(const std::string& name);
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
-	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint);
-	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout);
+	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity);
+	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);
 
 	Endpoint m_serverEndpoint;
 	int m_timeout;
@@ -173,6 +173,8 @@ private:
 	std::mutex m_eventListenersMutex;
 	std::vector<EventListener *> m_eventListeners;
 	std::unique_ptr<EventThread> m_eventThread;
+
+	const static std::string CAMEO_SERVER;
 };
 
 std::ostream& operator<<(std::ostream&, const Server&);

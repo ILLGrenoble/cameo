@@ -150,7 +150,7 @@ void PublisherZmq::cancelWaitForSubscribers() {
 	request.pushValue(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_synchronizerPort).toString());
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_synchronizerPort).toString(), "zzzZZZ");
 	requestSocket->requestJSON(request.toString());
 }
 

@@ -85,12 +85,12 @@ void This::Com::releasePort(int port) const {
 	m_server->releasePort(m_applicationId, port);
 }
 
-std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint) const {
-	return m_server->createRequestSocket(endpoint);
+std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity) const {
+	return m_server->createRequestSocket(endpoint, responderIdentity);
 }
 
-std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint, int timeout) const {
-	return m_server->createRequestSocket(endpoint, timeout);
+std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) const {
+	return m_server->createRequestSocket(endpoint, responderIdentity, timeout);
 }
 
 State This::parseState(const std::string& value) {

@@ -23,8 +23,11 @@ endif()
 
 # Tests
 
-add_executable(badendpoint src/TestBadEndpoint.cpp)
-target_link_libraries(badendpoint PRIVATE Cameo::cameo-api-cpp)
+add_executable(testserver src/TestServer.cpp)
+target_link_libraries(testserver PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testbadendpoint src/TestBadEndpoint.cpp)
+target_link_libraries(testbadendpoint PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(simple src/Simple.cpp)
 target_link_libraries(simple PRIVATE Cameo::cameo-api-cpp)

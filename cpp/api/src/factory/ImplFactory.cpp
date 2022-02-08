@@ -33,8 +33,8 @@ std::unique_ptr<Context> ImplFactory::createContext() {
 	return std::make_unique<ContextZmq>();
 }
 
-std::unique_ptr<RequestSocketImpl> ImplFactory::createRequestSocket(Context * context, const std::string& endpoint) {
-	return std::make_unique<RequestSocketZmq>(context, endpoint);
+std::unique_ptr<RequestSocketImpl> ImplFactory::createRequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity) {
+	return std::make_unique<RequestSocketZmq>(context, endpoint, responderIdentity);
 }
 
 std::unique_ptr<StreamSocketImpl> ImplFactory::createEventStreamSocket() {

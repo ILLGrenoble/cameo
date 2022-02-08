@@ -78,7 +78,7 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 	if (m_numberOfSubscribers > 0) {
 
 		// Create a request socket.
-		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(appEndpoint.withPort(m_synchronizerPort).toString());
+		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(appEndpoint.withPort(m_synchronizerPort).toString(), "zzzZZZ");
 
 		// Poll subscriber.
 		zmq_pollitem_t items[1];

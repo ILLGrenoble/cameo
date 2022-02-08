@@ -32,7 +32,7 @@ void RequesterZmq::init(const Endpoint& endpoint, int responderPort) {
 	m_canceled = false;
 
 	// Create the request socket.
-	m_requestSocket = application::This::getCom().createRequestSocket(endpoint.withPort(responderPort).toString());
+	m_requestSocket = application::This::getCom().createRequestSocket(endpoint.withPort(responderPort).toString(), "zzzZZZ");
 
 	// Create a socket REP.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
@@ -171,7 +171,7 @@ void RequesterZmq::cancel() {
 	request.pushValue(message::CANCEL);
 
 	// Create a request socket only for the request.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString());
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_requesterPort).toString(), "zzzZZZ");
 	requestSocket->requestJSON(request.toString());
 }
 

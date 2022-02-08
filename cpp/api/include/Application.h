@@ -105,8 +105,8 @@ public:
 		void setPortUnavailable(int port) const;
 		void releasePort(int port) const;
 
-		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint) const;
-		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, int timeout) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) const;
 
 	private:
 		Com(Server* server, int applicationId);

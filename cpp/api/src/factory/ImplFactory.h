@@ -46,7 +46,7 @@ class ImplFactory {
 
 public:
 	static std::unique_ptr<Context> createContext();
-	static std::unique_ptr<RequestSocketImpl> createRequestSocket(Context * context, const std::string& endpoint);
+	static std::unique_ptr<RequestSocketImpl> createRequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity);
 	static std::unique_ptr<StreamSocketImpl> createEventStreamSocket();
 	static std::unique_ptr<StreamSocketImpl> createOutputStreamSocket(const std::string& name);
 
