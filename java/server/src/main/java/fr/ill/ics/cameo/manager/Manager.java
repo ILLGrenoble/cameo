@@ -269,8 +269,8 @@ public class Manager extends ConfigLoader {
 		// Find an id, throws an exception if there is no id available.
 		int id = findId();
 		
-		// Create application.
-		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
+		// Create the application. The proxy host endpoint is passed.
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getProxyHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
 		// Threads.
@@ -683,7 +683,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application.
-		Application application = new UnregisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
+		Application application = new UnregisteredApplication(ConfigManager.getInstance().getProxyHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
 		// Threads.

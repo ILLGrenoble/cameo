@@ -3,7 +3,7 @@ package fr.ill.ics.cameo.base.impl;
 public interface RequestSocketImpl {
 
 	void setTimeout(int timeout);
-	void connect(String endpoint);
+	void connect(String endpoint, String responderIdentity);
 	
 	byte[][] request(byte[] part1, int overrideTimeout);
 	byte[][] request(byte[] part1, byte[] part2, int overrideTimeout);

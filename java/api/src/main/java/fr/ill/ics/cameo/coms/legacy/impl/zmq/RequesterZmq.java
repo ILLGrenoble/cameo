@@ -41,7 +41,7 @@ public class RequesterZmq implements RequesterImpl {
 
 		// Create the request socket.
 		String responderEndpoint = endpoint.withPort(responderPort).toString();
-		requestSocket = This.getCom().createRequestSocket(responderEndpoint);
+		requestSocket = This.getCom().createRequestSocket(responderEndpoint, "zzzZZZ");
 		
 		// Create the REP socket.
 		requester = context.createSocket(Zmq.REP);
@@ -146,7 +146,7 @@ public class RequesterZmq implements RequesterImpl {
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
+		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString(), "zzzZZZ");
 		requestSocket.requestJSON(request);
 		
 		// Terminate the socket.

@@ -22,8 +22,8 @@ public class RequestSocket {
 		this.impl.setTimeout(timeout);
 	}
 
-	public void connect(String endpoint) {
-		impl.connect(endpoint);
+	public void connect(String endpoint, String responderIdentity) {
+		impl.connect(endpoint, responderIdentity);
 	}
 	
 	public byte[][] request(byte[] part1) {

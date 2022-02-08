@@ -33,10 +33,13 @@ import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ResponderIdentity;
 
 public class Server {
 
 	private Zmq.Context context;
+	private Zmq.Socket socket;
 	private String configFileName;
 	private InputStream configStream;
 	private static String implementationVersion = "?";
@@ -66,6 +69,28 @@ public class Server {
 	public Server(InputStream configStream) {
 		this.configStream = configStream;
 	}
+	
+	private void initSocket() {
+		
+		// Create the socket.
+		socket = context.createSocket(Zmq.ROUTER);
+		
+		// Set the identity.
+		socket.setIdentity(ResponderIdentity.CAMEO_SERVER);
+		
+		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
+		Endpoint proxyEndpoint = ConfigManager.getInstance().getProxyLocalEndpoint();
+
+		try {
+			socket.connect(proxyEndpoint.toString());
+			
+			Log.logger().info("Connected to proxy " + proxyEndpoint);
+		}
+		catch (Exception e) {
+			Log.logger().severe("Cannot connect to proxy " + proxyEndpoint + ": " + e.getMessage());
+			System.exit(1);
+		}
+	}
 
 	public void run() {
 		
@@ -81,15 +106,9 @@ public class Server {
 
 		// Create the context.
 		context = new Zmq.Context();
-		Zmq.Socket server = context.createSocket(Zmq.REP);
 		
-		try {
-			server.bind(ConfigManager.getInstance().getEndpoint());
-		}
-		catch (Exception e) {
-			Log.logger().severe("Cannot start server on port " + ConfigManager.getInstance().getPort() + ": " + e.getMessage());
-			System.exit(1);
-		}
+		// Create and connect the socket.
+		initSocket();
 
 		Log.logger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
 
@@ -118,128 +137,145 @@ public class Server {
 			Zmq.Msg reply = null;
 
 			try {
-				message = Zmq.Msg.recvMsg(server);
+				// Receive the multi-part message.
+				message = Zmq.Msg.recvMsg(socket);
 
 				if (message == null) {
 					break;
 				}
 
-				// Get the first frame.
-				byte[] data = message.getFirstData();
+				// Get all the parts. 
+				byte[][] data = message.getAllData();
+		
+				// Get the identity of the router.
+				byte[] proxyIdentity = data[0];
+				Log.logger().info("Received from " + ResponderIdentity.toInt(proxyIdentity));
+		
+				// Get the identity of the requester.
+				byte[] requesterIdentity = data[2];
+				Log.logger().info("Received requester " + ResponderIdentity.toInt(requesterIdentity));
+
+				// Prepare the reply.
+				reply = new Zmq.Msg();
+				
+				// Add the necessary parts.
+				reply.add(proxyIdentity);
+				reply.add(new byte[0]);
+				reply.add(requesterIdentity);
+				reply.add(new byte[0]);
 				
 				// Get the JSON request object.
-				JSONObject request = (JSONObject)parser.parse(Messages.parseString(data));
+				JSONObject request = (JSONObject)parser.parse(Messages.parseString(data[4]));
 				
-				// Get the type.
+				// Process the request, first get the type.
 				long type = JSON.getLong(request, Messages.TYPE);
 				
+				// Process on the type.
 				if (type == Messages.SYNC) {
-					reply = process.processSync(manager);
+					process.processSync(reply, manager);
 				}
 				else if (type == Messages.SYNC_STREAM) {
-					reply = process.processSyncStream(request, manager);
+					process.processSyncStream(request, reply, manager);
 				}
 				else if (type == Messages.START) {
-					reply = process.processStartRequest(request, manager);
+					process.processStartRequest(request, reply, manager);
 				}
 				else if (type == Messages.STOP) {
-					reply = process.processStopRequest(request, manager);
+					process.processStopRequest(request, reply, manager);
 				}
 				else if (type == Messages.KILL) {
-					reply = process.processKillRequest(request, manager);
+					process.processKillRequest(request, reply, manager);
 				}
 				else if (type == Messages.CONNECT) {
-					reply = process.processConnectRequest(request, manager);
+					process.processConnectRequest(request, reply, manager);
 				}
 				else if (type == Messages.CONNECT_WITH_ID) {
-					reply = process.processConnectWithIdRequest(request, manager);
+					process.processConnectWithIdRequest(request, reply, manager);
 				}
 				else if (type == Messages.OUTPUT_PORT) {
-					reply = process.processOutputPortRequest(request, manager);
+					process.processOutputPortRequest(request, reply, manager);
 				}
 				else if (type == Messages.OUTPUT_PORT_WITH_ID) {
-					reply = process.processOutputPortWithIdRequest(request, manager);
+					process.processOutputPortWithIdRequest(request, reply, manager);
 				}
 				else if (type == Messages.IS_ALIVE) {
-					reply = process.processIsAliveRequest(request, manager);
+					process.processIsAliveRequest(request, reply, manager);
 				}
 				else if (type == Messages.WRITE_INPUT) {
-					reply = process.processWriteInputRequest(request, manager);
+					process.processWriteInputRequest(request, reply, manager);
 				}
 				else if (type == Messages.STATUS) {
-					reply = process.processStatusRequest();
+					process.processStatusRequest(reply);
 				}
 				else if (type == Messages.APPS) {
-					reply = process.processAppsRequest(request, manager);
+					process.processAppsRequest(request, reply, manager);
 				}
 				else if (type == Messages.LIST) {
-					reply = process.processListRequest(request, manager);
+					process.processListRequest(request, reply, manager);
 				}
 				else if (type == Messages.SET_STATUS) {
-					reply = process.processSetStatusRequest(request, manager);
+					process.processSetStatusRequest(request, reply, manager);
 				}
 				else if (type == Messages.GET_STATUS) {
-					reply = process.processGetStatusRequest(request, manager);
+					process.processGetStatusRequest(request, reply, manager);
 				}
 				else if (type == Messages.SET_RESULT) {
-					// The result data is in the second frame.
-					byte[] resultData = message.getLastData();
-					reply = process.processSetResultRequest(request, resultData, manager);
+					// The result data is in the next frame.
+					process.processSetResultRequest(request, data[5], reply, manager);
 				}
 				else if (type == Messages.ATTACH_UNREGISTERED) {
-					reply = process.processAttachUnregisteredRequest(request, manager);
+					process.processAttachUnregisteredRequest(request, reply, manager);
 				}
 				else if (type == Messages.DETACH_UNREGISTERED) {
-					reply = process.processDetachUnregisteredRequest(request, manager);
+					process.processDetachUnregisteredRequest(request, reply, manager);
 				}
 				else if (type == Messages.IMPL_VERSION) {
-					reply = process.processVersion(version);
+					process.processVersion(version, reply);
 				}
 				else if (type == Messages.STORE_KEY_VALUE) {
-					reply = process.processStoreKeyValue(request, manager);
+					process.processStoreKeyValue(request, reply, manager);
 				}
 				else if (type == Messages.GET_KEY_VALUE) {
-					reply = process.processGetKeyValue(request, manager);
+					process.processGetKeyValue(request, reply, manager);
 				}
 				else if (type == Messages.REMOVE_KEY) {
-					reply = process.processRemoveKeyValue(request, manager);
+					process.processRemoveKeyValue(request, reply, manager);
 				}
 				else if (type == Messages.REQUEST_PORT) {
-					reply = process.processRequestPortRequest(request, manager);
+					process.processRequestPortRequest(request, reply, manager);
 				}
 				else if (type == Messages.PORT_UNAVAILABLE) {
-					reply = process.processPortUnavailableRequest(request, manager);
+					process.processPortUnavailableRequest(request, reply, manager);
 				}
 				else if (type == Messages.RELEASE_PORT) {
-					reply = process.processReleasePortRequest(request, manager);
+					process.processReleasePortRequest(request, reply, manager);
 				}
 				else if (type == Messages.PORTS) {
-					reply = process.processPortsRequest(request, manager);
+					process.processPortsRequest(request, reply, manager);
 				}
 				else if (type == Messages.SET_STOP_HANDLER) {
-					reply = process.processSetStopHandlerRequest(request, manager);
+					process.processSetStopHandlerRequest(request, reply, manager);
 				}
 				else {
 					System.err.println("Unknown request type " + type);
-					message.send(server);
+					message.send(socket);
 				}
 
 				// Send reply to the client.
 				if (reply != null) {
-					reply.send(server);
+					reply.send(socket);
 				}
 			}
 			catch (ParseException e) {
 				System.err.println("Cannot parse request");
+				
+				// Reply bad request if no reply was sent.
+				if (reply != null) {
+					reply.add("Bad request");
+					reply.send(socket);
+				}
 			}
 			finally {
-				// reply bad request if no reply was sent
-				if (reply == null) {
-					reply = new Zmq.Msg();
-					reply.add("Bad request");
-					reply.send(server);
-				}
-
 				// Do not use the garbage collector since Java 9 because it is causing a memory leak.
 				// A sleep is used to avoid to have too many requests that "block" the zeromq queue.
 				try {

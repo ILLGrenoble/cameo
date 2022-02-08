@@ -33,7 +33,8 @@ public final class ConfigManager {
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
-	private String proxyPort;
+	private Endpoint proxyLocalEndpoint;
+	private Endpoint proxyHostEndpoint;
 	
 	private ConfigManager() {
 		super();
@@ -83,10 +84,10 @@ public final class ConfigManager {
 		return endpoint.getPort();
 	}
 	
-	public String getProxyPort() {
-		return proxyPort;
+	public int getProxyPort() {
+		return proxyLocalEndpoint.getPort();
 	}
-
+		
 	public int getMaxNumberOfApplications() {
 		return maxNumberOfApplications;
 	}
@@ -216,8 +217,37 @@ public final class ConfigManager {
 		endpoint = new Endpoint(host, port);
 	}
 
-	public void setProxyPort(String value) {
-		proxyPort = value;
+	public void setProxyPort(String portString) {
+		
+		int port = 0;
+		
+		try {
+			port = Integer.parseInt(portString);
+		}
+		catch (java.lang.NumberFormatException e) {
+			System.err.println("Error, 'proxy_port' is not an integer");
+		}
+		
+		String localhost;
+		
+		try {
+			localhost = InetAddress.getLocalHost().getHostAddress();
+		}
+		catch (UnknownHostException e) {
+			localhost = "127.0.0.1"; 
+		}
+		
+		proxyLocalEndpoint = new Endpoint(localhost, port);
+		proxyHostEndpoint = endpoint.withPort(port);
 	}
+	
+	public Endpoint getProxyLocalEndpoint() {
+		return proxyLocalEndpoint;		
+	}
+	
+	public Endpoint getProxyHostEndpoint() {
+		return proxyHostEndpoint;		
+	}
+
 
 }

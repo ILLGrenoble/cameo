@@ -63,10 +63,14 @@ int main(int argc, char *argv[]) {
 				continue;
 			}
 
-			std::string fromIdentityStr = std::string(fromIdentity.data<char>(), fromIdentity.size());
-			std::string toIdentityStr = std::string(toIdentity.data<char>(), toIdentity.size());
+//			std::string fromIdentityStr = std::string(fromIdentity.data<char>(), fromIdentity.size());
+//			std::string toIdentityStr = std::string(toIdentity.data<char>(), toIdentity.size());
 
-			std::cout << "Message received from " << fromIdentityStr << " must be sent to " << toIdentityStr << std::endl;
+//			char* p_end;
+//			const long f = std::strtol(fromIdentityStr.c_str(), &p_end, 10);
+//			const long t = std::strtol(toIdentityStr.c_str(), &p_end, 10);
+//
+//			std::cout << "Message received from " << fromIdentityStr << " must be sent to " << toIdentityStr << std::endl;
 
 			// This part will be removed and replaced by the router identity once the message is sent.
 			router.send(toIdentity, zmq::send_flags::sndmore);

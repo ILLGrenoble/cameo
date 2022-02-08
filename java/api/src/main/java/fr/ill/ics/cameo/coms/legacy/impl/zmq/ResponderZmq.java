@@ -135,7 +135,7 @@ public class ResponderZmq implements ResponderImpl {
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString());
+		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString(), "zzzZZZ");
 		requestSocket.requestJSON(request);
 		
 		// Terminate the socket.

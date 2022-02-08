@@ -110,12 +110,12 @@ public class This {
 			}
 		}
 
-		public RequestSocket createRequestSocket(String endpoint) {
-			return server.createRequestSocket(endpoint);
+		public RequestSocket createRequestSocket(String endpoint, String responderIdentity) {
+			return server.createRequestSocket(endpoint, responderIdentity);
 		}
 		
-		public RequestSocket createRequestSocket(String endpoint, int timeout) {
-			return server.createRequestSocket(endpoint, timeout);
+		public RequestSocket createRequestSocket(String endpoint, String responderIdentity, int timeout) {
+			return server.createRequestSocket(endpoint, responderIdentity, timeout);
 		}
 		
 		/**

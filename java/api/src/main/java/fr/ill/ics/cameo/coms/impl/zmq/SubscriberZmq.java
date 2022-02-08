@@ -73,7 +73,7 @@ public class SubscriberZmq implements SubscriberImpl {
 		if (numberOfSubscribers > 0) {
 			
 			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = This.getCom().createRequestSocket(appEndpoint.withPort(synchronizerPort).toString());
+			RequestSocket requestSocket = This.getCom().createRequestSocket(appEndpoint.withPort(synchronizerPort).toString(), "zzzZZZ");
 			
 			// polling to wait for connection
 			Zmq.Poller poller = context.createPoller(subscriber);

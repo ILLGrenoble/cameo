@@ -54,10 +54,11 @@ public class RequestProcessor {
 	
 	/**
 	 * verify connection
+	 * @param reply 
 	 * @param manager 
 	 * 
 	 */
-	public Msg processSync(Manager manager) {
+	public void processSync(Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Sync message");
 		
@@ -69,10 +70,10 @@ public class RequestProcessor {
 		response.put(Messages.RequestResponse.VALUE, 0);
 		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
-	public Msg processSyncStream(JSONObject request, Manager manager) {
+	public void processSyncStream(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received SyncStream message");
 		
@@ -92,16 +93,17 @@ public class RequestProcessor {
 		response.put(Messages.RequestResponse.VALUE, 0);
 		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
 	/**
 	 * start command
+	 * @param reply 
 	 * 
 	 * @param message
 	 * @return
 	 */
-	public Msg processStartRequest(JSONObject request, Manager manager) {
+	public void processStartRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Start request");
 		
@@ -140,7 +142,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, application.getId());
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			
@@ -148,7 +150,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, Long.valueOf(-1));
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
@@ -159,7 +161,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processAppsRequest(JSONObject request, Manager manager) {
+	public void processAppsRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Apps request");
 		
@@ -184,10 +186,10 @@ public class RequestProcessor {
 		}
 		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
-	public Msg processSetStopHandlerRequest(JSONObject request, Manager manager) {
+	public void processSetStopHandlerRequest(JSONObject request, Msg reply, Manager manager) {
 	
 		Log.logger().fine("Received SetStopHandler request");
 		
@@ -199,7 +201,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -207,19 +209,20 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
 	
 	/**
 	 * stop command
+	 * @param reply 
 	 * 
 	 * @param message
 	 * @param manager
 	 * @return
 	 */
-	public Msg processStopRequest(JSONObject request, Manager manager) {
+	public void processStopRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Stop request");
 		
@@ -231,7 +234,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -239,7 +242,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
@@ -250,7 +253,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processKillRequest(JSONObject request, Manager manager) {
+	public void processKillRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Kill request");
 		
@@ -262,7 +265,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -270,7 +273,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
@@ -281,7 +284,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processConnectRequest(JSONObject request, Manager manager) {
+	public void processConnectRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Connect request");
 		
@@ -312,10 +315,10 @@ public class RequestProcessor {
 		}
 		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
-	public Msg processConnectWithIdRequest(JSONObject request, Manager manager) {
+	public void processConnectWithIdRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received ConnectWithId request");
 		
@@ -346,7 +349,7 @@ public class RequestProcessor {
 		}
 		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
 	
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
 	/**
@@ -356,7 +359,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processOutputPortWithIdRequest(JSONObject request, Manager manager) {
+	public void processOutputPortWithIdRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received OutputPortWithId request");
 				
@@ -368,7 +371,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, port);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (java.lang.ArrayIndexOutOfBoundsException | IdNotFoundException | UnknownApplicationException | StreamNotPublishedException e) {
 			// Return the reply.
@@ -376,7 +379,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 	
@@ -387,7 +390,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processIsAliveRequest(JSONObject request, Manager manager) {
+	public void processIsAliveRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received IsAlive request");
 		
@@ -397,7 +400,7 @@ public class RequestProcessor {
 		JSONObject response = new JSONObject();
 		response.put(Messages.IsAliveResponse.IS_ALIVE, isAlive);
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
 	/**
@@ -407,7 +410,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public Msg processWriteInputRequest(JSONObject request, Manager manager) {
+	public void processWriteInputRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received WriteInput request");
 		
@@ -428,7 +431,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException | UnregisteredApplicationException e) {
 			// Return the reply.
@@ -436,7 +439,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
@@ -445,7 +448,7 @@ public class RequestProcessor {
 	 * 
 	 * @return
 	 */
-	public Msg processStatusRequest() {
+	public void processStatusRequest(Msg reply) {
 		
 		Log.logger().fine("Received Status request");
 		
@@ -456,10 +459,10 @@ public class RequestProcessor {
 		response.put(Messages.RequestResponse.VALUE, port);
 		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
-	public Msg processListRequest(JSONObject request, Manager manager) {
+	public void processListRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received List request");
 		
@@ -485,7 +488,7 @@ public class RequestProcessor {
 		
 		response.put(Messages.ApplicationConfigListResponse.APPLICATION_CONFIG, array);
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
 	/**
@@ -493,7 +496,7 @@ public class RequestProcessor {
 	 * 
 	 * @return
 	 */
-	public Msg processOutputPortRequest(JSONObject request, Manager manager) {
+	public void processOutputPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received OuputPort request");
 		
@@ -504,10 +507,10 @@ public class RequestProcessor {
 		response.put(Messages.RequestResponse.VALUE, port);
 		response.put(Messages.RequestResponse.MESSAGE, "OK");
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
-	public Msg processSetStatusRequest(JSONObject request, Manager manager) {
+	public void processSetStatusRequest(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received SetStatus request");
 		
@@ -534,10 +537,10 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 		}
 				
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
-	public Msg processGetStatusRequest(JSONObject request, Manager manager) {
+	public void processGetStatusRequest(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received GetStatus request");
 		
@@ -552,11 +555,11 @@ public class RequestProcessor {
 		response.put(Messages.StatusEvent.APPLICATION_STATE, status.getApplicationState());
 		response.put(Messages.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
 
-	public Msg processSetResultRequest(JSONObject request, byte[] data, Manager manager) {
+	public void processSetResultRequest(JSONObject request, byte[] data, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received SetResult request");
 		
@@ -570,7 +573,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -578,11 +581,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processAttachUnregisteredRequest(JSONObject request, Manager manager) {
+	public void processAttachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received AttachUnregistered request");
 		
@@ -604,7 +607,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, applicationId);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
 			// Return the reply.
@@ -612,11 +615,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);			
+			reply.add(Messages.serialize(response));			
 		} 
 	}
 
-	public Msg processDetachUnregisteredRequest(JSONObject request, Manager manager) {
+	public void processDetachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received DetachUnregistered request");
 		
@@ -630,7 +633,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -638,11 +641,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}		
 	}
 
-	public Msg processVersion(Version version) {
+	public void processVersion(Version version, Msg reply) {
 		
 		Log.logger().fine("Received Version request");
 		
@@ -652,10 +655,10 @@ public class RequestProcessor {
 		response.put(Messages.VersionResponse.MINOR, version.minor);
 		response.put(Messages.VersionResponse.REVISION, version.revision);
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 
-	public Msg processStoreKeyValue(JSONObject request, Manager manager) {
+	public void processStoreKeyValue(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received StoreKeyValue request");
 		
@@ -671,7 +674,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (KeyAlreadyExistsException e) {
 			// Return the reply.
@@ -679,7 +682,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -2);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 						
-			return Converter.reply(response);	
+			reply.add(Messages.serialize(response));	
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -687,11 +690,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}		
 	}
 
-	public Msg processGetKeyValue(JSONObject request, Manager manager) {
+	public void processGetKeyValue(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received GetKeyValue request");
 		
@@ -707,7 +710,7 @@ public class RequestProcessor {
 				response.put(Messages.RequestResponse.VALUE, 0);
 				response.put(Messages.RequestResponse.MESSAGE, value);
 				
-				return Converter.reply(response);
+				reply.add(Messages.serialize(response));
 			}
 			else {
 				// Return the reply.
@@ -715,7 +718,7 @@ public class RequestProcessor {
 				response.put(Messages.RequestResponse.VALUE, -2);
 				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
-				return Converter.reply(response);
+				reply.add(Messages.serialize(response));
 			}
 		}
 		catch (IdNotFoundException e) {
@@ -724,11 +727,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processRemoveKeyValue(JSONObject request, Manager manager) {
+	public void processRemoveKeyValue(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received RemoveKey request");
 		
@@ -744,7 +747,7 @@ public class RequestProcessor {
 				response.put(Messages.RequestResponse.VALUE, 0);
 				response.put(Messages.RequestResponse.MESSAGE, "OK");
 				
-				return Converter.reply(response);
+				reply.add(Messages.serialize(response));
 			}
 			else {
 				// Return the reply.
@@ -752,7 +755,7 @@ public class RequestProcessor {
 				response.put(Messages.RequestResponse.VALUE, -2);
 				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
-				return Converter.reply(response);
+				reply.add(Messages.serialize(response));
 			}
 		}
 		catch (IdNotFoundException e) {
@@ -761,11 +764,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processRequestPortRequest(JSONObject request, Manager manager) {
+	public void processRequestPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received RequestPort request");
 		
@@ -780,7 +783,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, port);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -788,11 +791,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processPortUnavailableRequest(JSONObject request, Manager manager) {
+	public void processPortUnavailableRequest(JSONObject request, Msg reply, Manager manager) {
 				
 		Log.logger().fine("Received PortUnavailable request");
 		
@@ -808,7 +811,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -816,11 +819,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processReleasePortRequest(JSONObject request, Manager manager) {
+	public void processReleasePortRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received ReleasePort request");
 		
@@ -836,7 +839,7 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, 0);
 			response.put(Messages.RequestResponse.MESSAGE, "OK");
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
@@ -844,11 +847,11 @@ public class RequestProcessor {
 			response.put(Messages.RequestResponse.VALUE, -1);
 			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			return Converter.reply(response);
+			reply.add(Messages.serialize(response));
 		}
 	}
 
-	public Msg processPortsRequest(JSONObject request, Manager manager) {
+	public void processPortsRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Ports request");
 		
@@ -871,7 +874,7 @@ public class RequestProcessor {
 		
 		response.put(Messages.PortInfoListResponse.PORT_INFO, array);
 		
-		return Converter.reply(response);
+		reply.add(Messages.serialize(response));
 	}
 	
 }

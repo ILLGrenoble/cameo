@@ -33,6 +33,7 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ResponderIdentity;
 
 /**
  * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
@@ -111,7 +112,7 @@ public class Server {
 	 */
 	final private void init() {
 		contextImpl = ImplFactory.createContext();
-		requestSocket = this.createRequestSocket(serverEndpoint.toString());
+		requestSocket = this.createRequestSocket(serverEndpoint.toString(), ResponderIdentity.CAMEO_SERVER);
 	}
 	
 	private int getAvailableTimeout() {
@@ -184,18 +185,18 @@ public class Server {
 		serverVersion[2] = JSON.getInt(response, Messages.VersionResponse.REVISION);
 	}
 	
-	RequestSocket createRequestSocket(String endpoint) throws SocketException {
+	RequestSocket createRequestSocket(String endpoint, String responderIdentity) throws SocketException {
 		
 		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
-		requestSocket.connect(endpoint);
+		requestSocket.connect(endpoint, responderIdentity);
 		
 		return requestSocket;
 	}
 	
-	RequestSocket createRequestSocket(String endpoint, int timeout) throws SocketException {
+	RequestSocket createRequestSocket(String endpoint, String responderIdentity, int timeout) throws SocketException {
 		
 		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
-		requestSocket.connect(endpoint);
+		requestSocket.connect(endpoint, responderIdentity);
 		
 		return requestSocket;
 	}

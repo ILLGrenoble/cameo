@@ -66,7 +66,7 @@ public class Request {
 
 		// Create a new socket.
 		// Notice that trying to reuse a socket by calling connect() does not work (it is worse with jeromq)
-		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint, timeout);
+		RequestSocket requestSocket = This.getCom().createRequestSocket(requesterEndpoint, "zzzZZZ", timeout);
 		
 		try {
 			requestSocket.request(Messages.serialize(request), response);
