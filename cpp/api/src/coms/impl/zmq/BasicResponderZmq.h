@@ -32,7 +32,7 @@ public:
 	ResponderZmq();
 	~ResponderZmq();
 
-	virtual void init();
+	virtual void init(const std::string& responderIdentity);
 	virtual int getResponderPort();
 	virtual void cancel();
 	virtual bool isCanceled();
@@ -43,12 +43,16 @@ public:
 private:
 	zmq::message_t * responseToRequest();
 	zmq::message_t * responseToCancelResponder();
-	zmq::message_t * responseToUnknownRequest();
 
 	void terminate();
 
 	int m_responderPort;
 	std::unique_ptr<zmq::socket_t> m_responder;
+	std::string m_responderIdentity;
+
+	std::unique_ptr<zmq::message_t> m_proxyIdentity;
+	std::unique_ptr<zmq::message_t> m_requesterIdentity;
+
 	bool m_canceled;
 };
 

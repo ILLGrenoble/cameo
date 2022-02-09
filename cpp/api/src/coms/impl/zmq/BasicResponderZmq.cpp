@@ -37,29 +37,39 @@ ResponderZmq::~ResponderZmq() {
 	terminate();
 }
 
-void ResponderZmq::init() {
+void ResponderZmq::init(const std::string& responderIdentity) {
 
-	// Create a socket REP.
+	m_responderIdentity = responderIdentity;
+
+	// Create a socket ROUTER.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::rep));
+	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
 
-	std::string endpointPrefix("tcp://*:");
+	// Set the identity.
+	m_responder->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
-	// Loop to find an available port for the responder.
-	while (true) {
+	// Connect to the proxy.
+	m_responder->connect(application::This::getEndpoint().toString());
 
-		int port = application::This::getCom().requestPort();
-		std::string repEndpoint = endpointPrefix + std::to_string(port);
+	std::cout << "Connected responder " << responderIdentity << " to the proxy " << application::This::getEndpoint() << std::endl;
 
-		try {
-			m_responder->bind(repEndpoint.c_str());
-			m_responderPort = port;
-			break;
-		}
-		catch (...) {
-			application::This::getCom().setPortUnavailable(port);
-		}
-	}
+//	std::string endpointPrefix("tcp://*:");
+//
+//	// Loop to find an available port for the responder.
+//	while (true) {
+//
+//		int port = application::This::getCom().requestPort();
+//		std::string repEndpoint = endpointPrefix + std::to_string(port);
+//
+//		try {
+//			m_responder->bind(repEndpoint.c_str());
+//			m_responderPort = port;
+//			break;
+//		}
+//		catch (...) {
+//			application::This::getCom().setPortUnavailable(port);
+//		}
+//	}
 }
 
 int ResponderZmq::getResponderPort() {
@@ -73,7 +83,7 @@ void ResponderZmq::cancel() {
 	request.pushValue(message::CANCEL);
 
 	// Create a request socket.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString(), "zzzZZZ");
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().toString(), m_responderIdentity);
 	requestSocket->requestJSON(request.toString());
 }
 
@@ -83,80 +93,121 @@ bool ResponderZmq::isCanceled() {
 
 std::unique_ptr<Request> ResponderZmq::receive() {
 
-	zmq::message_t message;
-	if (!m_responder->recv(message, zmq::recv_flags::none).has_value()) {
-		return {};
-	}
+	m_proxyIdentity.reset(new zmq::message_t());
+	m_requesterIdentity.reset(new zmq::message_t());
 
-	// Get the JSON request.
-	json::Object request;
-	json::parse(request, message);
+	while (true) {
 
-	int type = request[message::TYPE].GetInt();
-
-	// Create the reply.
-	std::unique_ptr<zmq::message_t> reply;
-	std::unique_ptr<Request> result;
-
-	if (type == message::REQUEST) {
-
-		std::string name = request[message::Request::APPLICATION_NAME].GetString();
-		int id = request[message::Request::APPLICATION_ID].GetInt();
-		std::string serverUrl = request[message::Request::SERVER_URL].GetString();
-		int serverPort = request[message::Request::SERVER_PORT].GetInt();
-
-		// Get the second part for the message.
-		zmq::message_t secondPart;
-		if (!m_responder->recv(secondPart, zmq::recv_flags::none).has_value()) {
+		// Get the identity of the proxy.
+		if (!m_responder->recv(*m_proxyIdentity, zmq::recv_flags::none).has_value()) {
 			return {};
 		}
-		std::string message1(secondPart.data<char>(), secondPart.size());
-		std::string message2;
 
-		// Set message 2 if it exists.
-		if (secondPart.more()) {
-			zmq::message_t thirdPart;
-			if (!m_responder->recv(thirdPart, zmq::recv_flags::none).has_value()) {
-				return {};
-			}
-			message2 = std::string(thirdPart.data<char>(), thirdPart.size());
+		// Followed by an empty message.
+		zmq::message_t empty;
+		if (!m_responder->recv(empty, zmq::recv_flags::none).has_value()) {
+			return {};
 		}
 
-		// Create the request.
-		result = std::unique_ptr<Request>(new Request(name,
-				id,
-				serverUrl,
-				serverPort,
-				message1,
-				message2));
-	}
-	else if (type == message::CANCEL) {
-		m_canceled = true;
+		// Get the identity of the requester.
+		if (!m_responder->recv(*m_requesterIdentity, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
 
-		// Reply immediately.
-		reply.reset(responseToCancelResponder());
-		m_responder->send(*reply.get(), zmq::send_flags::none);
-	}
-	else {
-		// Reply immediately.
-		reply.reset(responseToUnknownRequest());
-		m_responder->send(*reply.get(), zmq::send_flags::none);
-	}
+		// Followed by an empty message.
+		if (!m_responder->recv(empty, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
 
-	// Do not reply to the client now. This will be done by the Request.
-	// Return the Request object.
-	return result;
+		// Get the request part.
+		zmq::message_t message;
+		if (!m_responder->recv(message, zmq::recv_flags::none).has_value()) {
+			return {};
+		}
+
+		// Get the JSON request.
+		json::Object request;
+		json::parse(request, message);
+
+		int type = request[message::TYPE].GetInt();
+
+		// Create the reply.
+		std::unique_ptr<zmq::message_t> reply;
+
+		if (type == message::REQUEST) {
+
+			std::string name = request[message::Request::APPLICATION_NAME].GetString();
+			int id = request[message::Request::APPLICATION_ID].GetInt();
+			std::string serverUrl = request[message::Request::SERVER_URL].GetString();
+			int serverPort = request[message::Request::SERVER_PORT].GetInt();
+
+			// Get the second part for the message.
+			zmq::message_t secondPart;
+			if (!m_responder->recv(secondPart, zmq::recv_flags::none).has_value()) {
+				return {};
+			}
+			std::string message1(secondPart.data<char>(), secondPart.size());
+			std::string message2;
+
+			// Set message 2 if it exists.
+			if (secondPart.more()) {
+				zmq::message_t thirdPart;
+				if (!m_responder->recv(thirdPart, zmq::recv_flags::none).has_value()) {
+					return {};
+				}
+				message2 = std::string(thirdPart.data<char>(), thirdPart.size());
+			}
+
+			// Create the request.
+			return std::unique_ptr<Request>(new Request(name,
+					id,
+					serverUrl,
+					serverPort,
+					message1,
+					message2));
+		}
+		else if (type == message::CANCEL) {
+			m_canceled = true;
+
+			// Reply immediately.
+			zmq::message_t empty;
+			m_responder->send(*m_proxyIdentity, zmq::send_flags::sndmore);
+			m_responder->send(empty, zmq::send_flags::sndmore);
+			m_responder->send(*m_requesterIdentity, zmq::send_flags::sndmore);
+			m_responder->send(empty, zmq::send_flags::sndmore);
+			reply.reset(responseToCancelResponder());
+			m_responder->send(*reply, zmq::send_flags::none);
+
+			return {};
+		}
+		else if (type == message::SYNC) {
+
+			// Reply immediately.
+			zmq::message_t empty;
+			m_responder->send(*m_proxyIdentity, zmq::send_flags::sndmore);
+			m_responder->send(empty, zmq::send_flags::sndmore);
+			m_responder->send(*m_requesterIdentity, zmq::send_flags::sndmore);
+			m_responder->send(empty, zmq::send_flags::sndmore);
+			reply.reset(responseToRequest());
+			m_responder->send(*reply, zmq::send_flags::none);
+
+			// Do not return, continue the loop.
+		}
+	}
 }
 
 void ResponderZmq::reply(const std::string& responsePart1, const std::string& responsePart2) {
 
+	// Send the identities.
+	zmq::message_t empty;
+	m_responder->send(*m_proxyIdentity, zmq::send_flags::sndmore);
+	m_responder->send(empty, zmq::send_flags::sndmore);
+	m_responder->send(*m_requesterIdentity, zmq::send_flags::sndmore);
+	m_responder->send(empty, zmq::send_flags::sndmore);
+
 	// Prepare the response parts.
-	int responsePart1Size = responsePart1.length();
-	int responsePart2Size = responsePart2.length();
-	zmq::message_t responsePart1Message(responsePart1Size);
-	zmq::message_t responsePart2Message(responsePart2Size);
-	memcpy(static_cast<void *>(responsePart1Message.data()), responsePart1.c_str(), responsePart1Size);
-	memcpy(static_cast<void *>(responsePart2Message.data()), responsePart2.c_str(), responsePart2Size);
+	zmq::message_t responsePart1Message(responsePart1.c_str(), responsePart1.size());
+	zmq::message_t responsePart2Message(responsePart2.c_str(), responsePart2.size());
 
 	// Send the response in two parts.
 	m_responder->send(responsePart1Message, zmq::send_flags::sndmore);
@@ -167,30 +218,14 @@ zmq::message_t * ResponderZmq::responseToRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
-
-	return reply;
+	return new zmq::message_t(result.c_str(), result.size());
 }
 
 zmq::message_t * ResponderZmq::responseToCancelResponder() {
 
 	std::string result = createRequestResponse(0, "OK");
 
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
-
-	return reply;
-}
-
-zmq::message_t * ResponderZmq::responseToUnknownRequest() {
-
-	std::string result = createRequestResponse(-1, "Unknown request");
-
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
-
-	return reply;
+	return new zmq::message_t(result.c_str(), result.size());
 }
 
 void ResponderZmq::terminate() {

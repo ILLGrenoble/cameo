@@ -220,6 +220,10 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 	return jsonObject.toString();
 }
 
+std::string ResponderIdentity::from(int id, const std::string& responderName) {
+	return std::to_string(id) + ":" + responderName;
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint) {
 
 	os << endpoint.toString();

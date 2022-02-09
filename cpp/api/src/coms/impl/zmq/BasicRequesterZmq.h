@@ -26,6 +26,9 @@
 #include <zmq.hpp>
 
 namespace cameo {
+
+class ContextZmq;
+
 namespace coms {
 namespace basic {
 
@@ -38,7 +41,7 @@ public:
 	virtual void setPollingTime(int value);
 	virtual void setTimeout(int value);
 
-	virtual void init(const Endpoint& endpoint, int responderPort);
+	virtual void init(const Endpoint& endpoint, const std::string& responderIdentity, int responderPort);
 	virtual void sendBinary(const std::string& requestData);
 	virtual void send(const std::string& requestData);
 	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
@@ -54,13 +57,20 @@ public:
 	virtual void terminate();
 
 private:
+	void resetSocket();
+	void initSocket();
+	bool sendSync();
+	void sendRequest(const std::string& request);
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2);
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3);
 	bool receiveMessage(zmq::message_t& message);
 
 	int m_pollingTime;
 	int m_timeout;
+	ContextZmq* m_contextImpl;
 	std::unique_ptr<zmq::socket_t> m_requester;
+	Endpoint m_endpoint;
+	std::string m_responderIdentity;
 	std::atomic_bool m_canceled;
 	std::atomic_bool m_timedout;
 };

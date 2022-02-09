@@ -154,7 +154,7 @@ Responder::~Responder() {
 void Responder::init(const std::string &name) {
 
 	// Init the reponder socket.
-	m_impl->init();
+	m_impl->init(ResponderIdentity::from(application::This::getId(), name));
 
 	// Store the responder data.
 	json::StringObject responderData;
@@ -235,7 +235,7 @@ void Requester::tryInit(application::Instance & app) {
 
 		int responderPort = responderData[Responder::PORT.c_str()].GetInt();
 
-		m_impl->init(app.getEndpoint(), responderPort);
+		m_impl->init(app.getEndpoint(), ResponderIdentity::from(m_appId, m_responderName), responderPort);
 	}
 	catch (...) {
 		throw RequesterCreationException("Cannot create requester");

@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
+	cout << "Created responder" << endl;
+
 	application::This::setRunning();
 
 	// Receive first request.
@@ -71,6 +73,12 @@ int main(int argc, char *argv[]) {
 	this_thread::sleep_for(chrono::seconds(1));
 
 	request->reply("4th response");
+
+
+	// Receive request.
+	request = responder->receive();
+	cout << "received request " << *request << endl;
+	request->reply("5th response");
 
 
 	unique_ptr<application::Instance> requester = request->connectToRequester();

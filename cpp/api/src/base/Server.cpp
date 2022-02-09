@@ -36,7 +36,7 @@
 
 namespace cameo {
 
-constexpr int defaultTimeout = 10000;
+constexpr int DEFAULT_TIMEOUT = 10000;
 
 const std::string Server::CAMEO_SERVER = "0:0";
 
@@ -164,7 +164,7 @@ int Server::getAvailableTimeout() const {
 		return timeout;
 	}
 	else {
-		return defaultTimeout;
+		return DEFAULT_TIMEOUT;
 	}
 }
 

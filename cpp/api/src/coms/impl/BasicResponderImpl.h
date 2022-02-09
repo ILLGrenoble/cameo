@@ -31,7 +31,7 @@ class ResponderImpl {
 public:
 	virtual ~ResponderImpl() {}
 
-	virtual void init() = 0;
+	virtual void init(const std::string& responderIdentity) = 0;
 	virtual int getResponderPort() = 0;
 	virtual void cancel() = 0;
 	virtual bool isCanceled() = 0;

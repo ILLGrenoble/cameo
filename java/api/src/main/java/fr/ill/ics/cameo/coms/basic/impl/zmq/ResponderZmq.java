@@ -99,7 +99,7 @@ public class ResponderZmq implements ResponderImpl {
 				// Get all the parts. 
 				byte[][] data = message.getAllData();
 		
-				// Get the identity of the router.
+				// Get the identity of the proxy.
 				byte[] proxyIdentity = data[0];
 		
 				// Get the identity of the requester.

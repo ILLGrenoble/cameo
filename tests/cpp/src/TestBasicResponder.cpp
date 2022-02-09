@@ -108,6 +108,12 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
+		// Send a simple message.
+		requester->send("request after timeout");
+
+		response = requester->receive();
+		cout << "Response is " << response.value() << endl;
+
 		// Wait for the end of the application.
 		application::State state = responderApplication->waitFor();
 

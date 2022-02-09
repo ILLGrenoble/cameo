@@ -133,8 +133,8 @@ public class TestSelector {
 //		apps.add("testrequestercpp");
 //		apps.add("testcancelcpp");
 //		apps.add("teststreamcpp");
-//		apps.add("testbasicrespondercpp");
-//		apps.add("testbasicrequestercpp");
+		apps.add("testbasicrespondercpp");
+		apps.add("testbasicrequestercpp");
 		
 		return apps;
 	}

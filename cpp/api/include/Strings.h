@@ -90,6 +90,11 @@ private:
 	ApplicationIdentity m_starter;
 };
 
+struct ResponderIdentity {
+
+	static std::string from(int id, const std::string& responderName);
+};
+
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
