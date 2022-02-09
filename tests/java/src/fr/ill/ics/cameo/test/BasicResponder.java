@@ -65,8 +65,6 @@ public class BasicResponder {
 			request.terminate();
 			
 			System.out.println("Replied 3rd response");			
-						
-			
 			
 			
 			// Receive the fourth request.
@@ -85,11 +83,18 @@ public class BasicResponder {
 			request.terminate();
 			
 			
+			// Receive the fifth request.
+			request = responder.receive();
+			
+			// Reply.
+			request.reply("5th response");
+			
 			// Test connection.
 			Instance requester = request.connectToRequester();
 			System.out.println("Requester is " + requester);
-						
+			
 			request.terminate();
+			requester.terminate();
 			
 			// Terminate the responder.
 			responder.terminate();

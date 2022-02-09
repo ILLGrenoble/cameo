@@ -94,7 +94,7 @@ public class TestBasicResponder {
 				
 				
 				// Send a simple message.
-				requester.send("request after timeout");
+				requester.send("request after wait");
 				requester.setTimeout(500);
 				
 				String response = requester.receiveString();
@@ -108,6 +108,13 @@ public class TestBasicResponder {
 				else {
 					System.out.println("No response");	
 				}
+				
+
+				// Send a simple message.
+				requester.send("request after timeout");
+				
+				response = requester.receiveString();
+				System.out.println("Response is " + response);
 				
 				
 				int state = responderApplication.waitFor();
