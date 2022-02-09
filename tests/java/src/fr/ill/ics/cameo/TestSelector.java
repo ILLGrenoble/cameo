@@ -110,7 +110,7 @@ public class TestSelector {
 //		apps.add("testresponderjava");
 //		apps.add("testrequesterjava");
 //		apps.add("testcanceljava");
-//		apps.add("teststreamjava");
+		apps.add("teststreamjava");
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
 		
@@ -132,7 +132,7 @@ public class TestSelector {
 //		apps.add("testrespondercpp");
 //		apps.add("testrequestercpp");
 //		apps.add("testcancelcpp");
-//		apps.add("teststreamcpp");
+		apps.add("teststreamcpp");
 		apps.add("testbasicrespondercpp");
 		apps.add("testbasicrequestercpp");
 		
