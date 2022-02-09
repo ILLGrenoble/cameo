@@ -19,8 +19,8 @@ public class ImplFactory {
 		return new ContextZmq();
 	}
 	
-	public static RequestSocketImpl createRequestSocket(Context context, int timeout) {
-		return new RequestSocketZmq(context, timeout);
+	public static RequestSocketImpl createRequestSocket(Context context, String endpoint, String responderIdentity, int timeout) {
+		return new RequestSocketZmq(context, endpoint, responderIdentity, timeout);
 	}
 	
 	public static EventStreamSocketImpl createEventStreamSocket() {

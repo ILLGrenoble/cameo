@@ -12,33 +12,41 @@ public class RequestSocketZmq implements RequestSocketImpl {
 
 	private Zmq.Context context;
 	private Zmq.Socket socket;
+	private String endpoint;
 	private int timeout = 0;
 	private String responderIdentity;
 
-	public RequestSocketZmq(Context context, int timeout) {
+	public RequestSocketZmq(Context context, String endpoint, String responderIdentity, int timeout) {
 		// Get the Zmq context.
 		this.context = ((ContextZmq)context).getContext();
-		this.socket = this.context.createSocket(Zmq.REQ);
+		this.endpoint = endpoint;
+		this.responderIdentity = responderIdentity;
 		this.timeout = timeout;
+		
+		init();
 	}
 			
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 
-	public void connect(String endpoint, String responderIdentity) {
-		
-		this.responderIdentity = responderIdentity;
-		
-		try {
-			boolean result = socket.connect(endpoint);
-			if (!result) {
-				throw new SocketException("Cannot connect socket to " + endpoint);
+	public void init() {
+
+		if (socket == null) {
+			socket = this.context.createSocket(Zmq.REQ);
+			
+			try {
+				boolean result = socket.connect(endpoint);
+				if (!result) {
+					throw new SocketException("Cannot connect socket to " + endpoint);
+				}
+			}
+			catch (Exception e) {
+				throw new SocketException(e.getMessage());
 			}
 		}
-		catch (Exception e) {
-			throw new SocketException(e.getMessage());
-		}
+		
+		//TODO set socket linger ?
 	}
 	
 	private Zmq.Msg createMessage() {
@@ -53,7 +61,7 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	}
 	
 	public byte[][] request(byte[] part1, int overrideTimeout) {
-	
+		
 		// Create the message which adds the responder identity.
 		Zmq.Msg message = createMessage();
 		message.add(part1);
@@ -65,7 +73,7 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	}
 	
 	public byte[][] request(byte[] part1, byte[] part2, int overrideTimeout) {
-
+		
 		// Create the message which adds the responder identity.
 		Zmq.Msg message = createMessage();
 		message.add(part1);
@@ -93,6 +101,9 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	
 	public Zmq.Msg request(Zmq.Msg request, int overrideTimeout) throws ConnectionTimeout {
 
+		// Init if not already done or if a timeout occurred.
+		init();
+		
 		// Send request.
 		request.send(socket);
 
@@ -109,6 +120,10 @@ public class RequestSocketZmq implements RequestSocketImpl {
 				reply = Zmq.Msg.recvMsg(socket);
 			}
 			else {
+				// Timeout occurred.
+				// Reset the socket.
+				terminate();
+				
 				throw new ConnectionTimeout();
 			}
 

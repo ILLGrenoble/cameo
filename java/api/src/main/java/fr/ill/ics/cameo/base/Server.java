@@ -187,16 +187,14 @@ public class Server {
 	
 	RequestSocket createRequestSocket(String endpoint, String responderIdentity) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
-		requestSocket.connect(endpoint, responderIdentity);
+		RequestSocket requestSocket = new RequestSocket(contextImpl, endpoint, responderIdentity, timeout, parser);
 		
 		return requestSocket;
 	}
 	
 	RequestSocket createRequestSocket(String endpoint, String responderIdentity, int timeout) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(contextImpl, timeout, parser);
-		requestSocket.connect(endpoint, responderIdentity);
+		RequestSocket requestSocket = new RequestSocket(contextImpl, endpoint, responderIdentity, timeout, parser);
 		
 		return requestSocket;
 	}

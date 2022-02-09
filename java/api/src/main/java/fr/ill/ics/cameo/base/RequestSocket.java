@@ -13,17 +13,13 @@ public class RequestSocket {
 	private RequestSocketImpl impl;
 	private Parser parser;
 
-	public RequestSocket(Context context, int timeout, Parser parser) {
-		this.impl = ImplFactory.createRequestSocket(context, timeout);
+	public RequestSocket(Context context, String endpoint, String responderIdentity, int timeout, Parser parser) {
+		this.impl = ImplFactory.createRequestSocket(context, endpoint, responderIdentity, timeout);
 		this.parser = parser;
 	}
 			
 	public void setTimeout(int timeout) {
 		this.impl.setTimeout(timeout);
-	}
-
-	public void connect(String endpoint, String responderIdentity) {
-		impl.connect(endpoint, responderIdentity);
 	}
 	
 	public byte[][] request(byte[] part1) {
