@@ -20,7 +20,7 @@ import fr.ill.ics.cameo.coms.basic.Request;
 
 public interface ResponderImpl {
 
-	void init();
+	void init(String responderIdentity);
 	int getResponderPort();
 	Request receive();
 	void reply(byte[] part1, byte[] part2);

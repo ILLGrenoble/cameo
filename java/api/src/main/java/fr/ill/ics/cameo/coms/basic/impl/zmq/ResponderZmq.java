@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.coms.basic.impl.zmq;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
@@ -34,15 +35,27 @@ public class ResponderZmq implements ResponderImpl {
 	
 	private Zmq.Context context;
 	private Zmq.Socket responder;
+	private String responderIdentity;
+	private Zmq.Msg reply = null; // Memorize the reply before sending it.
 	
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init() {
+	public void init(String responderIdentity) {
 		
-		// Create a socket REP.
+		this.responderIdentity = responderIdentity;
+		
+		// Create a socket ROUTER.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
-		responder = context.createSocket(Zmq.REP);
+		responder = context.createSocket(Zmq.ROUTER);
+		
+		// Set the identity.
+		responder.setIdentity(responderIdentity);
+		
+		// Connect to the proxy.
+		responder.connect(This.getEndpoint().toString());
+		
+		System.out.println("Connected responder " + responderIdentity + " to the proxy " + This.getEndpoint());
 		
 		String endpointPrefix = "tcp://*:";	
 		
@@ -69,93 +82,112 @@ public class ResponderZmq implements ResponderImpl {
 
 	public Request receive() {
 		
-		Zmq.Msg message = null;
-		Zmq.Msg reply = null;
+		// Loop on the SYNC messages because they are not requests.
+		while (true) {
 		
-		try {
-			message = Zmq.Msg.recvMsg(responder);
-
-			if (message == null) {
-				ended = true;
+			Zmq.Msg message = null;
+			
+			try {
+				message = Zmq.Msg.recvMsg(responder);
+	
+				if (message == null) {
+					ended = true;
+					
+					return null;
+				}
 				
-				return null;
-			}
-			
-			// Get the JSON request object.
-			JSONObject request = This.getCom().parse(message.getFirstData());
-			
-			// Get the type.
-			long type = JSON.getLong(request, Messages.TYPE);
-			
-			if (type == Messages.REQUEST) {
-
-				String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
-				int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
-				String serverUrl = JSON.getString(request, Messages.Request.SERVER_URL);
-				int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
-				
+				// Get all the parts. 
 				byte[][] data = message.getAllData();
-				byte[] messagePart1 = data[1];
-				byte[] messagePart2 = null;
-				if (data.length > 2) {
-					messagePart2 = data[2];
-				}
+		
+				// Get the identity of the router.
+				byte[] proxyIdentity = data[0];
+		
+				// Get the identity of the requester.
+				byte[] requesterIdentity = data[2];
+	
+				// Prepare the reply.
+				reply = new Zmq.Msg();
 				
-				// Return the request but do not reply to the client now. This will be done by the Request.			
-				return new Request(name, id, serverUrl, serverPort, messagePart1, messagePart2);
+				// Add the necessary parts.
+				reply.add(proxyIdentity);
+				reply.add(new byte[0]);
+				reply.add(requesterIdentity);
+				reply.add(new byte[0]);
+				
+				// Get the JSON request object.
+				JSONObject request = This.getCom().parse(data[4]);
+				
+				// Get the type.
+				long type = JSON.getLong(request, Messages.TYPE);
+				
+				if (type == Messages.REQUEST) {
+	
+					String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
+					int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
+					String serverUrl = JSON.getString(request, Messages.Request.SERVER_URL);
+					int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
+					
+					byte[] messagePart1 = data[5];
+					byte[] messagePart2 = null;
+					if (data.length > 6) {
+						messagePart2 = data[6];
+					}
+					
+					// Return the request but do not reply to the client now. This will be done by the Request.			
+					return new Request(name, id, serverUrl, serverPort, messagePart1, messagePart2);
+				}
+				else if (type == Messages.CANCEL) {
+					canceled = true;
+	
+					// Reply immediately.
+					responseToRequest(reply);
+					reply.send(responder);
+					reply = null;
+					
+					return null;
+				}
+				else if (type == Messages.SYNC) {
+					
+					// Reply immediately.
+					responseToRequest(reply);
+					reply.send(responder);
+					reply = null;
+					
+					// Do not return, continue the loop.
+				}
 			}
-			else if (type == Messages.CANCEL) {
-				canceled = true;
-
-				// Reply immediately.
-				reply = responseToRequest();
-				reply.send(responder);
-				
-				if (reply != null) {
-					reply.destroy();
-				}
-				
-				return null;
+			finally {
+				if (message != null) {
+					message.destroy();
+				}	
 			}
 		}
-		finally {
-			if (message != null) {
-				message.destroy();
-			}	
-		}
-			
-		return null;
 	}
 	
 	public void reply(byte[] part1, byte[] part2) {
 		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(part1);
-		message.add(part2);
+		// The reply has already been created at the reception of the request.
+		reply.add(part1);
+		reply.add(part2);
 		
-		message.send(responder);
+		reply.send(responder);
+		reply = null;
 	}
 	
 	public void cancel() {
-		Endpoint endpoint = This.getEndpoint().withPort(responderPort);
-
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CANCEL);
 		
 		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString(), "zzzZZZ");
+		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().toString(), responderIdentity);
 		requestSocket.requestJSON(request);
 		
 		// Terminate the socket.
 		requestSocket.terminate();
 	}
 
-	private Zmq.Msg responseToRequest() {
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
-		
-		return message;
+	private void responseToRequest(Zmq.Msg reply) {
+		reply.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
 	}
 	
 	public boolean isEnded() {

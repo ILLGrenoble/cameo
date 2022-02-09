@@ -91,6 +91,9 @@ public class BasicResponder {
 						
 			request.terminate();
 			
+			// Terminate the responder.
+			responder.terminate();
+			
 		} catch (RemoteException e) {
 			System.out.println("Responder error");
 			

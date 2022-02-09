@@ -44,8 +44,6 @@ int main(int argc, char *argv[]) {
 
 		if (items[0].revents & ZMQ_POLLIN) {
 
-			std::cout << "Got a message" << std::endl;
-
 			zmq::message_t fromIdentity, empty, toIdentity, message;
 			if (!router.recv(fromIdentity, zmq::recv_flags::none)) {
 				continue;
@@ -62,15 +60,6 @@ int main(int argc, char *argv[]) {
 			if (!router.recv(message, zmq::recv_flags::none)) {
 				continue;
 			}
-
-//			std::string fromIdentityStr = std::string(fromIdentity.data<char>(), fromIdentity.size());
-//			std::string toIdentityStr = std::string(toIdentity.data<char>(), toIdentity.size());
-
-//			char* p_end;
-//			const long f = std::strtol(fromIdentityStr.c_str(), &p_end, 10);
-//			const long t = std::strtol(toIdentityStr.c_str(), &p_end, 10);
-//
-//			std::cout << "Message received from " << fromIdentityStr << " must be sent to " << toIdentityStr << std::endl;
 
 			// This part will be removed and replaced by the router identity once the message is sent.
 			router.send(toIdentity, zmq::send_flags::sndmore);
@@ -104,8 +93,6 @@ int main(int argc, char *argv[]) {
 			else {
 				router.send(message, zmq::send_flags::none);
 			}
-
-			std::cout << "Message sent" << std::endl;
 		}
 	}
 

@@ -57,6 +57,12 @@ public class TestBasicResponder {
 				Instance responderApplication = server.start(applicationName);
 				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
 
+//				System.out.println("Waiting 1s");
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e1) {
+//				}
+				
 				fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(responderApplication, "responder");
 				System.out.println("Created requester " + requester);
 			

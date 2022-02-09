@@ -13,6 +13,7 @@ import fr.ill.ics.cameo.coms.basic.impl.RequesterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ResponderIdentity;
 
 /**
  * Class Requester.
@@ -43,7 +44,7 @@ public class Requester {
 	
 	private void tryInit(Instance app) throws RequesterCreationException {
 		
-		// Get the publisher data.
+		// Get the responder data.
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
 			
@@ -51,7 +52,7 @@ public class Requester {
 			
 			int responderPort = JSON.getInt(responderData, Responder.PORT);
 			
-			impl.init(app.getEndpoint(), responderPort);	
+			impl.init(app.getEndpoint(), ResponderIdentity.from(appId, responderName), responderPort);	
 		}
 		catch (UndefinedApplicationException | UndefinedKeyException e) {
 			throw new RequesterCreationException("");

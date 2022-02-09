@@ -105,12 +105,12 @@ public class TestSelector {
 		apps.add("testerrorjava");
 		apps.add("teststoragejava");
 		apps.add("testwaitstoragejava");
-		apps.add("testpublisherjava");
-		apps.add("testsubscriberjava");
-		apps.add("testresponderjava");
-		apps.add("testrequesterjava");
-		apps.add("testcanceljava");
-		apps.add("teststreamjava");
+//		apps.add("testpublisherjava");
+//		apps.add("testsubscriberjava");
+//		apps.add("testresponderjava");
+//		apps.add("testrequesterjava");
+//		apps.add("testcanceljava");
+//		apps.add("teststreamjava");
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
 		
@@ -127,14 +127,14 @@ public class TestSelector {
 		apps.add("testerrorcpp");
 		apps.add("teststoragecpp");
 		apps.add("testwaitstoragecpp");
-		apps.add("testpublishercpp");
-		apps.add("testsubscribercpp");
-		apps.add("testrespondercpp");
-		apps.add("testrequestercpp");
-		apps.add("testcancelcpp");
-		apps.add("teststreamcpp");
-		apps.add("testbasicrespondercpp");
-		apps.add("testbasicrequestercpp");
+//		apps.add("testpublishercpp");
+//		apps.add("testsubscribercpp");
+//		apps.add("testrespondercpp");
+//		apps.add("testrequestercpp");
+//		apps.add("testcancelcpp");
+//		apps.add("teststreamcpp");
+//		apps.add("testbasicrespondercpp");
+//		apps.add("testbasicrequestercpp");
 		
 		return apps;
 	}
@@ -172,9 +172,16 @@ public class TestSelector {
 		
 		// Start the server.
 		serverProcess = startServer(testsPath);
-				
+
+		System.out.println("Sleep for 1s to ensure that the Cameo server router connected to the proxy");
+				 
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+		}
+		
 		Server server = new Server("tcp://localhost:10000");
-	
+		
 		if (server.isAvailable()) {
 			System.out.println("*** Server is available ***");
 		}

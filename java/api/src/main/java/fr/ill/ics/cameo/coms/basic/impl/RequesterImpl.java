@@ -23,7 +23,7 @@ public interface RequesterImpl {
 	void setPollingTime(int value);
 	void setTimeout(int value);
 	
-	void init(Endpoint endpoint, int responderPort);
+	void init(Endpoint endpoint, String responderIdentity, int responderPort);
 	
 	void send(byte[] requestData);
 	void send(String request);

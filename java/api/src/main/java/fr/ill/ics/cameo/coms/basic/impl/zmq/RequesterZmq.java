@@ -35,9 +35,13 @@ public class RequesterZmq implements RequesterImpl {
 	
 	private Zmq.Context context;
 	private Zmq.Socket requester;
+	private Endpoint endpoint;
+	private String responderIdentity;
 	
 	private AtomicBoolean canceled = new AtomicBoolean(false);
 	private AtomicBoolean timedout = new AtomicBoolean(false);
+	
+	private final static int SYNC_TIMEOUT = 200;
 	
 	public void setPollingTime(int value) {
 		pollingTime = value;
@@ -47,14 +51,99 @@ public class RequesterZmq implements RequesterImpl {
 		timeout = value;
 	}
 	
-	public void init(Endpoint endpoint, int responderPort) {
+	private void resetSocket() {
+
+		// Destroy socket.
+		if (requester != null) {
+			context.destroySocket(requester);
+			requester = null;
+		}
+	}
+	
+	private void initSocket() {
+		
+		if (requester == null) {
+			// Create the REQ socket.
+			requester = context.createSocket(Zmq.REQ);
+			
+			// Connect to the proxy. Do not use the responder port.
+			requester.connect(endpoint.toString());
+			
+			//TODO Shall we set linger to 0?
+		}
+	}
+	
+	private boolean sendSync() {
+		
+		// Create the request.
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SYNC);
+	
+		sendRequest(Messages.serialize(request));
+		if (receiveMessage() != null) {
+			// Had a response we can exit the loop.
+			return true;
+		}
+		
+		return false;
+	}
+		
+	public void init(Endpoint endpoint, String responderIdentity, int responderPort) {
+		
+		this.endpoint = endpoint;
+		this.responderIdentity = responderIdentity;
+		
+		// Get the context.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
-		// Create the REQ socket.
-		requester = context.createSocket(Zmq.REQ);
-		requester.connect(endpoint.withPort(responderPort).toString());
+		// Loop to ensure that the responder is connected to the proxy and can reply.
+		// Initial timeout.
+		timeout = SYNC_TIMEOUT;
 		
-		//TODO Shall we set linger to 0?
+		while (true) {
+			// Init the socket.
+			initSocket();
+			
+			// Send sync returns false if a timeout occurred.
+			if (sendSync()) {
+				break;
+			}
+
+			// Reset the socket in case of timeout.
+			resetSocket();
+			
+			// Increase timeout.
+			timeout += SYNC_TIMEOUT;
+		}
+		
+		// Reset timeout.
+		timeout = 0;
+	}
+	
+	private Zmq.Msg createMessage() {
+		
+		Zmq.Msg message = new Zmq.Msg();
+		
+		// Add the responder identity as first part.
+		message.add(responderIdentity);
+		message.add(new byte[0]);
+	
+		return message;
+	}
+	
+	private void sendRequest(byte[] part) {
+	
+		// Reset timedout.
+		timedout.set(false);
+		
+		// Init the socket if necessary.
+		initSocket();
+		
+		// Prepare and send the message.
+		Zmq.Msg message = createMessage();
+		message.add(part);
+		
+		message.send(requester);
 	}
 	
 	private void sendRequest(byte[] part1, byte[] part2) {
@@ -62,8 +151,11 @@ public class RequesterZmq implements RequesterImpl {
 		// Reset timedout.
 		timedout.set(false);
 		
+		// Init the socket if necessary.
+		initSocket();
+		
 		// Prepare and send the message.
-		Zmq.Msg message = new Zmq.Msg();
+		Zmq.Msg message = createMessage();
 		message.add(part1);
 		message.add(part2);
 		
@@ -75,8 +167,11 @@ public class RequesterZmq implements RequesterImpl {
 		// Reset timedout.
 		timedout.set(false);
 		
+		// Init the socket if necessary.
+		initSocket();
+		
 		// Prepare and send the message.
-		Zmq.Msg message = new Zmq.Msg();
+		Zmq.Msg message = createMessage();
 		message.add(part1);
 		message.add(part2);
 		message.add(part3);
@@ -138,9 +233,12 @@ public class RequesterZmq implements RequesterImpl {
 			i++;
 		}
 
-		// Timeout.
+		// Timeout occurred.
 		timedout.set(true);
 
+		// Reset the socket because it cannot be reused after a timeout.
+		resetSocket();
+		
 		return null;
 	}
 	
@@ -154,15 +252,18 @@ public class RequesterZmq implements RequesterImpl {
 			if (message == null) {
 				return null;
 			}
+
+			// Get the data.
+			byte[][] data = message.getAllData();
 			
 			// Get the JSON request object.
-			JSONObject request = This.getCom().parse(message.getFirstData());
+			JSONObject request = This.getCom().parse(data[2]);
 			
 			// Get the type.
 			long type = JSON.getLong(request, Messages.TYPE);
 						
 			if (type == Messages.RESPONSE) {
-				return message.getLastData();
+				return data[3];
 			}
 			else {
 				return null;
@@ -200,8 +301,7 @@ public class RequesterZmq implements RequesterImpl {
 	}
 	
 	public void terminate() {
-		
-		context.destroySocket(requester);
+		resetSocket();
 	}
 	
 }
