@@ -57,13 +57,14 @@ namespace message {
 	const int RELEASE_PORT = 36;
 	const int PORTS = 37;
 	const int SET_STOP_HANDLER = 38;
+	const int STREAM_MESSAGE = 39;
+	const int STREAM_END = 40;
 
 	namespace Event {
 		constexpr const char* SYNC = "SYNC";
 		constexpr const char* CANCEL = "CANCEL";
 		constexpr const char* STREAM = "STREAM";
-		constexpr const char* ENDSTREAM = "ENDSTREAM";
-		constexpr const char* SYNCSTREAM = "SYNCSTREAM";
+		constexpr const char* ENDSTREAM_temp = "ENDSTREAM";
 		constexpr const char* STATUS = "STATUS";
 		constexpr const char* RESULT = "RESULT";
 		constexpr const char* KEYVALUE = "KEYVALUE";

@@ -55,7 +55,7 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, std::string(message::Event::SYNC).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, std::string(message::Event::STREAM).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM, std::string(message::Event::ENDSTREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM_temp, std::string(message::Event::ENDSTREAM_temp).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 
@@ -133,7 +133,7 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 			}
 			return std::string(static_cast<char*>(secondPart.data()), secondPart.size());
 		}
-		else if (response == message::Event::ENDSTREAM) {
+		else if (response == message::Event::ENDSTREAM_temp) {
 			m_ended = true;
 			return {};
 		}
@@ -203,7 +203,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 
 			return std::make_tuple(data1, data2);
 
-		} else if (response == message::Event::ENDSTREAM) {
+		} else if (response == message::Event::ENDSTREAM_temp) {
 			m_ended = true;
 			return {};
 

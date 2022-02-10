@@ -74,14 +74,16 @@ std::optional<Output> OutputStreamSocket::receive() {
 		// Get the second part of the message.
 		std::string message = m_impl->receive();
 
-		// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
-		if (messageType == message::Event::SYNCSTREAM) {
-			continue;
-		}
-
 		// Get the JSON event.
 		json::Object event;
 		json::parse(event, message);
+
+		int type = event[message::TYPE].GetInt();
+
+		// Continue if type of message is SYNC_STREAM. Theses messages are only used for the poller.
+		if (type == message::SYNC_STREAM) {
+			continue;
+		}
 
 		int id = event[message::ApplicationStream::ID].GetInt();
 
@@ -90,7 +92,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 		if (m_applicationId == -1 || m_applicationId == id) {
 
 			// Terminate the stream if type of message is ENDSTREAM.
-			if (messageType == message::Event::ENDSTREAM) {
+			if (type == message::STREAM_END) {
 				m_ended = true;
 				return {};
 			}

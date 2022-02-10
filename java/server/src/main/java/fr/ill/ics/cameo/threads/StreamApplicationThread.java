@@ -84,6 +84,7 @@ public class StreamApplicationThread extends ApplicationThread {
 		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
+			event.put(Messages.TYPE, Messages.STREAM_MESSAGE);
 			event.put(Messages.ApplicationStream.ID, application.getId());
 			event.put(Messages.ApplicationStream.MESSAGE, line);
 			event.put(Messages.ApplicationStream.EOL, endOfLine);
@@ -221,12 +222,11 @@ public class StreamApplicationThread extends ApplicationThread {
 		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
+			event.put(Messages.TYPE, Messages.STREAM_END);
 			event.put(Messages.ApplicationStream.ID, application.getId());
-			event.put(Messages.ApplicationStream.MESSAGE, Messages.Event.ENDSTREAM);
-			event.put(Messages.ApplicationStream.EOL, true);
 
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, Messages.Event.ENDSTREAM, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
 		}
 	}
 	

@@ -58,9 +58,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(endpoint.toString());
-		subscriber.subscribe(Messages.Event.SYNCSTREAM);
 		subscriber.subscribe(Messages.Event.STREAM);
-		subscriber.subscribe(Messages.Event.ENDSTREAM);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
@@ -116,14 +114,16 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 			// Get the second part of the message.
 			byte[] messageValue = this.subscriberSocket.recv();
 
-			// Continue if type of message is SYNCSTREAM. Theses messages are only used for the poller.
-			if (messageType.equals(Messages.Event.SYNCSTREAM)) {
-				continue;
-			}
-			
 			try {
 				// Get the JSON object.
 				JSONObject stream = parser.parse(Messages.parseString(messageValue));
+				
+				int type = JSON.getInt(stream, Messages.TYPE);
+				
+				// Continue if type of message is SYNC_STREAM. Theses messages are only used for the poller.
+				if (type == Messages.SYNC_STREAM) {
+					continue;
+				}
 				
 				int id = JSON.getInt(stream, Messages.ApplicationStream.ID);
 				
@@ -131,8 +131,8 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 				// Others are ignored.
 				if (applicationId == -1 || applicationId == id) {
 					
-					// Terminate the stream if type of message is ENDSTREAM.
-					if (messageType.equals(Messages.Event.ENDSTREAM)) {
+					// Terminate the stream if type of message is STREAM_END.
+					if (type == Messages.STREAM_END) {
 						ended = true;
 						return null;
 					}

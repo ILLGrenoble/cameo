@@ -52,7 +52,7 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.connect(appEndpoint.withPort(publisherPort).toString());
 		subscriber.subscribe(Messages.Event.SYNC);
 		subscriber.subscribe(Messages.Event.STREAM);
-		subscriber.subscribe(Messages.Event.ENDSTREAM);
+		subscriber.subscribe(Messages.Event.ENDSTREAM_temp);
 		
 		// Create an endpoint that should be unique
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -123,7 +123,7 @@ public class SubscriberZmq implements SubscriberImpl {
 			if (message.equals(Messages.Event.STREAM)) {
 				return subscriber.recv();
 				
-			} else if (message.equals(Messages.Event.ENDSTREAM)) {
+			} else if (message.equals(Messages.Event.ENDSTREAM_temp)) {
 				ended = true;
 				return null;
 				
@@ -174,7 +174,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				
 				return result;
 				
-			} else if (message.equals(Messages.Event.ENDSTREAM)) {
+			} else if (message.equals(Messages.Event.ENDSTREAM_temp)) {
 				ended = true;
 				return null;
 				

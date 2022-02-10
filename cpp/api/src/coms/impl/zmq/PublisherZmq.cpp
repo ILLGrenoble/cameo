@@ -180,8 +180,8 @@ void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher) {
 		// send a dummy ENDSTREAM message by the publisher socket
-		std::string data(message::Event::ENDSTREAM);
-		publish(message::Event::ENDSTREAM, data.c_str(), data.length());
+		std::string data(message::Event::ENDSTREAM_temp);
+		publish(message::Event::ENDSTREAM_temp, data.c_str(), data.length());
 
 		m_ended = true;
 	}

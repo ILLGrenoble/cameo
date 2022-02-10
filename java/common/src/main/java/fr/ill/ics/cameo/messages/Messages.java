@@ -45,13 +45,14 @@ public class Messages {
 	public static final long RELEASE_PORT = 36;
 	public static final long PORTS = 37;
 	public static final long SET_STOP_HANDLER = 38;
+	public static final long STREAM_MESSAGE = 39;
+	public static final long STREAM_END = 40;
 				
 	public static class Event {
 		public static final String SYNC = "SYNC";
 		public static final String CANCEL = "CANCEL";
 		public static final String STREAM = "STREAM";
-		public static final String ENDSTREAM = "ENDSTREAM";
-		public static final String SYNCSTREAM = "SYNCSTREAM";
+		public static final String ENDSTREAM_temp = "ENDSTREAM";
 		public static final String STATUS = "STATUS";
 		public static final String RESULT = "RESULT";
 		public static final String KEYVALUE = "KEYVALUE";

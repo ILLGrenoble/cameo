@@ -208,8 +208,8 @@ public class PublisherZmq implements PublisherImpl {
 	public void sendEnd() {
 		
 		if (!ended) {
-			publisher.sendMore(Messages.Event.ENDSTREAM);
-			publisher.send(Messages.Event.ENDSTREAM);
+			publisher.sendMore(Messages.Event.ENDSTREAM_temp);
+			publisher.send(Messages.Event.ENDSTREAM_temp);
 			
 			ended = true;
 		}

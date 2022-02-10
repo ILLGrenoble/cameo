@@ -49,9 +49,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
 
 	vector<string> streamList;
-	streamList.push_back(message::Event::SYNCSTREAM);
 	streamList.push_back(message::Event::STREAM);
-	streamList.push_back(message::Event::ENDSTREAM);
 	streamList.push_back(message::Event::CANCEL);
 
 	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {

@@ -83,9 +83,10 @@ public class RequestProcessor {
 		// Publish a SYNCSTREAM event.
 		if (publisher != null) {
 			JSONObject event = new JSONObject();
+			event.put(Messages.TYPE, Messages.SYNC_STREAM);
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
-			Manager.publishSynchronized(publisher, Messages.Event.SYNCSTREAM, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
 		}
 		
 		// Return the reply.
