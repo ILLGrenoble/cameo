@@ -18,8 +18,11 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
 endif()
 
 #------------------------------------------------------------
-# Program
+# Programs
 #------------------------------------------------------------
 
-add_executable(cameoproxy src/Proxy.cpp)
-target_link_libraries(cameoproxy PRIVATE Cameo::cameo-api-cpp)
+add_executable(cameo-rep-proxy src/RepProxy.cpp)
+target_link_libraries(cameo-rep-proxy PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(cameo-pub-proxy src/PubProxy.cpp)
+target_link_libraries(cameo-pub-proxy PRIVATE Cameo::cameo-api-cpp)
