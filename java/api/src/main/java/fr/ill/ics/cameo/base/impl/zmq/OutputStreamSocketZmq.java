@@ -32,6 +32,7 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.StringId;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
@@ -56,9 +57,11 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		
 		// Prepare our context and subscriber
 		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
-		
 		subscriber.connect(endpoint.toString());
-		subscriber.subscribe(Messages.Event.STREAM);
+
+		// Subscribe to the topic.
+		String topicId = StringId.from(Messages.Event.STREAM, name);
+		subscriber.subscribe(topicId);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
 		
@@ -72,16 +75,15 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		Zmq.Poller poller = this.context.createPoller(subscriber);
 		
 		while (true) {
-			
-			// the server returns a SYNCSTREAM message that is used to synchronize the subscriber
+			// The server returns a SYNC_STREAM message that is used to synchronize the subscriber.
 			try {
 				requestSocket.requestJSON(Messages.createSyncStreamRequest(name));
 			}
 			catch (ConnectionTimeout e) {
-				// do nothing
+				// Do nothing.
 			}
 
-			// return at the first response.
+			// Return at the first message received by the subscriber.
 			if (poller.poll(100)) {
 				break;
 			}

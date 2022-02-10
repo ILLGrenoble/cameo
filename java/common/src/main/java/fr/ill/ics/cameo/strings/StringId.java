@@ -10,6 +10,10 @@ public class StringId {
 		return applicationId + ":" + name;
 	}
 	
+	public static String from(String topic, String name) {
+		return topic + ":" + name;
+	}
+	
 	public static long toInt(byte[] identity) {
 		
 		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);

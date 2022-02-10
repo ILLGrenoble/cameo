@@ -46,6 +46,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.server.Server.Version;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * 
@@ -78,15 +79,19 @@ public class RequestProcessor {
 		Log.logger().fine("Received SyncStream message");
 		
 		// Get the publisher.
-		Zmq.Socket publisher = manager.getStreamPublisher(JSON.getString(request, Messages.SyncStreamRequest.NAME));
+		String applicationName = JSON.getString(request, Messages.SyncStreamRequest.NAME);
+		Zmq.Socket publisher = manager.getStreamPublisher(applicationName);
 		
 		// Publish a SYNCSTREAM event.
 		if (publisher != null) {
 			JSONObject event = new JSONObject();
 			event.put(Messages.TYPE, Messages.SYNC_STREAM);
+
+			// Get the topic id.
+			String topicId = StringId.from(Messages.Event.STREAM, applicationName);
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
-			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
 		}
 		
 		// Return the reply.

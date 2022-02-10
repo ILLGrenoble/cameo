@@ -20,8 +20,6 @@
 #include "../../Messages.h"
 #include "../../CancelIdGenerator.h"
 
-using namespace std;
-
 namespace cameo {
 
 OutputStreamSocketZmq::OutputStreamSocketZmq(const std::string& name) :
@@ -48,11 +46,15 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
 
-	vector<string> streamList;
-	streamList.push_back(message::Event::STREAM);
-	streamList.push_back(message::Event::CANCEL);
+	std::vector<std::string> topicsList;
 
-	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
+	// Get the topic id.
+	std::string topicId = StringId::from(message::Event::STREAM, m_name);
+
+	topicsList.push_back(topicId);
+	topicsList.push_back(message::Event::CANCEL);
+
+	for (std::vector<std::string>::const_iterator s = topicsList.begin(); s != topicsList.end(); ++s) {
 		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
@@ -77,6 +79,8 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 		// Wait for 100ms.
 		int rc = zmq::poll(items, 1, 100);
+
+		// Return when the subscriber received a message.
 		if (rc != 0) {
 			break;
 		}
@@ -107,7 +111,7 @@ std::string OutputStreamSocketZmq::receive(bool blocking) {
 void OutputStreamSocketZmq::cancel() {
 
 	if (m_cancelSocket.get() != nullptr) {
-		string data(message::Event::CANCEL);
+		std::string data(message::Event::CANCEL);
 		zmq::message_t requestType(data.length());
 		zmq::message_t requestData(data.length());
 		memcpy(requestType.data(), message::Event::CANCEL, data.length());

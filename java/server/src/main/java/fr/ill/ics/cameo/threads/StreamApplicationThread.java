@@ -29,6 +29,7 @@ import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * Class getting the stream from the process input stream.
@@ -43,6 +44,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	private boolean send = false;
 	private boolean eol;
 	private Zmq.Socket publisher;
+	private String topicId;
 	private FileOutputStream fileOutputStream;
 	
 	/**
@@ -55,7 +57,10 @@ public class StreamApplicationThread extends ApplicationThread {
 		super(application);
 		
 		// We get the application by the name as the publisher is shared among the different instances.
-		publisher = manager.getStreamPublisher(application.getName()); 
+		publisher = manager.getStreamPublisher(application.getName());
+		
+		// Memorize the string id.
+		topicId = StringId.from(Messages.Event.STREAM, application.getName());
 	}
 	
 	private void sendMessage(String line, boolean endOfLine) {
@@ -90,7 +95,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			event.put(Messages.ApplicationStream.EOL, endOfLine);
 			
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
 		}
 	}
 	
@@ -226,7 +231,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			event.put(Messages.ApplicationStream.ID, application.getId());
 
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, Messages.Event.STREAM, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
 		}
 	}
 	

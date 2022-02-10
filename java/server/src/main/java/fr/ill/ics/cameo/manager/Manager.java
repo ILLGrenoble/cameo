@@ -133,10 +133,10 @@ public class Manager extends ConfigLoader {
 		return streamPublishers.get(name);
 	}
 	
-	public static void publishSynchronized(Zmq.Socket publisher, String type, byte[] data) {
+	public static void publishSynchronized(Zmq.Socket publisher, String topicId, byte[] data) {
 		
 		synchronized (publisher) {
-			publisher.sendMore(type);
+			publisher.sendMore(topicId);
 			publisher.send(data, 0);
 		}
 	}
