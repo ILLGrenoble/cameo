@@ -49,13 +49,13 @@ public class Messages {
 	public static final long STREAM_END = 40;
 				
 	public static class Event {
-		public static final String SYNC = "SYNC";
-		public static final String CANCEL = "CANCEL";
-		public static final String STREAM = "STREAM";
-		public static final String ENDSTREAM_temp = "ENDSTREAM";
-		public static final String STATUS = "STATUS";
-		public static final String RESULT = "RESULT";
-		public static final String KEYVALUE = "KEYVALUE";
+		public static final String SYNC = "sync";
+		public static final String CANCEL = "cancel";
+		public static final String STREAM = "stream";
+		public static final String ENDSTREAM_temp = "endstream";
+		public static final String STATUS = "status";
+		public static final String RESULT = "result";
+		public static final String KEYVALUE = "keyvalue";
 	}
 	
 	public static class ApplicationIdentity {

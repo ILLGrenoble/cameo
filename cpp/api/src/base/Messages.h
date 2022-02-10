@@ -61,13 +61,13 @@ namespace message {
 	const int STREAM_END = 40;
 
 	namespace Event {
-		constexpr const char* SYNC = "SYNC";
-		constexpr const char* CANCEL = "CANCEL";
-		constexpr const char* STREAM = "STREAM";
-		constexpr const char* ENDSTREAM_temp = "ENDSTREAM";
-		constexpr const char* STATUS = "STATUS";
-		constexpr const char* RESULT = "RESULT";
-		constexpr const char* KEYVALUE = "KEYVALUE";
+		constexpr const char* SYNC = "sync";
+		constexpr const char* CANCEL = "cancel";
+		constexpr const char* STREAM = "stream";
+		constexpr const char* ENDSTREAM_temp = "endstream";
+		constexpr const char* STATUS = "status";
+		constexpr const char* RESULT = "result";
+		constexpr const char* KEYVALUE = "keyvalue";
 	}
 
 	namespace ApplicationIdentity {
