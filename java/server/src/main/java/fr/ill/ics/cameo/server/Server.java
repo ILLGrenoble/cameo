@@ -34,7 +34,7 @@ import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.ResponderIdentity;
+import fr.ill.ics.cameo.strings.StringId;
 
 public class Server {
 
@@ -76,7 +76,7 @@ public class Server {
 		socket = context.createSocket(Zmq.ROUTER);
 		
 		// Set the identity.
-		socket.setIdentity(ResponderIdentity.CAMEO_SERVER);
+		socket.setIdentity(StringId.CAMEO_SERVER);
 		
 		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
 		Endpoint proxyEndpoint = ConfigManager.getInstance().getProxyLocalEndpoint();
@@ -149,11 +149,11 @@ public class Server {
 		
 				// Get the identity of the router.
 				byte[] proxyIdentity = data[0];
-				Log.logger().info("Received from " + ResponderIdentity.toInt(proxyIdentity));
+				Log.logger().info("Received from " + StringId.toInt(proxyIdentity));
 		
 				// Get the identity of the requester.
 				byte[] requesterIdentity = data[2];
-				Log.logger().info("Received requester " + ResponderIdentity.toInt(requesterIdentity));
+				Log.logger().info("Received requester " + StringId.toInt(requesterIdentity));
 
 				// Prepare the reply.
 				reply = new Zmq.Msg();

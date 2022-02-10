@@ -2,7 +2,7 @@ package fr.ill.ics.cameo.strings;
 
 import java.nio.ByteBuffer;
 
-public class ResponderIdentity {
+public class StringId {
 
 	public final static String CAMEO_SERVER = "0:0";
 	

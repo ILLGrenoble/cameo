@@ -9,7 +9,7 @@ import fr.ill.ics.cameo.coms.ResponderCreationException;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.ResponderIdentity;
+import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * Class Responder.
@@ -35,7 +35,7 @@ public class Responder {
 	private void init(String name) throws ResponderCreationException {
 		
 		// Init with the responder identity.
-		impl.init(ResponderIdentity.from(This.getId(), name));
+		impl.init(StringId.from(This.getId(), name));
 
 		// Store the responder data.
 		JSONObject responderData = new JSONObject();

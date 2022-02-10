@@ -90,7 +90,7 @@ private:
 	ApplicationIdentity m_starter;
 };
 
-struct ResponderIdentity {
+struct StringId {
 
 	static std::string from(int id, const std::string& responderName);
 };
