@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 	std::string frontAddress("tcp://*:");
 	frontAddress += frontPort;
 
-	std::string backPort{argv[1]};
+	std::string backPort{argv[2]};
 	std::string backAddress("tcp://*:");
 	backAddress += backPort;
 
@@ -37,11 +37,25 @@ int main(int argc, char *argv[]) {
 	zmq::context_t context(1);
 	zmq::socket_t frontend(context, ZMQ_XSUB);
 	//set hwm
-	frontend.bind(frontAddress);
+
+	try {
+		frontend.bind(frontAddress);
+	}
+	catch (const std::exception& e) {
+		std::cout << "Cannot bind socket to " << frontAddress << ": " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 
 	zmq::socket_t backend(context, ZMQ_XPUB);
 	//set hwm
-	backend.bind(backAddress);
+
+	try {
+		backend.bind(backAddress);
+	}
+	catch (const std::exception& e) {
+		std::cout << "Cannot bind socket to " << backAddress << ": " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 
 	zmq::proxy(frontend, backend);
 

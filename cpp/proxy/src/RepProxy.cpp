@@ -33,7 +33,14 @@ int main(int argc, char *argv[]) {
 	zmq::context_t context(1);
 	zmq::socket_t router(context, ZMQ_ROUTER);
 	router.setsockopt(ZMQ_IDENTITY, "R");
-	router.bind(address);
+
+	try {
+		router.bind(address);
+	}
+	catch (const std::exception& e) {
+		std::cout << "Cannot bind socket to " << address << ": " << e.what() << std::endl;
+		return EXIT_FAILURE;
+	}
 
 	// Initialize poll set.
 	zmq::pollitem_t items[] = { { router, 0, ZMQ_POLLIN, 0 } };
