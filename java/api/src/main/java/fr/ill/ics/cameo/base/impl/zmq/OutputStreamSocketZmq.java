@@ -60,7 +60,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		subscriber.connect(endpoint.toString());
 
 		// Subscribe to the topic.
-		String topicId = StringId.from(Messages.Event.STREAM, name);
+		String topicId = StringId.from(name, Messages.Event.STREAM);
 		subscriber.subscribe(topicId);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();

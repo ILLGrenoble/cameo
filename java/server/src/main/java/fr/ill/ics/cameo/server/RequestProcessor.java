@@ -88,7 +88,7 @@ public class RequestProcessor {
 			event.put(Messages.TYPE, Messages.SYNC_STREAM);
 
 			// Get the topic id.
-			String topicId = StringId.from(Messages.Event.STREAM, applicationName);
+			String topicId = StringId.from(applicationName, Messages.Event.STREAM);
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
 			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));

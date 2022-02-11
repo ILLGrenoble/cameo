@@ -93,7 +93,7 @@ private:
 struct StringId {
 
 	static std::string from(int id, const std::string& name);
-	static std::string from(const std::string& topic, const std::string& name);
+	static std::string from(const std::string& id, const std::string& name);
 };
 
 }

@@ -49,7 +49,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	std::vector<std::string> topicsList;
 
 	// Get the topic id.
-	std::string topicId = StringId::from(message::Event::STREAM, m_name);
+	std::string topicId = StringId::from(m_name, message::Event::STREAM);
 
 	topicsList.push_back(topicId);
 	topicsList.push_back(message::Event::CANCEL);

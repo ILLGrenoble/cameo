@@ -60,7 +60,7 @@ public class StreamApplicationThread extends ApplicationThread {
 		publisher = manager.getStreamPublisher(application.getName());
 		
 		// Memorize the string id.
-		topicId = StringId.from(Messages.Event.STREAM, application.getName());
+		topicId = StringId.from(application.getName(), Messages.Event.STREAM);
 	}
 	
 	private void sendMessage(String line, boolean endOfLine) {

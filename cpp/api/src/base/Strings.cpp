@@ -224,8 +224,8 @@ std::string StringId::from(int id, const std::string& name) {
 	return std::to_string(id) + ":" + name;
 }
 
-std::string StringId::from(const std::string& topic, const std::string& name) {
-	return topic + ":" + name;
+std::string StringId::from(const std::string& id, const std::string& name) {
+	return id + ":" + name;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint) {
