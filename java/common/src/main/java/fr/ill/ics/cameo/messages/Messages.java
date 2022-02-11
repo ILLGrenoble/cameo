@@ -30,6 +30,7 @@ public class Messages {
 	public static final long LIST = 14;
 	public static final long SET_STATUS = 15;
 	public static final long GET_STATUS = 16;
+	public static final long PUBLISHER_PROXY_PORT = 17;
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
 	public static final long REQUEST = 26;
@@ -294,6 +295,14 @@ public class Messages {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.STATUS);
+
+		return request;
+	}
+	
+	public static JSONObject createPublisherProxyPortRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.PUBLISHER_PROXY_PORT);
 
 		return request;
 	}

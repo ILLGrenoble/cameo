@@ -187,6 +187,15 @@ std::string createStreamStatusRequest() {
 	return request.toString();
 }
 
+std::string createPublisherProxyPortRequest() {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushValue(message::PUBLISHER_PROXY_PORT);
+
+	return request.toString();
+}
+
 std::string createOutputPortWithIdRequest(int id) {
 
 	json::StringObject request;

@@ -57,6 +57,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
 		
 		subscriber.connect(endpoint.toString());
+		
 		subscriber.subscribe(Messages.Event.STATUS);
 		subscriber.subscribe(Messages.Event.RESULT);
 		subscriber.subscribe(Messages.Event.KEYVALUE);
@@ -70,16 +71,15 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		Zmq.Poller poller = this.context.createPoller(subscriber);
 		
 		while (true) {
-			
-			// the server returns a STATUS message that is used to synchronize the subscriber
+			// The server returns a STATUS message that is used to synchronize the subscriber
 			try {
 				requestSocket.requestJSON(Messages.createSyncRequest());
-
-			} catch (ConnectionTimeout e) {
-				// do nothing
+			}
+			catch (ConnectionTimeout e) {
+				// Do nothing.
 			}
 
-			// return at the first response.
+			// Return after the first message received by the subscriber.
 			if (poller.poll(100)) {
 				break;
 			}

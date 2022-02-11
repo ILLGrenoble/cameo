@@ -97,7 +97,7 @@ public class Server {
 		
 		// Retrieve the server version.
 		retrieveServerVersion();
-				
+		
 		// Start the status thread if it is possible.
 		EventStreamSocket streamSocket = openEventStream();
 		
@@ -260,6 +260,30 @@ public class Server {
 	public JSONObject requestJSON(JSONObject request, byte[] data) {
 		return requestSocket.requestJSON(request, data);
 	}
+
+	private int getStreamPort(String name) throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createOutputPortRequest(name);
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
+
+	private int getStatusPort() throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createStreamStatusRequest();
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
+	
+	private int getPublisherProxyPort() throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createPublisherProxyPortRequest();
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
 	
 	/**
 	 * 
@@ -267,8 +291,8 @@ public class Server {
 	 */
 	private EventStreamSocket openEventStream() {
 
-		JSONObject response = requestSocket.requestJSON(Messages.createStreamStatusRequest());
-		statusPort = JSON.getInt(response, Messages.RequestResponse.VALUE);
+		// If use proxy, status port is the port of the publisher proxy.
+		statusPort = getPublisherProxyPort();
 
 		EventStreamSocket eventStreamSocket = new EventStreamSocket();
 		eventStreamSocket.init(contextImpl, serverEndpoint.withPort(statusPort), requestSocket, parser);
@@ -648,24 +672,19 @@ public class Server {
 		
 		return result;
 	}
-	
-
-	private int getStreamPort(String name) throws ConnectionTimeout {
-		
-		JSONObject request = Messages.createOutputPortRequest(name);
-		JSONObject response = requestSocket.requestJSON(request);
-		
-		return JSON.getInt(response, Messages.RequestResponse.VALUE);
-	}
 
 	private OutputStreamSocket createOutputStreamSocket(String name) {
 		
 		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(name);
 		
+		// Even with the proxy, it is necessary to check if the application has an output stream.
 		int port = getStreamPort(name);
 		if (port == -1) {
 			return null;
 		}
+		
+		// If use proxy, stream port is the port of the publisher proxy which is the same port as status port.
+		port = statusPort;
 		
 		outputStreamSocket.init(contextImpl, serverEndpoint.withPort(port), requestSocket, parser);
 		

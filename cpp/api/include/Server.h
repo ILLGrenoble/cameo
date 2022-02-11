@@ -157,8 +157,9 @@ private:
 	void initRequestSocket();
 
 	void retrieveServerVersion();
-	void initStatus();
+	int getStatusPort();
 	int getStreamPort(const std::string& name);
+	int getPublisherProxyPort();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);

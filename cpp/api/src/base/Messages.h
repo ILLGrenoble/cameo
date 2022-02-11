@@ -42,6 +42,7 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
+	const int PUBLISHER_PROXY_PORT = 17;
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
 	const int REQUEST = 26;
@@ -282,6 +283,7 @@ std::string createAppsRequest();
 std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
+std::string createPublisherProxyPortRequest();
 std::string createSetResultRequest(int id);
 std::string createAttachUnregisteredRequest(const std::string& name, long pid);
 std::string createDetachUnregisteredRequest(int id);

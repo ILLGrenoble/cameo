@@ -58,7 +58,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		// Prepare our context and subscriber
 		Zmq.Socket subscriber = this.context.createSocket(Zmq.SUB);
 		subscriber.connect(endpoint.toString());
-
+		
 		// Subscribe to the topic.
 		String topicId = StringId.from(name, Messages.Event.STREAM);
 		subscriber.subscribe(topicId);

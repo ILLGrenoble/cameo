@@ -17,21 +17,22 @@
 #include <string>
 #include <iostream>
 #include <zmq.hpp>
+#include <thread>
 
 int main(int argc, char *argv[]) {
 
 	if (argc < 3) {
-		std::cout << "Usage: <front port> <back port>" << std::endl;
+		std::cout << "Usage: <sub port> <pub port>" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	std::string frontPort{argv[1]};
-	std::string frontAddress("tcp://*:");
-	frontAddress += frontPort;
+	std::string subPort{argv[1]};
+	std::string subAddress("tcp://*:");
+	subAddress += subPort;
 
-	std::string backPort{argv[2]};
-	std::string backAddress("tcp://*:");
-	backAddress += backPort;
+	std::string pubPort{argv[2]};
+	std::string pubAddress("tcp://*:");
+	pubAddress += pubPort;
 
 	// Prepare our context and sockets.
 	zmq::context_t context(1);
@@ -39,10 +40,10 @@ int main(int argc, char *argv[]) {
 	//set hwm
 
 	try {
-		frontend.bind(frontAddress);
+		frontend.bind(subAddress);
 	}
 	catch (const std::exception& e) {
-		std::cout << "Cannot bind socket to " << frontAddress << ": " << e.what() << std::endl;
+		std::cout << "Cannot bind socket to " << subAddress << ": " << e.what() << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -50,10 +51,10 @@ int main(int argc, char *argv[]) {
 	//set hwm
 
 	try {
-		backend.bind(backAddress);
+		backend.bind(pubAddress);
 	}
 	catch (const std::exception& e) {
-		std::cout << "Cannot bind socket to " << backAddress << ": " << e.what() << std::endl;
+		std::cout << "Cannot bind socket to " << pubAddress << ": " << e.what() << std::endl;
 		return EXIT_FAILURE;
 	}
 

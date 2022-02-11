@@ -33,8 +33,11 @@ public final class ConfigManager {
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
-	private Endpoint proxyLocalEndpoint;
-	private Endpoint proxyHostEndpoint;
+	private Endpoint responderProxyLocalEndpoint;
+	private Endpoint responderProxyHostEndpoint;
+	private Endpoint subscriberProxyLocalEndpoint;
+	private Endpoint subscriberProxyHostEndpoint;
+	private int publisherProxyPort;
 	
 	private ConfigManager() {
 		super();
@@ -85,7 +88,7 @@ public final class ConfigManager {
 	}
 	
 	public int getProxyPort() {
-		return proxyLocalEndpoint.getPort();
+		return responderProxyLocalEndpoint.getPort();
 	}
 		
 	public int getMaxNumberOfApplications() {
@@ -217,7 +220,7 @@ public final class ConfigManager {
 		endpoint = new Endpoint(host, port);
 	}
 
-	public void setProxyPort(String portString) {
+	public void setResponderProxyPort(String portString) {
 		
 		int port = 0;
 		
@@ -225,7 +228,7 @@ public final class ConfigManager {
 			port = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, 'proxy_port' is not an integer");
+			System.err.println("Error, " + ConfigLoader.RESPONDER_PROXY_PORT + " is not an integer");
 		}
 		
 		String localhost;
@@ -237,17 +240,62 @@ public final class ConfigManager {
 			localhost = "127.0.0.1"; 
 		}
 		
-		proxyLocalEndpoint = new Endpoint(localhost, port);
-		proxyHostEndpoint = endpoint.withPort(port);
+		responderProxyLocalEndpoint = new Endpoint(localhost, port);
+		responderProxyHostEndpoint = endpoint.withPort(port);
 	}
 	
-	public Endpoint getProxyLocalEndpoint() {
-		return proxyLocalEndpoint;		
+	public Endpoint getResponderProxyLocalEndpoint() {
+		return responderProxyLocalEndpoint;		
 	}
 	
-	public Endpoint getProxyHostEndpoint() {
-		return proxyHostEndpoint;		
+	public Endpoint getResponderProxyHostEndpoint() {
+		return responderProxyHostEndpoint;		
 	}
 
+	public void setPublisherProxyPort(String portString) {
+		
+		try {
+			publisherProxyPort = Integer.parseInt(portString);
+		}
+		catch (java.lang.NumberFormatException e) {
+			System.err.println("Error, " + ConfigLoader.PUBLISHER_PROXY_PORT + " is not an integer");
+		}
+	}
+	
+	public void setSubscriberProxyPort(String portString) {
+		
+		int port = 0;
+		
+		try {
+			port = Integer.parseInt(portString);
+		}
+		catch (java.lang.NumberFormatException e) {
+			System.err.println("Error, " + ConfigLoader.SUBSCRIBER_PROXY_PORT + " is not an integer");
+		}
+		
+		String localhost;
+		
+		try {
+			localhost = InetAddress.getLocalHost().getHostAddress();
+		}
+		catch (UnknownHostException e) {
+			localhost = "127.0.0.1"; 
+		}
+		
+		subscriberProxyLocalEndpoint = new Endpoint(localhost, port);
+		subscriberProxyHostEndpoint = endpoint.withPort(port);
+	}
+	
+	public Endpoint getSubscriberProxyLocalEndpoint() {
+		return subscriberProxyLocalEndpoint;		
+	}
+	
+	public Endpoint getSubscriberProxyHostEndpoint() {
+		return subscriberProxyHostEndpoint;		
+	}
+
+	public int getPublisherProxyPort() {
+		return publisherProxyPort;
+	}
 
 }

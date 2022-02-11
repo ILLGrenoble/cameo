@@ -39,6 +39,7 @@ import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnregisteredApplicationException;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 
@@ -84,7 +85,20 @@ public class Manager extends ConfigLoader {
 		Log.logger().fine("Max Id is " + MAX_ID);
 	}
 
-	private synchronized int bindSocket(Zmq.Socket socket, String applicationName) {
+	private synchronized int initPublisher(Zmq.Socket socket, String applicationName) {
+		
+		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
+		Endpoint proxyEndpoint = ConfigManager.getInstance().getSubscriberProxyLocalEndpoint();
+
+		try {
+			socket.connect(proxyEndpoint.toString());
+			
+			Log.logger().info("Connected publisher " + applicationName + " to proxy " + proxyEndpoint);
+		}
+		catch (Exception e) {
+			Log.logger().severe("Cannot connect to publisher proxy " + proxyEndpoint + ": " + e.getMessage());
+			System.exit(1);
+		}
 		
 		// Loop until the socket is bound.
 		while (true) {
@@ -108,7 +122,7 @@ public class Manager extends ConfigLoader {
 		
 		eventPublisher = context.createSocket(Zmq.PUB);
 		
-		int port = bindSocket(eventPublisher, "<server>:<event>");
+		int port = initPublisher(eventPublisher, "<server>:<event>");
 		ConfigManager.getInstance().setStreamPort(port);
 		
 		Log.logger().info("Status socket on port " + port);
@@ -119,7 +133,7 @@ public class Manager extends ConfigLoader {
 			if (config.hasOutputStream()) {
 				Zmq.Socket streamPublisher = context.createSocket(Zmq.PUB);
 				
-				port = bindSocket(streamPublisher, "<server>:<output>" + config.getName());
+				port = initPublisher(streamPublisher, "<server>:<output>" + config.getName());
 				config.setOutputStreamPort(port);
 				
 				streamPublishers.put(config.getName(), streamPublisher);
@@ -270,7 +284,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application. The proxy host endpoint is passed.
-		Application application = new RegisteredApplication(ConfigManager.getInstance().getProxyHostEndpoint(), id, config, args, starter);
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
 		// Threads.
@@ -683,7 +697,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application.
-		Application application = new UnregisteredApplication(ConfigManager.getInstance().getProxyHostEndpoint(), id, name, pid);
+		Application application = new UnregisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
 		// Threads.

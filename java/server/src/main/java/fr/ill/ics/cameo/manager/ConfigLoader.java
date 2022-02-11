@@ -31,36 +31,38 @@ import fr.ill.ics.cameo.exception.UnknownApplicationException;
 
 public abstract class ConfigLoader {
 
-	private final String MAX_APPLICATIONS = "max_applications";
-	private final String HOST = "host";
-	private final String PORT = "port";
-	private final String PROXY_PORT = "proxy_port";
-	private final String LOG_DIRECTORY = "log_directory";
-	private final String LOG_LEVEL = "log_level";
-	private final String SLEEP_TIME = "sleep_time";
-	private final String POLLING_TIME = "polling_time";
-	private final String APPLICATIONS = "applications";
-	private final String APPLICATION = "application";
-	private final String NAME = "name";
-	private final String DESCRIPTION = "description";
-	private final String WORKING_DIRECTORY = "working_directory";
-	private final String DEFAULT = "default";
-	private final String STARTING_TIME = "starting_time";
-	private final String STOPPING_TIME = "stopping_time";
-	private final String MULTIPLE = "multiple";
-	private final String STREAM = "stream";
-	private final String OUTPUT_STREAM = "output_stream";
-	private final String PASS_INFO = "pass_info";
-	private final String INFO_ARG = "info_arg";
-	private final String RESTART = "restart";
-	private final String ENVIRONMENT = "environment";
-	private final String START = "start";
-	private final String EXECUTABLE = "executable";
-	private final String STOP = "stop";
-	private final String ERROR = "error";
-	private final String ARGS = "args";
-	private final String ARG = "arg";
-	private final String VALUE = "value";
+	public final static String MAX_APPLICATIONS = "max_applications";
+	public final static String HOST = "host";
+	public final static String PORT = "port";
+	public final static String RESPONDER_PROXY_PORT = "responder_proxy_port";
+	public final static String PUBLISHER_PROXY_PORT = "publisher_proxy_port";
+	public final static String SUBSCRIBER_PROXY_PORT = "subscriber_proxy_port";
+	public final static String LOG_DIRECTORY = "log_directory";
+	public final static String LOG_LEVEL = "log_level";
+	public final static String SLEEP_TIME = "sleep_time";
+	public final static String POLLING_TIME = "polling_time";
+	public final static String APPLICATIONS = "applications";
+	public final static String APPLICATION = "application";
+	public final static String NAME = "name";
+	public final static String DESCRIPTION = "description";
+	public final static String WORKING_DIRECTORY = "working_directory";
+	public final static String DEFAULT = "default";
+	public final static String STARTING_TIME = "starting_time";
+	public final static String STOPPING_TIME = "stopping_time";
+	public final static String MULTIPLE = "multiple";
+	public final static String STREAM = "stream";
+	public final static String OUTPUT_STREAM = "output_stream";
+	public final static String PASS_INFO = "pass_info";
+	public final static String INFO_ARG = "info_arg";
+	public final static String RESTART = "restart";
+	public final static String ENVIRONMENT = "environment";
+	public final static String START = "start";
+	public final static String EXECUTABLE = "executable";
+	public final static String STOP = "stop";
+	public final static String ERROR = "error";
+	public final static String ARGS = "args";
+	public final static String ARG = "arg";
+	public final static String VALUE = "value";
 	
 	protected List<ApplicationConfig> applicationList;
 
@@ -158,10 +160,12 @@ public abstract class ConfigLoader {
 		
 		Element root = configXML.getRootElement();
 		
-		// Set the attributes
+		// Set the base parameters.
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
 		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
-		ConfigManager.getInstance().setProxyPort(root.getAttributeValue(PROXY_PORT));
+		ConfigManager.getInstance().setResponderProxyPort(root.getAttributeValue(RESPONDER_PROXY_PORT));
+		ConfigManager.getInstance().setPublisherProxyPort(root.getAttributeValue(PUBLISHER_PROXY_PORT));
+		ConfigManager.getInstance().setSubscriberProxyPort(root.getAttributeValue(SUBSCRIBER_PROXY_PORT));
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
 		
@@ -171,7 +175,7 @@ public abstract class ConfigLoader {
 		try {
 			sleepTime = Integer.parseInt(sleepTimeString);
 		} catch (NumberFormatException e) {
-			// Set default value
+			// Set default value.
 		}
 					
 		ConfigManager.getInstance().setSleepTime(sleepTime);
@@ -182,12 +186,12 @@ public abstract class ConfigLoader {
 		try {
 			pollingTime = Integer.parseInt(pollingTimeString);
 		} catch (NumberFormatException e) {
-			// Set default value
+			// Set default value.
 		}
 		
 		ConfigManager.getInstance().setPollingTime(pollingTime);
 		
-		// Get applications
+		// Get applications.
 		List<Element> listApplication = root.getChild(APPLICATIONS).getChildren(APPLICATION);
 		applicationList = new LinkedList<ApplicationConfig>();
 

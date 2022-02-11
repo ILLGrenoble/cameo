@@ -79,15 +79,15 @@ public class Server {
 		socket.setIdentity(StringId.CAMEO_SERVER);
 		
 		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
-		Endpoint proxyEndpoint = ConfigManager.getInstance().getProxyLocalEndpoint();
+		Endpoint proxyEndpoint = ConfigManager.getInstance().getResponderProxyLocalEndpoint();
 
 		try {
 			socket.connect(proxyEndpoint.toString());
 			
-			Log.logger().info("Connected to proxy " + proxyEndpoint);
+			Log.logger().info("Connected responder to proxy " + proxyEndpoint);
 		}
 		catch (Exception e) {
-			Log.logger().severe("Cannot connect to proxy " + proxyEndpoint + ": " + e.getMessage());
+			Log.logger().severe("Cannot connect to responder proxy " + proxyEndpoint + ": " + e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -194,6 +194,9 @@ public class Server {
 				}
 				else if (type == Messages.OUTPUT_PORT) {
 					process.processOutputPortRequest(request, reply, manager);
+				}
+				else if (type == Messages.PUBLISHER_PROXY_PORT) {
+					process.processPublisherProxyPortRequest(request, reply, manager);
 				}
 				else if (type == Messages.OUTPUT_PORT_WITH_ID) {
 					process.processOutputPortWithIdRequest(request, reply, manager);

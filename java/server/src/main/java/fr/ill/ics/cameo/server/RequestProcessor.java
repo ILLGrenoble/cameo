@@ -359,7 +359,6 @@ public class RequestProcessor {
 	}
 	
 	/**
-	 * ShowCommand
 	 * 
 	 * @param message
 	 * @param manager
@@ -508,6 +507,24 @@ public class RequestProcessor {
 		
 		int port = manager.getApplicationStreamPort(JSON.getString(request, Messages.OutputRequest.NAME));
 		
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, port);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		reply.add(Messages.serialize(response));
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public void processPublisherProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+		
+		Log.logger().fine("Received PublisherProxyPort request");
+		
+		int port = ConfigManager.getInstance().getPublisherProxyPort();
+				
 		// Return the reply.
 		JSONObject response = new JSONObject();
 		response.put(Messages.RequestResponse.VALUE, port);
