@@ -60,7 +60,9 @@ public class StreamApplicationThread extends ApplicationThread {
 		publisher = manager.getStreamPublisher(application.getName());
 		
 		// Memorize the string id.
-		topicId = StringId.from(application.getName(), Messages.Event.STREAM);
+		// The topic name starts with the "stream" string rather than the application name.
+		// Indeed, the ZeroMQ filter applies on the prefix, so that "result" would conflict with an application name starting with "result" e.g. "resultcpp". 
+		topicId = StringId.from(Messages.Event.STREAM, application.getName());
 	}
 	
 	private void sendMessage(String line, boolean endOfLine) {
