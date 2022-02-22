@@ -53,23 +53,23 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 
 	std::cout << "Connected responder " << responderIdentity << " to the proxy " << application::This::getEndpoint() << std::endl;
 
-//	std::string endpointPrefix("tcp://*:");
-//
-//	// Loop to find an available port for the responder.
-//	while (true) {
-//
-//		int port = application::This::getCom().requestPort();
-//		std::string repEndpoint = endpointPrefix + std::to_string(port);
-//
-//		try {
-//			m_responder->bind(repEndpoint.c_str());
-//			m_responderPort = port;
-//			break;
-//		}
-//		catch (...) {
-//			application::This::getCom().setPortUnavailable(port);
-//		}
-//	}
+	std::string endpointPrefix("tcp://*:");
+
+	// Loop to find an available port for the responder.
+	while (true) {
+
+		int port = application::This::getCom().requestPort();
+		std::string repEndpoint = endpointPrefix + std::to_string(port);
+
+		try {
+			m_responder->bind(repEndpoint.c_str());
+			m_responderPort = port;
+			break;
+		}
+		catch (...) {
+			application::This::getCom().setPortUnavailable(port);
+		}
+	}
 }
 
 int ResponderZmq::getResponderPort() {

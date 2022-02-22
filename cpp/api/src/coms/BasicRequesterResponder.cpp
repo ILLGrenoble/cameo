@@ -153,16 +153,17 @@ Responder::~Responder() {
 
 void Responder::init(const std::string &name) {
 
+	// Set the key.
+	m_key = KEY + "-" + name;
+
 	// Init the reponder socket.
-	m_impl->init(StringId::from(application::This::getId(), name));
+	m_impl->init(StringId::from(application::This::getId(), m_key));
 
 	// Store the responder data.
 	json::StringObject responderData;
 
 	responderData.pushKey(PORT);
 	responderData.pushValue(m_impl->getResponderPort());
-
-	m_key = KEY + "-" + name;
 
 	try {
 		application::This::getCom().storeKeyValue(m_key, responderData.toString());
@@ -235,7 +236,7 @@ void Requester::tryInit(application::Instance & app) {
 
 		int responderPort = responderData[Responder::PORT.c_str()].GetInt();
 
-		m_impl->init(app.getEndpoint(), StringId::from(m_appId, m_responderName), responderPort);
+		m_impl->init(app.getEndpoint(), StringId::from(m_appId, m_key), responderPort);
 	}
 	catch (...) {
 		throw RequesterCreationException("Cannot create requester");

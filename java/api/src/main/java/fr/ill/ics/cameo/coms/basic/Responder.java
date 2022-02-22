@@ -33,15 +33,16 @@ public class Responder {
 	}
 	
 	private void init(String name) throws ResponderCreationException {
+
+		// Set the key.
+		key = KEY + "-" + name;
 		
 		// Init with the responder identity.
-		impl.init(StringId.from(This.getId(), name));
+		impl.init(StringId.from(This.getId(), key));
 
 		// Store the responder data.
 		JSONObject responderData = new JSONObject();
 		responderData.put(PORT, impl.getResponderPort());
-		
-		key = KEY + "-" + name;
 		
 		try {
 			This.getCom().storeKeyValue(key, responderData.toJSONString());

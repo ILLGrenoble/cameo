@@ -52,7 +52,7 @@ public class Requester {
 			
 			int responderPort = JSON.getInt(responderData, Responder.PORT);
 			
-			impl.init(app.getEndpoint(), StringId.from(appId, responderName), responderPort);	
+			impl.init(app.getEndpoint(), StringId.from(appId, key), responderPort);	
 		}
 		catch (UndefinedApplicationException | UndefinedKeyException e) {
 			throw new RequesterCreationException("");
