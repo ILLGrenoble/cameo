@@ -46,7 +46,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.server.Server.Version;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.StringId;
+import fr.ill.ics.cameo.strings.TopicId;
 
 /**
  * 
@@ -88,7 +88,7 @@ public class RequestProcessor {
 			event.put(Messages.TYPE, Messages.SYNC_STREAM);
 
 			// Get the topic id.
-			String topicId = StringId.from(Messages.Event.STREAM, applicationName);
+			byte[] topicId = TopicId.from(Messages.Event.STREAM, applicationName);
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
 			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));

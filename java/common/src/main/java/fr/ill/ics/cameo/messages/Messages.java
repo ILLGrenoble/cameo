@@ -50,13 +50,14 @@ public class Messages {
 	public static final long STREAM_END = 40;
 				
 	public static class Event {
-		public static final String SYNC = "sync";
-		public static final String CANCEL = "cancel";
-		public static final String STREAM = "stream";
-		public static final String ENDSTREAM_temp = "endstream";
-		public static final String STATUS = "status";
-		public static final String RESULT = "result";
-		public static final String KEYVALUE = "keyvalue";
+		public static final byte[] SYNC     = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x01 };
+		public static final byte[] CANCEL   = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x02 };
+		public static final byte[] STREAM   = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x03 };
+		public static final byte[] ENDSTREAM_temp = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x04 };
+		public static final byte[] STATUS   = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x05 };
+		public static final byte[] RESULT   = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x06 };
+		public static final byte[] KEYVALUE = new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x07 };
+		
 	}
 	
 	public static class ApplicationIdentity {

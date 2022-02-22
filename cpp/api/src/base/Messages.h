@@ -17,6 +17,7 @@
 #ifndef CAMEO_REQUESTS_H_
 #define CAMEO_REQUESTS_H_
 
+#include "Strings.h"
 #include <string>
 #include <vector>
 
@@ -62,13 +63,30 @@ namespace message {
 	const int STREAM_END = 40;
 
 	namespace Event {
-		constexpr const char* SYNC = "sync";
-		constexpr const char* CANCEL = "cancel";
-		constexpr const char* STREAM = "stream";
-		constexpr const char* ENDSTREAM_temp = "endstream";
-		constexpr const char* STATUS = "status";
-		constexpr const char* RESULT = "result";
-		constexpr const char* KEYVALUE = "keyvalue";
+//		constexpr const char* SYNC = "sync";
+//		constexpr const char* CANCEL = "cancel";
+//		constexpr const char* STREAM = "stream";
+//		constexpr const char* ENDSTREAM_temp = "endstream";
+//		constexpr const char* STATUS = "status";
+//		constexpr const char* RESULT = "result";
+//		constexpr const char* KEYVALUE = "keyvalue";
+
+		extern const uint32_t SYNC_value;
+		extern const uint32_t CANCEL_value;
+		extern const uint32_t STREAM_value;
+		extern const uint32_t ENDSTREAM_temp_value;
+		extern const uint32_t STATUS_value;
+		extern const uint32_t RESULT_value;
+		extern const uint32_t KEYVALUE_value;
+
+		extern const std::string SYNC;
+		extern const std::string CANCEL;
+		extern const std::string STREAM;
+		extern const std::string ENDSTREAM_temp;
+		extern const std::string STATUS;
+		extern const std::string RESULT;
+		extern const std::string KEYVALUE;
+
 	}
 
 	namespace ApplicationIdentity {

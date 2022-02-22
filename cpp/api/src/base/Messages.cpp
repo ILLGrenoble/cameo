@@ -19,6 +19,29 @@
 
 namespace cameo {
 
+namespace message {
+
+namespace Event {
+
+const uint32_t SYNC_value     = 0x00000001;
+const uint32_t CANCEL_value   = 0x00000002;
+const uint32_t STREAM_value   = 0x00000003;
+const uint32_t ENDSTREAM_temp_value = 0x00000004;
+const uint32_t STATUS_value   = 0x00000005;
+const uint32_t RESULT_value   = 0x00000006;
+const uint32_t KEYVALUE_value = 0x00000007;
+
+const std::string SYNC = TopicId::from(SYNC_value);
+const std::string CANCEL = TopicId::from(CANCEL_value);
+const std::string STREAM = TopicId::from(STREAM_value);
+const std::string ENDSTREAM_temp = TopicId::from(ENDSTREAM_temp_value);
+const std::string STATUS = TopicId::from(STATUS_value);
+const std::string RESULT = TopicId::from(RESULT_value);
+const std::string KEYVALUE = TopicId::from(KEYVALUE_value);
+
+}
+}
+
 std::string createSyncRequest() {
 
 	json::StringObject request;

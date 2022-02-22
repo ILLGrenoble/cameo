@@ -49,14 +49,20 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	std::vector<std::string> topicsList;
 
 	// Get the topic id.
-	std::string topicId = StringId::from(message::Event::STREAM, m_name);
+//	std::string topicId = StringId::from(message::Event::STREAM, m_name);
 
-	topicsList.push_back(topicId);
-	topicsList.push_back(message::Event::CANCEL);
+//	topicsList.push_back(topicId);
+//	topicsList.push_back(message::Event::CANCEL);
 
-	for (std::vector<std::string>::const_iterator s = topicsList.begin(); s != topicsList.end(); ++s) {
-		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
-	}
+//	for (std::vector<std::string>::const_iterator s = topicsList.begin(); s != topicsList.end(); ++s) {
+//		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
+//	}
+
+	// Get the topic id.
+	std::string topicId = TopicId::from(message::Event::STREAM_value, m_name);
+	m_socket->setsockopt(ZMQ_SUBSCRIBE, topicId.c_str(), topicId.length());
+
+	m_socket->setsockopt(ZMQ_SUBSCRIBE, &message::Event::CANCEL, 4);
 
 	m_socket->connect(endpoint.toString().c_str());
 	m_socket->connect(cancelEndpoint.str().c_str());
@@ -110,15 +116,17 @@ std::string OutputStreamSocketZmq::receive(bool blocking) {
 
 void OutputStreamSocketZmq::cancel() {
 
-	if (m_cancelSocket.get() != nullptr) {
-		std::string data(message::Event::CANCEL);
-		zmq::message_t requestType(data.length());
-		zmq::message_t requestData(data.length());
-		memcpy(requestType.data(), message::Event::CANCEL, data.length());
-		memcpy(requestData.data(), data.c_str(), data.length());
-		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
-		m_cancelSocket->send(requestData, zmq::send_flags::none);
-	}
+	std::cout << "TODO OutputStreamSocketZmq::cancel" << std::endl;
+
+//	if (m_cancelSocket.get() != nullptr) {
+//		std::string data(message::Event::CANCEL);
+//		zmq::message_t requestType(data.length());
+//		zmq::message_t requestData(data.length());
+//		memcpy(requestType.data(), message::Event::CANCEL, data.length());
+//		memcpy(requestData.data(), data.c_str(), data.length());
+//		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
+//		m_cancelSocket->send(requestData, zmq::send_flags::none);
+//	}
 }
 
 void OutputStreamSocketZmq::close() {

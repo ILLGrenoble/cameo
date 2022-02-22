@@ -228,6 +228,38 @@ std::string StringId::from(const std::string& id, const std::string& name) {
 	return id + ":" + name;
 }
 
+std::string TopicId::from(uint32_t id) {
+
+	std::string result;
+
+	size_t idSize = sizeof(id);
+
+	result.resize(idSize);
+
+	const char *dest = result.c_str();
+	memcpy(static_cast<void *>(&id), dest, idSize);
+
+	return result;
+}
+
+std::string TopicId::from(uint32_t id, const std::string& name) {
+
+	std::string result;
+
+	size_t idSize = sizeof(id);
+
+	result.resize(idSize + name.size());
+
+	char *dest = result.data();
+	memcpy(dest, static_cast<void *>(&id), idSize);
+
+	dest += idSize;
+
+	memcpy(dest, name.data(), name.length());
+
+	return result;
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint) {
 
 	os << endpoint.toString();

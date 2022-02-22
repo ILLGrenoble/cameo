@@ -114,8 +114,8 @@ public class Zmq {
 			return true;
 		}
 
-		public void subscribe(String topic) {
-			socket.subscribe(topic.getBytes());
+		public void subscribe(byte[] topic) {
+			socket.subscribe(topic);
 		}
 
 		public void send(String data) {

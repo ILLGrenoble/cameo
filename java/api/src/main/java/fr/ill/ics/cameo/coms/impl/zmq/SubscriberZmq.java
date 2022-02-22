@@ -228,7 +228,7 @@ public class SubscriberZmq implements SubscriberImpl {
 
 	
 		cancelPublisher.sendMore(Messages.Event.CANCEL);
-		cancelPublisher.send(Messages.Event.CANCEL);
+		cancelPublisher.send("cancel");
 	}
 
 	public static JSONObject createSubscribePublisherRequest() {

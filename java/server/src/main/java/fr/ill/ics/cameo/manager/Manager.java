@@ -147,7 +147,7 @@ public class Manager extends ConfigLoader {
 		return streamPublishers.get(name);
 	}
 	
-	public static void publishSynchronized(Zmq.Socket publisher, String topicId, byte[] data) {
+	public static void publishSynchronized(Zmq.Socket publisher, byte[] topicId, byte[] data) {
 		
 		synchronized (publisher) {
 			publisher.sendMore(topicId);

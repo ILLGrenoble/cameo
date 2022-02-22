@@ -29,7 +29,7 @@ import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.StringId;
+import fr.ill.ics.cameo.strings.TopicId;
 
 /**
  * Class getting the stream from the process input stream.
@@ -44,7 +44,7 @@ public class StreamApplicationThread extends ApplicationThread {
 	private boolean send = false;
 	private boolean eol;
 	private Zmq.Socket publisher;
-	private String topicId;
+	private byte[] topicId;
 	private FileOutputStream fileOutputStream;
 	
 	/**
@@ -62,7 +62,7 @@ public class StreamApplicationThread extends ApplicationThread {
 		// Memorize the string id.
 		// The topic name starts with the "stream" string rather than the application name.
 		// Indeed, the ZeroMQ filter applies on the prefix, so that "result" would conflict with an application name starting with "result" e.g. "resultcpp". 
-		topicId = StringId.from(Messages.Event.STREAM, application.getName());
+		topicId = TopicId.from(Messages.Event.STREAM, application.getName());
 	}
 	
 	private void sendMessage(String line, boolean endOfLine) {

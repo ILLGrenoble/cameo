@@ -17,6 +17,8 @@ package fr.ill.ics.cameo.base.impl.zmq;
 
 
 
+import java.util.Arrays;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -32,7 +34,7 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.StringId;
+import fr.ill.ics.cameo.strings.TopicId;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
@@ -60,7 +62,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		subscriber.connect(endpoint.toString());
 		
 		// Subscribe to the topic.
-		String topicId = StringId.from(Messages.Event.STREAM, name);
+		byte[] topicId = TopicId.from(Messages.Event.STREAM, name);
 		subscriber.subscribe(topicId);
 		
 		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -103,12 +105,12 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
 	public Application.Output receive()	{
 		
-		// Loop on recvStr() because in case of configuration multiple=yes, messages can come from different instances.
+		// Loop on recv() because in case of configuration multiple=yes, messages can come from different instances.
 		while (true) {
-			String messageType = this.subscriberSocket.recvStr();
+			byte[] messageType = this.subscriberSocket.recv();
 			
 			// Cancel can only come from this instance.
-			if (messageType.equals(Messages.Event.CANCEL)) {
+			if (Arrays.equals(messageType, Messages.Event.CANCEL)) {
 				canceled = true;
 				return null;
 			}
@@ -164,7 +166,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
 	public void cancel() {
 		cancelSocket.sendMore(Messages.Event.CANCEL);
-		cancelSocket.send(Messages.Event.CANCEL);
+		cancelSocket.send("cancel");
 	}
 	
 	public void destroy() {

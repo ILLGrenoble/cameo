@@ -96,6 +96,12 @@ struct StringId {
 	static std::string from(const std::string& id, const std::string& name);
 };
 
+struct TopicId {
+
+	static std::string from(uint32_t id);
+	static std::string from(uint32_t id, const std::string& name);
+};
+
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);

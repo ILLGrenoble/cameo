@@ -53,11 +53,11 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC, std::string(message::Event::SYNC).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM, std::string(message::Event::STREAM).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM_temp, std::string(message::Event::ENDSTREAM_temp).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::SYNC.c_str(), std::string(message::Event::SYNC).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STREAM.c_str(), std::string(message::Event::STREAM).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::ENDSTREAM_temp.c_str(), std::string(message::Event::ENDSTREAM_temp).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL.c_str(), std::string(message::Event::CANCEL).length());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS.c_str(), std::string(message::Event::STATUS).length());
 
 	m_subscriber->connect(appEndpoint.withPort(m_publisherPort).toString());
 

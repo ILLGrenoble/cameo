@@ -17,6 +17,8 @@ package fr.ill.ics.cameo.base.impl.zmq;
 
 
 
+import java.util.Arrays;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -94,12 +96,12 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
 	public Event receive() {
 		
-		String message = this.subscriberSocket.recvStr();
+		byte[] message = this.subscriberSocket.recv();
 		Event event = null;
 		
 		// We can receive messages from the status publisher located in the server
 		// as well as messages from the cancel publisher located in the same process.
-		if (message.equals(Messages.Event.STATUS)) {
+		if (Arrays.equals(message, Messages.Event.STATUS)) {
 			
 			byte[] statusMessage = this.subscriberSocket.recv();
 			
@@ -124,7 +126,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Messages.Event.RESULT)) {
+		else if (Arrays.equals(message, Messages.Event.RESULT)) {
 				
 			byte[] resultMessage = this.subscriberSocket.recv();
 			
@@ -144,7 +146,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Messages.Event.KEYVALUE)) {
+		else if (Arrays.equals(message, Messages.Event.KEYVALUE)) {
 			
 			byte[] keyValueMessage = this.subscriberSocket.recv();
 			
@@ -169,7 +171,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 				throw new UnexpectedException("Cannot parse response");
 			}
 		}
-		else if (message.equals(Messages.Event.CANCEL)) {
+		else if (Arrays.equals(message, Messages.Event.CANCEL)) {
 			canceled = true;
 			return null;
 		}
@@ -183,7 +185,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
 	public void cancel() {
 		cancelSocket.sendMore(Messages.Event.CANCEL);
-		cancelSocket.send(Messages.Event.CANCEL);
+		cancelSocket.send("cancel");
 	}
 
 	public void destroy() {

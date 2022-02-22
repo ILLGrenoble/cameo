@@ -209,7 +209,7 @@ public class PublisherZmq implements PublisherImpl {
 		
 		if (!ended) {
 			publisher.sendMore(Messages.Event.ENDSTREAM_temp);
-			publisher.send(Messages.Event.ENDSTREAM_temp);
+			publisher.send("endstream");
 			
 			ended = true;
 		}
@@ -240,7 +240,7 @@ public class PublisherZmq implements PublisherImpl {
 		
 		// send a dummy SYNC message by the publisher socket
 		publisher.sendMore(Messages.Event.SYNC);
-		publisher.send(Messages.Event.SYNC);
+		publisher.send("sync");
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));

@@ -46,6 +46,17 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		return std::unique_ptr<Event>(nullptr);
 	}
 
+	std::cout << "Received " << message << " " << message.size() << std::endl;
+
+	for (size_t i = 0; i < message.size(); ++i) {
+		std::cout << "Received " << (int)message[i] << std::endl;
+	}
+
+	std::cout << "STATUS " << std::endl;
+	for (size_t i = 0; i < message::Event::STATUS.size(); ++i) {
+		std::cout << "  " << (int)message::Event::STATUS[i] << std::endl;
+	}
+
 	if (message == message::Event::STATUS) {
 
 		message = m_impl->receive();
