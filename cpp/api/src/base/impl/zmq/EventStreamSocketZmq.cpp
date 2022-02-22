@@ -20,8 +20,6 @@
 #include "../../Messages.h"
 #include "../../CancelIdGenerator.h"
 
-using namespace std;
-
 namespace cameo {
 
 EventStreamSocketZmq::EventStreamSocketZmq() : m_context(nullptr) {
@@ -47,13 +45,13 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 
 	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
 
-	vector<string> streamList;
+	std::vector<std::string> streamList;
 	streamList.push_back(message::Event::STATUS);
 	streamList.push_back(message::Event::RESULT);
 	streamList.push_back(message::Event::KEYVALUE);
 	streamList.push_back(message::Event::CANCEL);
 
-	for (vector<string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
+	for (std::vector<std::string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
 		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
@@ -86,8 +84,7 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 
 void EventStreamSocketZmq::send(const std::string& data) {
 
-	zmq::message_t messageData(data.size());
-	memcpy(static_cast<void *>(messageData.data()), data.c_str(), data.size());
+	zmq::message_t messageData(data.c_str(), data.size());
 	m_socket->send(messageData, zmq::send_flags::none);
 }
 
@@ -108,12 +105,12 @@ std::string EventStreamSocketZmq::receive(bool blocking) {
 void EventStreamSocketZmq::cancel() {
 
 	if (m_cancelSocket.get() != nullptr) {
-		string data(message::Event::CANCEL);
-		zmq::message_t requestType(data.length());
-		zmq::message_t requestData(data.length());
-		memcpy(requestType.data(), message::Event::CANCEL, data.length());
-		memcpy(requestData.data(), data.c_str(), data.length());
+		std::string data(message::Event::CANCEL);
+
+		zmq::message_t requestType(data.c_str(), data.length());
 		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
+
+		zmq::message_t requestData(data.c_str(), data.length());
 		m_cancelSocket->send(requestData, zmq::send_flags::none);
 	}
 }

@@ -89,8 +89,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 void OutputStreamSocketZmq::send(const std::string& data) {
 
-	zmq::message_t messageData(data.size());
-	memcpy(static_cast<void *>(messageData.data()), data.c_str(), data.size());
+	zmq::message_t messageData(data.c_str(), data.size());
 	m_socket->send(messageData, zmq::send_flags::none);
 }
 
@@ -112,11 +111,11 @@ void OutputStreamSocketZmq::cancel() {
 
 	if (m_cancelSocket.get() != nullptr) {
 		std::string data(message::Event::CANCEL);
-		zmq::message_t requestType(data.length());
-		zmq::message_t requestData(data.length());
-		memcpy(requestType.data(), message::Event::CANCEL, data.length());
-		memcpy(requestData.data(), data.c_str(), data.length());
+
+		zmq::message_t requestType(data.c_str(), data.length());
 		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
+
+		zmq::message_t requestData(data.c_str(), data.length());
 		m_cancelSocket->send(requestData, zmq::send_flags::none);
 	}
 }
