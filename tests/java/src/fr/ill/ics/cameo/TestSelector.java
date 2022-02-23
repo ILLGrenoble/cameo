@@ -105,14 +105,14 @@ public class TestSelector {
 		apps.add("testerrorjava");
 		apps.add("teststoragejava");
 		apps.add("testwaitstoragejava");
-//		apps.add("testpublisherjava");
-//		apps.add("testsubscriberjava");
-//		apps.add("testresponderjava");
-//		apps.add("testrequesterjava");
-//		apps.add("testcanceljava");
-		apps.add("teststreamjava");
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
+		apps.add("testpublisherjava");
+		apps.add("testsubscriberjava");
+//		apps.add("testresponderjava");
+//		apps.add("testrequesterjava");
+		apps.add("testcanceljava");
+		apps.add("teststreamjava");
 		
 		return apps;
 	}
@@ -127,14 +127,14 @@ public class TestSelector {
 		apps.add("testerrorcpp");
 		apps.add("teststoragecpp");
 		apps.add("testwaitstoragecpp");
-//		apps.add("testpublishercpp");
-//		apps.add("testsubscribercpp");
-//		apps.add("testrespondercpp");
-//		apps.add("testrequestercpp");
-//		apps.add("testcancelcpp");
-		apps.add("teststreamcpp");
 		apps.add("testbasicrespondercpp");
 		apps.add("testbasicrequestercpp");
+		apps.add("testpublishercpp");
+		apps.add("testsubscribercpp");
+//		apps.add("testrespondercpp");
+//		apps.add("testrequestercpp");
+		apps.add("testcancelcpp");
+		apps.add("teststreamcpp");
 		
 		return apps;
 	}

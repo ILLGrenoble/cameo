@@ -171,30 +171,6 @@ int main(int argc, char *argv[]) {
 		killThread.join();
 	}
 
-	// Test the legacy Responder.
-	{
-		cout << "Creating legacy responder and waiting for requests" << endl;
-
-		// Create a responder.
-		unique_ptr<coms::legacy::Responder> responder = coms::legacy::Responder::create("responder");
-
-		// Start thread.
-		thread cancelThread([&] {
-			this_thread::sleep_for(chrono::seconds(1));
-			responder->cancel();
-		});
-
-		cout << "Wait for requests" << endl;
-
-		unique_ptr<coms::legacy::Request> request = responder->receive();
-
-		if (request) {
-			cerr << "Responder error: receive should return null" << endl;
-		}
-
-		cancelThread.join();
-	}
-
 	// Test the basic Responder.
 	{
 		cout << "Creating basic responder and waiting for requests" << endl;
@@ -226,6 +202,14 @@ int main(int argc, char *argv[]) {
 		// Create a responder.
 		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
 
+		// Start thread.
+		thread responderThread([&] {
+			while (!responder->isCanceled()) {
+				responder->receive();
+			}
+		});
+
+
 		// Get this app.
 		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
 
@@ -236,6 +220,7 @@ int main(int argc, char *argv[]) {
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(1));
 			requester->cancel();
+			responder->cancel();
 		});
 
 		cout << "Sending request" << endl;
@@ -254,6 +239,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		cancelThread.join();
+		responderThread.join();
 	}
 
 	cout << "Finished the application" << endl;
