@@ -5,8 +5,12 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
+import fr.ill.ics.cameo.coms.basic.Request;
+import fr.ill.ics.cameo.coms.basic.Responder;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
+import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -20,11 +24,13 @@ public class Publisher {
 	private PublisherImpl impl;
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
+	private Responder responder = null;
 	
-	public static String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
-	public static String PUBLISHER_PORT = "publisher_port";
-	public static String SYNCHRONIZER_PORT = "synchronizer_port";
-	public static String NUMBER_OF_SUBSCRIBERS = "n_subscribers";
+	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
+	public static final String PUBLISHER_PORT = "publisher_port";
+	public static final String NUMBER_OF_SUBSCRIBERS = "n_subscribers";
+	public static final String RESPONDER_PREFIX = "publisher:";
+	public static final long SUBSCRIBE_PUBLISHER = 100;
 	
 	private Publisher(String name, int numberOfSubscribers) {
 		
@@ -42,12 +48,11 @@ public class Publisher {
 		key = KEY + "-" + name;
 		
 		// Init the publisher and synchronizer sockets.
-		impl.init(StringId.from(This.getId(), key), numberOfSubscribers);
+		impl.init(StringId.from(This.getId(), key));
 		
 		// Store the publisher data.
 		JSONObject publisherData = new JSONObject();
 		publisherData.put(PUBLISHER_PORT, impl.getPublisherPort());
-		publisherData.put(SYNCHRONIZER_PORT, impl.getSynchronizerPort());
 		publisherData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
 		
 		try {
@@ -91,14 +96,63 @@ public class Publisher {
 	 * @return
 	 */
 	public boolean waitForSubscribers() {
-		return impl.waitForSubscribers();
+		
+		System.out.println("Wait for subscribers");
+		
+		try {
+			// Create the responder.
+			responder = Responder.create(RESPONDER_PREFIX + name);
+		
+			// Loop until the number of subscribers is reached.
+			int counter = 0;
+			
+			while (counter < numberOfSubscribers) {
+				
+				Request request = responder.receive();
+		
+				System.out.println("Received request");
+				
+				if (request == null) {
+					return false;
+				}
+				
+				System.out.println("Received request " + request.get());
+				
+				// Get the JSON request object.
+				JSONObject jsonRequest = This.getCom().parse(request.get());
+				
+				// Get the type.
+				long type = JSON.getLong(jsonRequest, Messages.TYPE);
+				
+				if (type == SUBSCRIBE_PUBLISHER) {
+					counter++;
+				}
+				
+				request.reply("OK");
+			}
+			
+			return !responder.isCanceled();
+		}
+		catch (ResponderCreationException e) {
+			System.err.println("Error, cannot create responder");
+			return false;
+		}
+		finally {
+			// Destroy responder.
+			if (responder != null) {
+				responder.terminate();
+				responder = null;
+			}
+		}
 	}
 	
 	/**
 	 * Cancels the wait for subscribers.
 	 */
 	public void cancelWaitForSubscribers() {
-		impl.cancelWaitForSubscribers();
+		if (responder != null) {
+			responder.cancel();
+		}
 	}
 
 	public void send(byte[] data) {

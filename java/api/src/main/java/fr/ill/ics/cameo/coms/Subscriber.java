@@ -8,9 +8,11 @@ import fr.ill.ics.cameo.base.KeyValue;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
+import fr.ill.ics.cameo.coms.basic.Requester;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
 
@@ -44,13 +46,41 @@ public class Subscriber {
 			// Do not use publisher port but proxy port.
 			//int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
 			int publisherPort = app.getCom().getPublisherProxyPort();
-			int synchronizerPort = JSON.getInt(publisherData, Publisher.SYNCHRONIZER_PORT);
 			int numberOfSubscribers = JSON.getInt(publisherData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
-			impl.init(appId, appEndpoint, app.getStatusEndpoint(), StringId.from(appId, key), publisherPort, synchronizerPort, numberOfSubscribers);	
+			impl.init(appId, appEndpoint, app.getStatusEndpoint(), StringId.from(appId, key), publisherPort);
+	
+			// Synchronize the subscriber only if the number of subscribers > 0.
+			if (numberOfSubscribers > 0) {
+				synchronize(app);
+			}
 		}
 		catch (UndefinedApplicationException | UndefinedKeyException e) {
 			throw new SubscriberCreationException("");
+		}
+	}
+	
+	private void synchronize(Instance app) {
+		
+		System.out.println("Synchronize subscriber");
+		
+		try {
+			Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+			System.out.println("Created requester " + requester + " for synchronization");
+			
+			// Send a subscribe request.
+			JSONObject request = new JSONObject();
+			request.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+			
+			requester.send(request.toJSONString());
+			String response = requester.receiveString();
+			
+			System.out.println("Requester received response " + response);
+			
+			requester.terminate();
+		}
+		catch (RequesterCreationException e) {
+			System.err.println("Error, cannot create requester for subscriber");
 		}
 	}
 	

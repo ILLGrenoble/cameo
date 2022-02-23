@@ -18,6 +18,7 @@
 
 #include "JSON.h"
 #include "Server.h"
+#include "BasicRequesterResponder.h"
 #include "../factory/ImplFactory.h"
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/Messages.h"
@@ -34,7 +35,7 @@ namespace coms {
 
 const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 const std::string Publisher::PUBLISHER_PORT = "publisher_port";
-const std::string Publisher::SYNCHRONIZER_PORT = "synchronizer_port";
+const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
@@ -57,16 +58,13 @@ void Publisher::init(const std::string& name) {
 	m_key = KEY + "-" + name;
 
 	// Init the publisher and synchronizer sockets.
-	m_impl->init(StringId::from(application::This::getId(), m_key), m_numberOfSubscribers);
+	m_impl->init(StringId::from(application::This::getId(), m_key));
 
 	// Store the publisher data.
 	json::StringObject publisherData;
 
 	publisherData.pushKey(PUBLISHER_PORT);
 	publisherData.pushValue(m_impl->getPublisherPort());
-
-	publisherData.pushKey(SYNCHRONIZER_PORT);
-	publisherData.pushValue(m_impl->getSynchronizerPort());
 
 	publisherData.pushKey(NUMBER_OF_SUBSCRIBERS);
 	publisherData.pushValue(m_numberOfSubscribers);
@@ -91,12 +89,57 @@ const std::string& Publisher::getName() const {
 	return m_name;
 }
 
-bool Publisher::waitForSubscribers() const {
-	return m_impl->waitForSubscribers();
+bool Publisher::waitForSubscribers() {
+
+	std::cout << "Wait for subscribers" << std::endl;
+
+	try {
+		m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
+
+		// Loop until the number of subscribers is reached.
+		int counter = 0;
+
+		while (counter < m_numberOfSubscribers) {
+
+			std::unique_ptr<basic::Request> request = m_responder->receive();
+
+			std::cout << "Received request" << std::endl;
+
+			if (!request) {
+				return false;
+			}
+
+			std::cout << "Received request " << request->get() << std::endl;
+
+			// Get the JSON request.
+			json::Object jsonRequest;
+			json::parse(jsonRequest, request->get());
+
+			int type = jsonRequest[message::TYPE].GetInt();
+
+			if (type == SUBSCRIBE_PUBLISHER) {
+				counter++;
+			}
+
+			request->reply("OK");
+		}
+
+		bool canceled = m_responder->isCanceled();
+		m_responder.reset();
+
+		return !canceled;
+	}
+	catch (const coms::ResponderCreationException& e) {
+		std::cerr << "Error, cannot create responder" << std::endl;
+		return false;
+	}
 }
 
 void Publisher::cancelWaitForSubscribers() {
-	m_impl->cancelWaitForSubscribers();
+
+	if (m_responder) {
+		m_responder->cancel();
+	}
 }
 
 void Publisher::sendBinary(const std::string& data) const {
@@ -148,13 +191,41 @@ void Subscriber::tryInit(application::Instance & app) {
 		// Do not use publisher port but proxy port.
 		//int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
 		int publisherPort = app.getCom().getPublisherProxyPort();
-		int synchronizerPort = publisherData[Publisher::SYNCHRONIZER_PORT.c_str()].GetInt();
 		int numberOfSubscribers = publisherData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
 
-		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key), publisherPort, synchronizerPort, numberOfSubscribers);
+		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key), publisherPort);
+
+		// Synchronize the subscriber only if the number of subscribers > 0.
+		if (numberOfSubscribers > 0) {
+			synchronize(app);
+		}
 	}
 	catch (...) {
 		throw SubscriberCreationException("Cannot create subscriber");
+	}
+}
+
+void Subscriber::synchronize(application::Instance & app) {
+
+	std::cout << "Synchronize subscriber" << std::endl;
+
+	try {
+		std::unique_ptr<basic::Requester> requester = basic::Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+
+		std::cout << "Created requester " << *requester << " for synchronization" << std::endl;
+
+		// Send a subscribe request.
+		json::StringObject request;
+		request.pushKey(message::TYPE);
+		request.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+
+		requester->send(request.toString());
+		std::optional<std::string> response = requester->receive();
+
+		std::cout << "Requester received response " << response.value() << std::endl;
+	}
+	catch (const RequesterCreationException& e) {
+		std::cerr << "Error, cannot create requester for subscriber" << std::endl;
 	}
 }
 

@@ -30,17 +30,11 @@ namespace coms {
 class PublisherImpl {
 
 public:
-	static const int SUBSCRIBE_PUBLISHER = 100;
-
 	virtual ~PublisherImpl() {}
 
-	virtual void init(const std::string& publisherIdentity, int numberOfSubscribers) = 0;
+	virtual void init(const std::string& publisherIdentity) = 0;
 
 	virtual int getPublisherPort() const = 0;
-	virtual int getSynchronizerPort() const = 0;
-
-	virtual bool waitForSubscribers() = 0;
-	virtual void cancelWaitForSubscribers() = 0;
 
 	virtual void sendBinary(const std::string& data) = 0;
 	virtual void send(const std::string& data) = 0;

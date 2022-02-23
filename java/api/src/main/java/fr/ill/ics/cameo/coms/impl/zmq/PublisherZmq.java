@@ -19,29 +19,23 @@ package fr.ill.ics.cameo.coms.impl.zmq;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
-import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 public class PublisherZmq implements PublisherImpl {
 
 	private int publisherPort;
-	private int synchronizerPort;
 	private String publisherIdentity;
-	private int numberOfSubscribers;
 	private Zmq.Context context;
 	private Zmq.Socket publisher = null;
-	private Zmq.Socket synchronizer = null;
 	private boolean ended = false;
 	
-	public void init(String publisherIdentity, int numberOfSubscribers) {
+	public void init(String publisherIdentity) {
 		
 		this.publisherIdentity = publisherIdentity;
-		this.numberOfSubscribers = numberOfSubscribers;	
 		
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		publisher = context.createSocket(Zmq.PUB);
@@ -69,125 +63,12 @@ public class PublisherZmq implements PublisherImpl {
 				This.getCom().setPortUnavailable(port);
 			}
 		}
-			
-		// Define the synchronizer if the number of subscribers is strictly positive.
-		if (numberOfSubscribers > 0) {
-
-			synchronizer = context.createSocket(Zmq.REP);
-
-			// Loop to find an available port for the synchronizer.
-			while (true) {
-		
-				int port = This.getCom().requestPort();
-				String pubEndpoint = endpointPrefix + port;
-		
-				try {
-					synchronizer.bind(pubEndpoint);
-					synchronizerPort = port;
-					break;
-				}
-				catch (Exception e) {
-					This.getCom().setPortUnavailable(port);
-				}
-			}
-		}	
 	}
 	
 	public int getPublisherPort() {
 		return publisherPort;
 	}
 	
-	public int getSynchronizerPort() {
-		return synchronizerPort; 	
-	}
-			
-	public boolean waitForSubscribers() {
-				
-		if (numberOfSubscribers <= 0) {
-			return true;
-		}
-		
-		boolean canceled = false;
-		
-		try {
-			// Loop until the number of subscribers is reached.
-			int counter = 0;
-			
-			while (counter < numberOfSubscribers) {
-
-				Zmq.Msg message = null;
-				Zmq.Msg reply = null;
-				
-				try {
-					message = Zmq.Msg.recvMsg(synchronizer);
-					
-					if (message == null) {
-						break;
-					}
-							
-					// Get the JSON request object.
-					JSONObject request = This.getCom().parse(message.getFirstData());
-					
-					// Get the type.
-					long type = JSON.getLong(request, Messages.TYPE);
-					
-					if (type == Messages.SYNC) {
-						reply = responseToSyncRequest();						
-					}
-					else if (type == SUBSCRIBE_PUBLISHER) {
-						counter++;
-						reply = responseToSubscribeRequest();
-					}
-					else if (type == Messages.CANCEL) {
-						canceled = true;
-						counter = numberOfSubscribers;
-						reply = responseToCancelRequest();
-					}
-					else {
-						reply = responseToUnknownRequest();
-					}
-					
-					// send to the client
-					if (reply != null) {
-						reply.send(synchronizer);
-					}
-				}
-				finally {
-					
-					if (message != null) {
-						message.destroy();
-					}	
-					
-					if (reply != null) {
-						reply.destroy();
-					}
-				}
-			}
-			
-		} finally {
-			// Destroy synchronizer socket as we do not need it anymore.
-			if (synchronizer != null) {
-				context.destroySocket(synchronizer);
-			}	
-		}
-		
-		return !canceled;
-	}
-	
-	public void cancelWaitForSubscribers() {
-		Endpoint endpoint = This.getEndpoint().withPort(synchronizerPort);
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CANCEL);
-		
-		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(endpoint.toString(), "zzzZZZ");
-		JSONObject response = requestSocket.requestJSON(request);
-		
-		// Terminate the socket.
-		requestSocket.terminate();
-	}
-
 	public void send(byte[] data) {
 		
 		publisher.sendMore(publisherIdentity);
@@ -226,7 +107,6 @@ public class PublisherZmq implements PublisherImpl {
 	public void sendEnd() {
 		
 		if (!ended) {
-			
 			publisher.sendMore(publisherIdentity);
 	
 			JSONObject messageType = new JSONObject();
@@ -249,52 +129,6 @@ public class PublisherZmq implements PublisherImpl {
 		
 		// Release the publisher port.
 		This.getCom().releasePort(publisherPort);
-		
-		if (synchronizer != null) {
-			context.destroySocket(synchronizer);
-			
-			// Release the publisher port.
-			This.getCom().releasePort(synchronizerPort);	
-		}
 	}
-	
-	private Zmq.Msg responseToSyncRequest() {
 		
-		// Send a SYNC message by the publisher socket.
-		publisher.sendMore(publisherIdentity);
-		
-		JSONObject messageType = new JSONObject();
-		messageType.put(Messages.TYPE, Messages.SYNC);
-		publisher.send(Messages.serialize(messageType), 0);
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
-				
-		return message;
-	}
-	
-	private Zmq.Msg responseToSubscribeRequest() {
-	
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
-		
-		return message;
-	}
-	
-	private Zmq.Msg responseToCancelRequest() {
-		
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
-		
-		return message;
-	}
-	
-	private Zmq.Msg responseToUnknownRequest() {
-	
-		Zmq.Msg message = new Zmq.Msg();
-		message.add(Messages.serialize(Messages.createRequestResponse(-1, "Unknown request")));
-		
-		return message;
-	}
-	
 }

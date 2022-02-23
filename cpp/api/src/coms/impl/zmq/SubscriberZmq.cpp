@@ -31,8 +31,6 @@ namespace coms {
 
 SubscriberZmq::SubscriberZmq() :
 	m_publisherPort(0),
-	m_synchronizerPort(0),
-	m_numberOfSubscribers(0),
 	m_appId(0),
 	m_ended(false),
 	m_canceled(false) {
@@ -41,12 +39,10 @@ SubscriberZmq::SubscriberZmq() :
 SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
+void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, int publisherPort) {
 
 	m_publisherIdentity = publisherIdentity;
 	m_publisherPort = publisherPort;
-	m_synchronizerPort = synchronizerPort;
-	m_numberOfSubscribers = numberOfSubscribers;
 	m_appId = appId;
 	m_ended = false;
 	m_canceled = false;
@@ -78,39 +74,6 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 
 	m_subscriber->connect(appStatusEndpoint.toString().c_str());
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
-
-	// Synchronize the subscriber only if the number of subscribers > 0.
-	if (m_numberOfSubscribers > 0) {
-
-		// Create a request socket.
-		std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(appEndpoint.withPort(m_synchronizerPort).toString(), "zzzZZZ");
-
-		// Poll subscriber.
-		zmq_pollitem_t items[1];
-		items[0].socket = static_cast<void *>(*m_subscriber);
-		items[0].fd = 0;
-		items[0].events = ZMQ_POLLIN;
-		items[0].revents = 0;
-
-		while (true) {
-
-			// The subscriber sends SYNC messages to the publisher that returns SYNC message.
-			try {
-				requestSocket->requestJSON(createSyncRequest());
-			}
-			catch (const ConnectionTimeout&) {
-				// The server is not accessible.
-			}
-
-			// Wait for 100ms.
-			int rc = zmq::poll(items, 1, 100);
-			if (rc != 0) {
-				break;
-			}
-		}
-
-		requestSocket->requestJSON(createSubscribePublisherRequest());
-	}
 }
 
 bool SubscriberZmq::isEnded() const {
@@ -286,15 +249,6 @@ void SubscriberZmq::cancel() {
 	std::string data(message::Event::CANCEL);
 	zmq::message_t requestData(data.c_str(), data.length());
 	m_cancelPublisher->send(requestData, zmq::send_flags::none);
-}
-
-std::string SubscriberZmq::createSubscribePublisherRequest() const {
-
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(PublisherImpl::SUBSCRIBE_PUBLISHER);
-
-	return request.toString();
 }
 
 }

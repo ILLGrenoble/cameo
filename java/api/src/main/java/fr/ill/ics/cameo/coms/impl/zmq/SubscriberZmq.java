@@ -21,11 +21,8 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.CancelIdGenerator;
-import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -42,7 +39,7 @@ public class SubscriberZmq implements SubscriberImpl {
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, String publisherIdentity, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
+	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, String publisherIdentity, int publisherPort) {
 
 		this.appId = appId;
 		this.publisherIdentity = publisherIdentity;
@@ -74,39 +71,6 @@ public class SubscriberZmq implements SubscriberImpl {
 		// Subscribe to STATUS
 		subscriber.connect(appStatusEndpoint.toString());
 		subscriber.subscribe(Messages.Event.STATUS);
-		
-		// Synchronize the subscriber only if the number of subscribers > 0
-		if (numberOfSubscribers > 0) {
-			
-			// Create a socket that will be used for several requests.
-			RequestSocket requestSocket = This.getCom().createRequestSocket(appEndpoint.withPort(synchronizerPort).toString(), "zzzZZZ");
-			
-			// polling to wait for connection
-			Zmq.Poller poller = context.createPoller(subscriber);
-			
-			boolean ready = false;
-			while (!ready) {
-				
-				// The subscriber sends SYNC messages to the publisher that returns SYNC message.
-				try {
-					requestSocket.requestJSON(Messages.createSyncRequest());
-
-				} catch (ConnectionTimeout e) {
-					// do nothing
-				}
-
-				// return at the first response.
-				if (poller.poll(100)) {
-					ready = true;
-				}
-			}
-			
-			// The subscriber is connected and ready to receive data.
-			// Notify the publisher that it can send data.
-			JSONObject request = createSubscribePublisherRequest();
-			requestSocket.requestJSON(request);
-			requestSocket.terminate();
-		}
 	}
 	
 	public boolean isEnded() {
@@ -256,14 +220,6 @@ public class SubscriberZmq implements SubscriberImpl {
 	
 		cancelPublisher.sendMore(Messages.Event.CANCEL);
 		cancelPublisher.send(Messages.Event.CANCEL);
-	}
-
-	public static JSONObject createSubscribePublisherRequest() {
-		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, PublisherImpl.SUBSCRIBE_PUBLISHER);
-
-		return request;
 	}
 	
 	public void terminate() {

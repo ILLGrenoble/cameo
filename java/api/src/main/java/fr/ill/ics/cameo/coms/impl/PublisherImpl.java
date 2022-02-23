@@ -17,16 +17,11 @@
 package fr.ill.ics.cameo.coms.impl;
 
 public interface PublisherImpl {
-
-	static final long SUBSCRIBE_PUBLISHER = 100;
 	
-	void init(String publisherIdentity, int numberOfSubscribers);
+	void init(String publisherIdentity);
 	
 	int getPublisherPort();
-	int getSynchronizerPort();
 	
-	boolean waitForSubscribers();
-	void cancelWaitForSubscribers();
 	void send(byte[] data);
 	void send(String data);
 	void sendTwoParts(byte[] data1, byte[] data2);

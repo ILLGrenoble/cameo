@@ -27,6 +27,12 @@ namespace coms {
 class PublisherImpl;
 class SubscriberImpl;
 
+namespace basic {
+
+class Responder;
+
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Publisher
 
@@ -48,7 +54,7 @@ public:
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
 	 */
-	bool waitForSubscribers() const;
+	bool waitForSubscribers();
 	void cancelWaitForSubscribers();
 
 	void sendBinary(const std::string &data) const;
@@ -66,8 +72,9 @@ public:
 
 	static const std::string KEY;
 	static const std::string PUBLISHER_PORT;
-	static const std::string SYNCHRONIZER_PORT;
 	static const std::string NUMBER_OF_SUBSCRIBERS;
+	static const std::string RESPONDER_PREFIX;
+	static const int SUBSCRIBE_PUBLISHER = 100;
 
 private:
 	Publisher(const std::string &name, int numberOfSubscribers);
@@ -78,6 +85,7 @@ private:
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
+	std::unique_ptr<basic::Responder> m_responder;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -128,6 +136,7 @@ private:
 	Subscriber();
 	void init(application::Instance &app, const std::string &publisherName);
 	void tryInit(application::Instance & app);
+	void synchronize(application::Instance & app);
 
 	std::string m_publisherName;
 	std::string m_appName;
