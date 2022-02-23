@@ -48,9 +48,9 @@ public class Requester {
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
 			
-			JSONObject responderData = This.getCom().parse(jsonString);
+			JSONObject jsonData = This.getCom().parse(jsonString);
 			
-			int responderPort = JSON.getInt(responderData, Responder.PORT);
+			int responderPort = JSON.getInt(jsonData, Responder.PORT);
 			
 			impl.init(app.getEndpoint(), StringId.from(appId, key), responderPort);	
 		}

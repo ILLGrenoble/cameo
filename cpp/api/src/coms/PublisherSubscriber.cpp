@@ -61,16 +61,16 @@ void Publisher::init(const std::string& name) {
 	m_impl->init(StringId::from(application::This::getId(), m_key));
 
 	// Store the publisher data.
-	json::StringObject publisherData;
+	json::StringObject jsonData;
 
-	publisherData.pushKey(PUBLISHER_PORT);
-	publisherData.pushValue(m_impl->getPublisherPort());
+	jsonData.pushKey(PUBLISHER_PORT);
+	jsonData.pushValue(m_impl->getPublisherPort());
 
-	publisherData.pushKey(NUMBER_OF_SUBSCRIBERS);
-	publisherData.pushValue(m_numberOfSubscribers);
+	jsonData.pushKey(NUMBER_OF_SUBSCRIBERS);
+	jsonData.pushValue(m_numberOfSubscribers);
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, publisherData.toString());
+		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
@@ -185,13 +185,13 @@ void Subscriber::tryInit(application::Instance & app) {
 	try {
 		std::string jsonString = app.getCom().getKeyValue(m_key);
 
-		json::Object publisherData;
-		json::parse(publisherData, jsonString);
+		json::Object jsonData;
+		json::parse(jsonData, jsonString);
 
 		// Do not use publisher port but proxy port.
 		//int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
 		int publisherPort = app.getCom().getPublisherProxyPort();
-		int numberOfSubscribers = publisherData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
+		int numberOfSubscribers = jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
 
 		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key), publisherPort);
 
@@ -215,11 +215,11 @@ void Subscriber::synchronize(application::Instance & app) {
 		std::cout << "Created requester " << *requester << " for synchronization" << std::endl;
 
 		// Send a subscribe request.
-		json::StringObject request;
-		request.pushKey(message::TYPE);
-		request.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+		json::StringObject jsonRequest;
+		jsonRequest.pushKey(message::TYPE);
+		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-		requester->send(request.toString());
+		requester->send(jsonRequest.toString());
 		std::optional<std::string> response = requester->receive();
 
 		std::cout << "Requester received response " << response.value() << std::endl;

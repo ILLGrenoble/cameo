@@ -51,12 +51,12 @@ public class Publisher {
 		impl.init(StringId.from(This.getId(), key));
 		
 		// Store the publisher data.
-		JSONObject publisherData = new JSONObject();
-		publisherData.put(PUBLISHER_PORT, impl.getPublisherPort());
-		publisherData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+		JSONObject jsonData = new JSONObject();
+		jsonData.put(PUBLISHER_PORT, impl.getPublisherPort());
+		jsonData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
 		
 		try {
-			This.getCom().storeKeyValue(key, publisherData.toJSONString());
+			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");

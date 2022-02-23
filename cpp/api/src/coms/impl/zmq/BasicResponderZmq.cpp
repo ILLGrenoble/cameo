@@ -78,13 +78,13 @@ int ResponderZmq::getResponderPort() {
 
 void ResponderZmq::cancel() {
 
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::CANCEL);
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::CANCEL);
 
 	// Create a request socket.
 	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().toString(), m_responderIdentity);
-	requestSocket->requestJSON(request.toString());
+	requestSocket->requestJSON(jsonRequest.toString());
 }
 
 bool ResponderZmq::isCanceled() {
@@ -120,26 +120,26 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 		}
 
 		// Get the request part.
-		zmq::message_t message;
-		if (!m_responder->recv(message, zmq::recv_flags::none).has_value()) {
+		zmq::message_t requestPart;
+		if (!m_responder->recv(requestPart, zmq::recv_flags::none).has_value()) {
 			return {};
 		}
 
 		// Get the JSON request.
-		json::Object request;
-		json::parse(request, message);
+		json::Object jsonRequest;
+		json::parse(jsonRequest, requestPart);
 
-		int type = request[message::TYPE].GetInt();
+		int type = jsonRequest[message::TYPE].GetInt();
 
 		// Create the reply.
 		std::unique_ptr<zmq::message_t> reply;
 
 		if (type == message::REQUEST) {
 
-			std::string name = request[message::Request::APPLICATION_NAME].GetString();
-			int id = request[message::Request::APPLICATION_ID].GetInt();
-			std::string serverUrl = request[message::Request::SERVER_URL].GetString();
-			int serverPort = request[message::Request::SERVER_PORT].GetInt();
+			std::string name = jsonRequest[message::Request::APPLICATION_NAME].GetString();
+			int id = jsonRequest[message::Request::APPLICATION_ID].GetInt();
+			std::string serverUrl = jsonRequest[message::Request::SERVER_URL].GetString();
+			int serverPort = jsonRequest[message::Request::SERVER_PORT].GetInt();
 
 			// Get the second part for the message.
 			zmq::message_t secondPart;
@@ -205,13 +205,12 @@ void ResponderZmq::reply(const std::string& responsePart1, const std::string& re
 	m_responder->send(*m_requesterIdentity, zmq::send_flags::sndmore);
 	m_responder->send(empty, zmq::send_flags::sndmore);
 
-	// Prepare the response parts.
-	zmq::message_t responsePart1Message(responsePart1.c_str(), responsePart1.size());
-	zmq::message_t responsePart2Message(responsePart2.c_str(), responsePart2.size());
-
 	// Send the response in two parts.
-	m_responder->send(responsePart1Message, zmq::send_flags::sndmore);
-	m_responder->send(responsePart2Message, zmq::send_flags::none);
+	zmq::message_t responsePart1Part(responsePart1.c_str(), responsePart1.size());
+	m_responder->send(responsePart1Part, zmq::send_flags::sndmore);
+
+	zmq::message_t responsePart2Part(responsePart2.c_str(), responsePart2.size());
+	m_responder->send(responsePart2Part, zmq::send_flags::none);
 }
 
 zmq::message_t * ResponderZmq::responseToRequest() {

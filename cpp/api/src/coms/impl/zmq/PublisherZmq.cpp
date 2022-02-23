@@ -98,12 +98,12 @@ void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher) {
 		// send a STREAM_END message by the publisher socket
-		zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
-		m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+		zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+		m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-		std::string type = createMessageType(message::STREAM_END);
-		zmq::message_t requestType(type.c_str(), type.length());
-		m_publisher->send(requestType, zmq::send_flags::none);
+		std::string messageType = createMessageType(message::STREAM_END);
+		zmq::message_t typePart(messageType.c_str(), messageType.length());
+		m_publisher->send(typePart, zmq::send_flags::none);
 
 		m_ended = true;
 	}
@@ -126,40 +126,40 @@ void PublisherZmq::terminate() {
 
 std::string PublisherZmq::createMessageType(int type) {
 
-	json::StringObject messageType;
-	messageType.pushKey(message::TYPE);
-	messageType.pushValue(type);
+	json::StringObject jsonType;
+	jsonType.pushKey(message::TYPE);
+	jsonType.pushValue(type);
 
-	return messageType.toString();
+	return jsonType.toString();
 }
 
 void PublisherZmq::publish(const char* data, std::size_t size) {
 
-	zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
-	m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+	zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-	std::string type = createMessageType(message::STREAM);
-	zmq::message_t requestType(type.c_str(), type.length());
-	m_publisher->send(requestType, zmq::send_flags::sndmore);
+	std::string messageType = createMessageType(message::STREAM);
+	zmq::message_t typePart(messageType.c_str(), messageType.length());
+	m_publisher->send(typePart, zmq::send_flags::sndmore);
 
-	zmq::message_t requestData(data, size);
-	m_publisher->send(requestData, zmq::send_flags::none);
+	zmq::message_t dataPart(data, size);
+	m_publisher->send(dataPart, zmq::send_flags::none);
 }
 
 void PublisherZmq::publishTwoParts(const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
 
-	zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
-	m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+	zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-	std::string type = createMessageType(message::STREAM);
-	zmq::message_t requestType(type.c_str(), type.length());
-	m_publisher->send(requestType, zmq::send_flags::sndmore);
+	std::string messageType = createMessageType(message::STREAM);
+	zmq::message_t typePart(messageType.c_str(), messageType.length());
+	m_publisher->send(typePart, zmq::send_flags::sndmore);
 
-	zmq::message_t requestData1(data1, size1);
-	m_publisher->send(requestData1, zmq::send_flags::sndmore);
+	zmq::message_t data1Part(data1, size1);
+	m_publisher->send(data1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestData2(data2, size2);
-	m_publisher->send(requestData2, zmq::send_flags::none);
+	zmq::message_t data2Part(data2, size2);
+	m_publisher->send(data2Part, zmq::send_flags::none);
 }
 
 }

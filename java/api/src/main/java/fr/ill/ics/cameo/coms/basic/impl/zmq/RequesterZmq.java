@@ -76,10 +76,10 @@ public class RequesterZmq implements RequesterImpl {
 	private boolean sendSync() {
 		
 		// Create the request.
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SYNC);
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.SYNC);
 	
-		sendRequest(Messages.serialize(request));
+		sendRequest(Messages.serialize(jsonRequest));
 		if (receiveMessage() != null) {
 			// Had a response we can exit the loop.
 			return true;
@@ -181,14 +181,14 @@ public class RequesterZmq implements RequesterImpl {
 	
 	public void send(byte[] requestData) {
 		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REQUEST);
-		request.put(Messages.Request.APPLICATION_NAME, This.getName());
-		request.put(Messages.Request.APPLICATION_ID, This.getId());
-		request.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
-		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
+		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
+		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
+		jsonRequest.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
+		jsonRequest.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		
-		sendRequest(Messages.serialize(request), requestData);
+		sendRequest(Messages.serialize(jsonRequest), requestData);
 	}
 	
 	public void send(String request) {
@@ -197,14 +197,14 @@ public class RequesterZmq implements RequesterImpl {
 	
 	public void sendTwoParts(byte[] requestData1, byte[] requestData2) {
 		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REQUEST);
-		request.put(Messages.Request.APPLICATION_NAME, This.getName());
-		request.put(Messages.Request.APPLICATION_ID, This.getId());
-		request.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
-		request.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
+		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
+		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
+		jsonRequest.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
+		jsonRequest.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
 		
-		sendRequest(Messages.serialize(request), requestData1, requestData2);
+		sendRequest(Messages.serialize(jsonRequest), requestData1, requestData2);
 	}
 
 	private Zmq.Msg receiveMessage() {

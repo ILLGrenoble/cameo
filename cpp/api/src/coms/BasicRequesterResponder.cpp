@@ -89,11 +89,11 @@ Request::Request(const std::string & requesterApplicationName, int requesterAppl
 
 bool Request::replyBinary(const std::string& response) {
 
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::RESPONSE);
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::RESPONSE);
 
-	m_responder->reply(request.toString(), response);
+	m_responder->reply(jsonRequest.toString(), response);
 
 	return true;
 }
@@ -160,13 +160,13 @@ void Responder::init(const std::string &name) {
 	m_impl->init(StringId::from(application::This::getId(), m_key));
 
 	// Store the responder data.
-	json::StringObject responderData;
+	json::StringObject jsonData;
 
-	responderData.pushKey(PORT);
-	responderData.pushValue(m_impl->getResponderPort());
+	jsonData.pushKey(PORT);
+	jsonData.pushValue(m_impl->getResponderPort());
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, responderData.toString());
+		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
@@ -231,10 +231,10 @@ void Requester::tryInit(application::Instance & app) {
 	try {
 		std::string jsonString = app.getCom().getKeyValue(m_key);
 
-		json::Object responderData;
-		json::parse(responderData, jsonString);
+		json::Object jsonData;
+		json::parse(jsonData, jsonString);
 
-		int responderPort = responderData[Responder::PORT.c_str()].GetInt();
+		int responderPort = jsonData[Responder::PORT.c_str()].GetInt();
 
 		m_impl->init(app.getEndpoint(), StringId::from(m_appId, m_key), responderPort);
 	}

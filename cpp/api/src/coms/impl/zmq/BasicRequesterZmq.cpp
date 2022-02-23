@@ -69,12 +69,12 @@ void RequesterZmq::initSocket() {
 
 bool RequesterZmq::sendSync() {
 
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::SYNC);
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::SYNC);
 
 	// Send the request.
-	sendRequest(request.toString());
+	sendRequest(jsonRequest.toString());
 
 	while (true) {
 
@@ -136,16 +136,14 @@ void RequesterZmq::sendRequest(const std::string& request) {
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
-	m_requester->send(responderIdentityMessage, zmq::send_flags::sndmore);
+	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestMessage(request.c_str(), request.size());
-
-	// Send the request.
-	m_requester->send(requestMessage, zmq::send_flags::none);
+	zmq::message_t requestPart(request.c_str(), request.size());
+	m_requester->send(requestPart, zmq::send_flags::none);
 }
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2) {
@@ -157,18 +155,18 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
-	m_requester->send(responderIdentityMessage, zmq::send_flags::sndmore);
+	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart1Message(requestPart1.c_str(), requestPart1.size());
-	zmq::message_t requestPart2Message(requestPart2.c_str(), requestPart2.size());
-
 	// Send the request in two parts.
-	m_requester->send(requestPart1Message, zmq::send_flags::sndmore);
-	m_requester->send(requestPart2Message, zmq::send_flags::none);
+	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	m_requester->send(requestPart2Part, zmq::send_flags::none);
 }
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3) {
@@ -180,42 +178,43 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityMessage(m_responderIdentity.c_str(), m_responderIdentity.size());
-	m_requester->send(responderIdentityMessage, zmq::send_flags::sndmore);
+	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart1Message(requestPart1.c_str(), requestPart1.size());
-	zmq::message_t requestPart2Message(requestPart2.c_str(), requestPart2.size());
-	zmq::message_t requestPart3Message(requestPart3.c_str(), requestPart3.size());
-
 	// Send the request in three parts.
-	m_requester->send(requestPart1Message, zmq::send_flags::sndmore);
-	m_requester->send(requestPart2Message, zmq::send_flags::sndmore);
-	m_requester->send(requestPart3Message, zmq::send_flags::none);
+	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	m_requester->send(requestPart2Part, zmq::send_flags::sndmore);
+
+	zmq::message_t requestPart3Part(requestPart3.c_str(), requestPart3.size());
+	m_requester->send(requestPart3Part, zmq::send_flags::none);
 }
 
 void RequesterZmq::sendBinary(const std::string& requestData) {
 
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::REQUEST);
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::REQUEST);
 
-	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushValue(application::This::getName());
+	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
+	jsonRequest.pushValue(application::This::getName());
 
-	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushValue(application::This::getId());
+	jsonRequest.pushKey(message::Request::APPLICATION_ID);
+	jsonRequest.pushValue(application::This::getId());
 
-	request.pushKey(message::Request::SERVER_URL);
-	request.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	jsonRequest.pushKey(message::Request::SERVER_URL);
+	jsonRequest.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
-	request.pushKey(message::Request::SERVER_PORT);
-	request.pushValue(application::This::getEndpoint().getPort());
+	jsonRequest.pushKey(message::Request::SERVER_PORT);
+	jsonRequest.pushValue(application::This::getEndpoint().getPort());
 
 	// Send the request.
-	sendRequest(request.toString(), requestData);
+	sendRequest(jsonRequest.toString(), requestData);
 }
 
 void RequesterZmq::send(const std::string& requestData) {
@@ -227,24 +226,24 @@ void RequesterZmq::send(const std::string& requestData) {
 
 void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) {
 
-	json::StringObject request;
-	request.pushKey(message::TYPE);
-	request.pushValue(message::REQUEST);
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::REQUEST);
 
-	request.pushKey(message::Request::APPLICATION_NAME);
-	request.pushValue(application::This::getName());
+	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
+	jsonRequest.pushValue(application::This::getName());
 
-	request.pushKey(message::Request::APPLICATION_ID);
-	request.pushValue(application::This::getId());
+	jsonRequest.pushKey(message::Request::APPLICATION_ID);
+	jsonRequest.pushValue(application::This::getId());
 
-	request.pushKey(message::Request::SERVER_URL);
-	request.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	jsonRequest.pushKey(message::Request::SERVER_URL);
+	jsonRequest.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
 
-	request.pushKey(message::Request::SERVER_PORT);
-	request.pushValue(application::This::getEndpoint().getPort());
+	jsonRequest.pushKey(message::Request::SERVER_PORT);
+	jsonRequest.pushValue(application::This::getEndpoint().getPort());
 
 	// Send the request.
-	sendRequest(request.toString(), requestData1, requestData2);
+	sendRequest(jsonRequest.toString(), requestData1, requestData2);
 }
 
 bool RequesterZmq::receiveMessage(zmq::message_t& message) {
@@ -297,8 +296,8 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	}
 
 	// Receive the requester identity.
-	zmq::message_t requesterIdentity;
-	if (!receiveMessage(requesterIdentity)) {
+	zmq::message_t requesterIdentityPart;
+	if (!receiveMessage(requesterIdentityPart)) {
 		return {};
 	}
 
@@ -309,28 +308,28 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	}
 
 	// Receive the message.
-	zmq::message_t message;
-	if (!receiveMessage(message)) {
+	zmq::message_t typePart;
+	if (!receiveMessage(typePart)) {
 		return {};
 	}
 
-	// Get the JSON request.
-	json::Object request;
-	json::parse(request, message);
+	// Get the JSON type.
+	json::Object jsonType;
+	json::parse(jsonType, typePart);
 
-	int type = request[message::TYPE].GetInt();
+	int type = jsonType[message::TYPE].GetInt();
 
 	std::optional<std::string> result;
 
 	if (type == message::RESPONSE) {
 
-		// Get the second part of the message.
-		zmq::message_t secondPart;
-		if (!receiveMessage(secondPart)) {
+		// Get the response part of the message.
+		zmq::message_t responsePart;
+		if (!receiveMessage(responsePart)) {
 			return {};
 		}
 
-		result = std::string(secondPart.data<char>(), secondPart.size());
+		result = std::string(responsePart.data<char>(), responsePart.size());
 	}
 
 	return result;

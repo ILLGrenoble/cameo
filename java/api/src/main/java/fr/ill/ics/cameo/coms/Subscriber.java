@@ -41,12 +41,12 @@ public class Subscriber {
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
 			
-			JSONObject publisherData = This.getCom().parse(jsonString);
+			JSONObject jsonData = This.getCom().parse(jsonString);
 
 			// Do not use publisher port but proxy port.
 			//int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
 			int publisherPort = app.getCom().getPublisherProxyPort();
-			int numberOfSubscribers = JSON.getInt(publisherData, Publisher.NUMBER_OF_SUBSCRIBERS);
+			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
 			impl.init(appId, appEndpoint, app.getStatusEndpoint(), StringId.from(appId, key), publisherPort);
 	
@@ -69,10 +69,10 @@ public class Subscriber {
 			System.out.println("Created requester " + requester + " for synchronization");
 			
 			// Send a subscribe request.
-			JSONObject request = new JSONObject();
-			request.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+			JSONObject jsonRequest = new JSONObject();
+			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
 			
-			requester.send(request.toJSONString());
+			requester.send(jsonRequest.toJSONString());
 			String response = requester.receiveString();
 			
 			System.out.println("Requester received response " + response);

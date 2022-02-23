@@ -61,10 +61,10 @@ public class Request {
 	
 	public boolean reply(byte[] response) {
 		
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.RESPONSE);
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
 
-		responder.reply(request, response);
+		responder.reply(jsonRequest, response);
 		
 		return true;
 	}

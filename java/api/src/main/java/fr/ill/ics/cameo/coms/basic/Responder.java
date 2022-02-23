@@ -41,11 +41,11 @@ public class Responder {
 		impl.init(StringId.from(This.getId(), key));
 
 		// Store the responder data.
-		JSONObject responderData = new JSONObject();
-		responderData.put(PORT, impl.getResponderPort());
+		JSONObject jsonData = new JSONObject();
+		jsonData.put(PORT, impl.getResponderPort());
 		
 		try {
-			This.getCom().storeKeyValue(key, responderData.toJSONString());
+			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
