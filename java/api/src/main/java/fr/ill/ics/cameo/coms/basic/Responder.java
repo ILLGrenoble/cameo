@@ -22,8 +22,8 @@ public class Responder {
 	private ResponderWaiting waiting = new ResponderWaiting(this);
 	private String key;
 	
-	public static String KEY = "responder-676e576d-6102-42d8-ae24-222a7000dfa0";
-	public static String PORT = "port";
+	public final static String KEY = "responder-676e576d-6102-42d8-ae24-222a7000dfa0";
+	public final static String PORT = "port";
 	
 	private Responder(String name) {
 		this.name = name;
