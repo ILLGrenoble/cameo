@@ -112,11 +112,11 @@ void OutputStreamSocketZmq::cancel() {
 	if (m_cancelSocket.get() != nullptr) {
 		std::string data(message::Event::CANCEL);
 
-		zmq::message_t requestType(data.c_str(), data.length());
-		m_cancelSocket->send(requestType, zmq::send_flags::sndmore);
+		zmq::message_t typePart(data.c_str(), data.length());
+		m_cancelSocket->send(typePart, zmq::send_flags::sndmore);
 
-		zmq::message_t requestData(data.c_str(), data.length());
-		m_cancelSocket->send(requestData, zmq::send_flags::none);
+		zmq::message_t dataPart(data.c_str(), data.length());
+		m_cancelSocket->send(dataPart, zmq::send_flags::none);
 	}
 }
 

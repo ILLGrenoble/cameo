@@ -118,16 +118,16 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 
 			try {
 				// Get the JSON object.
-				JSONObject stream = parser.parse(Messages.parseString(messageValue));
+				JSONObject jsonMessage = parser.parse(Messages.parseString(messageValue));
 				
-				int type = JSON.getInt(stream, Messages.TYPE);
+				int type = JSON.getInt(jsonMessage, Messages.TYPE);
 				
 				// Continue if type of message is SYNC_STREAM. Theses messages are only used for the poller.
 				if (type == Messages.SYNC_STREAM) {
 					continue;
 				}
 				
-				int id = JSON.getInt(stream, Messages.ApplicationStream.ID);
+				int id = JSON.getInt(jsonMessage, Messages.ApplicationStream.ID);
 				
 				// Filter on the application id so that only the messages concerning the instance applicationId are processed.
 				// Others are ignored.
@@ -140,8 +140,8 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 					}
 					
 					// Here the type of message is STREAM.
-					String line = JSON.getString(stream, Messages.ApplicationStream.MESSAGE);
-					boolean endOfLine = JSON.getBoolean(stream, Messages.ApplicationStream.EOL);
+					String line = JSON.getString(jsonMessage, Messages.ApplicationStream.MESSAGE);
+					boolean endOfLine = JSON.getBoolean(jsonMessage, Messages.ApplicationStream.EOL);
 					
 					return new Application.Output(id, line, endOfLine);
 				}
