@@ -6,14 +6,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
- * Definitions for the JSON objects. 
+ * Definitions for the JSON objects.
  */
 public class Messages {
-	
+
 	public static Charset CHARSET = Charset.forName("UTF-8");
-	
+
 	public static final String TYPE = "type";
-	
+
 	public static final long SYNC = 1;
 	public static final long SYNC_STREAM = 2;
 	public static final long START = 3;
@@ -32,51 +32,49 @@ public class Messages {
 	public static final long GET_STATUS = 16;
 	public static final long PUBLISHER_PROXY_PORT = 17;
 	public static final long SUBSCRIBER_PROXY_PORT = 18;
-	public static final long CANCEL = 21;
-	public static final long SET_RESULT = 22;
-	public static final long REQUEST = 26;
-	public static final long RESPONSE = 27;
-	public static final long ATTACH_UNREGISTERED = 28;
-	public static final long DETACH_UNREGISTERED = 29;
-	public static final long IMPL_VERSION = 30;
-	public static final long STORE_KEY_VALUE = 31;
-	public static final long GET_KEY_VALUE = 32;
-	public static final long REMOVE_KEY = 33;
-	public static final long REQUEST_PORT = 34;
-	public static final long PORT_UNAVAILABLE = 35;
-	public static final long RELEASE_PORT = 36;
-	public static final long PORTS = 37;
-	public static final long SET_STOP_HANDLER = 38;
-	public static final long STREAM = 39;
-	public static final long STREAM_END = 40;
-				
+	public static final long CANCEL = 19;
+	public static final long SET_RESULT = 20;
+	public static final long REQUEST = 21;
+	public static final long RESPONSE = 22;
+	public static final long ATTACH_UNREGISTERED = 23;
+	public static final long DETACH_UNREGISTERED = 24;
+	public static final long IMPL_VERSION = 25;
+	public static final long STORE_KEY_VALUE = 26;
+	public static final long GET_KEY_VALUE = 27;
+	public static final long REMOVE_KEY = 28;
+	public static final long REQUEST_PORT = 29;
+	public static final long PORT_UNAVAILABLE = 30;
+	public static final long RELEASE_PORT = 31;
+	public static final long PORTS = 32;
+	public static final long SET_STOP_HANDLER = 33;
+	public static final long STREAM = 34;
+	public static final long STREAM_END = 35;
+
 	public static class Event {
-		public static final String SYNC = "sync";
 		public static final String CANCEL = "cancel";
 		public static final String STREAM = "stream";
-		public static final String ENDSTREAM_temp = "endstream";
 		public static final String STATUS = "status";
 		public static final String RESULT = "result";
 		public static final String KEYVALUE = "keyvalue";
 	}
-	
+
 	public static class ApplicationIdentity {
 		public static final String NAME = "name"; // string
 		public static final String ID = "id"; // int32
 		public static final String SERVER = "server"; // string
 		public static final String STARTER = "starter"; // object
 	}
-	
+
 	public static class SyncStreamRequest {
 		public static final String NAME = "name"; // string
 	}
-	
+
 	public static class StartRequest {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String ARGS = "args"; // repeated string args = 2;
 		public static final String STARTER = "starter"; // object
 	}
-	
+
 	public static class RequestResponse {
 		public static final String VALUE = "value"; // required int32 value = 1;
 		public static final String MESSAGE = "message"; // optional string message = 2;
@@ -86,7 +84,7 @@ public class Messages {
 		public static final String ID = "id"; // int32
 		public static final String STOPPING_TIME = "stopping_time"; // int32
 	}
-	
+
 	public static class StopRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}
@@ -94,7 +92,7 @@ public class Messages {
 	public static class ConnectRequest {
 		public static final String NAME = "name"; // required string name = 1;
 	}
-	
+
 	public static class ConnectWithIdRequest {
 		public static final String ID = "id"; // int32
 	}
@@ -109,14 +107,16 @@ public class Messages {
 	}
 
 	public static class ApplicationConfigListResponse {
-		public static final String APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
+		public static final String APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig
+																				// applicationConfig = 1;
 	}
 
 	public static class StatusEvent {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		public static final String PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		public static final String PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32
+																						// pastApplicationStates = 4;
 		public static final String EXIT_CODE = "exitCode"; // optional
 	}
 
@@ -125,18 +125,20 @@ public class Messages {
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String DATA = "data"; // required bytes data = 3;
 	}
-	
+
 	public static class ApplicationInfo {
 		public static final String ID = "id"; // required int32 id = 1;
 		public static final String NAME = "name"; // required string name = 2;
 		public static final String APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		public static final String PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		public static final String PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32
+																						// pastApplicationStates = 4;
 		public static final String ARGS = "args"; // required string args = 5;
 		public static final String PID = "pid"; // optional int64 pid = 6;
 	}
 
 	public static class ApplicationInfoListResponse {
-		public static final String APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
+		public static final String APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo =
+																			// 1;
 	}
 
 	public static class OutputPortWithIdRequest {
@@ -200,24 +202,24 @@ public class Messages {
 	public static class DetachUnregisteredRequest {
 		public static final String ID = "id"; // required int32 id = 1;
 	}
-	
+
 	public static class VersionResponse {
 		public static final String MAJOR = "major";
 		public static final String MINOR = "minor";
 		public static final String REVISION = "revision";
 	}
-	
+
 	public static class StoreKeyValueRequest {
 		public static final String ID = "id"; // int32
 		public static final String KEY = "key"; // string
 		public static final String VALUE = "value"; // string
 	}
-	
+
 	public static class GetKeyValueRequest {
 		public static final String ID = "id"; // int32
 		public static final String KEY = "key"; // string
 	}
-	
+
 	public static class RemoveKeyRequest {
 		public static final String ID = "id"; // int32
 		public static final String KEY = "key"; // string
@@ -230,21 +232,21 @@ public class Messages {
 		public static final String KEY = "key"; // string
 		public static final String VALUE = "value"; // string
 	}
-	
+
 	public static class RequestPortRequest {
 		public static final String ID = "id"; // int32
 	}
-	
+
 	public static class PortUnavailableRequest {
 		public static final String ID = "id"; // int32
 		public static final String PORT = "port"; // int32
 	}
-	
+
 	public static class ReleasePortRequest {
 		public static final String ID = "id"; // int32
 		public static final String PORT = "port"; // int32
 	}
-	
+
 	public static class PortInfo {
 		public static final String PORT = "port"; // int32
 		public static final String STATUS = "status"; // string
@@ -254,36 +256,36 @@ public class Messages {
 	public static class PortInfoListResponse {
 		public static final String PORT_INFO = "portInfo"; // multiple PortInfo
 	}
-	
+
 	public static String parseString(byte[] data) {
 		return new String(data, CHARSET);
 	}
-	
+
 	public static byte[] serialize(String string) {
 		return string.getBytes(CHARSET);
 	}
-	
+
 	public static byte[] serialize(JSONObject object) {
 		return serialize(object.toJSONString());
 	}
-	
+
 	public static JSONObject createSyncRequest() {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SYNC);
-		
+
 		return request;
 	}
 
 	public static JSONObject createSyncStreamRequest(String name) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SYNC_STREAM);
 		request.put(Messages.SyncStreamRequest.NAME, name);
-		
+
 		return request;
 	}
-	
+
 	public static JSONObject createVersionRequest() {
 
 		JSONObject request = new JSONObject();
@@ -291,69 +293,69 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	public static JSONObject createStreamStatusRequest() {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.STATUS);
 
 		return request;
 	}
-	
+
 	public static JSONObject createPublisherProxyPortRequest() {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.PUBLISHER_PROXY_PORT);
 
 		return request;
 	}
-	
+
 	public static JSONObject createSubscriberProxyPortRequest() {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SUBSCRIBER_PROXY_PORT);
 
 		return request;
 	}
-	
+
 	public static JSONObject createGetStatusRequest(int id) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.GET_STATUS);
 		request.put(Messages.GetStatusRequest.ID, id);
 
-		return request;	
+		return request;
 	}
-	
+
 	public static JSONObject createAttachUnregisteredRequest(String name, long pid) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.ATTACH_UNREGISTERED);
 		request.put(Messages.AttachUnregisteredRequest.NAME, name);
 		request.put(Messages.AttachUnregisteredRequest.PID, pid);
-		
+
 		return request;
 	}
-	
+
 	public static JSONObject createDetachUnregisteredRequest(int id) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.DETACH_UNREGISTERED);
 		request.put(Messages.DetachUnregisteredRequest.ID, id);
-		
+
 		return request;
 	}
-	
+
 	public static JSONObject createSetStopHandlerRequest(int id, int stoppingTime) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SET_STOP_HANDLER);
 		request.put(Messages.SetStopHandlerRequest.ID, id);
 		request.put(Messages.SetStopHandlerRequest.STOPPING_TIME, stoppingTime);
-		
+
 		return request;
 	}
-	
+
 	/**
 	 * create isAlive request
 	 * 
@@ -361,39 +363,40 @@ public class Messages {
 	 * @return
 	 */
 	public static JSONObject createIsAliveRequest(int id) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.IS_ALIVE);
 		request.put(Messages.IsAliveRequest.ID, id);
 
 		return request;
 	}
-	
+
 	/**
 	 * create start request with parameters
 	 * 
 	 * @param name
 	 * @param args
-	 * @param returnResult 
+	 * @param returnResult
 	 * @return request
 	 */
-	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint) {
-		
+	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId,
+			String thisEndpoint) {
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.START);
 		request.put(Messages.StartRequest.NAME, name);
-		
+
 		// Add the starter object if This exists.
 		if (thisName != null) {
-			
+
 			JSONObject starter = new JSONObject();
 			starter.put(Messages.ApplicationIdentity.NAME, thisName);
 			starter.put(Messages.ApplicationIdentity.ID, thisId);
 			starter.put(Messages.ApplicationIdentity.SERVER, thisEndpoint);
-			
+
 			request.put(Messages.StartRequest.STARTER, starter);
 		}
-		
+
 		if (args != null) {
 			JSONArray list = new JSONArray();
 			for (int i = 0; i < args.length; i++) {
@@ -419,7 +422,7 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	/**
 	 * create kill request
 	 * 
@@ -437,10 +440,11 @@ public class Messages {
 
 	/**
 	 * create connect request
+	 * 
 	 * @return request
 	 */
 	public static JSONObject createConnectRequest(String name) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CONNECT);
 		request.put(Messages.ConnectRequest.NAME, name);
@@ -450,17 +454,18 @@ public class Messages {
 
 	/**
 	 * create connect with id request
+	 * 
 	 * @return request
 	 */
 	public static JSONObject createConnectWithIdRequest(int id) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.CONNECT_WITH_ID);
 		request.put(Messages.ConnectWithIdRequest.ID, id);
 
 		return request;
 	}
-	
+
 	/**
 	 * create all available request
 	 * 
@@ -473,7 +478,7 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	/**
 	 * create showall request
 	 * 
@@ -493,14 +498,14 @@ public class Messages {
 	 * @return request
 	 */
 	public static JSONObject createOutputPortWithIdRequest(int id) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.OUTPUT_PORT_WITH_ID);
 		request.put(Messages.OutputPortWithIdRequest.ID, id);
 
 		return request;
 	}
-	
+
 	/**
 	 * create WriteInput request
 	 * 
@@ -509,11 +514,11 @@ public class Messages {
 	 * @return
 	 */
 	public static JSONObject createWriteInputRequest(int id, String[] inputs) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.WRITE_INPUT);
 		request.put(Messages.WriteInputRequest.ID, id);
-		
+
 		JSONArray list = new JSONArray();
 		for (int i = 0; i < inputs.length; i++) {
 			list.add(inputs[i]);
@@ -522,14 +527,14 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	/**
 	 * create output request
 	 * 
 	 * @param name
 	 */
 	public static JSONObject createOutputPortRequest(String name) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.OUTPUT_PORT);
 		request.put(Messages.OutputRequest.NAME, name);
@@ -538,18 +543,18 @@ public class Messages {
 	}
 
 	public static JSONObject createRequestResponse(int value, String message) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.RESPONSE);
-		
+
 		request.put(Messages.RequestResponse.VALUE, value);
 		request.put(Messages.RequestResponse.MESSAGE, message);
 
 		return request;
 	}
-	
+
 	public static JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.STORE_KEY_VALUE);
 		request.put(Messages.StoreKeyValueRequest.ID, applicationId);
@@ -560,7 +565,7 @@ public class Messages {
 	}
 
 	public static JSONObject createGetKeyValueRequest(int applicationId, String key) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.GET_KEY_VALUE);
 		request.put(Messages.GetKeyValueRequest.ID, applicationId);
@@ -568,9 +573,9 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	public static JSONObject createRemoveKeyRequest(int applicationId, String key) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.REMOVE_KEY);
 		request.put(Messages.RemoveKeyRequest.ID, applicationId);
@@ -580,12 +585,12 @@ public class Messages {
 	}
 
 	public static JSONObject createRequestPortRequest(int applicationId) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.REQUEST_PORT);
 		request.put(Messages.RequestPortRequest.ID, applicationId);
 
-		return request;	
+		return request;
 	}
 
 	public static JSONObject createPortUnavailableRequest(int applicationId, int port) {
@@ -607,7 +612,7 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	public static JSONObject createPortsRequest() {
 
 		JSONObject request = new JSONObject();
@@ -615,9 +620,9 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	public static JSONObject createSetStatusRequest(int id, int state) {
-		
+
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SET_STATUS);
 		request.put(Messages.SetStatusRequest.ID, id);
@@ -625,14 +630,14 @@ public class Messages {
 
 		return request;
 	}
-	
+
 	public static JSONObject createSetResultRequest(int id) {
 
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.SET_RESULT);
 		request.put(Messages.SetResultRequest.ID, id);
-		
+
 		return request;
 	}
-	
+
 }
