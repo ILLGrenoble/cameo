@@ -137,6 +137,14 @@ Endpoint Server::getStatusEndpoint() const {
 	return m_serverEndpoint.withPort(m_statusPort);
 }
 
+int Server::getPublisherProxyPort() const {
+	return m_publisherProxyPort;
+}
+
+int Server::getSubscriberProxyPort() const {
+	return m_subscriberProxyPort;
+}
+
 std::array<int, 3> Server::getVersion() const {
 	return m_serverVersion;
 }
@@ -531,7 +539,7 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 		//m_statusPort = getStatusPort();
 
 		// With the proxy, the status port is the publisher proxy port.
-		m_statusPort = getPublisherProxyPort();
+		m_statusPort = m_publisherProxyPort;
 	}
 
 	// Create the event stream socket.
@@ -663,6 +671,10 @@ void Server::initContext() {
 void Server::initRequestSocket() {
 	// Create the request socket. The server endpoint must have been initialized.
 	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
+
+	// Get the publisher and subscriber ports.
+	m_publisherProxyPort = retrievePublisherProxyPort();
+	m_subscriberProxyPort = retrieveSubscriberProxyPort();
 }
 
 void Server::retrieveServerVersion() {
@@ -688,9 +700,16 @@ int Server::getStreamPort(const std::string& name) {
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
-int Server::getPublisherProxyPort() {
+int Server::retrievePublisherProxyPort() {
 
 	json::Object response = m_requestSocket->requestJSON(createPublisherProxyPortRequest());
+
+	return response[message::RequestResponse::VALUE].GetInt();
+}
+
+int Server::retrieveSubscriberProxyPort() {
+
+	json::Object response = m_requestSocket->requestJSON(createSubscriberProxyPortRequest());
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }

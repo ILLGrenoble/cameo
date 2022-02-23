@@ -136,6 +136,9 @@ public:
 
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
+	int getPublisherProxyPort() const;
+	int getSubscriberProxyPort() const;
+
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 
@@ -159,7 +162,8 @@ private:
 	void retrieveServerVersion();
 	int getStatusPort();
 	int getStreamPort(const std::string& name);
-	int getPublisherProxyPort();
+	int retrievePublisherProxyPort();
+	int retrieveSubscriberProxyPort();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);
@@ -167,6 +171,8 @@ private:
 	Endpoint m_serverEndpoint;
 	int m_timeout;
 	std::array<int, 3> m_serverVersion;
+	int m_publisherProxyPort;
+	int m_subscriberProxyPort;
 	int m_statusPort;
 	std::unique_ptr<Context> m_context;
 	std::unique_ptr<RequestSocket> m_requestSocket;

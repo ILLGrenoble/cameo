@@ -196,6 +196,15 @@ std::string createPublisherProxyPortRequest() {
 	return request.toString();
 }
 
+std::string createSubscriberProxyPortRequest() {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushValue(message::SUBSCRIBER_PROXY_PORT);
+
+	return request.toString();
+}
+
 std::string createOutputPortWithIdRequest(int id) {
 
 	json::StringObject request;

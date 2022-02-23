@@ -97,6 +97,9 @@ public:
 	public:
 		Context* getContext() const;
 
+		int getPublisherProxyPort() const;
+		int getSubscriberProxyPort() const;
+
 		void storeKeyValue(const std::string& key, const std::string& value) const;
 		std::string getKeyValue(const std::string& key) const;
 		void removeKey(const std::string& key) const;
@@ -214,6 +217,9 @@ public:
 		friend class Instance;
 
 	public:
+		int getPublisherProxyPort() const;
+		int getSubscriberProxyPort() const;
+
 		std::string getKeyValue(const std::string& key) const;
 
 	private:

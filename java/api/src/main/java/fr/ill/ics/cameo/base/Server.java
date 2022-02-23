@@ -45,6 +45,8 @@ public class Server {
 
 	private Endpoint serverEndpoint;
 	private int[] serverVersion = new int[3];
+	private int publisherProxyPort;
+	private int subscriberProxyPort;
 	private int statusPort;
 	private Context contextImpl;
 	private int timeout = 0; // default value because of ZeroMQ design
@@ -113,6 +115,10 @@ public class Server {
 	final private void init() {
 		contextImpl = ImplFactory.createContext();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString(), StringId.CAMEO_SERVER);
+		
+		// Get the publisher and subscriber proxy ports.
+		publisherProxyPort = retrievePublisherProxyPort();
+		subscriberProxyPort = retrieveSubscriberProxyPort();
 	}
 	
 	private int getAvailableTimeout() {
@@ -144,8 +150,16 @@ public class Server {
 		return serverEndpoint.withPort(statusPort);
 	}
 	
-	public Context getContext() {
+	Context getContext() {
 		return contextImpl;
+	}
+	
+	int getPublisherProxyPort() {
+		return publisherProxyPort;
+	}
+	
+	int getSubscriberProxyPort() {
+		return subscriberProxyPort;
 	}
 			
 	JSONObject parse(byte[] data) throws ParseException {
@@ -277,9 +291,17 @@ public class Server {
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
-	private int getPublisherProxyPort() throws ConnectionTimeout {
+	private int retrievePublisherProxyPort() throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createPublisherProxyPortRequest();
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
+	
+	private int retrieveSubscriberProxyPort() throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createSubscriberProxyPortRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
@@ -292,7 +314,7 @@ public class Server {
 	private EventStreamSocket openEventStream() {
 
 		// If use proxy, status port is the port of the publisher proxy.
-		statusPort = getPublisherProxyPort();
+		statusPort = publisherProxyPort;
 
 		EventStreamSocket eventStreamSocket = new EventStreamSocket();
 		eventStreamSocket.init(contextImpl, serverEndpoint.withPort(statusPort), requestSocket, parser);

@@ -198,6 +198,9 @@ public class Server {
 				else if (type == Messages.PUBLISHER_PROXY_PORT) {
 					process.processPublisherProxyPortRequest(request, reply, manager);
 				}
+				else if (type == Messages.SUBSCRIBER_PROXY_PORT) {
+					process.processSubscriberProxyPortRequest(request, reply, manager);
+				}
 				else if (type == Messages.OUTPUT_PORT_WITH_ID) {
 					process.processOutputPortWithIdRequest(request, reply, manager);
 				}

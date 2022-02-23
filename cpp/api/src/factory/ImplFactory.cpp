@@ -45,8 +45,8 @@ std::unique_ptr<StreamSocketImpl> ImplFactory::createOutputStreamSocket(const st
 	return std::make_unique<OutputStreamSocketZmq>(name);
 }
 
-std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher(const std::string& name, int numberOfSubscribers) {
-	return std::make_unique<coms::PublisherZmq>(name, numberOfSubscribers);
+std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher() {
+	return std::make_unique<coms::PublisherZmq>();
 }
 
 std::unique_ptr<coms::SubscriberImpl> ImplFactory::createSubscriber() {

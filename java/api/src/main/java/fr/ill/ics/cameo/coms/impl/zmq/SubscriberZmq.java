@@ -35,24 +35,30 @@ public class SubscriberZmq implements SubscriberImpl {
 	
 	private Zmq.Context context;
 	private Zmq.Socket subscriber;
+	private String publisherIdentity;
 	private String cancelEndpoint;
 	private Zmq.Socket cancelPublisher;
 	private int appId;
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
+	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, String publisherIdentity, int publisherPort, int synchronizerPort, int numberOfSubscribers) {
 
 		this.appId = appId;
+		this.publisherIdentity = publisherIdentity;
+		
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
 		
-		subscriber.connect(appEndpoint.withPort(publisherPort).toString());
-		subscriber.subscribe(Messages.Event.SYNC);
-		subscriber.subscribe(Messages.Event.STREAM);
-		subscriber.subscribe(Messages.Event.ENDSTREAM_temp);
+		Endpoint publisherEndpoint = appEndpoint.withPort(publisherPort);
+		subscriber.connect(publisherEndpoint.toString());
+		
+		System.out.println("Connected subscriber to " + publisherEndpoint.toString() + " with identity " + publisherIdentity);
+		
+		// Subcribe to the publisher.
+		subscriber.subscribe(publisherIdentity);
 		
 		// Create an endpoint that should be unique
 		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
@@ -120,18 +126,29 @@ public class SubscriberZmq implements SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(Messages.Event.STREAM)) {
-				return subscriber.recv();
+			if (message.equals(publisherIdentity)) {
 				
-			} else if (message.equals(Messages.Event.ENDSTREAM_temp)) {
-				ended = true;
-				return null;
+				String messageTypePart = subscriber.recvStr();
 				
-			} else if (message.equals(Messages.Event.CANCEL)) {
+				// Get the JSON object.
+				JSONObject messageType = This.getCom().parse(messageTypePart);
+				
+				// Get the type.
+				long type = JSON.getLong(messageType, Messages.TYPE);
+				
+				if (type == Messages.STREAM) {
+					return subscriber.recv();
+				}
+				else if (type == Messages.STREAM_END) {
+					ended = true;
+					return null;	
+				}
+			}
+			else if (message.equals(Messages.Event.CANCEL)) {
 				canceled = true;
 				return null;
-				
-			} else if (message.equals(Messages.Event.STATUS)) {
+			}
+			else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				// Get the JSON object.
@@ -167,22 +184,33 @@ public class SubscriberZmq implements SubscriberImpl {
 		while (true) {
 			String message = subscriber.recvStr();
 			
-			if (message.equals(Messages.Event.STREAM)) {
-				byte[][] result = new byte[2][];
-				result[0] = subscriber.recv();
-				result[1] = subscriber.recv();
+			if (message.equals(publisherIdentity)) {
 				
-				return result;
+				String messageTypePart = subscriber.recvStr();
 				
-			} else if (message.equals(Messages.Event.ENDSTREAM_temp)) {
-				ended = true;
-				return null;
+				// Get the JSON object.
+				JSONObject messageType = This.getCom().parse(messageTypePart);
 				
-			} else if (message.equals(Messages.Event.CANCEL)) {
+				// Get the type.
+				long type = JSON.getLong(messageType, Messages.TYPE);
+				
+				if (type == Messages.STREAM) {
+					byte[][] result = new byte[2][];
+					result[0] = subscriber.recv();
+					result[1] = subscriber.recv();
+					
+					return result;
+				}
+				else if (type == Messages.STREAM_END) {
+					ended = true;
+					return null;	
+				}
+			}
+			else if (message.equals(Messages.Event.CANCEL)) {
 				canceled = true;
 				return null;
-				
-			} else if (message.equals(Messages.Event.STATUS)) {
+			}
+			else if (message.equals(Messages.Event.STATUS)) {
 				byte[] statusMessage = subscriber.recv();
 				
 				// Get the JSON request object.
@@ -225,7 +253,6 @@ public class SubscriberZmq implements SubscriberImpl {
 	}
 	
 	public void cancel() {	
-
 	
 		cancelPublisher.sendMore(Messages.Event.CANCEL);
 		cancelPublisher.send(Messages.Event.CANCEL);

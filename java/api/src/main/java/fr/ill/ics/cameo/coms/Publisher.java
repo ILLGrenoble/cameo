@@ -7,6 +7,7 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
+import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * Class Publisher.
@@ -30,23 +31,24 @@ public class Publisher {
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
 		
-		this.impl = ImplFactory.createPublisher(name, numberOfSubscribers);
+		this.impl = ImplFactory.createPublisher();
 		
 		waiting.add();
 	}
 	
 	private void init(String name) throws PublisherCreationException {
 		
+		// Set the key.
+		key = KEY + "-" + name;
+		
 		// Init the publisher and synchronizer sockets.
-		impl.init();
+		impl.init(StringId.from(This.getId(), key), numberOfSubscribers);
 		
 		// Store the publisher data.
 		JSONObject publisherData = new JSONObject();
 		publisherData.put(PUBLISHER_PORT, impl.getPublisherPort());
 		publisherData.put(SYNCHRONIZER_PORT, impl.getSynchronizerPort());
 		publisherData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
-		
-		key = KEY + "-" + name;
 		
 		try {
 			This.getCom().storeKeyValue(key, publisherData.toJSONString());

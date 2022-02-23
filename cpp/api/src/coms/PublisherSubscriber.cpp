@@ -40,7 +40,7 @@ const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
 	m_name(name), m_numberOfSubscribers(numberOfSubscribers) {
 
-	m_impl = ImplFactory::createPublisher(name, numberOfSubscribers);
+	m_impl = ImplFactory::createPublisher();
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Publisher::cancelWaitForSubscribers, this)));
@@ -53,8 +53,11 @@ Publisher::~Publisher() {
 
 void Publisher::init(const std::string& name) {
 
+	// Set the key.
+	m_key = KEY + "-" + name;
+
 	// Init the publisher and synchronizer sockets.
-	m_impl->init();
+	m_impl->init(StringId::from(application::This::getId(), m_key), m_numberOfSubscribers);
 
 	// Store the publisher data.
 	json::StringObject publisherData;
@@ -67,8 +70,6 @@ void Publisher::init(const std::string& name) {
 
 	publisherData.pushKey(NUMBER_OF_SUBSCRIBERS);
 	publisherData.pushValue(m_numberOfSubscribers);
-
-	m_key = KEY + "-" + name;
 
 	try {
 		application::This::getCom().storeKeyValue(m_key, publisherData.toString());
@@ -144,11 +145,13 @@ void Subscriber::tryInit(application::Instance & app) {
 		json::Object publisherData;
 		json::parse(publisherData, jsonString);
 
-		int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
+		// Do not use publisher port but proxy port.
+		//int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
+		int publisherPort = app.getCom().getPublisherProxyPort();
 		int synchronizerPort = publisherData[Publisher::SYNCHRONIZER_PORT.c_str()].GetInt();
 		int numberOfSubscribers = publisherData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
 
-		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);
+		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key), publisherPort, synchronizerPort, numberOfSubscribers);
 	}
 	catch (...) {
 		throw SubscriberCreationException("Cannot create subscriber");

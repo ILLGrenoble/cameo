@@ -50,7 +50,7 @@ public:
 	static std::unique_ptr<StreamSocketImpl> createEventStreamSocket();
 	static std::unique_ptr<StreamSocketImpl> createOutputStreamSocket(const std::string& name);
 
-	static std::unique_ptr<coms::PublisherImpl> createPublisher(const std::string& name, int numberOfSubscribers);
+	static std::unique_ptr<coms::PublisherImpl> createPublisher();
 	static std::unique_ptr<coms::SubscriberImpl> createSubscriber();
 
 	static std::unique_ptr<coms::legacy::ResponderImpl> createLegacyResponder();

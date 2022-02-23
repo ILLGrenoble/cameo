@@ -31,21 +31,26 @@ public class PublisherZmq implements PublisherImpl {
 
 	private int publisherPort;
 	private int synchronizerPort;
-	private String name;
+	private String publisherIdentity;
 	private int numberOfSubscribers;
 	private Zmq.Context context;
 	private Zmq.Socket publisher = null;
 	private Zmq.Socket synchronizer = null;
 	private boolean ended = false;
 	
-	public PublisherZmq(String name, int numberOfSubscribers) {
-		this.name = name;
-		this.numberOfSubscribers = numberOfSubscribers;
-	}
-	
-	public void init() {
+	public void init(String publisherIdentity, int numberOfSubscribers) {
+		
+		this.publisherIdentity = publisherIdentity;
+		this.numberOfSubscribers = numberOfSubscribers;	
+		
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		publisher = context.createSocket(Zmq.PUB);
+		
+		// Connect to the proxy.
+		Endpoint subscriberProxyEndpoint = This.getEndpoint().withPort(This.getCom().getSubscriberProxyPort());
+		publisher.connect(subscriberProxyEndpoint.toString());
+		
+		System.out.println("Connected publisher to " + subscriberProxyEndpoint.toString());
 		
 		String endpointPrefix = "tcp://*:";	
 		
@@ -185,22 +190,35 @@ public class PublisherZmq implements PublisherImpl {
 
 	public void send(byte[] data) {
 		
-		publisher.sendMore(Messages.Event.STREAM);
+		publisher.sendMore(publisherIdentity);
+		
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.STREAM);
+		publisher.sendMore(Messages.serialize(messageType));
+		
 		publisher.send(data, 0);
 	}
 	
 	public void send(String data) {
 		
-		byte[] result = Messages.serialize(data);
+		publisher.sendMore(publisherIdentity);
 		
-		publisher.sendMore(Messages.Event.STREAM);
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.STREAM);
+		publisher.sendMore(Messages.serialize(messageType));
+				
+		byte[] result = Messages.serialize(data);
 		publisher.send(result, 0);
 	}
 	
-	
 	public void sendTwoParts(byte[] data1, byte[] data2) {
+	
+		publisher.sendMore(publisherIdentity);
+	
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.STREAM);
+		publisher.sendMore(Messages.serialize(messageType));
 		
-		publisher.sendMore(Messages.Event.STREAM);
 		publisher.sendMore(data1);
 		publisher.send(data2, 0);
 	}
@@ -208,8 +226,12 @@ public class PublisherZmq implements PublisherImpl {
 	public void sendEnd() {
 		
 		if (!ended) {
-			publisher.sendMore(Messages.Event.ENDSTREAM_temp);
-			publisher.send(Messages.Event.ENDSTREAM_temp);
+			
+			publisher.sendMore(publisherIdentity);
+	
+			JSONObject messageType = new JSONObject();
+			messageType.put(Messages.TYPE, Messages.STREAM_END);
+			publisher.send(Messages.serialize(messageType), 0);
 			
 			ended = true;
 		}
@@ -238,9 +260,12 @@ public class PublisherZmq implements PublisherImpl {
 	
 	private Zmq.Msg responseToSyncRequest() {
 		
-		// send a dummy SYNC message by the publisher socket
-		publisher.sendMore(Messages.Event.SYNC);
-		publisher.send(Messages.Event.SYNC);
+		// Send a SYNC message by the publisher socket.
+		publisher.sendMore(publisherIdentity);
+		
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.SYNC);
+		publisher.send(Messages.serialize(messageType), 0);
 		
 		Zmq.Msg message = new Zmq.Msg();
 		message.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));

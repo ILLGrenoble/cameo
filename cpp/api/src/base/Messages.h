@@ -43,6 +43,7 @@ namespace message {
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
 	const int PUBLISHER_PROXY_PORT = 17;
+	const int SUBSCRIBER_PROXY_PORT = 18;
 	const int CANCEL = 21;
 	const int SET_RESULT = 22;
 	const int REQUEST = 26;
@@ -58,7 +59,7 @@ namespace message {
 	const int RELEASE_PORT = 36;
 	const int PORTS = 37;
 	const int SET_STOP_HANDLER = 38;
-	const int STREAM_MESSAGE = 39;
+	const int STREAM = 39;
 	const int STREAM_END = 40;
 
 	namespace Event {
@@ -284,6 +285,7 @@ std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
 std::string createPublisherProxyPortRequest();
+std::string createSubscriberProxyPortRequest();
 std::string createSetResultRequest(int id);
 std::string createAttachUnregisteredRequest(const std::string& name, long pid);
 std::string createDetachUnregisteredRequest(int id);

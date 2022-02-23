@@ -48,6 +48,14 @@ public class This {
 			return server.getContext();
 		}
 		
+		public int getPublisherProxyPort() {
+			return server.getPublisherProxyPort();
+		}
+		
+		public int getSubscriberProxyPort() {
+			return server.getSubscriberProxyPort();
+		}
+		
 		public void storeKeyValue(String key, String value) throws KeyAlreadyExistsException {
 			try {
 				server.storeKeyValue(applicationId, key, value);

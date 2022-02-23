@@ -26,11 +26,10 @@
 namespace cameo {
 namespace coms {
 
-PublisherZmq::PublisherZmq(const std::string& name, int numberOfSubscribers) :
+PublisherZmq::PublisherZmq() :
 	m_publisherPort(0),
 	m_synchronizerPort(0),
-	m_name(name),
-	m_numberOfSubscribers(numberOfSubscribers),
+	m_numberOfSubscribers(0),
 	m_ended(false) {
 }
 
@@ -38,11 +37,20 @@ PublisherZmq::~PublisherZmq() {
 	terminate();
 }
 
-void PublisherZmq::init() {
+void PublisherZmq::init(const std::string& publisherIdentity, int numberOfSubscribers) {
+
+	m_publisherIdentity = publisherIdentity;
+	m_numberOfSubscribers = numberOfSubscribers;
 
 	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
+
+	// Connect to the proxy.
+	Endpoint subscriberProxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getSubscriberProxyPort());
+	m_publisher->connect(subscriberProxyEndpoint.toString());
+
+	std::cout << "Connected publisher to " << subscriberProxyEndpoint.toString() << std::endl;
 
 	std::string endpointPrefix("tcp://*:");
 
@@ -157,7 +165,7 @@ void PublisherZmq::cancelWaitForSubscribers() {
 void PublisherZmq::sendBinary(const std::string& data) {
 
 	// send a STREAM message by the publisher socket
-	publish(message::Event::STREAM, data.c_str(), data.length());
+	publish(data.c_str(), data.length());
 }
 
 void PublisherZmq::send(const std::string& data) {
@@ -167,21 +175,25 @@ void PublisherZmq::send(const std::string& data) {
 	serialize(data, result);
 
 	// send a STREAM message by the publisher socket
-	publish(message::Event::STREAM, result.c_str(), result.length());
+	publish(result.c_str(), result.length());
 }
 
 void PublisherZmq::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {
 
 	// send a STREAM message by the publisher socket
-	publishTwoParts(message::Event::STREAM, data1.c_str(), data1.length(), data2.c_str(), data2.length());
+	publishTwoParts(data1.c_str(), data1.length(), data2.c_str(), data2.length());
 }
 
 void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher) {
-		// send a dummy ENDSTREAM message by the publisher socket
-		std::string data(message::Event::ENDSTREAM_temp);
-		publish(message::Event::ENDSTREAM_temp, data.c_str(), data.length());
+		// send a STREAM_END message by the publisher socket
+		zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+		m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+
+		std::string type = createMessageType(message::STREAM_END);
+		zmq::message_t requestType(type.c_str(), type.length());
+		m_publisher->send(requestType, zmq::send_flags::none);
 
 		m_ended = true;
 	}
@@ -209,45 +221,58 @@ void PublisherZmq::terminate() {
 	}
 }
 
-void PublisherZmq::publish(const std::string& header, const char* data, std::size_t size) {
+std::string PublisherZmq::createMessageType(int type) {
 
-	zmq::message_t requestType(header.length());
-	memcpy(requestType.data(), header.c_str(), header.length());
+	json::StringObject messageType;
+	messageType.pushKey(message::TYPE);
+	messageType.pushValue(type);
 
-	zmq::message_t requestData(size);
-	memcpy(requestData.data(), data, size);
+	return messageType.toString();
+}
 
+void PublisherZmq::publish(const char* data, std::size_t size) {
+
+	zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+
+	std::string type = createMessageType(message::STREAM);
+	zmq::message_t requestType(type.c_str(), type.length());
 	m_publisher->send(requestType, zmq::send_flags::sndmore);
+
+	zmq::message_t requestData(data, size);
 	m_publisher->send(requestData, zmq::send_flags::none);
 }
 
-void PublisherZmq::publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
+void PublisherZmq::publishTwoParts(const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
 
-	zmq::message_t requestType(header.length());
-	memcpy(requestType.data(), header.c_str(), header.length());
+	zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
 
-	zmq::message_t requestData1(size1);
-	memcpy(requestData1.data(), data1, size1);
-
-	zmq::message_t requestData2(size2);
-	memcpy(requestData2.data(), data2, size2);
-
+	std::string type = createMessageType(message::STREAM);
+	zmq::message_t requestType(type.c_str(), type.length());
 	m_publisher->send(requestType, zmq::send_flags::sndmore);
+
+	zmq::message_t requestData1(data1, size1);
 	m_publisher->send(requestData1, zmq::send_flags::sndmore);
+
+	zmq::message_t requestData2(data2, size2);
 	m_publisher->send(requestData2, zmq::send_flags::none);
 }
 
 zmq::message_t * PublisherZmq::responseToSyncRequest() {
 
 	// Send a dummy SYNC message by the publisher socket.
-	std::string data(message::Event::SYNC);
-	publish(message::Event::SYNC, data.c_str(), data.length());
+	zmq::message_t requestIdentity(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	m_publisher->send(requestIdentity, zmq::send_flags::sndmore);
+
+	std::string type = createMessageType(message::SYNC);
+	zmq::message_t requestType(type.c_str(), type.length());
+	m_publisher->send(requestType, zmq::send_flags::none);
 
 	std::string result = createRequestResponse(0, "OK");
 
 	size_t size = result.length();
-	zmq::message_t * reply = new zmq::message_t(size);
-	memcpy(static_cast<void *>(reply->data()), result.c_str(), size);
+	zmq::message_t * reply = new zmq::message_t(result.c_str(), size);
 
 	return reply;
 }
@@ -256,8 +281,7 @@ zmq::message_t * PublisherZmq::responseToSubscribeRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
+	zmq::message_t * reply = new zmq::message_t(result.c_str(), result.length());
 
 	return reply;
 }
@@ -266,8 +290,7 @@ zmq::message_t * PublisherZmq::responseToCancelRequest() {
 
 	std::string result = createRequestResponse(0, "OK");
 
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
+	zmq::message_t * reply = new zmq::message_t(result.c_str(), result.length());
 
 	return reply;
 }
@@ -276,8 +299,7 @@ zmq::message_t * PublisherZmq::responseToUnknownRequest() {
 
 	std::string result = createRequestResponse(-1, "Unknown command");
 
-	zmq::message_t * reply = new zmq::message_t(result.length());
-	memcpy(reply->data(), result.c_str(), result.length());
+	zmq::message_t * reply = new zmq::message_t(result.c_str(), result.length());
 
 	return reply;
 }

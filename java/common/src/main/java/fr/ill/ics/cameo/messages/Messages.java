@@ -31,6 +31,7 @@ public class Messages {
 	public static final long SET_STATUS = 15;
 	public static final long GET_STATUS = 16;
 	public static final long PUBLISHER_PROXY_PORT = 17;
+	public static final long SUBSCRIBER_PROXY_PORT = 18;
 	public static final long CANCEL = 21;
 	public static final long SET_RESULT = 22;
 	public static final long REQUEST = 26;
@@ -46,7 +47,7 @@ public class Messages {
 	public static final long RELEASE_PORT = 36;
 	public static final long PORTS = 37;
 	public static final long SET_STOP_HANDLER = 38;
-	public static final long STREAM_MESSAGE = 39;
+	public static final long STREAM = 39;
 	public static final long STREAM_END = 40;
 				
 	public static class Event {
@@ -303,6 +304,14 @@ public class Messages {
 		
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.PUBLISHER_PROXY_PORT);
+
+		return request;
+	}
+	
+	public static JSONObject createSubscriberProxyPortRequest() {
+		
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.SUBSCRIBER_PROXY_PORT);
 
 		return request;
 	}

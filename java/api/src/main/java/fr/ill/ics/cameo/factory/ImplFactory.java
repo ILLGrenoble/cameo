@@ -31,8 +31,8 @@ public class ImplFactory {
 		return new OutputStreamSocketZmq(name);	
 	}
 	
-	public static PublisherImpl createPublisher(String name, int numberOfSubscribers) {
-		return new PublisherZmq(name, numberOfSubscribers);
+	public static PublisherImpl createPublisher() {
+		return new PublisherZmq();
 	}
 	
 	public static SubscriberImpl createSubscriber() {

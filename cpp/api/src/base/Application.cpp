@@ -62,6 +62,14 @@ Context* This::Com::getContext() const {
 	return m_server->m_context.get();
 }
 
+int This::Com::getPublisherProxyPort() const {
+	return m_server->getPublisherProxyPort();
+}
+
+int This::Com::getSubscriberProxyPort() const {
+	return m_server->getSubscriberProxyPort();
+}
+
 void This::Com::storeKeyValue(const std::string& key, const std::string& value) const {
 	m_server->storeKeyValue(m_applicationId, key, value);
 }
@@ -421,6 +429,14 @@ void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
 Instance::Com::Com(Server * server) :
 	m_server(server),
 	m_applicationId(-1) {
+}
+
+int Instance::Com::getPublisherProxyPort() const {
+	return m_server->getPublisherProxyPort();
+}
+
+int Instance::Com::getSubscriberProxyPort() const {
+	return m_server->getSubscriberProxyPort();
 }
 
 std::string Instance::Com::getKeyValue(const std::string& key) const {

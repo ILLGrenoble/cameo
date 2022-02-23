@@ -33,10 +33,10 @@ namespace coms {
 class PublisherZmq : public PublisherImpl {
 
 public:
-	PublisherZmq(const std::string& name, int numberOfSubscribers);
+	PublisherZmq();
 	~PublisherZmq();
 
-	virtual void init();
+	virtual void init(const std::string& publisherIdentity, int numberOfSubscribers);
 	virtual int getPublisherPort() const;
 	virtual int getSynchronizerPort() const;
 
@@ -50,18 +50,20 @@ public:
 	virtual bool isEnded();
 	virtual void terminate();
 
-	void publish(const std::string& header, const char* data, std::size_t size);
-	void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2);
-
 private:
+	std::string createMessageType(int type);
+
 	zmq::message_t * responseToSyncRequest();
 	zmq::message_t * responseToSubscribeRequest();
 	zmq::message_t * responseToCancelRequest();
 	zmq::message_t * responseToUnknownRequest();
 
+	void publish(const char* data, std::size_t size);
+	void publishTwoParts(const char* data1, std::size_t size1, const char* data2, std::size_t size2);
+
 	int m_publisherPort;
 	int m_synchronizerPort;
-	std::string m_name;
+	std::string m_publisherIdentity;
 	int m_numberOfSubscribers;
 	std::unique_ptr<zmq::socket_t> m_publisher;
 	std::unique_ptr<zmq::socket_t> m_synchronizer;

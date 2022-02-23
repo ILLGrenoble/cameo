@@ -91,7 +91,7 @@ public class StreamApplicationThread extends ApplicationThread {
 		if (application.hasOutputStream()) {
 			// Send the stream.
 			JSONObject event = new JSONObject();
-			event.put(Messages.TYPE, Messages.STREAM_MESSAGE);
+			event.put(Messages.TYPE, Messages.STREAM);
 			event.put(Messages.ApplicationStream.ID, application.getId());
 			event.put(Messages.ApplicationStream.MESSAGE, line);
 			event.put(Messages.ApplicationStream.EOL, endOfLine);

@@ -12,6 +12,7 @@ import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * Class Subscriber. 
@@ -39,12 +40,14 @@ public class Subscriber {
 			String jsonString = app.getCom().getKeyValue(key);
 			
 			JSONObject publisherData = This.getCom().parse(jsonString);
-			
-			int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
+
+			// Do not use publisher port but proxy port.
+			//int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
+			int publisherPort = app.getCom().getPublisherProxyPort();
 			int synchronizerPort = JSON.getInt(publisherData, Publisher.SYNCHRONIZER_PORT);
 			int numberOfSubscribers = JSON.getInt(publisherData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
-			impl.init(appId, appEndpoint, app.getStatusEndpoint(), publisherPort, synchronizerPort, numberOfSubscribers);	
+			impl.init(appId, appEndpoint, app.getStatusEndpoint(), StringId.from(appId, key), publisherPort, synchronizerPort, numberOfSubscribers);	
 		}
 		catch (UndefinedApplicationException | UndefinedKeyException e) {
 			throw new SubscriberCreationException("");

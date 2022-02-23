@@ -41,6 +41,14 @@ public class Instance extends EventListener {
 			this.server = server;
 			this.applicationId = applicationId;
 		}
+
+		public int getPublisherProxyPort() {
+			return server.getPublisherProxyPort();
+		}
+		
+		public int getSubscriberProxyPort() {
+			return server.getSubscriberProxyPort();
+		}
 		
 		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
 			return server.getKeyValue(applicationId, key);

@@ -20,7 +20,7 @@ public interface PublisherImpl {
 
 	static final long SUBSCRIBE_PUBLISHER = 100;
 	
-	void init();
+	void init(String publisherIdentity, int numberOfSubscribers);
 	
 	int getPublisherPort();
 	int getSynchronizerPort();

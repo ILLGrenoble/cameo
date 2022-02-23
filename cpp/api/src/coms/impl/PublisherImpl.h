@@ -34,7 +34,7 @@ public:
 
 	virtual ~PublisherImpl() {}
 
-	virtual void init() = 0;
+	virtual void init(const std::string& publisherIdentity, int numberOfSubscribers) = 0;
 
 	virtual int getPublisherPort() const = 0;
 	virtual int getSynchronizerPort() const = 0;
@@ -48,9 +48,6 @@ public:
 	virtual void setEnd() = 0;
 	virtual bool isEnded() = 0;
 	virtual void terminate() = 0;
-
-	virtual void publish(const std::string& header, const char* data, std::size_t size) = 0;
-	virtual void publishTwoParts(const std::string& header, const char* data1, std::size_t size1, const char* data2, std::size_t size2) = 0;
 };
 
 }

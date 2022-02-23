@@ -32,7 +32,7 @@ public:
 	SubscriberZmq();
 	virtual ~SubscriberZmq();
 
-	virtual void init(int appId, const Endpoint& appEndpoint, const Endpoint& appStatusEndpoint, int publisherPort, int synchronizerPort, int numberOfSubscribers);
+	virtual void init(int appId, const Endpoint& appEndpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, int publisherPort, int synchronizerPort, int numberOfSubscribers);
 
 	virtual bool isEnded() const;
 	virtual bool isCanceled() const;
@@ -51,6 +51,7 @@ private:
 	int m_numberOfSubscribers;
 	int m_appId;
 	std::unique_ptr<zmq::socket_t> m_subscriber;
+	std::string m_publisherIdentity;
 	std::string m_cancelEndpoint;
 	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
 	bool m_ended;

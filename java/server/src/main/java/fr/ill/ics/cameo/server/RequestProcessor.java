@@ -533,6 +533,20 @@ public class RequestProcessor {
 		reply.add(Messages.serialize(response));
 	}
 
+	public void processSubscriberProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+		
+		Log.logger().fine("Received SubscriberProxyPort request");
+		
+		int port = ConfigManager.getInstance().getSubscriberProxyPort();
+				
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, port);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		reply.add(Messages.serialize(response));
+	}
+	
 	public void processSetStatusRequest(JSONObject request, Msg reply, Manager manager) {
 
 		Log.logger().fine("Received SetStatus request");
