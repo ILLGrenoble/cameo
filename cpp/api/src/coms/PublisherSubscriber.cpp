@@ -91,8 +91,6 @@ const std::string& Publisher::getName() const {
 
 bool Publisher::waitForSubscribers() {
 
-	std::cout << "Wait for subscribers" << std::endl;
-
 	try {
 		m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
 
@@ -103,13 +101,9 @@ bool Publisher::waitForSubscribers() {
 
 			std::unique_ptr<basic::Request> request = m_responder->receive();
 
-			std::cout << "Received request" << std::endl;
-
 			if (!request) {
 				return false;
 			}
-
-			std::cout << "Received request " << request->get() << std::endl;
 
 			// Get the JSON request.
 			json::Object jsonRequest;
@@ -207,12 +201,8 @@ void Subscriber::tryInit(application::Instance & app) {
 
 void Subscriber::synchronize(application::Instance & app) {
 
-	std::cout << "Synchronize subscriber" << std::endl;
-
 	try {
 		std::unique_ptr<basic::Requester> requester = basic::Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
-
-		std::cout << "Created requester " << *requester << " for synchronization" << std::endl;
 
 		// Send a subscribe request.
 		json::StringObject jsonRequest;
@@ -221,8 +211,6 @@ void Subscriber::synchronize(application::Instance & app) {
 
 		requester->send(jsonRequest.toString());
 		std::optional<std::string> response = requester->receive();
-
-		std::cout << "Requester received response " << response.value() << std::endl;
 	}
 	catch (const RequesterCreationException& e) {
 		std::cerr << "Error, cannot create requester for subscriber" << std::endl;

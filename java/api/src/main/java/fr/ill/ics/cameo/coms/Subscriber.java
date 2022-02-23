@@ -62,20 +62,15 @@ public class Subscriber {
 	
 	private void synchronize(Instance app) {
 		
-		System.out.println("Synchronize subscriber");
-		
 		try {
 			Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
-			System.out.println("Created requester " + requester + " for synchronization");
-			
+
 			// Send a subscribe request.
 			JSONObject jsonRequest = new JSONObject();
 			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
 			
 			requester.send(jsonRequest.toJSONString());
 			String response = requester.receiveString();
-			
-			System.out.println("Requester received response " + response);
 			
 			requester.terminate();
 		}

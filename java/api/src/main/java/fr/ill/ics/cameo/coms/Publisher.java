@@ -97,8 +97,6 @@ public class Publisher {
 	 */
 	public boolean waitForSubscribers() {
 		
-		System.out.println("Wait for subscribers");
-		
 		try {
 			// Create the responder.
 			responder = Responder.create(RESPONDER_PREFIX + name);
@@ -109,14 +107,10 @@ public class Publisher {
 			while (counter < numberOfSubscribers) {
 				
 				Request request = responder.receive();
-		
-				System.out.println("Received request");
 				
 				if (request == null) {
 					return false;
 				}
-				
-				System.out.println("Received request " + request.get());
 				
 				// Get the JSON request object.
 				JSONObject jsonRequest = This.getCom().parse(request.get());
