@@ -229,7 +229,7 @@ public final class ConfigManager {
 			port = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, " + ConfigLoader.RESPONDER_PROXY_PORT + " is not an integer");
+			System.err.println("Error, responder proxy port is not an integer");
 		}
 		
 		String localhost;
@@ -259,7 +259,7 @@ public final class ConfigManager {
 			publisherProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, " + ConfigLoader.PUBLISHER_PROXY_PORT + " is not an integer");
+			System.err.println("Error, publisher proxy port is not an integer");
 		}
 	}
 	
@@ -269,7 +269,7 @@ public final class ConfigManager {
 			subscriberProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, " + ConfigLoader.SUBSCRIBER_PROXY_PORT + " is not an integer");
+			System.err.println("Error, subscriber proxy port is not an integer");
 		}
 		
 		String localhost;

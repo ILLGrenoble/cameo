@@ -34,9 +34,7 @@ public abstract class ConfigLoader {
 	public final static String MAX_APPLICATIONS = "max_applications";
 	public final static String HOST = "host";
 	public final static String PORT = "port";
-	public final static String RESPONDER_PROXY_PORT = "responder_proxy_port";
-	public final static String PUBLISHER_PROXY_PORT = "publisher_proxy_port";
-	public final static String SUBSCRIBER_PROXY_PORT = "subscriber_proxy_port";
+	public final static String PROXY_PORTS = "proxy_ports";
 	public final static String LOG_DIRECTORY = "log_directory";
 	public final static String LOG_LEVEL = "log_level";
 	public final static String SLEEP_TIME = "sleep_time";
@@ -163,9 +161,23 @@ public abstract class ConfigLoader {
 		// Set the base parameters.
 		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
 		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
-		ConfigManager.getInstance().setResponderProxyPort(root.getAttributeValue(RESPONDER_PROXY_PORT));
-		ConfigManager.getInstance().setPublisherProxyPort(root.getAttributeValue(PUBLISHER_PROXY_PORT));
-		ConfigManager.getInstance().setSubscriberProxyPort(root.getAttributeValue(SUBSCRIBER_PROXY_PORT));
+		
+		// Get the proxy ports.
+		String proxyPortsString = root.getAttributeValue(PROXY_PORTS);
+		
+		if (proxyPortsString != null) {
+			String[] proxyPorts = proxyPortsString.split(",");
+			
+			if (proxyPorts.length < 3) {
+				Log.logger().severe("Error, " + PROXY_PORTS + " must contain three ports");
+			}
+			else {
+				ConfigManager.getInstance().setResponderProxyPort(proxyPorts[0].strip());
+				ConfigManager.getInstance().setPublisherProxyPort(proxyPorts[1].strip());
+				ConfigManager.getInstance().setSubscriberProxyPort(proxyPorts[2].strip());
+			}
+		}
+		
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
 		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
 		
