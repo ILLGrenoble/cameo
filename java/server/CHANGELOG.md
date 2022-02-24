@@ -1,6 +1,8 @@
 2.0.0
 -----
 
+* Messaging architecture reviewed to support proxies for responders and publishers.
+
 1.1.0
 -----
 
