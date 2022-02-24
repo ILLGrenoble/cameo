@@ -22,17 +22,17 @@
 int main(int argc, char *argv[]) {
 
 	if (argc < 3) {
-		std::cout << "Usage: <sub port> <pub port>" << std::endl;
+		std::cout << "Usage: <publisher port> <subscriber port>" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	std::string subPort{argv[1]};
-	std::string subAddress("tcp://*:");
-	subAddress += subPort;
-
-	std::string pubPort{argv[2]};
+	std::string pubPort{argv[1]};
 	std::string pubAddress("tcp://*:");
 	pubAddress += pubPort;
+
+	std::string subPort{argv[2]};
+	std::string subAddress("tcp://*:");
+	subAddress += subPort;
 
 	// Prepare our context and sockets.
 	zmq::context_t context(1);
