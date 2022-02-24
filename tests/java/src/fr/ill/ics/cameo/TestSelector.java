@@ -109,8 +109,6 @@ public class TestSelector {
 		apps.add("testbasicrequesterjava");
 		apps.add("testpublisherjava");
 		apps.add("testsubscriberjava");
-//		apps.add("testresponderjava");
-//		apps.add("testrequesterjava");
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");
 		
@@ -131,8 +129,6 @@ public class TestSelector {
 		apps.add("testbasicrequestercpp");
 		apps.add("testpublishercpp");
 		apps.add("testsubscribercpp");
-//		apps.add("testrespondercpp");
-//		apps.add("testrequestercpp");
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");
 		

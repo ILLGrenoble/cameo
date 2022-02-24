@@ -18,7 +18,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
 using namespace cameo;
 
 int main(int argc, char *argv[]) {
@@ -26,63 +25,63 @@ int main(int argc, char *argv[]) {
 	application::This::init(argc, argv);
 
 	// The request message is the second argument.
-	string requestMessage;
+	std::string requestMessage;
 	if (argc > 2) {
 		requestMessage = argv[1];
 	}
 
 	int N = 1;
 	if (argc > 3) {
-		istringstream is(argv[2]);
+		std::istringstream is(argv[2]);
 		is >> N;
 	}
 
-	string serverEndpoint;
+	std::string serverEndpoint;
 	if (argc > 4) {
 		serverEndpoint = argv[3];
 	}
 
-	unique_ptr<Server> server;
+	std::unique_ptr<Server> server;
 
 	if (serverEndpoint == "") {
 		server.reset(new Server(application::This::getServer().getEndpoint()));
-
-	} else {
+	}
+	else {
 		server.reset(new Server(serverEndpoint));
 	}
 
 
 	if (application::This::isAvailable() && server->isAvailable()) {
-		cout << "Connected server " << *server << endl;
+		std::cout << "Connected server " << *server << std::endl;
 	}
 
 	// Connect to the server.
-	unique_ptr<application::Instance> responderServer = server->connect("responder");
+	std::unique_ptr<application::Instance> responderServer = server->connect("responder");
 
-	cout << "Application " << *responderServer << " has state " << application::toString(responderServer->now()) << endl;
+	std::cout << "Application " << *responderServer << " has state " << application::toString(responderServer->now()) << std::endl;
 
 	// Create a requester.
-	unique_ptr<coms::legacy::Requester> requester = coms::legacy::Requester::create(*responderServer, "the-responder");
+	std::unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*responderServer, "the-responder");
 
-	cout << "Created requester " << *requester << endl;
+	std::cout << "Created requester " << *requester << std::endl;
 
 	if (requester.get() == 0) {
-		cout << "requester error" << endl;
+		std::cout << "requester error" << std::endl;
 		return -1;
 	}
 
 	for (int i = 0; i < N; ++i) {
 
 		// Send a simple message as string.
-		requester->send(requestMessage + "-" + to_string(i));
+		requester->send(requestMessage + "-" + std::to_string(i));
 
 		// Receive the response.
-		optional<string> response = requester->receive();
+		std::optional<std::string> response = requester->receive();
 
-		cout << "Response is " << response.value() << endl;
+		std::cout << "Response is " << response.value() << std::endl;
 	}
 
-	cout << "Finished the application" << endl;
+	std::cout << "Finished the application" << std::endl;
 
 	return 0;
 }

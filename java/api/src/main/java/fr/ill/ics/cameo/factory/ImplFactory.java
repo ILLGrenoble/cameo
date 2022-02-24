@@ -39,16 +39,8 @@ public class ImplFactory {
 		return new SubscriberZmq();	
 	}
 	
-	public static fr.ill.ics.cameo.coms.legacy.impl.zmq.ResponderZmq createLegacyResponder() {
-		return new fr.ill.ics.cameo.coms.legacy.impl.zmq.ResponderZmq();
-	}
-	
 	public static fr.ill.ics.cameo.coms.basic.impl.zmq.ResponderZmq createBasicResponder() {
 		return new fr.ill.ics.cameo.coms.basic.impl.zmq.ResponderZmq();
-	}
-
-	public static fr.ill.ics.cameo.coms.legacy.impl.zmq.RequesterZmq createLegacyRequester() {
-		return new fr.ill.ics.cameo.coms.legacy.impl.zmq.RequesterZmq();
 	}
 	
 	public static fr.ill.ics.cameo.coms.basic.impl.zmq.RequesterZmq createBasicRequester() {

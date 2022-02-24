@@ -17,7 +17,6 @@
 #include <cameo/api/cameo.h>
 #include <iostream>
 
-using namespace std;
 using namespace cameo;
 
 int main(int argc, char *argv[]) {
@@ -25,21 +24,21 @@ int main(int argc, char *argv[]) {
 	application::This::init(argc, argv);
 
 	if (application::This::isAvailable()) {
-		cout << "Connected" << endl;
+		std::cout << "Connected" << std::endl;
 	}
 
 	application::This::handleStop([] {
 		application::This::cancelWaitings();
 	});
 
-	unique_ptr<coms::legacy::Responder> responder;
+	std::unique_ptr<coms::basic::Responder> responder;
 
 	try {
-		responder = coms::legacy::Responder::create("the-responder");
-		cout << "Created responder " << *responder << endl;
-
-	} catch (const coms::ResponderCreationException& e) {
-		cout << "Responder error" << endl;
+		responder = coms::basic::Responder::create("the-responder");
+		std::cout << "Created responder " << *responder << std::endl;
+	}
+	catch (const coms::ResponderCreationException& e) {
+		std::cout << "Responder error" << std::endl;
 		return -1;
 	}
 
@@ -49,19 +48,19 @@ int main(int argc, char *argv[]) {
 	while (true) {
 		
 		// Receive the simple request.
-		unique_ptr<coms::legacy::Request> request = responder->receive();
+		std::unique_ptr<coms::basic::Request> request = responder->receive();
 		if (!request) {
-			cout << "Responder is canceled" << endl;
+			std::cout << "Responder is canceled" << std::endl;
 			break;
 		}
 
-		cout << "Received request " << request->get() << endl;
+		std::cout << "Received request " << request->get() << std::endl;
 
 		// Reply.
 		request->reply("done");
 	}
 
-	cout << "Finished the application" << endl;
+	std::cout << "Finished the application" << std::endl;
 
 	return 0;
 }

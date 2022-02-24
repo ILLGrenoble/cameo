@@ -17,19 +17,18 @@
 #include <cameo/api/cameo.h>
 #include <iostream>
 
-using namespace std;
 using namespace cameo;
 
 int main(int argc, char *argv[]) {
 		
 	application::This::init(argc, argv);
 
-	string serverEndpoint;
+	std::string serverEndpoint;
 	if (argc > 2) {
 		serverEndpoint = argv[1];
 	}
 
-	unique_ptr<Server> server;
+	std::unique_ptr<Server> server;
 
 	if (serverEndpoint == "") {
 		server.reset(new Server(application::This::getServer().getEndpoint()));
@@ -40,36 +39,36 @@ int main(int argc, char *argv[]) {
 
 
 	if (application::This::isAvailable() && server->isAvailable()) {
-		cout << "Connected server " << *server << endl;
+		std::cout << "Connected server " << *server << std::endl;
 	}
 
 	// Connect to the server.
-	unique_ptr<application::Instance> publisherApp = server->connect("publisher");
+	std::unique_ptr<application::Instance> publisherApp = server->connect("publisher");
 
-	cout << "Application " << *publisherApp << " has state " << application::toString(publisherApp->now()) << endl;
+	std::cout << "Application " << *publisherApp << " has state " << application::toString(publisherApp->now()) << std::endl;
 
 	// Create a requester.
-	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
+	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
 
-	cout << "Created subscriber " << *subscriber << endl;
+	std::cout << "Created subscriber " << *subscriber << std::endl;
 
 	// Receive data.
 	while (true) {
-		optional<string> message = subscriber->receive();
+		std::optional<std::string> message = subscriber->receive();
 		if (!message.has_value()) {
 			break;
 		}
-		string value = message.value();
-		cout << "Received " << value << endl;
+		std::string value = message.value();
+		std::cout << "Received " << value << std::endl;
 
 		json::Object object;
 		if (json::parse(object, value)) {
-			cout << "\tmessage : " << object["message"].GetString() << endl;
-			cout << "\tvalue : " << object["value"].GetInt() << endl;
+			std::cout << "\tmessage : " << object["message"].GetString() << std::endl;
+			std::cout << "\tvalue : " << object["value"].GetInt() << std::endl;
 		}
 	}
 
-	cout << "Finished the application" << endl;
+	std::cout << "Finished the application" << std::endl;
 
 	return 0;
 }

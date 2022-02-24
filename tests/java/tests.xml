@@ -57,6 +57,22 @@
 		<application name="testwaitstoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestWaitStorage"/>
 		</application>
+				
+		<application name="basicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.BasicResponder"/>
+		</application>
+		
+		<application name="testbasicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicResponder basicresponderjava"/>
+		</application>
+	
+		<application name="basicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.BasicRequester"/>
+		</application>
+		
+		<application name="testbasicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicRequester basicrequesterjava"/>
+		</application>
 		
 		<application name="publisherjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Publisher"/>
@@ -72,22 +88,6 @@
 		
 		<application name="testsubscriberjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestSubscriber subscriberjava"/>
-		</application>
-		
-		<application name="responderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Responder"/>
-		</application>
-		
-		<application name="testresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestResponder responderjava"/>
-		</application>
-		
-		<application name="requesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Requester"/>
-		</application>
-		
-		<application name="testrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestRequester requesterjava"/>
 		</application>
 		
 		<application name="publisherloopjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
@@ -112,22 +112,6 @@
 		
 		<application name="teststreamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestStream"/>
-		</application>
-		
-		<application name="basicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.BasicResponder"/>
-		</application>
-		
-		<application name="testbasicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicResponder basicresponderjava"/>
-		</application>
-	
-		<application name="basicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.BasicRequester"/>
-		</application>
-		
-		<application name="testbasicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicRequester basicrequesterjava"/>
 		</application>
 	
 
@@ -201,20 +185,20 @@
 			<start executable="testsubscriber" args="subscribercpp"/>
 		</application>
 
-		<application name="respondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="responder"/>
+		<application name="basicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="basicresponder"/>
 		</application>
 
-		<application name="testrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="testresponder" args="respondercpp"/>
+		<application name="testbasicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testbasicresponder" args="basicrespondercpp"/>
 		</application>
 
-		<application name="requestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="requester"/>
+		<application name="basicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="basicrequester"/>
 		</application>
 
-		<application name="testrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="testrequester" args="requestercpp"/>
+		<application name="testbasicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testbasicrequester" args="basicrequestercpp"/>
 		</application>
 
 		<application name="publisherloopcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
@@ -239,22 +223,6 @@
 
 		<application name="teststreamcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="teststream"/>
-		</application>
-		
-		<application name="basicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="basicresponder"/>
-		</application>
-
-		<application name="testbasicrespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="testbasicresponder" args="basicrespondercpp"/>
-		</application>
-
-		<application name="basicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="basicrequester"/>
-		</application>
-
-		<application name="testbasicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="testbasicrequester" args="basicrequestercpp"/>
 		</application>
 		
 		

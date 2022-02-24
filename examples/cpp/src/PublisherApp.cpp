@@ -17,7 +17,6 @@
 #include <cameo/api/cameo.h>
 #include <iostream>
 
-using namespace std;
 using namespace cameo;
 
 std::string serializeToJSON(const std::string& message, int i) {
@@ -39,29 +38,29 @@ int main(int argc, char *argv[]) {
 
 	int numberOfSubscribers = 0;
 	if (argc > 2) {
-		numberOfSubscribers = stoi(argv[1]);
+		numberOfSubscribers = std::stoi(argv[1]);
 	}
 
 	if (application::This::isAvailable()) {
-		cout << "Connected" << endl;
+		std::cout << "Connected" << std::endl;
 	}
 
-	unique_ptr<coms::Publisher> publisher;
+	std::unique_ptr<coms::Publisher> publisher;
 
 	try {
 		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
-		cout << "Created publisher " << *publisher << endl;
+		std::cout << "Created publisher " << *publisher << std::endl;
 
 		publisher->waitForSubscribers();
-
-	} catch (const coms::PublisherCreationException& e) {
-		cout << "Publisher error" << endl;
+	}
+	catch (const coms::PublisherCreationException& e) {
+		std::cout << "Publisher error" << std::endl;
 		return -1;
 	}
 
 	application::This::setRunning();
 
-	cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
+	std::cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << std::endl;
 
 	// Loop on the events.
 	int i = 0;
@@ -72,10 +71,10 @@ int main(int argc, char *argv[]) {
 		i++;
 		
 		// Sleep for 1s.
-		this_thread::sleep_for(chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
-	cout << "Finished the application" << endl;
+	std::cout << "Finished the application" << std::endl;
 
 	return 0;
 }

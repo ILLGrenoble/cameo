@@ -22,8 +22,6 @@
 #include "../base/impl/zmq/OutputStreamSocketZmq.h"
 #include "../coms/impl/zmq/PublisherZmq.h"
 #include "../coms/impl/zmq/SubscriberZmq.h"
-#include "../coms/impl/zmq/LegacyResponderZmq.h"
-#include "../coms/impl/zmq/LegacyRequesterZmq.h"
 #include "../coms/impl/zmq/BasicResponderZmq.h"
 #include "../coms/impl/zmq/BasicRequesterZmq.h"
 
@@ -51,14 +49,6 @@ std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher() {
 
 std::unique_ptr<coms::SubscriberImpl> ImplFactory::createSubscriber() {
 	return std::make_unique<coms::SubscriberZmq>();
-}
-
-std::unique_ptr<coms::legacy::ResponderImpl> ImplFactory::createLegacyResponder() {
-	return std::make_unique<coms::legacy::ResponderZmq>();
-}
-
-std::unique_ptr<coms::legacy::RequesterImpl> ImplFactory::createLegacyRequester() {
-	return std::make_unique<coms::legacy::RequesterZmq>();
 }
 
 std::unique_ptr<coms::basic::ResponderImpl> ImplFactory::createBasicResponder() {

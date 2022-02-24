@@ -80,18 +80,6 @@ target_link_libraries(subscriber PRIVATE Cameo::cameo-api-cpp)
 add_executable(testsubscriber src/TestSubscriber.cpp)
 target_link_libraries(testsubscriber PRIVATE Cameo::cameo-api-cpp)
 
-add_executable(responder src/Responder.cpp)
-target_link_libraries(responder PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(testresponder src/TestResponder.cpp)
-target_link_libraries(testresponder PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(requester src/Requester.cpp)
-target_link_libraries(requester PRIVATE Cameo::cameo-api-cpp)
-
-add_executable(testrequester src/TestRequester.cpp)
-target_link_libraries(testrequester PRIVATE Cameo::cameo-api-cpp)
-
 add_executable(publisherloop src/PublisherLoop.cpp)
 target_link_libraries(publisherloop PRIVATE Cameo::cameo-api-cpp)
 

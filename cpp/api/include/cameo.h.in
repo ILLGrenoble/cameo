@@ -23,7 +23,6 @@
 
 #include "Application.h"
 #include "Server.h"
-#include "LegacyRequesterResponder.h"
 #include "BasicRequesterResponder.h"
 #include "PublisherSubscriber.h"
 
