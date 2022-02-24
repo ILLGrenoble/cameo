@@ -23,9 +23,16 @@ def cancelResponder(responder):
     time.sleep(1)
     responder.cancel()
 
-def cancelRequester(requester):
+def loopResponder(responder):
+    
+    while not responder.isCanceled():
+        responder.receive()
+    
+
+def cancelRequester(requester, responder):
     time.sleep(1)
     requester.cancel()
+    responder.cancel()
 
 
 this = cameopy.This
@@ -155,11 +162,11 @@ def testCancelSubscriber():
 
     t.join()
     k.join()
-    
 
-def testLegacyResponder():
+
+def testResponder():
     
-    print("Creating legacy responder and waiting for requests")
+    print("Creating basic responder and waiting for requests")
     
     responder = cameopy.Responder.create("responder")
     
@@ -175,41 +182,25 @@ def testLegacyResponder():
         print("Responder error: receive should return None")
 
     t.join()
-
-
-def testBasicResponder():
-    
-    print("Creating basic responder and waiting for requests")
-    
-    responder = cameopy.BasicResponder.create("responder")
-    
-    # Start cancel thread.
-    t = threading.Thread(target=cancelResponder, args=(responder,))
-    t.start()
-
-    print("Wait for requests")
-
-    request = responder.receive()
-    
-    if request is not None:
-        print("Responder error: receive should return None")
-
-    t.join()
     
 
-def testBasicRequester():
+def testRequester():
     
     print("Creating basic responder and requester")
     
-    responder = cameopy.BasicResponder.create("responder")
+    responder = cameopy.Responder.create("responder")
+    
+    # Start reponder thread.
+    tr = threading.Thread(target=loopResponder, args=(responder,))
+    tr.start()
     
     thisApp = server.connect(cameopy.This.getName())
     
-    requester = cameopy.BasicRequester.create(thisApp, "responder")
+    requester = cameopy.Requester.create(thisApp, "responder")
     
     # Start cancel thread.
-    t = threading.Thread(target=cancelRequester, args=(requester,))
-    t.start()
+    tc = threading.Thread(target=cancelRequester, args=(requester, responder,))
+    tc.start()
 
     print("Sending request")
 
@@ -224,7 +215,8 @@ def testBasicRequester():
     else:
         print("Requester is not canceled")
 
-    t.join()
+    tc.join()
+    tr.join()
 
     
 testCancelAll()
@@ -232,8 +224,7 @@ testCancelWaitFor()
 testCancelWaitForSubscribers()
 testKillApplication()
 testCancelSubscriber()
-testLegacyResponder()
-testBasicResponder()
-testBasicRequester()
+testResponder()
+testRequester()
 
 print("Finished the application")
