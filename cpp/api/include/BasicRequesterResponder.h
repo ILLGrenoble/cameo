@@ -167,7 +167,6 @@ private:
 	void tryInit(application::Instance & app);
 
 	std::string m_responderName;
-	int m_requesterId;
 	std::string m_appName;
 	int m_appId;
 	Endpoint m_appEndpoint;

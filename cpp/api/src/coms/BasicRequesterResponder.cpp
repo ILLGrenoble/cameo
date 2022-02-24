@@ -362,7 +362,6 @@ std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 	os << "req." << requester.m_responderName
-		<< "." << requester.m_requesterId
 		<< ":" << requester.m_appName
 		<< "." << requester.m_appId
 		<< "@" << requester.m_appEndpoint;
