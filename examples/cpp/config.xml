@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="11000" max_applications="20" log_directory="logs" log_level="fine" polling_time="100">
+<config port="11000" responder_proxy_port="10000" subscriber_proxy_port="10001" publisher_proxy_port="10002" max_applications="20" log_directory="logs" log_level="fine" polling_time="100">
 
 	<applications>
 		

@@ -149,11 +149,9 @@ public class Server {
 		
 				// Get the identity of the router.
 				byte[] proxyIdentity = data[0];
-				Log.logger().info("Received from " + StringId.toInt(proxyIdentity));
 		
 				// Get the identity of the requester.
 				byte[] requesterIdentity = data[2];
-				Log.logger().info("Received requester " + StringId.toInt(requesterIdentity));
 
 				// Prepare the reply.
 				reply = new Zmq.Msg();
