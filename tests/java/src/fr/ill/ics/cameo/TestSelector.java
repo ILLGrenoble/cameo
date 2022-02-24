@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
+import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
@@ -16,7 +17,7 @@ public class TestSelector {
 
 	public static Process startServer(String config) {
 
-		System.out.println("*** Starting server ***");
+		System.out.println("*** Starting Cameo server ***");
 		
 		String jarFileName = "";
 		
@@ -50,7 +51,7 @@ public class TestSelector {
 		builder.redirectErrorStream(true);
 		
 		try {
-			System.out.println("*** Server started ***");
+			System.out.println("*** Cameo Server started ***");
 			return builder.start();
 		}
 		catch (IOException e) {
@@ -169,14 +170,19 @@ public class TestSelector {
 		// Start the server.
 		serverProcess = startServer(testsPath);
 
-		System.out.println("Sleep for 1s to ensure that the Cameo server router connected to the proxy");
-				 
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
+		Server server = null;
+
+		// It is necessary to loop because the Cameo server may not be connected to the proxy (connect is asynchronous).
+		while (true) {
+			try {
+				System.out.println("*** Trying to create server ***");
+				server = new Server("tcp://localhost:10000", 100);
+				System.out.println("*** Server created ***");
+				break;
+			}
+			catch (Exception e) {
+			}
 		}
-		
-		Server server = new Server("tcp://localhost:10000");
 		
 		if (server.isAvailable()) {
 			System.out.println("*** Server is available ***");
