@@ -26,3 +26,7 @@ target_link_libraries(cameo-rep-proxy PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(cameo-pub-proxy src/PubProxy.cpp)
 target_link_libraries(cameo-pub-proxy PRIVATE Cameo::cameo-api-cpp)
+
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-rep-proxy ${CMAKE_CURRENT_BINARY_DIR}/cameo-pub-proxy 
+        TYPE BIN
+)
