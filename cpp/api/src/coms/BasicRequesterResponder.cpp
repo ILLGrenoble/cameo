@@ -305,14 +305,6 @@ void Requester::setTimeout(int value) {
 	m_impl->setTimeout(value);
 }
 
-void Requester::useProxy(bool value) {
-	m_useProxy = value;
-}
-
-bool Requester::usesProxy() {
-	return m_useProxy;
-}
-
 const std::string& Requester::getResponderName() const {
 	return m_responderName;
 }

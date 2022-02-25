@@ -121,7 +121,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-class Requester : public ProxyInterface {
+class Requester {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
@@ -136,9 +136,6 @@ public:
 
 	void setPollingTime(int value);
 	void setTimeout(int value);
-
-	virtual void useProxy(bool value);
-	virtual bool usesProxy();
 
 	const std::string& getResponderName() const;
 	const std::string& getAppName() const;

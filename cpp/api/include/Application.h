@@ -32,7 +32,6 @@
 #include "JSON.h"
 #include "KeyValue.h"
 #include "Strings.h"
-#include "ProxyInterface.h"
 #include <functional>
 #include <vector>
 #include <set>

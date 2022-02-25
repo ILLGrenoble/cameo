@@ -28,7 +28,7 @@ public class TestServer {
 
 		System.out.println("Create server");
 		
-		Server server = new Server("tcp://localhost:10000");
+		Server server = new Server("tcp://localhost:11000", 0, false);
 		
 		System.out.println("Testing connection");
 		

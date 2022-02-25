@@ -67,8 +67,9 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 	}
 }
 
-Server::Server(const Endpoint& endpoint, int timeoutMs) :
+Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :
 	m_timeout(0),
+	m_useProxy(useProxy),
 	m_statusPort(0),
 	m_context(nullptr) {
 
@@ -81,15 +82,15 @@ Server::Server(const Endpoint& endpoint, int timeoutMs) :
 	initServer(endpoint, timeoutMs);
 }
 
-Server::Server(const std::string& endpoint, int timeoutMs) :
+Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 	m_timeout(0),
+	m_useProxy(useProxy),
 	m_statusPort(0),
 	m_context(nullptr) {
 
 	m_serverVersion[0] = 0;
 	m_serverVersion[1] = 0;
 	m_serverVersion[2] = 0;
-
 
 	initContext();
 
@@ -536,10 +537,14 @@ std::unique_ptr<EventStreamSocket> Server::openEventStream() {
 
 	// Init the status port if necessary.
 	if (m_statusPort == 0) {
-		//m_statusPort = getStatusPort();
 
-		// With the proxy, the status port is the publisher proxy port.
-		m_statusPort = m_publisherProxyPort;
+		if (m_useProxy) {
+			// With the proxy, the status port is the publisher proxy port.
+			m_statusPort = m_publisherProxyPort;
+		}
+		else {
+			m_statusPort = m_serverStatusPort;
+		}
 	}
 
 	// Create the event stream socket.
@@ -669,8 +674,12 @@ void Server::initContext() {
 }
 
 void Server::initRequestSocket() {
+
 	// Create the request socket. The server endpoint must have been initialized.
 	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
+
+	// Get the status port.
+	m_serverStatusPort = retrieveStatusPort();
 
 	// Get the publisher and subscriber ports.
 	m_publisherProxyPort = retrievePublisherProxyPort();
@@ -686,14 +695,14 @@ void Server::retrieveServerVersion() {
 	m_serverVersion[2] = response[message::VersionResponse::REVISION].GetInt();
 }
 
-int Server::getStatusPort() {
+int Server::retrieveStatusPort() {
 
 	json::Object response = m_requestSocket->requestJSON(createStreamStatusRequest());
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
-int Server::getStreamPort(const std::string& name) {
+int Server::retrieveStreamPort(const std::string& name) {
 
 	json::Object response = m_requestSocket->requestJSON(createOutputPortRequest(name));
 
@@ -720,14 +729,16 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 	std::unique_ptr<OutputStreamSocket> outputStreamSocket = std::unique_ptr<OutputStreamSocket>(new OutputStreamSocket(name));
 
 	// Even with the proxy, it is necessary to check if the application has an output stream.
-	int port = getStreamPort(name);
+	int port = retrieveStreamPort(name);
 	if (port == -1) {
 		std::cerr << "No stream port for " << name << std::endl;
 		return nullptr;
 	}
 
 	// With the proxy, the port is the publisher proxy port i.e. the status port.
-	port = m_statusPort;
+	if (m_useProxy) {
+		port = m_statusPort;
+	}
 
 	outputStreamSocket->init(m_context.get(), m_serverEndpoint.withPort(port), m_requestSocket.get());
 
