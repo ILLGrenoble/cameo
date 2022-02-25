@@ -284,7 +284,8 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application. The proxy host endpoint is passed.
-		Application application = new RegisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, config, args, starter);
+		//Application application = new RegisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, config, args, starter);
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter);
 		applicationMap.put(id, application);
 		
 		// Threads.
@@ -697,7 +698,8 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application.
-		Application application = new UnregisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, name, pid);
+		//Application application = new UnregisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, name, pid);
+		Application application = new UnregisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, name, pid);
 		applicationMap.put(id, application);
 		
 		// Threads.

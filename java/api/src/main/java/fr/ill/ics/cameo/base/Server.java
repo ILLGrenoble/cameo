@@ -44,7 +44,7 @@ import fr.ill.ics.cameo.strings.StringId;
 public class Server {
 
 	private Endpoint serverEndpoint;
-	private boolean useProxy;
+	private boolean useProxy = true;
 	private int[] serverVersion = new int[3];
 	private int publisherProxyPort;
 	private int subscriberProxyPort;
@@ -70,12 +70,10 @@ public class Server {
 	}
 	
 	public Server(Endpoint endpoint, int timeout) {
-		this.useProxy = true;
 		this.initServer(endpoint, timeout);
 	}
 	
 	public Server(Endpoint endpoint) {
-		this.useProxy = true;
 		this.initServer(endpoint, 0);	
 	}
 	

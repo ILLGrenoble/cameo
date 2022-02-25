@@ -160,7 +160,7 @@ public class This {
 		if (instance.getStarterEndpoint() != null) {
 			starterServer = new Server(instance.getStarterEndpoint());
 		}
-		com = new Com(instance.getServer(), instance.getId());
+		com = new Com(This.getServer(), This.getId());
 	}
 	
 	static public void init(String[] args) {
@@ -403,7 +403,7 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = new Server(serverEndpoint, 0);
+		server = new Server(serverEndpoint, 0, false);
 		
 		// Init the unregistered application.
 		if (!registered) {

@@ -218,7 +218,7 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 void This::initApplication() {
 
 	// Create the local server.
-	m_server = std::make_unique<Server>(m_serverEndpoint);
+	m_server = std::make_unique<Server>(m_serverEndpoint, 0, false);
 
 	// Registered apps have the id key.
 	if (!m_registered) {
