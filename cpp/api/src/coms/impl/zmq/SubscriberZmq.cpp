@@ -54,9 +54,6 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 	Endpoint publisherEndpoint = appEndpoint.withPort(m_publisherPort);
 	m_subscriber->connect(publisherEndpoint.toString());
 
-	//TODO Remove
-	std::cout << "Connected subscriber to " << publisherEndpoint.toString() << " with identity " << publisherIdentity << std::endl;
-
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 
 

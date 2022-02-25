@@ -51,8 +51,6 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 	// Connect to the proxy.
 	m_responder->connect(application::This::getEndpoint().toString());
 
-	std::cout << "Connected responder " << responderIdentity << " to the proxy " << application::This::getEndpoint() << std::endl;
-
 	std::string endpointPrefix("tcp://*:");
 
 	// Loop to find an available port for the responder.

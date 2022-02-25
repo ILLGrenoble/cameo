@@ -52,9 +52,6 @@ public class SubscriberZmq implements SubscriberImpl {
 		Endpoint publisherEndpoint = appEndpoint.withPort(publisherPort);
 		subscriber.connect(publisherEndpoint.toString());
 		
-		//TODO Remove
-		System.out.println("Connected subscriber to " + publisherEndpoint.toString() + " with identity " + publisherIdentity);
-		
 		// Subcribe to the publisher.
 		subscriber.subscribe(publisherIdentity);
 		

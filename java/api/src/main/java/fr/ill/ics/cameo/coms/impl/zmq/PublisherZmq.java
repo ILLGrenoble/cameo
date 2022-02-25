@@ -44,9 +44,6 @@ public class PublisherZmq implements PublisherImpl {
 		Endpoint subscriberProxyEndpoint = This.getEndpoint().withPort(This.getCom().getSubscriberProxyPort());
 		publisher.connect(subscriberProxyEndpoint.toString());
 		
-		//TODO Remove
-		System.out.println("Connected publisher to " + subscriberProxyEndpoint.toString());
-		
 		String endpointPrefix = "tcp://*:";	
 		
 		// Loop to find an available port for the publisher.

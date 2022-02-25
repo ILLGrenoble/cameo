@@ -47,9 +47,6 @@ void PublisherZmq::init(const std::string& publisherIdentity) {
 	Endpoint subscriberProxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getSubscriberProxyPort());
 	m_publisher->connect(subscriberProxyEndpoint.toString());
 
-	//TODO Remove
-	std::cout << "Connected publisher to " << subscriberProxyEndpoint.toString() << std::endl;
-
 	std::string endpointPrefix("tcp://*:");
 
 	// Loop to find an available port for the publisher.
