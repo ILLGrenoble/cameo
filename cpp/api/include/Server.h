@@ -172,6 +172,7 @@ private:
 	int m_timeout;
 	bool m_useProxy;
 	std::array<int, 3> m_serverVersion;
+	int m_responderProxyPort;
 	int m_publisherProxyPort;
 	int m_subscriberProxyPort;
 	int m_serverStatusPort;

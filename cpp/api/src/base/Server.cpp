@@ -203,7 +203,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		json::Object response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString()));
+		json::Object response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort));
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		if (value == -1) {
@@ -680,6 +680,8 @@ void Server::initRequestSocket() {
 
 	// Get the status port.
 	m_serverStatusPort = retrieveStatusPort();
+
+	m_responderProxyPort = 11; //TODO retrieve
 
 	// Get the publisher and subscriber ports.
 	m_publisherProxyPort = retrievePublisherProxyPort();

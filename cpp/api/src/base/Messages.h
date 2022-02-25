@@ -75,6 +75,7 @@ namespace message {
 		constexpr const char* ID = "id"; // int32
 		constexpr const char* SERVER = "server"; // string
 		constexpr const char* STARTER = "starter"; // object
+		constexpr const char* STARTER_PROXY_PORT = "starter_proxy_port"; // int32
 	}
 
 	namespace SyncStreamRequest {
@@ -85,6 +86,7 @@ namespace message {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* ARGS = "args"; // repeated string args = 2;
 		constexpr const char* STARTER = "starter"; // object
+		constexpr const char* STARTER_PROXY_PORT = "starter_proxy_port"; // int32
 	}
 
 	namespace RequestResponse {
@@ -270,7 +272,7 @@ namespace message {
 std::string createSyncRequest();
 std::string createSyncStreamRequest(const std::string& name);
 std::string createVersionRequest();
-std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint);
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort);
 std::string createSetStopHandlerRequest(int id, int stoppingTime);
 std::string createStopRequest(int id);
 std::string createKillRequest(int id);

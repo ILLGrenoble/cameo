@@ -46,6 +46,7 @@ public class Server {
 	private Endpoint serverEndpoint;
 	private boolean useProxy = true;
 	private int[] serverVersion = new int[3];
+	private int responderProxyPort = 11;
 	private int publisherProxyPort;
 	private int subscriberProxyPort;
 	private int serverStatusPort;
@@ -361,10 +362,10 @@ public class Server {
 		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
-			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
+			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort);
 		}
 		else {
-			request = Messages.createStartRequest(name, args, null, 0, null);
+			request = Messages.createStartRequest(name, args, null, 0, null, 0);
 		}
 		
 		JSONObject response = requestSocket.requestJSON(request);

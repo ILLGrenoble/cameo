@@ -125,7 +125,10 @@ public class RequestProcessor {
 			}
 			
 			JSONObject starterObject = JSON.getObject(request, Messages.ApplicationIdentity.STARTER);
+			
+			int starterProxyPort = 0;
 			ApplicationIdentity starter = null;
+			
 			if (starterObject != null) {
 				String endpoint = JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER);
 				try {
@@ -136,12 +139,15 @@ public class RequestProcessor {
 				catch (Exception e) {
 					Log.logger().severe("Cannot parse request starter endpoint " + endpoint);
 				}
+				
+				starterProxyPort = JSON.getInt(request, Messages.ApplicationIdentity.STARTER_PROXY_PORT);
 			}
 			
 			// Start the application.
 			Application application = manager.startApplication(JSON.getString(request, Messages.StartRequest.NAME), 
 																args,
-																starter);
+																starter, 
+																starterProxyPort);
 			
 			// Return the reply.
 			JSONObject response = new JSONObject();
