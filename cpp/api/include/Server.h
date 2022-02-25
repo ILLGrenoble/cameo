@@ -61,6 +61,8 @@ public:
 	Endpoint getEndpoint() const;
 	Endpoint getStatusEndpoint() const;
 	std::array<int, 3> getVersion() const;
+	bool usesProxy() const;
+
 	bool isAvailable(int timeout) const;
 
 	/**
@@ -136,6 +138,7 @@ public:
 
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
+	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
 
@@ -162,6 +165,7 @@ private:
 	void retrieveServerVersion();
 	int retrieveStatusPort();
 	int retrieveStreamPort(const std::string& name);
+	int retrieveResponderProxyPort();
 	int retrievePublisherProxyPort();
 	int retrieveSubscriberProxyPort();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);

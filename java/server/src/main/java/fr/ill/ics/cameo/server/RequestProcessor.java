@@ -520,11 +520,21 @@ public class RequestProcessor {
 		
 		reply.add(Messages.serialize(response));
 	}
+
+	public void processResponderProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+		
+		Log.logger().fine("Received ResponderProxyPort request");
+		
+		int port = ConfigManager.getInstance().getResponderProxyPort();
+				
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, port);
+		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		
+		reply.add(Messages.serialize(response));
+	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public void processPublisherProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received PublisherProxyPort request");

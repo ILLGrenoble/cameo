@@ -97,6 +97,7 @@ public:
 	public:
 		Context* getContext() const;
 
+		int getResponderProxyPort() const;
 		int getPublisherProxyPort() const;
 		int getSubscriberProxyPort() const;
 
@@ -217,6 +218,7 @@ public:
 		friend class Instance;
 
 	public:
+		int getResponderProxyPort() const;
 		int getPublisherProxyPort() const;
 		int getSubscriberProxyPort() const;
 
@@ -233,6 +235,7 @@ public:
 
 	const std::string& getName() const;
 	int getId() const;
+	bool usesProxy() const;
 	Endpoint getEndpoint() const;
 	Endpoint getStatusEndpoint() const;
 	std::string getNameId() const;

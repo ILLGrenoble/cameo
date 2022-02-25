@@ -62,6 +62,10 @@ Context* This::Com::getContext() const {
 	return m_server->m_context.get();
 }
 
+int This::Com::getResponderProxyPort() const {
+	return m_server->getResponderProxyPort();
+}
+
 int This::Com::getPublisherProxyPort() const {
 	return m_server->getPublisherProxyPort();
 }
@@ -431,6 +435,10 @@ Instance::Com::Com(Server * server) :
 	m_applicationId(-1) {
 }
 
+int Instance::Com::getResponderProxyPort() const {
+	return m_server->getResponderProxyPort();
+}
+
 int Instance::Com::getPublisherProxyPort() const {
 	return m_server->getPublisherProxyPort();
 }
@@ -495,6 +503,10 @@ void Instance::setInitialState(State state) {
 
 int Instance::getId() const {
 	return m_id;
+}
+
+bool Instance::usesProxy() const {
+	return m_server->usesProxy();
 }
 
 Endpoint Instance::getEndpoint() const {

@@ -276,6 +276,9 @@ public class Server {
 				else if (type == Messages.OUTPUT_PORT) {
 					process.processOutputPortRequest(request, reply, manager);
 				}
+				else if (type == Messages.RESPONDER_PROXY_PORT) {
+					process.processResponderProxyPortRequest(request, reply, manager);
+				}
 				else if (type == Messages.PUBLISHER_PROXY_PORT) {
 					process.processPublisherProxyPortRequest(request, reply, manager);
 				}

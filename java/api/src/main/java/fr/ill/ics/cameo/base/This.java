@@ -48,6 +48,10 @@ public class This {
 			return server.getContext();
 		}
 		
+		public int getResponderProxyPort() {
+			return server.getResponderProxyPort();
+		}
+		
 		public int getPublisherProxyPort() {
 			return server.getPublisherProxyPort();
 		}

@@ -138,6 +138,10 @@ Endpoint Server::getStatusEndpoint() const {
 	return m_serverEndpoint.withPort(m_statusPort);
 }
 
+int Server::getResponderProxyPort() const {
+	return m_responderProxyPort;
+}
+
 int Server::getPublisherProxyPort() const {
 	return m_publisherProxyPort;
 }
@@ -148,6 +152,10 @@ int Server::getSubscriberProxyPort() const {
 
 std::array<int, 3> Server::getVersion() const {
 	return m_serverVersion;
+}
+
+bool Server::usesProxy() const {
+	return m_useProxy;
 }
 
 bool Server::isAvailable(int timeout) const {
@@ -681,9 +689,8 @@ void Server::initRequestSocket() {
 	// Get the status port.
 	m_serverStatusPort = retrieveStatusPort();
 
-	m_responderProxyPort = 11; //TODO retrieve
-
-	// Get the publisher and subscriber ports.
+	// Get the proxy ports.
+	m_responderProxyPort = retrieveResponderProxyPort();
 	m_publisherProxyPort = retrievePublisherProxyPort();
 	m_subscriberProxyPort = retrieveSubscriberProxyPort();
 }
@@ -707,6 +714,13 @@ int Server::retrieveStatusPort() {
 int Server::retrieveStreamPort(const std::string& name) {
 
 	json::Object response = m_requestSocket->requestJSON(createOutputPortRequest(name));
+
+	return response[message::RequestResponse::VALUE].GetInt();
+}
+
+int Server::retrieveResponderProxyPort() {
+
+	json::Object response = m_requestSocket->requestJSON(createResponderProxyPortRequest());
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }

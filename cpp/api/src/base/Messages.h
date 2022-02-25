@@ -42,6 +42,7 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
+	const int RESPONDER_PROXY_PORT = 36;
 	const int PUBLISHER_PROXY_PORT = 17;
 	const int SUBSCRIBER_PROXY_PORT = 18;
 	const int CANCEL = 19;
@@ -284,6 +285,7 @@ std::string createAppsRequest();
 std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
+std::string createResponderProxyPortRequest();
 std::string createPublisherProxyPortRequest();
 std::string createSubscriberProxyPortRequest();
 std::string createSetResultRequest(int id);

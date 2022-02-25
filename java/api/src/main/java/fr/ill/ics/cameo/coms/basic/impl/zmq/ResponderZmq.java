@@ -26,6 +26,7 @@ import fr.ill.ics.cameo.coms.basic.Request;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ResponderZmq implements ResponderImpl {
 
@@ -51,7 +52,10 @@ public class ResponderZmq implements ResponderImpl {
 		responder.setIdentity(responderIdentity);
 		
 		// Connect to the proxy.
-		responder.connect(This.getEndpoint().toString());
+		Endpoint proxyEndpoint = This.getEndpoint().withPort(This.getCom().getResponderProxyPort());
+		responder.connect(proxyEndpoint.toString());
+		
+		System.out.println("Connected responder to " + proxyEndpoint);
 		
 		String endpointPrefix = "tcp://*:";	
 		

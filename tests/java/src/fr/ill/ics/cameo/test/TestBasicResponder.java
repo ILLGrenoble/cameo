@@ -46,7 +46,9 @@ public class TestBasicResponder {
 			System.exit(-1);
 		}
 		
-		Server server = This.getServer();
+		//Server server = This.getServer();
+		Server server = new Server("tcp://localhost:10000", 0, true);
+		//Server server = new Server("tcp://localhost:11000", 0, false);
 		
 		try {
 			
@@ -128,6 +130,7 @@ public class TestBasicResponder {
 			System.out.println("Requester error:" + e);
 			
 		} finally {
+			server.terminate();
 			This.terminate();
 		}
 		

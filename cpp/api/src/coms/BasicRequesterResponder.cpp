@@ -214,7 +214,7 @@ bool Responder::isCanceled() const {
 // Requester
 
 Requester::Requester() :
-	m_useProxy(true),
+	m_useProxy(false),
 	m_appId(0) {
 
 	m_impl = ImplFactory::createBasicRequester();
@@ -227,6 +227,9 @@ Requester::~Requester() {
 }
 
 void Requester::tryInit(application::Instance & app) {
+
+	// Memorizes proxy.
+	m_useProxy = app.usesProxy();
 
 	// Get the responder data.
 	try {
@@ -241,6 +244,7 @@ void Requester::tryInit(application::Instance & app) {
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
+			// useProxy is inherited, so the server endpoint is the proxy endpoint.
 			endpoint = app.getEndpoint();
 		}
 		else {

@@ -46,7 +46,7 @@ public class Server {
 	private Endpoint serverEndpoint;
 	private boolean useProxy = true;
 	private int[] serverVersion = new int[3];
-	private int responderProxyPort = 11;
+	private int responderProxyPort;
 	private int publisherProxyPort;
 	private int subscriberProxyPort;
 	private int serverStatusPort;
@@ -137,7 +137,8 @@ public class Server {
 		// Get the status port.
 		serverStatusPort = retrieveStatusPort();
 		
-		// Get the publisher and subscriber proxy ports.
+		// Get the proxy ports.
+		responderProxyPort = retrieveResponderProxyPort();
 		publisherProxyPort = retrievePublisherProxyPort();
 		subscriberProxyPort = retrieveSubscriberProxyPort();
 	}
@@ -167,12 +168,20 @@ public class Server {
 		return serverVersion;
 	}
 	
+	public boolean usesProxy() {
+		return useProxy;
+	}
+	
 	public Endpoint getStatusEndpoint() {
 		return serverEndpoint.withPort(statusPort);
 	}
 	
 	Context getContext() {
 		return contextImpl;
+	}
+	
+	int getResponderProxyPort() {
+		return responderProxyPort;
 	}
 	
 	int getPublisherProxyPort() {
@@ -307,6 +316,14 @@ public class Server {
 	private int retrieveStatusPort() throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createStreamStatusRequest();
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
+	
+	private int retrieveResponderProxyPort() throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createResponderProxyPortRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);

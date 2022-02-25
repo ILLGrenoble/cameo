@@ -69,6 +69,8 @@ public class RequesterZmq implements RequesterImpl {
 			// Connect to the proxy. Do not use the responder port.
 			requester.connect(endpoint.toString());
 			
+			System.out.println("Connected requester to " + endpoint.toString());
+			
 			//TODO Shall we set linger to 0?
 		}
 	}
@@ -88,7 +90,7 @@ public class RequesterZmq implements RequesterImpl {
 		return false;
 	}
 		
-	public void init(Endpoint endpoint, String responderIdentity, int responderPort) {
+	public void init(Endpoint endpoint, String responderIdentity) {
 		
 		this.endpoint = endpoint;
 		this.responderIdentity = responderIdentity;
