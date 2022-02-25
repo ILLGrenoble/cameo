@@ -58,8 +58,10 @@ void RequesterZmq::initSocket() {
 		// Create a socket REQ.
 		m_requester.reset(new zmq::socket_t(m_contextImpl->getContext(), zmq::socket_type::req));
 
-		// Connect to the proxy. Do not use the responder port.
+		// Connect to the endpoint.
 		m_requester->connect(m_endpoint.toString());
+
+		std::cout << "Connected requester to " << m_endpoint.toString() << std::endl;
 
 		// Configure the socket to not wait at close time.
 		int linger = 0;
@@ -92,7 +94,7 @@ bool RequesterZmq::sendSync() {
 	return true;
 }
 
-void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderIdentity, int) {
+void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderIdentity) {
 
 	m_endpoint = endpoint;
 	m_responderIdentity = responderIdentity;

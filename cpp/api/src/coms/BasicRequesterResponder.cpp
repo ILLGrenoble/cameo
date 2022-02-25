@@ -214,6 +214,7 @@ bool Responder::isCanceled() const {
 // Requester
 
 Requester::Requester() :
+	m_useProxy(true),
 	m_appId(0) {
 
 	m_impl = ImplFactory::createBasicRequester();
@@ -236,7 +237,17 @@ void Requester::tryInit(application::Instance & app) {
 
 		int responderPort = jsonData[Responder::PORT.c_str()].GetInt();
 
-		m_impl->init(app.getEndpoint(), StringId::from(m_appId, m_key), responderPort);
+		Endpoint endpoint;
+
+		// The endpoint depends on the use of the proxy.
+		if (m_useProxy) {
+			endpoint = app.getEndpoint();
+		}
+		else {
+			endpoint = app.getEndpoint().withPort(responderPort);
+		}
+
+		m_impl->init(endpoint, StringId::from(m_appId, m_key));
 	}
 	catch (...) {
 		throw RequesterCreationException("Cannot create requester");
@@ -292,6 +303,14 @@ void Requester::setPollingTime(int value) {
 
 void Requester::setTimeout(int value) {
 	m_impl->setTimeout(value);
+}
+
+void Requester::useProxy(bool value) {
+	m_useProxy = value;
+}
+
+bool Requester::usesProxy() {
+	return m_useProxy;
 }
 
 const std::string& Requester::getResponderName() const {
