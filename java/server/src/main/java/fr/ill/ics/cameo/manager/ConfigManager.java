@@ -33,6 +33,7 @@ public final class ConfigManager {
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
+	private int responderProxyPort;
 	private Endpoint responderProxyLocalEndpoint;
 	private Endpoint responderProxyHostEndpoint;
 	private Endpoint subscriberProxyLocalEndpoint;
@@ -223,13 +224,11 @@ public final class ConfigManager {
 
 	public void setResponderProxyPort(String portString) {
 		
-		int port = 0;
-		
 		try {
-			port = Integer.parseInt(portString);
+			responderProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, responder proxy port is not an integer");
+			System.err.println("Error, responder proxy port is not an integer!");
 		}
 		
 		String localhost;
@@ -241,8 +240,8 @@ public final class ConfigManager {
 			localhost = "127.0.0.1"; 
 		}
 		
-		responderProxyLocalEndpoint = new Endpoint(localhost, port);
-		responderProxyHostEndpoint = endpoint.withPort(port);
+		responderProxyLocalEndpoint = new Endpoint(localhost, responderProxyPort);
+		responderProxyHostEndpoint = endpoint.withPort(responderProxyPort);
 	}
 	
 	public Endpoint getResponderProxyLocalEndpoint() {
@@ -251,6 +250,10 @@ public final class ConfigManager {
 	
 	public Endpoint getResponderProxyHostEndpoint() {
 		return responderProxyHostEndpoint;		
+	}
+
+	public int getResponderProxyPort() {
+		return responderProxyPort;
 	}
 
 	public void setPublisherProxyPort(String portString) {

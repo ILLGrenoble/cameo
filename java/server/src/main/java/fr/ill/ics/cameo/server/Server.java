@@ -19,6 +19,8 @@ package fr.ill.ics.cameo.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -41,9 +43,15 @@ public class Server {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private String configFileName;
+	private String proxyPath = Paths.get("build", "cpp", "proxy").toString(); // Default path, useful for tests and examples.
+	private Process repProxyProcess;
+	private Process pubProxyProcess;
 	private InputStream configStream;
 	private static String implementationVersion = "?";
 	private static String buildTimestamp = "?";
+	
+	private final static String CAMEO_REP_PROXY = "cameo-rep-proxy";
+	private final static String CAMEO_PUB_PROXY = "cameo-pub-proxy";
 	
 	/**
 	 * Class storing the version in the major, minor, revision format.
@@ -69,6 +77,54 @@ public class Server {
 	public Server(InputStream configStream) {
 		this.configStream = configStream;
 	}
+
+	private void setProxyPath(String proxyPath) {
+		this.proxyPath = proxyPath;
+	}
+
+	private void startProxies() {
+		
+		// Start the two rep proxy program.
+		Path repProxyPath = Paths.get(proxyPath, CAMEO_REP_PROXY);
+		
+		String repProxyCommandList[] = new String[2];
+		repProxyCommandList[0] = repProxyPath.toString();
+		repProxyCommandList[1] = Integer.toString(ConfigManager.getInstance().getResponderProxyPort());
+		String repProxyCommand = "$ " + repProxyCommandList[0] + " " + repProxyCommandList[1];
+		
+		ProcessBuilder builder = new ProcessBuilder(repProxyCommandList);  
+
+		try {
+			repProxyProcess = builder.start();
+			
+			Log.logger().info("Started proxy with " + repProxyCommand);
+		}
+		catch (IOException e) {
+			Log.logger().severe("Cannot start proxy with " + repProxyCommand);
+		}
+		
+		
+		// Start the two rep proxy program.
+		Path pubProxyPath = Paths.get(proxyPath, CAMEO_PUB_PROXY);
+		
+		String pubProxyCommandList[] = new String[3];
+		pubProxyCommandList[0] = pubProxyPath.toString();
+		pubProxyCommandList[1] = Integer.toString(ConfigManager.getInstance().getPublisherProxyPort());
+		pubProxyCommandList[2] = Integer.toString(ConfigManager.getInstance().getSubscriberProxyPort());
+				
+		String pubProxyCommand = "$ " + pubProxyCommandList[0] + " " + pubProxyCommandList[1] + " " + pubProxyCommandList[2];
+		
+		builder = new ProcessBuilder(pubProxyCommandList);  
+
+		try {
+			pubProxyProcess = builder.start();
+			
+			Log.logger().info("Started proxy with " + pubProxyCommand);
+		}
+		catch (IOException e) {
+			Log.logger().severe("Cannot start proxy with " + pubProxyCommand);
+		}
+	}
 	
 	private void initSocket() {
 		
@@ -93,7 +149,7 @@ public class Server {
 	}
 
 	public void run() {
-		
+
 		// Start the manager.
 		final Manager manager;
 		
@@ -104,6 +160,9 @@ public class Server {
 			manager = new Manager(configStream);
 		}
 
+		// Start the proxies.
+		startProxies();
+		
 		// Create the context.
 		context = new Zmq.Context();
 		
@@ -117,9 +176,21 @@ public class Server {
 
 		// Create a shutdown hook.
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			
 			public void run() {
 
 				manager.killAllApplications();
+				
+				// Kill the proxy programs.
+				// However if the Cameo server is killed with a SIGKILL signal, then the shutdown hook is not called, letting the proxy programs live.  
+				if (repProxyProcess != null) {
+					repProxyProcess.destroyForcibly();
+				}
+				
+				if (pubProxyProcess != null) {
+					pubProxyProcess.destroyForcibly();
+				}
+				
 				Log.logger().fine("Exited");
 			}
 		}));
@@ -361,17 +432,35 @@ public class Server {
 		}
 		
 		String configFile = "";
+		String proxyPath = null;
 		
-		for (int i = 0; i < args.length; ++i) {
+		int i = 0;
+		while (i < args.length) {
 			if (args[i].equals("--log-console")) {
 				Log.enableLogConsole();
 			}
-			if (args[i].endsWith(".xml")) {
+			else if (args[i].equals("--proxy-path")) {
+				++i;
+				if (i < args.length) {
+					proxyPath = args[i];
+				}
+			}
+			else if (args[i].endsWith(".xml")) {
 				configFile = args[i];
 			}
+			++i;
 		}
 
+		// Create the server.
 		Server server = new Server(configFile);
+
+		// Set the proxy path if it is defined.
+		if (proxyPath != null) {
+			server.setProxyPath(proxyPath);
+		}
+		
+		// Start the server with the blocking call run() which waits for requests.
 		server.run();
 	}
+
 }

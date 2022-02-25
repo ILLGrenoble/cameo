@@ -3,10 +3,11 @@ package fr.ill.ics.cameo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
@@ -43,7 +44,9 @@ public class TestSelector {
 		commandList.add("fr.ill.ics.cameo.server.Server");
 		commandList.add(config);
 
-		// Prepare the command
+		// Proxy path is let by default.
+		
+		// Prepare the command.
 		String command[] = new String[commandList.size()];
 		commandList.toArray(command);
 		
@@ -249,7 +252,7 @@ public class TestSelector {
 			// If the server process exists.
 			if (serverProcess != null) {
 				// Destroy the server process.
-				serverProcess.destroyForcibly();
+				serverProcess.destroy();
 				
 				// Waiting for the server that should not return without
 				// interruption.
