@@ -60,6 +60,9 @@ class Instance;
 struct ServerAndInstance {
 	std::unique_ptr<Server> server;
 	std::unique_ptr<Instance> instance;
+
+	std::unique_ptr<Server> getServer();
+	std::unique_ptr<Instance> getInstance();
 };
 
 

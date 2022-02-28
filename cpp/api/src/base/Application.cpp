@@ -53,6 +53,15 @@ namespace application {
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
 
+std::unique_ptr<Server> ServerAndInstance::getServer() {
+	return std::move(server);
+}
+
+std::unique_ptr<Instance> ServerAndInstance::getInstance() {
+	return std::move(instance);
+}
+
+
 This::Com::Com(Server * server, int applicationId) :
 	m_server(server),
 	m_applicationId(applicationId) {

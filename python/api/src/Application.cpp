@@ -50,6 +50,10 @@ PYBIND11_MODULE(cameopy, m) {
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.
 	// If the policy is not set, the bindings are blocking other Python running threads.
 
+	py::class_<ServerAndInstance>(m, "ServerAndInstance")
+		    .def("getServer", &ServerAndInstance::getServer)
+			.def("getInstance", &ServerAndInstance::getInstance);
+
 	py::class_<This>(m, "This")
 	    .def_static(
 		"init",
@@ -91,7 +95,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("setResult", &This::setResult,
 	    		"data"_a,
 				py::call_guard<py::gil_scoped_release>())
-	    .def_static("connectToStarter", &This::connectToStarter, py::call_guard<py::gil_scoped_release>());
+	    .def_static("connectToStarter", &This::connectToStarter,
+	    		"options"_a = 0,
+				"useProxy"_a = false,
+	    		py::call_guard<py::gil_scoped_release>());
 
 	py::class_<cameo::Output>(m, "Output")
 		.def("getId", &cameo::Output::getId)
@@ -186,7 +193,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("reply", &basic::Request::reply,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connectToRequester", &basic::Request::connectToRequester, py::call_guard<py::gil_scoped_release>());
+	    .def("connectToRequester", &basic::Request::connectToRequester,
+	    		"options"_a = 0,
+				"useProxy"_a = false,
+	    		py::call_guard<py::gil_scoped_release>());
 
 	py::class_<basic::Responder>(m, "Responder")
 	    .def_static("create", &basic::Responder::create,

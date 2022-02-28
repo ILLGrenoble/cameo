@@ -7,8 +7,10 @@ this.init(sys.argv)
 
 starter = this.connectToStarter()
 
+app = starter.getInstance()
+
 # Create a requester.
-requester = cameopy.Requester.create(starter, "responder")
+requester = cameopy.Requester.create(app, "responder")
 
 this.setRunning()
 
