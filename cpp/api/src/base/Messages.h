@@ -76,7 +76,7 @@ namespace message {
 		constexpr const char* ID = "id"; // int32
 		constexpr const char* SERVER = "server"; // string
 		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starter_proxy_port"; // int32
+		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	namespace SyncStreamRequest {
@@ -87,7 +87,7 @@ namespace message {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* ARGS = "args"; // repeated string args = 2;
 		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starter_proxy_port"; // int32
+		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	namespace RequestResponse {
@@ -97,7 +97,7 @@ namespace message {
 
 	namespace SetStopHandlerRequest {
 		constexpr const char* ID = "id"; // int32
-		constexpr const char* STOPPING_TIME = "stopping_time"; // int32
+		constexpr const char* STOPPING_TIME = "stoppingTime"; // int32
 	}
 
 	namespace StopRequest {

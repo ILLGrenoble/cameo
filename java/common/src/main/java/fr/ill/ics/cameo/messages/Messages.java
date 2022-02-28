@@ -64,7 +64,7 @@ public class Messages {
 		public static final String ID = "id"; // int32
 		public static final String SERVER = "server"; // string
 		public static final String STARTER = "starter"; // object
-		public static final String STARTER_PROXY_PORT = "starter_proxy_port"; // int32
+		public static final String STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	public static class SyncStreamRequest {
@@ -75,7 +75,7 @@ public class Messages {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String ARGS = "args"; // repeated string args = 2;
 		public static final String STARTER = "starter"; // object
-		public static final String STARTER_PROXY_PORT = "starter_proxy_port"; // int32
+		public static final String STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	public static class RequestResponse {
@@ -85,7 +85,7 @@ public class Messages {
 
 	public static class SetStopHandlerRequest {
 		public static final String ID = "id"; // int32
-		public static final String STOPPING_TIME = "stopping_time"; // int32
+		public static final String STOPPING_TIME = "stoppingTime"; // int32
 	}
 
 	public static class StopRequest {
