@@ -42,7 +42,9 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	Server& server = application::This::getServer();
+	//Server& server = application::This::getServer();
+	//Server server("tcp://gamma36:10000", 0, true);
+	Server server("tcp://gamma36:11000", 0, false);
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {

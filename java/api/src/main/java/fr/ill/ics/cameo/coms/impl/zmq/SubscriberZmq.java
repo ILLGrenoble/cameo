@@ -39,7 +39,7 @@ public class SubscriberZmq implements SubscriberImpl {
 	private boolean ended = false;
 	private boolean canceled = false;
 	
-	public void init(int appId, Endpoint appEndpoint, Endpoint appStatusEndpoint, String publisherIdentity, int publisherPort) {
+	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity) {
 
 		this.appId = appId;
 		this.publisherIdentity = publisherIdentity;
@@ -48,9 +48,9 @@ public class SubscriberZmq implements SubscriberImpl {
 		
 		// Create the subscriber
 		subscriber = context.createSocket(Zmq.SUB);
+		subscriber.connect(endpoint.toString());
 		
-		Endpoint publisherEndpoint = appEndpoint.withPort(publisherPort);
-		subscriber.connect(publisherEndpoint.toString());
+		System.out.println("Connected subscriber to " + endpoint.toString());
 		
 		// Subcribe to the publisher.
 		subscriber.subscribe(publisherIdentity);

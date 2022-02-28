@@ -47,8 +47,8 @@ public class TestBasicResponder {
 		}
 		
 		//Server server = This.getServer();
-		Server server = new Server("tcp://localhost:10000", 0, true);
-		//Server server = new Server("tcp://localhost:11000", 0, false);
+		//Server server = new Server("tcp://localhost:10000", 0, true);
+		Server server = new Server("tcp://localhost:11000", 0, false);
 		
 		try {
 			
