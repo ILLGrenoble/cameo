@@ -16,8 +16,8 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.ServerAndInstance;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -44,7 +44,6 @@ public class BasicResponder {
 
 			// Reply.
 			request.reply("1st response");
-			request.terminate();
 			
 			// Receive the second request.
 			request = responder.receive();
@@ -54,7 +53,6 @@ public class BasicResponder {
 
 			// Reply.
 			request.reply("2nd response");
-			request.terminate();
 			
 			// Receive the third request.
 			request = responder.receive();
@@ -62,7 +60,6 @@ public class BasicResponder {
 
 			// Reply.
 			request.reply("3rd response");
-			request.terminate();
 			
 			System.out.println("Replied 3rd response");			
 			
@@ -80,7 +77,6 @@ public class BasicResponder {
 			
 			// Reply.
 			request.reply("4th response");
-			request.terminate();
 			
 			
 			// Receive the fifth request.
@@ -90,10 +86,9 @@ public class BasicResponder {
 			request.reply("5th response");
 			
 			// Test connection.
-			Instance requester = request.connectToRequester();
-			System.out.println("Requester is " + requester);
+			ServerAndInstance requester = request.connectToRequester();
+			System.out.println("Requester is " + requester.getInstance());
 			
-			request.terminate();
 			requester.terminate();
 			
 			// Terminate the responder.

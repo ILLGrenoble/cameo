@@ -44,7 +44,7 @@ import fr.ill.ics.cameo.strings.StringId;
 public class Server {
 
 	private Endpoint serverEndpoint;
-	private boolean useProxy = true;
+	private boolean useProxy = false;
 	private int[] serverVersion = new int[3];
 	private int responderProxyPort;
 	private int publisherProxyPort;

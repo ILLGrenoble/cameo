@@ -65,8 +65,6 @@ public class RequesterZmq implements RequesterImpl {
 		if (requester == null) {
 			// Create the REQ socket.
 			requester = context.createSocket(Zmq.REQ);
-			
-			// Connect to the proxy. Do not use the responder port.
 			requester.connect(endpoint.toString());
 			
 			System.out.println("Connected requester to " + endpoint.toString());

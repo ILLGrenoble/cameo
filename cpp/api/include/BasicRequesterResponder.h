@@ -53,12 +53,7 @@ public:
 	bool replyBinary(const std::string &response);
 	bool reply(const std::string &response);
 
-	std::unique_ptr<application::Instance> connectToRequester();
-
-	/**
-	 * Transfers the ownership of the requester server.
-	 */
-	std::unique_ptr<Server> getServer();
+	application::ServerAndInstance connectToRequester(int options = 0, bool useProxy = false);
 
 private:
 	void setResponder(Responder* responder);
@@ -70,8 +65,6 @@ private:
 	int m_requesterApplicationId;
 	std::string m_requesterServerEndpoint;
 	int m_timeout;
-
-	std::unique_ptr<Server> m_requesterServer;
 };
 
 ///////////////////////////////////////////////////////////////////////////

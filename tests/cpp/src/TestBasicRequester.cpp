@@ -44,7 +44,9 @@ int main(int argc, char *argv[]) {
 
 
 
-	Server& server = application::This::getServer();
+	//Server& server = application::This::getServer();
+	Server server("tcp://gamma36:10000", 0, true);
+	//Server server("tcp://gamma36:11000", 0, false);
 
 	application::This::setRunning();
 

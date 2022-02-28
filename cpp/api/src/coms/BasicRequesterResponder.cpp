@@ -107,28 +107,28 @@ bool Request::reply(const std::string& response) {
 	return replyBinary(result);
 }
 
-std::unique_ptr<application::Instance> Request::connectToRequester() {
+application::ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
 
-	// Instantiate the requester server if it does not exist.
-	if (m_requesterServer.get() == nullptr) {
-		m_requesterServer.reset(new Server(m_requesterServerEndpoint, m_timeout));
+	application::ServerAndInstance result;
+
+	// Create the starter server.
+	if (m_requesterServerEndpoint == "") {
+		return {};
 	}
 
-	// Connect and find the instance.
-	application::InstanceArray instances = m_requesterServer->connectAll(m_requesterApplicationName);
+	result.server = std::make_unique<Server>(m_requesterServerEndpoint, 0, useProxy);
 
-	for (size_t i = 0; i < instances.size(); i++) {
-		if (instances[i]->getId() == m_requesterApplicationId) {
-			return std::unique_ptr<application::Instance>(std::move(instances[i]));
+	// Iterate the instances to find the id
+	application::InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);
+
+	for (auto i = instances.begin(); i != instances.end(); ++i) {
+		if ((*i)->getId() == m_requesterApplicationId) {
+			result.instance = std::unique_ptr<application::Instance>(std::move(*i));
+			break;
 		}
 	}
 
-	// Not found.
-	return std::unique_ptr<application::Instance>(nullptr);
-}
-
-std::unique_ptr<Server> Request::getServer() {
-	return std::move(m_requesterServer);
+	return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -238,16 +238,15 @@ void Requester::tryInit(application::Instance & app) {
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
 
-		int responderPort = jsonData[Responder::PORT.c_str()].GetInt();
-
 		Endpoint endpoint;
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			// useProxy is inherited, so the server endpoint is the proxy endpoint.
-			endpoint = app.getEndpoint();
+			int responderPort = app.getCom().getResponderProxyPort();
+			endpoint = app.getEndpoint().withPort(responderPort);
 		}
 		else {
+			int responderPort = jsonData[Responder::PORT.c_str()].GetInt();
 			endpoint = app.getEndpoint().withPort(responderPort);
 		}
 

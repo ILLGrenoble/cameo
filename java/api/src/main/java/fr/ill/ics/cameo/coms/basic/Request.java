@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.ServerAndInstance;
 import fr.ill.ics.cameo.messages.Messages;
 
 /**
@@ -15,7 +16,6 @@ import fr.ill.ics.cameo.messages.Messages;
 public class Request {
 	
 	private Responder responder = null;
-	private Server requesterServer = null;
 	private byte[] messagePart1;
 	private byte[] messagePart2;
 	private String requesterApplicationName;
@@ -73,44 +73,37 @@ public class Request {
 		return reply(Messages.serialize(response));
 	}
 	
-	public Instance connectToRequester() {
+	public ServerAndInstance connectToRequester(int options, boolean useProxy) {
 		
-		// Instantiate the requester server if it is null.
-		if (requesterServer == null) {
-			requesterServer = new Server(requesterServerEndpoint, timeout);
-		}	
+		if (requesterServerEndpoint == null) {
+			return null;
+		}
 		
-		// Connect and find the instance.
-		List<Instance> instances = requesterServer.connectAll(requesterApplicationName);
+		Server starterServer = new Server(requesterServerEndpoint, 0, useProxy);
 		
-		for (Instance instance : instances) {
-			if (instance.getId() == requesterApplicationId) {
-				return instance;
+		// Iterate the instances to find the id
+		Instance starterInstance = null;
+		List<Instance> instances = starterServer.connectAll(requesterApplicationName, options);
+		for (Instance i : instances) {
+			if (i.getId() == requesterApplicationId) {
+				starterInstance = i;
+				break;
 			}
 		}
 		
-		// Not found.
-		return null;
-	}
-	
-	/**
-	 * Gets the requester server and transfers the ownership. The client code is responsible to terminate the server.
-	 * @return
-	 */
-	public Server getServer() {
-		
-		// Transfers the ownership of the server.
-		Server result = requesterServer;
-		requesterServer = null;
-		
-		return result;
-	}
-	
-	public void terminate() {
-		
-		if (requesterServer != null) {
-			requesterServer.terminate();
+		if (starterInstance == null) {
+			return null;
 		}
+		
+		return new ServerAndInstance(starterServer, starterInstance);
+	}
+	
+	public ServerAndInstance connectToRequester(int options) {
+		return connectToRequester(options, false);
+	}
+	
+	public ServerAndInstance connectToRequester() {
+		return connectToRequester(0, false);
 	}
 
 	@Override

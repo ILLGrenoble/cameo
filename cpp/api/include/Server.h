@@ -51,8 +51,8 @@ class Server {
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
-	Server(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = true);
-	Server(const std::string& endpoint, int timeoutMs = 0, bool useProxy = true);
+	Server(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = false);
+	Server(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
 	~Server();
 
 	void setTimeout(int value);

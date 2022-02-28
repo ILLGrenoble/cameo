@@ -51,19 +51,17 @@ public class Requester {
 		// Get the responder data.
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
-			
 			JSONObject jsonData = This.getCom().parse(jsonString);
-			
-			int responderPort = JSON.getInt(jsonData, Responder.PORT);
 					
 			Endpoint endpoint;
 			
 			// The endpoint depends on the use of the proxy.
 			if (useProxy) {
-				// useProxy is inherited, so the server endpoint is the proxy endpoint.
-				endpoint = app.getEndpoint();
+				int responderPort = app.getCom().getResponderProxyPort();
+				endpoint = app.getEndpoint().withPort(responderPort);
 			}
 			else {
+				int responderPort = JSON.getInt(jsonData, Responder.PORT);
 				endpoint = app.getEndpoint().withPort(responderPort);
 			}
 			

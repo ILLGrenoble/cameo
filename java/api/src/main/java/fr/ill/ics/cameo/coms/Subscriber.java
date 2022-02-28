@@ -44,7 +44,6 @@ public class Subscriber {
 		// Get the publisher data.
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
-			
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			

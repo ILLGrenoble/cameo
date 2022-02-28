@@ -166,6 +166,7 @@ This::This() :
 	m_id(-1),
 	m_registered(false),
 	m_starterId(0),
+	m_starterProxyPort(0),
 	m_inited(false) {
 }
 
@@ -198,6 +199,7 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterEndpoint = Endpoint::parse(starterValue[message::ApplicationIdentity::SERVER].GetString());
 		m_starterName = starterValue[message::ApplicationIdentity::NAME].GetString();
 		m_starterId = starterValue[message::ApplicationIdentity::ID].GetInt();
+		m_starterProxyPort = infoObject[message::ApplicationIdentity::STARTER_PROXY_PORT].GetInt();
 	}
 
 	// Init the app.
@@ -231,11 +233,6 @@ void This::initApplication() {
 			throw UnregisteredApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
 		}
 		m_id = id;
-	}
-
-	// Create the starter server.
-	if (m_starterEndpoint.getAddress() != "") {
-		m_starterServer = std::make_unique<Server>(m_starterEndpoint);
 	}
 
 	m_waitingSet = std::make_unique<WaitingSet>();
@@ -292,15 +289,6 @@ Server& This::getServer() {
 
 const This::Com& This::getCom() {
 	return *m_instance.m_com;
-}
-
-Server& This::getStarterServer() {
-
-	if (m_instance.m_starterServer.get() == nullptr) {
-		throw StarterServerException();
-	}
-
-	return *m_instance.m_starterServer;
 }
 
 bool This::isAvailable(int timeout) {
@@ -390,22 +378,34 @@ State This::waitForStop() {
 	return UNKNOWN;
 }
 
-std::unique_ptr<Instance> This::connectToStarter() {
+ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 
-	if (m_instance.m_starterServer.get() == nullptr) {
-		return std::unique_ptr<Instance>(nullptr);
+	ServerAndInstance result;
+
+	// Create the starter server.
+	if (m_instance.m_starterEndpoint.getAddress() == "") {
+		return {};
+	}
+
+	// Create the server with proxy or not.
+	if (useProxy) {
+		result.server = std::make_unique<Server>(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
+	}
+	else {
+		result.server = std::make_unique<Server>(m_instance.m_starterEndpoint, 0, false);
 	}
 
 	// Iterate the instances to find the id
-	InstanceArray instances = m_instance.m_starterServer->connectAll(m_instance.m_starterName);
+	InstanceArray instances = result.server->connectAll(m_instance.m_starterName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_instance.m_starterId) {
-			return std::unique_ptr<Instance>(std::move(*i));
+			result.instance = std::unique_ptr<Instance>(std::move(*i));
+			break;
 		}
 	}
 
-	return std::unique_ptr<Instance>(nullptr);
+	return result;
 }
 
 void This::stoppingFunction(StopFunctionType stop) {

@@ -75,7 +75,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("getEndpoint", &This::getEndpoint)
 	    .def_static("getServer", &This::getServer, py::return_value_policy::reference)
 	    .def_static("getCom", &This::getCom)
-	    .def_static("getStarterServer", &This::getStarterServer)
 	    .def_static("isAvailable", &This::isAvailable,
 	    		"timeout"_a = 10000,
 	    		py::call_guard<py::gil_scoped_release>()) //, py::arg("timeout") = 1000) // this does not work!
@@ -187,9 +186,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("reply", &basic::Request::reply,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connectToRequester", &basic::Request::connectToRequester, py::call_guard<py::gil_scoped_release>())
-	    // the following require "Server.h"
-	    .def("getServer", &basic::Request::getServer);
+	    .def("connectToRequester", &basic::Request::connectToRequester, py::call_guard<py::gil_scoped_release>());
 
 	py::class_<basic::Responder>(m, "Responder")
 	    .def_static("create", &basic::Responder::create,

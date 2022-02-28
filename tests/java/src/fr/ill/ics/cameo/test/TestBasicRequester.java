@@ -44,8 +44,9 @@ public class TestBasicRequester {
 			System.exit(-1);
 		}
 		
-		// get the client services
-		Server server = This.getServer();
+		//Server server = This.getServer();
+		Server server = new Server("tcp://localhost:10000", 0, true);
+		//Server server = new Server("tcp://localhost:11000", 0, false);
 		
 		try {
 			// Set the state.
@@ -83,9 +84,6 @@ public class TestBasicRequester {
 		    		request.reply("done");
 		    		
 		    		System.out.println("Processed " + request);
-		    		
-					// Terminate the request.
-					request.terminate();
 				}
 				
 				// Wait for the requester applications.
@@ -96,11 +94,12 @@ public class TestBasicRequester {
 				
 				responder.terminate();
 			}
-			
-		} catch (RemoteException e) {
+		}
+		catch (RemoteException e) {
 			System.out.println("Requester error:" + e);
-			
-		} finally {
+		}
+		finally {
+			server.terminate();
 			This.terminate();
 		}
 		
