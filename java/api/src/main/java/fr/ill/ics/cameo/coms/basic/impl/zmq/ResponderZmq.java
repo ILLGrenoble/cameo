@@ -178,8 +178,8 @@ public class ResponderZmq implements ResponderImpl {
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
 		
-		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().toString(), responderIdentity);
+		// Create the request socket connected directly to the responder. We can create it here because it should be called only once.
+		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().withPort(responderPort).toString(), responderIdentity);
 		requestSocket.requestJSON(jsonRequest);
 		
 		// Terminate the socket.
