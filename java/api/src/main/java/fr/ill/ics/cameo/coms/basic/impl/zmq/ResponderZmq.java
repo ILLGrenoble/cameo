@@ -124,8 +124,8 @@ public class ResponderZmq implements ResponderImpl {
 	
 					String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
 					int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
-					String serverUrl = JSON.getString(request, Messages.Request.SERVER_URL);
-					int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
+					String serverEndpoint = JSON.getString(request, Messages.Request.SERVER_ENDPOINT);
+					int serverProxyPort = JSON.getInt(request, Messages.Request.SERVER_PROXY_PORT);
 					
 					byte[] messagePart1 = data[5];
 					byte[] messagePart2 = null;
@@ -134,7 +134,7 @@ public class ResponderZmq implements ResponderImpl {
 					}
 					
 					// Return the request but do not reply to the client now. This will be done by the Request.			
-					return new Request(name, id, serverUrl, serverPort, messagePart1, messagePart2);
+					return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
 				}
 				else if (type == Messages.CANCEL) {
 					canceled = true;

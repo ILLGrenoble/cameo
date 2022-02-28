@@ -200,8 +200,8 @@ namespace message {
 	namespace Request {
 		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
 		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		constexpr const char* SERVER_URL = "serverUrl"; // required string serverUrl = 5;
-		constexpr const char* SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
+		constexpr const char* SERVER_ENDPOINT = "serverEndpoint";
+		constexpr const char* SERVER_PROXY_PORT = "serverProxyPort";
 		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 

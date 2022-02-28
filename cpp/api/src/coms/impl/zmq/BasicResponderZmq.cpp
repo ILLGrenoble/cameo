@@ -139,8 +139,8 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 
 			std::string name = jsonRequest[message::Request::APPLICATION_NAME].GetString();
 			int id = jsonRequest[message::Request::APPLICATION_ID].GetInt();
-			std::string serverUrl = jsonRequest[message::Request::SERVER_URL].GetString();
-			int serverPort = jsonRequest[message::Request::SERVER_PORT].GetInt();
+			std::string serverEndpoint = jsonRequest[message::Request::SERVER_ENDPOINT].GetString();
+			int serverProxyPort = jsonRequest[message::Request::SERVER_PROXY_PORT].GetInt();
 
 			// Get the second part for the message.
 			zmq::message_t secondPart;
@@ -162,8 +162,8 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 			// Create the request.
 			return std::unique_ptr<Request>(new Request(name,
 					id,
-					serverUrl,
-					serverPort,
+					serverEndpoint,
+					serverProxyPort,
 					message1,
 					message2));
 		}

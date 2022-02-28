@@ -86,7 +86,7 @@ public class BasicResponder {
 			request.reply("5th response");
 			
 			// Test connection.
-			ServerAndInstance requester = request.connectToRequester();
+			ServerAndInstance requester = request.connectToRequester(0, true);
 			System.out.println("Requester is " + requester.getInstance());
 			
 			requester.terminate();

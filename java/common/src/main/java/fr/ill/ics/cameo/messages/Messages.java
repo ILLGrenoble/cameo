@@ -192,8 +192,8 @@ public class Messages {
 	public static class Request {
 		public static final String APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
 		public static final String APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		public static final String SERVER_URL = "serverUrl"; // required string serverUrl = 5;
-		public static final String SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
+		public static final String SERVER_ENDPOINT = "serverEndpoint";
+		public static final String SERVER_PROXY_PORT = "serverProxyPort";
 		public static final String REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 

@@ -51,11 +51,11 @@ std::string Request::getObjectId() const {
 		+ "."
 		+ std::to_string(m_requesterApplicationId)
 		+ "@"
-		+ m_requesterServerEndpoint;
+		+ m_requesterServerEndpoint.toString();
 }
 
 std::string Request::getRequesterEndpoint() const {
-	return m_requesterServerEndpoint;
+	return m_requesterServerEndpoint.toString();
 }
 
 const std::string& Request::getBinary() const {
@@ -74,7 +74,7 @@ const std::string& Request::getSecondBinaryPart() const {
 	return m_messagePart2;
 }
 
-Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverUrl, int serverPort, const std::string& messagePart1, const std::string& messagePart2) :
+Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2) :
 	m_responder(nullptr),
 	m_messagePart1(messagePart1),
 	m_messagePart2(messagePart2),
@@ -82,9 +82,8 @@ Request::Request(const std::string & requesterApplicationName, int requesterAppl
 	m_requesterApplicationId(requesterApplicationId),
 	m_timeout(0) {
 
-	std::stringstream requesterServerEndpoint;
-	requesterServerEndpoint << serverUrl << ":" << serverPort;
-	m_requesterServerEndpoint = requesterServerEndpoint.str();
+	m_requesterServerEndpoint = Endpoint::parse(serverEndpoint);
+	m_requesterServerProxyPort = serverProxyPort;
 }
 
 bool Request::replyBinary(const std::string& response) {
@@ -112,11 +111,16 @@ application::ServerAndInstance Request::connectToRequester(int options, bool use
 	application::ServerAndInstance result;
 
 	// Create the starter server.
-	if (m_requesterServerEndpoint == "") {
+	if (m_requesterServerEndpoint.getAddress() == "") {
 		return {};
 	}
 
-	result.server = std::make_unique<Server>(m_requesterServerEndpoint, 0, useProxy);
+	if (useProxy) {
+		result.server = std::make_unique<Server>(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), options, true);
+	}
+	else {
+		result.server = std::make_unique<Server>(m_requesterServerEndpoint.toString(), options, false);
+	}
 
 	// Iterate the instances to find the id
 	application::InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);

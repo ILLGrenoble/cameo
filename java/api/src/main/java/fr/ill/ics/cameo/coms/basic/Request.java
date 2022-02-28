@@ -8,6 +8,7 @@ import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.ServerAndInstance;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * Class Request.
@@ -20,10 +21,11 @@ public class Request {
 	private byte[] messagePart2;
 	private String requesterApplicationName;
 	private int requesterApplicationId;
-	private String requesterServerEndpoint;
+	private Endpoint requesterServerEndpoint;
+	private int requesterServerProxyPort;
 	private int timeout = 0;
 		
-	public Request(String requesterApplicationName, int requesterApplicationId, String serverUrl, int serverPort, byte[] messagePart1, byte[] messagePart2) {
+	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] messagePart1, byte[] messagePart2) {
 		
 		this.messagePart1 = messagePart1;
 		this.messagePart2 = messagePart2;
@@ -31,7 +33,8 @@ public class Request {
 		this.requesterApplicationName = requesterApplicationName;
 		this.requesterApplicationId = requesterApplicationId;
 		
-		this.requesterServerEndpoint = serverUrl + ":" + serverPort;
+		this.requesterServerEndpoint = Endpoint.parse(serverEndpoint);
+		this.requesterServerProxyPort = serverProxyPort;
 	}
 	
 	void setResponder(Responder responder) {
@@ -79,7 +82,14 @@ public class Request {
 			return null;
 		}
 		
-		Server starterServer = new Server(requesterServerEndpoint, 0, useProxy);
+		Server starterServer;
+		
+		if (useProxy) {
+			starterServer = new Server(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
+		}
+		else {
+			starterServer = new Server(requesterServerEndpoint, 0, false);	
+		}
 		
 		// Iterate the instances to find the id
 		Instance starterInstance = null;

@@ -209,11 +209,11 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 	jsonRequest.pushKey(message::Request::APPLICATION_ID);
 	jsonRequest.pushValue(application::This::getId());
 
-	jsonRequest.pushKey(message::Request::SERVER_URL);
-	jsonRequest.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
+	jsonRequest.pushValue(application::This::getEndpoint().toString());
 
-	jsonRequest.pushKey(message::Request::SERVER_PORT);
-	jsonRequest.pushValue(application::This::getEndpoint().getPort());
+	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
+	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
 
 	// Send the request.
 	sendRequest(jsonRequest.toString(), requestData);
@@ -238,11 +238,11 @@ void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std
 	jsonRequest.pushKey(message::Request::APPLICATION_ID);
 	jsonRequest.pushValue(application::This::getId());
 
-	jsonRequest.pushKey(message::Request::SERVER_URL);
-	jsonRequest.pushValue(application::This::getEndpoint().getProtocol() + "://" + application::This::getEndpoint().getAddress());
+	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
+	jsonRequest.pushValue(application::This::getEndpoint().toString());
 
-	jsonRequest.pushKey(message::Request::SERVER_PORT);
-	jsonRequest.pushValue(application::This::getEndpoint().getPort());
+	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
+	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
 
 	// Send the request.
 	sendRequest(jsonRequest.toString(), requestData1, requestData2);
