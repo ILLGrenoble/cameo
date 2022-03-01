@@ -20,7 +20,6 @@
 #include "../BasicRequesterImpl.h"
 #include "Waiting.h"
 #include "Strings.h"
-#include <string>
 #include <optional>
 #include <atomic>
 #include <zmq.hpp>

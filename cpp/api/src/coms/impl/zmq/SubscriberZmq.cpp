@@ -23,8 +23,6 @@
 #include "ContextZmq.h"
 #include "CancelIdGenerator.h"
 #include "../PublisherImpl.h"
-#include <sstream>
-
 
 namespace cameo {
 namespace coms {

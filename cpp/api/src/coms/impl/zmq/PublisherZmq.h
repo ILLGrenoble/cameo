@@ -19,7 +19,6 @@
 
 #include "../PublisherImpl.h"
 #include <memory>
-#include <string>
 #include <zmq.hpp>
 
 namespace cameo {

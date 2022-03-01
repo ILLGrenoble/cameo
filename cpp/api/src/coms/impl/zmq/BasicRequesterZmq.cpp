@@ -19,8 +19,6 @@
 #include "Messages.h"
 #include "JSON.h"
 #include "ContextZmq.h"
-#include <zmq.hpp>
-#include <sstream>
 
 namespace cameo {
 namespace coms {

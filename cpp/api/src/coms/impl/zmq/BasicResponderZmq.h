@@ -17,8 +17,8 @@
 #ifndef CAMEO_COMS_BASIC_RESPONDERZMQ_H_
 #define CAMEO_COMS_BASIC_RESPONDERZMQ_H_
 
-#include <zmq.hpp>
 #include "../BasicResponderImpl.h"
+#include <zmq.hpp>
 
 namespace cameo {
 namespace coms {

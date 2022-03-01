@@ -21,7 +21,6 @@
 #include "BasicRequesterResponder.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
-#include <sstream>
 
 namespace cameo {
 namespace coms {
