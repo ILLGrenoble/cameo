@@ -63,11 +63,7 @@ const std::string& Request::getBinary() const {
 }
 
 std::string Request::get() const {
-
-	std::string data;
-	parse(m_messagePart1, data);
-
-	return data;
+	return m_messagePart1;
 }
 
 const std::string& Request::getSecondBinaryPart() const {
@@ -98,12 +94,7 @@ bool Request::replyBinary(const std::string& response) {
 }
 
 bool Request::reply(const std::string& response) {
-
-	// Encode the data.
-	std::string result;
-	serialize(response, result);
-
-	return replyBinary(result);
+	return replyBinary(response);
 }
 
 application::ServerAndInstance Request::connectToRequester(int options, bool useProxy) {

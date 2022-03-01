@@ -342,10 +342,7 @@ void This::setBinaryResult(const std::string& data) {
 }
 
 void This::setResult(const std::string& data) {
-
-	std::string resultData;
-	serialize(data, resultData);
-	setBinaryResult(resultData);
+	setBinaryResult(data);
 }
 
 State This::getState(int id) const {

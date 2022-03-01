@@ -16,7 +16,6 @@
 
 #include "BasicResponderZmq.h"
 #include "Application.h"
-#include "Serializer.h"
 #include "JSON.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
 #include "../../../base/Messages.h"

@@ -15,7 +15,6 @@
  */
 
 #include "SubscriberZmq.h"
-#include "Serializer.h"
 #include "Server.h"
 #include "JSON.h"
 #include "../../../base/CancelIdGenerator.h"

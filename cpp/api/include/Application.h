@@ -25,7 +25,6 @@
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
 #include "Response.h"
-#include "Serializer.h"
 #include "Context.h"
 #include "TimeCondition.h"
 #include "EventListener.h"

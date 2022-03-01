@@ -82,10 +82,7 @@ int main(int argc, char *argv[]) {
 		// Send a two-parts message.
 		string buffer1, buffer2;
 
-		serialize("first", buffer1);
-		serialize("second", buffer2);
-
-		requester->sendTwoBinaryParts(buffer1, buffer2);
+		requester->sendTwoBinaryParts("first", "second");
 
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;

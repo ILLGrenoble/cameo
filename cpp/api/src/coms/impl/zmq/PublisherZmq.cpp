@@ -16,7 +16,6 @@
 
 #include "PublisherZmq.h"
 #include "Application.h"
-#include "Serializer.h"
 #include "JSON.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
 #include "../../../base/Messages.h"
@@ -78,12 +77,8 @@ void PublisherZmq::sendBinary(const std::string& data) {
 
 void PublisherZmq::send(const std::string& data) {
 
-	// encode the data
-	std::string result;
-	serialize(data, result);
-
 	// send a STREAM message by the publisher socket
-	publish(result.c_str(), result.length());
+	publish(data.c_str(), data.length());
 }
 
 void PublisherZmq::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {

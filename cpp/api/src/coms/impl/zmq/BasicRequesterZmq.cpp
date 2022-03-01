@@ -16,7 +16,6 @@
 
 #include "BasicRequesterZmq.h"
 #include "Application.h"
-#include "Serializer.h"
 #include "JSON.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
 #include "../../../base/Messages.h"
@@ -218,10 +217,7 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 }
 
 void RequesterZmq::send(const std::string& requestData) {
-
-	std::string result;
-	serialize(requestData, result);
-	sendBinary(result);
+	sendBinary(requestData);
 }
 
 void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) {
