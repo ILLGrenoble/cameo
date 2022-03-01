@@ -25,6 +25,7 @@
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "Strings.h"
+#include "JSON.h"
 #include "Server.h"
 #include "Messages.h"
 #include "Waiting.h"

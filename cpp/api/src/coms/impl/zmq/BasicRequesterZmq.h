@@ -18,7 +18,6 @@
 #define CAMEO_COMS_BASIC_REQUESTERZMQ_H_
 
 #include "../BasicRequesterImpl.h"
-#include "Waiting.h"
 #include "Strings.h"
 #include <optional>
 #include <atomic>
