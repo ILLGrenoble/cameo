@@ -61,9 +61,6 @@ public class ResponderApp {
 	
 				// Reply.
 				request.reply("done");
-				
-				// Terminate the request object.
-				request.terminate();
 			}
 						
 		} catch (RemoteException e) {
