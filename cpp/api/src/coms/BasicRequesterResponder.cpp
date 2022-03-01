@@ -16,11 +16,11 @@
 
 #include "BasicRequesterResponder.h"
 
+#include "RequestSocket.h"
 #include "Messages.h"
 #include "JSON.h"
 #include "Server.h"
 #include "../base/impl/zmq/ContextZmq.h"
-#include "../base/RequestSocket.h"
 #include "../factory/ImplFactory.h"
 #include "impl/zmq/BasicRequesterZmq.h"
 #include "impl/zmq/BasicResponderZmq.h"

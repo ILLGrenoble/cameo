@@ -18,8 +18,8 @@
 #include "Application.h"
 #include "Messages.h"
 #include "JSON.h"
+#include "RequestSocket.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
-#include "../../../base/RequestSocket.h"
 #include <sstream>
 
 

@@ -19,8 +19,8 @@
 #include "Messages.h"
 #include "JSON.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
-#include "../../../base/RequestSocket.h"
 #include "BasicRequesterResponder.h"
+#include "RequestSocket.h"
 #include <sstream>
 
 namespace cameo {

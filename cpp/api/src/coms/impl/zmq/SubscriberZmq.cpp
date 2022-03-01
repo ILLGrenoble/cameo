@@ -19,11 +19,12 @@
 #include "Messages.h"
 #include "JSON.h"
 #include "Waiting.h"
+#include "RequestSocket.h"
 #include "../../../base/CancelIdGenerator.h"
-#include "../../../base/RequestSocket.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
 #include "../../../coms/impl/PublisherImpl.h"
 #include <sstream>
+
 
 namespace cameo {
 namespace coms {

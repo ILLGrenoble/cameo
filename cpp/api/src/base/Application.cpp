@@ -28,9 +28,9 @@
 #include "Strings.h"
 #include "Server.h"
 #include "Messages.h"
-#include "RequestSocket.h"
 #include "Waiting.h"
 #include "WaitingSet.h"
+#include "RequestSocket.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>

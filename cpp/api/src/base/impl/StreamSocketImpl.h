@@ -18,8 +18,7 @@
 #define CAMEO_EVENTSTREAMSOCKETIMPL_H_
 
 #include "Strings.h"
-#include "../RequestSocket.h"
-#include <string>
+#include "RequestSocket.h"
 
 namespace cameo {
 
