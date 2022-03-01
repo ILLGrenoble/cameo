@@ -18,11 +18,11 @@
 #include "Server.h"
 #include "Messages.h"
 #include "JSON.h"
+#include "Waiting.h"
 #include "../../../base/CancelIdGenerator.h"
 #include "../../../base/RequestSocket.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
 #include "../../../coms/impl/PublisherImpl.h"
-#include "../../../base/Waiting.h"
 #include <sstream>
 
 namespace cameo {

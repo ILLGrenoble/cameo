@@ -15,7 +15,7 @@
  */
 
 #include "PublisherSubscriber.h"
-
+#include "Waiting.h"
 #include "Messages.h"
 #include "JSON.h"
 #include "Server.h"
@@ -23,7 +23,6 @@
 #include "../factory/ImplFactory.h"
 #include "../base/impl/zmq/ContextZmq.h"
 #include "../base/RequestSocket.h"
-#include "../base/Waiting.h"
 #include "impl/zmq/PublisherZmq.h"
 #include "impl/zmq/SubscriberZmq.h"
 
