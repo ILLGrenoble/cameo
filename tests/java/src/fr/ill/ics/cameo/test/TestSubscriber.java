@@ -50,13 +50,22 @@ public class TestSubscriber {
 			subscriberApplicationName = args[0];
 			N = Integer.parseInt(args[1]);
 			System.out.println("Subscriber application is " + subscriberApplicationName);
-			
-		} else {
+		}
+		else {
 			System.err.println("Arguments: [subscriber application name] [number of loops]");
 			System.exit(-1);
 		}
 		
-		Server server = This.getServer();
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 3) {
+			useProxy = Boolean.parseBoolean(args[2]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
 			for (int i = 0; i < N; i++) {
@@ -109,6 +118,7 @@ public class TestSubscriber {
 			System.out.println("Publisher error");
 		}
 		finally {
+			server.terminate();
 			This.terminate();
 		}
 		

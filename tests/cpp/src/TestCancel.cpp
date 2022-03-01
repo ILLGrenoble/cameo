@@ -25,7 +25,16 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	Server& server = application::This::getServer();
+	bool useProxy = false;
+	string endpoint = "tcp://localhost:11000";
+	if (argc > 2) {
+		useProxy = (string(argv[1]) == "true");
+	}
+	if (useProxy) {
+		endpoint = "tcp://localhost:10000";
+	}
+
+	Server server(endpoint, 0, useProxy);
 
 	// Test the cancelWaitings function.
 	{

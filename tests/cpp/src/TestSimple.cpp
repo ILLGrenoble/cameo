@@ -30,7 +30,16 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	Server& server = application::This::getServer();
+	bool useProxy = false;
+	string endpoint = "tcp://localhost:11000";
+	if (argc > 3) {
+		useProxy = (string(argv[2]) == "true");
+	}
+	if (useProxy) {
+		endpoint = "tcp://localhost:10000";
+	}
+
+	Server server(endpoint, 0, useProxy);
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {

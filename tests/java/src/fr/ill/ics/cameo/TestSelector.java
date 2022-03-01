@@ -178,8 +178,19 @@ public class TestSelector {
 		// It is necessary to loop because the Cameo server may not be connected to the proxy (connect is asynchronous).
 		while (true) {
 			try {
+				String lastArg = args[args.length - 1];
+				
+				boolean useProxy = Boolean.parseBoolean(lastArg);
+				
 				System.out.println("*** Trying to create server ***");
-				server = new Server("tcp://localhost:10000", 100);
+				
+				if (useProxy) {
+					server = new Server("tcp://localhost:10000", 100, true);
+				}
+				else {
+					server = new Server("tcp://localhost:11000", 100, false);	
+				}
+				
 				System.out.println("*** Server created ***");
 				break;
 			}
@@ -191,15 +202,17 @@ public class TestSelector {
 			System.out.println("*** Server is available ***");
 		}
 		
-		int argsIndex = 0;
-		
 		try {
 			String appName;
 			String[] appArgs;
+			appArgs = new String[args.length - 1];
+			for (int i = 0; i < args.length - 1; ++i) {
+				appArgs[i] = args[i + 1];
+			}
 			
 			ArrayList<String> apps = new ArrayList<String>();
 						
-			if (args.length < argsIndex + 1) {
+			if (args.length < 1) {
 				
 				System.out.println("*** Available applications ***");
 			
@@ -214,7 +227,7 @@ public class TestSelector {
 				return;
 			}
 			else {
-				appName = args[argsIndex];
+				appName = args[0];
 				
 				if (appName.equals("all")) {
 					apps.addAll(getJavaTests());
@@ -232,11 +245,6 @@ public class TestSelector {
 				}
 				else {
 					apps.add(appName);
-				}
-				
-				appArgs = new String[args.length - 1 - argsIndex];
-				for (int i = 0; i < args.length - 1 - argsIndex; ++i) {
-					appArgs[i] = args[argsIndex + i + 1];
 				}
 			}
 

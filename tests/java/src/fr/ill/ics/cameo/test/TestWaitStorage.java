@@ -31,11 +31,21 @@ public class TestWaitStorage {
 		This.init(args);
 		
 		int numberOfTimes = 1;
+		
 		if (args.length > 1) {
 			numberOfTimes = Integer.parseInt(args[0]);
 		}
 		
-		Server server = This.getServer();
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 2) {
+			useProxy = Boolean.parseBoolean(args[1]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		Date d = new Date();
 		
@@ -69,6 +79,7 @@ public class TestWaitStorage {
 			}
 		}
 		finally {
+			server.terminate();
 			This.terminate();
 		}
 		

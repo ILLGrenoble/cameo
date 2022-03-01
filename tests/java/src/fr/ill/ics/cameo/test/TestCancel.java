@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.basic.Request;
 
@@ -29,12 +30,23 @@ public class TestCancel {
 
 		This.init(args);
 		
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 1) {
+			useProxy = Boolean.parseBoolean(args[0]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
+		
 		try {
 			// Test This.cancelWaitings.
 			{
 				System.out.println("Starting stopjava for cancelWaitings");
 				
-				Instance stopApplication = This.getServer().start("stopjava");
+				Instance stopApplication = server.start("stopjava");
 	
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -67,7 +79,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting stopjava for cancelWaitFor");
 				
-				final Instance stopApplication = This.getServer().start("stopjava");
+				final Instance stopApplication = server.start("stopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -132,7 +144,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for killing");
 				
-				final Instance pubLoopApplication = This.getServer().start("publisherloopjava");
+				final Instance pubLoopApplication = server.start("publisherloopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -177,7 +189,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for testing cancel of a subscriber");
 				
-				final Instance pubLoopApplication = This.getServer().start("publisherloopjava");
+				final Instance pubLoopApplication = server.start("publisherloopjava");
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
 
@@ -294,7 +306,7 @@ public class TestCancel {
 
 				
 				// Get this app.
-				final Instance thisApp = This.getServer().connect(This.getName());
+				final Instance thisApp = server.connect(This.getName());
 				
 				// Create the requester.
 				final fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(thisApp, "responder");
@@ -343,6 +355,7 @@ public class TestCancel {
 		catch (InterruptedException e) {
 		}
 		finally {
+			server.terminate();
 			This.terminate();			
 		}
 		

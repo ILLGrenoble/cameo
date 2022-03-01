@@ -38,15 +38,22 @@ public class TestBasicRequester {
 			if (args.length > 2) {
 				numberOfTimes = Integer.parseInt(args[1]);
 			}
-			
-		} else {
+		}
+		else {
 			System.err.println("Arguments: [application name]");
 			System.exit(-1);
 		}
 		
-		//Server server = This.getServer();
-		Server server = new Server("tcp://localhost:10000", 0, true);
-		//Server server = new Server("tcp://localhost:11000", 0, false);
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 3) {
+			useProxy = Boolean.parseBoolean(args[2]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
 			// Set the state.
