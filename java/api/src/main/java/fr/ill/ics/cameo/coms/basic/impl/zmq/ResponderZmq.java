@@ -55,7 +55,7 @@ public class ResponderZmq implements ResponderImpl {
 		Endpoint proxyEndpoint = This.getEndpoint().withPort(This.getCom().getResponderProxyPort());
 		responder.connect(proxyEndpoint.toString());
 		
-		System.out.println("Connected responder to " + proxyEndpoint);
+		System.out.println("Connected responder to proxy " + proxyEndpoint);
 		
 		String endpointPrefix = "tcp://*:";	
 		
