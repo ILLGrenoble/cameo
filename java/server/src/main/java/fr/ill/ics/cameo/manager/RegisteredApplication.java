@@ -13,10 +13,11 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class RegisteredApplication extends Application {
 
 	private java.lang.Process process;
-	protected String[] args;
-	protected ApplicationIdentity starter;
+	private String[] args;
+	private ApplicationIdentity starter;
+	private int starterProxyPort;
 	
-	public RegisteredApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter) {
+	public RegisteredApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter, int starterProxyPort) {
 		super(endpoint, id);
 		
 		// Set the config.
@@ -46,6 +47,7 @@ public class RegisteredApplication extends Application {
 		
 		this.args = args;
 		this.starter = starter;
+		this.starterProxyPort = starterProxyPort;
 	}
 	
 	@Override
@@ -98,7 +100,7 @@ public class RegisteredApplication extends Application {
 			// Add the endpoint and id
 			if (hasInfoArg()) {
 				// Pass the info in JSON format.
-				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter);
+				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter, starterProxyPort);
 
 				// On Windows, " are removed, so we need to force their presence by escaping.
 				String identityString = identity.toJSONString();

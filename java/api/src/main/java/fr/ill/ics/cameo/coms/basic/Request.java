@@ -6,7 +6,9 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.ServerAndInstance;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
  * Class Request.
@@ -15,15 +17,15 @@ import fr.ill.ics.cameo.messages.Messages;
 public class Request {
 	
 	private Responder responder = null;
-	private Server requesterServer = null;
 	private byte[] messagePart1;
 	private byte[] messagePart2;
 	private String requesterApplicationName;
 	private int requesterApplicationId;
-	private String requesterServerEndpoint;
+	private Endpoint requesterServerEndpoint;
+	private int requesterServerProxyPort;
 	private int timeout = 0;
 		
-	public Request(String requesterApplicationName, int requesterApplicationId, String serverUrl, int serverPort, byte[] messagePart1, byte[] messagePart2) {
+	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] messagePart1, byte[] messagePart2) {
 		
 		this.messagePart1 = messagePart1;
 		this.messagePart2 = messagePart2;
@@ -31,7 +33,8 @@ public class Request {
 		this.requesterApplicationName = requesterApplicationName;
 		this.requesterApplicationId = requesterApplicationId;
 		
-		this.requesterServerEndpoint = serverUrl + ":" + serverPort;
+		this.requesterServerEndpoint = Endpoint.parse(serverEndpoint);
+		this.requesterServerProxyPort = serverProxyPort;
 	}
 	
 	void setResponder(Responder responder) {
@@ -73,44 +76,44 @@ public class Request {
 		return reply(Messages.serialize(response));
 	}
 	
-	public Instance connectToRequester() {
+	public ServerAndInstance connectToRequester(int options, boolean useProxy) {
 		
-		// Instantiate the requester server if it is null.
-		if (requesterServer == null) {
-			requesterServer = new Server(requesterServerEndpoint, timeout);
-		}	
+		if (requesterServerEndpoint == null) {
+			return null;
+		}
 		
-		// Connect and find the instance.
-		List<Instance> instances = requesterServer.connectAll(requesterApplicationName);
+		Server starterServer;
 		
-		for (Instance instance : instances) {
-			if (instance.getId() == requesterApplicationId) {
-				return instance;
+		if (useProxy) {
+			starterServer = new Server(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
+		}
+		else {
+			starterServer = new Server(requesterServerEndpoint, 0, false);	
+		}
+		
+		// Iterate the instances to find the id
+		Instance starterInstance = null;
+		List<Instance> instances = starterServer.connectAll(requesterApplicationName, options);
+		for (Instance i : instances) {
+			if (i.getId() == requesterApplicationId) {
+				starterInstance = i;
+				break;
 			}
 		}
 		
-		// Not found.
-		return null;
-	}
-	
-	/**
-	 * Gets the requester server and transfers the ownership. The client code is responsible to terminate the server.
-	 * @return
-	 */
-	public Server getServer() {
-		
-		// Transfers the ownership of the server.
-		Server result = requesterServer;
-		requesterServer = null;
-		
-		return result;
-	}
-	
-	public void terminate() {
-		
-		if (requesterServer != null) {
-			requesterServer.terminate();
+		if (starterInstance == null) {
+			return null;
 		}
+		
+		return new ServerAndInstance(starterServer, starterInstance);
+	}
+	
+	public ServerAndInstance connectToRequester(int options) {
+		return connectToRequester(options, false);
+	}
+	
+	public ServerAndInstance connectToRequester() {
+		return connectToRequester(0, false);
 	}
 
 	@Override

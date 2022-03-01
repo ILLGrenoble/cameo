@@ -44,9 +44,12 @@ import fr.ill.ics.cameo.strings.StringId;
 public class Server {
 
 	private Endpoint serverEndpoint;
+	private boolean useProxy = false;
 	private int[] serverVersion = new int[3];
+	private int responderProxyPort;
 	private int publisherProxyPort;
 	private int subscriberProxyPort;
+	private int serverStatusPort;
 	private int statusPort;
 	private Context contextImpl;
 	private int timeout = 0; // default value because of ZeroMQ design
@@ -62,12 +65,27 @@ public class Server {
 	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
 	 * @param endpoint
 	 */
+	public Server(Endpoint endpoint, int timeout, boolean useProxy) {
+		this.useProxy = useProxy;
+		this.initServer(endpoint, timeout);
+	}
+	
 	public Server(Endpoint endpoint, int timeout) {
 		this.initServer(endpoint, timeout);
 	}
-
+	
 	public Server(Endpoint endpoint) {
 		this.initServer(endpoint, 0);	
+	}
+	
+	public Server(String endpoint, int timeout, boolean useProxy) {
+		this.useProxy = useProxy;
+		try {
+			this.initServer(Endpoint.parse(endpoint), timeout);
+		}
+		catch (Exception e) {
+			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
+		}
 	}
 	
 	public Server(String endpoint, int timeout) {
@@ -78,7 +96,7 @@ public class Server {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
 		}
 	}
-
+	
 	public Server(String endpoint) {
 		try {
 			this.initServer(Endpoint.parse(endpoint), 0);
@@ -116,7 +134,11 @@ public class Server {
 		contextImpl = ImplFactory.createContext();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString(), StringId.CAMEO_SERVER);
 		
-		// Get the publisher and subscriber proxy ports.
+		// Get the status port.
+		serverStatusPort = retrieveStatusPort();
+		
+		// Get the proxy ports.
+		responderProxyPort = retrieveResponderProxyPort();
 		publisherProxyPort = retrievePublisherProxyPort();
 		subscriberProxyPort = retrieveSubscriberProxyPort();
 	}
@@ -146,12 +168,20 @@ public class Server {
 		return serverVersion;
 	}
 	
+	public boolean usesProxy() {
+		return useProxy;
+	}
+	
 	public Endpoint getStatusEndpoint() {
 		return serverEndpoint.withPort(statusPort);
 	}
 	
 	Context getContext() {
 		return contextImpl;
+	}
+	
+	int getResponderProxyPort() {
+		return responderProxyPort;
 	}
 	
 	int getPublisherProxyPort() {
@@ -275,7 +305,7 @@ public class Server {
 		return requestSocket.requestJSON(request, data);
 	}
 
-	private int getStreamPort(String name) throws ConnectionTimeout {
+	private int retrieveStreamPort(String name) throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createOutputPortRequest(name);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -283,9 +313,17 @@ public class Server {
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 
-	private int getStatusPort() throws ConnectionTimeout {
+	private int retrieveStatusPort() throws ConnectionTimeout {
 		
 		JSONObject request = Messages.createStreamStatusRequest();
+		JSONObject response = requestSocket.requestJSON(request);
+		
+		return JSON.getInt(response, Messages.RequestResponse.VALUE);
+	}
+	
+	private int retrieveResponderProxyPort() throws ConnectionTimeout {
+		
+		JSONObject request = Messages.createResponderProxyPortRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
@@ -313,8 +351,13 @@ public class Server {
 	 */
 	private EventStreamSocket openEventStream() {
 
-		// If use proxy, status port is the port of the publisher proxy.
-		statusPort = publisherProxyPort;
+		if (useProxy) {
+			// With the proxy, the status port is the publisher proxy port.
+			statusPort = publisherProxyPort;
+		}
+		else {
+			statusPort = serverStatusPort;
+		}
 
 		EventStreamSocket eventStreamSocket = new EventStreamSocket();
 		eventStreamSocket.init(contextImpl, serverEndpoint.withPort(statusPort), requestSocket, parser);
@@ -336,10 +379,10 @@ public class Server {
 		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
-			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString());
+			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort);
 		}
 		else {
-			request = Messages.createStartRequest(name, args, null, 0, null);
+			request = Messages.createStartRequest(name, args, null, 0, null, 0);
 		}
 		
 		JSONObject response = requestSocket.requestJSON(request);
@@ -700,13 +743,15 @@ public class Server {
 		OutputStreamSocket outputStreamSocket = new OutputStreamSocket(name);
 		
 		// Even with the proxy, it is necessary to check if the application has an output stream.
-		int port = getStreamPort(name);
+		int port = retrieveStreamPort(name);
 		if (port == -1) {
 			return null;
 		}
 		
 		// If use proxy, stream port is the port of the publisher proxy which is the same port as status port.
-		port = statusPort;
+		if (useProxy) {
+			port = statusPort;
+		}
 		
 		outputStreamSocket.init(contextImpl, serverEndpoint.withPort(port), requestSocket, parser);
 		

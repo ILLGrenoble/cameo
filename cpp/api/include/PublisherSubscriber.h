@@ -138,6 +138,7 @@ private:
 	void tryInit(application::Instance & app);
 	void synchronize(application::Instance & app);
 
+	bool m_useProxy;
 	std::string m_publisherName;
 	std::string m_appName;
 	int m_appId;

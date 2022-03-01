@@ -22,6 +22,7 @@ import fr.ill.ics.cameo.strings.StringId;
  */
 public class Subscriber {
 	
+	private boolean useProxy = false;
 	private String publisherName;
 	private String appName;
 	private int appId;
@@ -37,18 +38,28 @@ public class Subscriber {
 	
 	private void tryInit(Instance app) throws SubscriberCreationException {
 		
+		// Memorize proxy.
+		useProxy = app.usesProxy();
+		
 		// Get the publisher data.
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
-			
 			JSONObject jsonData = This.getCom().parse(jsonString);
-
-			// Do not use publisher port but proxy port.
-			//int publisherPort = JSON.getInt(publisherData, Publisher.PUBLISHER_PORT);
-			int publisherPort = app.getCom().getPublisherProxyPort();
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
-			impl.init(appId, appEndpoint, app.getStatusEndpoint(), StringId.from(appId, key), publisherPort);
+			Endpoint endpoint;
+			
+			// The endpoint depends on the use of the proxy.
+			if (useProxy) {
+				int publisherPort = app.getCom().getPublisherProxyPort();
+				endpoint = app.getEndpoint().withPort(publisherPort);
+			}
+			else {
+				int publisherPort = JSON.getInt(jsonData, Publisher.PUBLISHER_PORT);
+				endpoint = app.getEndpoint().withPort(publisherPort);
+			}
+			
+			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(appId, key));
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
 			if (numberOfSubscribers > 0) {
@@ -145,11 +156,11 @@ public class Subscriber {
 	public int getAppId() {
 		return appId;
 	}
-	
+
 	public Endpoint getAppEndpoint() {
 		return appEndpoint;
 	}
-	
+		
 	public boolean isEnded() {
 		return impl.isEnded();
 	}

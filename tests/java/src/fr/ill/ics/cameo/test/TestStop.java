@@ -26,12 +26,23 @@ public class TestStop {
 	public static void main(String[] args) {
 
 		This.init(args);
-		Server server = This.getServer();
 		
 		int numberOfTimes = 1;
+		
 		if (args.length > 1) {
 			numberOfTimes = Integer.parseInt(args[0]);
 		}
+		
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 2) {
+			useProxy = Boolean.parseBoolean(args[1]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
 			// Loop the number of times.
@@ -45,7 +56,8 @@ public class TestStop {
 				// Stop the application after 1s.
 				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 				}
 				
 				System.out.println("Stopping application " + stopApplication.getNameId());
@@ -56,15 +68,16 @@ public class TestStop {
 				
 				if (result != null) {
 					System.out.println("Stop application returned " + result);
-
-				} else {
+				}
+				else {
 					System.out.println("Stop application has no result");
 				}
 				
 				System.out.println("Stop application finished");
 			}
-						
-		} finally {
+		}
+		finally {
+			server.terminate();
 			This.terminate();
 		}
 		

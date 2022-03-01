@@ -26,6 +26,7 @@ import fr.ill.ics.cameo.coms.basic.Request;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.Endpoint;
 
 public class ResponderZmq implements ResponderImpl {
 
@@ -51,7 +52,8 @@ public class ResponderZmq implements ResponderImpl {
 		responder.setIdentity(responderIdentity);
 		
 		// Connect to the proxy.
-		responder.connect(This.getEndpoint().toString());
+		Endpoint proxyEndpoint = This.getEndpoint().withPort(This.getCom().getResponderProxyPort());
+		responder.connect(proxyEndpoint.toString());
 		
 		String endpointPrefix = "tcp://*:";	
 		
@@ -120,8 +122,8 @@ public class ResponderZmq implements ResponderImpl {
 	
 					String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
 					int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
-					String serverUrl = JSON.getString(request, Messages.Request.SERVER_URL);
-					int serverPort = JSON.getInt(request, Messages.Request.SERVER_PORT);
+					String serverEndpoint = JSON.getString(request, Messages.Request.SERVER_ENDPOINT);
+					int serverProxyPort = JSON.getInt(request, Messages.Request.SERVER_PROXY_PORT);
 					
 					byte[] messagePart1 = data[5];
 					byte[] messagePart2 = null;
@@ -130,7 +132,7 @@ public class ResponderZmq implements ResponderImpl {
 					}
 					
 					// Return the request but do not reply to the client now. This will be done by the Request.			
-					return new Request(name, id, serverUrl, serverPort, messagePart1, messagePart2);
+					return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
 				}
 				else if (type == Messages.CANCEL) {
 					canceled = true;
@@ -174,8 +176,8 @@ public class ResponderZmq implements ResponderImpl {
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
 		
-		// Create the request socket. We can create it here because it should be called only once.
-		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().toString(), responderIdentity);
+		// Create the request socket connected directly to the responder. We can create it here because it should be called only once.
+		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().withPort(responderPort).toString(), responderIdentity);
 		requestSocket.requestJSON(jsonRequest);
 		
 		// Terminate the socket.

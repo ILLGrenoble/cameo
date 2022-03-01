@@ -38,7 +38,7 @@ class Request {
 	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
-	Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverUrl, int serverPort, const std::string& messagePart1, const std::string& messagePart2);
+	Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2);
 	~Request();
 
 	std::string getObjectId() const;
@@ -53,12 +53,7 @@ public:
 	bool replyBinary(const std::string &response);
 	bool reply(const std::string &response);
 
-	std::unique_ptr<application::Instance> connectToRequester();
-
-	/**
-	 * Transfers the ownership of the requester server.
-	 */
-	std::unique_ptr<Server> getServer();
+	application::ServerAndInstance connectToRequester(int options = 0, bool useProxy = false);
 
 private:
 	void setResponder(Responder* responder);
@@ -68,10 +63,9 @@ private:
 	std::string m_messagePart2;
 	std::string m_requesterApplicationName;
 	int m_requesterApplicationId;
-	std::string m_requesterServerEndpoint;
+	Endpoint m_requesterServerEndpoint;
+	int m_requesterServerProxyPort;
 	int m_timeout;
-
-	std::unique_ptr<Server> m_requesterServer;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -166,6 +160,7 @@ private:
 	void init(application::Instance & app, const std::string & responderName);
 	void tryInit(application::Instance & app);
 
+	bool m_useProxy;
 	std::string m_responderName;
 	std::string m_appName;
 	int m_appId;

@@ -65,8 +65,6 @@ public class RequesterZmq implements RequesterImpl {
 		if (requester == null) {
 			// Create the REQ socket.
 			requester = context.createSocket(Zmq.REQ);
-			
-			// Connect to the proxy. Do not use the responder port.
 			requester.connect(endpoint.toString());
 			
 			//TODO Shall we set linger to 0?
@@ -88,7 +86,7 @@ public class RequesterZmq implements RequesterImpl {
 		return false;
 	}
 		
-	public void init(Endpoint endpoint, String responderIdentity, int responderPort) {
+	public void init(Endpoint endpoint, String responderIdentity) {
 		
 		this.endpoint = endpoint;
 		this.responderIdentity = responderIdentity;
@@ -185,8 +183,8 @@ public class RequesterZmq implements RequesterImpl {
 		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
 		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
 		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
-		jsonRequest.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
-		jsonRequest.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
+		jsonRequest.put(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString());
+		jsonRequest.put(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort());
 		
 		sendRequest(Messages.serialize(jsonRequest), requestData);
 	}
@@ -201,8 +199,8 @@ public class RequesterZmq implements RequesterImpl {
 		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
 		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
 		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
-		jsonRequest.put(Messages.Request.SERVER_URL, This.getEndpoint().getProtocol() + "://" + This.getEndpoint().getAddress());
-		jsonRequest.put(Messages.Request.SERVER_PORT, This.getEndpoint().getPort());
+		jsonRequest.put(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString());
+		jsonRequest.put(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort());
 		
 		sendRequest(Messages.serialize(jsonRequest), requestData1, requestData2);
 	}

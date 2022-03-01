@@ -163,7 +163,9 @@ void Publisher::sendEnd() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber() {
+Subscriber::Subscriber() :
+	m_useProxy(false) {
+
 	m_impl = ImplFactory::createSubscriber();
 
 	// Create the waiting here.
@@ -175,6 +177,9 @@ Subscriber::~Subscriber() {
 
 void Subscriber::tryInit(application::Instance & app) {
 
+	// Memorizes proxy.
+	m_useProxy = app.usesProxy();
+
 	// Get the publisher data.
 	try {
 		std::string jsonString = app.getCom().getKeyValue(m_key);
@@ -182,12 +187,21 @@ void Subscriber::tryInit(application::Instance & app) {
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
 
-		// Do not use publisher port but proxy port.
-		//int publisherPort = publisherData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
-		int publisherPort = app.getCom().getPublisherProxyPort();
 		int numberOfSubscribers = jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
 
-		m_impl->init(m_appId, m_appEndpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key), publisherPort);
+		Endpoint endpoint;
+
+		// The endpoint depends on the use of the proxy.
+		if (m_useProxy) {
+			int publisherPort = app.getCom().getPublisherProxyPort();
+			endpoint = app.getEndpoint().withPort(publisherPort);
+		}
+		else {
+			int publisherPort = jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
+			endpoint = app.getEndpoint().withPort(publisherPort);
+		}
+
+		m_impl->init(m_appId, endpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key));
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {

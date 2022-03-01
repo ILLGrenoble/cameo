@@ -24,12 +24,12 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	unique_ptr<application::Instance> starter = application::This::connectToStarter();
+	application::ServerAndInstance starter = application::This::connectToStarter(0, true);
 
 	cout << "Connected to started" << endl;
 
 	// Create a requester.
-	unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*starter, "responder");
+	unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*starter.instance, "responder");
 
 	cout << "Created requester" << endl;
 

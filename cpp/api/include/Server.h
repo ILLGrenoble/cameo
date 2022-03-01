@@ -51,8 +51,8 @@ class Server {
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
-	Server(const Endpoint& endpoint, int timeoutMs = 0);
-	Server(const std::string& endpoint, int timeoutMs = 0);
+	Server(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = false);
+	Server(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
 	~Server();
 
 	void setTimeout(int value);
@@ -61,6 +61,8 @@ public:
 	Endpoint getEndpoint() const;
 	Endpoint getStatusEndpoint() const;
 	std::array<int, 3> getVersion() const;
+	bool usesProxy() const;
+
 	bool isAvailable(int timeout) const;
 
 	/**
@@ -136,6 +138,7 @@ public:
 
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
+	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
 
@@ -160,8 +163,9 @@ private:
 	void initRequestSocket();
 
 	void retrieveServerVersion();
-	int getStatusPort();
-	int getStreamPort(const std::string& name);
+	int retrieveStatusPort();
+	int retrieveStreamPort(const std::string& name);
+	int retrieveResponderProxyPort();
 	int retrievePublisherProxyPort();
 	int retrieveSubscriberProxyPort();
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
@@ -170,9 +174,12 @@ private:
 
 	Endpoint m_serverEndpoint;
 	int m_timeout;
+	bool m_useProxy;
 	std::array<int, 3> m_serverVersion;
+	int m_responderProxyPort;
 	int m_publisherProxyPort;
 	int m_subscriberProxyPort;
+	int m_serverStatusPort;
 	int m_statusPort;
 	std::unique_ptr<Context> m_context;
 	std::unique_ptr<RequestSocket> m_requestSocket;

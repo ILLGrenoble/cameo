@@ -30,7 +30,6 @@ namespace cameo {
 namespace coms {
 
 SubscriberZmq::SubscriberZmq() :
-	m_publisherPort(0),
 	m_appId(0),
 	m_ended(false),
 	m_canceled(false) {
@@ -39,10 +38,9 @@ SubscriberZmq::SubscriberZmq() :
 SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, int publisherPort) {
+void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity) {
 
 	m_publisherIdentity = publisherIdentity;
-	m_publisherPort = publisherPort;
 	m_appId = appId;
 	m_ended = false;
 	m_canceled = false;
@@ -50,9 +48,7 @@ void SubscriberZmq::init(int appId, const Endpoint& appEndpoint, const Endpoint&
 	// Create a socket for publishing.
 	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
 	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
-
-	Endpoint publisherEndpoint = appEndpoint.withPort(m_publisherPort);
-	m_subscriber->connect(publisherEndpoint.toString());
+	m_subscriber->connect(endpoint.toString());
 
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 

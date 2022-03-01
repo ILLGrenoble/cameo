@@ -49,7 +49,8 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 	m_responder->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
 	// Connect to the proxy.
-	m_responder->connect(application::This::getEndpoint().toString());
+	Endpoint proxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getResponderProxyPort());
+	m_responder->connect(proxyEndpoint.toString());
 
 	std::string endpointPrefix("tcp://*:");
 
@@ -80,8 +81,8 @@ void ResponderZmq::cancel() {
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::CANCEL);
 
-	// Create a request socket.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().toString(), m_responderIdentity);
+	// Create a request socket connected directly to the responder.
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString(), m_responderIdentity);
 	requestSocket->requestJSON(jsonRequest.toString());
 }
 
@@ -136,8 +137,8 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 
 			std::string name = jsonRequest[message::Request::APPLICATION_NAME].GetString();
 			int id = jsonRequest[message::Request::APPLICATION_ID].GetInt();
-			std::string serverUrl = jsonRequest[message::Request::SERVER_URL].GetString();
-			int serverPort = jsonRequest[message::Request::SERVER_PORT].GetInt();
+			std::string serverEndpoint = jsonRequest[message::Request::SERVER_ENDPOINT].GetString();
+			int serverProxyPort = jsonRequest[message::Request::SERVER_PROXY_PORT].GetInt();
 
 			// Get the second part for the message.
 			zmq::message_t secondPart;
@@ -159,8 +160,8 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 			// Create the request.
 			return std::unique_ptr<Request>(new Request(name,
 					id,
-					serverUrl,
-					serverPort,
+					serverEndpoint,
+					serverProxyPort,
 					message1,
 					message2));
 		}

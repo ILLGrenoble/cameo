@@ -38,14 +38,22 @@ public class TestBasicRequester {
 			if (args.length > 2) {
 				numberOfTimes = Integer.parseInt(args[1]);
 			}
-			
-		} else {
+		}
+		else {
 			System.err.println("Arguments: [application name]");
 			System.exit(-1);
 		}
 		
-		// get the client services
-		Server server = This.getServer();
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 3) {
+			useProxy = Boolean.parseBoolean(args[2]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
 			// Set the state.
@@ -83,9 +91,6 @@ public class TestBasicRequester {
 		    		request.reply("done");
 		    		
 		    		System.out.println("Processed " + request);
-		    		
-					// Terminate the request.
-					request.terminate();
 				}
 				
 				// Wait for the requester applications.
@@ -96,11 +101,12 @@ public class TestBasicRequester {
 				
 				responder.terminate();
 			}
-			
-		} catch (RemoteException e) {
+		}
+		catch (RemoteException e) {
 			System.out.println("Requester error:" + e);
-			
-		} finally {
+		}
+		finally {
+			server.terminate();
 			This.terminate();
 		}
 		

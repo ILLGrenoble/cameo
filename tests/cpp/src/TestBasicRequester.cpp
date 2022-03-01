@@ -36,16 +36,22 @@ int main(int argc, char *argv[]) {
 		if (argc > 3) {
 			numberOfTimes = stoi(argv[2]);
 		}
-
-	} else {
+	}
+	else {
 		cerr << "Arguments: [application name] <number of times>" << endl;
 		return -1;
 	}
 
+	bool useProxy = false;
+	string endpoint = "tcp://localhost:11000";
+	if (argc > 4) {
+		useProxy = (string(argv[3]) == "true");
+	}
+	if (useProxy) {
+		endpoint = "tcp://localhost:10000";
+	}
 
-
-	Server& server = application::This::getServer();
-
+	Server server(endpoint, 0, useProxy);
 	application::This::setRunning();
 
 	int N = 5;

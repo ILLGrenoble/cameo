@@ -42,6 +42,10 @@ public class Instance extends EventListener {
 			this.applicationId = applicationId;
 		}
 
+		public int getResponderProxyPort() {
+			return server.getResponderProxyPort();
+		}
+		
 		public int getPublisherProxyPort() {
 			return server.getPublisherProxyPort();
 		}
@@ -117,7 +121,11 @@ public class Instance extends EventListener {
 	public int getId() {
 		return id;
 	}
-		
+	
+	public boolean usesProxy() {
+		return server.usesProxy();
+	}
+	
 	public Endpoint getEndpoint() {
 		return server.getEndpoint();
 	}

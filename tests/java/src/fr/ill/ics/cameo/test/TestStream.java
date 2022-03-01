@@ -29,7 +29,17 @@ public class TestStream {
 	public static void main(String[] args) {
 
 		This.init(args);
-		Server server = This.getServer();
+		
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 1) {
+			useProxy = Boolean.parseBoolean(args[0]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		// Start the application.
 		Instance app = server.start("streamjava", Option.OUTPUTSTREAM);
@@ -58,12 +68,13 @@ public class TestStream {
 			System.out.println("Canceling output");
 			socket.cancel();
 			outputThread.join();
-			
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 		}
 
 		app.waitFor();
 		
+		server.terminate();
 		This.terminate();
 		
 		System.out.println("Finished the application");

@@ -40,13 +40,22 @@ public class TestBasicResponder {
 			if (args.length > 2) {
 				numberOfTimes = Integer.parseInt(args[1]);
 			}
-			
-		} else {
+		}
+		else {
 			System.err.println("Arguments: [application name]");
 			System.exit(-1);
 		}
 		
-		Server server = This.getServer();
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 3) {
+			useProxy = Boolean.parseBoolean(args[2]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
 			
@@ -57,12 +66,6 @@ public class TestBasicResponder {
 				Instance responderApplication = server.start(applicationName);
 				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
 
-//				System.out.println("Waiting 1s");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e1) {
-//				}
-				
 				fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(responderApplication, "responder");
 				System.out.println("Created requester " + requester);
 			
@@ -123,11 +126,12 @@ public class TestBasicResponder {
 				// Terminate the requester.
 				requester.terminate();
 			}
-			
-		} catch (RemoteException e) {
+		}
+		catch (RemoteException e) {
 			System.out.println("Requester error:" + e);
-			
-		} finally {
+		}
+		finally {
+			server.terminate();
 			This.terminate();
 		}
 		

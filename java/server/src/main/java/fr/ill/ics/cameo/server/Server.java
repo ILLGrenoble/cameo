@@ -143,9 +143,23 @@ public class Server {
 			Log.logger().info("Connected responder to proxy " + proxyEndpoint);
 		}
 		catch (Exception e) {
-			Log.logger().severe("Cannot connect to responder proxy " + proxyEndpoint + ": " + e.getMessage());
+			Log.logger().severe("Cannot connect responder to proxy " + proxyEndpoint + ": " + e.getMessage());
 			System.exit(1);
 		}
+		
+		// Bind the socket.
+		try {
+			socket.bind(ConfigManager.getInstance().getEndpoint());
+			
+			Log.logger().fine("Bound responder to " + ConfigManager.getInstance().getEndpoint());			
+		}
+		catch (Exception e) {
+			Log.logger().severe("Cannot bind responder to " + ConfigManager.getInstance().getEndpoint() + ": " + e.getMessage());
+			System.exit(1);
+		}
+
+
+
 	}
 
 	public void run() {
@@ -168,8 +182,6 @@ public class Server {
 		
 		// Create and connect the socket.
 		initSocket();
-
-		Log.logger().fine("Service is ready at " + ConfigManager.getInstance().getEndpoint());
 
 		// Init the stream sockets.
 		manager.initStreamSockets(context);
@@ -263,6 +275,9 @@ public class Server {
 				}
 				else if (type == Messages.OUTPUT_PORT) {
 					process.processOutputPortRequest(request, reply, manager);
+				}
+				else if (type == Messages.RESPONDER_PROXY_PORT) {
+					process.processResponderProxyPortRequest(request, reply, manager);
 				}
 				else if (type == Messages.PUBLISHER_PROXY_PORT) {
 					process.processPublisherProxyPortRequest(request, reply, manager);

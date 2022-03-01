@@ -8,10 +8,12 @@ public class ApplicationWithStarterIdentity {
 
 	private ApplicationIdentity application;
 	private ApplicationIdentity starter;
+	private int starterProxyPort;
 	
-	public ApplicationWithStarterIdentity(ApplicationIdentity application, ApplicationIdentity starter) {
+	public ApplicationWithStarterIdentity(ApplicationIdentity application, ApplicationIdentity starter, int starterProxyPort) {
 		this.application = application;
 		this.starter = starter;
+		this.starterProxyPort = starterProxyPort;
 	}
 	
 	public ApplicationWithStarterIdentity(ApplicationIdentity application) {
@@ -32,6 +34,7 @@ public class ApplicationWithStarterIdentity {
 		
 		if (starter != null) {
 			result.put(Messages.ApplicationIdentity.STARTER, starter.toJSON());
+			result.put(Messages.ApplicationIdentity.STARTER_PROXY_PORT, starterProxyPort);
 		}
 		
 		return result;

@@ -45,4 +45,9 @@ print("Received request", request.get())
 
 request.reply("4th response after timeout")
 
+requester = request.connectToRequester(0, True)
+app = requester.getInstance()
+
+print("Requester", app.getId())
+
 print("Finished the application")

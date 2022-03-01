@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	unique_ptr<application::Instance> requester = request->connectToRequester();
-	cout << "Requester " << *requester << endl;
+	application::ServerAndInstance requester = request->connectToRequester(0, true);
+	cout << "Requester " << *requester.instance << endl;
 
 	cout << "Finished the application" << endl;
 

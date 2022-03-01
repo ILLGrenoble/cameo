@@ -12,6 +12,7 @@ import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import zmq.socket.Pair;
 
 public class This {
 	
@@ -25,6 +26,7 @@ public class This {
 	private Endpoint starterEndpoint;
 	private String starterName;
 	private int starterId;
+	private int starterProxyPort;
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
@@ -32,7 +34,6 @@ public class This {
 	private WaitingSet waitingSet = new WaitingSet();
 	
 	private Server server;
-	private Server starterServer;
 	
 	public static class Com {
 		
@@ -46,6 +47,10 @@ public class This {
 
 		public Context getContext() {
 			return server.getContext();
+		}
+		
+		public int getResponderProxyPort() {
+			return server.getResponderProxyPort();
 		}
 		
 		public int getPublisherProxyPort() {
@@ -156,11 +161,7 @@ public class This {
 	
 	void initServer() {
 		server.registerEventListener(instance.getEventListener());
-		
-		if (instance.getStarterEndpoint() != null) {
-			starterServer = new Server(instance.getStarterEndpoint());
-		}
-		com = new Com(instance.getServer(), instance.getId());
+		com = new Com(This.getServer(), This.getId());
 	}
 	
 	static public void init(String[] args) {
@@ -214,14 +215,7 @@ public class This {
 		}
 		return instance.server;
 	}
-	
-	static public Server getStarterServer() {
-		if (instance == null) {
-			return null;		
-		}
-		return instance.starterServer;
-	}
-	
+		
 	static public Com getCom() {
 		return com;
 	}
@@ -302,31 +296,56 @@ public class This {
 	}
 	
 	/**
-	 * 
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @return
 	 */
-	static public Instance connectToStarter(int options) {
-		if (instance.starterServer == null) {
+	static public ServerAndInstance connectToStarter(int options, boolean useProxy) {
+		
+		if (instance.getStarterEndpoint() == null) {
 			return null;
 		}
 		
+		// Create the server with proxy or not.
+		Server starterServer;
+		
+		if (useProxy) {
+			starterServer = new Server(instance.getStarterEndpoint().withPort(instance.starterProxyPort), 0, true);
+		}
+		else {
+			starterServer = new Server(instance.getStarterEndpoint(), 0, false);	
+		}
+		
 		// Iterate the instances to find the id
-		List<Instance> instances = instance.starterServer.connectAll(instance.getStarterName(), 0);
+		Instance starterInstance = null;
+		List<Instance> instances = starterServer.connectAll(instance.getStarterName(), options);
 		for (Instance i : instances) {
 			if (i.getId() == instance.getStarterId()) {
-				return i;
+				starterInstance = i;
+				break;
 			}
 		}
 		
-		return null;
+		if (starterInstance == null) {
+			return null;
+		}
+		
+		return new ServerAndInstance(starterServer, starterInstance);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	static public Instance connectToStarter() {
-		return connectToStarter(0);
+	static public ServerAndInstance connectToStarter(int options) {
+		return connectToStarter(options, false);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	static public ServerAndInstance connectToStarter() {
+		return connectToStarter(0, false);
 	}
 	
 	
@@ -379,6 +398,7 @@ public class This {
 			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER));
 			starterName = JSON.getString(starterObject, Messages.ApplicationIdentity.NAME);
 			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
+			starterProxyPort = JSON.getInt(infoObject, Messages.ApplicationIdentity.STARTER_PROXY_PORT);
 		}		
 		
 		// Init.
@@ -403,7 +423,7 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = new Server(serverEndpoint, 0);
+		server = new Server(serverEndpoint, 0, false);
 		
 		// Init the unregistered application.
 		if (!registered) {
@@ -448,9 +468,6 @@ public class This {
 		}
 		
 		server.terminate();
-		if (starterServer != null) {
-			starterServer.terminate();
-		}
 	}
 	
 	private int initUnregisteredApplication() {

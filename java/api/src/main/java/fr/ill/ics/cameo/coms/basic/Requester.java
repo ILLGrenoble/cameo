@@ -21,6 +21,7 @@ import fr.ill.ics.cameo.strings.StringId;
  */
 public class Requester {
 
+	private boolean useProxy = false;
 	private String responderName;
 	private String appName;
 	private int appId;
@@ -44,15 +45,27 @@ public class Requester {
 	
 	private void tryInit(Instance app) throws RequesterCreationException {
 		
+		// Memorize proxy.
+		useProxy = app.usesProxy();
+		
 		// Get the responder data.
 		try {
 			String jsonString = app.getCom().getKeyValue(key);
-			
 			JSONObject jsonData = This.getCom().parse(jsonString);
+					
+			Endpoint endpoint;
 			
-			int responderPort = JSON.getInt(jsonData, Responder.PORT);
+			// The endpoint depends on the use of the proxy.
+			if (useProxy) {
+				int responderPort = app.getCom().getResponderProxyPort();
+				endpoint = app.getEndpoint().withPort(responderPort);
+			}
+			else {
+				int responderPort = JSON.getInt(jsonData, Responder.PORT);
+				endpoint = app.getEndpoint().withPort(responderPort);
+			}
 			
-			impl.init(app.getEndpoint(), StringId.from(appId, key), responderPort);	
+			impl.init(endpoint, StringId.from(appId, key));
 		}
 		catch (UndefinedApplicationException | UndefinedKeyException e) {
 			throw new RequesterCreationException("");

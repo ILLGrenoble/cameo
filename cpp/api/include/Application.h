@@ -32,7 +32,6 @@
 #include "JSON.h"
 #include "KeyValue.h"
 #include "Strings.h"
-#include "ProxyInterface.h"
 #include <functional>
 #include <vector>
 #include <set>
@@ -57,6 +56,15 @@ class RequestSocket;
 namespace application {
 
 class Instance;
+
+struct ServerAndInstance {
+	std::unique_ptr<Server> server;
+	std::unique_ptr<Instance> instance;
+
+	std::unique_ptr<Server> getServer();
+	std::unique_ptr<Instance> getInstance();
+};
+
 
 typedef int32_t State;
 
@@ -98,6 +106,7 @@ public:
 	public:
 		Context* getContext() const;
 
+		int getResponderProxyPort() const;
 		int getPublisherProxyPort() const;
 		int getSubscriberProxyPort() const;
 
@@ -140,10 +149,6 @@ public:
 	static Server& getServer();
 	static const Com& getCom();
 
-	/**
-	 * throws StarterServerException.
-	 */
-	static Server& getStarterServer();
 	static bool isAvailable(int timeout = 10000);
 	static bool isStopping();
 
@@ -165,8 +170,9 @@ public:
 
 	/**
 	 * Connects to the starter application, i.e. the application which started this application.
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 */
-	static std::unique_ptr<Instance> connectToStarter();
+	static ServerAndInstance connectToStarter(int options = 0, bool useProxy = false);
 
 private:
 	void initApplication(int argc, char* argv[]);
@@ -192,9 +198,9 @@ private:
 	Endpoint m_starterEndpoint;
 	std::string m_starterName;
 	int m_starterId;
+	int m_starterProxyPort;
 
 	std::unique_ptr<Server> m_server;
-	std::unique_ptr<Server> m_starterServer;
 	std::unique_ptr<Com> m_com;
 
 	std::unique_ptr<WaitingSet> m_waitingSet;
@@ -218,6 +224,7 @@ public:
 		friend class Instance;
 
 	public:
+		int getResponderProxyPort() const;
 		int getPublisherProxyPort() const;
 		int getSubscriberProxyPort() const;
 
@@ -234,6 +241,7 @@ public:
 
 	const std::string& getName() const;
 	int getId() const;
+	bool usesProxy() const;
 	Endpoint getEndpoint() const;
 	Endpoint getStatusEndpoint() const;
 	std::string getNameId() const;

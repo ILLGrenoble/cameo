@@ -42,6 +42,7 @@ namespace message {
 	const int LIST = 14;
 	const int SET_STATUS = 15;
 	const int GET_STATUS = 16;
+	const int RESPONDER_PROXY_PORT = 36;
 	const int PUBLISHER_PROXY_PORT = 17;
 	const int SUBSCRIBER_PROXY_PORT = 18;
 	const int CANCEL = 19;
@@ -75,6 +76,7 @@ namespace message {
 		constexpr const char* ID = "id"; // int32
 		constexpr const char* SERVER = "server"; // string
 		constexpr const char* STARTER = "starter"; // object
+		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	namespace SyncStreamRequest {
@@ -85,6 +87,7 @@ namespace message {
 		constexpr const char* NAME = "name"; // required string name = 1;
 		constexpr const char* ARGS = "args"; // repeated string args = 2;
 		constexpr const char* STARTER = "starter"; // object
+		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
 	}
 
 	namespace RequestResponse {
@@ -94,7 +97,7 @@ namespace message {
 
 	namespace SetStopHandlerRequest {
 		constexpr const char* ID = "id"; // int32
-		constexpr const char* STOPPING_TIME = "stopping_time"; // int32
+		constexpr const char* STOPPING_TIME = "stoppingTime"; // int32
 	}
 
 	namespace StopRequest {
@@ -197,8 +200,8 @@ namespace message {
 	namespace Request {
 		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
 		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		constexpr const char* SERVER_URL = "serverUrl"; // required string serverUrl = 5;
-		constexpr const char* SERVER_PORT = "serverPort"; // required int32 serverPort = 6;
+		constexpr const char* SERVER_ENDPOINT = "serverEndpoint";
+		constexpr const char* SERVER_PROXY_PORT = "serverProxyPort";
 		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
 	}
 
@@ -270,7 +273,7 @@ namespace message {
 std::string createSyncRequest();
 std::string createSyncStreamRequest(const std::string& name);
 std::string createVersionRequest();
-std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint);
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort);
 std::string createSetStopHandlerRequest(int id, int stoppingTime);
 std::string createStopRequest(int id);
 std::string createKillRequest(int id);
@@ -282,6 +285,7 @@ std::string createAppsRequest();
 std::string createStreamStatusRequest();
 std::string createSetStatusRequest(int id, int32_t state);
 std::string createGetStatusRequest(int id);
+std::string createResponderProxyPortRequest();
 std::string createPublisherProxyPortRequest();
 std::string createSubscriberProxyPortRequest();
 std::string createSetResultRequest(int id);

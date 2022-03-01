@@ -27,7 +27,7 @@ int main(int, char *[]) {
 
 	cout << "Create server" << endl;
 
-	Server server("tcp://localhost:10000");
+	Server server("tcp://localhost:11000", 0, false);
 
 	cout << "Testing connection" << endl;
 
