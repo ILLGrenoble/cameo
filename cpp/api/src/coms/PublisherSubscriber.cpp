@@ -16,6 +16,7 @@
 
 #include "PublisherSubscriber.h"
 
+#include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
 #include "Waiting.h"
@@ -23,7 +24,6 @@
 #include "JSON.h"
 #include "Server.h"
 #include "BasicRequesterResponder.h"
-#include "../factory/ImplFactory.h"
 #include "impl/zmq/PublisherZmq.h"
 #include "impl/zmq/SubscriberZmq.h"
 

@@ -16,11 +16,12 @@
 
 #include "OutputStreamSocket.h"
 
+#include "ImplFactory.h"
 #include "JSON.h"
 #include "Messages.h"
-#include "../factory/ImplFactory.h"
 #include "impl/zmq/OutputStreamSocketZmq.h"
 #include <iostream>
+
 
 namespace cameo {
 

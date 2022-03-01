@@ -16,12 +16,12 @@
 
 #include "EventStreamSocket.h"
 
+#include "ImplFactory.h"
 #include "KeyEvent.h"
 #include "ResultEvent.h"
 #include "StatusEvent.h"
 #include "JSON.h"
 #include "Messages.h"
-#include "../factory/ImplFactory.h"
 #include "impl/zmq/EventStreamSocketZmq.h"
 
 namespace cameo {

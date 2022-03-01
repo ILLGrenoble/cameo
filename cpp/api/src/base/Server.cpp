@@ -23,7 +23,7 @@
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
 #include "EventThread.h"
-#include "../factory/ImplFactory.h"
+#include "ImplFactory.h"
 #include "impl/StreamSocketImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "Context.h"

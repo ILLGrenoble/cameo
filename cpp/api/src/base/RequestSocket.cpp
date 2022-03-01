@@ -16,8 +16,8 @@
 
 #include "RequestSocket.h"
 
+#include "ImplFactory.h"
 #include "ConnectionTimeout.h"
-#include "../factory/ImplFactory.h"
 #include "impl/zmq/RequestSocketZmq.h"
 #include <iostream>
 #include <chrono>
