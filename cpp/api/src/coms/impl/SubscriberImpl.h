@@ -17,7 +17,7 @@
 #ifndef CAMEO_SUBSCRIBERIMPL_H_
 #define CAMEO_SUBSCRIBERIMPL_H_
 
-#include "Application.h"
+#include "Strings.h"
 #include <optional>
 #include <tuple>
 

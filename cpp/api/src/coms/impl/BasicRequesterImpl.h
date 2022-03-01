@@ -18,7 +18,7 @@
 #define CAMEO_COMS_BASIC_REQUESTERIMPL_H_
 
 #include "Strings.h"
-#include "Waiting.h"
+#include <optional>
 
 namespace cameo {
 namespace coms {
