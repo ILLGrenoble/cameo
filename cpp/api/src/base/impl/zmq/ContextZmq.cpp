@@ -15,7 +15,6 @@
  */
 
 #include "ContextZmq.h"
-
 #include <zmq.hpp>
 
 namespace cameo {

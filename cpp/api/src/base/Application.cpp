@@ -24,13 +24,13 @@
 #include "EventStreamSocket.h"
 #include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
-#include "impl/zmq/ContextZmq.h"
 #include "Strings.h"
 #include "Server.h"
 #include "Messages.h"
 #include "Waiting.h"
 #include "WaitingSet.h"
 #include "RequestSocket.h"
+#include "ContextZmq.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>

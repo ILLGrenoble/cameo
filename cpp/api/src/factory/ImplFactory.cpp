@@ -16,7 +16,7 @@
 
 #include "ImplFactory.h"
 
-#include "../base/impl/zmq/ContextZmq.h"
+#include "ContextZmq.h"
 #include "../base/impl/zmq/RequestSocketZmq.h"
 #include "../base/impl/zmq/EventStreamSocketZmq.h"
 #include "../base/impl/zmq/OutputStreamSocketZmq.h"

@@ -17,13 +17,13 @@
 #include "PublisherSubscriber.h"
 
 #include "RequestSocket.h"
+#include "ContextZmq.h"
 #include "Waiting.h"
 #include "Messages.h"
 #include "JSON.h"
 #include "Server.h"
 #include "BasicRequesterResponder.h"
 #include "../factory/ImplFactory.h"
-#include "../base/impl/zmq/ContextZmq.h"
 #include "impl/zmq/PublisherZmq.h"
 #include "impl/zmq/SubscriberZmq.h"
 

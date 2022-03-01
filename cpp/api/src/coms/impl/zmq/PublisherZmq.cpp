@@ -19,7 +19,7 @@
 #include "Messages.h"
 #include "JSON.h"
 #include "RequestSocket.h"
-#include "../../../base/impl/zmq/ContextZmq.h"
+#include "ContextZmq.h"
 #include <sstream>
 
 

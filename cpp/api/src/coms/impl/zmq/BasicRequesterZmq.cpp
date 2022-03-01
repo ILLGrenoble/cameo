@@ -18,7 +18,7 @@
 #include "Application.h"
 #include "Messages.h"
 #include "JSON.h"
-#include "../../../base/impl/zmq/ContextZmq.h"
+#include "ContextZmq.h"
 #include <zmq.hpp>
 #include <sstream>
 

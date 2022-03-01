@@ -20,8 +20,8 @@
 #include "JSON.h"
 #include "Waiting.h"
 #include "RequestSocket.h"
+#include "ContextZmq.h"
 #include "CancelIdGenerator.h"
-#include "../../../base/impl/zmq/ContextZmq.h"
 #include "../PublisherImpl.h"
 #include <sstream>
 
