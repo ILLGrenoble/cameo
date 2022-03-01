@@ -16,11 +16,12 @@
 
 #include "PublisherZmq.h"
 #include "Application.h"
+#include "Messages.h"
 #include "JSON.h"
 #include "../../../base/impl/zmq/ContextZmq.h"
-#include "../../../base/Messages.h"
 #include "../../../base/RequestSocket.h"
 #include <sstream>
+
 
 namespace cameo {
 namespace coms {

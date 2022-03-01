@@ -1,6 +1,6 @@
 #include "Test.h"
 #include "Strings.h"
-#include "../src/base/Messages.h"
+#include "Messages.h"
 #include "JSON.h"
 #include <iostream>
 

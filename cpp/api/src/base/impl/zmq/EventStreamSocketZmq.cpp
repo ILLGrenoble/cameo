@@ -17,7 +17,7 @@
 #include "EventStreamSocketZmq.h"
 #include "Server.h"
 #include "ContextZmq.h"
-#include "../../Messages.h"
+#include "Messages.h"
 #include "../../CancelIdGenerator.h"
 
 namespace cameo {

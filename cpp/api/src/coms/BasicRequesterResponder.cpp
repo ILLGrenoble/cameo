@@ -15,10 +15,11 @@
  */
 
 #include "BasicRequesterResponder.h"
+
+#include "Messages.h"
 #include "JSON.h"
 #include "Server.h"
 #include "../base/impl/zmq/ContextZmq.h"
-#include "../base/Messages.h"
 #include "../base/RequestSocket.h"
 #include "../factory/ImplFactory.h"
 #include "impl/zmq/BasicRequesterZmq.h"
