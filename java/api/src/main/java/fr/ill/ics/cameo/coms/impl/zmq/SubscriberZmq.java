@@ -50,8 +50,6 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber = context.createSocket(Zmq.SUB);
 		subscriber.connect(endpoint.toString());
 		
-		System.out.println("Connected subscriber to " + endpoint.toString());
-		
 		// Subcribe to the publisher.
 		subscriber.subscribe(publisherIdentity);
 		

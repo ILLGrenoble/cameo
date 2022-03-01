@@ -67,8 +67,6 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
-		System.out.println("Connected event socket to " + endpoint.toString());
-		
 		// polling to wait for connection
 		Zmq.Poller poller = this.context.createPoller(subscriber);
 		

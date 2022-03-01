@@ -67,8 +67,6 @@ public class RequesterZmq implements RequesterImpl {
 			requester = context.createSocket(Zmq.REQ);
 			requester.connect(endpoint.toString());
 			
-			System.out.println("Connected requester to " + endpoint.toString());
-			
 			//TODO Shall we set linger to 0?
 		}
 	}

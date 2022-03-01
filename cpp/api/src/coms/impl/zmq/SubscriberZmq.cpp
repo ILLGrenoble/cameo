@@ -50,8 +50,6 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
 	m_subscriber->connect(endpoint.toString());
 
-	std::cout << "Connected subscriber to " << endpoint.toString() << std::endl;
-
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 
 

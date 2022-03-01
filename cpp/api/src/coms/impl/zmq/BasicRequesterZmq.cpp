@@ -61,8 +61,6 @@ void RequesterZmq::initSocket() {
 		// Connect to the endpoint.
 		m_requester->connect(m_endpoint.toString());
 
-		std::cout << "Connected requester to " << m_endpoint.toString() << std::endl;
-
 		// Configure the socket to not wait at close time.
 		int linger = 0;
 		m_requester->setsockopt(ZMQ_LINGER, &linger, sizeof(linger));

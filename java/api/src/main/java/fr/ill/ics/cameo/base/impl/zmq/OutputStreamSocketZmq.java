@@ -74,8 +74,6 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		// Polling to wait for connection.
 		Zmq.Poller poller = this.context.createPoller(subscriber);
 		
-		System.out.println("Connected stream socket to " + endpoint.toString());
-		
 		while (true) {
 			// The server returns a SYNC_STREAM message that is used to synchronize the subscriber.
 			try {

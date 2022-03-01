@@ -61,8 +61,6 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	m_socket->connect(endpoint.toString().c_str());
 	m_socket->connect(cancelEndpoint.str().c_str());
 
-	std::cout << "Connected stream socket to " << endpoint.toString() << std::endl;
-
 	// Wait for the connection to be ready.
 	// Poll subscriber.
 	zmq_pollitem_t items[1];
