@@ -61,12 +61,12 @@ class OutputStreamSocket {
 
 public:
 	~OutputStreamSocket();
+	void terminate();
 
 	std::optional<Output> receive();
 	void cancel();
 	bool isEnded() const;
 	bool isCanceled() const;
-	void terminate();
 
 private:
 	OutputStreamSocket(const std::string& name);

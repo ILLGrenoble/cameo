@@ -56,6 +56,10 @@ void OutputStreamSocket::init(Context * context, const Endpoint& endpoint, Reque
 OutputStreamSocket::~OutputStreamSocket() {
 }
 
+void OutputStreamSocket::terminate() {
+	m_impl.reset();
+}
+
 void OutputStreamSocket::setApplicationId(int id) {
 	m_applicationId = id;
 }
@@ -126,10 +130,6 @@ bool OutputStreamSocket::isEnded() const {
 
 bool OutputStreamSocket::isCanceled() const {
 	return m_canceled;
-}
-
-void OutputStreamSocket::terminate() {
-	m_impl.reset();
 }
 
 }

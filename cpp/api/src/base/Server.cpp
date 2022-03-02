@@ -103,9 +103,13 @@ Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 }
 
 Server::~Server() {
+	terminate();
+}
+
+void Server::terminate() {
 
 	// Stop the event thread.
-	if (m_eventThread.get() != nullptr) {
+	if (m_eventThread) {
 		m_eventThread->cancel();
 	}
 	m_eventThread.reset();
@@ -121,7 +125,7 @@ void Server::setTimeout(int timeout) {
 
 	m_timeout = timeout;
 
-	if (m_requestSocket.get() != nullptr) {
+	if (m_requestSocket) {
 		m_requestSocket->setTimeout(timeout);
 	}
 }

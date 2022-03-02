@@ -106,11 +106,11 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("isEndOfLine", &cameo::Output::isEndOfLine);
 
 	py::class_<cameo::OutputStreamSocket>(m, "OutputStreamSocket")
+		.def("terminate", &cameo::OutputStreamSocket::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("receive", &cameo::OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &cameo::OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isEnded", &cameo::OutputStreamSocket::isEnded)
-		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled)
-		.def("terminate", &cameo::OutputStreamSocket::terminate);
+		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
 
 	py::class_<Instance>(m, "Instance")
 	    .def("getName", &Instance::getName)
@@ -264,6 +264,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"endpoint"_a,
 				"timeout"_a = 0,
 				"useProxy"_a = false)
+		.def("terminate", &cameo::Server::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("setTimeout", &cameo::Server::setTimeout,
 	    		"value"_a)
 	    .def("getTimeout", &cameo::Server::getTimeout)

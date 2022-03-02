@@ -33,6 +33,10 @@ EventStreamSocket::EventStreamSocket() {
 EventStreamSocket::~EventStreamSocket() {
 }
 
+void EventStreamSocket::terminate() {
+	m_impl.reset();
+}
+
 void EventStreamSocket::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
 	m_impl->init(context, endpoint, requestSocket);
 }
@@ -115,10 +119,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 void EventStreamSocket::cancel() {
 	m_impl->cancel();
-}
-
-void EventStreamSocket::terminate() {
-	m_impl.reset();
 }
 
 }
