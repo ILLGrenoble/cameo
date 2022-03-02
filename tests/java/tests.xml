@@ -315,6 +315,10 @@
 		<application name="teststreampy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/teststream.py"/>
 		</application>
+		
+		<application name="testterminatepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testterminate.py"/>
+		</application>
 				
 	</applications>
 	

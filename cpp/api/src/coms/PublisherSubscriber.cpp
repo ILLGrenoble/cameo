@@ -52,10 +52,12 @@ Publisher::~Publisher() {
 
 void Publisher::terminate() {
 
-	application::This::getCom().removeKey(m_key);
+	if (m_impl) {
+		application::This::getCom().removeKey(m_key);
 
-	m_impl.reset();
-	m_responder.reset();
+		m_responder.reset();
+		m_impl.reset();
+	}
 }
 
 void Publisher::init(const std::string& name) {

@@ -153,6 +153,7 @@ public class TestSelector {
 		apps.add("testrequesterpy");
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
+		apps.add("testterminatepy");
 		
 		return apps;
 	}

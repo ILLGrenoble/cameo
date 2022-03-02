@@ -148,9 +148,11 @@ Responder::~Responder() {
 
 void Responder::terminate() {
 
-	application::This::getCom().removeKey(m_key);
+	if (m_impl) {
+		application::This::getCom().removeKey(m_key);
 
-	m_impl.reset();
+		m_impl.reset();
+	}
 }
 
 void Responder::init(const std::string &name) {
