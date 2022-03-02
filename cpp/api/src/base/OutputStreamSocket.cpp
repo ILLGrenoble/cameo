@@ -128,4 +128,8 @@ bool OutputStreamSocket::isCanceled() const {
 	return m_canceled;
 }
 
+void OutputStreamSocket::terminate() {
+	m_impl.reset();
+}
+
 }

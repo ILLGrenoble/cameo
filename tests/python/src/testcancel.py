@@ -37,7 +37,14 @@ def cancelRequester(requester, responder):
 
 this = cameopy.This
 this.init(sys.argv)
-server = this.getServer()
+
+useProxy = False if len(sys.argv) < 3 else (sys.argv[1] == "true") 
+
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
 
 def testCancelAll():
 

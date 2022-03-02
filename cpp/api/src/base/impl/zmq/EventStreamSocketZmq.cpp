@@ -27,7 +27,7 @@ EventStreamSocketZmq::EventStreamSocketZmq() : m_context(nullptr) {
 }
 
 EventStreamSocketZmq::~EventStreamSocketZmq() {
-	close();
+	terminate();
 }
 
 void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
@@ -115,8 +115,12 @@ void EventStreamSocketZmq::cancel() {
 	}
 }
 
-void EventStreamSocketZmq::close() {
-	m_socket->close();
+void EventStreamSocketZmq::terminate() {
+
+	if (m_socket) {
+		m_socket->close();
+		m_socket.reset();
+	}
 }
 
 }

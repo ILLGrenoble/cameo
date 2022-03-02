@@ -14,9 +14,15 @@ if len(sys.argv) >= 3:
 if len(sys.argv) >= 4:
     numberOfTimes = int(sys.argv[2])
 
-print("Responder application is", applicationName)
+useProxy = False if len(sys.argv) < 5 else (sys.argv[3] == "true") 
 
-server = this.getServer()
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
+
+print("Responder application is", applicationName)
 
 for i in range(numberOfTimes):
     

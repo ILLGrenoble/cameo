@@ -29,7 +29,7 @@ OutputStreamSocketZmq::OutputStreamSocketZmq(const std::string& name) :
 }
 
 OutputStreamSocketZmq::~OutputStreamSocketZmq() {
-	close();
+	terminate();
 }
 
 void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket) {
@@ -121,8 +121,12 @@ void OutputStreamSocketZmq::cancel() {
 	}
 }
 
-void OutputStreamSocketZmq::close() {
-	m_socket->close();
+void OutputStreamSocketZmq::terminate() {
+
+	if (m_socket) {
+		m_socket->close();
+		m_socket.reset();
+	}
 }
 
 }

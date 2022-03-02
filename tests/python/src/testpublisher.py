@@ -15,7 +15,13 @@ if len(sys.argv) >= 4:
 
 print("Publisher application is", applicationName)
 
-server = this.getServer()
+useProxy = False if len(sys.argv) < 5 else (sys.argv[3] == "true") 
+
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
 
 for i in range(numberOfTimes):
     

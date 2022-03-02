@@ -109,7 +109,8 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("receive", &cameo::OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &cameo::OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isEnded", &cameo::OutputStreamSocket::isEnded)
-		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
+		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled)
+		.def("terminate", &cameo::OutputStreamSocket::terminate);
 
 	py::class_<Instance>(m, "Instance")
 	    .def("getName", &Instance::getName)
@@ -259,7 +260,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getOwner", &Port::getOwner);
 
 	py::class_<cameo::Server>(m, "Server")
-	    .def(py::init<const std::string&>())
+	    .def(py::init<const std::string&, int, bool>(),
+	    		"endpoint"_a,
+				"timeout"_a = 0,
+				"useProxy"_a = false)
 	    .def("setTimeout", &cameo::Server::setTimeout,
 	    		"value"_a)
 	    .def("getTimeout", &cameo::Server::getTimeout)

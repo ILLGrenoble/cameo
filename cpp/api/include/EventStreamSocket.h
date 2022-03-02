@@ -43,6 +43,7 @@ public:
 
 	std::unique_ptr<Event> receive(bool blocking = true);
 	void cancel();
+	void terminate();
 
 private:
 	EventStreamSocket();

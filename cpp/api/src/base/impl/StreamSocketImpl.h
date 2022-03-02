@@ -33,7 +33,7 @@ public:
 	virtual void send(const std::string& data) = 0;
 	virtual std::string receive(bool blocking = true) = 0;
 	virtual void cancel() = 0;
-	virtual void close() = 0;
+	virtual void terminate() = 0;
 };
 
 }

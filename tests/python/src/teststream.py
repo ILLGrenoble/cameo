@@ -13,7 +13,14 @@ def printOutput(socket):
 
 this = cameopy.This
 this.init(sys.argv)
-server = this.getServer()
+
+useProxy = False if len(sys.argv) < 3 else (sys.argv[1] == "true") 
+
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
 
 app = server.start("streampy", cameopy.OUTPUTSTREAM)
 
@@ -28,6 +35,8 @@ time.sleep(1)
 print("Canceling output")
 
 socket.cancel()
+socket.terminate()
+
 t.join()
 
 state = app.waitFor()

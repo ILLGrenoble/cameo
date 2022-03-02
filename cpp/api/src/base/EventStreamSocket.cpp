@@ -117,4 +117,8 @@ void EventStreamSocket::cancel() {
 	m_impl->cancel();
 }
 
+void EventStreamSocket::terminate() {
+	m_impl.reset();
+}
+
 }

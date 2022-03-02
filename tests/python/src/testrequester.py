@@ -14,12 +14,18 @@ if len(sys.argv) >= 3:
 if len(sys.argv) >= 4:
     numberOfTimes = int(sys.argv[2])
 
+useProxy = False if len(sys.argv) < 5 else (sys.argv[3] == "true") 
+
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
+
 print("Requester application is", applicationName)
-
 print("Creating responder")
-responder = cameopy.Responder.create("responder")
 
-server = this.getServer()
+responder = cameopy.Responder.create("responder")
 
 N = 5
 

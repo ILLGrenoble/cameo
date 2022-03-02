@@ -37,7 +37,7 @@ public:
 	void send(const std::string& data);
 	std::string receive(bool blocking);
 	void cancel();
-	void close();
+	void terminate();
 
 private:
 	std::string m_name;

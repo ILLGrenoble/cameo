@@ -5,8 +5,13 @@ this = cameopy.This
 this.init(sys.argv)
 
 numberOfTimes = 1 if len(sys.argv) < 3 else int(sys.argv[1])
+useProxy = False if len(sys.argv) < 4 else (sys.argv[2] == "true") 
 
-server = this.getServer()
+endpoint = "tcp://localhost:11000";
+if useProxy:
+    endpoint = "tcp://localhost:10000";
+
+server = cameopy.Server(endpoint, 0, useProxy)
 
 for i in range(numberOfTimes):    
     app = server.start("veryfastpy")
