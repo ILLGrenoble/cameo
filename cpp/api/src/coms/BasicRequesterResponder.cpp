@@ -143,8 +143,14 @@ Responder::Responder(const std::string& name) :
 }
 
 Responder::~Responder() {
+	terminate();
+}
+
+void Responder::terminate() {
 
 	application::This::getCom().removeKey(m_key);
+
+	m_impl.reset();
 }
 
 void Responder::init(const std::string &name) {
@@ -220,6 +226,11 @@ Requester::Requester() :
 }
 
 Requester::~Requester() {
+	terminate();
+}
+
+void Requester::terminate() {
+	m_impl.reset();
 }
 
 void Requester::tryInit(application::Instance & app) {

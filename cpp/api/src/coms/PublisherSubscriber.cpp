@@ -47,8 +47,15 @@ Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
 }
 
 Publisher::~Publisher() {
+	terminate();
+}
+
+void Publisher::terminate() {
 
 	application::This::getCom().removeKey(m_key);
+
+	m_impl.reset();
+	m_responder.reset();
 }
 
 void Publisher::init(const std::string& name) {
@@ -172,6 +179,11 @@ Subscriber::Subscriber() :
 }
 
 Subscriber::~Subscriber() {
+	terminate();
+}
+
+void Subscriber::terminate() {
+	m_impl.reset();
 }
 
 void Subscriber::tryInit(application::Instance & app) {

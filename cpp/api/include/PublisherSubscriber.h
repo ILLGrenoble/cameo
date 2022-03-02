@@ -42,6 +42,7 @@ class Publisher {
 
 public:
 	~Publisher();
+	void terminate();
 
 	/**
 	 * Returns the publisher with name.
@@ -98,6 +99,7 @@ class Subscriber {
 
 public:
 	~Subscriber();
+	void terminate();
 
 	static std::unique_ptr<Subscriber> create(application::Instance & app, const std::string &publisherName);
 

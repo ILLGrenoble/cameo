@@ -150,6 +150,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"name"_a,
 	    		"numberOfSubscribers"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &Publisher::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &Publisher::getName)
 	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitForSubscribers", &Publisher::cancelWaitForSubscribers, py::call_guard<py::gil_scoped_release>())
@@ -170,6 +171,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"instance"_a,
 	    		"publisherName"_a,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &Subscriber::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getPublisherName", &Subscriber::getPublisherName)
 	    .def("getAppName", &Subscriber::getAppName)
 	    .def("getAppId", &Subscriber::getAppId)
@@ -204,6 +206,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("create", &basic::Responder::create,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &basic::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &basic::Responder::getName)
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("receive", &basic::Responder::receive, py::call_guard<py::gil_scoped_release>())
@@ -214,7 +217,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"instance"_a,
 				"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-
+		.def("terminate", &basic::Requester::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &basic::Requester::setTimeout)
 		.def("setPollingTime", &basic::Requester::setPollingTime)
 	    .def("getName", &basic::Requester::getResponderName)

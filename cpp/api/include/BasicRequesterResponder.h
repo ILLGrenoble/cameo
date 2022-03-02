@@ -78,6 +78,7 @@ class Responder {
 
 public:
 	~Responder();
+	void terminate();
 
 	/** \brief Returns the responder with name.
 	 * throws ResponderCreationException.
@@ -120,7 +121,8 @@ class Requester {
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
 public:
-	virtual ~Requester();
+	~Requester();
+	void terminate();
 
 	/**
 	 * Returns the responder with name.
