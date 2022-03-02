@@ -50,7 +50,7 @@ public class OutputPrintThread extends Thread {
 			
 		} finally {
 			// destroy the socket, because it is no longer needed
-			socket.destroy();
+			socket.terminate();
 		}
 	}
 	

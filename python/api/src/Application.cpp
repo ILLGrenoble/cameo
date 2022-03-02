@@ -113,6 +113,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
 
 	py::class_<Instance>(m, "Instance")
+		.def("terminate", &Instance::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &Instance::getName)
 	    .def("getId", &Instance::getId)
 	    .def("getEndpoint", &Instance::getEndpoint)

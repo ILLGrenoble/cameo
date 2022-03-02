@@ -14,5 +14,5 @@ public interface OutputStreamSocketImpl {
 	boolean isEnded();
 	boolean isCanceled();
 	void cancel();
-	void destroy();
+	void terminate();
 }

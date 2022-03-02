@@ -58,8 +58,8 @@ public class OutputStreamSocket {
 		impl.cancel();
 	}
 	
-	public void destroy() {
-		impl.destroy();
+	public void terminate() {
+		impl.terminate();
 	}
 
 }

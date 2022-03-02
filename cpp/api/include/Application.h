@@ -241,6 +241,7 @@ public:
 	};
 
 	~Instance();
+	void terminate();
 
 	const std::string& getName() const;
 	int getId() const;

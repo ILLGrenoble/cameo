@@ -471,10 +471,16 @@ Instance::Instance(Server * server) :
 }
 
 Instance::~Instance() {
-	// Unregister the instance.
-	m_server->unregisterEventListener(this);
+	terminate();
 
 	// The destructor has been added to avoid blocking ZeroMQ, because the inner objects destructors were not called.
+}
+
+void Instance::terminate() {
+	m_outputStreamSocket.reset();
+
+	// Unregister the instance.
+	m_server->unregisterEventListener(this);
 }
 
 void Instance::setId(int id) {

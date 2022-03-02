@@ -12,5 +12,5 @@ public interface EventStreamSocketImpl {
 	Event receive();
 	boolean isCanceled();
 	void cancel();
-	void destroy();
+	void terminate();
 }

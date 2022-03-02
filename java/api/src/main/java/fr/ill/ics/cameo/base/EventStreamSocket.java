@@ -46,7 +46,7 @@ public class EventStreamSocket {
 		impl.cancel();
 	}
 
-	public void destroy() {
-		impl.destroy();
+	public void terminate() {
+		impl.terminate();
 	}
 }

@@ -186,7 +186,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		cancelSocket.send(Messages.Event.CANCEL);
 	}
 
-	public void destroy() {
+	public void terminate() {
 		context.destroySocket(subscriberSocket);
 	}
 }

@@ -167,7 +167,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		cancelSocket.send(Messages.Event.CANCEL);
 	}
 	
-	public void destroy() {
+	public void terminate() {
 		context.destroySocket(subscriberSocket);
 	}
 }
