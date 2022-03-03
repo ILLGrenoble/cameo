@@ -115,6 +115,7 @@ public class TestSelector {
 		apps.add("testsubscriberjava");
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");
+		apps.add("testcheckappjava");
 		
 		return apps;
 	}
@@ -135,6 +136,7 @@ public class TestSelector {
 		apps.add("testsubscribercpp");
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");
+		apps.add("testcheckappcpp");
 		
 		return apps;
 	}

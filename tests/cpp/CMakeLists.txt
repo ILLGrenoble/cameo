@@ -112,3 +112,6 @@ target_link_libraries(basicrequester PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testbasicrequester src/TestBasicRequester.cpp)
 target_link_libraries(testbasicrequester PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testcheckapp src/TestCheckApp.cpp)
+target_link_libraries(testcheckapp PRIVATE Cameo::cameo-api-cpp)

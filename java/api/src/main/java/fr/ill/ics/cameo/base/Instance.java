@@ -370,6 +370,10 @@ public class Instance extends EventListener {
 		return server.getPastStates(id);
 	}
 	
+	public int getLastState() {
+		return waitFor(0, null, false);
+	}
+	
 	public void terminate() {
 		// Unregister the status.
 		server.unregisterEventListener(this);

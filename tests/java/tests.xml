@@ -14,7 +14,7 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestSimple"/>
 		</application>
 		
-		<application name="veryfastjava" starting_time="0" stopping_time="0" output_stream="yes" multiple="no" restart="no" info_arg="no" log_directory="logs">
+		<application name="veryfastjava" starting_time="0" stopping_time="0" output_stream="yes" multiple="yes" restart="no" info_arg="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.VeryFast"/>
 		</application>
 		
@@ -113,6 +113,10 @@
 		<application name="teststreamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestStream"/>
 		</application>
+		
+		<application name="testcheckappjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestCheckApp"/>	
+		</application>
 	
 
 		<!-- C++ apps -->
@@ -125,7 +129,7 @@
 			<start executable="testsimple"/>
 		</application>
 		
-		<application name="veryfastcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="veryfastcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="veryfast"/>
 		</application>
 		
@@ -223,6 +227,10 @@
 
 		<application name="teststreamcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="teststream"/>
+		</application>
+		
+		<application name="testcheckappcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testcheckapp"/>
 		</application>
 		
 		
