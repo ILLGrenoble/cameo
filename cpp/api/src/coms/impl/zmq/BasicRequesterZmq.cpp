@@ -45,7 +45,7 @@ void RequesterZmq::setTimeout(int value) {
 
 void RequesterZmq::resetSocket() {
 	if (m_requester) {
-		m_requester.reset(nullptr);
+		m_requester.reset();
 	}
 }
 

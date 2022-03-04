@@ -115,3 +115,9 @@ target_link_libraries(testbasicrequester PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testcheckapp src/TestCheckApp.cpp)
 target_link_libraries(testcheckapp PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(multiresponder src/MultiResponder.cpp)
+target_link_libraries(multiresponder PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testmultiresponder src/TestMultiResponder.cpp)
+target_link_libraries(testmultiresponder PRIVATE Cameo::cameo-api-cpp)

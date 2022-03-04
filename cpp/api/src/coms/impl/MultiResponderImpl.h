@@ -14,19 +14,33 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_H_
-#define CAMEO_H_
+#ifndef CAMEO_COMS_MULTI_RESPONDERIMPL_H_
+#define CAMEO_COMS_MULTI_RESPONDERIMPL_H_
 
-#define CAMEO_API_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
-#define CAMEO_API_VERSION_MINOR @PROJECT_VERSION_MINOR@
-#define CAMEO_API_VERSION_REVISION @PROJECT_VERSION_PATCH@
+#include <string>
+#include <memory>
 
-#include "Application.h"
-#include "Server.h"
-#include "ContextZmq.h"
-#include "ImplFactory.h"
-#include "BasicRequesterResponder.h"
-#include "MultiRequesterResponder.h"
-#include "PublisherSubscriber.h"
+namespace cameo {
+namespace coms {
+namespace multi {
+
+class Request;
+
+class ResponderImpl {
+
+public:
+	virtual ~ResponderImpl() {}
+
+	virtual void init(const std::string& endpoint) = 0;
+	virtual void cancel() = 0;
+	virtual bool isCanceled() = 0;
+
+	virtual std::unique_ptr<Request> receive() = 0;
+	virtual void reply(const std::string& type, const std::string& response) = 0;
+};
+
+}
+}
+}
 
 #endif

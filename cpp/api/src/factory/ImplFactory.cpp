@@ -24,6 +24,8 @@
 #include "../coms/impl/zmq/SubscriberZmq.h"
 #include "../coms/impl/zmq/BasicResponderZmq.h"
 #include "../coms/impl/zmq/BasicRequesterZmq.h"
+#include "../coms/impl/zmq/MultiResponderZmq.h"
+#include "../coms/impl/zmq/MultiResponderRouterZmq.h"
 
 namespace cameo {
 
@@ -57,6 +59,14 @@ std::unique_ptr<coms::basic::ResponderImpl> ImplFactory::createBasicResponder() 
 
 std::unique_ptr<coms::basic::RequesterImpl> ImplFactory::createBasicRequester() {
 	return std::make_unique<coms::basic::RequesterZmq>();
+}
+
+std::unique_ptr<coms::multi::ResponderRouterImpl> ImplFactory::createMultiResponderRouter() {
+	return std::make_unique<coms::multi::ResponderRouterZmq>();
+}
+
+std::unique_ptr<coms::multi::ResponderImpl> ImplFactory::createMultiResponder() {
+	return std::make_unique<coms::multi::ResponderZmq>();
 }
 
 }
