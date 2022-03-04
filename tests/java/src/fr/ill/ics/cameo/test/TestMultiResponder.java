@@ -66,7 +66,7 @@ public class TestMultiResponder {
 				Instance responderApplication = server.start(applicationName);
 				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
 
-				fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(responderApplication, "responder");
+				fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(responderApplication, "responder");
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.

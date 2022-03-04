@@ -43,8 +43,8 @@ public class ImplFactory {
 		return new fr.ill.ics.cameo.coms.basic.impl.zmq.ResponderZmq();
 	}
 	
-	public static fr.ill.ics.cameo.coms.basic.impl.RequesterImpl createBasicRequester() {
-		return new fr.ill.ics.cameo.coms.basic.impl.zmq.RequesterZmq();
+	public static fr.ill.ics.cameo.coms.impl.RequesterImpl createBasicRequester() {
+		return new fr.ill.ics.cameo.coms.impl.zmq.RequesterZmq();
 	}
 	
 	public static fr.ill.ics.cameo.coms.multi.impl.ResponderImpl createMultiResponder() {

@@ -14,29 +14,26 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.basic.impl;
+package fr.ill.ics.cameo.coms;
 
-import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.base.Waiting;
 
-public interface RequesterImpl {
+public class RequesterWaiting extends Waiting {
 
-	void setPollingTime(int value);
-	void setTimeout(int value);
+	private Requester requester;
 	
-	void init(Endpoint endpoint, String responderIdentity);
+	public RequesterWaiting(Requester requester) {
+		this.requester = requester;
+	}
 	
-	void send(byte[] requestData);
-	void send(String request);
-	void sendTwoParts(byte[] requestData1, byte[] requestData2);
-	
-	byte[] receive();
-	String receiveString();
-	
-	void cancel();
-	boolean isCanceled();
-	
-	boolean hasTimedout();
-	
-	void terminate();
+	@Override
+	public void cancel() {
+		requester.cancel();
+	}
+
+	@Override
+	public void terminate() {
+		requester.terminate();
+	}
 	
 }

@@ -8,7 +8,6 @@ import fr.ill.ics.cameo.base.KeyValue;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.basic.Requester;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;

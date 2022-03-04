@@ -309,7 +309,7 @@ public class TestCancel {
 				final Instance thisApp = server.connect(This.getName());
 				
 				// Create the requester.
-				final fr.ill.ics.cameo.coms.basic.Requester requester = fr.ill.ics.cameo.coms.basic.Requester.create(thisApp, "responder");
+				final fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(thisApp, "responder");
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {

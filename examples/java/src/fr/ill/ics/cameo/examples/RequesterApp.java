@@ -21,7 +21,7 @@ import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.basic.Requester;
+import fr.ill.ics.cameo.coms.Requester;
 
 
 public class RequesterApp {
