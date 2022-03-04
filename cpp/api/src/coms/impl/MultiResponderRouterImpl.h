@@ -30,6 +30,7 @@ public:
 	virtual ~ResponderRouterImpl() {}
 
 	virtual void init(const std::string& responderIdentity, const std::string& dealerEndpoint) = 0;
+	virtual void setPollingTime(int value) = 0;
 	virtual int getResponderPort() = 0;
 	virtual void cancel() = 0;
 	virtual bool isCanceled() = 0;

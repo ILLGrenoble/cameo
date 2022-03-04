@@ -33,6 +33,7 @@ public:
 	~ResponderRouterZmq();
 
 	virtual void init(const std::string& responderIdentity, const std::string& dealerEndpoint);
+	virtual void setPollingTime(int value);
 	virtual int getResponderPort();
 	virtual void cancel();
 	virtual bool isCanceled();
@@ -42,6 +43,7 @@ public:
 private:
 	void terminate();
 
+	int m_pollingTime;
 	int m_responderPort;
 	std::unique_ptr<zmq::socket_t> m_router;
 	std::unique_ptr<zmq::socket_t> m_dealer;

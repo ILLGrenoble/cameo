@@ -155,6 +155,10 @@ void ResponderRouter::terminate() {
 	}
 }
 
+void ResponderRouter::setPollingTime(int value) {
+	m_impl->setPollingTime(value);
+}
+
 void ResponderRouter::init(const std::string &name) {
 
 	// Set the key.

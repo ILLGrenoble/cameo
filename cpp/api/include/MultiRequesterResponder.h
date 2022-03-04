@@ -87,6 +87,8 @@ public:
 	 */
 	static std::unique_ptr<ResponderRouter> create(const std::string &name);
 
+	void setPollingTime(int value);
+
 	/// Returns the name of the responder
 	const std::string& getName() const;
 

@@ -27,7 +27,7 @@ namespace coms {
 namespace multi {
 
 ResponderRouterZmq::ResponderRouterZmq() :
-	m_responderPort(0), m_canceled(false) {
+	m_pollingTime(100),	m_responderPort(0), m_canceled(false) {
 }
 
 ResponderRouterZmq::~ResponderRouterZmq() {
@@ -71,6 +71,10 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 	m_dealer->bind(dealerEndpoint);
 }
 
+void ResponderRouterZmq::setPollingTime(int value) {
+	m_pollingTime = value;
+}
+
 int ResponderRouterZmq::getResponderPort() {
 	return m_responderPort;
 }
@@ -91,7 +95,7 @@ void ResponderRouterZmq::run() {
 	// Switch messages between sockets.
 	while (true) {
 
-		zmq::poll(&items[0], 2, 100);
+		zmq::poll(&items[0], 2, m_pollingTime);
 
 		if (items[0].revents & ZMQ_POLLIN) {
 
