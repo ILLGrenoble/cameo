@@ -22,7 +22,8 @@
 #include "Server.h"
 #include "ContextZmq.h"
 #include "Waiting.h"
-#include "BasicRequesterResponder.h"
+#include "BasicResponder.h"
+#include "Requester.h"
 #include "impl/zmq/PublisherZmq.h"
 #include "impl/zmq/SubscriberZmq.h"
 

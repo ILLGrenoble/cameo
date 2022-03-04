@@ -14,21 +14,18 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_COMS_MULTI_REQUESTERRESPONDER_H_
-#define CAMEO_COMS_MULTI_REQUESTERRESPONDER_H_
+#ifndef CAMEO_COMS_BASIC_RESPONDER_H_
+#define CAMEO_COMS_BASIC_RESPONDER_H_
 
 #include "Application.h"
 #include "ResponderCreationException.h"
-#include "RequesterCreationException.h"
 
 namespace cameo {
 namespace coms {
-namespace multi {
+namespace basic {
 
 class Responder;
 class ResponderImpl;
-class ResponderRouter;
-class ResponderRouterImpl;
 
 ///////////////////////////////////////////////////////////////////////////
 // Request
@@ -70,52 +67,6 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////
-// ResponderRouter
-
-class ResponderRouter {
-
-	friend class Responder;
-	friend class Request;
-	friend std::ostream& operator<<(std::ostream&, const ResponderRouter&);
-
-public:
-	~ResponderRouter();
-	void terminate();
-
-	/** \brief Returns the responder with name.
-	 * throws ResponderCreationException.
-	 */
-	static std::unique_ptr<ResponderRouter> create(const std::string &name);
-
-	void setPollingTime(int value);
-
-	/// Returns the name of the responder
-	const std::string& getName() const;
-
-	void cancel();
-
-	void run();
-
-	/** check if it has been canceled */
-	bool isCanceled() const;
-
-	static const std::string KEY;
-	static const std::string PORT;
-
-private:
-	ResponderRouter(const std::string &name);
-	void init(const std::string &name);
-
-	const std::string& getDealerEndpoint() const;
-
-	std::string m_name;
-	std::unique_ptr<ResponderRouterImpl> m_impl;
-	std::unique_ptr<Waiting> m_waiting;
-	std::string m_key;
-	std::string m_dealerEndpoint;
-};
-
-///////////////////////////////////////////////////////////////////////////
 // Responder
 
 class Responder {
@@ -130,7 +81,10 @@ public:
 	/** \brief Returns the responder with name.
 	 * throws ResponderCreationException.
 	 */
-	static std::unique_ptr<Responder> create(const ResponderRouter& router);
+	static std::unique_ptr<Responder> create(const std::string &name);
+
+	/// Returns the name of the responder
+	const std::string& getName() const;
 
 	void cancel();
 
@@ -142,18 +96,22 @@ public:
 	/** check if it has been canceled */
 	bool isCanceled() const;
 
+	static const std::string KEY;
+	static const std::string PORT;
+
 private:
-	Responder();
-	void init(const std::string &endpoint);
+	Responder(const std::string &name);
+	void init(const std::string &name);
 
 	void reply(const std::string& type, const std::string& response);
 
+	std::string m_name;
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
+	std::string m_key;
 };
 
 std::ostream& operator<<(std::ostream&, const Request&);
-std::ostream& operator<<(std::ostream&, const ResponderRouter&);
 std::ostream& operator<<(std::ostream&, const Responder&);
 
 }

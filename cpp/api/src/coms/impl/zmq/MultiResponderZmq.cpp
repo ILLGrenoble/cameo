@@ -15,7 +15,7 @@
  */
 
 #include "MultiResponderZmq.h"
-#include "MultiRequesterResponder.h"
+#include "MultiResponder.h"
 #include "Application.h"
 #include "Messages.h"
 #include "JSON.h"

@@ -16,10 +16,6 @@
 
 #include "MultiResponderRouterZmq.h"
 #include "Application.h"
-#include "Messages.h"
-#include "JSON.h"
-#include "BasicRequesterResponder.h"
-#include "RequestSocket.h"
 #include "ContextZmq.h"
 
 namespace cameo {

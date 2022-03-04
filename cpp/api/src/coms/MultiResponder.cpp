@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "MultiRequesterResponder.h"
+#include "MultiResponder.h"
 #include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "Messages.h"

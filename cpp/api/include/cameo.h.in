@@ -25,8 +25,9 @@
 #include "Server.h"
 #include "ContextZmq.h"
 #include "ImplFactory.h"
-#include "BasicRequesterResponder.h"
-#include "MultiRequesterResponder.h"
+#include "BasicResponder.h"
+#include "MultiResponder.h"
+#include "Requester.h"
 #include "PublisherSubscriber.h"
 
 #endif

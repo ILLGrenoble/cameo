@@ -18,7 +18,7 @@
 #include "Application.h"
 #include "Messages.h"
 #include "JSON.h"
-#include "BasicRequesterResponder.h"
+#include "BasicResponder.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
 
