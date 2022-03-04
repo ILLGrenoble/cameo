@@ -79,6 +79,11 @@ int main(int argc, char *argv[]) {
 		optional<string> response = requester->receive();
 		cout << "Response is " << response.value() << endl;
 
+		// Send a two-parts message.
+		requester->sendTwoBinaryParts("first", "second");
+
+		response = requester->receive();
+		cout << "Response is " << response.value() << endl;
 
 
 		// Wait for the end of the application.

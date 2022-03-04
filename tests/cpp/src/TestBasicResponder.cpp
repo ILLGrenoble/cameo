@@ -80,8 +80,6 @@ int main(int argc, char *argv[]) {
 		cout << "Response is " << response.value() << endl;
 
 		// Send a two-parts message.
-		string buffer1, buffer2;
-
 		requester->sendTwoBinaryParts("first", "second");
 
 		response = requester->receive();

@@ -27,20 +27,19 @@ namespace coms {
 namespace multi {
 
 ResponderRouterZmq::ResponderRouterZmq() :
-	m_responderPort(0),
-	m_canceled(false) {
+	m_responderPort(0), m_canceled(false) {
 }
 
 ResponderRouterZmq::~ResponderRouterZmq() {
 	terminate();
 }
 
-void ResponderRouterZmq::init(const std::string& responderIdentity, const std::string& dealerEndpoint) {
+void ResponderRouterZmq::init(const std::string &responderIdentity, const std::string &dealerEndpoint) {
 
 	m_responderIdentity = responderIdentity;
 
 	// Create a socket ROUTER.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	ContextZmq *contextImpl = dynamic_cast<ContextZmq*>(application::This::getCom().getContext());
 	m_router.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
 
 	// Set the identity.
@@ -62,8 +61,7 @@ void ResponderRouterZmq::init(const std::string& responderIdentity, const std::s
 			m_router->bind(repEndpoint.c_str());
 			m_responderPort = port;
 			break;
-		}
-		catch (...) {
+		} catch (...) {
 			application::This::getCom().setPortUnavailable(port);
 		}
 	}
@@ -78,16 +76,7 @@ int ResponderRouterZmq::getResponderPort() {
 }
 
 void ResponderRouterZmq::cancel() {
-
-//	json::StringObject jsonRequest;
-//	jsonRequest.pushKey(message::TYPE);
-//	jsonRequest.pushValue(message::CANCEL);
-//
-//	// Create a request socket connected directly to the responder.
-//	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString(), m_responderIdentity);
-//	requestSocket->requestJSON(jsonRequest.toString());
-
-	std::cout << "ResponderRouterZmq::cancel TODO" << std::endl;
+	m_canceled = true;
 }
 
 bool ResponderRouterZmq::isCanceled() {
@@ -96,8 +85,55 @@ bool ResponderRouterZmq::isCanceled() {
 
 void ResponderRouterZmq::run() {
 
-	// Connect work threads to client threads via a queue
-    zmq::proxy(*m_router, *m_dealer, nullptr);
+	// Poll to check if the router has been canceled.
+	zmq::pollitem_t items[] = { { *m_router, 0, ZMQ_POLLIN, 0 }, { *m_dealer, 0, ZMQ_POLLIN, 0 } };
+
+	// Switch messages between sockets.
+	while (true) {
+
+		zmq::poll(&items[0], 2, 100);
+
+		if (items[0].revents & ZMQ_POLLIN) {
+
+			while (true) {
+				zmq::message_t message;
+
+				if (!m_router->recv(message, zmq::recv_flags::none).has_value()) {
+					continue;
+				}
+
+				if (message.more()) {
+					m_dealer->send(message, zmq::send_flags::sndmore);
+				}
+				else {
+					m_dealer->send(message, zmq::send_flags::none);
+					break;
+				}
+			}
+		}
+		if (items[1].revents & ZMQ_POLLIN) {
+			while (true) {
+				zmq::message_t message;
+
+				if (!m_dealer->recv(message, zmq::recv_flags::none).has_value()) {
+					continue;
+				}
+
+				if (message.more()) {
+					m_router->send(message, zmq::send_flags::sndmore);
+				}
+				else {
+					m_router->send(message, zmq::send_flags::none);
+					break;
+				}
+			}
+		}
+
+		if (m_canceled) {
+			break;
+		}
+	}
+
 }
 
 void ResponderRouterZmq::terminate() {

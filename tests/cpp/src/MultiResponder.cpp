@@ -45,52 +45,26 @@ int main(int argc, char *argv[]) {
 
 		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
 
+		// Receive first request.
 		unique_ptr<coms::multi::Request> request = responder->receive();
 		cout << "Received request " << *request << endl;
 
 		request->reply("1st response");
+
+		// Receive second request.
+		request = responder->receive();
+
+		cout << "Received request " << request->getBinary() << " " << request->getSecondBinaryPart() << endl;
+		request->reply("2nd response");
+
+		router->cancel();
 	});
 
 	router->run();
 
-	// Receive first request.
-/*	unique_ptr<coms::basic::Request> request = responder->receive();
-	cout << "Received request " << *request << endl;
+	std::cout << "Router terminated" << std::endl;
 
-	request->reply("1st response");
-
-	// Receive second request.
-	request = responder->receive();
-
-	cout << "Received request " << request->getBinary() << " " << request->getSecondBinaryPart() << endl;
-	request->reply("2nd response");
-
-	// Receive third request.
-	request = responder->receive();
-	cout << "Received request " << request->get() << endl;
-
-	// Reply.
-	request->reply("3rd response");
-	cout << "Replied 3rd response" << endl;
-
-	// Receive request.
-	request = responder->receive();
-	cout << "received request " << *request << endl;
-
-	cout << "Wait so that the requester has timed out" << endl;
-	this_thread::sleep_for(chrono::seconds(1));
-
-	request->reply("4th response");
-
-
-	// Receive request.
-	request = responder->receive();
-	cout << "received request " << *request << endl;
-	request->reply("5th response");
-
-
-	application::ServerAndInstance requester = request->connectToRequester(0, true);
-	cout << "Requester " << *requester.instance << endl;*/
+	td.join();
 
 	cout << "Finished the application" << endl;
 
