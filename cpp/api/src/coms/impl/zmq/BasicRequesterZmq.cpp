@@ -248,6 +248,11 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 		n = m_timeout / m_pollingTime + 1;
 	}
 
+	// Create the poller.
+	zmq::pollitem_t items[] = {
+		{ *m_requester.get(), 0, ZMQ_POLLIN, 0 }
+	};
+
 	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
 	int i = 0;
 	while (i < n || m_timeout == 0) {
@@ -258,9 +263,6 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 		}
 
 		// Poll the requester.
-		zmq::pollitem_t items[] = {
-			{ *m_requester.get(), 0, ZMQ_POLLIN, 0 }
-		};
 		zmq::poll(&items[0], 1, m_pollingTime);
 
 		// Get a reply.

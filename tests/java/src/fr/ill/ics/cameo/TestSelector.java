@@ -111,6 +111,7 @@ public class TestSelector {
 		apps.add("testwaitstoragejava");
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
+		apps.add("testmultiresponderjava");
 		apps.add("testpublisherjava");
 		apps.add("testsubscriberjava");
 		apps.add("testcanceljava");
@@ -132,12 +133,12 @@ public class TestSelector {
 		apps.add("testwaitstoragecpp");
 		apps.add("testbasicrespondercpp");
 		apps.add("testbasicrequestercpp");
+		apps.add("testmultirespondercpp");
 		apps.add("testpublishercpp");
 		apps.add("testsubscribercpp");
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");
 		apps.add("testcheckappcpp");
-		apps.add("testmultirespondercpp");
 		
 		return apps;
 	}

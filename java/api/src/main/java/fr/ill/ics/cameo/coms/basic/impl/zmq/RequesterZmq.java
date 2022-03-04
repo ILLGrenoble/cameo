@@ -212,6 +212,10 @@ public class RequesterZmq implements RequesterImpl {
 		if (pollingTime > 0) {
 			n = timeout / pollingTime + 1;
 		}
+
+		// Create the poller.
+		Zmq.Poller poller = this.context.createPoller(1);
+		poller.register(requester);
 		
 		// Infinite loop if timeout is 0 or finite loop if timeout is defined.
 		int i = 0;
@@ -223,8 +227,6 @@ public class RequesterZmq implements RequesterImpl {
 			}
 
 			// Poll the requester.
-			Zmq.Poller poller = this.context.createPoller(1);
-			poller.register(requester);
 			poller.poll(pollingTime);
 			if (poller.pollin(0)) {
 				return Zmq.Msg.recvMsg(requester);
