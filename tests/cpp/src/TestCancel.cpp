@@ -218,7 +218,6 @@ int main(int argc, char *argv[]) {
 			}
 		});
 
-
 		// Get this app.
 		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
 
@@ -249,6 +248,35 @@ int main(int argc, char *argv[]) {
 
 		cancelThread.join();
 		responderThread.join();
+	}
+
+	// Test the multi responder.
+	{
+		cout << "Creating multi responder" << endl;
+
+		unique_ptr<coms::multi::ResponderRouter> router = coms::multi::ResponderRouter::create("responder");
+		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+
+		std::thread routerThread([&] {
+			router->run();
+		});
+
+		std::thread responderThread([&] {
+			responder->receive();
+		});
+
+		responder->cancel();
+		router->cancel();
+
+		if (responder->isCanceled() && router->isCanceled()) {
+			cout << "Router and responder are canceled" << endl;
+		}
+		else {
+			cout << "Router and responder are not canceled" << endl;
+		}
+
+		responderThread.join();
+		routerThread.join();
 	}
 
 	cout << "Finished the application" << endl;

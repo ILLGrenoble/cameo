@@ -42,19 +42,20 @@ void ResponderZmq::init(const std::string& endpoint) {
 
 	// Connect to the dealer.
 	m_responder->connect(endpoint);
+
+	m_cancelEndpoint = std::string("inproc://") + IdGenerator::newStringId();
+	m_responder->bind(m_cancelEndpoint);
 }
 
 void ResponderZmq::cancel() {
 
-//	json::StringObject jsonRequest;
-//	jsonRequest.pushKey(message::TYPE);
-//	jsonRequest.pushValue(message::CANCEL);
-//
-//	// Create a request socket connected directly to the responder.
-//	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString(), m_responderIdentity);
-//	requestSocket->requestJSON(jsonRequest.toString());
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::CANCEL);
 
-	std::cout << "ResponderZmq::cancel TODO" << std::endl;
+	// Create a request socket connected directly to the responder.
+	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_cancelEndpoint, "");
+	requestSocket->requestJSON(jsonRequest.toString());
 }
 
 bool ResponderZmq::isCanceled() {

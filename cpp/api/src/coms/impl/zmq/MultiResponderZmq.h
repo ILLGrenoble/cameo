@@ -47,6 +47,7 @@ private:
 
 	std::unique_ptr<zmq::socket_t> m_responder;
 	std::unique_ptr<zmq::message_t> m_responderIdentity;
+	std::string m_cancelEndpoint;
 
 	bool m_canceled;
 };

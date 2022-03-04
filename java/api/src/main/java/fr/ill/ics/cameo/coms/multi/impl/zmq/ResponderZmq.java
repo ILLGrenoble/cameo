@@ -19,6 +19,8 @@ package fr.ill.ics.cameo.coms.multi.impl.zmq;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.base.IdGenerator;
+import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.multi.Request;
@@ -32,6 +34,7 @@ public class ResponderZmq implements ResponderImpl {
 	
 	private Zmq.Context context;
 	private Zmq.Socket responder;
+	private String cancelEndpoint;
 	private Zmq.Msg reply = null; // Memorize the reply before sending it.
 	
 	private boolean canceled = false;
@@ -44,6 +47,9 @@ public class ResponderZmq implements ResponderImpl {
 		
 		// Connect to the dealer.
 		responder.connect(endpoint);
+		
+		cancelEndpoint = "inproc://" + IdGenerator.newStringId();
+		responder.bind(cancelEndpoint);
 	}
 	
 	public Request receive() {
@@ -134,15 +140,15 @@ public class ResponderZmq implements ResponderImpl {
 	}
 	
 	public void cancel() {
-//		JSONObject jsonRequest = new JSONObject();
-//		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
-//		
-//		// Create the request socket connected directly to the responder. We can create it here because it should be called only once.
-//		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().withPort(responderPort).toString(), responderIdentity);
-//		requestSocket.requestJSON(jsonRequest);
-//		
-//		// Terminate the socket.
-//		requestSocket.terminate();
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
+		
+		// Create the request socket connected directly to the responder. We can create it here because it should be called only once.
+		RequestSocket requestSocket = This.getCom().createRequestSocket(cancelEndpoint, "");
+		requestSocket.requestJSON(jsonRequest);
+		
+		// Terminate the socket.
+		requestSocket.terminate();
 	}
 
 	private void responseToRequest(Zmq.Msg reply) {

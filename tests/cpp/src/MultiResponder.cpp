@@ -41,11 +41,13 @@ int main(int argc, char *argv[]) {
 
 	application::This::setRunning();
 
+	unique_ptr<coms::multi::Responder> responder;
+
 	std::thread td([&] {
 
 		cout << "Creating responder" << endl;
 
-		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+		responder = coms::multi::Responder::create(*router);
 
 		cout << "Created responder" << endl;
 
@@ -65,8 +67,6 @@ int main(int argc, char *argv[]) {
 	});
 
 	router->run();
-
-	std::cout << "Router terminated" << std::endl;
 
 	td.join();
 

@@ -348,6 +348,46 @@ public class TestCancel {
 				responder.terminate();
 				requester.terminate();
 			}
+			
+			// Test the multi responder.
+			{
+				// Create the responder.
+				final fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+				final fr.ill.ics.cameo.coms.multi.Responder responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+
+				Thread routerThread = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+						router.run();
+				    }
+				});
+				
+				routerThread.start();
+				
+				Thread responderThread = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+						responder.receive();
+				    }
+				});
+				
+				responderThread.start();
+				
+				responder.cancel();
+				router.cancel();
+				
+				if (responder.isCanceled() && router.isCanceled()) {
+					System.out.println("Router and responder are canceled");
+				}
+				else {
+					System.out.println("Router and responder are not canceled");
+				}
+				
+				responderThread.join();
+				routerThread.join();
+			}
+			
+			
 		}
 		catch (RemoteException e) {
 			System.err.println("Error: " + e.getMessage());

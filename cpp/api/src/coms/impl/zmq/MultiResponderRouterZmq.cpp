@@ -59,7 +59,8 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 			m_router->bind(repEndpoint.c_str());
 			m_responderPort = port;
 			break;
-		} catch (...) {
+		}
+		catch (...) {
 			application::This::getCom().setPortUnavailable(port);
 		}
 	}
