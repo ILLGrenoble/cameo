@@ -223,8 +223,10 @@ public class RequesterZmq implements RequesterImpl {
 			}
 
 			// Poll the requester.
-			Zmq.Poller poller = context.createPoller(requester);
-			if (poller.poll(pollingTime)) {
+			Zmq.Poller poller = this.context.createPoller(1);
+			poller.register(requester);
+			poller.poll(pollingTime);
+			if (poller.pollin(0)) {
 				return Zmq.Msg.recvMsg(requester);
 			}
 

@@ -72,7 +72,8 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		cancelPublisher.bind(cancelEndpoint);
 		
 		// Polling to wait for connection.
-		Zmq.Poller poller = this.context.createPoller(subscriber);
+		Zmq.Poller poller = this.context.createPoller(1);
+		poller.register(subscriber);
 		
 		while (true) {
 			// The server returns a SYNC_STREAM message that is used to synchronize the subscriber.
@@ -84,7 +85,8 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 			}
 
 			// Return at the first message received by the subscriber.
-			if (poller.poll(100)) {
+			poller.poll(100);
+			if (poller.pollin(0)) {
 				break;
 			}
 		}

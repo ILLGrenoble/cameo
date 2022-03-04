@@ -37,7 +37,6 @@ public:
 	virtual int getResponderPort();
 	virtual void cancel();
 	virtual bool isCanceled();
-
 	virtual void run();
 
 private:
@@ -47,7 +46,6 @@ private:
 	int m_responderPort;
 	std::unique_ptr<zmq::socket_t> m_router;
 	std::unique_ptr<zmq::socket_t> m_dealer;
-	std::string m_responderIdentity;
 
 	bool m_canceled;
 };

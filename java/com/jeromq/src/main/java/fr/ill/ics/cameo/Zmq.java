@@ -133,17 +133,20 @@ public class Zmq {
 		
 		private ZMQ.Poller poller;
 
-		Poller(ZContext context, ZMQ.Socket socket) {
-			
-			poller = context.createPoller(1);
-			poller.register(socket, ZMQ.Poller.POLLIN);
+		Poller(ZContext context, int size) {
+			poller = context.createPoller(size);
 		}
 		
-		public boolean poll(long timeout) {
-
+		public void register(Zmq.Socket socket) {
+			poller.register(socket.socket, ZMQ.Poller.POLLIN);	
+		}
+		
+		public void poll(long timeout) {
 			poller.poll(timeout);
-			
-			return (poller.pollin(0));
+		}
+		
+		public boolean pollin(int i) {
+			return poller.pollin(i);	
 		}
 	}
 	
@@ -187,8 +190,8 @@ public class Zmq {
 			context.destroySocket(socket.socket);
 		}
 		
-		public Poller createPoller(Socket socket) {
-			return new Poller(context, socket.socket);
+		public Poller createPoller(int size) {
+			return new Poller(context, size);
 		}
 		
 	}

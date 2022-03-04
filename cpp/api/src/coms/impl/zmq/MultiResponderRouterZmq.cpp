@@ -36,8 +36,6 @@ ResponderRouterZmq::~ResponderRouterZmq() {
 
 void ResponderRouterZmq::init(const std::string &responderIdentity, const std::string &dealerEndpoint) {
 
-	m_responderIdentity = responderIdentity;
-
 	// Create a socket ROUTER.
 	ContextZmq *contextImpl = dynamic_cast<ContextZmq*>(application::This::getCom().getContext());
 	m_router.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
@@ -137,7 +135,6 @@ void ResponderRouterZmq::run() {
 			break;
 		}
 	}
-
 }
 
 void ResponderRouterZmq::terminate() {

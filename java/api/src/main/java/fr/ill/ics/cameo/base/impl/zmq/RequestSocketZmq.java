@@ -113,11 +113,14 @@ public class RequestSocketZmq implements RequestSocketImpl {
 		}
 
 		if (usedTimeout > 0) {
-
-			Zmq.Poller poller = context.createPoller(socket);
+			
+			Zmq.Poller poller = this.context.createPoller(1);
+			poller.register(socket);
+			poller.poll(usedTimeout);
 			Zmq.Msg reply = null;
-			if (poller.poll(usedTimeout)) {
-				reply = Zmq.Msg.recvMsg(socket);
+
+			if (poller.pollin(0)) {
+				reply = Zmq.Msg.recvMsg(socket);	
 			}
 			else {
 				// Timeout occurred.

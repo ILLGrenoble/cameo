@@ -133,17 +133,24 @@ public class Zmq {
 	
 	public static class Poller {
 		
-		private PollItem[] items = new PollItem[1];
-
-		Poller(ZContext context, ZMQ.Socket socket) {
-			items[0] = new PollItem(socket, ZMQ.Poller.POLLIN);
+		private PollItem[] items;
+		private int currentIndex = 0;
+		
+		Poller(ZContext context, int size) {
+			items = new PollItem[size];
 		}
 		
-		public boolean poll(long timeout) {
-
+		public void register(Zmq.Socket socket) {
+			items[currentIndex] = new PollItem(socket.socket, ZMQ.Poller.POLLIN);
+			currentIndex++;
+		}
+		
+		public void poll(long timeout) {
 			ZMQ.poll(items, timeout);
-			
-			return (items[0].isReadable());
+		}
+		
+		public boolean pollin(int i) {
+			return items[i].isReadable();
 		}
 	}
 	
@@ -187,8 +194,8 @@ public class Zmq {
 			context.destroySocket(socket.socket);
 		}
 		
-		public Poller createPoller(Socket socket) {
-			return new Poller(context, socket.socket);
+		public Poller createPoller(int size) {
+			return new Poller(context, size);
 		}
 		
 	}

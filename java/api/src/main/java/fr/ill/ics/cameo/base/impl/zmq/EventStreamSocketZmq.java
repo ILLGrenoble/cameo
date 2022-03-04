@@ -68,7 +68,8 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
 		// polling to wait for connection
-		Zmq.Poller poller = this.context.createPoller(subscriber);
+		Zmq.Poller poller = this.context.createPoller(1);
+		poller.register(subscriber);
 		
 		while (true) {
 			// The server returns a STATUS message that is used to synchronize the subscriber
@@ -80,7 +81,8 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			}
 
 			// Return after the first message received by the subscriber.
-			if (poller.poll(100)) {
+			poller.poll(100);
+			if (poller.pollin(0)) {
 				break;
 			}
 		}
