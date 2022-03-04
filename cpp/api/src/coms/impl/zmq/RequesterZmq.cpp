@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-#include "BasicRequesterZmq.h"
+#include "RequesterZmq.h"
 #include "Application.h"
 #include "Messages.h"
 #include "JSON.h"

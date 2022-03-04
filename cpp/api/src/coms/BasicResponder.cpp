@@ -22,7 +22,7 @@
 #include "Server.h"
 #include "ContextZmq.h"
 #include "Waiting.h"
-#include "impl/zmq/BasicRequesterZmq.h"
+#include "impl/zmq/RequesterZmq.h"
 #include "impl/zmq/BasicResponderZmq.h"
 
 namespace cameo {

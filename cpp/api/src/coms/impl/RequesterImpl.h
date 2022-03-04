@@ -14,8 +14,8 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_COMS_BASIC_REQUESTERIMPL_H_
-#define CAMEO_COMS_BASIC_REQUESTERIMPL_H_
+#ifndef CAMEO_COMS_REQUESTERIMPL_H_
+#define CAMEO_COMS_REQUESTERIMPL_H_
 
 #include "Strings.h"
 #include <optional>

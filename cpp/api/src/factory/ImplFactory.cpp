@@ -23,7 +23,7 @@
 #include "../coms/impl/zmq/PublisherZmq.h"
 #include "../coms/impl/zmq/SubscriberZmq.h"
 #include "../coms/impl/zmq/BasicResponderZmq.h"
-#include "../coms/impl/zmq/BasicRequesterZmq.h"
+#include "../coms/impl/zmq/RequesterZmq.h"
 #include "../coms/impl/zmq/MultiResponderZmq.h"
 #include "../coms/impl/zmq/MultiResponderRouterZmq.h"
 

@@ -14,10 +14,10 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_COMS_BASIC_REQUESTERZMQ_H_
-#define CAMEO_COMS_BASIC_REQUESTERZMQ_H_
+#ifndef CAMEO_COMS_REQUESTERZMQ_H_
+#define CAMEO_COMS_REQUESTERZMQ_H_
 
-#include "../BasicRequesterImpl.h"
+#include "../RequesterImpl.h"
 #include <atomic>
 #include <zmq.hpp>
 
