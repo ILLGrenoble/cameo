@@ -14,24 +14,25 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_CANCELIDGENERATOR_H_
-#define CAMEO_CANCELIDGENERATOR_H_
+#ifndef CAMEO_IDGENERATOR_H_
+#define CAMEO_IDGENERATOR_H_
 
-#include <mutex>
+#include <atomic>
+#include <string>
 
 namespace cameo {
 
 /**
  * Class managing the id of cancel publishers.
  */
-class CancelIdGenerator {
+class IdGenerator {
 
 public:
 	static int newId();
+	static std::string newStringId();
 
 private:
-	static std::mutex m_mutex;
-	static int m_currentId;
+	static std::atomic_int m_currentId;
 };
 
 }

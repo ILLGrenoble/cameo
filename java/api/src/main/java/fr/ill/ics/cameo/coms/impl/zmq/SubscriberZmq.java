@@ -20,7 +20,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.CancelIdGenerator;
+import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
@@ -54,7 +54,7 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.subscribe(publisherIdentity);
 		
 		// Create an endpoint that should be unique
-		cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
+		cancelEndpoint = "inproc://" + IdGenerator.newStringId();
 		
 		// Create a cancel publisher so that it sends the CANCEL message to the status subscriber (connected to 2 publishers)
 		cancelPublisher = context.createSocket(Zmq.PUB);

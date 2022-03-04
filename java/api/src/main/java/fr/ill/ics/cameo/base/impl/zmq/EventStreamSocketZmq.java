@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.CancelIdGenerator;
+import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.Event;
@@ -62,7 +62,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.subscribe(Messages.Event.RESULT);
 		subscriber.subscribe(Messages.Event.KEYVALUE);
 		
-		String cancelEndpoint = "inproc://cancel." + CancelIdGenerator.newId();
+		String cancelEndpoint = "inproc://" + IdGenerator.newStringId();
 		
 		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(Messages.Event.CANCEL);

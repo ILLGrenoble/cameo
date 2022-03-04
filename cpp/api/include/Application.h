@@ -31,7 +31,7 @@
 #include "JSON.h"
 #include "KeyValue.h"
 #include "Strings.h"
-#include "CancelIdGenerator.h"
+#include "IdGenerator.h"
 #include "RequestSocket.h"
 #include "Waiting.h"
 #include "Messages.h"

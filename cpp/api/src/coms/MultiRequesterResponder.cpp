@@ -21,6 +21,7 @@
 #include "Server.h"
 #include "ContextZmq.h"
 #include "Waiting.h"
+#include "IdGenerator.h"
 #include "impl/zmq/MultiResponderZmq.h"
 #include "impl/zmq/MultiResponderRouterZmq.h"
 
@@ -160,7 +161,7 @@ void ResponderRouter::init(const std::string &name) {
 	m_key = KEY + "-" + name;
 
 	// Set the dealer endpoint.
-	m_dealerEndpoint = "inproc://cameo-1";
+	m_dealerEndpoint = std::string("inproc://") + IdGenerator::newStringId();
 
 	// Init the responder socket.
 	m_impl->init(StringId::from(application::This::getId(), m_key), m_dealerEndpoint);

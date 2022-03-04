@@ -17,7 +17,6 @@
 #include "Server.h"
 
 #include "Application.h"
-#include "CancelIdGenerator.h"
 #include "ConnectionChecker.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"

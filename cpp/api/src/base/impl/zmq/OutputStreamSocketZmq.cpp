@@ -16,7 +16,7 @@
 
 #include "OutputStreamSocketZmq.h"
 
-#include "CancelIdGenerator.h"
+#include "IdGenerator.h"
 #include "Server.h"
 #include "ContextZmq.h"
 #include "Messages.h"
@@ -39,7 +39,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	std::stringstream cancelEndpoint;
 
 	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
+	cancelEndpoint << "inproc://cancel." << IdGenerator::newId();
 
 	// Create the sockets.
 	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::pub));

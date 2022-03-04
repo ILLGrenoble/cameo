@@ -14,21 +14,22 @@
  * limitations under the Licence.
  */
 
-#include "CancelIdGenerator.h"
-
-using namespace std;
+#include "IdGenerator.h"
 
 namespace cameo {
 
-std::mutex CancelIdGenerator::m_mutex;
-int CancelIdGenerator::m_currentId = 0;
+std::atomic_int IdGenerator::m_currentId{0};
 
-int CancelIdGenerator::newId() {
+int IdGenerator::newId() {
 
-	lock_guard<mutex> lock(m_mutex);
-	m_currentId++;
+	int id = m_currentId.load() + 1;
+	m_currentId.store(id);
 
-	return m_currentId;
+	return id;
+}
+
+std::string IdGenerator::newStringId() {
+	return std::string("cameo.") + std::to_string(newId());
 }
 
 }

@@ -21,7 +21,7 @@
 #include "Waiting.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
-#include "CancelIdGenerator.h"
+#include "IdGenerator.h"
 #include "../PublisherImpl.h"
 
 namespace cameo {
@@ -50,18 +50,13 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 
-
-	// We must first bind the cancel publisher before connecting the subscriber.
-	std::stringstream cancelEndpoint;
-
-	// We define a unique name.
-	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
-	m_cancelEndpoint = cancelEndpoint.str();
+	// First define the cancel endpoint.
+	m_cancelEndpoint = std::string("inproc://" + IdGenerator::newStringId());
 
 	m_cancelPublisher = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
-	m_cancelPublisher->bind(m_cancelEndpoint.c_str());
+	m_cancelPublisher->bind(m_cancelEndpoint);
 
-	m_subscriber->connect(m_cancelEndpoint.c_str());
+	m_subscriber->connect(m_cancelEndpoint);
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 
 	m_subscriber->connect(appStatusEndpoint.toString().c_str());

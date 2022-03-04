@@ -15,7 +15,7 @@
  */
 
 #include "EventStreamSocketZmq.h"
-#include "CancelIdGenerator.h"
+#include "IdGenerator.h"
 #include "Server.h"
 #include "ContextZmq.h"
 #include "Messages.h"
@@ -34,14 +34,11 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 
 	m_context = dynamic_cast<ContextZmq *>(context);
 
-	std::stringstream cancelEndpoint;
-
-	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	cancelEndpoint << "inproc://cancel." << CancelIdGenerator::newId();
+	std::string cancelEndpoint = std::string("inproc://" + IdGenerator::newStringId());
 
 	// Create the sockets.
 	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::pub));
-	m_cancelSocket->bind(cancelEndpoint.str());
+	m_cancelSocket->bind(cancelEndpoint);
 
 	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
 
@@ -56,7 +53,7 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 	}
 
 	m_socket->connect(endpoint.toString().c_str());
-	m_socket->connect(cancelEndpoint.str().c_str());
+	m_socket->connect(cancelEndpoint);
 
 	// Wait for the connection to be ready.
 	// Poll subscriber.
