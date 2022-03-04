@@ -34,7 +34,6 @@ namespace legacy {
 
 namespace basic {
 	class ResponderImpl;
-	class RequesterImpl;
 }
 
 namespace multi {
@@ -42,6 +41,7 @@ namespace multi {
 	class ResponderRouterImpl;
 }
 
+class RequesterImpl;
 class PublisherImpl;
 class SubscriberImpl;
 
@@ -58,13 +58,10 @@ public:
 	static std::unique_ptr<coms::PublisherImpl> createPublisher();
 	static std::unique_ptr<coms::SubscriberImpl> createSubscriber();
 
-	static std::unique_ptr<coms::legacy::ResponderImpl> createLegacyResponder();
-	static std::unique_ptr<coms::legacy::RequesterImpl> createLegacyRequester();
 	static std::unique_ptr<coms::basic::ResponderImpl> createBasicResponder();
-	static std::unique_ptr<coms::basic::RequesterImpl> createBasicRequester();
-
 	static std::unique_ptr<coms::multi::ResponderRouterImpl> createMultiResponderRouter();
 	static std::unique_ptr<coms::multi::ResponderImpl> createMultiResponder();
+	static std::unique_ptr<coms::RequesterImpl> createBasicRequester();
 };
 
 }

@@ -22,7 +22,6 @@
 
 namespace cameo {
 namespace coms {
-namespace basic {
 
 constexpr int SYNC_TIMEOUT = 200;
 
@@ -351,7 +350,6 @@ void RequesterZmq::terminate() {
 	resetSocket();
 }
 
-}
 }
 }
 

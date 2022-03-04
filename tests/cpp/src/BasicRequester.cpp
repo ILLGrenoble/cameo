@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 	cout << "Connected to started" << endl;
 
 	// Create a requester.
-	unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*starter.instance, "responder");
+	unique_ptr<coms::Requester> requester = coms::Requester::create(*starter.instance, "responder");
 
 	cout << "Created requester" << endl;
 

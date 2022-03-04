@@ -22,7 +22,6 @@
 
 namespace cameo {
 namespace coms {
-namespace basic {
 
 class RequesterImpl;
 
@@ -87,7 +86,6 @@ private:
 
 std::ostream& operator<<(std::ostream&, const Requester&);
 
-}
 }
 }
 

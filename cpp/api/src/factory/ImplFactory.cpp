@@ -57,16 +57,16 @@ std::unique_ptr<coms::basic::ResponderImpl> ImplFactory::createBasicResponder() 
 	return std::make_unique<coms::basic::ResponderZmq>();
 }
 
-std::unique_ptr<coms::basic::RequesterImpl> ImplFactory::createBasicRequester() {
-	return std::make_unique<coms::basic::RequesterZmq>();
-}
-
 std::unique_ptr<coms::multi::ResponderRouterImpl> ImplFactory::createMultiResponderRouter() {
 	return std::make_unique<coms::multi::ResponderRouterZmq>();
 }
 
 std::unique_ptr<coms::multi::ResponderImpl> ImplFactory::createMultiResponder() {
 	return std::make_unique<coms::multi::ResponderZmq>();
+}
+
+std::unique_ptr<coms::RequesterImpl> ImplFactory::createBasicRequester() {
+	return std::make_unique<coms::RequesterZmq>();
 }
 
 }

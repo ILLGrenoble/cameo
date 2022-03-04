@@ -27,7 +27,6 @@
 
 namespace cameo {
 namespace coms {
-namespace basic {
 
 ///////////////////////////////////////////////////////////////////////////
 // Requester
@@ -70,7 +69,7 @@ void Requester::tryInit(application::Instance & app) {
 			endpoint = app.getEndpoint().withPort(responderPort);
 		}
 		else {
-			int responderPort = jsonData[Responder::PORT.c_str()].GetInt();
+			int responderPort = jsonData[basic::Responder::PORT.c_str()].GetInt();
 			endpoint = app.getEndpoint().withPort(responderPort);
 		}
 
@@ -87,7 +86,7 @@ void Requester::init(application::Instance & app, const std::string &responderNa
 	m_appName = app.getName();
 	m_appId = app.getId();
 	m_appEndpoint = app.getEndpoint();
-	m_key = Responder::KEY + "-" + responderName;
+	m_key = basic::Responder::KEY + "-" + responderName;
 
 	try {
 		return tryInit(app);
@@ -190,7 +189,6 @@ std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 	return os;
 }
 
-}
 }
 }
 

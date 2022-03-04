@@ -22,7 +22,6 @@
 
 namespace cameo {
 namespace coms {
-namespace basic {
 
 class RequesterImpl {
 
@@ -48,7 +47,6 @@ public:
 	virtual void terminate() = 0;
 };
 
-}
 }
 }
 

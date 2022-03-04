@@ -230,7 +230,7 @@ void Subscriber::tryInit(application::Instance & app) {
 void Subscriber::synchronize(application::Instance & app) {
 
 	try {
-		std::unique_ptr<basic::Requester> requester = basic::Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+		std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
 
 		// Send a subscribe request.
 		json::StringObject jsonRequest;

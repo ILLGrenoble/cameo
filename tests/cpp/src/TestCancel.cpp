@@ -222,7 +222,7 @@ int main(int argc, char *argv[]) {
 		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
 
 		// Create a requester.
-		unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*thisApp, "responder");
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "responder");
 
 		// Start thread.
 		thread cancelThread([&] {

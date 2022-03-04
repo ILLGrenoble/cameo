@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 		cout << "Started application " << *responderApplication << " with state " << application::toString(responderApplication->now()) << endl;
 
 		// Create a subscriber to the application applicationName
-		unique_ptr<coms::basic::Requester> requester = coms::basic::Requester::create(*responderApplication, "responder");
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
 
 		cout << "Created requester " << *requester << endl;
 

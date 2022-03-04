@@ -26,7 +26,6 @@ namespace cameo {
 class ContextZmq;
 
 namespace coms {
-namespace basic {
 
 class RequesterZmq : public RequesterImpl {
 
@@ -71,7 +70,6 @@ private:
 	std::atomic_bool m_timedout;
 };
 
-}
 }
 }
 
