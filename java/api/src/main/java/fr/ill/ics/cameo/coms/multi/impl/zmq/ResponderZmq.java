@@ -86,10 +86,10 @@ public class ResponderZmq implements ResponderImpl {
 					String serverEndpoint = JSON.getString(request, Messages.Request.SERVER_ENDPOINT);
 					int serverProxyPort = JSON.getInt(request, Messages.Request.SERVER_PROXY_PORT);
 					
-					byte[] messagePart1 = data[5];
+					byte[] messagePart1 = data[3];
 					byte[] messagePart2 = null;
-					if (data.length > 6) {
-						messagePart2 = data[6];
+					if (data.length > 4) {
+						messagePart2 = data[4];
 					}
 					
 					// Return the request but do not reply to the client now. This will be done by the Request.			

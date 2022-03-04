@@ -117,6 +117,14 @@
 		<application name="testcheckappjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestCheckApp"/>	
 		</application>
+		
+		<application name="multiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponder"/>
+		</application>
+		
+		<application name="testmultiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
+		</application>
 	
 
 		<!-- C++ apps -->

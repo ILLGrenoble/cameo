@@ -129,6 +129,10 @@ public class Zmq {
 		public byte[] recv() {
 			return socket.recv();
 		}
+		
+		public boolean hasMore() {
+			return socket.hasReceiveMore();
+		}
 	}
 	
 	public static class Poller {

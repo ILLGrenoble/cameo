@@ -61,10 +61,10 @@ public class ResponderZmq implements ResponderImpl {
 		while (true) {
 		
 			int port = This.getCom().requestPort();
-			String pubEndpoint = endpointPrefix + port;
+			String endpoint = endpointPrefix + port;
 
 			try {
-				responder.bind(pubEndpoint);
+				responder.bind(endpoint);
 				responderPort = port;
 				break;
 			}

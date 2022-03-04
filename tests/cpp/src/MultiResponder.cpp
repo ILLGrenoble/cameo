@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	unique_ptr<coms::multi::ResponderRouter> router;
 
 	try {
-		cout << "Creating responder" << endl;
+		cout << "Creating router" << endl;
 
 		router = coms::multi::ResponderRouter::create("responder");
 	}
@@ -37,13 +37,17 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	cout << "Created responder" << endl;
+	cout << "Created router" << endl;
 
 	application::This::setRunning();
 
 	std::thread td([&] {
 
+		cout << "Creating responder" << endl;
+
 		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+
+		cout << "Created responder" << endl;
 
 		// Receive first request.
 		unique_ptr<coms::multi::Request> request = responder->receive();

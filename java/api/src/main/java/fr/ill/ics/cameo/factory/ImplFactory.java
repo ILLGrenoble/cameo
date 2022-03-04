@@ -39,12 +39,20 @@ public class ImplFactory {
 		return new SubscriberZmq();	
 	}
 	
-	public static fr.ill.ics.cameo.coms.basic.impl.zmq.ResponderZmq createBasicResponder() {
+	public static fr.ill.ics.cameo.coms.basic.impl.ResponderImpl createBasicResponder() {
 		return new fr.ill.ics.cameo.coms.basic.impl.zmq.ResponderZmq();
 	}
 	
-	public static fr.ill.ics.cameo.coms.basic.impl.zmq.RequesterZmq createBasicRequester() {
+	public static fr.ill.ics.cameo.coms.basic.impl.RequesterImpl createBasicRequester() {
 		return new fr.ill.ics.cameo.coms.basic.impl.zmq.RequesterZmq();
+	}
+	
+	public static fr.ill.ics.cameo.coms.multi.impl.ResponderImpl createMultiResponder() {
+		return new fr.ill.ics.cameo.coms.multi.impl.zmq.ResponderZmq();
+	}
+	
+	public static fr.ill.ics.cameo.coms.multi.impl.ResponderRouterImpl createMultiResponderRouter() {
+		return new fr.ill.ics.cameo.coms.multi.impl.zmq.ResponderRouterZmq();
 	}
 	
 }

@@ -16,7 +16,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
  */
 public class Request {
 	
-	//private Responder responder = null;
+	private Responder responder = null;
 	private byte[] messagePart1;
 	private byte[] messagePart2;
 	private String requesterApplicationName;
@@ -37,9 +37,9 @@ public class Request {
 		this.requesterServerProxyPort = serverProxyPort;
 	}
 	
-//	void setResponder(Responder responder) {
-//		this.responder = responder;
-//	}
+	void setResponder(Responder responder) {
+		this.responder = responder;
+	}
 	
 	public byte[] getBinary() {
 		return messagePart1;
@@ -67,7 +67,7 @@ public class Request {
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
 
-		//responder.reply(jsonRequest, response);
+		responder.reply(jsonRequest, response);
 		
 		return true;
 	}
