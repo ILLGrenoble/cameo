@@ -65,6 +65,7 @@ public class Messages {
 		public static final String SERVER = "server"; // string
 		public static final String STARTER = "starter"; // object
 		public static final String STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		public static final String STARTER_LINKED = "starterLinked"; // boolean		
 	}
 
 	public static class SyncStreamRequest {
@@ -76,6 +77,7 @@ public class Messages {
 		public static final String ARGS = "args"; // repeated string args = 2;
 		public static final String STARTER = "starter"; // object
 		public static final String STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		public static final String STARTER_LINKED = "starterLinked"; // boolean
 	}
 
 	public static class RequestResponse {
@@ -387,10 +389,11 @@ public class Messages {
 	 * 
 	 * @param name
 	 * @param args
+	 * @param linked 
 	 * @param returnResult
 	 * @return request
 	 */
-	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint, int thisProxyPort) {
+	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint, int thisProxyPort, boolean linked) {
 
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.START);
@@ -406,6 +409,7 @@ public class Messages {
 
 			request.put(Messages.StartRequest.STARTER, starter);
 			request.put(Messages.StartRequest.STARTER_PROXY_PORT, thisProxyPort);
+			request.put(Messages.StartRequest.STARTER_LINKED, linked);
 		}
 
 		if (args != null) {

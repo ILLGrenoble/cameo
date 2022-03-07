@@ -48,6 +48,11 @@ namespace cameo {
  */
 const int OUTPUTSTREAM = 1;
 
+/**
+ * Option unlinked.
+ */
+const int UNLINKED = 2;
+
 class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
@@ -202,6 +207,7 @@ private:
 	std::string m_starterName;
 	int m_starterId;
 	int m_starterProxyPort;
+	bool m_starterLinked;
 
 	std::unique_ptr<Server> m_server;
 	std::unique_ptr<Com> m_com;

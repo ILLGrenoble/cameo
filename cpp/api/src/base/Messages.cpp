@@ -61,7 +61,7 @@ std::string createIsAliveRequest(int id) {
 	return request.toString();
 }
 
-std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort) {
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort, bool linked) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -95,6 +95,9 @@ std::string createStartRequest(const std::string& name, const std::vector<std::s
 
 		request.pushKey(message::StartRequest::STARTER_PROXY_PORT);
 		request.pushValue(thisProxyPort);
+
+		request.pushKey(message::StartRequest::STARTER_LINKED);
+		request.pushValue(linked);
 	}
 
 	return request.toString();

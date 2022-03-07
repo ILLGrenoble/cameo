@@ -266,6 +266,7 @@ public class Manager extends ConfigLoader {
 	 * @param commandArray
 	 * @param args
 	 * @param starterProxyPort 
+	 * @param starterLinked 
 	 * @param serverEndpoint 
 	 * @param result 
 	 * @return
@@ -273,7 +274,7 @@ public class Manager extends ConfigLoader {
 	 * @throws MaxNumberOfApplicationsReached
 	 * @throws ApplicationAlreadyExecuting
 	 */
-	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
@@ -285,8 +286,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application. The proxy host endpoint is passed.
-		//Application application = new RegisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, config, args, starter);
-		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter, starterProxyPort);
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter, starterProxyPort, starterLinked);
 		applicationMap.put(id, application);
 		
 		// Threads.

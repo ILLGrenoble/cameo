@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import java.util.Date;
 
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 

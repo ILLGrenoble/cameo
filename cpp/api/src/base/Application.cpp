@@ -172,11 +172,11 @@ void This::terminate() {
 
 
 This::This() :
-	//Services(),
 	m_id(-1),
 	m_registered(false),
 	m_starterId(0),
 	m_starterProxyPort(0),
+	m_starterLinked(false),
 	m_inited(false) {
 }
 
@@ -210,6 +210,7 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterName = starterValue[message::ApplicationIdentity::NAME].GetString();
 		m_starterId = starterValue[message::ApplicationIdentity::ID].GetInt();
 		m_starterProxyPort = infoObject[message::ApplicationIdentity::STARTER_PROXY_PORT].GetInt();
+		m_starterLinked = infoObject[message::ApplicationIdentity::STARTER_LINKED].GetBool();
 	}
 
 	// Init the app.

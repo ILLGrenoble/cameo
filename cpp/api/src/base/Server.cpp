@@ -199,6 +199,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, in
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
+	bool linked = ((options & UNLINKED) == 0);
 
 	std::unique_ptr<application::Instance> instance = makeInstance();
 
@@ -214,7 +215,14 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		json::Object response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort));
+		json::Object response;
+
+		if (application::This::getId() == -1) {
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, "", 0, "", 0, false));
+		}
+		else {
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort, linked));
+		}
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		if (value == -1) {

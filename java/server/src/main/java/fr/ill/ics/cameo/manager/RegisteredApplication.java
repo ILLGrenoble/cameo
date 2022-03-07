@@ -16,8 +16,9 @@ public class RegisteredApplication extends Application {
 	private String[] args;
 	private ApplicationIdentity starter;
 	private int starterProxyPort;
+	private boolean starterLinked;
 	
-	public RegisteredApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter, int starterProxyPort) {
+	public RegisteredApplication(Endpoint endpoint, int id, ApplicationConfig config, String[] args, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) {
 		super(endpoint, id);
 		
 		// Set the config.
@@ -48,6 +49,7 @@ public class RegisteredApplication extends Application {
 		this.args = args;
 		this.starter = starter;
 		this.starterProxyPort = starterProxyPort;
+		this.starterLinked = starterLinked;
 	}
 	
 	@Override
@@ -100,7 +102,7 @@ public class RegisteredApplication extends Application {
 			// Add the endpoint and id
 			if (hasInfoArg()) {
 				// Pass the info in JSON format.
-				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter, starterProxyPort);
+				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter, starterProxyPort, starterLinked);
 
 				// On Windows, " are removed, so we need to force their presence by escaping.
 				String identityString = identity.toJSONString();

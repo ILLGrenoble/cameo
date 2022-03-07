@@ -370,19 +370,20 @@ public class Server {
 	 * 
 	 * @param name
 	 * @param args
+	 * @param linked 
 	 * @param returnResult 
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	private Response startApplication(String name, String[] args) throws ConnectionTimeout {
+	private Response startApplication(String name, String[] args, boolean linked) throws ConnectionTimeout {
 		
 		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
-			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort);
+			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort, linked);
 		}
 		else {
-			request = Messages.createStartRequest(name, args, null, 0, null, 0);
+			request = Messages.createStartRequest(name, args, null, 0, null, 0, false);
 		}
 		
 		JSONObject response = requestSocket.requestJSON(request);
@@ -400,6 +401,7 @@ public class Server {
 	public Instance start(String name, String[] args, int options) {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
+		boolean linked = ((options & Option.UNLINKED) == 0);
 				
 		Instance instance = new Instance(this);
 		
@@ -415,7 +417,7 @@ public class Server {
 				streamSocket = createOutputStreamSocket(name);
 			}
 			
-			Response response = startApplication(name, args);
+			Response response = startApplication(name, args, linked);
 			
 			if (response.getValue() == -1) {
 				instance.setErrorMessage(response.getMessage());

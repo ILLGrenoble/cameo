@@ -27,6 +27,7 @@ public class This {
 	private String starterName;
 	private int starterId;
 	private int starterProxyPort;
+	private boolean starterLinked;
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
@@ -399,6 +400,7 @@ public class This {
 			starterName = JSON.getString(starterObject, Messages.ApplicationIdentity.NAME);
 			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
 			starterProxyPort = JSON.getInt(infoObject, Messages.ApplicationIdentity.STARTER_PROXY_PORT);
+			starterLinked = JSON.getBoolean(infoObject, Messages.ApplicationIdentity.STARTER_LINKED);
 		}		
 		
 		// Init.
