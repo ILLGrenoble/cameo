@@ -25,7 +25,6 @@ public interface ResponderImpl {
 	Request receive();
 	void reply(byte[] part1, byte[] part2);
 	void cancel();
-	boolean isEnded();
 	boolean isCanceled();
 	void terminate();
 	

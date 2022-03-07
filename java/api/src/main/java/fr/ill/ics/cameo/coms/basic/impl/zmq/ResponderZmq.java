@@ -37,7 +37,6 @@ public class ResponderZmq implements ResponderImpl {
 	private String responderIdentity;
 	private Zmq.Msg reply = null; // Memorize the reply before sending it.
 	
-	private boolean ended = false;
 	private boolean canceled = false;
 	
 	public void init(String responderIdentity) {
@@ -89,8 +88,6 @@ public class ResponderZmq implements ResponderImpl {
 				message = Zmq.Msg.recvMsg(responder);
 	
 				if (message == null) {
-					ended = true;
-					
 					return null;
 				}
 				
@@ -186,10 +183,6 @@ public class ResponderZmq implements ResponderImpl {
 
 	private void responseToRequest(Zmq.Msg reply) {
 		reply.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
-	}
-	
-	public boolean isEnded() {
-		return ended;
 	}
 	
 	public boolean isCanceled() {

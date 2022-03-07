@@ -91,10 +91,6 @@ public class Responder {
 		impl.cancel();			
 	}
 	
-	public boolean isEnded() {
-		return impl.isEnded();
-	}
-	
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
