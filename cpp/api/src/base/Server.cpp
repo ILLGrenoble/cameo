@@ -251,7 +251,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 	return instance;
 }
 
-Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
+Response Server::stop(int id, bool immediately) const {
 
 	std::string request;
 

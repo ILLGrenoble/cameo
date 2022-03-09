@@ -181,7 +181,7 @@ public class Instance extends EventListener {
 	 */
 	public boolean stop() {
 		try {
-			Response response = server.stopApplicationAsynchronously(id, false);
+			Response response = server.stop(id, false);
 			
 		} catch (ConnectionTimeout e) {
 			errorMessage = e.getMessage();
@@ -199,7 +199,7 @@ public class Instance extends EventListener {
 	 */
 	public boolean kill() {
 		try {
-			Response response = server.stopApplicationAsynchronously(id, true);
+			Response response = server.stop(id, true);
 			
 		} catch (ConnectionTimeout e) {
 			errorMessage = e.getMessage();

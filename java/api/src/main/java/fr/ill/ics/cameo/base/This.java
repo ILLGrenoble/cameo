@@ -434,6 +434,7 @@ public class This {
 		eventListener.setName(name);
 		server.registerEventListener(eventListener);
 		
+		// Init starter check.
 		if (starterLinked) {
 			initStarterCheck();
 		}
@@ -607,11 +608,7 @@ public class This {
 	}
 	
 	private void stop() {
-		server.stopApplicationAsynchronously(id, false);
-	}
-
-	private EventListener getEventListener() {
-		return eventListener;
+		server.stop(id, false);
 	}
 
 	@Override

@@ -398,7 +398,7 @@ ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 }
 
 void This::stop() {
-	m_server->stopApplicationAsynchronously(m_id, false);
+	m_server->stop(m_id, false);
 }
 
 void This::startCheckStatesThread() {
@@ -606,7 +606,7 @@ const std::string& Instance::getErrorMessage() const {
 
 bool Instance::stop() {
 	try {
-		Response response = m_server->stopApplicationAsynchronously(m_id, false);
+		Response response = m_server->stop(m_id, false);
 
 	} catch (const ConnectionTimeout& e) {
 		m_errorMessage = e.what();
@@ -618,7 +618,7 @@ bool Instance::stop() {
 
 bool Instance::kill() {
 	try {
-		Response response = m_server->stopApplicationAsynchronously(m_id, true);
+		Response response = m_server->stop(m_id, true);
 
 	} catch (const ConnectionTimeout& e) {
 		m_errorMessage = e.what();

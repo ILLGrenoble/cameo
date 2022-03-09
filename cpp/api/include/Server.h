@@ -162,7 +162,7 @@ private:
 	std::unique_ptr<application::Instance> makeInstance();
 	bool isAlive(int id) const;
 
-	Response stopApplicationAsynchronously(int id, bool immediately) const;
+	Response stop(int id, bool immediately) const;
 	int getAvailableTimeout() const;
 
 	void storeKeyValue(int id, const std::string& key, const std::string& value);

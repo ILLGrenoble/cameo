@@ -472,7 +472,7 @@ public class Server {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
+	Response stop(int id, boolean immediately) throws ConnectionTimeout {
 
 		JSONObject request;
 		
