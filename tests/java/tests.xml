@@ -22,7 +22,7 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestVeryFast"/>
 		</application>
 		
-		<application name="stopjava" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+		<application name="stopjava" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
 		</application>
 		
@@ -125,6 +125,14 @@
 		<application name="testmultiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
 		</application>
+		
+		<application name="linkedjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Linked"/>
+		</application>
+		
+		<application name="testlinkedjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestLinked"/>
+		</application>
 	
 
 		<!-- C++ apps -->
@@ -145,7 +153,7 @@
 			<start executable="testveryfast"/>
 		</application>
 		
-		<application name="stopcpp" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+		<application name="stopcpp" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="stop"/>
 		</application>
 		

@@ -115,6 +115,7 @@ public class TestSelector {
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");
 		apps.add("testcheckappjava");
+		apps.add("testlinkedjava");
 		
 		return apps;
 	}

@@ -520,7 +520,7 @@ public class This {
 	}
 
 	private void startCheckStatesThread() {
-
+		
 		if (checkStatesThread == null) {
 			checkStatesThread = new Thread(new Runnable() {
 				public void run() {

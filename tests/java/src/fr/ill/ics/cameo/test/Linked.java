@@ -16,51 +16,39 @@
 
 package fr.ill.ics.cameo.test;
 
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
 
-public class Stop {
+public class Linked {
 
-	public static AtomicBoolean stopping = new AtomicBoolean(false);
-	
 	public static void main(String[] args) {
-
+		
 		This.init(args);
-
-		This.handleStop(() -> {
-			System.out.println("Stop handler executed");
-			stopping.set(true);
-		});
 		
+		boolean useProxy = false;
+		String endpoint = "tcp://localhost:11000";
+		if (args.length > 2) {
+			useProxy = Boolean.parseBoolean(args[1]);
+		}
+		if (useProxy) {
+			endpoint = "tcp://localhost:10000";
+		}
+		
+		Server server = new Server(endpoint, 0, useProxy);
+		
+		// Start the application.
+		server.start("stopjava");
+	
 		This.setRunning();
-		
-		try {
-			Date begin = new Date();
 
-			int i = 0;
-			while (!stopping.get()) {
-				System.out.println("Waiting " + i + "...");
+		// Loop, the app will be killed.
+		while (true) {
+			try {
 				Thread.sleep(100);
-				i++;
 			}
-			
-			Date end = new Date();
-			
-			String result = "";
-			result += end.getTime() - begin.getTime();
-			
-			This.setResult(result);
-			
-			System.out.println("Finished the application");
-		}
-		catch (Throwable e) {
-			e.printStackTrace();
-		}
-		finally {
-			This.terminate();			
+			catch (InterruptedException e) {
+			}
 		}
 	}
 

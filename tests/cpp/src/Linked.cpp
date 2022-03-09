@@ -22,12 +22,6 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	int numberOfTimes = 1;
-
-	if (argc > 2) {
-		numberOfTimes = stoi(argv[1]);
-	}
-
 	application::This::init(argc, argv);
 
 	// Define a stop handler.
@@ -51,6 +45,7 @@ int main(int argc, char *argv[]) {
 
 	application::This::setRunning();
 
+	// Loop, the app will be killed.
 	while (true) {
 		this_thread::sleep_for(chrono::milliseconds(100));
 	}
