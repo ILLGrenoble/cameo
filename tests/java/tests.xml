@@ -248,6 +248,14 @@
 		<application name="testmultirespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testmultiresponder" args="multirespondercpp"/>
 		</application>
+				
+		<application name="linkedcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="linked"/>
+		</application>
+		
+		<application name="testlinkedcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testlinked"/>
+		</application>
 		
 		
 		

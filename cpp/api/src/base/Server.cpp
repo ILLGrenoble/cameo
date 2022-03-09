@@ -39,6 +39,14 @@ constexpr int DEFAULT_TIMEOUT = 10000;
 
 const std::string Server::CAMEO_SERVER = "0:0";
 
+EventListener * Server::FilteredEventListener::getListener() const {
+	return m_listener;
+}
+
+bool Server::FilteredEventListener::isFiltered() const {
+	return m_filtered;
+}
+
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	initContext();
@@ -665,14 +673,14 @@ json::Object Server::requestJSON(const std::string& requestPart1, const std::str
 	return m_requestSocket->requestJSON(requestPart1, requestPart2, overrideTimeout);
 }
 
-std::vector<EventListener *> Server::getEventListeners() {
+std::vector<Server::FilteredEventListener> Server::getEventListeners() {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
 	return m_eventListeners;
 }
 
-void Server::registerEventListener(EventListener * listener) {
+void Server::registerEventListener(EventListener * listener, bool filtered) {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
-	m_eventListeners.push_back(listener);
+	m_eventListeners.push_back(FilteredEventListener(listener, filtered));
 }
 
 void Server::unregisterEventListener(EventListener * listener) {
@@ -680,7 +688,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 	// Iterate to find the listener.
 	for (auto it = m_eventListeners.begin(); it != m_eventListeners.end(); ++it) {
-		if (*it == listener) {
+		if (it->getListener() == listener) {
 			m_eventListeners.erase(it);
 			break;
 		}

@@ -123,14 +123,30 @@ public:
 	std::unique_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
 
 	/**
+	 * Class used for filtering events.
+	 */
+	class FilteredEventListener {
+
+	public:
+		FilteredEventListener(EventListener * listener, bool filtered) : m_listener(listener), m_filtered(filtered) {}
+
+		EventListener * getListener() const;
+		bool isFiltered() const;
+
+	private:
+		EventListener * m_listener;
+		bool m_filtered;
+	};
+
+	/**
 	 * Gets the event listeners. Copies the list.
 	 */
-	std::vector<EventListener *> getEventListeners();
+	std::vector<FilteredEventListener> getEventListeners();
 
 	/**
 	 * Registers an event listener.
 	 */
-	void registerEventListener(EventListener * listener);
+	void registerEventListener(EventListener * listener, bool filtered = true);
 
 	/**
 	 * Unregisters an event listener.
@@ -186,7 +202,7 @@ private:
 	std::unique_ptr<RequestSocket> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;
-	std::vector<EventListener *> m_eventListeners;
+	std::vector<FilteredEventListener> m_eventListeners;
 	std::unique_ptr<EventThread> m_eventThread;
 
 	const static std::string CAMEO_SERVER;

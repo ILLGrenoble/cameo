@@ -16,9 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;

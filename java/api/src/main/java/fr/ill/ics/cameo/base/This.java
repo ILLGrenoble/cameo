@@ -8,11 +8,9 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.base.Application.Handler;
-import fr.ill.ics.cameo.base.Application.State;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
-import zmq.socket.Pair;
 
 public class This {
 	
@@ -31,10 +29,10 @@ public class This {
 	
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
-	private HandlerRunner stopHandler;
 	private WaitingSet waitingSet = new WaitingSet();
 	
 	private Server server;
+	private Server starterServer;
 	
 	public static class Com {
 		
@@ -160,19 +158,15 @@ public class This {
 	
 	private static Com com;
 	
-	void initServer() {
-		server.registerEventListener(instance.getEventListener());
-		com = new Com(This.getServer(), This.getId());
-	}
+	private Handler stopHandler;
+	private Thread checkStatesThread = null;
 	
 	static public void init(String[] args) {
 		instance = new This(args);
-		instance.initServer();
 	}
 	
 	static public void init(String name, String endpoint) {
 		instance = new This(name, endpoint);
-		instance.initServer();
 	}
 			
 	static public String getName() {
@@ -285,7 +279,7 @@ public class This {
 	 * @param handler
 	 */
 	static public void handleStop(final Handler handler, int stoppingTime) {
-		instance.createStopHandler(handler, stoppingTime);
+		instance.initStopCheck(handler, stoppingTime);
 	}
 	
 	/**
@@ -438,6 +432,13 @@ public class This {
 		
 		// Init listener.
 		eventListener.setName(name);
+		server.registerEventListener(eventListener);
+		
+		if (starterLinked) {
+			initStarterCheck();
+		}
+		
+		com = new Com(server, id);
 	}
 		
 	private Endpoint getStarterEndpoint() {
@@ -458,10 +459,6 @@ public class This {
 
 	private void terminateAll() {
 		
-		if (stopHandler != null) {
-			stopHandler.terminate();
-		}
-		
 		waitingSet.terminateAll();
 
 		// Tell the cameo server that the application is terminated if it is unregistered.
@@ -469,7 +466,26 @@ public class This {
 			terminateUnregisteredApplication();
 		}
 		
+		// Stop the check states thread.
+		if (checkStatesThread != null) {
+			
+			// Cancel the listener.
+			eventListener.cancel(id);
+
+			try {
+				checkStatesThread.join();
+			}
+			catch (InterruptedException e) {
+			}
+		}
+		
+		// Terminate the server.
 		server.terminate();
+		
+		// Terminate the starter server if the application is linked.
+		if (starterServer != null) {
+			starterServer.terminate();
+		}
 	}
 	
 	private int initUnregisteredApplication() {
@@ -501,58 +517,98 @@ public class This {
 			
 		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
-		
-	/**
-	 * Waits for the stop event.
-	 */
-	int waitForStop() {
-				
-		// Warning, this method is executed in a parallel thread.
-		int state = Application.State.UNKNOWN; 
-		
-		while (true) {
-			// waits for a new incoming status
-			Event event = eventListener.popEvent();
-			
-			if (event.getId() == id) {
-			
-				if (event instanceof StatusEvent) {
-				
-					StatusEvent status = (StatusEvent)event;
-					state = status.getState();
-										
-					if (state == Application.State.STOPPING) {
-						return state;
-					}
+
+	private void startCheckStatesThread() {
+
+		if (checkStatesThread == null) {
+			checkStatesThread = new Thread(new Runnable() {
+				public void run() {
+					// Warning, this method is executed in a parallel thread.
+					int state = Application.State.UNKNOWN; 
 					
-				} else if (event instanceof CancelEvent) {
-					return State.UNKNOWN;
+					while (true) {
+						// waits for a new incoming status
+						Event event = eventListener.popEvent();
+						
+						// Filter events coming from this.
+						if (event.getId() == id) {
+						
+							if (event instanceof StatusEvent) {
+							
+								StatusEvent status = (StatusEvent)event;
+								state = status.getState();
+													
+								if (state == Application.State.STOPPING) {
+									if (stopHandler != null) {
+										stopHandler.handle();
+									}
+									return;
+								}
+							}
+							else if (event instanceof CancelEvent) {
+								break;
+							}
+						}
+						
+						// Filter events coming from starter.
+						if (event.getId() == starterId) {
+							
+							if (event instanceof StatusEvent) {
+								
+								StatusEvent status = (StatusEvent)event;
+								state = status.getState();
+
+								// Stop this application if it was linked.
+								if (state == Application.State.STOPPED || state == Application.State.KILLED || state == Application.State.SUCCESS || state == Application.State.ERROR) {
+									stop();
+								}
+							}
+						}
+					}
 				}
-			}
+			});
+			
+			checkStatesThread.start();
 		}
 	}
 	
-	
-	void terminateWaitForStop() {
-		eventListener.cancel(id);		
-	}
-	
-	/**
-	 * 
-	 */
-	private void createStopHandler(Handler handler, int stoppingTime) {
+	private void initStopCheck(Handler handler, int stoppingTime) {
 		
 		if (handler == null) {
 			return;
 		}
 		
+		// Memorize handler.
+		stopHandler = handler;
+		
 		// Notify the server.
 		setStopHandler(stoppingTime);
 		
-		stopHandler = new HandlerRunner(this, handler);
-		stopHandler.start();
+		// Start the check states thread.
+		startCheckStatesThread();
 	}
 	
+	private void initStarterCheck() {
+		
+		// Create the starter server.
+		starterServer = new Server(starterEndpoint, 0, false);
+
+		// Get the actual state.
+		int state = starterServer.getActualState(starterId);
+		starterServer.registerEventListener(eventListener, false);
+
+		// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
+		if (state == Application.State.UNKNOWN) {
+			stop();
+		}
+		else {
+			startCheckStatesThread();
+		}
+	}
+	
+	private void stop() {
+		server.stopApplicationAsynchronously(id, false);
+	}
 
 	private EventListener getEventListener() {
 		return eventListener;

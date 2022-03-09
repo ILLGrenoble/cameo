@@ -27,13 +27,12 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	application::This::setRunning();
-
-	// Define a stop handler.
 	application::This::handleStop([&] {
 		cout << "Stop handler executed" << endl;
 		stopping.store(true);
 	});
+
+	application::This::setRunning();
 
 	int i = 0;
 	while (!stopping.load()) {

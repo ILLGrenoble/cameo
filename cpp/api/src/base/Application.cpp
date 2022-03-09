@@ -22,7 +22,6 @@
 #include "StarterServerException.h"
 #include "StatusEvent.h"
 #include "EventStreamSocket.h"
-#include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "Strings.h"
 #include "JSON.h"
@@ -249,8 +248,13 @@ void This::initApplication() {
 	m_waitingSet = std::make_unique<WaitingSet>();
 
 	// Init listener.
-	setName(m_name);
+	EventListener::setName(m_name);
 	m_server->registerEventListener(this);
+
+	// Init the check of the starter if it is linked.
+	if (m_starterLinked) {
+		initStarterCheck();
+	}
 
 	// Init com.
 	m_com = std::unique_ptr<Com>(new Com(m_server.get(), m_id));
@@ -260,11 +264,20 @@ void This::initApplication() {
 }
 
 This::~This() {
-	// Do not delete the impl here because there will be order trouble.
 
 	// Terminate the unregistered application.
 	if (m_inited && !m_registered) {
 		terminateUnregisteredApplication();
+	}
+
+	// Join the check states thread if it was started.
+	if (m_checkStatesThread) {
+
+		// Cancel the listener if it is necessary.
+		EventListener::cancel(m_id);
+
+		// Join the thread.
+		m_checkStatesThread->join();
 	}
 }
 
@@ -311,7 +324,7 @@ bool This::isStopping() {
 }
 
 void This::handleStop(StopFunctionType function, int stoppingTime) {
-	m_instance.handleStopImpl(function, stoppingTime);
+	m_instance.initStopCheck(function, stoppingTime);
 }
 
 void This::cancelWaitings() {
@@ -354,38 +367,6 @@ State This::getState(int id) const {
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-State This::waitForStop() {
-
-	// The function is executed in a thread in parallel.
-	// Do not parallelize the calls to the request socket.
-	State state = UNKNOWN;
-
-	while (true) {
-		// waits for a new incoming status
-		std::unique_ptr<Event> event = popEvent();
-
-		// The socket is canceled.
-		if (event.get() == nullptr) {
-			return UNKNOWN;
-		}
-
-		if (event->getId() == m_id) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
-
-			if (status != nullptr) {
-				state = status->getState();
-
-				if (state == STOPPING
-					|| state == KILLING) {
-					return state;
-				}
-			}
-		}
-	}
-
-	return UNKNOWN;
-}
-
 ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 
 	ServerAndInstance result;
@@ -416,23 +397,92 @@ ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 	return result;
 }
 
-void This::stoppingFunction(StopFunctionType stop) {
+void This::stop() {
+	m_server->stopApplicationAsynchronously(m_id, false);
+}
 
-	application::State state = waitForStop();
+void This::startCheckStatesThread() {
 
-	// Only stop in case of STOPPING.
-	if (state == application::STOPPING) {
-		stop();
+	if (!m_checkStatesThread) {
+		m_checkStatesThread = std::make_unique<std::thread>(std::bind(&This::checkStates, this));
 	}
 }
 
-void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
+void This::initStopCheck(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
 	m_server->requestJSON(createSetStopHandlerRequest(m_id, stoppingTime));
 
-	// Create the handler.
-	m_stopHandler = std::make_unique<HandlerImpl>(bind(&This::stoppingFunction, this, function));
+	// Memorize the stop function.
+	m_stopFunction = function;
+
+	// Start the check states thread.
+	startCheckStatesThread();
+}
+
+void This::initStarterCheck() {
+
+	// Create the starter server.
+	m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
+
+	// Get the actual state.
+	State state = m_starterServer->getActualState(m_starterId);
+	m_starterServer->registerEventListener(this, false);
+
+	// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
+	if (state == UNKNOWN) {
+		stop();
+	}
+	else {
+		startCheckStatesThread();
+	}
+}
+
+void This::checkStates() {
+
+	// The function is executed in a thread in parallel.
+	// Do not parallelize the calls to the request socket.
+	while (true) {
+		// Wait for a new incoming status.
+		std::unique_ptr<Event> event = EventListener::popEvent();
+
+		// Test if the socket is canceled.
+		if (event.get() == nullptr || dynamic_cast<CancelEvent *>(event.get()) != nullptr) {
+			return;
+		}
+
+		// Filter events coming from this.
+		if (event->getId() == m_id) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Call the stop function if stop has been requested.
+				if (state == STOPPING) {
+
+					if (m_stopFunction) {
+						m_stopFunction();
+					}
+					return;
+				}
+			}
+		}
+
+		// Filter events coming from starter.
+		if (event->getId() == m_starterId) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Stop this application if it was linked.
+				if (state == STOPPED || state == KILLED || state == SUCCESS || state == FAILURE) {
+					stop();
+				}
+			}
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

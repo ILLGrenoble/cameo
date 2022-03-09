@@ -52,13 +52,11 @@ int main(int argc, char *argv[]) {
 
 		unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
 
-		cout << "Waiting 100ms..." << endl;
-		this_thread::sleep_for(chrono::milliseconds(100));
+		cout << "Waiting 1s..." << endl;
+		this_thread::sleep_for(chrono::seconds(1));
 
 		cout << "Stopping application " << stopApplication->getNameId() << endl;
 		stopApplication->stop();
-
-		//stopApplication->waitFor(StateHandler());
 
 		optional<string> result = stopApplication->getResult();
 		if (result.has_value()) {

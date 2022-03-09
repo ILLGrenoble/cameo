@@ -58,7 +58,7 @@ class EventStreamSocket;
 class OutputStreamSocket;
 class Waiting;
 class WaitingSet;
-class HandlerImpl;
+class StopHandler;
 class RequestSocket;
 
 namespace application {
@@ -193,10 +193,11 @@ private:
 	int initUnregisteredApplication();
 	void terminateUnregisteredApplication();
 
-	State waitForStop();
-
-	void stoppingFunction(StopFunctionType stop);
-	void handleStopImpl(StopFunctionType function, int stoppingTime);
+	void initStopCheck(StopFunctionType function, int stoppingTime);
+	void stop();
+	void checkStates();
+	void initStarterCheck();
+	void startCheckStatesThread();
 
 	std::string m_name;
 	int m_id;
@@ -213,7 +214,10 @@ private:
 	std::unique_ptr<Com> m_com;
 
 	std::unique_ptr<WaitingSet> m_waitingSet;
-	std::unique_ptr<HandlerImpl> m_stopHandler;
+
+	StopFunctionType m_stopFunction;
+	std::unique_ptr<Server> m_starterServer;
+	std::unique_ptr<std::thread> m_checkStatesThread;
 
 	bool m_inited;
 

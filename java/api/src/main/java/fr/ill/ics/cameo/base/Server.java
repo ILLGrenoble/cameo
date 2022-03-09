@@ -55,7 +55,7 @@ public class Server {
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
 	private JSON.Parser parser = new JSON.Parser();
-	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
+	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
 	
 	/**
@@ -285,15 +285,24 @@ public class Server {
 		contextImpl.terminate();
 	}
 	
+	public void registerEventListener(EventListener listener, boolean filtered) {
+		eventListeners.add(new FilteredEventListener(listener, filtered));
+	}
+
 	public void registerEventListener(EventListener listener) {
-		eventListeners.add(listener);
+		eventListeners.add(new FilteredEventListener(listener, true));
 	}
 	
 	public void unregisterEventListener(EventListener listener) {
-		eventListeners.remove(listener);
+		
+		for (FilteredEventListener filteredEventListener : eventListeners) {
+			if (filteredEventListener.getListener() == listener) {
+				eventListeners.remove(filteredEventListener);
+			}
+		}
 	}
 	
-	ConcurrentLinkedDeque<EventListener> getEventListeners() {
+	ConcurrentLinkedDeque<FilteredEventListener> getEventListeners() {
 		return eventListeners;
 	}
 

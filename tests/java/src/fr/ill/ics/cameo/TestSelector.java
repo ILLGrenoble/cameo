@@ -3,8 +3,6 @@ package fr.ill.ics.cameo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
@@ -139,6 +137,7 @@ public class TestSelector {
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");
 		apps.add("testcheckappcpp");
+		apps.add("testlinkedcpp");
 		
 		return apps;
 	}

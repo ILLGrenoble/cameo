@@ -31,13 +31,13 @@ public class Stop {
 		This.init(args);
 		
 		try {
-			Date begin = new Date();
-			
 			This.handleStop(() -> {
 				System.out.println("Stop handler executed");
 				stopping.set(true);
 			});
-			
+
+			Date begin = new Date();
+
 			int i = 0;
 			while (!stopping.get()) {
 				System.out.println("Waiting " + i + "...");

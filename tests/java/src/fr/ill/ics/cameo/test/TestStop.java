@@ -51,11 +51,11 @@ public class TestStop {
 				// Start the application.
 				Instance stopApplication = server.start("stopjava");
 	
-				System.out.println("Waiting 100ms...");
+				System.out.println("Waiting 1s...");
 				
 				// Stop the application after 1s.
 				try {
-					Thread.sleep(100);
+					Thread.sleep(1000);
 				}
 				catch (InterruptedException e) {
 				}
