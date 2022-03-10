@@ -24,7 +24,12 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
-	application::ServerAndInstance starter = application::This::connectToStarter(0, true);
+	bool useProxy = false;
+	if (argc > 2) {
+		useProxy = (string(argv[1]) == "true");
+	}
+
+	application::ServerAndInstance starter = application::This::connectToStarter(0, useProxy);
 
 	cout << "Connected to started" << endl;
 

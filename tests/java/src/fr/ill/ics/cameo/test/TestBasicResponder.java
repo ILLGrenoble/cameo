@@ -62,8 +62,11 @@ public class TestBasicResponder {
 			// Loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
+				// Args.
+				String[] appArgs = new String[] {args[2]};
+				
 				// Start the application.
-				Instance responderApplication = server.start(applicationName);
+				Instance responderApplication = server.start(applicationName, appArgs);
 				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
 
 				fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(responderApplication, "responder");

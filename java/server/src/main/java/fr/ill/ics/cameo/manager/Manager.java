@@ -86,18 +86,22 @@ public class Manager extends ConfigLoader {
 	}
 
 	private synchronized int initPublisher(Zmq.Socket socket, String applicationName) {
+	
+		// Check proxies.
+		if (ConfigManager.getInstance().hasProxies()) {
 		
-		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
-		Endpoint proxyEndpoint = ConfigManager.getInstance().getSubscriberProxyLocalEndpoint();
-
-		try {
-			socket.connect(proxyEndpoint.toString());
-			
-			Log.logger().info("Connected publisher " + applicationName + " to proxy " + proxyEndpoint);
-		}
-		catch (Exception e) {
-			Log.logger().severe("Cannot connect to publisher proxy " + proxyEndpoint + ": " + e.getMessage());
-			System.exit(1);
+			// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
+			Endpoint proxyEndpoint = ConfigManager.getInstance().getSubscriberProxyLocalEndpoint();
+	
+			try {
+				socket.connect(proxyEndpoint.toString());
+				
+				Log.logger().info("Connected publisher " + applicationName + " to proxy " + proxyEndpoint);
+			}
+			catch (Exception e) {
+				Log.logger().severe("Cannot connect to publisher proxy " + proxyEndpoint + ": " + e.getMessage());
+				System.exit(1);
+			}
 		}
 		
 		// Loop until the socket is bound.

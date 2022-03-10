@@ -59,7 +59,7 @@ public class TestLinked {
 				
 				int state = stopApp.waitFor();
 				
-				System.out.println("Application stop finished with state " + Application.State.toString(state));
+				System.out.println("First application stop finished with state " + Application.State.toString(state));
 			}
 			
 			{
@@ -72,7 +72,7 @@ public class TestLinked {
 				
 				int state = stopApp.waitFor();
 				
-				System.out.println("Application stop finished with state " + Application.State.toString(state));
+				System.out.println("Second application stop finished with state " + Application.State.toString(state));
 			}
 		}
 		

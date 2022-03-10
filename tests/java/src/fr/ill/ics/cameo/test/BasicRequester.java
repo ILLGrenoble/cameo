@@ -27,11 +27,16 @@ public class BasicRequester {
 
 		This.init(args);
 		
+		boolean useProxy = false;
+		if (args.length > 1) {
+			useProxy = Boolean.parseBoolean(args[0]);
+		}
+		
 		try {
 			System.out.println("Creating requester");
 			
 			// Get the starter app.
-			ServerAndInstance starter = This.connectToStarter(0, true);
+			ServerAndInstance starter = This.connectToStarter(0, useProxy);
 			
 			// Create the requester.
 			fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(starter.getInstance(), "responder");

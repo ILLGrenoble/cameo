@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 			// The stop app must be killed automatically.
 			state = stopApp->waitFor();
 
-			cout << "Application stop finished with state " << application::toString(state) << endl;
+			cout << "First application stop finished with state " << application::toString(state) << endl;
 		}
 
 		{
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 			// The stop app must be killed automatically.
 			state = stopApp->waitFor();
 
-			cout << "Application stop finished with state " << application::toString(state) << endl;
+			cout << "Second application stop finished with state " << application::toString(state) << endl;
 		}
 	}
 

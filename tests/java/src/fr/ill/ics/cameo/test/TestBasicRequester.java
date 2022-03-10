@@ -69,8 +69,11 @@ public class TestBasicRequester {
 				// Start the requester applications.
 				for (int j = 0; j < N; ++j) {
 					
+					// Args.
+					String[] appArgs = new String[] {args[2]};
+					
 					// Start the application.
-					requesterApps[j] = server.start(applicationName);
+					requesterApps[j] = server.start(applicationName, appArgs);
 					System.out.println("Started application " + requesterApps[j]);
 				}
 				
