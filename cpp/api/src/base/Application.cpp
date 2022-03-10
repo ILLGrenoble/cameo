@@ -398,7 +398,12 @@ ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 }
 
 void This::stop() {
-	m_server->stop(m_id, false);
+
+	// Use a request socket to avoid any race condition.
+	std::unique_ptr<RequestSocket> requestSocket = m_server->createServerRequestSocket();
+
+	std::string request = createStopRequest(m_id);
+	requestSocket->requestJSON(request);
 }
 
 void This::startCheckStatesThread() {
@@ -425,9 +430,11 @@ void This::initStarterCheck() {
 	// Create the starter server.
 	m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
 
-	// Get the actual state.
-	State state = m_starterServer->getActualState(m_starterId);
+	// Register this as event listener.
 	m_starterServer->registerEventListener(this, false);
+
+	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
+	State state = m_starterServer->getActualState(m_starterId);
 
 	// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
 	if (state == UNKNOWN) {

@@ -594,9 +594,11 @@ public class This {
 		// Create the starter server.
 		starterServer = new Server(starterEndpoint, 0, false);
 
-		// Get the actual state.
-		int state = starterServer.getActualState(starterId);
+		// Register this as event listener.
 		starterServer.registerEventListener(eventListener, false);
+		
+		// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
+		int state = starterServer.getActualState(starterId);
 
 		// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
 		if (state == Application.State.UNKNOWN) {
@@ -608,7 +610,12 @@ public class This {
 	}
 	
 	private void stop() {
-		server.stop(id, false);
+		
+		// Use a request socket to avoid any race condition.
+		RequestSocket requestSocket = server.createServerRequestSocket();
+		
+		JSONObject request = Messages.createStopRequest(id);
+		requestSocket.requestJSON(request);
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::unique_ptr<EventStreamSocket> openEventStream();
+	std::unique_ptr<EventStreamSocket> createEventStreamSocket();
 
 	/**
 	 * Creates a connection handler with polling time.
@@ -188,6 +188,7 @@ private:
 	std::unique_ptr<OutputStreamSocket> createOutputStreamSocket(const std::string& name);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity);
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);
+	std::unique_ptr<RequestSocket> createServerRequestSocket();
 
 	Endpoint m_serverEndpoint;
 	int m_timeout;

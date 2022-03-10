@@ -65,7 +65,7 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 		retrieveServerVersion();
 
 		// Start the event thread.
-		std::unique_ptr<EventStreamSocket> socket = openEventStream();
+		std::unique_ptr<EventStreamSocket> socket = createEventStreamSocket();
 		m_eventThread.reset(new EventThread(this, socket));
 		m_eventThread->start();
 	}
@@ -560,7 +560,7 @@ std::set<application::State> Server::getPastStates(int id) const {
 	return result;
 }
 
-std::unique_ptr<EventStreamSocket> Server::openEventStream() {
+std::unique_ptr<EventStreamSocket> Server::createEventStreamSocket() {
 
 	// Init the status port if necessary.
 	if (m_statusPort == 0) {
@@ -786,6 +786,10 @@ std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& en
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) {
 	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, responderIdentity, timeout));
+}
+
+std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

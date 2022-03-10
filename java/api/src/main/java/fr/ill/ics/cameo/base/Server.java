@@ -119,7 +119,7 @@ public class Server {
 		retrieveServerVersion();
 		
 		// Start the status thread if it is possible.
-		EventStreamSocket streamSocket = openEventStream();
+		EventStreamSocket streamSocket = createEventStreamSocket();
 		
 		if (streamSocket != null) {
 			eventThread = new EventThread(this, streamSocket);
@@ -243,6 +243,14 @@ public class Server {
 		return requestSocket;
 	}
 	
+	RequestSocket createServerRequestSocket() throws SocketException {
+		
+		RequestSocket requestSocket = new RequestSocket(contextImpl, serverEndpoint.toString(), StringId.CAMEO_SERVER, timeout, parser);
+		
+		return requestSocket;
+	}
+	
+	
 	/**
 	 * Connects to the server. Returns false if there is no connection.
 	 * It must be called to initialize the receiving status.
@@ -253,7 +261,7 @@ public class Server {
 		
 		if (connected && eventThread == null) {
 			// start the status thread
-			eventThread = new EventThread(this, openEventStream());
+			eventThread = new EventThread(this, createEventStreamSocket());
 			eventThread.start();
 		}
 		
@@ -358,7 +366,7 @@ public class Server {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	private EventStreamSocket openEventStream() {
+	private EventStreamSocket createEventStreamSocket() {
 
 		if (useProxy) {
 			// With the proxy, the status port is the publisher proxy port.
