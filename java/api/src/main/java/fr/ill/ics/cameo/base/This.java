@@ -592,7 +592,13 @@ public class This {
 	private void initStarterCheck() {
 		
 		// Create the starter server.
-		starterServer = new Server(starterEndpoint, 0, false);
+		// If the starter has a running proxy, then use the proxy: it is reasonable.
+		if (starterProxyPort != 0) {
+			starterServer = new Server(starterEndpoint.withPort(starterProxyPort), 0, true);
+		}
+		else {
+			starterServer = new Server(starterEndpoint, 0, false);	
+		}
 
 		// Register this as event listener.
 		starterServer.registerEventListener(eventListener, false);

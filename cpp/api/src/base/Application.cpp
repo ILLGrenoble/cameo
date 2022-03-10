@@ -428,7 +428,13 @@ void This::initStopCheck(StopFunctionType function, int stoppingTime) {
 void This::initStarterCheck() {
 
 	// Create the starter server.
-	m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
+	// If the starter has a running proxy, then use the proxy: it is reasonable.
+	if (m_starterProxyPort != 0) {
+		m_starterServer = std::make_unique<Server>(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
+	}
+	else {
+		m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
+	}
 
 	// Register this as event listener.
 	m_starterServer->registerEventListener(this, false);
