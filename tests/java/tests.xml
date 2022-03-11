@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="11000" proxy_port="10000, 10001, 10002" max_applications="200" polling_time="100" log_level="fine" log_directory="logs">
+<config port="11000" proxy_ports="10000, 10001, 10002" max_applications="200" polling_time="100" log_level="fine" log_directory="logs">
 
 	<applications>
 		
@@ -255,6 +255,14 @@
 
 		<application name="testmultirespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testmultiresponder" args="multirespondercpp"/>
+		</application>
+		
+		<application name="multiresponderscpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="multiresponders"/>
+		</application>
+
+		<application name="testmultiresponderscpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testmultiresponders" args="multiresponderscpp"/>
 		</application>
 				
 		<application name="linkedcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">

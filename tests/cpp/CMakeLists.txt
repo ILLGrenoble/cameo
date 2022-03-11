@@ -122,6 +122,12 @@ target_link_libraries(multiresponder PRIVATE Cameo::cameo-api-cpp)
 add_executable(testmultiresponder src/TestMultiResponder.cpp)
 target_link_libraries(testmultiresponder PRIVATE Cameo::cameo-api-cpp)
 
+add_executable(multiresponders src/MultiResponders.cpp)
+target_link_libraries(multiresponders PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testmultiresponders src/TestMultiResponders.cpp)
+target_link_libraries(testmultiresponders PRIVATE Cameo::cameo-api-cpp)
+
 add_executable(linked src/Linked.cpp)
 target_link_libraries(linked PRIVATE Cameo::cameo-api-cpp)
 
