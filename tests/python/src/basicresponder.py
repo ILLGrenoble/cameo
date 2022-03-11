@@ -4,9 +4,11 @@ import cameopy
 this = cameopy.This
 this.init(sys.argv)
 
+useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
+
 print("Creating responder")
 
-responder = cameopy.Responder.create("responder")
+responder = cameopy.BasicResponder.create("responder")
 
 this.setRunning()
 
@@ -45,7 +47,7 @@ print("Received request", request.get())
 
 request.reply("4th response after timeout")
 
-requester = request.connectToRequester(0, True)
+requester = request.connectToRequester(0, useProxy)
 app = requester.getInstance()
 
 print("Requester", app.getId())

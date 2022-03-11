@@ -153,8 +153,9 @@ public class TestSelector {
 		apps.add("testerrorpy");
 		apps.add("testpublisherpy");
 		apps.add("testsubscriberpy");
-		apps.add("testresponderpy");
-		apps.add("testrequesterpy");
+		apps.add("testbasicresponderpy");
+		apps.add("testbasicrequesterpy");
+		apps.add("testmultiresponderpy");
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
 		apps.add("testterminatepy");

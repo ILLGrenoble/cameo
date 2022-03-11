@@ -183,7 +183,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>());
 
-	py::class_<basic::Request>(m, "Request")
+	py::class_<basic::Request>(m, "BasicRequest")
 		.def("getObjectId", &basic::Request::getObjectId)
 	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
 	    .def("getBinary", &basic::Request::getBinary)
@@ -202,7 +202,7 @@ PYBIND11_MODULE(cameopy, m) {
 				"useProxy"_a = false,
 	    		py::call_guard<py::gil_scoped_release>());
 
-	py::class_<basic::Responder>(m, "Responder")
+	py::class_<basic::Responder>(m, "BasicResponder")
 	    .def_static("create", &basic::Responder::create,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
@@ -211,6 +211,47 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("receive", &basic::Responder::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &basic::Responder::isCanceled);
+
+
+	py::class_<multi::Request>(m, "MultiRequest")
+		.def("getObjectId", &multi::Request::getObjectId)
+		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
+		.def("getBinary", &multi::Request::getBinary)
+		.def("get", &multi::Request::get)
+		.def("getSecondBinaryPart", &multi::Request::getSecondBinaryPart)
+		.def("setTimeout", &multi::Request::setTimeout,
+				"value"_a)
+		.def("replyBinary", &multi::Request::replyBinary,
+				"response"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("reply", &multi::Request::reply,
+				"response"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("connectToRequester", &multi::Request::connectToRequester,
+				"options"_a = 0,
+				"useProxy"_a = false,
+				py::call_guard<py::gil_scoped_release>());
+
+	py::class_<multi::ResponderRouter>(m, "MultiResponderRouter")
+		.def_static("create", &multi::ResponderRouter::create,
+				"name"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &multi::ResponderRouter::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("setPollingTime", &multi::ResponderRouter::setPollingTime,
+				"value"_a)
+		.def("getName", &multi::ResponderRouter::getName)
+		.def("cancel", &multi::ResponderRouter::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("run", &multi::ResponderRouter::run, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &multi::ResponderRouter::isCanceled);
+
+	py::class_<multi::Responder>(m, "MultiResponder")
+		.def_static("create", &multi::Responder::create,
+				"name"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &multi::Responder::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("cancel", &multi::Responder::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &multi::Responder::isCanceled);
 
 	py::class_<Requester>(m, "Requester")
 	    .def_static("create", &Requester::create,

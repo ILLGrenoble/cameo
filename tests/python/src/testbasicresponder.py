@@ -26,7 +26,8 @@ print("Responder application is", applicationName)
 
 for i in range(numberOfTimes):
     
-    app = server.start(applicationName)
+    args = ["true" if useProxy else "false"]
+    app = server.start(applicationName, args)
     print("Started application", applicationName)
 
     requester = cameopy.Requester.create(app, "responder")
