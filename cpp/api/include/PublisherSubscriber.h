@@ -136,9 +136,8 @@ public:
 
 private:
 	Subscriber();
-	void init(application::Instance &app, const std::string &publisherName);
-	void tryInit(application::Instance & app);
-	void synchronize(application::Instance & app);
+	void init(const application::Instance &app, const std::string &publisherName);
+	void synchronize(const application::Instance & app);
 
 	bool m_useProxy;
 	std::string m_publisherName;

@@ -84,7 +84,7 @@ void Requester::init(const application::Instance & app, const std::string &respo
 	}
 }
 
-std::unique_ptr<Requester> Requester::create(application::Instance & app, const std::string& responderName) {
+std::unique_ptr<Requester> Requester::create(const application::Instance & app, const std::string& responderName) {
 
 	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester());
 	requester->init(app, responderName);
