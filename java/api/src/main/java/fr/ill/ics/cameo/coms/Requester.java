@@ -4,7 +4,9 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.KeyValue;
+import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -43,14 +45,20 @@ public class Requester {
 		impl.setTimeout(value);
 	}
 	
-	private void tryInit(Instance app) throws RequesterCreationException {
+	private void init(Instance app, String responderName) throws RequesterCreationException {
 		
-		// Memorize proxy.
-		useProxy = app.usesProxy();
+		this.responderName = responderName;
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		this.key = Responder.KEY + "-" + responderName;
+		this.useProxy = app.usesProxy();
 		
 		// Get the responder data.
 		try {
-			String jsonString = app.getCom().getKeyValue(key);
+			//String jsonString = app.getCom().getKeyValue(key);
+			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
+			String jsonString = getter.get();
 			JSONObject jsonData = This.getCom().parse(jsonString);
 					
 			Endpoint endpoint;
@@ -67,51 +75,9 @@ public class Requester {
 			
 			impl.init(endpoint, StringId.from(appId, key));
 		}
-		catch (UndefinedApplicationException | UndefinedKeyException e) {
+		catch (KeyValueGetterException e) {
 			throw new RequesterCreationException("");
 		}
-	}
-	
-	private boolean init(Instance app, String responderName) throws RequesterCreationException {
-		
-		this.responderName = responderName;
-		this.appName = app.getName();
-		this.appId = app.getId();
-		this.appEndpoint = app.getEndpoint();
-		this.key = Responder.KEY + "-" + responderName;
-		
-		// Try to create the requester.
-		// If the responder does not exist, an exception is thrown.
-		try {
-			tryInit(app);
-			return true;
-		}
-		catch (RequesterCreationException e) {
-			// The responder does not exist, so we are waiting for it.
-		}
-		
-		// Wait for the responder.
-		int lastState = app.waitFor(new KeyValue(key));
-		
-		// The state cannot be terminal or it means that the application has terminated that is not planned.
-		if (lastState == Application.State.SUCCESS 
-			|| lastState == Application.State.STOPPED
-			|| lastState == Application.State.KILLED					
-			|| lastState == Application.State.ERROR) {
-			return false;
-		}
-		
-		// The requester can be created.
-		try {
-			tryInit(app);
-			return true;
-		}
-		catch (RequesterCreationException e) {
-			// That should not happen.
-			System.err.println("the responder " + responderName + " does not exist but should");
-		}
-		
-		return false;
 	}
 	
 	/**

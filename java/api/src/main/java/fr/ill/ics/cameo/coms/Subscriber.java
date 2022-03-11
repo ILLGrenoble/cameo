@@ -4,7 +4,9 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.KeyValue;
+import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedApplicationException;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -35,14 +37,38 @@ public class Subscriber {
 		waiting.add();
 	}
 	
-	private void tryInit(Instance app) throws SubscriberCreationException {
+	private void synchronize(Instance app) {
 		
-		// Memorize proxy.
-		useProxy = app.usesProxy();
+		try {
+			Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+
+			// Send a subscribe request.
+			JSONObject jsonRequest = new JSONObject();
+			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+			
+			requester.send(jsonRequest.toJSONString());
+			String response = requester.receiveString();
+			
+			requester.terminate();
+		}
+		catch (RequesterCreationException e) {
+			System.err.println("Error, cannot create requester for subscriber");
+		}
+	}
+	
+	private void init(Instance app, String publisherName) throws SubscriberCreationException {
+		
+		this.publisherName = publisherName;
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		this.key = Publisher.KEY + "-" + publisherName;
+		this.useProxy = app.usesProxy();
 		
 		// Get the publisher data.
 		try {
-			String jsonString = app.getCom().getKeyValue(key);
+			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
+			String jsonString = getter.get();
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
@@ -65,78 +91,18 @@ public class Subscriber {
 				synchronize(app);
 			}
 		}
-		catch (UndefinedApplicationException | UndefinedKeyException e) {
+		catch (KeyValueGetterException e) {
 			throw new SubscriberCreationException("");
 		}
-	}
-	
-	private void synchronize(Instance app) {
-		
-		try {
-			Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
-
-			// Send a subscribe request.
-			JSONObject jsonRequest = new JSONObject();
-			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
-			
-			requester.send(jsonRequest.toJSONString());
-			String response = requester.receiveString();
-			
-			requester.terminate();
-		}
-		catch (RequesterCreationException e) {
-			System.err.println("Error, cannot create requester for subscriber");
-		}
-	}
-	
-	private boolean init(Instance app, String publisherName) {
-		
-		this.publisherName = publisherName;
-		this.appName = app.getName();
-		this.appId = app.getId();
-		this.appEndpoint = app.getEndpoint();
-		this.key = Publisher.KEY + "-" + publisherName;
-		
-		// Try to create the subscriber.
-		// If the publisher does not exist, an exception is thrown.
-		try {
-			tryInit(app);
-			return true;
-		}
-		catch (SubscriberCreationException e) {
-			// The publisher does not exist, so we are waiting for it.
-		}
-
-		// Wait for the publisher.
-		int lastState = app.waitFor(new KeyValue(key));
-		
-		// The state cannot be terminal or it means that the application has terminated that is not planned.
-		if (lastState == Application.State.SUCCESS 
-			|| lastState == Application.State.STOPPED
-			|| lastState == Application.State.KILLED					
-			|| lastState == Application.State.ERROR) {
-			return false;
-		}
-		
-		// The subscriber can be created.
-		try {
-			tryInit(app);
-			return true;
-		}
-		catch (SubscriberCreationException e) {
-			// That should not happen.
-			System.err.println("the publisher " + publisherName + " does not exist but should");
-		}
-		
-		return false;
 	}
 	
 	/**
 	 * Subscribes to the application publisher.
 	 * @param publisherName
 	 * @return
+	 * @throws SubscriberCreationException 
 	 */
-	public static Subscriber create(Instance app, String publisherName) {
+	public static Subscriber create(Instance app, String publisherName) throws SubscriberCreationException {
 		
 		Subscriber subscriber = new Subscriber();
 		subscriber.init(app, publisherName);
