@@ -243,11 +243,38 @@ public:
 
 		std::string getKeyValue(const std::string& key) const;
 
+		class KeyValueGetterException : public RemoteException {
+
+		public:
+			KeyValueGetterException(const std::string& message);
+		};
+
+		class KeyValueGetter : private EventListener {
+
+			friend class Com;
+
+		public:
+			virtual ~KeyValueGetter();
+
+			std::string get();
+			void cancel();
+
+		private:
+			KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key);
+
+			Server* m_server;
+			int m_id;
+			std::string m_key;
+		};
+
+		std::unique_ptr<KeyValueGetter> getKeyValueGetter(const std::string& key) const;
+
 	private:
 		Com(Server* server);
 
 		Server* m_server;
 		int m_applicationId;
+		std::string m_name;
 	};
 
 	~Instance();

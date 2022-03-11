@@ -71,8 +71,7 @@ public:
 
 private:
 	Requester();
-	void init(application::Instance & app, const std::string & responderName);
-	void tryInit(application::Instance & app);
+	void init(const application::Instance & app, const std::string & responderName);
 
 	bool m_useProxy;
 	std::string m_responderName;

@@ -523,6 +523,83 @@ std::string Instance::Com::getKeyValue(const std::string& key) const {
 	return m_server->getKeyValue(m_applicationId, key);
 }
 
+Instance::Com::KeyValueGetterException::KeyValueGetterException(const std::string& message) :
+	RemoteException(message) {
+}
+
+Instance::Com::KeyValueGetter::KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key) :
+	m_server(server),
+	m_id(id),
+	m_key(key) {
+
+	EventListener::setName(name);
+
+	m_server->registerEventListener(this);
+}
+
+Instance::Com::KeyValueGetter::~KeyValueGetter() {
+
+	m_server->unregisterEventListener(this);
+}
+
+std::string Instance::Com::KeyValueGetter::get() {
+
+	// Create a scoped waiting so that it is removed at the exit of the function.
+	Waiting scopedWaiting(std::bind(&Instance::Com::KeyValueGetter::cancel, this));
+
+	try {
+		return m_server->getKeyValue(m_id, m_key);
+	}
+	catch (...) {
+		// Key is not found, waiting for the event.
+	}
+
+	while (true) {
+		// Waits for a new incoming status.
+		std::unique_ptr<Event> event = EventListener::popEvent();
+
+		if (event->getId() == m_id) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Test the terminal state.
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
+					throw KeyValueGetterException("Application terminated");
+				}
+			}
+			else {
+
+				if (KeyEvent * keyEvent = dynamic_cast<KeyEvent *>(event.get())) {
+					if (keyEvent->getKey() == m_key) {
+						// Set the status and value.
+						if (keyEvent->getStatus() == KeyEvent::Status::STORED) {
+							return keyEvent->getValue();
+						}
+
+						throw KeyValueGetterException("Key removed");
+					}
+				}
+				else if (dynamic_cast<CancelEvent *>(event.get())) {
+					throw KeyValueGetterException("Get canceled");
+				}
+			}
+		}
+	}
+}
+
+void Instance::Com::KeyValueGetter::cancel() {
+	EventListener::cancel(m_id);
+}
+
+std::unique_ptr<Instance::Com::KeyValueGetter> Instance::Com::getKeyValueGetter(const std::string& key) const {
+	return std::unique_ptr<Instance::Com::KeyValueGetter>(new Instance::Com::KeyValueGetter(m_server, m_name, m_applicationId, key));
+}
+
 Instance::Instance(Server * server) :
 	m_server(server),
 	m_id(-1),
@@ -550,6 +627,7 @@ void Instance::terminate() {
 void Instance::setId(int id) {
 	m_id = id;
 	m_com.m_applicationId = id;
+	m_com.m_name = getName();
 }
 
 const std::string& Instance::getName() const {

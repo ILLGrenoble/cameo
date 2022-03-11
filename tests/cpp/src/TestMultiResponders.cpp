@@ -61,21 +61,43 @@ int main(int argc, char *argv[]) {
 
 	cout << "Started application " << *responderApplication << endl;
 
-	// Create a requester to the application applicationName
-	unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+	int N = 1;
 
-	cout << "Created requester " << *requester << endl;
+	// Instantiate the requesters sequentially with the same application.
+	vector<unique_ptr<coms::Requester>> requesters;
+	requesters.reserve(N);
 
-	int N = 5;
+	for (int t = 0; t < N; ++t) {
 
-	// Loop the number of times * N.
-	for (int i = 0; i < numberOfTimes * N; ++i) {
+		cout << "Creating requester..." << endl;
 
-		// Send a request.
-		requester->send(string("request-") + std::to_string(i));
+		// Create a requester to the application applicationName
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		requesters.push_back(std::move(requester));
 
-		optional<string> response = requester->receive();
-		cout << "Response is " << response.value() << endl;
+		cout << "Created requester" << endl;
+	}
+
+	std::thread tds[N];
+
+	for (int t = 0; t < N; ++t) {
+
+		tds[t] = std::thread([=,&responderApplication,&requesters] {
+
+			// Loop the number of times * N.
+			for (int i = 0; i < numberOfTimes; ++i) {
+
+				// Send a request.
+				requesters[t]->send(string("request-") + std::to_string(i));
+				optional<string> response = requesters[t]->receive();
+
+				cout << t << " receives " << response.value() << endl;
+			}
+		});
+	}
+
+	for (int t = 0; t < N; ++t) {
+		tds[t].join();
 	}
 
 	// Wait for the end of the application.

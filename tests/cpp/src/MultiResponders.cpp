@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 
 	application::This::setRunning();
 
-	int N = 5;
+	int N = 1;
 	atomic_int counter{1};
 
 	std::thread tds[N];
@@ -69,10 +69,12 @@ int main(int argc, char *argv[]) {
 				unique_ptr<coms::multi::Request> request = responder->receive();
 				cout << t << " received request " << *request << endl;
 
-				request->reply(string("response to ") + request->get());
+				request->reply(std::to_string(t) + string(" to ") + request->get());
 
 				int n = counter++;
 				if (n == numberOfTimes * N) {
+					// It is necessary to wait because the router may still have some messages to process.
+					this_thread::sleep_for(chrono::seconds(1));
 					router->cancel();
 				}
 			}
