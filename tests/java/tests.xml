@@ -126,7 +126,7 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
 		</application>
 		
-		<application name="multirespondersjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="multirespondersjava" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponders"/>
 		</application>
 
@@ -384,6 +384,15 @@
 		<application name="testmultiresponderpy" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/testmultiresponder.py multiresponderpy"/>	
 		</application>
+		
+		<application name="multiresponderspy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/multiresponders.py"/>	
+		</application>
+
+		<application name="testmultiresponderspy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testmultiresponders.py multiresponderspy"/>			
+		</application>
+		
 				
 	</applications>
 	

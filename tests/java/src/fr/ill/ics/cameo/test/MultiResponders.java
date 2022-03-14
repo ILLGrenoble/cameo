@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.ResponderCreationException;

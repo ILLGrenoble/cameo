@@ -158,6 +158,7 @@ public class TestSelector {
 		apps.add("testbasicresponderpy");
 		apps.add("testbasicrequesterpy");
 		apps.add("testmultiresponderpy");
+		apps.add("testmultiresponderspy");
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
 		apps.add("testterminatepy");
