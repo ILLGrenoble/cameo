@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 
 	application::This::setRunning();
 
-	int N = 1;
+	int N = 5;
 	atomic_int counter{1};
 
 	std::thread tds[N];
@@ -67,9 +67,10 @@ int main(int argc, char *argv[]) {
 			for (int i = 0; i < numberOfTimes; ++i) {
 
 				unique_ptr<coms::multi::Request> request = responder->receive();
+
 				cout << t << " received request " << *request << endl;
 
-				request->reply(std::to_string(t) + string(" to ") + request->get());
+				request->reply(std::to_string(t) + string(" to ") + request->getSecondBinaryPart());
 
 				int n = counter++;
 				if (n == numberOfTimes * N) {

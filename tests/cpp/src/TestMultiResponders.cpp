@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Started application " << *responderApplication << endl;
 
-	int N = 1;
+	int N = 5;
 
 	// Instantiate the requesters sequentially with the same application.
 	vector<unique_ptr<coms::Requester>> requesters;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 			for (int i = 0; i < numberOfTimes; ++i) {
 
 				// Send a request.
-				requesters[t]->send(string("request-") + std::to_string(i));
+				requesters[t]->sendTwoBinaryParts("request", std::to_string(i));
 				optional<string> response = requesters[t]->receive();
 
 				cout << t << " receives " << response.value() << endl;
