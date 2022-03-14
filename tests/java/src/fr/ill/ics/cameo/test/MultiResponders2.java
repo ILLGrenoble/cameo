@@ -1,0 +1,137 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
+package fr.ill.ics.cameo.test;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.ResponderCreationException;
+
+
+public class MultiResponders2 {
+
+	public static void main(String[] args) {
+
+		This.init(args);
+		
+		int numberOfTimes = 1;
+		
+		if (args.length > 1) {
+			numberOfTimes = Integer.parseInt(args[0]);
+		}
+		
+		try {
+			System.out.println("Creating router");
+			
+			// Create the router.
+			fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+
+			System.out.println("Created router");
+			
+			// Set the state.
+			This.setRunning();
+			
+			int N = 5;
+			AtomicInteger counter = new AtomicInteger(1);
+			
+			fr.ill.ics.cameo.coms.multi.Responder[] responders = new fr.ill.ics.cameo.coms.multi.Responder[N];
+			
+			Thread[] threads = new Thread[N];
+			
+			for (int t = 0; t < N; ++t) {
+	
+				final int ft = t;
+				final int fn = numberOfTimes;
+				
+				threads[ft] = new Thread(new Runnable() {
+					public void run() {
+	
+						// Create the responder.
+						
+						try {
+							System.out.println("Creating responder");
+							
+							responders[ft] = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+							
+							System.out.println("Created responder");
+						}
+						catch (ResponderCreationException e) {
+						}
+	
+						for (int i = 0; i < fn; ++i) {
+						
+							System.out.println("Receiving request");
+							fr.ill.ics.cameo.coms.multi.Request request = responders[ft].receive();
+							System.out.println("Received request " + request.get());
+							
+							request.reply(ft + " to " + request.get());
+							
+							System.out.println("Replied");
+							
+							int n = counter.incrementAndGet();
+
+							if (n == fn * N) {
+								try {
+									Thread.sleep(1000);
+								}
+								catch (InterruptedException e) {
+								}
+								router.cancel();
+							}
+						}
+					}
+				});
+				
+				threads[t].start();
+			}
+			
+			for (int t = 0; t < N; ++t) {
+				responders[t].terminate();
+				
+				System.out.println("Terminated responder");
+			}
+			
+			
+			System.out.println("Router runs");
+			
+			router.run();
+			
+			System.out.println("Router stopped");
+			
+			try {
+				for (int t = 0; t < N; ++t) {
+					threads[t].join();
+				}
+			}
+			catch (InterruptedException e) {
+			}
+			
+			// Terminate the router.
+			router.terminate();
+		}
+		catch (RemoteException e) {
+			System.out.println("Responder error");
+		}
+		finally {
+			This.terminate();			
+		}
+		
+		System.out.println("Finished the application");
+	}
+
+}

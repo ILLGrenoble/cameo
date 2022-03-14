@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 			for (int i = 0; i < numberOfTimes; ++i) {
 
 				// Send a request.
-				requesters[t]->sendTwoBinaryParts("request", std::to_string(i));
+				requesters[t]->send(std::to_string(i));
 				optional<string> response = requesters[t]->receive();
 
 				cout << t << " receives " << response.value() << endl;

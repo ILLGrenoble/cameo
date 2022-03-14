@@ -110,6 +110,7 @@ public class TestSelector {
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
 		apps.add("testmultiresponderjava");
+		apps.add("testmultirespondersjava");
 		apps.add("testpublisherjava");
 		apps.add("testsubscriberjava");
 		apps.add("testcanceljava");

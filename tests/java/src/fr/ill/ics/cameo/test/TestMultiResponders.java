@@ -21,10 +21,11 @@ import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.Requester;
 import fr.ill.ics.cameo.messages.Messages;
 
 
-public class TestMultiResponder {
+public class TestMultiResponders {
 
 	public static void main(String[] args) {
 		
@@ -56,38 +57,63 @@ public class TestMultiResponder {
 		}
 		
 		Server server = new Server(endpoint, 0, useProxy);
+
+		String[] appArgs = new String[] {args[1]};
+		
+		// Start the application.
+		Instance responderApplication = server.start(applicationName, appArgs);
+		System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
+
+		int N = 5;
 		
 		try {
+			Requester[] requesters = new Requester[N];
 			
-			// Loop the number of times.
-			for (int i = 0; i < numberOfTimes; ++i) {
-			
-				// Start the application.
-				Instance responderApplication = server.start(applicationName);
-				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
-
-				fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(responderApplication, "responder");
-				System.out.println("Created requester " + requester);
-			
-				// Check the state of the responder app.
-				System.out.println("Application " + responderApplication + " has state " + Application.State.toString(responderApplication.getActualState()));
+			for (int t = 0; t < N; ++t) {
 				
+				System.out.println("Creating requester");
 				
-				// Send a simple message.
-				requester.send("request");
-				System.out.println("Response is " + requester.receiveString());
-			
+				requesters[t] = Requester.create(responderApplication, "responder");
 				
-				// Send a two-parts message.
-				requester.sendTwoParts(Messages.serialize("first"), Messages.serialize("second"));
-				System.out.println("Response is " + requester.receiveString());
+				System.out.println("Created requester");
 				
-				int state = responderApplication.waitFor();
-				System.out.println("Responder application terminated with state " + Application.State.toString(state));			
-				
-				// Terminate the requester.
-				requester.terminate();
 			}
+			
+			Thread[] threads = new Thread[N];
+			
+			for (int t = 0; t < N; ++t) {
+				
+				final int ft = t;
+				final int fn = numberOfTimes;
+				
+				threads[ft] = new Thread(new Runnable() {
+					public void run() {
+					
+						for (int i = 0; i < fn; ++i) {
+							
+							requesters[ft].send("" + i);
+							System.out.println(ft + " receives " + requesters[ft].receiveString());
+						}
+					}
+				});
+				
+				threads[ft].start();
+			}
+			
+			for (int t = 0; t < N; ++t) {
+				
+				try {
+					threads[t].join();
+				}
+				catch (InterruptedException e) {
+				}
+				
+				requesters[t].terminate();
+			}
+			
+			int state = responderApplication.waitFor();
+			System.out.println("Responder application terminated with state " + Application.State.toString(state));
+			
 		}
 		catch (RemoteException e) {
 			System.out.println("Requester error:" + e);

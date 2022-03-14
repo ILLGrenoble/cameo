@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 
 				cout << t << " received request " << *request << endl;
 
-				request->reply(std::to_string(t) + string(" to ") + request->getSecondBinaryPart());
+				request->reply(std::to_string(t) + string(" to ") + request->get());
 
 				int n = counter++;
 				if (n == numberOfTimes * N) {

@@ -7,10 +7,7 @@ public class IdGenerator {
 	private static AtomicInteger id = new AtomicInteger(0);
 	
 	public static int newId() {
-		int newId = id.get() + 1;
-		id.set(newId);
-		
-		return newId;
+		return id.incrementAndGet();
 	}
 	
 	public static String newStringId() {

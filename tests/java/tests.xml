@@ -126,6 +126,14 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
 		</application>
 		
+		<application name="multirespondersjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponders"/>
+		</application>
+
+		<application name="testmultirespondersjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponders multirespondersjava"/>
+		</application>
+		
 		<application name="linkedjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Linked"/>
 		</application>

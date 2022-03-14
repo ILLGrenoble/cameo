@@ -21,11 +21,7 @@ namespace cameo {
 std::atomic_int IdGenerator::m_currentId{0};
 
 int IdGenerator::newId() {
-
-	int id = m_currentId.load() + 1;
-	m_currentId.store(id);
-
-	return id;
+	return ++m_currentId;
 }
 
 std::string IdGenerator::newStringId() {
