@@ -29,6 +29,12 @@ public class MultiResponders {
 
 		This.init(args);
 		
+		This.handleStop(() -> {
+			This.cancelWaitings();
+			
+			System.out.println("Stopped");
+		});
+		
 		int numberOfTimes = 1;
 		
 		if (args.length > 1) {
@@ -47,7 +53,6 @@ public class MultiResponders {
 			This.setRunning();
 			
 			int N = 5;
-			AtomicInteger counter = new AtomicInteger(1);
 			
 			Thread[] threads = new Thread[N];
 			
@@ -78,17 +83,6 @@ public class MultiResponders {
 							System.out.println("Received request " + request.get());
 							
 							request.reply(ft + " to " + request.get());
-							
-							int n = counter.incrementAndGet();
-
-							if (n == fn * N) {
-								try {
-									Thread.sleep(1000);
-								}
-								catch (InterruptedException e) {
-								}
-								router.cancel();
-							}
 						}
 						
 						responder.terminate();

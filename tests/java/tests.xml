@@ -265,7 +265,7 @@
 			<start executable="testmultiresponder" args="multirespondercpp"/>
 		</application>
 		
-		<application name="multiresponderscpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="multiresponderscpp" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="multiresponders"/>
 		</application>
 

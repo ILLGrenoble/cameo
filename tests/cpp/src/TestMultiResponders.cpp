@@ -100,6 +100,9 @@ int main(int argc, char *argv[]) {
 		tds[t].join();
 	}
 
+	// Stop the responder application.
+	responderApplication->stop();
+
 	// Wait for the end of the application.
 	application::State state = responderApplication->waitFor();
 

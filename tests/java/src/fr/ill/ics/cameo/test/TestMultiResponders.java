@@ -111,6 +111,9 @@ public class TestMultiResponders {
 				requesters[t].terminate();
 			}
 			
+			// Stop the responder application.
+			responderApplication.stop();
+			
 			int state = responderApplication.waitFor();
 			System.out.println("Responder application terminated with state " + Application.State.toString(state));
 			

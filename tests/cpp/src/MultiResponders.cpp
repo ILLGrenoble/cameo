@@ -25,6 +25,13 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
+	application::This::handleStop([] {
+		// Cancel the router.
+		application::This::cancelWaitings();
+
+		cout << "Stopped" << endl;
+	});
+
 	int numberOfTimes = 1;
 
 	if (argc > 2) {
@@ -50,13 +57,12 @@ int main(int argc, char *argv[]) {
 	application::This::setRunning();
 
 	int N = 5;
-	atomic_int counter{1};
 
 	std::thread tds[N];
 
 	for (int t = 0; t < N; ++t) {
 
-		tds[t] = std::thread([=,&router,&counter] {
+		tds[t] = std::thread([=,&router] {
 
 			cout << "Creating responder" << endl;
 
@@ -71,13 +77,6 @@ int main(int argc, char *argv[]) {
 				cout << t << " received request " << *request << endl;
 
 				request->reply(std::to_string(t) + string(" to ") + request->get());
-
-				int n = counter++;
-				if (n == numberOfTimes * N) {
-					// It is necessary to wait because the router may still have some messages to process.
-					this_thread::sleep_for(chrono::seconds(1));
-					router->cancel();
-				}
 			}
 		});
 	}
