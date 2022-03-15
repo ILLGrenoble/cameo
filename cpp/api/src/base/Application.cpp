@@ -154,19 +154,33 @@ void This::init(const std::string& name, const std::string& endpoint) {
 }
 
 void This::terminate() {
+	m_instance.terminateImpl();
+}
+
+void This::terminateImpl() {
 
 	// Test if termination is already done.
-	if (!m_instance.m_inited) {
+	if (!m_inited) {
 		return;
 	}
 
 	// Terminate the unregistered application.
-	if (!m_instance.m_registered) {
-		m_instance.terminateUnregisteredApplication();
+	if (!m_registered) {
+		terminateUnregisteredApplication();
+	}
+
+	// Join the check states thread if it was started.
+	if (m_checkStatesThread) {
+
+		// Cancel the listener if it is necessary.
+		EventListener::cancel(m_id);
+
+		// Join the thread.
+		m_checkStatesThread->join();
 	}
 
 	// Inited.
-	m_instance.m_inited = false;
+	m_inited = false;
 }
 
 
@@ -264,21 +278,7 @@ void This::initApplication() {
 }
 
 This::~This() {
-
-	// Terminate the unregistered application.
-	if (m_inited && !m_registered) {
-		terminateUnregisteredApplication();
-	}
-
-	// Join the check states thread if it was started.
-	if (m_checkStatesThread) {
-
-		// Cancel the listener if it is necessary.
-		EventListener::cancel(m_id);
-
-		// Join the thread.
-		m_checkStatesThread->join();
-	}
+	terminate();
 }
 
 const std::string& This::getName() {

@@ -183,6 +183,8 @@ public:
 	static ServerAndInstance connectToStarter(int options = 0, bool useProxy = false);
 
 private:
+	void terminateImpl();
+
 	void initApplication(int argc, char* argv[]);
 	void initApplication(const std::string& name, const std::string& endpoint);
 	void initApplication();

@@ -301,11 +301,11 @@
 			<start executable="python3" args="-u tests/python/src/testveryfast.py"/>
 		</application>
 		
-		<application name="stoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="stoppy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/stop.py"/>
 		</application>
 		
-		<application name="teststoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="teststoppy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/teststop.py"/>
 		</application>
 		
@@ -385,7 +385,7 @@
 			<start executable="python3" args="-u tests/python/src/testmultiresponder.py multiresponderpy"/>	
 		</application>
 		
-		<application name="multiresponderspy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="multiresponderspy" starting_time="0" stopping_time="2" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/multiresponders.py"/>	
 		</application>
 
