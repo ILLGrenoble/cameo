@@ -461,7 +461,7 @@ void This::checkStates() {
 
 		// Test if the socket is canceled.
 		if (event.get() == nullptr || dynamic_cast<CancelEvent *>(event.get()) != nullptr) {
-			return;
+			break;
 		}
 
 		// Filter events coming from this.
@@ -477,7 +477,7 @@ void This::checkStates() {
 					if (m_stopFunction) {
 						m_stopFunction();
 					}
-					return;
+					break;
 				}
 			}
 		}
@@ -496,6 +496,9 @@ void This::checkStates() {
 			}
 		}
 	}
+
+	// Reset the stop function here because in case of Python callback, it is necessary to do it here rather than in the This destructor.
+	m_stopFunction = StopFunctionType();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

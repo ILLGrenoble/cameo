@@ -63,12 +63,8 @@ for id in range(N):
     tds[id].join()
     requesters[id].terminate()
 
-print("Stopping app")
-
 # Stop the responder application.
-app.kill()
-
-print("Waiting for...")
+app.stop()
 
 # Wait for the application.
 app.waitFor()
