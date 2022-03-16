@@ -64,8 +64,11 @@ int main(int argc, char *argv[]) {
 		// Start the requester applications.
 		for (int j = 0; j < N; ++j) {
 
+			// Args.
+			vector<string> args{(useProxy ? "true" : "false")};
+
 			// Start the application.
-			apps.push_back(server.start(applicationName));
+			apps.push_back(server.start(applicationName, args));
 			cout << "Started application " << *apps.back() << endl;
 		}
 

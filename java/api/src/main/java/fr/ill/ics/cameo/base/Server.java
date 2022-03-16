@@ -55,7 +55,7 @@ public class Server {
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
 	private JSON.Parser parser = new JSON.Parser();
-	private ConcurrentLinkedDeque<EventListener> eventListeners = new ConcurrentLinkedDeque<EventListener>(); 
+	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
 	
 	/**
@@ -119,7 +119,7 @@ public class Server {
 		retrieveServerVersion();
 		
 		// Start the status thread if it is possible.
-		EventStreamSocket streamSocket = openEventStream();
+		EventStreamSocket streamSocket = createEventStreamSocket();
 		
 		if (streamSocket != null) {
 			eventThread = new EventThread(this, streamSocket);
@@ -243,6 +243,14 @@ public class Server {
 		return requestSocket;
 	}
 	
+	RequestSocket createServerRequestSocket() throws SocketException {
+		
+		RequestSocket requestSocket = new RequestSocket(contextImpl, serverEndpoint.toString(), StringId.CAMEO_SERVER, timeout, parser);
+		
+		return requestSocket;
+	}
+	
+	
 	/**
 	 * Connects to the server. Returns false if there is no connection.
 	 * It must be called to initialize the receiving status.
@@ -253,7 +261,7 @@ public class Server {
 		
 		if (connected && eventThread == null) {
 			// start the status thread
-			eventThread = new EventThread(this, openEventStream());
+			eventThread = new EventThread(this, createEventStreamSocket());
 			eventThread.start();
 		}
 		
@@ -285,15 +293,24 @@ public class Server {
 		contextImpl.terminate();
 	}
 	
+	public void registerEventListener(EventListener listener, boolean filtered) {
+		eventListeners.add(new FilteredEventListener(listener, filtered));
+	}
+
 	public void registerEventListener(EventListener listener) {
-		eventListeners.add(listener);
+		eventListeners.add(new FilteredEventListener(listener, true));
 	}
 	
 	public void unregisterEventListener(EventListener listener) {
-		eventListeners.remove(listener);
+		
+		for (FilteredEventListener filteredEventListener : eventListeners) {
+			if (filteredEventListener.getListener() == listener) {
+				eventListeners.remove(filteredEventListener);
+			}
+		}
 	}
 	
-	ConcurrentLinkedDeque<EventListener> getEventListeners() {
+	ConcurrentLinkedDeque<FilteredEventListener> getEventListeners() {
 		return eventListeners;
 	}
 
@@ -349,7 +366,7 @@ public class Server {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	private EventStreamSocket openEventStream() {
+	private EventStreamSocket createEventStreamSocket() {
 
 		if (useProxy) {
 			// With the proxy, the status port is the publisher proxy port.
@@ -370,19 +387,20 @@ public class Server {
 	 * 
 	 * @param name
 	 * @param args
+	 * @param linked 
 	 * @param returnResult 
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	private Response startApplication(String name, String[] args) throws ConnectionTimeout {
+	private Response startApplication(String name, String[] args, boolean linked) throws ConnectionTimeout {
 		
 		JSONObject request;
 		
 		if (This.getEndpoint() != null) {
-			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort);
+			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort, linked);
 		}
 		else {
-			request = Messages.createStartRequest(name, args, null, 0, null, 0);
+			request = Messages.createStartRequest(name, args, null, 0, null, 0, false);
 		}
 		
 		JSONObject response = requestSocket.requestJSON(request);
@@ -400,6 +418,7 @@ public class Server {
 	public Instance start(String name, String[] args, int options) {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
+		boolean linked = ((options & Option.UNLINKED) == 0);
 				
 		Instance instance = new Instance(this);
 		
@@ -415,7 +434,7 @@ public class Server {
 				streamSocket = createOutputStreamSocket(name);
 			}
 			
-			Response response = startApplication(name, args);
+			Response response = startApplication(name, args, linked);
 			
 			if (response.getValue() == -1) {
 				instance.setErrorMessage(response.getMessage());
@@ -461,7 +480,7 @@ public class Server {
 	 * @return null, if reply is null, else Response
 	 * @throws ConnectionTimeout 
 	 */
-	Response stopApplicationAsynchronously(int id, boolean immediately) throws ConnectionTimeout {
+	Response stop(int id, boolean immediately) throws ConnectionTimeout {
 
 		JSONObject request;
 		

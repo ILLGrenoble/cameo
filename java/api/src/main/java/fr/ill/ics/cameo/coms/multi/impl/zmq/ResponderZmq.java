@@ -30,8 +30,6 @@ import fr.ill.ics.cameo.messages.Messages;
 
 public class ResponderZmq implements ResponderImpl {
 
-	private int responderPort;
-	
 	private Zmq.Context context;
 	private Zmq.Socket responder;
 	private String cancelEndpoint;
@@ -161,9 +159,6 @@ public class ResponderZmq implements ResponderImpl {
 	
 	public void terminate() {
 		context.destroySocket(responder);
-		
-		// Release the responder port.
-		This.getCom().releasePort(responderPort);
 	}
 	
 	

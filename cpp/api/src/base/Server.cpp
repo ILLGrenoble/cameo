@@ -39,6 +39,14 @@ constexpr int DEFAULT_TIMEOUT = 10000;
 
 const std::string Server::CAMEO_SERVER = "0:0";
 
+EventListener * Server::FilteredEventListener::getListener() const {
+	return m_listener;
+}
+
+bool Server::FilteredEventListener::isFiltered() const {
+	return m_filtered;
+}
+
 void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 
 	initContext();
@@ -57,7 +65,7 @@ void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
 		retrieveServerVersion();
 
 		// Start the event thread.
-		std::unique_ptr<EventStreamSocket> socket = openEventStream();
+		std::unique_ptr<EventStreamSocket> socket = createEventStreamSocket();
 		m_eventThread.reset(new EventThread(this, socket));
 		m_eventThread->start();
 	}
@@ -199,6 +207,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, in
 std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
+	bool linked = ((options & UNLINKED) == 0);
 
 	std::unique_ptr<application::Instance> instance = makeInstance();
 
@@ -214,7 +223,14 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 			streamSocket = createOutputStreamSocket(name);
 		}
 
-		json::Object response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort));
+		json::Object response;
+
+		if (application::This::getId() == -1) {
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, "", 0, "", 0, false));
+		}
+		else {
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort, linked));
+		}
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		if (value == -1) {
@@ -235,7 +251,7 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 	return instance;
 }
 
-Response Server::stopApplicationAsynchronously(int id, bool immediately) const {
+Response Server::stop(int id, bool immediately) const {
 
 	std::string request;
 
@@ -544,7 +560,7 @@ std::set<application::State> Server::getPastStates(int id) const {
 	return result;
 }
 
-std::unique_ptr<EventStreamSocket> Server::openEventStream() {
+std::unique_ptr<EventStreamSocket> Server::createEventStreamSocket() {
 
 	// Init the status port if necessary.
 	if (m_statusPort == 0) {
@@ -657,14 +673,14 @@ json::Object Server::requestJSON(const std::string& requestPart1, const std::str
 	return m_requestSocket->requestJSON(requestPart1, requestPart2, overrideTimeout);
 }
 
-std::vector<EventListener *> Server::getEventListeners() {
+std::vector<Server::FilteredEventListener> Server::getEventListeners() {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
 	return m_eventListeners;
 }
 
-void Server::registerEventListener(EventListener * listener) {
+void Server::registerEventListener(EventListener * listener, bool filtered) {
 	std::unique_lock<std::mutex> lock(m_eventListenersMutex);
-	m_eventListeners.push_back(listener);
+	m_eventListeners.push_back(FilteredEventListener(listener, filtered));
 }
 
 void Server::unregisterEventListener(EventListener * listener) {
@@ -672,7 +688,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 	// Iterate to find the listener.
 	for (auto it = m_eventListeners.begin(); it != m_eventListeners.end(); ++it) {
-		if (*it == listener) {
+		if (it->getListener() == listener) {
 			m_eventListeners.erase(it);
 			break;
 		}
@@ -770,6 +786,10 @@ std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& en
 
 std::unique_ptr<RequestSocket> Server::createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) {
 	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), endpoint, responderIdentity, timeout));
+}
+
+std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
+	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

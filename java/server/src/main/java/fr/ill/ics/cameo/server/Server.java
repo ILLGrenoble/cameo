@@ -84,6 +84,11 @@ public class Server {
 
 	private void startProxies() {
 		
+		// Check proxies.
+		if (!ConfigManager.getInstance().hasProxies()) {
+			return;
+		}
+		
 		// Start the two rep proxy program.
 		Path repProxyPath = Paths.get(proxyPath, CAMEO_REP_PROXY);
 		
@@ -133,18 +138,22 @@ public class Server {
 		
 		// Set the identity.
 		socket.setIdentity(StringId.CAMEO_SERVER);
-		
-		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
-		Endpoint proxyEndpoint = ConfigManager.getInstance().getResponderProxyLocalEndpoint();
 
-		try {
-			socket.connect(proxyEndpoint.toString());
-			
-			Log.logger().info("Connected responder to proxy " + proxyEndpoint);
-		}
-		catch (Exception e) {
-			Log.logger().severe("Cannot connect responder to proxy " + proxyEndpoint + ": " + e.getMessage());
-			System.exit(1);
+		// Check proxies.
+		if (ConfigManager.getInstance().hasProxies()) {
+				
+			// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
+			Endpoint proxyEndpoint = ConfigManager.getInstance().getResponderProxyLocalEndpoint();
+	
+			try {
+				socket.connect(proxyEndpoint.toString());
+				
+				Log.logger().info("Connected responder to proxy " + proxyEndpoint);
+			}
+			catch (Exception e) {
+				Log.logger().severe("Cannot connect responder to proxy " + proxyEndpoint + ": " + e.getMessage());
+				System.exit(1);
+			}
 		}
 		
 		// Bind the socket.
@@ -157,9 +166,6 @@ public class Server {
 			Log.logger().severe("Cannot bind responder to " + ConfigManager.getInstance().getEndpoint() + ": " + e.getMessage());
 			System.exit(1);
 		}
-
-
-
 	}
 
 	public void run() {
@@ -442,7 +448,7 @@ public class Server {
 		// Verify arguments.
 		if (args.length < 1) {
 			showVersion();
-			System.out.printf("Usage: [--log-console] <config file>\n");
+			System.out.printf("Usage: [--log-console] [--proxy-path <path>] <config file>\n");
 			System.exit(1);
 		}
 		

@@ -189,14 +189,36 @@ void Subscriber::terminate() {
 	m_impl.reset();
 }
 
-void Subscriber::tryInit(application::Instance & app) {
+void Subscriber::synchronize(const application::Instance & app) {
 
-	// Memorizes proxy.
+	try {
+		std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+
+		// Send a subscribe request.
+		json::StringObject jsonRequest;
+		jsonRequest.pushKey(message::TYPE);
+		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+
+		requester->send(jsonRequest.toString());
+		std::optional<std::string> response = requester->receive();
+	}
+	catch (const RequesterCreationException& e) {
+		std::cerr << "Error, cannot create requester for subscriber" << std::endl;
+	}
+}
+
+void Subscriber::init(const application::Instance & app, const std::string& publisherName) {
+
+	m_publisherName = publisherName;
+	m_appName = app.getName();
+	m_appId = app.getId();
+	m_appEndpoint = app.getEndpoint();
+	m_key = Publisher::KEY + "-" + publisherName;
 	m_useProxy = app.usesProxy();
 
 	// Get the publisher data.
 	try {
-		std::string jsonString = app.getCom().getKeyValue(m_key);
+		std::string jsonString = app.getCom().getKeyValueGetter(m_key)->get();
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -224,59 +246,6 @@ void Subscriber::tryInit(application::Instance & app) {
 	}
 	catch (...) {
 		throw SubscriberCreationException("Cannot create subscriber");
-	}
-}
-
-void Subscriber::synchronize(application::Instance & app) {
-
-	try {
-		std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
-
-		// Send a subscribe request.
-		json::StringObject jsonRequest;
-		jsonRequest.pushKey(message::TYPE);
-		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
-
-		requester->send(jsonRequest.toString());
-		std::optional<std::string> response = requester->receive();
-	}
-	catch (const RequesterCreationException& e) {
-		std::cerr << "Error, cannot create requester for subscriber" << std::endl;
-	}
-}
-
-void Subscriber::init(application::Instance & app, const std::string& publisherName) {
-
-	m_publisherName = publisherName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
-	m_key = Publisher::KEY + "-" + publisherName;
-
-	try {
-		return tryInit(app);
-	}
-	catch (...) {
-		// The publisher does not exist so we are waiting for it.
-	}
-
-	// Wait for the publisher.
-	KeyValue keyValue(m_key);
-	application::State lastState = app.waitFor(keyValue);
-
-	// The state cannot be terminal or it means that the application has terminated.
-	if (lastState == application::SUCCESS
-		|| lastState == application::STOPPED
-		|| lastState == application::KILLED
-		|| lastState == application::FAILURE) {
-		throw SubscriberCreationException("Cannot create subscriber");
-	}
-
-	try {
-		tryInit(app);
-	}
-	catch (...) {
-		// Should not happen.
 	}
 }
 

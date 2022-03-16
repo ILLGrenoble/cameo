@@ -16,23 +16,15 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
 
-public class TestCheckApp {
+public class Linked {
 
 	public static void main(String[] args) {
 		
 		This.init(args);
-		
-		int numberOfTimes = 1;
-		
-		if (args.length > 1) {
-			numberOfTimes = Integer.parseInt(args[0]);
-		}
 		
 		boolean useProxy = false;
 		String endpoint = "tcp://localhost:11000";
@@ -45,40 +37,18 @@ public class TestCheckApp {
 		
 		Server server = new Server(endpoint, 0, useProxy);
 		
-		try {
-			// loop the number of times.
-			for (int i = 0; i < numberOfTimes; ++i) {
-
-				int N = 100;
-				
-				Instance[] apps = new Instance[N];
-				
-				int counter = 0;
-				boolean[] appFinished = new boolean[N];
-				
-				for (int j = 0; j < N; ++j) {
-					apps[j] = server.start("veryfastjava");
-					appFinished[j] = false;
-				}
+		// Start the application.
+		server.start("stopjava");
 	
-				while (counter < N) {
+		This.setRunning();
 
-					for (int j = 0; j < N; ++j) {
-						if (!appFinished[j] && apps[j].getLastState() == Application.State.SUCCESS) {
-							counter++;
-							appFinished[j] = true;
-							System.out.println("App " + j + " finished");
-						}
-					}
-				}
-
-				System.out.println("Finished loop\n");
+		// Loop, the app will be killed.
+		while (true) {
+			try {
+				Thread.sleep(100);
 			}
-		}
-		finally {
-			// Do not forget to terminate the server and application.
-			server.terminate();
-			This.terminate();
+			catch (InterruptedException e) {
+			}
 		}
 	}
 

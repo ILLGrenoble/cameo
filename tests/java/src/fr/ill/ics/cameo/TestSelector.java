@@ -3,8 +3,6 @@ package fr.ill.ics.cameo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
@@ -112,11 +110,13 @@ public class TestSelector {
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
 		apps.add("testmultiresponderjava");
+		apps.add("testmultirespondersjava");
 		apps.add("testpublisherjava");
 		apps.add("testsubscriberjava");
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");
 		apps.add("testcheckappjava");
+		apps.add("testlinkedjava");
 		
 		return apps;
 	}
@@ -134,11 +134,13 @@ public class TestSelector {
 		apps.add("testbasicrespondercpp");
 		apps.add("testbasicrequestercpp");
 		apps.add("testmultirespondercpp");
+		apps.add("testmultiresponderscpp");		
 		apps.add("testpublishercpp");
 		apps.add("testsubscribercpp");
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");
 		apps.add("testcheckappcpp");
+		apps.add("testlinkedcpp");
 		
 		return apps;
 	}
@@ -153,8 +155,10 @@ public class TestSelector {
 		apps.add("testerrorpy");
 		apps.add("testpublisherpy");
 		apps.add("testsubscriberpy");
-		apps.add("testresponderpy");
-		apps.add("testrequesterpy");
+		apps.add("testbasicresponderpy");
+		apps.add("testbasicrequesterpy");
+		apps.add("testmultiresponderpy");
+		apps.add("testmultiresponderspy");
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
 		apps.add("testterminatepy");

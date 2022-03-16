@@ -175,6 +175,8 @@ public abstract class ConfigLoader {
 				ConfigManager.getInstance().setResponderProxyPort(proxyPorts[0].strip());
 				ConfigManager.getInstance().setPublisherProxyPort(proxyPorts[1].strip());
 				ConfigManager.getInstance().setSubscriberProxyPort(proxyPorts[2].strip());
+				
+				ConfigManager.getInstance().setProxies(true);
 			}
 		}
 		

@@ -49,14 +49,18 @@ void Requester::terminate() {
 	m_impl.reset();
 }
 
-void Requester::tryInit(application::Instance & app) {
+void Requester::init(const application::Instance & app, const std::string &responderName) {
 
-	// Memorizes proxy.
+	m_responderName = responderName;
+	m_appName = app.getName();
+	m_appId = app.getId();
+	m_appEndpoint = app.getEndpoint();
+	m_key = basic::Responder::KEY + "-" + responderName;
 	m_useProxy = app.usesProxy();
 
 	// Get the responder data.
 	try {
-		std::string jsonString = app.getCom().getKeyValue(m_key);
+		std::string jsonString = app.getCom().getKeyValueGetter(m_key)->get();
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -80,42 +84,7 @@ void Requester::tryInit(application::Instance & app) {
 	}
 }
 
-void Requester::init(application::Instance & app, const std::string &responderName) {
-
-	m_responderName = responderName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
-	m_key = basic::Responder::KEY + "-" + responderName;
-
-	try {
-		return tryInit(app);
-	}
-	catch (...) {
-		// The responder does not exist so we are waiting for it.
-	}
-
-	// Wait for the responder.
-	KeyValue keyValue(m_key);
-	application::State lastState = app.waitFor(keyValue);
-
-	// The state cannot be terminal or it means that the application has terminated.
-	if (lastState == application::SUCCESS
-		|| lastState == application::STOPPED
-		|| lastState == application::KILLED
-		|| lastState == application::FAILURE) {
-		throw RequesterCreationException("Cannot create requester");
-	}
-
-	try {
-		tryInit(app);
-	}
-	catch (...) {
-		// Should not happen.
-	}
-}
-
-std::unique_ptr<Requester> Requester::create(application::Instance & app, const std::string& responderName) {
+std::unique_ptr<Requester> Requester::create(const application::Instance & app, const std::string& responderName) {
 
 	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester());
 	requester->init(app, responderName);

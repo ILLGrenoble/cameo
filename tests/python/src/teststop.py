@@ -19,7 +19,7 @@ for i in range(numberOfTimes):
     # Start the cpp app because handlers not supported in Python.
     app = server.start("stoppy");
   
-    print("Waiting 100ms...")
+    print("Waiting...")
     time.sleep(0.1)
     print("Stopping application", app.getNameId())
     app.stop()

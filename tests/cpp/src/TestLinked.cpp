@@ -22,17 +22,13 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
+	application::This::init(argc, argv);
+
 	int numberOfTimes = 1;
 
 	if (argc > 2) {
 		numberOfTimes = stoi(argv[1]);
 	}
-
-	application::This::init(argc, argv);
-
-	application::This::handleStop([&] {
-		cout << "Stop handler executed" << endl;
-	});
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -48,12 +44,34 @@ int main(int argc, char *argv[]) {
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		// Start the application.
-		unique_ptr<application::Instance> app = server.start("simplecpp");
+		{
+			unique_ptr<application::Instance> app = server.start("linkedcpp");
+			application::State state = app->waitFor(application::RUNNING);
+			unique_ptr<application::Instance> stopApp = server.connect("stopcpp");
+			state = stopApp->waitFor(application::RUNNING);
 
-		application::State state = app->waitFor();
+			app->kill();
+			app->waitFor();
 
-		cout << "Finished the application " << *app << " with state " << application::toString(state) << " and code " << app->getExitCode() << endl;
+			// The stop app must be killed automatically.
+			state = stopApp->waitFor();
+
+			cout << "First application stop finished with state " << application::toString(state) << endl;
+		}
+
+		{
+			unique_ptr<application::Instance> app = server.start("linkedcpp");
+			application::State state = app->waitFor(application::RUNNING);
+			unique_ptr<application::Instance> stopApp = server.connect("stopcpp");
+
+			app->kill();
+			app->waitFor();
+
+			// The stop app must be killed automatically.
+			state = stopApp->waitFor();
+
+			cout << "Second application stop finished with state " << application::toString(state) << endl;
+		}
 	}
 
 	return 0;

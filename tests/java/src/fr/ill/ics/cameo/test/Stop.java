@@ -29,15 +29,17 @@ public class Stop {
 	public static void main(String[] args) {
 
 		This.init(args);
+
+		This.handleStop(() -> {
+			System.out.println("Stop handler executed");
+			stopping.set(true);
+		});
+		
+		This.setRunning();
 		
 		try {
 			Date begin = new Date();
-			
-			This.handleStop(() -> {
-				System.out.println("Stop handler executed");
-				stopping.set(true);
-			});
-			
+
 			int i = 0;
 			while (!stopping.get()) {
 				System.out.println("Waiting " + i + "...");

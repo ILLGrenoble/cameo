@@ -21,4 +21,5 @@ public class Option {
 	
 	public final static int NONE = 0;
 	public final static int OUTPUTSTREAM = 1;
+	public final static int UNLINKED = 2;
 }

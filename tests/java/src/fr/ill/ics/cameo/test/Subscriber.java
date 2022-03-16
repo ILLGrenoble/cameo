@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.SubscriberCreationException;
 
 
 public class Subscriber {
@@ -63,6 +64,8 @@ public class Subscriber {
 			
 			System.out.println("Finished stream");
 			
+		} catch (SubscriberCreationException e) {
+			System.out.println("Cannot create subscriber");
 		} finally {
 			This.terminate();
 		}

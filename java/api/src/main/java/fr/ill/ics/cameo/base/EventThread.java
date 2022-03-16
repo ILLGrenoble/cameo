@@ -43,19 +43,19 @@ class EventThread extends Thread {
 				}
 				
 				// Forward the event to the listeners.
-				ConcurrentLinkedDeque<EventListener> eventListeners = server.getEventListeners();
-				for (EventListener listener : eventListeners) {
+				ConcurrentLinkedDeque<FilteredEventListener> eventListeners = server.getEventListeners();
+				for (FilteredEventListener listener : eventListeners) {
 					
 					// If the application name is null, all the status are pushed, otherwise, filter on the name.
 					// We filter on the name because the id is not known at the registration.
-					if (listener.getName() == null
-						|| listener.getName().equals(event.getName())) {
-						listener.pushEvent(event);
+					if (!listener.isFiltered()
+						|| listener.getListener().getName().equals(event.getName())) {
+						listener.getListener().pushEvent(event);
 					}
 				}
 			}
-			
-		} finally {
+		}
+		finally {
 			socket.terminate();
 		}
 	}

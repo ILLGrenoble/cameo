@@ -22,7 +22,7 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestVeryFast"/>
 		</application>
 		
-		<application name="stopjava" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+		<application name="stopjava" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
 		</application>
 		
@@ -125,6 +125,22 @@
 		<application name="testmultiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
 		</application>
+		
+		<application name="multirespondersjava" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponders"/>
+		</application>
+
+		<application name="testmultirespondersjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponders multirespondersjava"/>
+		</application>
+		
+		<application name="linkedjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Linked"/>
+		</application>
+		
+		<application name="testlinkedjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestLinked"/>
+		</application>
 	
 
 		<!-- C++ apps -->
@@ -145,7 +161,7 @@
 			<start executable="testveryfast"/>
 		</application>
 		
-		<application name="stopcpp" starting_time="0" stopping_time="2" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+		<application name="stopcpp" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="stop"/>
 		</application>
 		
@@ -249,6 +265,22 @@
 			<start executable="testmultiresponder" args="multirespondercpp"/>
 		</application>
 		
+		<application name="multiresponderscpp" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="multiresponders"/>
+		</application>
+
+		<application name="testmultiresponderscpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testmultiresponders" args="multiresponderscpp"/>
+		</application>
+				
+		<application name="linkedcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="linked"/>
+		</application>
+		
+		<application name="testlinkedcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testlinked"/>
+		</application>
+		
 		
 		
 		<!-- Python apps -->
@@ -269,11 +301,11 @@
 			<start executable="python3" args="-u tests/python/src/testveryfast.py"/>
 		</application>
 		
-		<application name="stoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="stoppy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/stop.py"/>
 		</application>
 		
-		<application name="teststoppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="teststoppy" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/teststop.py"/>
 		</application>
 		
@@ -309,20 +341,20 @@
 			<start executable="python3" args="-u tests/python/src/testsubscriber.py subscriberpy"/>
 		</application>
 
-		<application name="responderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="python3" args="-u tests/python/src/responder.py"/>
+		<application name="basicresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/basicresponder.py"/>
 		</application>
 		
-		<application name="testresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="python3" args="-u tests/python/src/testresponder.py responderpy"/>
+		<application name="testbasicresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testbasicresponder.py basicresponderpy"/>
 		</application>
 
-		<application name="requesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="python3" args="-u tests/python/src/requester.py"/>
+		<application name="basicrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/basicrequester.py"/>
 		</application>
 		
-		<application name="testrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="python3" args="-u tests/python/src/testrequester.py requesterpy"/>
+		<application name="testbasicrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testbasicrequester.py basicrequesterpy"/>
 		</application>
 		
 		<application name="publisherlooppy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
@@ -344,6 +376,23 @@
 		<application name="testterminatepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/testterminate.py"/>
 		</application>
+		
+		<application name="multiresponderpy" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/multiresponder.py"/>	
+		</application>
+		
+		<application name="testmultiresponderpy" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testmultiresponder.py multiresponderpy"/>	
+		</application>
+		
+		<application name="multiresponderspy" starting_time="0" stopping_time="2" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/multiresponders.py"/>	
+		</application>
+
+		<application name="testmultiresponderspy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testmultiresponders.py multiresponderspy"/>			
+		</application>
+		
 				
 	</applications>
 	

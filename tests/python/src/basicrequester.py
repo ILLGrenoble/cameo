@@ -5,7 +5,9 @@ import cameopy
 this = cameopy.This
 this.init(sys.argv)
 
-starter = this.connectToStarter()
+useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
+
+starter = this.connectToStarter(0, useProxy)
 
 app = starter.getInstance()
 

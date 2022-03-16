@@ -19,14 +19,25 @@ package fr.ill.ics.cameo.test;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.ResponderCreationException;
-import fr.ill.ics.cameo.messages.Messages;
 
 
-public class MultiResponder {
+public class MultiResponders {
 
 	public static void main(String[] args) {
 
 		This.init(args);
+		
+		This.handleStop(() -> {
+			This.cancelWaitings();
+			
+			System.out.println("Stopped");
+		});
+		
+		int numberOfTimes = 1;
+		
+		if (args.length > 1) {
+			numberOfTimes = Integer.parseInt(args[0]);
+		}
 		
 		try {
 			System.out.println("Creating router");
@@ -39,47 +50,56 @@ public class MultiResponder {
 			// Set the state.
 			This.setRunning();
 			
-			Thread thread = new Thread(new Runnable() {
-				public void run() {
-
-					// Create the responder.
-					fr.ill.ics.cameo.coms.multi.Responder responder = null;
-					
-					try {
-						System.out.println("Creating responder");
-						
-						responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
-						
-						System.out.println("Created responder");
-					}
-					catch (ResponderCreationException e) {
-					}
-					
-					fr.ill.ics.cameo.coms.multi.Request request = responder.receive();
-					System.out.println("Received request " + request.get());
-
-					// Reply.
-					request.reply("1st response");
-					
-					request = responder.receive();
-					byte[][] data = request.getTwoBinaryParts();
-					System.out.println("Received request " + Messages.parseString(data[0]) + " " + Messages.parseString(data[1]));
-
-					// Reply.
-					request.reply("2nd response");
-
-					router.cancel();
-					
-					responder.terminate();
-				}
-			});
+			int N = 5;
 			
-			thread.start();
+			Thread[] threads = new Thread[N];
+			
+			for (int t = 0; t < N; ++t) {
+	
+				final int ft = t;
+				final int fn = numberOfTimes;
+				
+				threads[ft] = new Thread(new Runnable() {
+					public void run() {
+	
+						// Create the responder.
+						fr.ill.ics.cameo.coms.multi.Responder responder = null;
+						
+						try {
+							System.out.println("Creating responder");
+							
+							responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+							
+							System.out.println("Created responder");
+						}
+						catch (ResponderCreationException e) {
+						}
+	
+						for (int i = 0; i < fn; ++i) {
+						
+							fr.ill.ics.cameo.coms.multi.Request request = responder.receive();
+							System.out.println("Received request " + request.get());
+							
+							request.reply(ft + " to " + request.get());
+						}
+						
+						responder.terminate();
+					}
+				});
+				
+				threads[t].start();
+			}
+			
+			System.out.println("Router runs");
 			
 			router.run();
 			
+			System.out.println("Router stopped");
+			
 			try {
-				thread.join();
+				for (int t = 0; t < N; ++t) {
+					threads[t].join();
+				}
 			}
 			catch (InterruptedException e) {
 			}

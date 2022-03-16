@@ -56,8 +56,11 @@ int main(int argc, char *argv[]) {
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
+		// Args.
+		vector<string> args{(useProxy ? "true" : "false")};
+
 		// Start the application.
-		unique_ptr<application::Instance> responderApplication = server.start(applicationName);
+		unique_ptr<application::Instance> responderApplication = server.start(applicationName, args);
 
 		cout << "Started application " << *responderApplication << " with state " << application::toString(responderApplication->now()) << endl;
 

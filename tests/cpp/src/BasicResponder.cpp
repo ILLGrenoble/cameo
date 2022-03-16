@@ -25,6 +25,11 @@ int main(int argc, char *argv[]) {
 
 	application::This::init(argc, argv);
 
+	bool useProxy = false;
+	if (argc > 2) {
+		useProxy = (string(argv[1]) == "true");
+	}
+
 	unique_ptr<coms::basic::Responder> responder;
 
 	try {
@@ -77,7 +82,7 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	application::ServerAndInstance requester = request->connectToRequester(0, true);
+	application::ServerAndInstance requester = request->connectToRequester(0, useProxy);
 	cout << "Requester " << *requester.instance << endl;
 
 	cout << "Finished the application" << endl;

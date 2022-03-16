@@ -48,18 +48,18 @@ void EventThread::start() {
 
 			// Forward the event to the listeners.
 			auto eventListeners = m_server->getEventListeners();
-			for (EventListener * listener : eventListeners) {
+			for (auto listener : eventListeners) {
 
 				// If the application name is null, all the status are pushed, otherwise, filter on the name.
 				// We filter on the name because the id is not known at the registration.
-				if (listener->getName() == ""
-					|| listener->getName() == event->getName()) {
+				if (!listener.isFiltered()
+					|| listener.getListener()->getName() == event->getName()) {
 
 					// Clone the event is necessary because the event is passed to different listeners working in different threads.
 					std::unique_ptr<Event> clonedEvent(event->clone());
 
 					// Push the cloned event.
-					listener->pushEvent(clonedEvent);
+					listener.getListener()->pushEvent(clonedEvent);
 				}
 			}
 		}

@@ -28,6 +28,11 @@ public class BasicResponder {
 
 		This.init(args);
 		
+		boolean useProxy = false;
+		if (args.length > 1) {
+			useProxy = Boolean.parseBoolean(args[0]);
+		}
+		
 		try {
 			System.out.println("Creating responder");
 			
@@ -86,7 +91,7 @@ public class BasicResponder {
 			request.reply("5th response");
 			
 			// Test connection.
-			ServerAndInstance requester = request.connectToRequester(0, true);
+			ServerAndInstance requester = request.connectToRequester(0, useProxy);
 			System.out.println("Requester is " + requester.getInstance());
 			
 			requester.terminate();

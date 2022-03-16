@@ -36,10 +36,12 @@ public class Instance extends EventListener {
 		
 		private Server server;
 		private int applicationId;
+		private String name;
 		
-		Com(Server server, int applicationId) {
+		Com(Server server, int applicationId, String name) {
 			this.server = server;
 			this.applicationId = applicationId;
+			this.name = name;
 		}
 
 		public int getResponderProxyPort() {
@@ -56,6 +58,92 @@ public class Instance extends EventListener {
 		
 		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
 			return server.getKeyValue(applicationId, key);
+		}
+		
+		public static class KeyValueGetter extends EventListener {
+
+			private Server server;
+			private int id;
+			private String key;
+			private KeyValueGetterWaiting waiting = new KeyValueGetterWaiting(this);
+
+			KeyValueGetter(Server server, String name, int id, String key) {
+				this.server = server;
+				this.id = id;
+				this.setName(name);
+				this.key = key;
+				
+				server.registerEventListener(this);
+			}
+			
+			public String get() throws KeyValueGetterException {
+				
+				// Register the waiting.
+				waiting.add();
+				
+				try {
+					try {
+						return server.getKeyValue(id, key);
+					}
+					catch (Exception e) {
+						// Key is not found, waiting for the event.
+					}
+				
+					while (true) {
+						// Wait for a new incoming status.
+						Event event = popEvent();
+						
+						if (event.getId() == id) {
+						
+							if (event instanceof StatusEvent) {
+							
+								StatusEvent status = (StatusEvent)event;
+								int state = status.getState();
+								
+								// Test the terminal state.
+								if (state == Application.State.SUCCESS 
+									|| state == Application.State.STOPPED
+									|| state == Application.State.KILLED					
+									|| state == Application.State.ERROR) {
+									throw new KeyValueGetterException("Application terminated");
+								}
+								
+							}
+							else if (event instanceof KeyEvent) {
+								
+								KeyEvent keyEvent = (KeyEvent)event;
+			
+								// Check if it is the event that is waited for.
+								if (keyEvent.getKey().equals(key)) {
+									
+									// Set the status and value.
+									if (keyEvent.getStatus() == KeyEvent.Status.STORED) {
+										return keyEvent.getValue();
+									}
+									throw new KeyValueGetterException("Key removed");
+								}
+								
+							}
+							else if (event instanceof CancelEvent) {
+								throw new KeyValueGetterException("Get canceled");
+							}
+						}	
+					}
+				}
+				finally {
+					// Unregister the waiting.
+					waiting.remove();
+					server.unregisterEventListener(this);
+				}
+			}
+			
+			public void cancel() {
+				this.cancel(id);
+			}
+		}
+		
+		public KeyValueGetter getKeyValueGetter(String key) {
+			return new KeyValueGetter(server, name, applicationId, key);
 		}
 		
 		/**
@@ -91,7 +179,7 @@ public class Instance extends EventListener {
 	
 	public Com getCom() {
 		if (com == null) {
-			com = new Com(server, id);
+			com = new Com(server, id, getName());
 		}
 		return com;
 	}
@@ -181,7 +269,7 @@ public class Instance extends EventListener {
 	 */
 	public boolean stop() {
 		try {
-			Response response = server.stopApplicationAsynchronously(id, false);
+			Response response = server.stop(id, false);
 			
 		} catch (ConnectionTimeout e) {
 			errorMessage = e.getMessage();
@@ -199,7 +287,7 @@ public class Instance extends EventListener {
 	 */
 	public boolean kill() {
 		try {
-			Response response = server.stopApplicationAsynchronously(id, true);
+			Response response = server.stop(id, true);
 			
 		} catch (ConnectionTimeout e) {
 			errorMessage = e.getMessage();

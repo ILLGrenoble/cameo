@@ -86,18 +86,22 @@ public class Manager extends ConfigLoader {
 	}
 
 	private synchronized int initPublisher(Zmq.Socket socket, String applicationName) {
+	
+		// Check proxies.
+		if (ConfigManager.getInstance().hasProxies()) {
 		
-		// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
-		Endpoint proxyEndpoint = ConfigManager.getInstance().getSubscriberProxyLocalEndpoint();
-
-		try {
-			socket.connect(proxyEndpoint.toString());
-			
-			Log.logger().info("Connected publisher " + applicationName + " to proxy " + proxyEndpoint);
-		}
-		catch (Exception e) {
-			Log.logger().severe("Cannot connect to publisher proxy " + proxyEndpoint + ": " + e.getMessage());
-			System.exit(1);
+			// Connect the socket to the proxy local endpoint as the proxy and this server run on the same host.
+			Endpoint proxyEndpoint = ConfigManager.getInstance().getSubscriberProxyLocalEndpoint();
+	
+			try {
+				socket.connect(proxyEndpoint.toString());
+				
+				Log.logger().info("Connected publisher " + applicationName + " to proxy " + proxyEndpoint);
+			}
+			catch (Exception e) {
+				Log.logger().severe("Cannot connect to publisher proxy " + proxyEndpoint + ": " + e.getMessage());
+				System.exit(1);
+			}
 		}
 		
 		// Loop until the socket is bound.
@@ -266,6 +270,7 @@ public class Manager extends ConfigLoader {
 	 * @param commandArray
 	 * @param args
 	 * @param starterProxyPort 
+	 * @param starterLinked 
 	 * @param serverEndpoint 
 	 * @param result 
 	 * @return
@@ -273,7 +278,7 @@ public class Manager extends ConfigLoader {
 	 * @throws MaxNumberOfApplicationsReached
 	 * @throws ApplicationAlreadyExecuting
 	 */
-	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
@@ -285,8 +290,7 @@ public class Manager extends ConfigLoader {
 		int id = findId();
 		
 		// Create the application. The proxy host endpoint is passed.
-		//Application application = new RegisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, config, args, starter);
-		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter, starterProxyPort);
+		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter, starterProxyPort, starterLinked);
 		applicationMap.put(id, application);
 		
 		// Threads.

@@ -22,7 +22,7 @@ import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
 
-public class TestCheckApp {
+public class TestLinked {
 
 	public static void main(String[] args) {
 		
@@ -45,41 +45,39 @@ public class TestCheckApp {
 		
 		Server server = new Server(endpoint, 0, useProxy);
 		
-		try {
-			// loop the number of times.
-			for (int i = 0; i < numberOfTimes; ++i) {
-
-				int N = 100;
+		// Loop the number of times.
+		for (int i = 0; i < numberOfTimes; ++i) {
+			
+			{
+				Instance app = server.start("linkedjava");
+				app.waitFor(Application.State.RUNNING);
+				Instance stopApp = server.connect("stopjava");
+				stopApp.waitFor(Application.State.RUNNING);
 				
-				Instance[] apps = new Instance[N];
+				app.kill();
+				app.waitFor();
 				
-				int counter = 0;
-				boolean[] appFinished = new boolean[N];
+				int state = stopApp.waitFor();
 				
-				for (int j = 0; j < N; ++j) {
-					apps[j] = server.start("veryfastjava");
-					appFinished[j] = false;
-				}
-	
-				while (counter < N) {
-
-					for (int j = 0; j < N; ++j) {
-						if (!appFinished[j] && apps[j].getLastState() == Application.State.SUCCESS) {
-							counter++;
-							appFinished[j] = true;
-							System.out.println("App " + j + " finished");
-						}
-					}
-				}
-
-				System.out.println("Finished loop\n");
+				System.out.println("First application stop finished with state " + Application.State.toString(state));
+			}
+			
+			{
+				Instance app = server.start("linkedjava");
+				app.waitFor(Application.State.RUNNING);
+				Instance stopApp = server.connect("stopjava");
+				
+				app.kill();
+				app.waitFor();
+				
+				int state = stopApp.waitFor();
+				
+				System.out.println("Second application stop finished with state " + Application.State.toString(state));
 			}
 		}
-		finally {
-			// Do not forget to terminate the server and application.
-			server.terminate();
-			This.terminate();
-		}
+		
+		server.terminate();
+		This.terminate();
 	}
 
 }

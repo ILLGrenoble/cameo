@@ -29,7 +29,7 @@ thisApp = server.connect(cameopy.This.getName())
 
 print("Creating basic responder and requester")
     
-responder = cameopy.Responder.create("responder")
+responder = cameopy.BasicResponder.create("responder")
 
 # Start reponder thread.
 tr = threading.Thread(target=loopResponder, args=(responder,))

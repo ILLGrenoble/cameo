@@ -48,12 +48,17 @@ namespace cameo {
  */
 const int OUTPUTSTREAM = 1;
 
+/**
+ * Option unlinked.
+ */
+const int UNLINKED = 2;
+
 class Server;
 class EventStreamSocket;
 class OutputStreamSocket;
 class Waiting;
 class WaitingSet;
-class HandlerImpl;
+class StopHandler;
 class RequestSocket;
 
 namespace application {
@@ -178,6 +183,8 @@ public:
 	static ServerAndInstance connectToStarter(int options = 0, bool useProxy = false);
 
 private:
+	void terminateImpl();
+
 	void initApplication(int argc, char* argv[]);
 	void initApplication(const std::string& name, const std::string& endpoint);
 	void initApplication();
@@ -188,10 +195,11 @@ private:
 	int initUnregisteredApplication();
 	void terminateUnregisteredApplication();
 
-	State waitForStop();
-
-	void stoppingFunction(StopFunctionType stop);
-	void handleStopImpl(StopFunctionType function, int stoppingTime);
+	void initStopCheck(StopFunctionType function, int stoppingTime);
+	void stop();
+	void checkStates();
+	void initStarterCheck();
+	void startCheckStatesThread();
 
 	std::string m_name;
 	int m_id;
@@ -202,12 +210,16 @@ private:
 	std::string m_starterName;
 	int m_starterId;
 	int m_starterProxyPort;
+	bool m_starterLinked;
 
 	std::unique_ptr<Server> m_server;
 	std::unique_ptr<Com> m_com;
 
 	std::unique_ptr<WaitingSet> m_waitingSet;
-	std::unique_ptr<HandlerImpl> m_stopHandler;
+
+	StopFunctionType m_stopFunction;
+	std::unique_ptr<Server> m_starterServer;
+	std::unique_ptr<std::thread> m_checkStatesThread;
 
 	bool m_inited;
 
@@ -233,11 +245,38 @@ public:
 
 		std::string getKeyValue(const std::string& key) const;
 
+		class KeyValueGetterException : public RemoteException {
+
+		public:
+			KeyValueGetterException(const std::string& message);
+		};
+
+		class KeyValueGetter : private EventListener {
+
+			friend class Com;
+
+		public:
+			virtual ~KeyValueGetter();
+
+			std::string get();
+			void cancel();
+
+		private:
+			KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key);
+
+			Server* m_server;
+			int m_id;
+			std::string m_key;
+		};
+
+		std::unique_ptr<KeyValueGetter> getKeyValueGetter(const std::string& key) const;
+
 	private:
 		Com(Server* server);
 
 		Server* m_server;
 		int m_applicationId;
+		std::string m_name;
 	};
 
 	~Instance();

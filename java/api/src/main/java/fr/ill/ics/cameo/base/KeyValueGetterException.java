@@ -1,3 +1,4 @@
+package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,17 +15,13 @@
  * limitations under the Licence.
  */
 
-#include "HandlerImpl.h"
 
-using namespace std;
 
-namespace cameo {
+public class KeyValueGetterException extends RemoteException {
 
-HandlerImpl::HandlerImpl(FunctionType function) : m_thread(new thread(function)) {
-}
+	private static final long serialVersionUID = 8288957337240690562L;
 
-HandlerImpl::~HandlerImpl() {
-	m_thread->join();
-}
-
+	public KeyValueGetterException(String message) {
+		super(message);
+	}
 }

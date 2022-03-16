@@ -14,27 +14,25 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_HANDLERIMPL_H_
-#define CAMEO_HANDLERIMPL_H_
+package fr.ill.ics.cameo.base;
 
-#include <thread>
-#include <functional>
-#include <memory>
+import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
 
-namespace cameo {
+public class KeyValueGetterWaiting extends Waiting {
 
-class HandlerImpl {
+	private KeyValueGetter getter;
+	
+	public KeyValueGetterWaiting(KeyValueGetter getter) {
+		this.getter = getter;
+	}
+	
+	@Override
+	public void cancel() {
+		getter.cancel();
+	}
 
-public:
-	typedef std::function<void ()> FunctionType;
-
-	HandlerImpl(FunctionType function);
-	~HandlerImpl();
-
-private:
-	std::unique_ptr<std::thread> m_thread;
-};
-
+	@Override
+	public void terminate() {
+	}
+	
 }
-
-#endif

@@ -40,7 +40,7 @@ public:
 	 * Returns the responder with name.
 	 * throws RequesterCreationException.
 	 */
-	static std::unique_ptr<Requester> create(application::Instance &app, const std::string &name);
+	static std::unique_ptr<Requester> create(const application::Instance &app, const std::string &name);
 
 	void setPollingTime(int value);
 	void setTimeout(int value);
@@ -71,8 +71,7 @@ public:
 
 private:
 	Requester();
-	void init(application::Instance & app, const std::string & responderName);
-	void tryInit(application::Instance & app);
+	void init(const application::Instance & app, const std::string & responderName);
 
 	bool m_useProxy;
 	std::string m_responderName;

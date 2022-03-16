@@ -22,7 +22,6 @@
 #include "StarterServerException.h"
 #include "StatusEvent.h"
 #include "EventStreamSocket.h"
-#include "impl/HandlerImpl.h"
 #include "impl/StreamSocketImpl.h"
 #include "Strings.h"
 #include "JSON.h"
@@ -155,28 +154,42 @@ void This::init(const std::string& name, const std::string& endpoint) {
 }
 
 void This::terminate() {
+	m_instance.terminateImpl();
+}
+
+void This::terminateImpl() {
 
 	// Test if termination is already done.
-	if (!m_instance.m_inited) {
+	if (!m_inited) {
 		return;
 	}
 
 	// Terminate the unregistered application.
-	if (!m_instance.m_registered) {
-		m_instance.terminateUnregisteredApplication();
+	if (!m_registered) {
+		terminateUnregisteredApplication();
+	}
+
+	// Join the check states thread if it was started.
+	if (m_checkStatesThread) {
+
+		// Cancel the listener if it is necessary.
+		EventListener::cancel(m_id);
+
+		// Join the thread.
+		m_checkStatesThread->join();
 	}
 
 	// Inited.
-	m_instance.m_inited = false;
+	m_inited = false;
 }
 
 
 This::This() :
-	//Services(),
 	m_id(-1),
 	m_registered(false),
 	m_starterId(0),
 	m_starterProxyPort(0),
+	m_starterLinked(false),
 	m_inited(false) {
 }
 
@@ -210,6 +223,7 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterName = starterValue[message::ApplicationIdentity::NAME].GetString();
 		m_starterId = starterValue[message::ApplicationIdentity::ID].GetInt();
 		m_starterProxyPort = infoObject[message::ApplicationIdentity::STARTER_PROXY_PORT].GetInt();
+		m_starterLinked = infoObject[message::ApplicationIdentity::STARTER_LINKED].GetBool();
 	}
 
 	// Init the app.
@@ -248,8 +262,13 @@ void This::initApplication() {
 	m_waitingSet = std::make_unique<WaitingSet>();
 
 	// Init listener.
-	setName(m_name);
+	EventListener::setName(m_name);
 	m_server->registerEventListener(this);
+
+	// Init the check of the starter if it is linked.
+	if (m_starterLinked) {
+		initStarterCheck();
+	}
 
 	// Init com.
 	m_com = std::unique_ptr<Com>(new Com(m_server.get(), m_id));
@@ -259,12 +278,7 @@ void This::initApplication() {
 }
 
 This::~This() {
-	// Do not delete the impl here because there will be order trouble.
-
-	// Terminate the unregistered application.
-	if (m_inited && !m_registered) {
-		terminateUnregisteredApplication();
-	}
+	terminate();
 }
 
 const std::string& This::getName() {
@@ -310,7 +324,7 @@ bool This::isStopping() {
 }
 
 void This::handleStop(StopFunctionType function, int stoppingTime) {
-	m_instance.handleStopImpl(function, stoppingTime);
+	m_instance.initStopCheck(function, stoppingTime);
 }
 
 void This::cancelWaitings() {
@@ -353,38 +367,6 @@ State This::getState(int id) const {
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-State This::waitForStop() {
-
-	// The function is executed in a thread in parallel.
-	// Do not parallelize the calls to the request socket.
-	State state = UNKNOWN;
-
-	while (true) {
-		// waits for a new incoming status
-		std::unique_ptr<Event> event = popEvent();
-
-		// The socket is canceled.
-		if (event.get() == nullptr) {
-			return UNKNOWN;
-		}
-
-		if (event->getId() == m_id) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
-
-			if (status != nullptr) {
-				state = status->getState();
-
-				if (state == STOPPING
-					|| state == KILLING) {
-					return state;
-				}
-			}
-		}
-	}
-
-	return UNKNOWN;
-}
-
 ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 
 	ServerAndInstance result;
@@ -415,23 +397,108 @@ ServerAndInstance This::connectToStarter(int options, bool useProxy) {
 	return result;
 }
 
-void This::stoppingFunction(StopFunctionType stop) {
+void This::stop() {
 
-	application::State state = waitForStop();
+	// Use a request socket to avoid any race condition.
+	std::unique_ptr<RequestSocket> requestSocket = m_server->createServerRequestSocket();
 
-	// Only stop in case of STOPPING.
-	if (state == application::STOPPING) {
-		stop();
+	std::string request = createStopRequest(m_id);
+	requestSocket->requestJSON(request);
+}
+
+void This::startCheckStatesThread() {
+
+	if (!m_checkStatesThread) {
+		m_checkStatesThread = std::make_unique<std::thread>(std::bind(&This::checkStates, this));
 	}
 }
 
-void This::handleStopImpl(StopFunctionType function, int stoppingTime) {
+void This::initStopCheck(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
 	m_server->requestJSON(createSetStopHandlerRequest(m_id, stoppingTime));
 
-	// Create the handler.
-	m_stopHandler = std::make_unique<HandlerImpl>(bind(&This::stoppingFunction, this, function));
+	// Memorize the stop function.
+	m_stopFunction = function;
+
+	// Start the check states thread.
+	startCheckStatesThread();
+}
+
+void This::initStarterCheck() {
+
+	// Create the starter server.
+	// If the starter has a running proxy, then use the proxy: it is reasonable.
+	if (m_starterProxyPort != 0) {
+		m_starterServer = std::make_unique<Server>(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
+	}
+	else {
+		m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
+	}
+
+	// Register this as event listener.
+	m_starterServer->registerEventListener(this, false);
+
+	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
+	State state = m_starterServer->getActualState(m_starterId);
+
+	// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
+	if (state == UNKNOWN) {
+		stop();
+	}
+	else {
+		startCheckStatesThread();
+	}
+}
+
+void This::checkStates() {
+
+	// The function is executed in a thread in parallel.
+	// Do not parallelize the calls to the request socket.
+	while (true) {
+		// Wait for a new incoming status.
+		std::unique_ptr<Event> event = EventListener::popEvent();
+
+		// Test if the socket is canceled.
+		if (event.get() == nullptr || dynamic_cast<CancelEvent *>(event.get()) != nullptr) {
+			break;
+		}
+
+		// Filter events coming from this.
+		if (event->getId() == m_id) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Call the stop function if stop has been requested.
+				if (state == STOPPING) {
+
+					if (m_stopFunction) {
+						m_stopFunction();
+					}
+					break;
+				}
+			}
+		}
+
+		// Filter events coming from starter.
+		if (event->getId() == m_starterId) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Stop this application if it was linked.
+				if (state == STOPPED || state == KILLED || state == SUCCESS || state == FAILURE) {
+					stop();
+				}
+			}
+		}
+	}
+
+	// Reset the stop function here because in case of Python callback, it is necessary to do it here rather than in the This destructor.
+	m_stopFunction = StopFunctionType();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -457,6 +524,83 @@ int Instance::Com::getSubscriberProxyPort() const {
 std::string Instance::Com::getKeyValue(const std::string& key) const {
 	// TODO catch exceptions and rethrow an exception: TerminatedException?
 	return m_server->getKeyValue(m_applicationId, key);
+}
+
+Instance::Com::KeyValueGetterException::KeyValueGetterException(const std::string& message) :
+	RemoteException(message) {
+}
+
+Instance::Com::KeyValueGetter::KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key) :
+	m_server(server),
+	m_id(id),
+	m_key(key) {
+
+	EventListener::setName(name);
+
+	m_server->registerEventListener(this);
+}
+
+Instance::Com::KeyValueGetter::~KeyValueGetter() {
+
+	m_server->unregisterEventListener(this);
+}
+
+std::string Instance::Com::KeyValueGetter::get() {
+
+	// Create a scoped waiting so that it is removed at the exit of the function.
+	Waiting scopedWaiting(std::bind(&Instance::Com::KeyValueGetter::cancel, this));
+
+	try {
+		return m_server->getKeyValue(m_id, m_key);
+	}
+	catch (...) {
+		// Key is not found, waiting for the event.
+	}
+
+	while (true) {
+		// Waits for a new incoming status.
+		std::unique_ptr<Event> event = EventListener::popEvent();
+
+		if (event->getId() == m_id) {
+			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+
+			if (status != nullptr) {
+				State state = status->getState();
+
+				// Test the terminal state.
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
+					throw KeyValueGetterException("Application terminated");
+				}
+			}
+			else {
+
+				if (KeyEvent * keyEvent = dynamic_cast<KeyEvent *>(event.get())) {
+					if (keyEvent->getKey() == m_key) {
+						// Set the status and value.
+						if (keyEvent->getStatus() == KeyEvent::Status::STORED) {
+							return keyEvent->getValue();
+						}
+
+						throw KeyValueGetterException("Key removed");
+					}
+				}
+				else if (dynamic_cast<CancelEvent *>(event.get())) {
+					throw KeyValueGetterException("Get canceled");
+				}
+			}
+		}
+	}
+}
+
+void Instance::Com::KeyValueGetter::cancel() {
+	EventListener::cancel(m_id);
+}
+
+std::unique_ptr<Instance::Com::KeyValueGetter> Instance::Com::getKeyValueGetter(const std::string& key) const {
+	return std::unique_ptr<Instance::Com::KeyValueGetter>(new Instance::Com::KeyValueGetter(m_server, m_name, m_applicationId, key));
 }
 
 Instance::Instance(Server * server) :
@@ -486,6 +630,7 @@ void Instance::terminate() {
 void Instance::setId(int id) {
 	m_id = id;
 	m_com.m_applicationId = id;
+	m_com.m_name = getName();
 }
 
 const std::string& Instance::getName() const {
@@ -555,7 +700,7 @@ const std::string& Instance::getErrorMessage() const {
 
 bool Instance::stop() {
 	try {
-		Response response = m_server->stopApplicationAsynchronously(m_id, false);
+		Response response = m_server->stop(m_id, false);
 
 	} catch (const ConnectionTimeout& e) {
 		m_errorMessage = e.what();
@@ -567,7 +712,7 @@ bool Instance::stop() {
 
 bool Instance::kill() {
 	try {
-		Response response = m_server->stopApplicationAsynchronously(m_id, true);
+		Response response = m_server->stop(m_id, true);
 
 	} catch (const ConnectionTimeout& e) {
 		m_errorMessage = e.what();

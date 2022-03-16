@@ -2,6 +2,7 @@
 -----
 
 * Messaging architecture reviewed to support proxies for responders and publishers.
+* Implementation of the linked apps i.e. stop an app when its parent dies.
 
 1.1.0
 -----
