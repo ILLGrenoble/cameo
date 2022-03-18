@@ -52,6 +52,7 @@ public class Console {
 	private boolean mute = false;
 	private boolean quiet = false;
 	private boolean consoleVersion = false;
+	private boolean useProxy = false;
 	
 	private static String CAMEO_SERVER = "CAMEO_SERVER";
 	
@@ -60,6 +61,9 @@ public class Console {
 	
 	private static String ENDPOINT_OPTION = "--endpoint";
 	private static String SHORT_ENDPOINT_OPTION = "-e";
+
+	private static String PROXY_OPTION = "--proxy-endpoint";
+	private static String SHORT_PROXY_OPTION = "-pe";
 	
 	private static String PORT_OPTION = "--port";
 	private static String SHORT_PORT_OPTION = "-p";
@@ -78,7 +82,7 @@ public class Console {
 	
 	private static String CONSOLE_OPTION = "--console";
 	private static String SHORT_CONSOLE_OPTION = "-c";
-	
+		
 	private static String NAME = "Name";
 	private static String DESCRIPTION = "Description";
 	private static String ID = "ID";
@@ -110,6 +114,20 @@ public class Console {
 		
 		// Searching for endpoint.
 		if (ENDPOINT_OPTION.equals(args[currentIndex]) || SHORT_ENDPOINT_OPTION.equals(args[currentIndex])) {
+			if (args.length > currentIndex + 1) {
+				currentIndex += 1;
+				endpoint = args[currentIndex];
+				currentIndex += 1;
+			}
+			else {
+				System.out.println("Endpoint is missing.");
+				System.exit(1);
+			}
+		}
+		else if (PROXY_OPTION.equals(args[currentIndex]) || SHORT_PROXY_OPTION.equals(args[currentIndex])) {
+			
+			useProxy = true;
+			
 			if (args.length > currentIndex + 1) {
 				currentIndex += 1;
 				endpoint = args[currentIndex];
@@ -243,7 +261,7 @@ public class Console {
 		
 		// Initialise the server if it is not a help command.
 		if (!commandName.equals("help")) {
-			server = new Server(endpoint);
+			server = new Server(endpoint, 0, useProxy);
 		}
 	}
 	
@@ -776,6 +794,7 @@ public class Console {
 		System.out.println("                               If endpoint is hostname then the port is 7000.");
 		System.out.println("                               If not specified, the CAMEO_SERVER environment variable is used.");
 		System.out.println("                               If the CAMEO_SERVER environment variable is not defined, the default value is tcp://localhost:7000.");
+		System.out.println("  -pe, --proxy-endpoint        Define the server proxy endpoint. Same remarks than for the server endpoint.");
 		System.out.println("  -p, --port [port]            Define the server endpoint port.");
 		System.out.println("                               If specified, the endpoint is tcp://localhost:port.");
 		System.out.println("  -a, --app [name]             Define the application name.");
