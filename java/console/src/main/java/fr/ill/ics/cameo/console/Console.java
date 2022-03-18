@@ -894,7 +894,6 @@ public class Console {
 		}
 		catch (Exception e) {
 			System.out.println("Cannot connect to server: " + e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		finally {
