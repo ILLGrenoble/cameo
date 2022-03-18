@@ -37,23 +37,18 @@ public class Subscriber {
 		waiting.add();
 	}
 	
-	private void synchronize(Instance app) {
+	private void synchronize(Instance app) throws RequesterCreationException {
 		
-		try {
-			Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 
-			// Send a subscribe request.
-			JSONObject jsonRequest = new JSONObject();
-			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
-			
-			requester.send(jsonRequest.toJSONString());
-			String response = requester.receiveString();
-			
-			requester.terminate();
-		}
-		catch (RequesterCreationException e) {
-			System.err.println("Error, cannot create requester for subscriber");
-		}
+		// Send a subscribe request.
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+		
+		requester.send(jsonRequest.toJSONString());
+		String response = requester.receiveString();
+		
+		requester.terminate();
 	}
 	
 	private void init(Instance app, String publisherName) throws SubscriberCreationException {
@@ -91,8 +86,8 @@ public class Subscriber {
 				synchronize(app);
 			}
 		}
-		catch (KeyValueGetterException e) {
-			throw new SubscriberCreationException("");
+		catch (KeyValueGetterException | RequesterCreationException e) {
+			throw new SubscriberCreationException("Cannot create subscriber");
 		}
 	}
 	

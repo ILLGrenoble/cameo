@@ -14,11 +14,10 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_COMS_BASIC_REQUESTERRESPONDER_H_
-#define CAMEO_COMS_BASIC_REQUESTERRESPONDER_H_
+#ifndef CAMEO_COMS_REQUESTERRESPONDER_H_
+#define CAMEO_COMS_REQUESTERRESPONDER_H_
 
 #include "Application.h"
-#include "RequesterCreationException.h"
 
 namespace cameo {
 namespace coms {
@@ -27,6 +26,13 @@ class RequesterImpl;
 
 ///////////////////////////////////////////////////////////////////////////
 // Requester
+
+class RequesterCreationException : public RemoteException {
+
+public:
+	RequesterCreationException(const std::string& message);
+};
+
 
 class Requester {
 

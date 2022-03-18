@@ -31,6 +31,11 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
+RequesterCreationException::RequesterCreationException(const std::string& message) :
+	RemoteException(message) {
+}
+
+
 Requester::Requester() :
 	m_useProxy(false),
 	m_appId(0) {

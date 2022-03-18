@@ -33,6 +33,11 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
+PublisherCreationException::PublisherCreationException(const std::string& message) :
+	RemoteException(message) {
+}
+
+
 const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 const std::string Publisher::PUBLISHER_PORT = "publisher_port";
 const std::string Publisher::RESPONDER_PREFIX = "publisher:";
@@ -132,8 +137,7 @@ bool Publisher::waitForSubscribers() {
 
 		return !canceled;
 	}
-	catch (const coms::ResponderCreationException& e) {
-		std::cerr << "Error, cannot create responder" << std::endl;
+	catch (const ResponderCreationException& e) {
 		return false;
 	}
 }
@@ -172,6 +176,11 @@ void Publisher::sendEnd() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
+SubscriberCreationException::SubscriberCreationException(const std::string& message) :
+	RemoteException(message) {
+}
+
+
 Subscriber::Subscriber() :
 	m_useProxy(false) {
 
@@ -191,20 +200,15 @@ void Subscriber::terminate() {
 
 void Subscriber::synchronize(const application::Instance & app) {
 
-	try {
-		std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
 
-		// Send a subscribe request.
-		json::StringObject jsonRequest;
-		jsonRequest.pushKey(message::TYPE);
-		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+	// Send a subscribe request.
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-		requester->send(jsonRequest.toString());
-		std::optional<std::string> response = requester->receive();
-	}
-	catch (const RequesterCreationException& e) {
-		std::cerr << "Error, cannot create requester for subscriber" << std::endl;
-	}
+	requester->send(jsonRequest.toString());
+	std::optional<std::string> response = requester->receive();
 }
 
 void Subscriber::init(const application::Instance & app, const std::string& publisherName) {

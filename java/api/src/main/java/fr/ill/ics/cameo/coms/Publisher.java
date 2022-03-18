@@ -128,7 +128,6 @@ public class Publisher {
 			return !responder.isCanceled();
 		}
 		catch (ResponderCreationException e) {
-			System.err.println("Error, cannot create responder");
 			return false;
 		}
 		finally {

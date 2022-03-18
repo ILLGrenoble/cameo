@@ -113,7 +113,6 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		return std::unique_ptr<Event>(nullptr);
 	}
 
-	std::cerr << "Cannot process '" << message << "' event" << std::endl;
 	return std::unique_ptr<Event>(nullptr);
 }
 

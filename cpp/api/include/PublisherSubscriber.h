@@ -18,8 +18,6 @@
 #define CAMEO_PUBLISHERSUBSCRIBER_H_
 
 #include "Application.h"
-#include "PublisherCreationException.h"
-#include "SubscriberCreationException.h"
 
 namespace cameo {
 namespace coms {
@@ -35,6 +33,13 @@ class Responder;
 
 ///////////////////////////////////////////////////////////////////////////
 // Publisher
+
+class PublisherCreationException : public RemoteException {
+
+public:
+	PublisherCreationException(const std::string& message);
+};
+
 
 class Publisher {
 
@@ -91,6 +96,13 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
+
+class SubscriberCreationException : public RemoteException {
+
+public:
+	SubscriberCreationException(const std::string& message);
+};
+
 
 class Subscriber {
 

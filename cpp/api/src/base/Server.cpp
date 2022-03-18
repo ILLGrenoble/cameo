@@ -766,7 +766,6 @@ std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::
 	// Even with the proxy, it is necessary to check if the application has an output stream.
 	int port = retrieveStreamPort(name);
 	if (port == -1) {
-		std::cerr << "No stream port for " << name << std::endl;
 		return nullptr;
 	}
 
