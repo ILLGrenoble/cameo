@@ -61,7 +61,7 @@ public class RequestProcessor {
 	 */
 	public void processSync(Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Sync message");
+		Log.logger().finer("Received Sync message");
 		
 		// Send sync message for synchronizing subscribers.
 		manager.sendStatus(-1, "", ApplicationState.UNKNOWN, ApplicationState.UNKNOWN, -1);
@@ -76,7 +76,7 @@ public class RequestProcessor {
 	
 	public void processSyncStream(JSONObject request, Msg reply, Manager manager) {
 
-		Log.logger().fine("Received SyncStream message");
+		Log.logger().finer("Received SyncStream message");
 		
 		// Get the publisher.
 		String applicationName = JSON.getString(request, Messages.SyncStreamRequest.NAME);
@@ -111,7 +111,7 @@ public class RequestProcessor {
 	 */
 	public void processStartRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Start request");
+		Log.logger().finer("Received Start request");
 		
 		try {
 			// Convert the args.
@@ -178,7 +178,7 @@ public class RequestProcessor {
 	 */
 	public void processAppsRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Apps request");
+		Log.logger().finer("Received Apps request");
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
@@ -206,7 +206,7 @@ public class RequestProcessor {
 
 	public void processSetStopHandlerRequest(JSONObject request, Msg reply, Manager manager) {
 	
-		Log.logger().fine("Received SetStopHandler request");
+		Log.logger().finer("Received SetStopHandler request");
 		
 		try {
 			manager.setApplicationStopHandler(JSON.getInt(request, Messages.SetStopHandlerRequest.ID), JSON.getInt(request, Messages.SetStopHandlerRequest.STOPPING_TIME));
@@ -239,7 +239,7 @@ public class RequestProcessor {
 	 */
 	public void processStopRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Stop request");
+		Log.logger().finer("Received Stop request");
 		
 		try {
 			String applicationName = manager.stopApplication(JSON.getInt(request, Messages.StopRequest.ID));
@@ -270,7 +270,7 @@ public class RequestProcessor {
 	 */
 	public void processKillRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Kill request");
+		Log.logger().finer("Received Kill request");
 		
 		try {
 			String applicationName = manager.killApplication(JSON.getInt(request, Messages.StopRequest.ID));
@@ -301,7 +301,7 @@ public class RequestProcessor {
 	 */
 	public void processConnectRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Connect request");
+		Log.logger().finer("Received Connect request");
 		
 		String applicationName = JSON.getString(request, Messages.ConnectRequest.NAME);
 		
@@ -335,7 +335,7 @@ public class RequestProcessor {
 
 	public void processConnectWithIdRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received ConnectWithId request");
+		Log.logger().finer("Received ConnectWithId request");
 		
 		int applicationId = JSON.getInt(request, Messages.ConnectWithIdRequest.ID);
 		
@@ -375,7 +375,7 @@ public class RequestProcessor {
 	 */
 	public void processOutputPortWithIdRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received OutputPortWithId request");
+		Log.logger().finer("Received OutputPortWithId request");
 				
 		try {
 			int port = manager.getStreamPort(JSON.getInt(request, Messages.OutputPortWithIdRequest.ID));
@@ -406,7 +406,7 @@ public class RequestProcessor {
 	 */
 	public void processIsAliveRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received IsAlive request");
+		Log.logger().finer("Received IsAlive request");
 		
 		boolean isAlive = manager.isAlive(JSON.getInt(request, Messages.IsAliveRequest.ID));
 		
@@ -426,7 +426,7 @@ public class RequestProcessor {
 	 */
 	public void processWriteInputRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received WriteInput request");
+		Log.logger().finer("Received WriteInput request");
 		
 		// Convert the parameters.
 		JSONArray list = JSON.getArray(request, Messages.WriteInputRequest.PARAMETERS);
@@ -464,7 +464,7 @@ public class RequestProcessor {
 	 */
 	public void processStatusRequest(Msg reply) {
 		
-		Log.logger().fine("Received Status request");
+		Log.logger().finer("Received Status request");
 		
 		int port = ConfigManager.getInstance().getStreamPort();
 				
@@ -478,7 +478,7 @@ public class RequestProcessor {
 	
 	public void processListRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received List request");
+		Log.logger().finer("Received List request");
 		
 		List<ApplicationConfig> list = manager.getAvailableApplications();
 		
@@ -512,7 +512,7 @@ public class RequestProcessor {
 	 */
 	public void processOutputPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received OuputPort request");
+		Log.logger().finer("Received OuputPort request");
 		
 		int port = manager.getApplicationStreamPort(JSON.getString(request, Messages.OutputRequest.NAME));
 		
@@ -526,7 +526,7 @@ public class RequestProcessor {
 
 	public void processResponderProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received ResponderProxyPort request");
+		Log.logger().finer("Received ResponderProxyPort request");
 		
 		int port = ConfigManager.getInstance().getResponderProxyPort();
 				
@@ -540,7 +540,7 @@ public class RequestProcessor {
 	
 	public void processPublisherProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received PublisherProxyPort request");
+		Log.logger().finer("Received PublisherProxyPort request");
 		
 		int port = ConfigManager.getInstance().getPublisherProxyPort();
 				
@@ -554,7 +554,7 @@ public class RequestProcessor {
 
 	public void processSubscriberProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received SubscriberProxyPort request");
+		Log.logger().finer("Received SubscriberProxyPort request");
 		
 		int port = ConfigManager.getInstance().getSubscriberProxyPort();
 				
@@ -568,7 +568,7 @@ public class RequestProcessor {
 	
 	public void processSetStatusRequest(JSONObject request, Msg reply, Manager manager) {
 
-		Log.logger().fine("Received SetStatus request");
+		Log.logger().finer("Received SetStatus request");
 		
 		int applicationId = JSON.getInt(request, Messages.SetStatusRequest.ID);
 		int state = JSON.getInt(request, Messages.SetStatusRequest.APPLICATION_STATE);
@@ -598,7 +598,7 @@ public class RequestProcessor {
 	
 	public void processGetStatusRequest(JSONObject request, Msg reply, Manager manager) {
 
-		Log.logger().fine("Received GetStatus request");
+		Log.logger().finer("Received GetStatus request");
 		
 		int applicationId = JSON.getInt(request, Messages.GetStatusRequest.ID);
 		
@@ -617,7 +617,7 @@ public class RequestProcessor {
 
 	public void processSetResultRequest(JSONObject request, byte[] data, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received SetResult request");
+		Log.logger().finer("Received SetResult request");
 		
 		int applicationId = JSON.getInt(request, Messages.SetResultRequest.ID);
 
@@ -643,7 +643,7 @@ public class RequestProcessor {
 
 	public void processAttachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
 
-		Log.logger().fine("Received AttachUnregistered request");
+		Log.logger().finer("Received AttachUnregistered request");
 		
 		int applicationId = 0;
 		String name = JSON.getString(request, Messages.AttachUnregisteredRequest.NAME);
@@ -677,7 +677,7 @@ public class RequestProcessor {
 
 	public void processDetachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received DetachUnregistered request");
+		Log.logger().finer("Received DetachUnregistered request");
 		
 		int applicationId = JSON.getInt(request, Messages.DetachUnregisteredRequest.ID);
 		
@@ -703,7 +703,7 @@ public class RequestProcessor {
 
 	public void processVersion(Version version, Msg reply) {
 		
-		Log.logger().fine("Received Version request");
+		Log.logger().finer("Received Version request");
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();
@@ -716,7 +716,7 @@ public class RequestProcessor {
 
 	public void processStoreKeyValue(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received StoreKeyValue request");
+		Log.logger().finer("Received StoreKeyValue request");
 		
 		int applicationId = JSON.getInt(request, Messages.StoreKeyValueRequest.ID);
 		String key = JSON.getString(request, Messages.StoreKeyValueRequest.KEY);
@@ -752,7 +752,7 @@ public class RequestProcessor {
 
 	public void processGetKeyValue(JSONObject request, Msg reply, Manager manager) {
 
-		Log.logger().fine("Received GetKeyValue request");
+		Log.logger().finer("Received GetKeyValue request");
 		
 		int applicationId = JSON.getInt(request, Messages.GetKeyValueRequest.ID);
 		String key = JSON.getString(request, Messages.GetKeyValueRequest.KEY);
@@ -789,7 +789,7 @@ public class RequestProcessor {
 
 	public void processRemoveKeyValue(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received RemoveKey request");
+		Log.logger().finer("Received RemoveKey request");
 		
 		int applicationId = JSON.getInt(request, Messages.RemoveKeyRequest.ID);
 		String key = JSON.getString(request, Messages.RemoveKeyRequest.KEY);
@@ -826,7 +826,7 @@ public class RequestProcessor {
 
 	public void processRequestPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received RequestPort request");
+		Log.logger().finer("Received RequestPort request");
 		
 		int applicationId = JSON.getInt(request, Messages.RequestPortRequest.ID);
 		
@@ -853,7 +853,7 @@ public class RequestProcessor {
 
 	public void processPortUnavailableRequest(JSONObject request, Msg reply, Manager manager) {
 				
-		Log.logger().fine("Received PortUnavailable request");
+		Log.logger().finer("Received PortUnavailable request");
 		
 		int applicationId = JSON.getInt(request, Messages.PortUnavailableRequest.ID);
 		int port = JSON.getInt(request, Messages.PortUnavailableRequest.PORT);
@@ -881,7 +881,7 @@ public class RequestProcessor {
 
 	public void processReleasePortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received ReleasePort request");
+		Log.logger().finer("Received ReleasePort request");
 		
 		int applicationId = JSON.getInt(request, Messages.ReleasePortRequest.ID);
 		int port = JSON.getInt(request, Messages.ReleasePortRequest.PORT);
@@ -909,7 +909,7 @@ public class RequestProcessor {
 
 	public void processPortsRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().fine("Received Ports request");
+		Log.logger().finer("Received Ports request");
 		
 		List<PortInfo> list = manager.getPortList();
 		
