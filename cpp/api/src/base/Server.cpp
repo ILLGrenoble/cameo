@@ -791,9 +791,13 @@ std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
 	return std::unique_ptr<RequestSocket>(new RequestSocket(m_context.get(), m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
 }
 
+std::string Server::toString() const {
+	return std::string("server@") + m_serverEndpoint.toString();
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 
-	os << "server@" << server.m_serverEndpoint.toString();
+	os << server.toString();
 
 	return os;
 }

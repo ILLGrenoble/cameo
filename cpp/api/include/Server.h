@@ -153,6 +153,11 @@ public:
 	 */
 	void unregisterEventListener(EventListener * listener);
 
+	/**
+	 *
+	 */
+	std::string toString() const;
+
 private:
 	void initServer(const Endpoint& endpoint, int timeoutMs);
 	int getResponderProxyPort() const;

@@ -98,19 +98,25 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("connectToStarter", &This::connectToStarter,
 	    		"options"_a = 0,
 				"useProxy"_a = false,
-	    		py::call_guard<py::gil_scoped_release>());
+	    		py::call_guard<py::gil_scoped_release>())
+		.def_static("__str__", &This::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<cameo::Output>(m, "Output")
 		.def("getId", &cameo::Output::getId)
 		.def("getMessage", &cameo::Output::getMessage)
-		.def("isEndOfLine", &cameo::Output::isEndOfLine);
+		.def("isEndOfLine", &cameo::Output::isEndOfLine)
+		.def("__str__", &cameo::Output::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<cameo::OutputStreamSocket>(m, "OutputStreamSocket")
 		.def("terminate", &cameo::OutputStreamSocket::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("receive", &cameo::OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &cameo::OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isEnded", &cameo::OutputStreamSocket::isEnded)
-		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled);
+		.def("isCanceled", &cameo::OutputStreamSocket::isCanceled)
+		.def("__str__", &cameo::OutputStreamSocket::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Instance>(m, "Instance")
 		.def("terminate", &Instance::terminate, py::call_guard<py::gil_scoped_release>())
@@ -141,7 +147,9 @@ PYBIND11_MODULE(cameopy, m) {
 			 return py::bytes(result.value());
 		 }, py::call_guard<py::gil_scoped_release>())
 	    .def("getResult", &Instance::getResult, py::call_guard<py::gil_scoped_release>())
-	    .def("getOutputStreamSocket", &Instance::getOutputStreamSocket);
+	    .def("getOutputStreamSocket", &Instance::getOutputStreamSocket)
+		.def("__str__", &Instance::toString,
+		   		py::call_guard<py::gil_scoped_release>());
 
 	py::class_<InstanceArray>(m, "InstanceArray");
 
@@ -164,7 +172,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"data1"_a, "data2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("sendEnd", &Publisher::sendEnd, py::call_guard<py::gil_scoped_release>())
-	    .def("isEnded", &Publisher::isEnded);
+	    .def("isEnded", &Publisher::isEnded)
+		.def("__str__", &Publisher::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Subscriber>(m, "Subscriber")
 	    .def_static("create", &Subscriber::create,
@@ -181,7 +191,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("receiveBinary", &Subscriber::receiveBinary, py::call_guard<py::gil_scoped_release>())
 	    .def("receive", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
-	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>());
+	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("__str__", &Subscriber::toString,
+					py::call_guard<py::gil_scoped_release>());
 
 	py::class_<basic::Request>(m, "BasicRequest")
 		.def("getObjectId", &basic::Request::getObjectId)
@@ -200,7 +212,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("connectToRequester", &basic::Request::connectToRequester,
 	    		"options"_a = 0,
 				"useProxy"_a = false,
-	    		py::call_guard<py::gil_scoped_release>());
+	    		py::call_guard<py::gil_scoped_release>())
+		.def("__str__", &basic::Request::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<basic::Responder>(m, "BasicResponder")
 	    .def_static("create", &basic::Responder::create,
@@ -210,7 +224,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getName", &basic::Responder::getName)
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("receive", &basic::Responder::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("isCanceled", &basic::Responder::isCanceled);
+	    .def("isCanceled", &basic::Responder::isCanceled)
+		.def("__str__", &basic::Responder::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 
 	py::class_<multi::Request>(m, "MultiRequest")
@@ -230,6 +246,8 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("connectToRequester", &multi::Request::connectToRequester,
 				"options"_a = 0,
 				"useProxy"_a = false,
+				py::call_guard<py::gil_scoped_release>())
+		.def("__str__", &multi::Request::toString,
 				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<multi::ResponderRouter>(m, "MultiResponderRouter")
@@ -242,7 +260,9 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("getName", &multi::ResponderRouter::getName)
 		.def("cancel", &multi::ResponderRouter::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("run", &multi::ResponderRouter::run, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &multi::ResponderRouter::isCanceled);
+		.def("isCanceled", &multi::ResponderRouter::isCanceled)
+		.def("__str__", &multi::ResponderRouter::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<multi::Responder>(m, "MultiResponder")
 		.def_static("create", &multi::Responder::create,
@@ -251,7 +271,9 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("terminate", &multi::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &multi::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &multi::Responder::isCanceled);
+		.def("isCanceled", &multi::Responder::isCanceled)
+		.def("__str__", &multi::Responder::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Requester>(m, "Requester")
 	    .def_static("create", &Requester::create,
@@ -278,7 +300,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("receive", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &Requester::isCanceled)
-        .def("hasTimedout", &Requester::hasTimedout);
+        .def("hasTimedout", &Requester::hasTimedout)
+		.def("__str__", &Requester::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Configuration>(m, "Configuration")
 	    .def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
@@ -287,7 +311,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("hasSingleInstance", &Configuration::hasSingleInstance)
 	    .def("canRestart", &Configuration::canRestart)
 	    .def("getStartingTime", &Configuration::getStartingTime)
-	    .def("getStoppingTime", &Configuration::getStoppingTime);
+	    .def("getStoppingTime", &Configuration::getStoppingTime)
+		.def("__str__", &Configuration::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Info>(m, "Info")
 	    .def(py::init<const std::string&, int, int, State, State, const std::string&>())
@@ -296,13 +322,17 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getPastStates", &Info::getPastStates)
 	    .def("getArgs", &Info::getArgs)
 	    .def("getName", &Info::getName)
-	    .def("getPid", &Info::getPid);
+	    .def("getPid", &Info::getPid)
+		.def("__str__", &Info::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Port>(m, "Port")
 	    .def(py::init<int, const std::string&, const std::string&>())
 	    .def("getPort", &Port::getPort)
 	    .def("getStatus", &Port::getStatus)
-	    .def("getOwner", &Port::getOwner);
+	    .def("getOwner", &Port::getOwner)
+		.def("__str__", &Port::toString,
+				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<cameo::Server>(m, "Server")
 	    .def(py::init<const std::string&, int, bool>(),
@@ -350,6 +380,8 @@ PYBIND11_MODULE(cameopy, m) {
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("getPastStates", &cameo::Server::getPastStates,
 	    		"id"_a,
-	    		py::call_guard<py::gil_scoped_release>());
-	    //.def("openEventStream", &cameo::Server::openEventStream, py::call_guard<py::gil_scoped_release>());
+	    		py::call_guard<py::gil_scoped_release>())
+		.def("__str__", &cameo::Server::toString,
+		   		py::call_guard<py::gil_scoped_release>());
+
 }

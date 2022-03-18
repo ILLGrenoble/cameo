@@ -173,6 +173,15 @@ void Publisher::sendEnd() const {
 	m_impl->setEnd();
 }
 
+std::string Publisher::toString() const {
+
+	return std::string("pub.") + getName()
+		+ ":" + application::This::getName()
+		+ "." + std::to_string(application::This::getId())
+		+ "@" + application::This::getEndpoint().toString();
+
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
@@ -305,22 +314,25 @@ void Subscriber::cancel() {
 	m_impl->cancel();
 }
 
+std::string Subscriber::toString() const {
+
+	return std::string("sub.") + getPublisherName()
+		+ ":" + getAppName()
+		+ "." + std::to_string(getAppId())
+		+ "@" + getAppEndpoint().toString();
+
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {
 
-	os << "pub." << publisher.getName()
-		<< ":" << application::This::getName()
-		<< "." << application::This::getId()
-		<< "@" << application::This::getEndpoint().toString();
+	os << publisher.toString();
 
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Subscriber& subscriber) {
 
-	os << "sub." << subscriber.getPublisherName()
-		<< ":" << subscriber.getAppName()
-		<< "." << subscriber.getAppId()
-		<< "@" << subscriber.getAppEndpoint();
+	os << subscriber.toString();
 
 	return os;
 }

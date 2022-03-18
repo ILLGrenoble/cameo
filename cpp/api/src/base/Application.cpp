@@ -501,6 +501,10 @@ void This::checkStates() {
 	m_stopFunction = StopFunctionType();
 }
 
+std::string This::toString() {
+	return m_instance.m_name + "." + std::to_string(m_instance.m_id) + "@" + m_instance.m_serverEndpoint.toString();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Instance
 
@@ -870,6 +874,9 @@ std::unique_ptr<OutputStreamSocket> Instance::getOutputStreamSocket() {
 	return std::move(m_outputStreamSocket);
 }
 
+std::string Instance::toString() const {
+	return m_name + "." + std::to_string(m_id) + "@" + m_server->getEndpoint().toString();
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Configuration
@@ -908,6 +915,16 @@ int Configuration::getStoppingTime() const {
 	return m_stoppingTime;
 }
 
+std::string Configuration::toString() const {
+
+	return std::string("[name=") + m_name
+			+ ", description=" + m_description
+			+ ", single instance=" + std::to_string(m_singleInstance)
+			+ ", restart=" + std::to_string(m_restart)
+			+ ", starting time=" + std::to_string(m_startingTime)
+			+ ", stopping time=" + std::to_string(m_stoppingTime) + "]";
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Info
 
@@ -944,6 +961,13 @@ int Info::getPid() const {
 	return m_pid;
 }
 
+std::string Info::toString() const {
+	return std::string("[name=")  + m_name
+		+ ", id=" + std::to_string(m_id)
+		+ ", state=" + application::toString(m_applicationState)
+		+ ", args=" + m_args + "]";
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Port
 
@@ -963,6 +987,13 @@ const std::string& Port::getStatus() const {
 
 const std::string& Port::getOwner() const {
 	return m_owner;
+}
+
+std::string Port::toString() const {
+
+	return std::string("[port=") + std::to_string(m_port)
+			+ ", status=" + m_status
+			+ ", owner=" + m_owner + "]";
 }
 
 std::string toString(cameo::application::State applicationStates) {
@@ -1026,47 +1057,30 @@ std::string toString(cameo::application::State applicationStates) {
 ///////////////////////////////////////////////////////////////////////////////
 // operator<<
 
-std::ostream& operator<<(std::ostream& os, const cameo::application::This& application) {
-
-	os << application.m_name << "." << application.m_id << "@" << application.m_serverEndpoint;
-
-	return os;
-}
-
 std::ostream& operator<<(std::ostream& os, const application::Instance& instance) {
 
-	os << instance.m_name << "." << instance.m_id << "@" << instance.m_server->getEndpoint();
+	os << instance.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Configuration& info) {
+std::ostream& operator<<(std::ostream& os, const application::Configuration& configuration) {
 
-	os << "[name=" << info.m_name
-			<< ", description=" << info.m_description
-			<< ", single instance=" << info.m_singleInstance
-			<< ", restart=" << info.m_restart
-			<< ", starting time=" << info.m_startingTime
-			<< ", stopping time=" << info.m_stoppingTime << "]";
+	os << configuration.toString();
 
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const application::Info& info) {
 
-	os << "[name=" << info.m_name
-			<< ", id=" << info.m_id
-			<< ", state=" << info.m_applicationState
-			<< ", args=" << info.m_args << "]";
+	os << info.toString();
 
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const application::Port& port) {
 
-	os << "[port=" << port.m_port
-			<< ", status=" << port.m_status
-			<< ", owner=" << port.m_owner << "]";
+	os << port.toString();
 
 	return os;
 }

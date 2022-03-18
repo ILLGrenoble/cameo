@@ -153,12 +153,18 @@ bool Requester::hasTimedout() const {
 	return m_impl->hasTimedout();
 }
 
+std::string Requester::toString() const {
+
+	return std::string("req.") + m_responderName
+		+ ":" + m_appName
+		+ "." + std::to_string(m_appId)
+		+ "@" + m_appEndpoint.toString();
+
+}
+
 std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
-	os << "req." << requester.m_responderName
-		<< ":" << requester.m_appName
-		<< "." << requester.m_appId
-		<< "@" << requester.m_appEndpoint;
+	os << requester.toString();
 
 	return os;
 }

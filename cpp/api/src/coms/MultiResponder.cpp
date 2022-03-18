@@ -127,6 +127,11 @@ application::ServerAndInstance Request::connectToRequester(int options, bool use
 	return result;
 }
 
+std::string Request::toString() const {
+
+	return std::string("[id=") + std::to_string(m_requesterApplicationId) + "]";
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Responder Router
 
@@ -213,6 +218,14 @@ bool ResponderRouter::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
+std::string ResponderRouter::toString() const {
+
+	return std::string("repr.") + m_name
+		+ ":" + application::This::getName()
+		+ "." + std::to_string(application::This::getId())
+		+ "@" + application::This::getEndpoint().toString();
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
@@ -271,29 +284,31 @@ bool Responder::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
+std::string Responder::toString() const {
+
+	return std::string("repm")
+		+ ":" + application::This::getName()
+		+ "." + std::to_string(application::This::getId())
+		+ "@" + application::This::getEndpoint().toString();
+}
+
 std::ostream& operator<<(std::ostream& os, const Request& request) {
 
-	os << "[id=" << request.m_requesterApplicationId << "]";
+	os << request.toString();
 
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const ResponderRouter& router) {
 
-	os << "repr." << router.m_name
-		<< ":" << application::This::getName()
-		<< "." << application::This::getId()
-		<< "@" << application::This::getEndpoint();
+	os << router.toString();
 
 	return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
-	os << "repm"
-		<< ":" << application::This::getName()
-		<< "." << application::This::getId()
-		<< "@" << application::This::getEndpoint();
+	os << responder.toString();
 
 	return os;
 }

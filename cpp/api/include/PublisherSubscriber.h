@@ -76,6 +76,8 @@ public:
 
 	bool isEnded() const;
 
+	std::string toString() const;
+
 	static const std::string KEY;
 	static const std::string PUBLISHER_PORT;
 	static const std::string NUMBER_OF_SUBSCRIBERS;
@@ -145,6 +147,8 @@ public:
 	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts() const;
 
 	void cancel();
+
+	std::string toString() const;
 
 private:
 	Subscriber();

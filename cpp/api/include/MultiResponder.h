@@ -55,6 +55,8 @@ public:
 
 	application::ServerAndInstance connectToRequester(int options = 0, bool useProxy = false);
 
+	std::string toString() const;
+
 private:
 	void setResponder(Responder* responder);
 
@@ -98,6 +100,8 @@ public:
 	/** check if it has been canceled */
 	bool isCanceled() const;
 
+	std::string toString() const;
+
 	static const std::string KEY;
 	static const std::string PORT;
 
@@ -140,6 +144,8 @@ public:
 
 	/** check if it has been canceled */
 	bool isCanceled() const;
+
+	std::string toString() const;
 
 private:
 	Responder();

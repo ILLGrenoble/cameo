@@ -41,6 +41,10 @@ bool Output::isEndOfLine() const {
 	return m_endOfLine;
 }
 
+std::string Output::toString() const {
+	return std::string("[id=") + std::to_string(m_id) + ", message=" + m_message + " eol=" + std::to_string(m_endOfLine) + "]";
+}
+
 OutputStreamSocket::OutputStreamSocket(const std::string& name) :
 	m_applicationId(-1),
 	m_ended(false),
@@ -130,6 +134,10 @@ bool OutputStreamSocket::isEnded() const {
 
 bool OutputStreamSocket::isCanceled() const {
 	return m_canceled;
+}
+
+std::string OutputStreamSocket::toString() const {
+	return std::string("[applicationId=") + std::to_string(m_applicationId) + "]";
 }
 
 }

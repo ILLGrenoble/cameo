@@ -182,6 +182,8 @@ public:
 	 */
 	static ServerAndInstance connectToStarter(int options = 0, bool useProxy = false);
 
+	static std::string toString();
+
 private:
 	void terminateImpl();
 
@@ -333,6 +335,8 @@ public:
 
 	std::unique_ptr<OutputStreamSocket> getOutputStreamSocket();
 
+	std::string toString() const;
+
 private:
 	Instance(Server* server);
 
@@ -381,6 +385,8 @@ public:
 	int getStartingTime() const;
 	int getStoppingTime() const;
 
+	std::string toString() const;
+
 private:
 	std::string m_name;
 	std::string m_description;
@@ -408,6 +414,8 @@ public:
 	const std::string& getName() const;
 	int getPid() const;
 
+	std::string toString() const;
+
 private:
 	int m_id;
 	int m_pid;
@@ -432,6 +440,8 @@ public:
 	const std::string& getStatus() const;
 	const std::string& getOwner() const;
 
+	std::string toString() const;
+
 private:
 	int m_port;
 	std::string m_status;
@@ -439,7 +449,6 @@ private:
 };
 
 std::string toString(cameo::application::State applicationStates);
-std::ostream& operator<<(std::ostream&, const cameo::application::This&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Instance&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Configuration&);
 std::ostream& operator<<(std::ostream&, const cameo::application::Info&);

@@ -25,6 +25,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 public class OutputStreamSocket {
 	
 	private OutputStreamSocketImpl impl;
+	private int applicationId;
 
 	public OutputStreamSocket(String name) {
 		impl = ImplFactory.createOutputStreamSocket(name);
@@ -39,6 +40,7 @@ public class OutputStreamSocket {
 	 * @param id
 	 */
 	public void setApplicationId(int id) {
+		this.applicationId = id;
 		impl.setApplicationId(id);
 	}
 	
@@ -60,6 +62,11 @@ public class OutputStreamSocket {
 	
 	public void terminate() {
 		impl.terminate();
+	}
+	
+	@Override
+	public String toString() {
+		return "[applicationId=" + applicationId + "]";
 	}
 
 }

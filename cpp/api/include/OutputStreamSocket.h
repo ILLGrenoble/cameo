@@ -45,6 +45,8 @@ public:
 	const std::string& getMessage() const;
 	bool isEndOfLine() const;
 
+	std::string toString() const;
+
 private:
 	int m_id;
 	std::string m_message;
@@ -67,6 +69,8 @@ public:
 	void cancel();
 	bool isEnded() const;
 	bool isCanceled() const;
+
+	std::string toString() const;
 
 private:
 	OutputStreamSocket(const std::string& name);

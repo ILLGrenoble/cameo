@@ -75,6 +75,8 @@ public:
 	bool isCanceled() const;
 	bool hasTimedout() const;
 
+	std::string toString() const;
+
 private:
 	Requester();
 	void init(const application::Instance & app, const std::string & responderName);

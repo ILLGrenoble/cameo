@@ -283,7 +283,7 @@ public class Application {
 
 		@Override
 		public String toString() {
-			return "ApplicationStream [id=" + id + ", message=" + message + " eol=" + endOfLine + "]";
+			return "[id=" + id + ", message=" + message + " eol=" + endOfLine + "]";
 		}
 
 	}
