@@ -37,7 +37,7 @@ ResponderZmq::~ResponderZmq() {
 void ResponderZmq::init(const std::string& endpoint) {
 
 	// Create a socket REP.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::rep));
 
 	// Connect to the dealer.
@@ -54,7 +54,7 @@ void ResponderZmq::cancel() {
 	jsonRequest.pushValue(message::CANCEL);
 
 	// Create a request socket connected directly to the responder.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(m_cancelEndpoint, "");
+	std::unique_ptr<RequestSocket> requestSocket = This::getCom().createRequestSocket(m_cancelEndpoint, "");
 	requestSocket->requestJSON(jsonRequest.toString());
 }
 

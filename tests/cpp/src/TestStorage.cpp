@@ -24,7 +24,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string key = "fr.ill.ics.cameo.test.testkey";
 
@@ -36,36 +36,36 @@ int main(int argc, char *argv[]) {
 	writer.EndObject();
 
 	try {
-		string valueString = application::This::getCom().getKeyValue(key);
+		string valueString = This::getCom().getKeyValue(key);
 	}
 	catch (const UndefinedKeyException& e) {
 		cout << "Key is undefined: " << e.what() << endl;
 	}
 
-	application::This::getCom().storeKeyValue(key, buffer.GetString());
+	This::getCom().storeKeyValue(key, buffer.GetString());
 
 	try {
-		application::This::getCom().storeKeyValue(key, buffer.GetString());
+		This::getCom().storeKeyValue(key, buffer.GetString());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		cout << "Key already exists: " << e.what() << endl;
 	}
 
 	try {
-		string valueString = application::This::getCom().getKeyValue(key);
+		string valueString = This::getCom().getKeyValue(key);
 
 		rapidjson::Document value;
 		value.Parse(static_cast<const char *>(valueString.c_str()), valueString.size());
 
 		cout << "x = " << value["x"].GetInt() << endl;
 
-		application::This::getCom().removeKey(key);
+		This::getCom().removeKey(key);
 	}
 	catch (const UndefinedKeyException& e) {
 	}
 
 	try {
-		application::This::getCom().getKeyValue(key);
+		This::getCom().getKeyValue(key);
 	}
 	catch (const UndefinedKeyException& e) {
 		cout << "Cannot remove key : " << e.what() << endl;

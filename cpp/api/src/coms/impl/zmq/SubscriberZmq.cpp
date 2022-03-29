@@ -44,7 +44,7 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_canceled = false;
 
 	// Create a socket for publishing.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
 	m_subscriber->connect(endpoint.toString());
 
@@ -125,13 +125,13 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 			int id = status[message::StatusEvent::ID].GetInt();
 
 			if (id == m_appId) {
-				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
+				State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
 
 				// test the terminal state
-				if (state == application::SUCCESS
-					|| state == application::STOPPED
-					|| state == application::KILLED
-					|| state == application::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}
@@ -210,13 +210,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 			int id = status[message::StatusEvent::ID].GetInt();
 
 			if (id == m_appId) {
-				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
+				State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
 
 				// test the terminal state
-				if (state == application::SUCCESS
-					|| state == application::STOPPED
-					|| state == application::KILLED
-					|| state == application::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}

@@ -61,8 +61,6 @@ class WaitingSet;
 class StopHandler;
 class RequestSocket;
 
-namespace application {
-
 class Instance;
 
 struct ServerAndInstance {
@@ -99,7 +97,7 @@ class This : private EventListener {
 
 	friend class cameo::Waiting;
 	friend class cameo::Server;
-	friend std::ostream& operator<<(std::ostream&, const cameo::application::This&);
+	friend std::ostream& operator<<(std::ostream&, const cameo::This&);
 
 public:
 	typedef std::function<void()> StopFunctionType;
@@ -448,13 +446,12 @@ private:
 	std::string m_owner;
 };
 
-std::string toString(cameo::application::State applicationStates);
-std::ostream& operator<<(std::ostream&, const cameo::application::Instance&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Configuration&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Info&);
-std::ostream& operator<<(std::ostream&, const cameo::application::Port&);
+std::string toString(cameo::State applicationStates);
+std::ostream& operator<<(std::ostream&, const cameo::Instance&);
+std::ostream& operator<<(std::ostream&, const cameo::Configuration&);
+std::ostream& operator<<(std::ostream&, const cameo::Info&);
+std::ostream& operator<<(std::ostream&, const cameo::Port&);
 
-} // namespace application
-} // namespace cameo
+}
 
 #endif

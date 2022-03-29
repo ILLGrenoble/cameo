@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	unique_ptr<coms::multi::ResponderRouter> router;
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Created router" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	unique_ptr<coms::multi::Responder> responder;
 

@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	unique_ptr<coms::Publisher> publisher;
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Synchronized with the subscriber" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// sending data
 	while (true) {

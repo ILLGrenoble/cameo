@@ -20,7 +20,7 @@
 
 namespace cameo {
 
-StatusEvent::StatusEvent(int id, const std::string& name, application::State state, application::State pastStates, int exitCode) :
+StatusEvent::StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode) :
 	Event(id, name),
 	m_state(state),
 	m_pastStates(pastStates),
@@ -38,11 +38,11 @@ StatusEvent* StatusEvent::clone() {
 	return new StatusEvent(*this);
 }
 
-application::State StatusEvent::getState() const {
+State StatusEvent::getState() const {
 	return m_state;
 }
 
-application::State StatusEvent::getPastStates() const {
+State StatusEvent::getPastStates() const {
 	return m_pastStates;
 }
 

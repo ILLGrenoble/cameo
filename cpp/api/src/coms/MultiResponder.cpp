@@ -98,9 +98,9 @@ bool Request::reply(const std::string& response) {
 	return replyBinary(response);
 }
 
-application::ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
+ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
 
-	application::ServerAndInstance result;
+	ServerAndInstance result;
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -115,11 +115,11 @@ application::ServerAndInstance Request::connectToRequester(int options, bool use
 	}
 
 	// Iterate the instances to find the id
-	application::InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);
+	InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_requesterApplicationId) {
-			result.instance = std::unique_ptr<application::Instance>(std::move(*i));
+			result.instance = std::unique_ptr<Instance>(std::move(*i));
 			break;
 		}
 	}
@@ -154,7 +154,7 @@ ResponderRouter::~ResponderRouter() {
 void ResponderRouter::terminate() {
 
 	if (m_impl) {
-		application::This::getCom().removeKey(m_key);
+		This::getCom().removeKey(m_key);
 
 		m_impl.reset();
 	}
@@ -173,7 +173,7 @@ void ResponderRouter::init(const std::string &name) {
 	m_dealerEndpoint = std::string("inproc://") + IdGenerator::newStringId();
 
 	// Init the responder socket.
-	m_impl->init(StringId::from(application::This::getId(), m_key), m_dealerEndpoint);
+	m_impl->init(StringId::from(This::getId(), m_key), m_dealerEndpoint);
 
 	// Store the responder data.
 	json::StringObject jsonData;
@@ -182,7 +182,7 @@ void ResponderRouter::init(const std::string &name) {
 	jsonData.pushValue(m_impl->getResponderPort());
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.toString());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
@@ -221,9 +221,9 @@ bool ResponderRouter::isCanceled() const {
 std::string ResponderRouter::toString() const {
 
 	return std::string("repr.") + m_name
-		+ ":" + application::This::getName()
-		+ "." + std::to_string(application::This::getId())
-		+ "@" + application::This::getEndpoint().toString();
+		+ ":" + This::getName()
+		+ "." + std::to_string(This::getId())
+		+ "@" + This::getEndpoint().toString();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -287,9 +287,9 @@ bool Responder::isCanceled() const {
 std::string Responder::toString() const {
 
 	return std::string("repm")
-		+ ":" + application::This::getName()
-		+ "." + std::to_string(application::This::getId())
-		+ "@" + application::This::getEndpoint().toString();
+		+ ":" + This::getName()
+		+ "." + std::to_string(This::getId())
+		+ "@" + This::getEndpoint().toString();
 }
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {

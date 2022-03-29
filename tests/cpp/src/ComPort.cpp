@@ -25,21 +25,21 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	int port1 = application::This::getCom().requestPort();
+	int port1 = This::getCom().requestPort();
 	cout << "Received port1 " << port1 << endl;
 
-	application::This::getCom().setPortUnavailable(port1);
+	This::getCom().setPortUnavailable(port1);
 	cout << "Set port " << port1 << " unavailable" << endl;
 
-	int port2 = application::This::getCom().requestPort();
+	int port2 = This::getCom().requestPort();
 	cout << "Received port2 " << port2 << endl;
 
-	application::This::getCom().releasePort(port2);
+	This::getCom().releasePort(port2);
 	cout << "Released port2 " << port2 << endl;
 
-	port2 = application::This::getCom().requestPort();
+	port2 = This::getCom().requestPort();
 	cout << "Received port2 " << port2 << endl;
 
 	cout << "Finished the application" << endl;

@@ -21,14 +21,14 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	if (application::This::isAvailable()) {
+	if (This::isAvailable()) {
 		std::cout << "Connected" << std::endl;
 	}
 
-	application::This::handleStop([] {
-		application::This::cancelWaitings();
+	This::handleStop([] {
+		This::cancelWaitings();
 	});
 
 	std::unique_ptr<coms::basic::Responder> responder;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Loop on the requests.
 	while (true) {

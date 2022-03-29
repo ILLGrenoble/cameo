@@ -40,14 +40,14 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 	m_responderIdentity = responderIdentity;
 
 	// Create a socket ROUTER.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
 
 	// Set the identity.
 	m_responder->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
 	// Connect to the proxy.
-	Endpoint proxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getResponderProxyPort());
+	Endpoint proxyEndpoint = This::getEndpoint().withPort(This::getCom().getResponderProxyPort());
 	m_responder->connect(proxyEndpoint.toString());
 
 	std::string endpointPrefix("tcp://*:");
@@ -55,7 +55,7 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 	// Loop to find an available port for the responder.
 	while (true) {
 
-		int port = application::This::getCom().requestPort();
+		int port = This::getCom().requestPort();
 		std::string repEndpoint = endpointPrefix + std::to_string(port);
 
 		try {
@@ -64,7 +64,7 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 			break;
 		}
 		catch (...) {
-			application::This::getCom().setPortUnavailable(port);
+			This::getCom().setPortUnavailable(port);
 		}
 	}
 }
@@ -80,7 +80,7 @@ void ResponderZmq::cancel() {
 	jsonRequest.pushValue(message::CANCEL);
 
 	// Create a request socket connected directly to the responder.
-	std::unique_ptr<RequestSocket> requestSocket = application::This::getCom().createRequestSocket(application::This::getEndpoint().withPort(m_responderPort).toString(), m_responderIdentity);
+	std::unique_ptr<RequestSocket> requestSocket = This::getCom().createRequestSocket(This::getEndpoint().withPort(m_responderPort).toString(), m_responderIdentity);
 	requestSocket->requestJSON(jsonRequest.toString());
 }
 
@@ -230,7 +230,7 @@ void ResponderZmq::terminate() {
 		m_responder.reset();
 
 		// Release the responder port.
-		application::This::getCom().releasePort(m_responderPort);
+		This::getCom().releasePort(m_responderPort);
 	}
 }
 

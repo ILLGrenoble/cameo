@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	if (argc > 2) {
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Created responder" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Receive first request.
 	unique_ptr<coms::basic::Request> request = responder->receive();
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	application::ServerAndInstance requester = request->connectToRequester(0, useProxy);
+	ServerAndInstance requester = request->connectToRequester(0, useProxy);
 	cout << "Requester " << *requester.instance << endl;
 
 	cout << "Finished the application" << endl;

@@ -29,18 +29,18 @@ class StatusEvent : public Event {
 	friend std::ostream& operator<<(std::ostream&, const StatusEvent&);
 
 public:
-	StatusEvent(int id, const std::string& name, application::State state, application::State pastStates, int exitCode = -1);
+	StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode = -1);
 	StatusEvent(const StatusEvent& event);
 
 	virtual StatusEvent* clone();
 
-	application::State getState() const;
-	application::State getPastStates() const;
+	State getState() const;
+	State getPastStates() const;
 	int getExitCode() const;
 
 private:
-	application::State m_state;
-	application::State m_pastStates;
+	State m_state;
+	State m_pastStates;
 	int m_exitCode; // TODO replace with optional
 };
 

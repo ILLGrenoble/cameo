@@ -59,7 +59,7 @@ Publisher::~Publisher() {
 void Publisher::terminate() {
 
 	if (m_impl) {
-		application::This::getCom().removeKey(m_key);
+		This::getCom().removeKey(m_key);
 
 		m_responder.reset();
 		m_impl.reset();
@@ -72,7 +72,7 @@ void Publisher::init(const std::string& name) {
 	m_key = KEY + "-" + name;
 
 	// Init the publisher and synchronizer sockets.
-	m_impl->init(StringId::from(application::This::getId(), m_key));
+	m_impl->init(StringId::from(This::getId(), m_key));
 
 	// Store the publisher data.
 	json::StringObject jsonData;
@@ -84,7 +84,7 @@ void Publisher::init(const std::string& name) {
 	jsonData.pushValue(m_numberOfSubscribers);
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.toString());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
@@ -176,9 +176,9 @@ void Publisher::sendEnd() const {
 std::string Publisher::toString() const {
 
 	return std::string("pub.") + getName()
-		+ ":" + application::This::getName()
-		+ "." + std::to_string(application::This::getId())
-		+ "@" + application::This::getEndpoint().toString();
+		+ ":" + This::getName()
+		+ "." + std::to_string(This::getId())
+		+ "@" + This::getEndpoint().toString();
 
 }
 
@@ -207,7 +207,7 @@ void Subscriber::terminate() {
 	m_impl.reset();
 }
 
-void Subscriber::synchronize(const application::Instance & app) {
+void Subscriber::synchronize(const Instance & app) {
 
 	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
 
@@ -220,7 +220,7 @@ void Subscriber::synchronize(const application::Instance & app) {
 	std::optional<std::string> response = requester->receive();
 }
 
-void Subscriber::init(const application::Instance & app, const std::string& publisherName) {
+void Subscriber::init(const Instance & app, const std::string& publisherName) {
 
 	m_publisherName = publisherName;
 	m_appName = app.getName();
@@ -262,7 +262,7 @@ void Subscriber::init(const application::Instance & app, const std::string& publ
 	}
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string &publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(Instance & app, const std::string &publisherName) {
 
 	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
 	subscriber->init(app, publisherName);

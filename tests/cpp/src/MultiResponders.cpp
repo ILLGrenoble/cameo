@@ -23,11 +23,11 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	application::This::handleStop([] {
+	This::handleStop([] {
 		// Cancel the router.
-		application::This::cancelWaitings();
+		This::cancelWaitings();
 
 		cout << "Stopped" << endl;
 	});
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Created router" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	int N = 5;
 

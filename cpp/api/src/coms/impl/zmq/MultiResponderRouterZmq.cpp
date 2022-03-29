@@ -33,14 +33,14 @@ ResponderRouterZmq::~ResponderRouterZmq() {
 void ResponderRouterZmq::init(const std::string &responderIdentity, const std::string &dealerEndpoint) {
 
 	// Create a socket ROUTER.
-	ContextZmq *contextImpl = dynamic_cast<ContextZmq*>(application::This::getCom().getContext());
+	ContextZmq *contextImpl = dynamic_cast<ContextZmq*>(This::getCom().getContext());
 	m_router.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
 
 	// Set the identity.
 	m_router->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
 	// Connect to the proxy.
-	Endpoint proxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getResponderProxyPort());
+	Endpoint proxyEndpoint = This::getEndpoint().withPort(This::getCom().getResponderProxyPort());
 	m_router->connect(proxyEndpoint.toString());
 
 	std::string endpointPrefix("tcp://*:");
@@ -48,7 +48,7 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 	// Loop to find an available port for the responder.
 	while (true) {
 
-		int port = application::This::getCom().requestPort();
+		int port = This::getCom().requestPort();
 		std::string repEndpoint = endpointPrefix + std::to_string(port);
 
 		try {
@@ -57,7 +57,7 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 			break;
 		}
 		catch (...) {
-			application::This::getCom().setPortUnavailable(port);
+			This::getCom().setPortUnavailable(port);
 		}
 	}
 
@@ -141,7 +141,7 @@ void ResponderRouterZmq::terminate() {
 		m_dealer.reset();
 
 		// Release the responder port.
-		application::This::getCom().releasePort(m_responderPort);
+		This::getCom().releasePort(m_responderPort);
 	}
 }
 

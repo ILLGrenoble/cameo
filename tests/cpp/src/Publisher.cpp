@@ -24,7 +24,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	int numberOfSubscribers = 1;
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	application::This::setRunning();
+	This::setRunning();
 
 	cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
 

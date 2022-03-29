@@ -34,14 +34,14 @@ std::string serializeToJSON(const std::string& message, int i) {
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	int numberOfSubscribers = 0;
 	if (argc > 2) {
 		numberOfSubscribers = std::stoi(argv[1]);
 	}
 
-	if (application::This::isAvailable()) {
+	if (This::isAvailable()) {
 		std::cout << "Connected" << std::endl;
 	}
 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	application::This::setRunning();
+	This::setRunning();
 
 	std::cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << std::endl;
 

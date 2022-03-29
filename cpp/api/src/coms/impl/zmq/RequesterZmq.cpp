@@ -94,7 +94,7 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 	m_responderIdentity = responderIdentity;
 
 	// Get the context.
-	m_contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	m_contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 
 	m_timeout = SYNC_TIMEOUT;
 
@@ -198,16 +198,16 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 	jsonRequest.pushValue(message::REQUEST);
 
 	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
-	jsonRequest.pushValue(application::This::getName());
+	jsonRequest.pushValue(This::getName());
 
 	jsonRequest.pushKey(message::Request::APPLICATION_ID);
-	jsonRequest.pushValue(application::This::getId());
+	jsonRequest.pushValue(This::getId());
 
 	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
-	jsonRequest.pushValue(application::This::getEndpoint().toString());
+	jsonRequest.pushValue(This::getEndpoint().toString());
 
 	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
-	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
+	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
 
 	// Send the request.
 	sendRequest(jsonRequest.toString(), requestData);
@@ -224,16 +224,16 @@ void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std
 	jsonRequest.pushValue(message::REQUEST);
 
 	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
-	jsonRequest.pushValue(application::This::getName());
+	jsonRequest.pushValue(This::getName());
 
 	jsonRequest.pushKey(message::Request::APPLICATION_ID);
-	jsonRequest.pushValue(application::This::getId());
+	jsonRequest.pushValue(This::getId());
 
 	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
-	jsonRequest.pushValue(application::This::getEndpoint().toString());
+	jsonRequest.pushValue(This::getEndpoint().toString());
 
 	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
-	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
+	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
 
 	// Send the request.
 	sendRequest(jsonRequest.toString(), requestData1, requestData2);

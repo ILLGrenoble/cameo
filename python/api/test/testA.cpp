@@ -17,52 +17,52 @@
 TEST_CASE("self" * doctest::expected_failures(0) // the getEndpoint
 ) {
 
-	cameo::application::This::setRunning();
-	CHECK(cameo::application::This::getName() == "testA");
+	cameo::This::setRunning();
+	CHECK(cameo::This::getName() == "testA");
 	// this name can effectively be set to the local hostname
-	// CHECK(cameo::application::This::getEndpoint() == "tcp://localhost.localdomain:2000");
-	CHECK(cameo::application::This::setRunning() == true);
+	// CHECK(cameo::This::getEndpoint() == "tcp://localhost.localdomain:2000");
+	CHECK(cameo::This::setRunning() == true);
 
-	CHECK(cameo::application::This::isAvailable() == true);
-	CHECK(cameo::application::This::isStopping() == false);
+	CHECK(cameo::This::isAvailable() == true);
+	CHECK(cameo::This::isStopping() == false);
 
-	cameo::Server& server = cameo::application::This::getServer();
-	std::cout << "This: " << cameo::application::This() << std::endl; // testing stream output
+	cameo::Server& server = cameo::This::getServer();
+	std::cout << "This: " << cameo::This() << std::endl; // testing stream output
 
 	CHECK(server.isAvailable() == true);
 	std::cout << "Server: " << server << std::endl; // testing stream output
 
-	std::unique_ptr<cameo::application::Instance> self =
-	    server.connect(cameo::application::This::getName());
+	std::unique_ptr<cameo::Instance> self =
+	    server.connect(cameo::This::getName());
 	CHECK(self->exists() == true);
-	// cameo::application::This::terminate(); // never call this!
+	// cameo::This::terminate(); // never call this!
 }
 
 /*************************************************************/
 TEST_CASE("instance") {
-	cameo::Server& server = cameo::application::This::getServer();
+	cameo::Server& server = cameo::This::getServer();
 
-	std::unique_ptr<cameo::application::Instance> self =
-	    server.connect(cameo::application::This::getName());
+	std::unique_ptr<cameo::Instance> self =
+	    server.connect(cameo::This::getName());
 	CHECK(self->exists() == true);
 
-	CHECK(self->getName() == cameo::application::This::getName());
+	CHECK(self->getName() == cameo::This::getName());
 	CHECK(self->getId() > 0);
 
-	//  std::string endpoint = cameo::application::This::getEndpoint();
+	//  std::string endpoint = cameo::This::getEndpoint();
 	// endpoint.erase(endpoint.size()-5); // remove the port
 	// CHECK( self->getUrl() == endpoint);
-	CHECK(self->getEndpoint() == cameo::application::This::getEndpoint());
+	CHECK(self->getEndpoint() == cameo::This::getEndpoint());
 	CHECK(self->getNameId() ==
-	      std::string(cameo::application::This::getName()) + "." + std::to_string(self->getId()));
+	      std::string(cameo::This::getName()) + "." + std::to_string(self->getId()));
 
 	CHECK(self->hasResult() == false);
 
 	CHECK(self->getErrorMessage() == "");
 	// self->waitFor();
 	self->cancelWaitFor();
-	CHECK(self->getLastState() == cameo::application::RUNNING);
-	CHECK(self->getActualState() == cameo::application::RUNNING);
+	CHECK(self->getLastState() == cameo::RUNNING);
+	CHECK(self->getActualState() == cameo::RUNNING);
 
 	// cannot do that if hasResult is false!
 	if (self->hasResult() == true) {
@@ -83,21 +83,21 @@ TEST_CASE("instance") {
 TEST_CASE("requester") {
 	std::string responder_name;
 
-	cameo::Server& server = cameo::application::This::getServer();
+	cameo::Server& server = cameo::This::getServer();
 	CHECK(server.isAvailable() == true);
 
 	SUBCASE("cpp") { responder_name = CAMEO_RESPONDER; }
 	SUBCASE("python") { responder_name = RESPONDERPYTHON; }
 
 	// tell the server to start the reponder application
-	std::unique_ptr<cameo::application::Instance> responder_instance;
+	std::unique_ptr<cameo::Instance> responder_instance;
 	{
 		responder_instance = server.start(responder_name);
 		std::cout << "Responder instance: " << (*responder_instance) << std::endl;
 		REQUIRE(responder_instance->exists() == true);
 	}
 	// connect to the responder application
-	std::unique_ptr<cameo::application::Instance> responderServer = server.connect(responder_name);
+	std::unique_ptr<cameo::Instance> responderServer = server.connect(responder_name);
 	std::cout << *responderServer << std::endl;
 	CHECK(responderServer->exists() == true);
 	CHECK(responder_instance->getEndpoint() == responderServer->getEndpoint());
@@ -127,11 +127,11 @@ TEST_CASE("requester") {
 
 /*************************************************************/
 TEST_CASE("responder") {
-	cameo::application::This::setRunning();
+	cameo::This::setRunning();
 
-	std::cout << "Name: " << cameo::application::This::getName() << std::endl;
-	std::cout << "Id: " << cameo::application::This::getId() << std::endl;
-	std::cout << "Timeout: " << cameo::application::This::getTimeout() << std::endl;
+	std::cout << "Name: " << cameo::This::getName() << std::endl;
+	std::cout << "Id: " << cameo::This::getId() << std::endl;
+	std::cout << "Timeout: " << cameo::This::getTimeout() << std::endl;
 	std::unique_ptr<cameo::coms::legacy::Responder> responder;
 	try {
 		responder = cameo::coms::legacy::Responder::create(CAMEO_RESPONDER);
@@ -142,7 +142,7 @@ TEST_CASE("responder") {
 	}
 
 	// this ensures that both are at this stage: requester and responder
-	std::unique_ptr<cameo::application::Instance> starter = cameo::application::This::connectToStarter();
+	std::unique_ptr<cameo::Instance> starter = cameo::This::connectToStarter();
 
 	std::unique_ptr<cameo::coms::legacy::Request> request = responder->receive();
 	CHECK(request->getBinary() == TEXT);
@@ -156,21 +156,21 @@ TEST_CASE("responder") {
 TEST_CASE("subscriber") {
 	std::string publisher_name;
 
-	cameo::Server& server = cameo::application::This::getServer();
+	cameo::Server& server = cameo::This::getServer();
 	CHECK(server.isAvailable() == true);
 
 	SUBCASE("cpp") { publisher_name = CAMEO_PUBLISHER; }
 	SUBCASE("python") { publisher_name = CAMEO_PUBLISHER_PYTHON; }
 
 	// tell the server to start the publisher application
-	std::unique_ptr<cameo::application::Instance> publisher_instance;
+	std::unique_ptr<cameo::Instance> publisher_instance;
 	{
 		publisher_instance = server.start(publisher_name);
 		std::cout << "Publisher instance: " << (*publisher_instance) << std::endl;
 		REQUIRE(publisher_instance->exists() == true);
 	}
 	// connect to the publisher application
-	std::unique_ptr<cameo::application::Instance> publisherServer = server.connect(publisher_name);
+	std::unique_ptr<cameo::Instance> publisherServer = server.connect(publisher_name);
 	std::cout << *publisherServer << std::endl;
 	CHECK(publisherServer->exists() == true);
 	CHECK(publisher_instance->getEndpoint() == publisherServer->getEndpoint());
@@ -193,11 +193,11 @@ TEST_CASE("subscriber") {
 
 /*************************************************************/
 TEST_CASE("publisher") { // it is started from the subscriber
-	cameo::application::This::setRunning();
+	cameo::This::setRunning();
 
-	std::cout << "Name: " << cameo::application::This::getName() << std::endl;
-	std::cout << "Id: " << cameo::application::This::getId() << std::endl;
-	std::cout << "Timeout: " << cameo::application::This::getTimeout() << std::endl;
+	std::cout << "Name: " << cameo::This::getName() << std::endl;
+	std::cout << "Id: " << cameo::This::getId() << std::endl;
+	std::cout << "Timeout: " << cameo::This::getTimeout() << std::endl;
 	std::unique_ptr<cameo::coms::Publisher> publisher;
 	try {
 		publisher = cameo::coms::Publisher::create(CAMEO_PUBLISHER);
@@ -211,7 +211,7 @@ TEST_CASE("publisher") { // it is started from the subscriber
 	std::cout << publisher->getApplicationId() << std::endl;
 	std::cout << publisher->getApplicationEndpoint() << std::endl;
 	// this ensures that both are at this stage: requester and publisher
-	std::unique_ptr<cameo::application::Instance> starter = cameo::application::This::connectToStarter();
+	std::unique_ptr<cameo::Instance> starter = cameo::This::connectToStarter();
 
 	std::cout << publisher->waitForSubscribers() << std::endl;
 
@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
 	// overrides
 	context.setOption("no-breaks", true); // don't break in the debugger when assertions fail
 
-	cameo::application::This thisApplication;
+	cameo::This thisApplication;
 
 	try {
 		thisApplication.init(argc, argv);
@@ -246,7 +246,7 @@ int main(int argc, char** argv) {
 		std::cerr << "[ERROR] Failed This::init" << std::endl;
 		return 1;
 	};
-	cameo::application::State returnState = cameo::application::UNKNOWN;
+	cameo::State returnState = cameo::UNKNOWN;
 
 	int res = context.run(); // run
 

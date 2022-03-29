@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	Server& server = application::This::getServer();
+	Server& server = This::getServer();
 
-	unique_ptr<application::Instance> publisherApplication = server.connect(applicationName);
+	unique_ptr<Instance> publisherApplication = server.connect(applicationName);
 	if (!publisherApplication->exists()) {
 		cout << "Publisher error" << endl;
 		return -1;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Synchronized with 1 publisher" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Receive data.
 	while (true) {

@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 		
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	// The request message is the second argument.
 	std::string requestMessage;
@@ -44,21 +44,21 @@ int main(int argc, char *argv[]) {
 	std::unique_ptr<Server> server;
 
 	if (serverEndpoint == "") {
-		server.reset(new Server(application::This::getServer().getEndpoint()));
+		server.reset(new Server(This::getServer().getEndpoint()));
 	}
 	else {
 		server.reset(new Server(serverEndpoint));
 	}
 
 
-	if (application::This::isAvailable() && server->isAvailable()) {
+	if (This::isAvailable() && server->isAvailable()) {
 		std::cout << "Connected server " << *server << std::endl;
 	}
 
 	// Connect to the server.
-	std::unique_ptr<application::Instance> responderServer = server->connect("responder");
+	std::unique_ptr<Instance> responderServer = server->connect("responder");
 
-	std::cout << "Application " << *responderServer << " has state " << application::toString(responderServer->now()) << std::endl;
+	std::cout << "Application " << *responderServer << " has state " << toString(responderServer->now()) << std::endl;
 
 	// Create a requester.
 	std::unique_ptr<coms::Requester> requester = coms::Requester::create(*responderServer, "the-responder");

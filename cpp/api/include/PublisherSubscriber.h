@@ -43,7 +43,7 @@ public:
 
 class Publisher {
 
-	friend class cameo::application::This;
+	friend class cameo::This;
 
 public:
 	~Publisher();
@@ -109,13 +109,13 @@ public:
 class Subscriber {
 
 	friend class cameo::Server;
-	friend class cameo::application::Instance;
+	friend class cameo::Instance;
 
 public:
 	~Subscriber();
 	void terminate();
 
-	static std::unique_ptr<Subscriber> create(application::Instance & app, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(Instance & app, const std::string &publisherName);
 
 	const std::string& getPublisherName() const;
 	const std::string& getAppName() const;
@@ -152,8 +152,8 @@ public:
 
 private:
 	Subscriber();
-	void init(const application::Instance &app, const std::string &publisherName);
-	void synchronize(const application::Instance & app);
+	void init(const Instance &app, const std::string &publisherName);
+	void synchronize(const Instance & app);
 
 	bool m_useProxy;
 	std::string m_publisherName;

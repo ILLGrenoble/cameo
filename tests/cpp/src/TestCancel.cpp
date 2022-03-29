@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -40,22 +40,22 @@ int main(int argc, char *argv[]) {
 	{
 		cout << "Starting stopcpp for cancelWaitings" << endl;
 
-		unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<Instance> stopApplication = server.start("stopcpp");
 
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			application::This::cancelWaitings();
+			This::cancelWaitings();
 		});
 
-		application::State state = stopApplication->waitFor();
+		State state = stopApplication->waitFor();
 
-		cout << "End of waitFor with state " << application::toString(state) << endl;
+		cout << "End of waitFor with state " << toString(state) << endl;
 
 		stopApplication->stop();
 		state = stopApplication->waitFor();
 
-		cout << "End of stopcpp with state " << application::toString(state) << endl;
+		cout << "End of stopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 	}
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting stopcpp for cancelWaitFor" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> stopApplication(server.start("stopcpp"));
+		shared_ptr<Instance> stopApplication(server.start("stopcpp"));
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -73,14 +73,14 @@ int main(int argc, char *argv[]) {
 			stopApplication->cancelWaitFor();
 		});
 
-		application::State state = stopApplication->waitFor();
+		State state = stopApplication->waitFor();
 
-		cout << "End of waitFor with state " << application::toString(state) << endl;
+		cout << "End of waitFor with state " << toString(state) << endl;
 
 		stopApplication->stop();
 		state = stopApplication->waitFor();
 
-		cout << "End of stopcpp with state " << application::toString(state) << endl;
+		cout << "End of stopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 	}
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for killing" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<Instance> pubLoopApplication(server.start("publisherloopcpp"));
 
 		// Start thread.
 		thread killThread([&] {
@@ -132,9 +132,9 @@ int main(int argc, char *argv[]) {
 
 		cout << "Subscriber end of stream " << subscriber->hasEnded() << endl;
 
-		application::State state = pubLoopApplication->waitFor();
+		State state = pubLoopApplication->waitFor();
 
-		cout << "End of publisherloopcpp with state " << application::toString(state) << endl;
+		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		killThread.join();
 	}
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for testing cancel of a subscriber" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<Instance> pubLoopApplication(server.start("publisherloopcpp"));
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			application::This::cancelWaitings();
+			This::cancelWaitings();
 		});
 
 		// Receiving data.
@@ -172,9 +172,9 @@ int main(int argc, char *argv[]) {
 			pubLoopApplication->kill();
 		});
 
-		application::State state = pubLoopApplication->waitFor();
+		State state = pubLoopApplication->waitFor();
 
-		cout << "End of publisherloopcpp with state " << application::toString(state) << endl;
+		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 		killThread.join();
@@ -219,7 +219,7 @@ int main(int argc, char *argv[]) {
 		});
 
 		// Get this app.
-		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
+		unique_ptr<Instance> thisApp = server.connect(This::getName());
 
 		// Create a requester.
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "responder");

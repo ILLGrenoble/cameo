@@ -22,14 +22,14 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	if (argc > 2) {
 		useProxy = (string(argv[1]) == "true");
 	}
 
-	application::ServerAndInstance starter = application::This::connectToStarter(0, useProxy);
+	ServerAndInstance starter = This::connectToStarter(0, useProxy);
 
 	cout << "Connected to started" << endl;
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Created requester" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Send 10 requests.
 	int R = 10;

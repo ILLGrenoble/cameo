@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<application::Instance> resultApplication = server.start("resultcpp");
+		unique_ptr<Instance> resultApplication = server.start("resultcpp");
 
 		optional<string> result = resultApplication->getResult();
 		if (result.has_value()) {

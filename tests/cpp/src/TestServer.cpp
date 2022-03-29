@@ -37,21 +37,21 @@ int main(int, char *[]) {
 
 	cout << "Configs" << endl;
 
-	vector<application::Configuration> configs = server.getApplicationConfigurations();
+	vector<Configuration> configs = server.getApplicationConfigurations();
 
 	for (auto c : configs) {
 		cout << c << endl;
 	}
 
-	unique_ptr<application::Instance> instance = server.start("simplecpp");
+	unique_ptr<Instance> instance = server.start("simplecpp");
 
 	if (!instance->exists()) {
 		cout << "App does not exist" << endl;
 	}
 
-	application::State state = instance->waitFor();
+	State state = instance->waitFor();
 
-	cout << "Terminated simple with state " << application::toString(state) << endl;
+	cout << "Terminated simple with state " << toString(state) << endl;
 
 	return 0;
 }

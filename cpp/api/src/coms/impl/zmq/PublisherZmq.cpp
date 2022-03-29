@@ -38,11 +38,11 @@ void PublisherZmq::init(const std::string& publisherIdentity) {
 	m_publisherIdentity = publisherIdentity;
 
 	// Create a socket for publishing.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
 
 	// Connect to the proxy.
-	Endpoint subscriberProxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getSubscriberProxyPort());
+	Endpoint subscriberProxyEndpoint = This::getEndpoint().withPort(This::getCom().getSubscriberProxyPort());
 	m_publisher->connect(subscriberProxyEndpoint.toString());
 
 	std::string endpointPrefix("tcp://*:");
@@ -50,7 +50,7 @@ void PublisherZmq::init(const std::string& publisherIdentity) {
 	// Loop to find an available port for the publisher.
 	while (true) {
 
-		int port = application::This::getCom().requestPort();
+		int port = This::getCom().requestPort();
 		std::string pubEndpoint = endpointPrefix + std::to_string(port);
 
 		try {
@@ -59,7 +59,7 @@ void PublisherZmq::init(const std::string& publisherIdentity) {
 			break;
 		}
 		catch (...) {
-			application::This::getCom().setPortUnavailable(port);
+			This::getCom().setPortUnavailable(port);
 		}
 	}
 }
@@ -112,7 +112,7 @@ void PublisherZmq::terminate() {
 		m_publisher.reset(nullptr);
 
 		// Release the publisher port.
-		application::This::getCom().releasePort(m_publisherPort);
+		This::getCom().releasePort(m_publisherPort);
 	}
 }
 

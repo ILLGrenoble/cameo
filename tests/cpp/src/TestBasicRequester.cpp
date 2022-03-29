@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -52,14 +52,14 @@ int main(int argc, char *argv[]) {
 	}
 
 	Server server(endpoint, 0, useProxy);
-	application::This::setRunning();
+	This::setRunning();
 
 	int N = 5;
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		application::InstanceArray apps;
+		InstanceArray apps;
 
 		// Start the requester applications.
 		for (int j = 0; j < N; ++j) {

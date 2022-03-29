@@ -31,10 +31,7 @@
 
 namespace cameo {
 
-namespace application {
-	class This;
-}
-
+class This;
 class EventListener;
 class EventThread;
 class Context;
@@ -42,8 +39,8 @@ class RequestSocket;
 
 class Server {
 
-	friend class application::Instance;
-	friend class application::This;
+	friend class Instance;
+	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
 	friend std::ostream& operator<<(std::ostream&, const Server&);
@@ -71,11 +68,11 @@ public:
 	 */
 	bool isAvailable() const;
 
-	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
-	std::unique_ptr<application::Instance> start(const std::string& name, int options = 0);
-	application::InstanceArray connectAll(const std::string& name, int options = 0);
-	std::unique_ptr<application::Instance> connect(const std::string& name, int options = 0);
-	std::unique_ptr<application::Instance> connect(int id, int options = 0);
+	std::unique_ptr<Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
+	std::unique_ptr<Instance> start(const std::string& name, int options = 0);
+	InstanceArray connectAll(const std::string& name, int options = 0);
+	std::unique_ptr<Instance> connect(const std::string& name, int options = 0);
+	std::unique_ptr<Instance> connect(int id, int options = 0);
 
 	/**
 	 * throws ConnectionTimeout
@@ -85,32 +82,32 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<application::Configuration> getApplicationConfigurations() const;
+	std::vector<Configuration> getApplicationConfigurations() const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<application::Info> getApplicationInfos() const;
+	std::vector<Info> getApplicationInfos() const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<application::Info> getApplicationInfos(const std::string& name) const;
+	std::vector<Info> getApplicationInfos(const std::string& name) const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<application::Port> getPorts() const;
+	std::vector<Port> getPorts() const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	application::State getActualState(int id) const;
+	State getActualState(int id) const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::set<application::State> getPastStates(int id) const;
+	std::set<State> getPastStates(int id) const;
 
 	/**
 	 * throws ConnectionTimeout
@@ -164,7 +161,7 @@ private:
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
 
-	std::unique_ptr<application::Instance> makeInstance();
+	std::unique_ptr<Instance> makeInstance();
 	bool isAlive(int id) const;
 
 	Response stop(int id, bool immediately) const;

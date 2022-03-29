@@ -196,20 +196,20 @@ int Server::getAvailableTimeout() const {
 	}
 }
 
-std::unique_ptr<application::Instance> Server::makeInstance() {
-	return std::unique_ptr<application::Instance>(new application::Instance(this));
+std::unique_ptr<Instance> Server::makeInstance() {
+	return std::unique_ptr<Instance>(new Instance(this));
 }
 
-std::unique_ptr<application::Instance> Server::start(const std::string& name, int options) {
+std::unique_ptr<Instance> Server::start(const std::string& name, int options) {
 	return start(name, std::vector<std::string>(), options);
 }
 
-std::unique_ptr<application::Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
+std::unique_ptr<Instance> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 	bool linked = ((options & UNLINKED) == 0);
 
-	std::unique_ptr<application::Instance> instance = makeInstance();
+	std::unique_ptr<Instance> instance = makeInstance();
 
 	// Set the name and register the instance as event listener.
 	instance->setName(name);
@@ -225,11 +225,11 @@ std::unique_ptr<application::Instance> Server::start(const std::string& name, co
 
 		json::Object response;
 
-		if (application::This::getId() == -1) {
+		if (This::getId() == -1) {
 			response = m_requestSocket->requestJSON(createStartRequest(name, args, "", 0, "", 0, false));
 		}
 		else {
-			response = m_requestSocket->requestJSON(createStartRequest(name, args, application::This::getName(), application::This::getId(), application::This::getEndpoint().toString(), application::This::getServer().m_responderProxyPort, linked));
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, This::getName(), This::getId(), This::getEndpoint().toString(), This::getServer().m_responderProxyPort, linked));
 		}
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
@@ -270,13 +270,13 @@ Response Server::stop(int id, bool immediately) const {
 	return Response(value, message);
 }
 
-application::InstanceArray Server::connectAll(const std::string& name, int options) {
+InstanceArray Server::connectAll(const std::string& name, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
 	json::Object response = m_requestSocket->requestJSON(createConnectRequest(name));
 
-	application::InstanceArray instances;
+	InstanceArray instances;
 
 	json::Value& applicationInfo = response[message::ApplicationInfoListResponse::APPLICATION_INFO];
 	json::Value::Array array = applicationInfo.GetArray();
@@ -290,7 +290,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 	for (size_t i = 0; i < size; ++i) {
 		json::Value::Object info = array[i].GetObject();
 
-		std::unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<Instance> instance = makeInstance();
 
 		// Set the name and register the instance as event listener.
 		std::string name = info[message::ApplicationInfo::NAME].GetString();
@@ -317,7 +317,7 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 	}
 
 	// Copy the alive instances.
-	application::InstanceArray aliveInstances;
+	InstanceArray aliveInstances;
 	aliveInstances.reserve(aliveInstancesCount);
 
 	for (size_t i = 0; i < size; ++i) {
@@ -330,19 +330,19 @@ application::InstanceArray Server::connectAll(const std::string& name, int optio
 	return aliveInstances;
 }
 
-std::unique_ptr<application::Instance> Server::connect(const std::string& name, int options) {
+std::unique_ptr<Instance> Server::connect(const std::string& name, int options) {
 
-	application::InstanceArray instances = connectAll(name, options);
+	InstanceArray instances = connectAll(name, options);
 
 	if (instances.size() == 0) {
-		std::unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<Instance> instance = makeInstance();
 		return instance;
 	}
 
 	return std::move(instances[0]);
 }
 
-std::unique_ptr<application::Instance> Server::connect(int id, int options) {
+std::unique_ptr<Instance> Server::connect(int id, int options) {
 
 	bool outputStream = ((options & OUTPUTSTREAM) != 0);
 
@@ -355,7 +355,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 	if (size > 0) {
 		json::Value::Object info = array[0].GetObject();
 
-		std::unique_ptr<application::Instance> instance = makeInstance();
+		std::unique_ptr<Instance> instance = makeInstance();
 
 		// Set the name and register the instance as event listener.
 		std::string name = info[message::ApplicationInfo::NAME].GetString();
@@ -385,7 +385,7 @@ std::unique_ptr<application::Instance> Server::connect(int id, int options) {
 
 void Server::killAllAndWaitFor(const std::string& name) {
 
-	application::InstanceArray instances = connectAll(name);
+	InstanceArray instances = connectAll(name);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		(*i)->kill();
@@ -400,9 +400,9 @@ bool Server::isAlive(int id) const {
 	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
 
-std::vector<application::Configuration> Server::getApplicationConfigurations() const {
+std::vector<Configuration> Server::getApplicationConfigurations() const {
 
-	std::vector<application::Configuration> configs;
+	std::vector<Configuration> configs;
 
 	json::Object response = m_requestSocket->requestJSON(createListRequest());
 
@@ -420,7 +420,7 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 		int startingTime = config[message::ApplicationConfig::STARTING_TIME].GetInt();
 		int stoppingTime = config[message::ApplicationConfig::STOPPING_TIME].GetInt();
 
-		application::Configuration applicationConfig(name,
+		Configuration applicationConfig(name,
 				description,
 				runsSingle,
 				restart,
@@ -433,9 +433,9 @@ std::vector<application::Configuration> Server::getApplicationConfigurations() c
 	return configs;
 }
 
-std::vector<application::Info> Server::getApplicationInfos() const {
+std::vector<Info> Server::getApplicationInfos() const {
 
-	std::vector<application::Info> infos;
+	std::vector<Info> infos;
 
 	json::Object response = m_requestSocket->requestJSON(createAppsRequest());
 
@@ -449,11 +449,11 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 		std::string name = info[message::ApplicationInfo::NAME].GetString();
 		int id = info[message::ApplicationInfo::ID].GetInt();
 		int pid = info[message::ApplicationInfo::PID].GetInt();
-		application::State state = info[message::ApplicationInfo::APPLICATION_STATE].GetInt();
-		application::State pastStates = info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt();
+		State state = info[message::ApplicationInfo::APPLICATION_STATE].GetInt();
+		State pastStates = info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt();
 		std::string args = info[message::ApplicationInfo::ARGS].GetString();
 
-		application::Info applicationInfo(name,
+		Info applicationInfo(name,
 						id,
 						pid,
 						state,
@@ -466,13 +466,13 @@ std::vector<application::Info> Server::getApplicationInfos() const {
 	return infos;
 }
 
-std::vector<application::Info> Server::getApplicationInfos(const std::string& name) const {
+std::vector<Info> Server::getApplicationInfos(const std::string& name) const {
 
-	std::vector<application::Info> allInfos = getApplicationInfos();
-	std::vector<application::Info> infos;
+	std::vector<Info> allInfos = getApplicationInfos();
+	std::vector<Info> infos;
 
-	for (std::vector<application::Info>::const_iterator i = allInfos.begin(); i != allInfos.end(); ++i) {
-		application::Info const & info = *i;
+	for (std::vector<Info>::const_iterator i = allInfos.begin(); i != allInfos.end(); ++i) {
+		Info const & info = *i;
 		if (info.getName() == name) {
 			infos.push_back(info);
 		}
@@ -481,9 +481,9 @@ std::vector<application::Info> Server::getApplicationInfos(const std::string& na
 	return infos;
 }
 
-std::vector<application::Port> Server::getPorts() const {
+std::vector<Port> Server::getPorts() const {
 
-	std::vector<application::Port> ports;
+	std::vector<Port> ports;
 
 	json::Object response = m_requestSocket->requestJSON(createPortsRequest());
 
@@ -498,7 +498,7 @@ std::vector<application::Port> Server::getPorts() const {
 		std::string status = info[message::PortInfo::STATUS].GetString();
 		std::string owner = info[message::PortInfo::OWNER].GetString();
 
-		application::Port portInfo(port, status, owner);
+		Port portInfo(port, status, owner);
 
 		ports.push_back(portInfo);
 	}
@@ -506,55 +506,55 @@ std::vector<application::Port> Server::getPorts() const {
 	return ports;
 }
 
-application::State Server::getActualState(int id) const {
+State Server::getActualState(int id) const {
 
 	json::Object response = m_requestSocket->requestJSON(createGetStatusRequest(id));
 
 	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-std::set<application::State> Server::getPastStates(int id) const {
+std::set<State> Server::getPastStates(int id) const {
 
 	json::Object response = m_requestSocket->requestJSON(createGetStatusRequest(id));
 
-	application::State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
+	State applicationStates = response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt();
 
-	std::set<application::State> result;
+	std::set<State> result;
 
-	if ((applicationStates & application::STARTING) != 0) {
-		result.insert(application::STARTING);
+	if ((applicationStates & STARTING) != 0) {
+		result.insert(STARTING);
 	}
 
-	if ((applicationStates & application::RUNNING) != 0) {
-		result.insert(application::RUNNING);
+	if ((applicationStates & RUNNING) != 0) {
+		result.insert(RUNNING);
 	}
 
-	if ((applicationStates & application::STOPPING) != 0) {
-		result.insert(application::STOPPING);
+	if ((applicationStates & STOPPING) != 0) {
+		result.insert(STOPPING);
 	}
 
-	if ((applicationStates & application::KILLING) != 0) {
-		result.insert(application::KILLING);
+	if ((applicationStates & KILLING) != 0) {
+		result.insert(KILLING);
 	}
 
-	if ((applicationStates & application::PROCESSING_ERROR) != 0) {
-		result.insert(application::PROCESSING_ERROR);
+	if ((applicationStates & PROCESSING_ERROR) != 0) {
+		result.insert(PROCESSING_ERROR);
 	}
 
-	if ((applicationStates & application::FAILURE) != 0) {
-		result.insert(application::FAILURE);
+	if ((applicationStates & FAILURE) != 0) {
+		result.insert(FAILURE);
 	}
 
-	if ((applicationStates & application::SUCCESS) != 0) {
-		result.insert(application::SUCCESS);
+	if ((applicationStates & SUCCESS) != 0) {
+		result.insert(SUCCESS);
 	}
 
-	if ((applicationStates & application::STOPPED) != 0) {
-		result.insert(application::STOPPED);
+	if ((applicationStates & STOPPED) != 0) {
+		result.insert(STOPPED);
 	}
 
-	if ((applicationStates & application::KILLED) != 0) {
-		result.insert(application::KILLED);
+	if ((applicationStates & KILLED) != 0) {
+		result.insert(KILLED);
 	}
 
 	return result;

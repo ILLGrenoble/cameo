@@ -22,11 +22,6 @@
 #include <zmq.hpp>
 
 namespace cameo {
-
-namespace application {
-	class This;
-}
-
 namespace coms {
 
 class PublisherZmq : public PublisherImpl {

@@ -22,10 +22,10 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	// Define a stop handler.
-	application::This::handleStop([&] {
+	This::handleStop([&] {
 		cout << "Stop handler executed" << endl;
 	});
 
@@ -41,9 +41,9 @@ int main(int argc, char *argv[]) {
 	Server server(endpoint, 0, useProxy);
 
 	// Start the application.
-	unique_ptr<application::Instance> app = server.start("stopcpp");
+	unique_ptr<Instance> app = server.start("stopcpp");
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Loop, the app will be killed.
 	while (true) {

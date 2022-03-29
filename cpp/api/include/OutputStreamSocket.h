@@ -27,12 +27,7 @@ namespace cameo {
 class Context;
 class RequestSocket;
 class StreamSocketImpl;
-
-namespace application {
-
 class Instance;
-
-}
 
 class Output {
 
@@ -57,7 +52,7 @@ private:
 class OutputStreamSocket {
 
 	friend class Server;
-	friend class application::Instance;
+	friend class Instance;
 
 	void setApplicationId(int id);
 

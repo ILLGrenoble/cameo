@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	vector<string> args{argv[2]};
 
 	// Start the application.
-	unique_ptr<application::Instance> responderApplication = server.start(applicationName, args);
+	unique_ptr<Instance> responderApplication = server.start(applicationName, args);
 
 	cout << "Started application " << *responderApplication << endl;
 
@@ -104,9 +104,9 @@ int main(int argc, char *argv[]) {
 	responderApplication->stop();
 
 	// Wait for the end of the application.
-	application::State state = responderApplication->waitFor();
+	State state = responderApplication->waitFor();
 
-	cout << "Responder application terminated with state " << application::toString(state) << endl;
+	cout << "Responder application terminated with state " << toString(state) << endl;
 	cout << "Finished the application" << endl;
 
 	return 0;

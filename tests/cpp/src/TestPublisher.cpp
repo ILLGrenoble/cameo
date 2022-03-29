@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<application::Instance> publisherApplication = server.start(applicationName);
+		unique_ptr<Instance> publisherApplication = server.start(applicationName);
 
 		cout << "Started application " << *publisherApplication << endl;
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 			return -1;
 		}
 
-		application::This::setRunning();
+		This::setRunning();
 
 		// Receiving data.
 		while (true) {
@@ -83,9 +83,9 @@ int main(int argc, char *argv[]) {
 
 		cout << "Finished stream" << endl;
 
-		application::State state = publisherApplication->waitFor();
+		State state = publisherApplication->waitFor();
 
-		cout << "Publisher application terminated with state " << application::toString(state) << endl;
+		cout << "Publisher application terminated with state " << toString(state) << endl;
 	}
 
 	return 0;

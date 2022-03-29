@@ -20,11 +20,6 @@
 #include <string>
 
 namespace cameo {
-
-namespace application {
-	class This;
-}
-
 namespace coms {
 
 class PublisherImpl {

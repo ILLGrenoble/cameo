@@ -48,7 +48,6 @@
 #endif
 
 namespace cameo {
-namespace application {
 
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
@@ -964,7 +963,7 @@ int Info::getPid() const {
 std::string Info::toString() const {
 	return std::string("[name=")  + m_name
 		+ ", id=" + std::to_string(m_id)
-		+ ", state=" + application::toString(m_applicationState)
+		+ ", state=" + cameo::toString(m_applicationState)
 		+ ", args=" + m_args + "]";
 }
 
@@ -996,7 +995,7 @@ std::string Port::toString() const {
 			+ ", owner=" + m_owner + "]";
 }
 
-std::string toString(cameo::application::State applicationStates) {
+std::string toString(cameo::State applicationStates) {
 
 	std::vector<std::string> states;
 
@@ -1057,33 +1056,32 @@ std::string toString(cameo::application::State applicationStates) {
 ///////////////////////////////////////////////////////////////////////////////
 // operator<<
 
-std::ostream& operator<<(std::ostream& os, const application::Instance& instance) {
+std::ostream& operator<<(std::ostream& os, const Instance& instance) {
 
 	os << instance.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Configuration& configuration) {
+std::ostream& operator<<(std::ostream& os, const Configuration& configuration) {
 
 	os << configuration.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Info& info) {
+std::ostream& operator<<(std::ostream& os, const Info& info) {
 
 	os << info.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const application::Port& port) {
+std::ostream& operator<<(std::ostream& os, const Port& port) {
 
 	os << port.toString();
 
 	return os;
 }
 
-}
 }
