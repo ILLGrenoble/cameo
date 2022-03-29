@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,6 +14,7 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
 
 public class StatusEvent extends Event {
@@ -23,8 +23,8 @@ public class StatusEvent extends Event {
 	private int pastApplicationStates;
 	private Integer exitCode;
 	
-	public final static StatusEvent SYNC = new StatusEvent(-1, "", Application.State.UNKNOWN, Application.State.UNKNOWN);
-	public final static StatusEvent END = new StatusEvent(-2, "", Application.State.UNKNOWN, Application.State.UNKNOWN);
+	public final static StatusEvent SYNC = new StatusEvent(-1, "", State.UNKNOWN, State.UNKNOWN);
+	public final static StatusEvent END = new StatusEvent(-2, "", State.UNKNOWN, State.UNKNOWN);
 	
 	public StatusEvent(int id, String name, int applicationState, int pastApplicationStates) {
 		super(id, name);
@@ -57,7 +57,7 @@ public class StatusEvent extends Event {
 
 	@Override
 	public String toString() {
-		return "ApplicationStatus [id=" + id + ", applicationState=" + Application.State.toString(applicationState) + ", name=" + name + "]";
+		return "ApplicationStatus [id=" + id + ", applicationState=" + State.toString(applicationState) + ", name=" + name + "]";
 	}
 	
 	@Override

@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -42,7 +42,7 @@ public class TestComPort {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// Start the application.
-				Instance application = server.start("comportjava");
+				App application = server.start("comportjava");
 	
 				application.waitFor();
 				System.out.println("Finished application " + application);

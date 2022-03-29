@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.base;
 
 import java.util.Set;
@@ -16,17 +32,17 @@ import fr.ill.ics.cameo.strings.Endpoint;
  * @author legoc
  *
  */
-public class Instance extends EventListener {
+public class App extends EventListener {
 
 	private Server server;
 	private int id = -1;
 	private OutputStreamSocket outputSocket;
 	private String errorMessage;
 	private int pastStates = 0;
-	private int initialState = Application.State.UNKNOWN;
-	private int lastState = Application.State.UNKNOWN;
+	private int initialState = State.UNKNOWN;
+	private int lastState = State.UNKNOWN;
 	private byte[] resultData;
-	private InstanceWaiting waiting = new InstanceWaiting(this);
+	private AppWaiting waiting = new AppWaiting(this);
 	private Integer exitCode;
 	
 	/**
@@ -101,10 +117,10 @@ public class Instance extends EventListener {
 								int state = status.getState();
 								
 								// Test the terminal state.
-								if (state == Application.State.SUCCESS 
-									|| state == Application.State.STOPPED
-									|| state == Application.State.KILLED					
-									|| state == Application.State.ERROR) {
+								if (state == State.SUCCESS 
+									|| state == State.STOPPED
+									|| state == State.KILLED					
+									|| state == State.ERROR) {
 									throw new KeyValueGetterException("Application terminated");
 								}
 								
@@ -162,10 +178,137 @@ public class Instance extends EventListener {
 		
 	}
 	
+	public static class Config {
+	
+		private String name;
+		private String description;
+		private boolean singleInstance;
+		private boolean restart;
+		private int startingTime;
+		private int stoppingTime;
+	
+		public Config(String name, String description, boolean singleInstance, boolean restart, int startingTime, int stoppingTime) {
+			super();
+			this.description = description;
+			this.singleInstance = singleInstance;
+			this.restart = restart;
+			this.name = name;
+			this.startingTime = startingTime;
+			this.stoppingTime = stoppingTime;
+		}
+	
+		public String getDescription() {
+			return description;
+		}
+		
+		public boolean hasSingleInstance() {
+			return singleInstance;
+		}
+	
+		public boolean canRestart() {
+			return restart;
+		}
+	
+		public String getName() {
+			return name;
+		}
+	
+		public int getStartingTime() {
+			return startingTime;
+		}
+	
+		public int getStoppingTime() {
+			return stoppingTime;
+		}
+		
+		@Override
+		public String toString() {
+			return "[name=" + name + ", description=" + description + ", single instance=" + singleInstance + ", restart=" + restart + ", starting time=" + startingTime + ", stopping time=" + stoppingTime + "]";
+		}
+	
+	}
+
+	public static class Info {
+	
+		private int id;
+		private int applicationState;
+		private int pastApplicationStates;
+		private String args;
+		private String name;
+		private long pid;
+	
+		public Info(String name, int id, long pid, int applicationState, int pastApplicationStates, String args) {
+			super();
+			this.id = id;
+			this.pid = pid;
+			this.applicationState = applicationState;
+			this.pastApplicationStates = pastApplicationStates;
+			this.args = args;
+			this.name = name;
+		}
+	
+		public int getId() {
+			return id;
+		}
+	
+		public int getApplicationState() {
+			return applicationState;
+		}
+		
+		public int getPastApplicationStates() {
+			return pastApplicationStates;
+		}
+	
+		public String getArgs() {
+			return args;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public long getPid() {
+			return pid;
+		}
+	
+		@Override
+		public String toString() {
+			return "[name=" + name + ", id=" + id + ", state=" + applicationState + ", pastStates=" + pastApplicationStates + ", args=" + args + "]";
+		}
+	
+	}
+
+	public static class Port {
+		
+		private int port;
+		private String status;
+		private String owner;
+		
+		public Port(int port, String status, String owner) {
+			super();
+			this.port = port;
+			this.status = status;
+			this.owner = owner;
+		}
+	
+		public int getPort() {
+			return port;
+		}
+	
+		public String getStatus() {
+			return status;
+		}
+	
+		public String getOwner() {
+			return owner;
+		}
+		
+	}
+
 	private Com com;
 		
 	
-	Instance(Server server) {
+	App(Server server) {
 		this.server = server;
 	}
 
@@ -308,10 +451,10 @@ public class Instance extends EventListener {
 			int state = status.getState();
 
 			// Test if the state is terminal.
-			if (state == Application.State.SUCCESS 
-					|| state == Application.State.STOPPED
-					|| state == Application.State.KILLED
-					|| state == Application.State.ERROR) {
+			if (state == State.SUCCESS 
+					|| state == State.STOPPED
+					|| state == State.KILLED
+					|| state == State.ERROR) {
 				
 				// Unregister here.
 				if (status.getId() == this.id) {
@@ -337,10 +480,10 @@ public class Instance extends EventListener {
 			}
 			
 			// Test the terminal state.
-			if (lastState == Application.State.SUCCESS
-					|| lastState == Application.State.STOPPED
-					|| lastState == Application.State.KILLED
-					|| lastState == Application.State.ERROR) {
+			if (lastState == State.SUCCESS
+					|| lastState == State.STOPPED
+					|| lastState == State.KILLED
+					|| lastState == State.ERROR) {
 				// The application is already terminated.
 				return lastState;
 			}
@@ -375,10 +518,10 @@ public class Instance extends EventListener {
 						}
 						
 						// Test the terminal state.
-						if (state == Application.State.SUCCESS 
-							|| state == Application.State.STOPPED
-							|| state == Application.State.KILLED					
-							|| state == Application.State.ERROR) {
+						if (state == State.SUCCESS 
+							|| state == State.STOPPED
+							|| state == State.KILLED					
+							|| state == State.ERROR) {
 							break;
 						}
 						

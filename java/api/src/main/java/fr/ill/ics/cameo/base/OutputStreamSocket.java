@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,6 +14,7 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
 
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
@@ -24,6 +24,38 @@ import fr.ill.ics.cameo.strings.Endpoint;
 
 public class OutputStreamSocket {
 	
+	public static class Output {
+		
+		private int id;
+		private String message;
+		private boolean endOfLine;
+			
+		public Output(int id, String message, boolean endOfLine) {
+			super();
+			this.id = id;
+			this.message = message;
+			this.endOfLine = endOfLine;
+		}
+	
+		public int getId() {
+			return id;
+		}
+	
+		public String getMessage() {
+			return message;
+		}
+		
+		public boolean isEndOfLine() {
+			return endOfLine;
+		}
+	
+		@Override
+		public String toString() {
+			return "[id=" + id + ", message=" + message + " eol=" + endOfLine + "]";
+		}
+	
+	}
+
 	private OutputStreamSocketImpl impl;
 	private int applicationId;
 
@@ -44,7 +76,7 @@ public class OutputStreamSocket {
 		impl.setApplicationId(id);
 	}
 	
-	public Application.Output receive()	{
+	public OutputStreamSocket.Output receive()	{
 		return impl.receive();
 	}
 	

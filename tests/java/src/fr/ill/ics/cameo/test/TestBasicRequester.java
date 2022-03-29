@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
@@ -64,7 +64,7 @@ public class TestBasicRequester {
 			// loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 
-				Instance[] requesterApps = new Instance[N];
+				App[] requesterApps = new App[N];
 				
 				// Start the requester applications.
 				for (int j = 0; j < N; ++j) {

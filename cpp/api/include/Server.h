@@ -39,7 +39,7 @@ class RequestSocket;
 
 class Server {
 
-	friend class Instance;
+	friend class App;
 	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
@@ -68,11 +68,11 @@ public:
 	 */
 	bool isAvailable() const;
 
-	std::unique_ptr<Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
-	std::unique_ptr<Instance> start(const std::string& name, int options = 0);
-	InstanceArray connectAll(const std::string& name, int options = 0);
-	std::unique_ptr<Instance> connect(const std::string& name, int options = 0);
-	std::unique_ptr<Instance> connect(int id, int options = 0);
+	std::unique_ptr<App> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
+	std::unique_ptr<App> start(const std::string& name, int options = 0);
+	AppArray connectAll(const std::string& name, int options = 0);
+	std::unique_ptr<App> connect(const std::string& name, int options = 0);
+	std::unique_ptr<App> connect(int id, int options = 0);
 
 	/**
 	 * throws ConnectionTimeout
@@ -82,22 +82,22 @@ public:
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<Configuration> getApplicationConfigurations() const;
+	std::vector<App::Config> getApplicationConfigurations() const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<Info> getApplicationInfos() const;
+	std::vector<App::Info> getApplicationInfos() const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<Info> getApplicationInfos(const std::string& name) const;
+	std::vector<App::Info> getApplicationInfos(const std::string& name) const;
 
 	/**
 	 * throws ConnectionTimeout
 	 */
-	std::vector<Port> getPorts() const;
+	std::vector<App::Port> getPorts() const;
 
 	/**
 	 * throws ConnectionTimeout
@@ -161,7 +161,7 @@ private:
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
 
-	std::unique_ptr<Instance> makeInstance();
+	std::unique_ptr<App> makeInstance();
 	bool isAlive(int id) const;
 
 	Response stop(int id, bool immediately) const;

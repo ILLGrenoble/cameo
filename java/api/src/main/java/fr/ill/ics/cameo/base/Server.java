@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,6 +14,7 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.Application.State;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
@@ -415,12 +415,12 @@ public class Server {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	public Instance start(String name, String[] args, int options) {
+	public App start(String name, String[] args, int options) {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		boolean linked = ((options & Option.UNLINKED) == 0);
 				
-		Instance instance = new Instance(this);
+		App instance = new App(this);
 		
 		// We set the name of the application and register before starting because the id is not available.
 		instance.setName(name);
@@ -454,7 +454,7 @@ public class Server {
 		return instance;
 	}
 	
-	public Instance start(String name, String[] args) {
+	public App start(String name, String[] args) {
 		return start(name, args, 0);
 	}
 	
@@ -465,11 +465,11 @@ public class Server {
 	 * 
 	 * @throws ConnectionTimeout 
 	 */
-	public Instance start(String name, int options) {
+	public App start(String name, int options) {
 		return start(name, null, options);
 	}
 	
-	public Instance start(String name) {
+	public App start(String name) {
 		return start(name, 0);
 	}
 		
@@ -498,17 +498,17 @@ public class Server {
 		
 	public void killAllAndWaitFor(String name) {
 		
-		List<Instance> applications = connectAll(name, Option.NONE);
+		List<App> applications = connectAll(name, Option.NONE);
 		
-		for (Instance application : applications) {
+		for (App application : applications) {
 			application.kill();
 			application.waitFor();
 		}
 	}
 	
-	private List<Instance> getInstancesFromApplicationInfos(JSONObject response, boolean outputStream) {
+	private List<App> getInstancesFromApplicationInfos(JSONObject response, boolean outputStream) {
 		
-		List<Instance> instances = new ArrayList<Instance>();
+		List<App> instances = new ArrayList<App>();
 		
 		try {
 			// Get the list of application info.
@@ -518,7 +518,7 @@ public class Server {
 				JSONObject applicationInfo = (JSONObject)list.get(i);
 
 				// Create a new instance.
-				Instance instance = new Instance(this);
+				App instance = new App(this);
 			
 				// Get the name.
 				String name = JSON.getString(applicationInfo, Messages.ApplicationInfo.NAME);
@@ -560,7 +560,7 @@ public class Server {
 	 * @return List of Instance, null if a connection timeout occurs
 	 * @throws ConnectionTimeout
 	 */
-	public List<Instance> connectAll(String name, int options) {
+	public List<App> connectAll(String name, int options) {
 
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
@@ -575,7 +575,7 @@ public class Server {
 	 * @return List of Instance, null if a connection timeout occurs
 	 * @throws ConnectionTimeout
 	 */
-	public List<Instance> connectAll(String name) {
+	public List<App> connectAll(String name) {
 		return connectAll(name, 0);
 	}
 	
@@ -584,17 +584,17 @@ public class Server {
 	 * @return Returns the first application with name.
 	 * @throws ConnectionTimeout
 	 */
-	public Instance connect(String name, int options) {
-		List<Instance> instances = connectAll(name, options);
+	public App connect(String name, int options) {
+		List<App> instances = connectAll(name, options);
 		
 		if (instances.size() == 0) {
-			return new Instance(this);
+			return new App(this);
 		}
 		
 		return instances.get(0);
 	}
 	
-	public Instance connect(String name) {
+	public App connect(String name) {
 		return connect(name, 0);
 	}
 	
@@ -604,17 +604,17 @@ public class Server {
 	 * @return Returns the application with id.
 	 * @throws ConnectionTimeout
 	 */
-	public Instance connect(int id, int options) {
+	public App connect(int id, int options) {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
 		JSONObject request = Messages.createConnectWithIdRequest(id);
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		List<Instance> instances = getInstancesFromApplicationInfos(response, outputStream);
+		List<App> instances = getInstancesFromApplicationInfos(response, outputStream);
 
 		if (instances.size() == 0) {
-			return new Instance(this);
+			return new App(this);
 		}
 		
 		return instances.get(0);
@@ -625,12 +625,12 @@ public class Server {
 	 * @return List of ApplicationConfig if everything is ok, else null
 	 * @throws ConnectionTimeout
 	 */
-	public List<Application.Configuration> getApplicationConfigurations() {
+	public List<App.Config> getApplicationConfigurations() {
 
 		JSONObject request = Messages.createListRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		LinkedList<Application.Configuration> applications = new LinkedList<Application.Configuration>();
+		LinkedList<App.Config> applications = new LinkedList<App.Config>();
 
 		// Get the list of application info.
 		JSONArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
@@ -645,7 +645,7 @@ public class Server {
 			int startingTime = JSON.getInt(config, Messages.ApplicationConfig.STARTING_TIME);
 			int stoppingTime = JSON.getInt(config, Messages.ApplicationConfig.STOPPING_TIME);
 		
-			applications.add(new Application.Configuration(name, description, runsSingle, restart, startingTime, stoppingTime));
+			applications.add(new App.Config(name, description, runsSingle, restart, startingTime, stoppingTime));
 		}
 	
 		return applications;
@@ -656,12 +656,12 @@ public class Server {
 	 * @return List of ApplicationInfoForClient if everything is ok, else null
 	 * @throws ConnectionTimeout 
 	 */
-	public List<Application.Info> getApplicationInfos() {
+	public List<App.Info> getApplicationInfos() {
 
 		JSONObject request = Messages.createAppsRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		LinkedList<Application.Info> applications = new LinkedList<Application.Info>();
+		LinkedList<App.Info> applications = new LinkedList<App.Info>();
 		
 		// Get the list of application info.
 		JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
@@ -676,7 +676,7 @@ public class Server {
 			int pastStates = JSON.getInt(info, Messages.ApplicationInfo.PAST_APPLICATION_STATES);
 			String args = JSON.getString(info, Messages.ApplicationInfo.ARGS);
 		
-			applications.add(new Application.Info(name, id, pid, state, pastStates, args));
+			applications.add(new App.Info(name, id, pid, state, pastStates, args));
 		}
 	
 		return applications;
@@ -688,12 +688,12 @@ public class Server {
 	 * @return the of application info of the applications with name
 	 * @throws ConnectionTimeout 
 	 */
-	public List<Application.Info> getApplicationInfos(String name) {
+	public List<App.Info> getApplicationInfos(String name) {
 		
-		List<Application.Info> applicationInfos = getApplicationInfos();
-		List<Application.Info> result = new LinkedList<Application.Info>();
+		List<App.Info> applicationInfos = getApplicationInfos();
+		List<App.Info> result = new LinkedList<App.Info>();
 		
-		for (Application.Info i : applicationInfos) {
+		for (App.Info i : applicationInfos) {
 			if (i.getName().equals(name)) {
 				result.add(i);
 			}
@@ -934,12 +934,12 @@ public class Server {
 		}
 	}
 	
-	public List<Application.Port> getPorts() {
+	public List<App.Port> getPorts() {
 		
 		JSONObject request = Messages.createPortsRequest();
 		JSONObject response = requestSocket.requestJSON(request);
 		
-		LinkedList<Application.Port> ports = new LinkedList<Application.Port>();
+		LinkedList<App.Port> ports = new LinkedList<App.Port>();
 		
 		// Get the list of application info.
 		JSONArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
@@ -951,7 +951,7 @@ public class Server {
 			String status = JSON.getString(info, Messages.PortInfo.STATUS);
 			String owner = JSON.getString(info, Messages.PortInfo.OWNER);
 		
-			ports.add(new Application.Port(port, status, owner));
+			ports.add(new App.Port(port, status, owner));
 		}
 		
 		return ports;

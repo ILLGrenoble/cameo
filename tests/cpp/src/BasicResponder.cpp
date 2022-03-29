@@ -82,8 +82,8 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	ServerAndInstance requester = request->connectToRequester(0, useProxy);
-	cout << "Requester " << *requester.instance << endl;
+	ServerAndApp requester = request->connectToRequester(0, useProxy);
+	cout << "Requester " << *requester.app << endl;
 
 	cout << "Finished the application" << endl;
 

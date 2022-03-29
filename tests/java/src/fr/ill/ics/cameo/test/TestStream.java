@@ -16,8 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application.Output;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.Server;
@@ -42,14 +41,14 @@ public class TestStream {
 		Server server = new Server(endpoint, 0, useProxy);
 		
 		// Start the application.
-		Instance app = server.start("streamjava", Option.OUTPUTSTREAM);
+		App app = server.start("streamjava", Option.OUTPUTSTREAM);
 
 		OutputStreamSocket socket = app.getOutputStreamSocket();
 		
 		// Start thread.
 		Thread outputThread = new Thread(() -> {
 			while (true) {
-				Output output = socket.receive();
+				OutputStreamSocket.Output output = socket.receive();
 		    	if (output != null) {
 		    		System.out.println(output.getMessage());
 		    	}

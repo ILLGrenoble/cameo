@@ -1,15 +1,27 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
-import fr.ill.ics.cameo.base.KeyValue;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.base.UndefinedApplicationException;
-import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.basic.Responder;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
@@ -45,7 +57,7 @@ public class Requester {
 		impl.setTimeout(value);
 	}
 	
-	private void init(Instance app, String responderName) throws RequesterCreationException {
+	private void init(App app, String responderName) throws RequesterCreationException {
 		
 		this.responderName = responderName;
 		this.appName = app.getName();
@@ -86,7 +98,7 @@ public class Requester {
 	 * @return
 	 * @throws RequesterCreationException, ConnectionTimeout
 	 */
-	static public Requester create(Instance app, String responderName) throws RequesterCreationException {
+	static public Requester create(App app, String responderName) throws RequesterCreationException {
 		
 		Requester requester = new Requester();
 		requester.init(app, responderName);

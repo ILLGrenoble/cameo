@@ -16,12 +16,27 @@
 
 package fr.ill.ics.cameo.base;
 
+public class ServerAndApp {
 
-public class WriteException extends RemoteException {
+	private Server server;
+	private App app;
 	
-	private static final long serialVersionUID = -9157515657163509208L;
-
-	public WriteException(String message) {
-		super(message);
+	public ServerAndApp(Server server, App app) {
+		this.server = server;
+		this.app = app;
 	}
+	
+	public void terminate() {
+		app.terminate();
+		server.terminate();
+	}
+	
+	public Server getServer() {
+		return server;
+	}
+	public App getApp() {
+		return app;
+	}
+	
+	
 }

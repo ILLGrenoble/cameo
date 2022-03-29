@@ -16,10 +16,10 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.basic.Request;
 
@@ -46,7 +46,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting stopjava for cancelWaitings");
 				
-				Instance stopApplication = server.start("stopjava");
+				App stopApplication = server.start("stopjava");
 	
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -65,12 +65,12 @@ public class TestCancel {
 				
 				int state = stopApplication.waitFor();
 	
-				System.out.println("End of waitFor with state " + Application.State.toString(state));
+				System.out.println("End of waitFor with state " + State.toString(state));
 	
 				stopApplication.stop();
 				state = stopApplication.waitFor();
 	
-				System.out.println("End of stopjava with state " + Application.State.toString(state));
+				System.out.println("End of stopjava with state " + State.toString(state));
 	
 				cancelThread.join();
 			}
@@ -79,7 +79,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting stopjava for cancelWaitFor");
 				
-				final Instance stopApplication = server.start("stopjava");
+				final App stopApplication = server.start("stopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -98,12 +98,12 @@ public class TestCancel {
 				
 				int state = stopApplication.waitFor();
 				
-				System.out.println("End of waitFor with state " + Application.State.toString(state));
+				System.out.println("End of waitFor with state " + State.toString(state));
 	
 				stopApplication.stop();
 				state = stopApplication.waitFor();
 	
-				System.out.println("End of stopjava with state " + Application.State.toString(state));
+				System.out.println("End of stopjava with state " + State.toString(state));
 	
 				cancelThread.join();
 			}
@@ -144,7 +144,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for killing");
 				
-				final Instance pubLoopApplication = server.start("publisherloopjava");
+				final App pubLoopApplication = server.start("publisherloopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -178,7 +178,7 @@ public class TestCancel {
 
 				int state = pubLoopApplication.waitFor();
 
-				System.out.println("End of waitFor " + Application.State.toString(state));
+				System.out.println("End of waitFor " + State.toString(state));
 	
 				cancelThread.join();
 				
@@ -189,7 +189,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for testing cancel of a subscriber");
 				
-				final Instance pubLoopApplication = server.start("publisherloopjava");
+				final App pubLoopApplication = server.start("publisherloopjava");
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
 
@@ -239,7 +239,7 @@ public class TestCancel {
 				
 				int state = pubLoopApplication.waitFor();
 
-				System.out.println("End of waitFor " + Application.State.toString(state));
+				System.out.println("End of waitFor " + State.toString(state));
 	
 				cancelThread.join();
 				killThread.join();
@@ -306,7 +306,7 @@ public class TestCancel {
 
 				
 				// Get this app.
-				final Instance thisApp = server.connect(This.getName());
+				final App thisApp = server.connect(This.getName());
 				
 				// Create the requester.
 				final fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(thisApp, "responder");

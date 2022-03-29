@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
 	Server& server = This::getServer();
 
-	unique_ptr<Instance> publisherApplication = server.connect(applicationName);
+	unique_ptr<App> publisherApplication = server.connect(applicationName);
 	if (!publisherApplication->exists()) {
 		cout << "Publisher error" << endl;
 		return -1;

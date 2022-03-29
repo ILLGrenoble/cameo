@@ -50,9 +50,9 @@ PYBIND11_MODULE(cameopy, m) {
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.
 	// If the policy is not set, the bindings are blocking other Python running threads.
 
-	py::class_<ServerAndInstance>(m, "ServerAndInstance")
-		    .def("getServer", &ServerAndInstance::getServer)
-			.def("getInstance", &ServerAndInstance::getInstance);
+	py::class_<ServerAndApp>(m, "ServerAndApp")
+		    .def("getServer", &ServerAndApp::getServer)
+			.def("getApp", &ServerAndApp::getApp);
 
 	py::class_<This>(m, "This")
 	    .def_static(
@@ -118,40 +118,40 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &OutputStreamSocket::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Instance>(m, "Instance")
-		.def("terminate", &Instance::terminate, py::call_guard<py::gil_scoped_release>())
-	    .def("getName", &Instance::getName)
-	    .def("getId", &Instance::getId)
-	    .def("getEndpoint", &Instance::getEndpoint)
-	    .def("getNameId", &Instance::getNameId)
-	    //.def("getCom", &Instance::getCom)
-	    .def("hasResult", &Instance::hasResult)
-	    .def("exists", &Instance::exists)
-	    .def("getErrorMessage", &Instance::getErrorMessage)
-	    .def("stop", &Instance::stop, py::call_guard<py::gil_scoped_release>())
-	    .def("kill", &Instance::kill, py::call_guard<py::gil_scoped_release>())
-	    .def("waitFor", py::overload_cast<>(&Instance::waitFor), py::call_guard<py::gil_scoped_release>())
-	    .def("waitFor", py::overload_cast<int>(&Instance::waitFor),
+	py::class_<App>(m, "App")
+		.def("terminate", &App::terminate, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &App::getName)
+	    .def("getId", &App::getId)
+	    .def("getEndpoint", &App::getEndpoint)
+	    .def("getNameId", &App::getNameId)
+	    //.def("getCom", &App::getCom)
+	    .def("hasResult", &App::hasResult)
+	    .def("exists", &App::exists)
+	    .def("getErrorMessage", &App::getErrorMessage)
+	    .def("stop", &App::stop, py::call_guard<py::gil_scoped_release>())
+	    .def("kill", &App::kill, py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<>(&App::waitFor), py::call_guard<py::gil_scoped_release>())
+	    .def("waitFor", py::overload_cast<int>(&App::waitFor),
 	    		"states"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("cancelWaitFor", &Instance::cancelWaitFor, py::call_guard<py::gil_scoped_release>())
-	    .def("getLastState", &Instance::getLastState, py::call_guard<py::gil_scoped_release>())
-	    .def("getActualState", &Instance::getActualState, py::call_guard<py::gil_scoped_release>())
-	    .def("getPastStates", &Instance::getPastStates, py::call_guard<py::gil_scoped_release>())
-	    .def("getExitCode", &Instance::getExitCode)
+	    .def("cancelWaitFor", &App::cancelWaitFor, py::call_guard<py::gil_scoped_release>())
+	    .def("getLastState", &App::getLastState, py::call_guard<py::gil_scoped_release>())
+	    .def("getActualState", &App::getActualState, py::call_guard<py::gil_scoped_release>())
+	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
+	    .def("getExitCode", &App::getExitCode)
 	    .def("getBinaryResult",
-		 [](Instance* instance) {
+		 [](App* instance) {
 			 auto result = instance->getBinaryResult();
 			 if (result.has_value() == false)
 				 return py::bytes("");
 			 return py::bytes(result.value());
 		 }, py::call_guard<py::gil_scoped_release>())
-	    .def("getResult", &Instance::getResult, py::call_guard<py::gil_scoped_release>())
-	    .def("getOutputStreamSocket", &Instance::getOutputStreamSocket)
-		.def("__str__", &Instance::toString,
+	    .def("getResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
+	    .def("getOutputStreamSocket", &App::getOutputStreamSocket)
+		.def("__str__", &App::toString,
 		   		py::call_guard<py::gil_scoped_release>());
 
-	py::class_<InstanceArray>(m, "InstanceArray");
+	py::class_<AppArray>(m, "AppArray");
 
 	py::class_<Publisher>(m, "Publisher")
 	    .def_static("create", &Publisher::create,
@@ -304,34 +304,34 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &Requester::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Configuration>(m, "Configuration")
+	py::class_<App::Config>(m, "AppConfig")
 	    .def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
-	    .def("getName", &Configuration::getName)
-	    .def("getDescription", &Configuration::getDescription)
-	    .def("hasSingleInstance", &Configuration::hasSingleInstance)
-	    .def("canRestart", &Configuration::canRestart)
-	    .def("getStartingTime", &Configuration::getStartingTime)
-	    .def("getStoppingTime", &Configuration::getStoppingTime)
-		.def("__str__", &Configuration::toString,
+	    .def("getName", &App::Config::getName)
+	    .def("getDescription", &App::Config::getDescription)
+	    .def("hasSingleInstance", &App::Config::hasSingleInstance)
+	    .def("canRestart", &App::Config::canRestart)
+	    .def("getStartingTime", &App::Config::getStartingTime)
+	    .def("getStoppingTime", &App::Config::getStoppingTime)
+		.def("__str__", &App::Config::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Info>(m, "Info")
+	py::class_<App::Info>(m, "AppInfo")
 	    .def(py::init<const std::string&, int, int, State, State, const std::string&>())
-	    .def("getId", &Info::getId)
-	    .def("getState", &Info::getState)
-	    .def("getPastStates", &Info::getPastStates)
-	    .def("getArgs", &Info::getArgs)
-	    .def("getName", &Info::getName)
-	    .def("getPid", &Info::getPid)
-		.def("__str__", &Info::toString,
+	    .def("getId", &App::Info::getId)
+	    .def("getState", &App::Info::getState)
+	    .def("getPastStates", &App::Info::getPastStates)
+	    .def("getArgs", &App::Info::getArgs)
+	    .def("getName", &App::Info::getName)
+	    .def("getPid", &App::Info::getPid)
+		.def("__str__", &App::Info::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Port>(m, "Port")
+	py::class_<App::Port>(m, "AppPort")
 	    .def(py::init<int, const std::string&, const std::string&>())
-	    .def("getPort", &Port::getPort)
-	    .def("getStatus", &Port::getStatus)
-	    .def("getOwner", &Port::getOwner)
-		.def("__str__", &Port::toString,
+	    .def("getPort", &App::Port::getPort)
+	    .def("getStatus", &App::Port::getStatus)
+	    .def("getOwner", &App::Port::getOwner)
+		.def("__str__", &App::Port::toString,
 				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<Server>(m, "Server")

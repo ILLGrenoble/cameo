@@ -21,10 +21,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.IdGenerator;
+import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.UnexpectedException;
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
@@ -103,7 +103,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		this.applicationId = id;
 	}
 	
-	public Application.Output receive()	{
+	public OutputStreamSocket.Output receive()	{
 		
 		// Loop on recvStr() because in case of configuration multiple=yes, messages can come from different instances.
 		while (true) {
@@ -145,7 +145,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 					String line = JSON.getString(jsonMessage, Messages.ApplicationStream.MESSAGE);
 					boolean endOfLine = JSON.getBoolean(jsonMessage, Messages.ApplicationStream.EOL);
 					
-					return new Application.Output(id, line, endOfLine);
+					return new OutputStreamSocket.Output(id, line, endOfLine);
 				}
 				
 				// Here, the application id is different from id, then re-iterate.

@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<Instance> app = server.start("waitstoragecpp");
+		unique_ptr<App> app = server.start("waitstoragecpp");
 
 		// Define a KeyValue.
 		KeyValue keyValue(key);

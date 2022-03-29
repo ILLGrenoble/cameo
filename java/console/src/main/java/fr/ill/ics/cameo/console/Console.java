@@ -25,13 +25,13 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import fr.ill.ics.cameo.base.Application;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
-import fr.ill.ics.cameo.base.Instance;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.UnexpectedException;
 
 public class Console {
@@ -350,10 +350,10 @@ public class Console {
 	}
 	
 	private LinkedList<Integer> getIDs(String applicationName) {
-		List<Application.Info> applicationInstances = server.getApplicationInfos();
+		List<App.Info> applicationInstances = server.getApplicationInfos();
 		LinkedList<Integer> ids = new LinkedList<Integer>();
 		
-		for (Application.Info info : applicationInstances) {
+		for (App.Info info : applicationInstances) {
 			if (info.getName().equals(applicationName)) {
 				ids.add(info.getId());
 			}
@@ -363,7 +363,7 @@ public class Console {
 	
 	private void processList() {
 		
-		List<Application.Configuration> applicationConfigs = server.getApplicationConfigurations();
+		List<App.Config> applicationConfigs = server.getApplicationConfigurations();
 
 		if (applicationConfigs == null) {
 			System.out.println("The server " + endpoint + " is not available.");
@@ -378,7 +378,7 @@ public class Console {
 		int maxNameLength = NAME.length() + 1;
 		int maxDescriptionLength = DESCRIPTION.length() + 1;
 				
-		for (Application.Configuration config : applicationConfigs) {
+		for (App.Config config : applicationConfigs) {
 			if (config.getName().length() > maxNameLength) {
 				maxNameLength = config.getName().length();
 			}
@@ -391,19 +391,19 @@ public class Console {
 		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
 		printLine(maxNameLength + maxDescriptionLength + 1);
 		
-		for (Application.Configuration config : applicationConfigs) {
+		for (App.Config config : applicationConfigs) {
 			System.out.println(cellString(config.getName(), maxNameLength) + " " + config.getDescription());
 		}		
 	}
 	
 	private void processApps() {
 		
-		List<Application.Info> applicationInstances = server.getApplicationInfos();
+		List<App.Info> applicationInstances = server.getApplicationInfos();
 		
 		int maxNameLength = NAME.length();
 		int maxArgsLength = ARGS.length();
 		
-		for (Application.Info info : applicationInstances) {
+		for (App.Info info : applicationInstances) {
 			if (info.getName().length() > maxNameLength) {
 				maxNameLength = info.getName().length();
 			}
@@ -417,17 +417,17 @@ public class Console {
 		
 		printLine(maxNameLength + 1 + 10 + 10 + 20 + maxArgsLength);
 		
-		for (Application.Info info : applicationInstances) {
+		for (App.Info info : applicationInstances) {
 			
 			long pid = info.getPid();
 			if (pid == 0) {
 				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString("-", 10) 
-					+ cellString(Application.State.toString(info.getApplicationState()), 20)
+					+ cellString(State.toString(info.getApplicationState()), 20)
 					+ info.getArgs());
 			}
 			else {
 				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString(info.getPid() + "", 10) 
-					+ cellString(Application.State.toString(info.getApplicationState()), 20)
+					+ cellString(State.toString(info.getApplicationState()), 20)
 					+ info.getArgs());
 			}
 		}
@@ -435,11 +435,11 @@ public class Console {
 
 	private void processPorts() {
 		
-		List<Application.Port> ports = server.getPorts();
+		List<App.Port> ports = server.getPorts();
 		
 		int maxOwnerLength = APPLICATION.length();
 		
-		for (Application.Port port : ports) {
+		for (App.Port port : ports) {
 			if (port.getOwner().length() > maxOwnerLength) {
 				maxOwnerLength = port.getOwner().length();
 			}
@@ -450,7 +450,7 @@ public class Console {
 		
 		printLine(10 + 10 + maxOwnerLength);
 		
-		for (Application.Port port : ports) {
+		for (App.Port port : ports) {
 			System.out.println(cellString(port.getPort() + "", 10) + cellString(port.getStatus(), 15) + cellString(port.getOwner(), maxOwnerLength));
 		}
 	}
@@ -465,8 +465,8 @@ public class Console {
 		try {
 			applicationId = Integer.parseInt(applicationName);
 			
-			List<Application.Info> applicationInstances = server.getApplicationInfos();
-			for (Application.Info info : applicationInstances) {
+			List<App.Info> applicationInstances = server.getApplicationInfos();
+			for (App.Info info : applicationInstances) {
 				
 				if (info.getId() == applicationId) {
 					applicationName = info.getName();
@@ -477,8 +477,8 @@ public class Console {
 			// Do nothing.
 		}
 				
-		List<Instance> applications = server.connectAll(applicationName);
-		for (Instance application : applications) {
+		List<App> applications = server.connectAll(applicationName);
+		for (App application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
 			
@@ -500,8 +500,8 @@ public class Console {
 		try {
 			applicationId = Integer.parseInt(applicationName);
 			
-			List<Application.Info> applicationInstances = server.getApplicationInfos();
-			for (Application.Info info : applicationInstances) {
+			List<App.Info> applicationInstances = server.getApplicationInfos();
+			for (App.Info info : applicationInstances) {
 				
 				if (info.getId() == applicationId) {
 					applicationName = info.getName();
@@ -512,8 +512,8 @@ public class Console {
 			// Do nothing.
 		}
 		
-		List<Instance> applications = server.connectAll(applicationName);
-		for (Instance application : applications) {
+		List<App> applications = server.connectAll(applicationName);
+		for (App application : applications) {
 			
 			if ((applicationId == -1) || (applicationId == application.getId())) {
 			
@@ -533,7 +533,7 @@ public class Console {
 			System.exit(1);
 		}
 		
-		Instance result = server.start(applicationName, applicationArgs);
+		App result = server.start(applicationName, applicationArgs);
 
 		if (result.exists()) {
 			System.out.println("Started " + result.getNameId() + ".");			
@@ -543,15 +543,15 @@ public class Console {
 		}
 	}
 
-	private int waitFor(Instance app) {
+	private int waitFor(App app) {
 		
-		int state = app.waitFor(Application.State.SUCCESS 
-				| Application.State.STOPPED 
-				| Application.State.KILLED 
-				| Application.State.ERROR 
-				| Application.State.PROCESSING_ERROR);
+		int state = app.waitFor(State.SUCCESS 
+				| State.STOPPED 
+				| State.KILLED 
+				| State.ERROR 
+				| State.PROCESSING_ERROR);
 
-		if (state == Application.State.PROCESSING_ERROR) {
+		if (state == State.PROCESSING_ERROR) {
 			
 			System.out.print("The application terminated with error that is now processed...");
 			// waiting for the end of process
@@ -563,7 +563,7 @@ public class Console {
 		return state;
 	}
 	
-	private int startThreadsAndWaitFor(Instance app, Thread shutdownHook) {
+	private int startThreadsAndWaitFor(App app, Thread shutdownHook) {
 		
 		final String appName = app.getName();
 		int appId = app.getId();
@@ -597,8 +597,8 @@ public class Console {
 						Server server = new Server(endpoint);
 						server.isAvailable();
 						
-						List<Instance> applications = server.connectAll(appName);
-						for (Instance application : applications) {
+						List<App> applications = server.connectAll(appName);
+						for (App application : applications) {
 							if (application.getId() == appId) {
 								application.stop();
 								System.out.println("Stopping " + appNameId + ".");
@@ -634,16 +634,16 @@ public class Console {
 	private void finishApplication(int state, String appNameId, Integer exitCode) {
 		
 		// Process state.
-		if (state == Application.State.SUCCESS) {
+		if (state == State.SUCCESS) {
 			System.out.println("The application " + appNameId + " terminated successfully.");
 		}
-		else if (state == Application.State.STOPPED) {
+		else if (state == State.STOPPED) {
 			System.out.println("The application " + appNameId + " has been stopped.");
 		}
-		else if (state == Application.State.KILLED) {
+		else if (state == State.KILLED) {
 			System.out.println("The application " + appNameId + " has been killed.");
 		}
-		else if (state == Application.State.ERROR) {
+		else if (state == State.ERROR) {
 			if (exitCode != null) {
 				System.out.println("The application " + appNameId + " terminated with error " + exitCode + ".");
 				
@@ -667,7 +667,7 @@ public class Console {
 		}
 		
 		// then start the application
-		final Instance app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
+		final App app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
 		final String appName = app.getName();
 		int appId = app.getId();
 		final String appNameId = app.getNameId();
@@ -688,8 +688,8 @@ public class Console {
 				Server server = new Server(endpoint);
 				server.isAvailable();
 				
-				List<Instance> applications = server.connectAll(appName);
-				for (Instance application : applications) {
+				List<App> applications = server.connectAll(appName);
+				for (App application : applications) {
 					if (application.getId() == appId) {
 						application.kill();
 						application.waitFor();
@@ -719,7 +719,7 @@ public class Console {
 			System.exit(1);
 		}
 		
-		Instance app = null;
+		App app = null;
 		
 		// Test if an id is provided.
 		try {
@@ -741,7 +741,7 @@ public class Console {
 		if (applicationId == -1) {
 				
 			// Connect all the apps.
-			List<Instance> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
+			List<App> apps = server.connectAll(applicationName, Option.OUTPUTSTREAM);
 			
 			if (apps.size() > 1) {
 				System.out.println("More than one application " + applicationName + " is executing, please select one.");

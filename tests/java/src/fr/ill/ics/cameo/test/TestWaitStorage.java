@@ -18,7 +18,7 @@ package fr.ill.ics.cameo.test;
 
 import java.util.Date;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.KeyValue;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
@@ -56,7 +56,7 @@ public class TestWaitStorage {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// Start the application.
-				Instance application = server.start("waitstoragejava");
+				App application = server.start("waitstoragejava");
 	
 				// Define a KeyValue.
 				KeyValue keyValue = new KeyValue(key);

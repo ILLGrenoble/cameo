@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		InstanceArray apps;
+		AppArray apps;
 
 		// Start the requester applications.
 		for (int j = 0; j < N; ++j) {

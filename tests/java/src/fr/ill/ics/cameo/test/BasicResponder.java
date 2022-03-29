@@ -17,7 +17,7 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.RemoteException;
-import fr.ill.ics.cameo.base.ServerAndInstance;
+import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.messages.Messages;
 
@@ -91,8 +91,8 @@ public class BasicResponder {
 			request.reply("5th response");
 			
 			// Test connection.
-			ServerAndInstance requester = request.connectToRequester(0, useProxy);
-			System.out.println("Requester is " + requester.getInstance());
+			ServerAndApp requester = request.connectToRequester(0, useProxy);
+			System.out.println("Requester is " + requester.getApp());
 			
 			requester.terminate();
 			

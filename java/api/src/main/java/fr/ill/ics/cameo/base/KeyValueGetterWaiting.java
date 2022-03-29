@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
+import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 
 public class KeyValueGetterWaiting extends Waiting {
 

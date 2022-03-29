@@ -14,14 +14,10 @@
  * limitations under the Licence.
  */
 
+
 package fr.ill.ics.cameo.base;
 
-
-public class WriteException extends RemoteException {
-	
-	private static final long serialVersionUID = -9157515657163509208L;
-
-	public WriteException(String message) {
-		super(message);
-	}
+public interface Handler {
+	void handle();
 }
+

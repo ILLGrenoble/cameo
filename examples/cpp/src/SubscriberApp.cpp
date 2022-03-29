@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Connect to the server.
-	std::unique_ptr<Instance> publisherApp = server->connect("publisher");
+	std::unique_ptr<App> publisherApp = server->connect("publisher");
 
 	std::cout << "Application " << *publisherApp << " has state " << toString(publisherApp->now()) << std::endl;
 

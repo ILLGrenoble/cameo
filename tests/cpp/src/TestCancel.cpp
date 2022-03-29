@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 	{
 		cout << "Starting stopcpp for cancelWaitings" << endl;
 
-		unique_ptr<Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<App> stopApplication = server.start("stopcpp");
 
 		// Start thread.
 		thread cancelThread([] {
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting stopcpp for cancelWaitFor" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<Instance> stopApplication(server.start("stopcpp"));
+		shared_ptr<App> stopApplication(server.start("stopcpp"));
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for killing" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<App> pubLoopApplication(server.start("publisherloopcpp"));
 
 		// Start thread.
 		thread killThread([&] {
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for testing cancel of a subscriber" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<App> pubLoopApplication(server.start("publisherloopcpp"));
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
@@ -219,7 +219,7 @@ int main(int argc, char *argv[]) {
 		});
 
 		// Get this app.
-		unique_ptr<Instance> thisApp = server.connect(This::getName());
+		unique_ptr<App> thisApp = server.connect(This::getName());
 
 		// Create a requester.
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "responder");

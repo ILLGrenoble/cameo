@@ -17,7 +17,7 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.RemoteException;
-import fr.ill.ics.cameo.base.ServerAndInstance;
+import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -36,10 +36,10 @@ public class BasicRequester {
 			System.out.println("Creating requester");
 			
 			// Get the starter app.
-			ServerAndInstance starter = This.connectToStarter(0, useProxy);
+			ServerAndApp starter = This.connectToStarter(0, useProxy);
 			
 			// Create the requester.
-			fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(starter.getInstance(), "responder");
+			fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(starter.getApp(), "responder");
 			
 			// Set the state.
 			This.setRunning();

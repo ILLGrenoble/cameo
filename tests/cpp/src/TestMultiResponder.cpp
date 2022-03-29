@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<Instance> responderApplication = server.start(applicationName);
+		unique_ptr<App> responderApplication = server.start(applicationName);
 
 		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->now()) << endl;
 

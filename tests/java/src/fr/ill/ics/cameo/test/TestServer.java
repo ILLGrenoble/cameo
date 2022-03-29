@@ -18,9 +18,9 @@ package fr.ill.ics.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 
 public class TestServer {
 
@@ -38,13 +38,13 @@ public class TestServer {
 		
 		System.out.println("Configs");
 		
-		List<Application.Configuration> configs = server.getApplicationConfigurations();
+		List<App.Config> configs = server.getApplicationConfigurations();
 		
-		for (Application.Configuration c : configs) {
+		for (App.Config c : configs) {
 			System.out.println("  " + c.toString());
 		}
 		
-		Instance instance = server.start("simplejava");
+		App instance = server.start("simplejava");
 		
 		if (!instance.exists()) {
 			System.out.println("App does not exist");
@@ -52,7 +52,7 @@ public class TestServer {
 		
 		int state = instance.waitFor();
 		
-		System.out.println("Terminated simple with state " + Application.State.toString(state));
+		System.out.println("Terminated simple with state " + State.toString(state));
 		
 		server.terminate();
 	}

@@ -45,9 +45,9 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		{
-			unique_ptr<Instance> app = server.start("linkedcpp");
+			unique_ptr<App> app = server.start("linkedcpp");
 			State state = app->waitFor(RUNNING);
-			unique_ptr<Instance> stopApp = server.connect("stopcpp");
+			unique_ptr<App> stopApp = server.connect("stopcpp");
 			state = stopApp->waitFor(RUNNING);
 
 			app->kill();
@@ -60,9 +60,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		{
-			unique_ptr<Instance> app = server.start("linkedcpp");
+			unique_ptr<App> app = server.start("linkedcpp");
 			State state = app->waitFor(RUNNING);
-			unique_ptr<Instance> stopApp = server.connect("stopcpp");
+			unique_ptr<App> stopApp = server.connect("stopcpp");
 
 			app->kill();
 			app->waitFor();

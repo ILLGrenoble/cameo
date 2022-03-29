@@ -1,15 +1,27 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
-import fr.ill.ics.cameo.base.KeyValue;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.base.UndefinedApplicationException;
-import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
@@ -37,7 +49,7 @@ public class Subscriber {
 		waiting.add();
 	}
 	
-	private void synchronize(Instance app) throws RequesterCreationException {
+	private void synchronize(App app) throws RequesterCreationException {
 		
 		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 
@@ -51,7 +63,7 @@ public class Subscriber {
 		requester.terminate();
 	}
 	
-	private void init(Instance app, String publisherName) throws SubscriberCreationException {
+	private void init(App app, String publisherName) throws SubscriberCreationException {
 		
 		this.publisherName = publisherName;
 		this.appName = app.getName();
@@ -97,7 +109,7 @@ public class Subscriber {
 	 * @return
 	 * @throws SubscriberCreationException 
 	 */
-	public static Subscriber create(Instance app, String publisherName) throws SubscriberCreationException {
+	public static Subscriber create(App app, String publisherName) throws SubscriberCreationException {
 		
 		Subscriber subscriber = new Subscriber();
 		subscriber.init(app, publisherName);

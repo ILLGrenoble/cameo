@@ -54,7 +54,7 @@ void Requester::terminate() {
 	m_impl.reset();
 }
 
-void Requester::init(const Instance & app, const std::string &responderName) {
+void Requester::init(const App & app, const std::string &responderName) {
 
 	m_responderName = responderName;
 	m_appName = app.getName();
@@ -89,7 +89,7 @@ void Requester::init(const Instance & app, const std::string &responderName) {
 	}
 }
 
-std::unique_ptr<Requester> Requester::create(const Instance & app, const std::string& responderName) {
+std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
 
 	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester());
 	requester->init(app, responderName);

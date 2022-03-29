@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Connect to the server.
-	std::unique_ptr<Instance> responderServer = server->connect("responder");
+	std::unique_ptr<App> responderServer = server->connect("responder");
 
 	std::cout << "Application " << *responderServer << " has state " << toString(responderServer->now()) << std::endl;
 

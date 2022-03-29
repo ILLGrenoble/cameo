@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.SubscriberCreationException;
@@ -41,7 +41,7 @@ public class Subscriber {
 		Server server = This.getServer();
 		
 		try {
-			Instance publisherApplication = server.connect(applicationName);
+			App publisherApplication = server.connect(applicationName);
 			if (!publisherApplication.exists()) {
 				System.err.println("Publisher error");
 				System.exit(-1);

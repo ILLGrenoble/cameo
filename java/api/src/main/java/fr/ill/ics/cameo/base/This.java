@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.base;
 
 import java.util.List;
@@ -7,7 +23,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
-import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
@@ -256,7 +271,7 @@ public class This {
 	 * @throws StateException, ConnectionTimeout
 	 */
 	static public boolean setRunning() {
-		JSONObject request = Messages.createSetStatusRequest(getId(), Application.State.RUNNING);
+		JSONObject request = Messages.createSetStatusRequest(getId(), State.RUNNING);
 		JSONObject response = instance.server.requestJSON(request);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
@@ -271,7 +286,7 @@ public class This {
 	 * @return
 	 */
 	static public boolean isStopping() {
-		return (instance.getState(getId()) == Application.State.STOPPING);
+		return (instance.getState(getId()) == State.STOPPING);
 	}
 	
 	/**
@@ -294,7 +309,7 @@ public class This {
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @return
 	 */
-	static public ServerAndInstance connectToStarter(int options, boolean useProxy) {
+	static public ServerAndApp connectToStarter(int options, boolean useProxy) {
 		
 		if (instance.getStarterEndpoint() == null) {
 			return null;
@@ -311,9 +326,9 @@ public class This {
 		}
 		
 		// Iterate the instances to find the id
-		Instance starterInstance = null;
-		List<Instance> instances = starterServer.connectAll(instance.getStarterName(), options);
-		for (Instance i : instances) {
+		App starterInstance = null;
+		List<App> instances = starterServer.connectAll(instance.getStarterName(), options);
+		for (App i : instances) {
 			if (i.getId() == instance.getStarterId()) {
 				starterInstance = i;
 				break;
@@ -324,14 +339,14 @@ public class This {
 			return null;
 		}
 		
-		return new ServerAndInstance(starterServer, starterInstance);
+		return new ServerAndApp(starterServer, starterInstance);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	static public ServerAndInstance connectToStarter(int options) {
+	static public ServerAndApp connectToStarter(int options) {
 		return connectToStarter(options, false);
 	}
 	
@@ -339,7 +354,7 @@ public class This {
 	 * 
 	 * @return
 	 */
-	static public ServerAndInstance connectToStarter() {
+	static public ServerAndApp connectToStarter() {
 		return connectToStarter(0, false);
 	}
 	
@@ -525,7 +540,7 @@ public class This {
 			checkStatesThread = new Thread(new Runnable() {
 				public void run() {
 					// Warning, this method is executed in a parallel thread.
-					int state = Application.State.UNKNOWN; 
+					int state = State.UNKNOWN; 
 					
 					while (true) {
 						// waits for a new incoming status
@@ -539,7 +554,7 @@ public class This {
 								StatusEvent status = (StatusEvent)event;
 								state = status.getState();
 													
-								if (state == Application.State.STOPPING) {
+								if (state == State.STOPPING) {
 									if (stopHandler != null) {
 										stopHandler.handle();
 									}
@@ -560,7 +575,7 @@ public class This {
 								state = status.getState();
 
 								// Stop this application if it was linked.
-								if (state == Application.State.STOPPED || state == Application.State.KILLED || state == Application.State.SUCCESS || state == Application.State.ERROR) {
+								if (state == State.STOPPED || state == State.KILLED || state == State.SUCCESS || state == State.ERROR) {
 									stop();
 								}
 							}
@@ -607,7 +622,7 @@ public class This {
 		int state = starterServer.getActualState(starterId);
 
 		// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
-		if (state == Application.State.UNKNOWN) {
+		if (state == State.UNKNOWN) {
 			stop();
 		}
 		else {

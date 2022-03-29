@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 		vector<string> args{(useProxy ? "true" : "false")};
 
 		// Start the application.
-		unique_ptr<Instance> responderApplication = server.start(applicationName, args);
+		unique_ptr<App> responderApplication = server.start(applicationName, args);
 
 		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->now()) << endl;
 

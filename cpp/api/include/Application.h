@@ -61,14 +61,14 @@ class WaitingSet;
 class StopHandler;
 class RequestSocket;
 
-class Instance;
+class App;
 
-struct ServerAndInstance {
+struct ServerAndApp {
 	std::unique_ptr<Server> server;
-	std::unique_ptr<Instance> instance;
+	std::unique_ptr<App> app;
 
 	std::unique_ptr<Server> getServer();
-	std::unique_ptr<Instance> getInstance();
+	std::unique_ptr<App> getApp();
 };
 
 
@@ -86,6 +86,9 @@ const State FAILURE          = 32;
 const State SUCCESS          = 64;
 const State STOPPED          = 128;
 const State KILLED           = 256;
+
+///////////////////////////////////////////////////////////////////////////
+// This
 
 /** \class This
  * \brief class managing the current CAMEO application.
@@ -178,7 +181,7 @@ public:
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 */
-	static ServerAndInstance connectToStarter(int options = 0, bool useProxy = false);
+	static ServerAndApp connectToStarter(int options = 0, bool useProxy = false);
 
 	static std::string toString();
 
@@ -227,16 +230,18 @@ private:
 	static const std::string RUNNING_STATE;
 };
 
+///////////////////////////////////////////////////////////////////////////
+// App
 
-class Instance : private EventListener {
+class App : private EventListener {
 
 	friend class cameo::Server;
-	friend std::ostream& operator<<(std::ostream&, const Instance&);
+	friend std::ostream& operator<<(std::ostream&, const App&);
 
 public:
 	class Com {
 
-		friend class Instance;
+		friend class App;
 
 	public:
 		int getResponderProxyPort() const;
@@ -279,7 +284,89 @@ public:
 		std::string m_name;
 	};
 
-	~Instance();
+	///////////////////////////////////////////////////////////////////////////
+	// Config
+
+	class Config {
+
+		friend std::ostream& operator<<(std::ostream&, const Config&);
+
+	public:
+		Config(const std::string& name, const std::string& description, bool singleInfo, bool restart,
+			      int startingTime, int stoppingTime);
+
+		const std::string& getName() const;
+		const std::string& getDescription() const;
+		bool hasSingleInstance() const;
+		bool canRestart() const;
+		int getStartingTime() const;
+		int getStoppingTime() const;
+
+		std::string toString() const;
+
+	private:
+		std::string m_name;
+		std::string m_description;
+		bool m_singleInstance;
+		bool m_restart;
+		int m_startingTime;
+		int m_stoppingTime;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// Info
+
+	class Info {
+
+		friend std::ostream& operator<<(std::ostream&, const Info&);
+
+	public:
+		Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates,
+		     const std::string& args);
+
+		int getId() const;
+		State getState() const;
+		State getPastStates() const;
+		const std::string& getArgs() const;
+		const std::string& getName() const;
+		int getPid() const;
+
+		std::string toString() const;
+
+	private:
+		int m_id;
+		int m_pid;
+		State m_applicationState;
+		State m_pastApplicationStates;
+		std::string m_processState;
+		std::string m_args;
+		std::string m_name;
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	// Port
+
+	class Port {
+
+		friend std::ostream& operator<<(std::ostream&, const Port&);
+
+	public:
+		Port(int port, const std::string& status, const std::string& owner);
+
+		int getPort() const;
+		const std::string& getStatus() const;
+		const std::string& getOwner() const;
+
+		std::string toString() const;
+
+	private:
+		int m_port;
+		std::string m_status;
+		std::string m_owner;
+	};
+
+
+	~App();
 	void terminate();
 
 	const std::string& getName() const;
@@ -336,7 +423,7 @@ public:
 	std::string toString() const;
 
 private:
-	Instance(Server* server);
+	App(Server* server);
 
 	void setId(int id);
 	void setErrorMessage(const std::string& message);
@@ -360,97 +447,16 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////
-// InstanceArray
+// AppArray
 
-typedef std::vector<std::unique_ptr<Instance>> InstanceArray;
+typedef std::vector<std::unique_ptr<App>> AppArray;
 
-
-///////////////////////////////////////////////////////////////////////////
-// Configuration
-
-class Configuration {
-
-	friend std::ostream& operator<<(std::ostream&, const Configuration&);
-
-public:
-	Configuration(const std::string& name, const std::string& description, bool singleInfo, bool restart,
-		      int startingTime, int stoppingTime);
-
-	const std::string& getName() const;
-	const std::string& getDescription() const;
-	bool hasSingleInstance() const;
-	bool canRestart() const;
-	int getStartingTime() const;
-	int getStoppingTime() const;
-
-	std::string toString() const;
-
-private:
-	std::string m_name;
-	std::string m_description;
-	bool m_singleInstance;
-	bool m_restart;
-	int m_startingTime;
-	int m_stoppingTime;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Info
-
-class Info {
-
-	friend std::ostream& operator<<(std::ostream&, const Info&);
-
-public:
-	Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates,
-	     const std::string& args);
-
-	int getId() const;
-	State getState() const;
-	State getPastStates() const;
-	const std::string& getArgs() const;
-	const std::string& getName() const;
-	int getPid() const;
-
-	std::string toString() const;
-
-private:
-	int m_id;
-	int m_pid;
-	State m_applicationState;
-	State m_pastApplicationStates;
-	std::string m_processState;
-	std::string m_args;
-	std::string m_name;
-};
-
-///////////////////////////////////////////////////////////////////////////
-// Port
-
-class Port {
-
-	friend std::ostream& operator<<(std::ostream&, const Port&);
-
-public:
-	Port(int port, const std::string& status, const std::string& owner);
-
-	int getPort() const;
-	const std::string& getStatus() const;
-	const std::string& getOwner() const;
-
-	std::string toString() const;
-
-private:
-	int m_port;
-	std::string m_status;
-	std::string m_owner;
-};
 
 std::string toString(cameo::State applicationStates);
-std::ostream& operator<<(std::ostream&, const cameo::Instance&);
-std::ostream& operator<<(std::ostream&, const cameo::Configuration&);
-std::ostream& operator<<(std::ostream&, const cameo::Info&);
-std::ostream& operator<<(std::ostream&, const cameo::Port&);
+std::ostream& operator<<(std::ostream&, const cameo::App&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
 
 }
 

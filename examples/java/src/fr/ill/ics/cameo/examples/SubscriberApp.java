@@ -20,9 +20,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Subscriber;
 import fr.ill.ics.cameo.coms.SubscriberCreationException;
@@ -65,8 +65,8 @@ public class SubscriberApp {
 		
 		try {
 			// Connect to the publisher application.
-			Instance publisherApp = server.connect("publisher");
-			System.out.println("Application " + publisherApp + " has state " + Application.State.toString(publisherApp.getActualState()));
+			App publisherApp = server.connect("publisher");
+			System.out.println("Application " + publisherApp + " has state " + State.toString(publisherApp.getActualState()));
 			
 			// Create a subscriber to the publisher named "publisher".
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");

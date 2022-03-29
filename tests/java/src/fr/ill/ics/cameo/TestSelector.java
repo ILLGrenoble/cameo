@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
@@ -64,7 +64,7 @@ public class TestSelector {
 	
 	public static void startApplication(Server server, String appName, String[] appArgs) {
 		
-		Instance instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
+		App instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
 		if (instance.exists()) {
 

@@ -207,7 +207,7 @@ void Subscriber::terminate() {
 	m_impl.reset();
 }
 
-void Subscriber::synchronize(const Instance & app) {
+void Subscriber::synchronize(const App & app) {
 
 	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
 
@@ -220,7 +220,7 @@ void Subscriber::synchronize(const Instance & app) {
 	std::optional<std::string> response = requester->receive();
 }
 
-void Subscriber::init(const Instance & app, const std::string& publisherName) {
+void Subscriber::init(const App & app, const std::string& publisherName) {
 
 	m_publisherName = publisherName;
 	m_appName = app.getName();
@@ -262,7 +262,7 @@ void Subscriber::init(const Instance & app, const std::string& publisherName) {
 	}
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(Instance & app, const std::string &publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName) {
 
 	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
 	subscriber->init(app, publisherName);

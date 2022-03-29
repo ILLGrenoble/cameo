@@ -51,7 +51,7 @@ public:
 	bool replyBinary(const std::string &response);
 	bool reply(const std::string &response);
 
-	ServerAndInstance connectToRequester(int options = 0, bool useProxy = false);
+	ServerAndApp connectToRequester(int options = 0, bool useProxy = false);
 
 	std::string toString() const;
 

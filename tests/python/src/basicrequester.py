@@ -9,7 +9,7 @@ useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
 
 starter = this.connectToStarter(0, useProxy)
 
-app = starter.getInstance()
+app = starter.getApp()
 
 # Create a requester.
 requester = cameopy.Requester.create(app, "responder")

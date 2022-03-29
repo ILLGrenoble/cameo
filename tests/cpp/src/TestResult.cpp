@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<Instance> resultApplication = server.start("resultcpp");
+		unique_ptr<App> resultApplication = server.start("resultcpp");
 
 		optional<string> result = resultApplication->getResult();
 		if (result.has_value()) {

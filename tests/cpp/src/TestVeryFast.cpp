@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<Instance> app = server.start("veryfastcpp", OUTPUTSTREAM);
+		unique_ptr<App> app = server.start("veryfastcpp", OUTPUTSTREAM);
 
 		State state = app->waitFor();
 

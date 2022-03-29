@@ -18,7 +18,7 @@ package fr.ill.ics.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.PublisherCreationException;
@@ -76,7 +76,7 @@ public class TestSubscriber {
 					String[] applicationArgs = {This.getName()};
 					
 					// Start the subscriber applications that can subscribe whereas the publisher is not created.
-					Instance subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
+					App subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
 					
 					if (subscriberApplication.exists()) {
 						System.out.println("Started application " + subscriberApplication);
@@ -106,8 +106,8 @@ public class TestSubscriber {
 				publisher.sendEnd();
 				
 				// So we must kill all the subscribers.
-				List<Instance> subscriberApplications = server.connectAll(subscriberApplicationName);
-				for (Instance subscriberApplication : subscriberApplications) {
+				List<App> subscriberApplications = server.connectAll(subscriberApplicationName);
+				for (App subscriberApplication : subscriberApplications) {
 					subscriberApplication.waitFor();
 				}
 				

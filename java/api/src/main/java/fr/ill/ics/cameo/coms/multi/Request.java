@@ -1,12 +1,28 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms.multi;
 
 import java.util.List;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.ServerAndInstance;
+import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
@@ -76,7 +92,7 @@ public class Request {
 		return reply(Messages.serialize(response));
 	}
 	
-	public ServerAndInstance connectToRequester(int options, boolean useProxy) {
+	public ServerAndApp connectToRequester(int options, boolean useProxy) {
 		
 		if (requesterServerEndpoint == null) {
 			return null;
@@ -92,9 +108,9 @@ public class Request {
 		}
 		
 		// Iterate the instances to find the id
-		Instance starterInstance = null;
-		List<Instance> instances = starterServer.connectAll(requesterApplicationName, options);
-		for (Instance i : instances) {
+		App starterInstance = null;
+		List<App> instances = starterServer.connectAll(requesterApplicationName, options);
+		for (App i : instances) {
 			if (i.getId() == requesterApplicationId) {
 				starterInstance = i;
 				break;
@@ -105,14 +121,14 @@ public class Request {
 			return null;
 		}
 		
-		return new ServerAndInstance(starterServer, starterInstance);
+		return new ServerAndApp(starterServer, starterInstance);
 	}
 	
-	public ServerAndInstance connectToRequester(int options) {
+	public ServerAndApp connectToRequester(int options) {
 		return connectToRequester(options, false);
 	}
 	
-	public ServerAndInstance connectToRequester() {
+	public ServerAndApp connectToRequester() {
 		return connectToRequester(0, false);
 	}
 

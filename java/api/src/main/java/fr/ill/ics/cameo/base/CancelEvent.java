@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -16,6 +15,7 @@ package fr.ill.ics.cameo.base;
  */
 
 
+package fr.ill.ics.cameo.base;
 
 
 public class CancelEvent extends Event {

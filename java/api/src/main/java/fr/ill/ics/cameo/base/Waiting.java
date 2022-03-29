@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,6 +13,8 @@ package fr.ill.ics.cameo.base;
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
+package fr.ill.ics.cameo.base;
 
 /**
  * The class implementation must be here to access the package protected member of This.

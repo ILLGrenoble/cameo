@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		unique_ptr<Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<App> stopApplication = server.start("stopcpp");
 
 		cout << "Waiting 0.1s..." << endl;
 		this_thread::sleep_for(chrono::milliseconds(100));

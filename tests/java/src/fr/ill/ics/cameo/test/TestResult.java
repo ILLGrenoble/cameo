@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -49,7 +49,7 @@ public class TestResult {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// Start the application.
-				Instance resultApplication = server.start("resultjava");
+				App resultApplication = server.start("resultjava");
 	
 				// The call is blocking until the application finishes.
 				String result = resultApplication.getStringResult();

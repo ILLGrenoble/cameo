@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 			applicationArgs.push_back(This::getName());
 
 			// Start the application.
-			unique_ptr<Instance> subscriberApplication = server.start(applicationName, applicationArgs);
+			unique_ptr<App> subscriberApplication = server.start(applicationName, applicationArgs);
 
 			if (subscriberApplication->exists()) {
 				cout << "Started application " << *subscriberApplication << endl;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 		publisher->sendEnd();
 
 		// Wait for the end of the applications.
-		InstanceArray instances = server.connectAll(applicationName);
+		AppArray instances = server.connectAll(applicationName);
 
 		for (size_t i = 0; i < instances.size(); i++) {
 			instances[i]->waitFor();

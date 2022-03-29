@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<Instance> publisherApplication = server.start(applicationName);
+		unique_ptr<App> publisherApplication = server.start(applicationName);
 
 		cout << "Started application " << *publisherApplication << endl;
 

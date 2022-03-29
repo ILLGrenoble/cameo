@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<Instance> app = server.start("simplecpp");
+		unique_ptr<App> app = server.start("simplecpp");
 
 		State state = app->waitFor();
 

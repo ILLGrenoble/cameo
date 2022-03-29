@@ -18,9 +18,9 @@ package fr.ill.ics.cameo.test;
 
 import java.util.Date;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -54,12 +54,12 @@ public class TestError {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// start the application.
-				Instance application = server.start("errorjava");
+				App application = server.start("errorjava");
 	
 				// the getString is blocking until the application finishes
 				int state = application.waitFor();
 								
-				System.out.println("Finished application " + application + " with state " + Application.State.toString(state) + " with exit code " + application.getExitCode());
+				System.out.println("Finished application " + application + " with state " + State.toString(state) + " with exit code " + application.getExitCode());
 			}
 		}
 		finally {

@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	Server server(endpoint, 0, useProxy);
 
 	// Start the application.
-	unique_ptr<Instance> app = server.start("stopcpp");
+	unique_ptr<App> app = server.start("stopcpp");
 
 	This::setRunning();
 

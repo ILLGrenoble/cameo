@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.base;
 
-public class InstanceWaiting extends Waiting {
+public class AppWaiting extends Waiting {
 
-	private Instance instance;
+	private App instance;
 	
-	public InstanceWaiting(Instance instance) {
+	public AppWaiting(App instance) {
 		this.instance = instance;
 	}
 	

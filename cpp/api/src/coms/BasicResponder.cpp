@@ -98,9 +98,9 @@ bool Request::reply(const std::string& response) {
 	return replyBinary(response);
 }
 
-ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
+ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 
-	ServerAndInstance result;
+	ServerAndApp result;
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -115,11 +115,11 @@ ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
 	}
 
 	// Iterate the instances to find the id
-	InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);
+	AppArray instances = result.server->connectAll(m_requesterApplicationName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_requesterApplicationId) {
-			result.instance = std::unique_ptr<Instance>(std::move(*i));
+			result.app = std::unique_ptr<App>(std::move(*i));
 			break;
 		}
 	}

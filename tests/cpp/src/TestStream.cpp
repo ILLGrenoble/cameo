@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 	Server server(endpoint, 0, useProxy);
 
 	// Start the application.
-	unique_ptr<Instance> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
+	unique_ptr<App> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
 
 	shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
 	std::thread outputThread([&] {

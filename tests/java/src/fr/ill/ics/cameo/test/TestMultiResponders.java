@@ -16,13 +16,12 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Requester;
-import fr.ill.ics.cameo.messages.Messages;
 
 
 public class TestMultiResponders {
@@ -61,8 +60,8 @@ public class TestMultiResponders {
 		String[] appArgs = new String[] {args[1]};
 		
 		// Start the application.
-		Instance responderApplication = server.start(applicationName, appArgs);
-		System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
+		App responderApplication = server.start(applicationName, appArgs);
+		System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
 
 		int N = 5;
 		
@@ -115,7 +114,7 @@ public class TestMultiResponders {
 			responderApplication.stop();
 			
 			int state = responderApplication.waitFor();
-			System.out.println("Responder application terminated with state " + Application.State.toString(state));
+			System.out.println("Responder application terminated with state " + State.toString(state));
 			
 		}
 		catch (RemoteException e) {

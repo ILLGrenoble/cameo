@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 	vector<string> args{argv[2]};
 
 	// Start the application.
-	unique_ptr<Instance> responderApplication = server.start(applicationName, args);
+	unique_ptr<App> responderApplication = server.start(applicationName, args);
 
 	cout << "Started application " << *responderApplication << endl;
 

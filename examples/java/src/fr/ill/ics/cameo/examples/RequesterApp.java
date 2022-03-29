@@ -16,10 +16,10 @@
 
 package fr.ill.ics.cameo.examples;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Requester;
 
@@ -60,8 +60,8 @@ public class RequesterApp {
 		
 		try {
 			// Connect to the server.
-			Instance responderServer = server.connect("responder");
-			System.out.println("Application " + responderServer + " has state " + Application.State.toString(responderServer.getActualState()));
+			App responderServer = server.connect("responder");
+			System.out.println("Application " + responderServer + " has state " + State.toString(responderServer.getActualState()));
 			
 			// Create a requester.
 			Requester requester = Requester.create(responderServer, "the-responder");

@@ -37,13 +37,13 @@ int main(int, char *[]) {
 
 	cout << "Configs" << endl;
 
-	vector<Configuration> configs = server.getApplicationConfigurations();
+	vector<App::Config> configs = server.getApplicationConfigurations();
 
 	for (auto c : configs) {
 		cout << c << endl;
 	}
 
-	unique_ptr<Instance> instance = server.start("simplecpp");
+	unique_ptr<App> instance = server.start("simplecpp");
 
 	if (!instance->exists()) {
 		cout << "App does not exist" << endl;

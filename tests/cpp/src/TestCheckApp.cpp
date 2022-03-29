@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the applications.
-		vector<unique_ptr<Instance>> apps;
+		vector<unique_ptr<App>> apps;
 
 		int N = 100;
 

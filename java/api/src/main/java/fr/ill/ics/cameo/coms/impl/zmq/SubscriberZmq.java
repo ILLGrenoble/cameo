@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.coms.impl.zmq;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.base.Application;
 import fr.ill.ics.cameo.base.IdGenerator;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
@@ -123,10 +123,10 @@ public class SubscriberZmq implements SubscriberImpl {
 					int state = JSON.getInt(status, Messages.StatusEvent.APPLICATION_STATE);
 					
 					// Test if the state is terminal
-					if (state == Application.State.SUCCESS 
-							|| state == Application.State.STOPPED
-							|| state == Application.State.KILLED
-							|| state == Application.State.ERROR) {
+					if (state == State.SUCCESS 
+							|| state == State.STOPPED
+							|| state == State.KILLED
+							|| state == State.ERROR) {
 						// Exit because the remote application has terminated.
 						return null;
 					}
@@ -185,10 +185,10 @@ public class SubscriberZmq implements SubscriberImpl {
 					int state = JSON.getInt(request, Messages.StatusEvent.APPLICATION_STATE);
 					
 					// Test if the state is terminal
-					if (state == Application.State.SUCCESS 
-							|| state == Application.State.STOPPED
-							|| state == Application.State.KILLED
-							|| state == Application.State.ERROR) {
+					if (state == State.SUCCESS 
+							|| state == State.STOPPED
+							|| state == State.KILLED
+							|| state == State.ERROR) {
 						// Exit because the remote application has terminated.
 						return null;
 					}

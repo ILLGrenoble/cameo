@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,7 +14,7 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
-
+package fr.ill.ics.cameo.base;
 
 
 public class OutputPrintThread extends Thread {
@@ -30,7 +29,7 @@ public class OutputPrintThread extends Thread {
 		
 		try {
 			while (true) {
-				Application.Output stream = socket.receive();
+				OutputStreamSocket.Output stream = socket.receive();
 				
 				if (stream == null) {
 					// The stream is finished.

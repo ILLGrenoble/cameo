@@ -26,12 +26,12 @@ namespace cameo {
 class Context;
 class RequestSocket;
 class StreamSocketImpl;
-class Instance;
+class App;
 
 class EventStreamSocket {
 
 	friend class Server;
-	friend class Instance;
+	friend class App;
 
 public:
 	~EventStreamSocket();

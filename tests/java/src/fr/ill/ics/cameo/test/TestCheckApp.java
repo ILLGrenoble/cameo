@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -51,7 +51,7 @@ public class TestCheckApp {
 
 				int N = 100;
 				
-				Instance[] apps = new Instance[N];
+				App[] apps = new App[N];
 				
 				int counter = 0;
 				boolean[] appFinished = new boolean[N];
@@ -64,7 +64,7 @@ public class TestCheckApp {
 				while (counter < N) {
 
 					for (int j = 0; j < N; ++j) {
-						if (!appFinished[j] && apps[j].getLastState() == Application.State.SUCCESS) {
+						if (!appFinished[j] && apps[j].getLastState() == State.SUCCESS) {
 							counter++;
 							appFinished[j] = true;
 							System.out.println("App " + j + " finished");

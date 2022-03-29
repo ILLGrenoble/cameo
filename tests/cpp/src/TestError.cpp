@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<Instance> app = server.start("errorcpp");
+		unique_ptr<App> app = server.start("errorcpp");
 
 		State state = app->waitFor();
 

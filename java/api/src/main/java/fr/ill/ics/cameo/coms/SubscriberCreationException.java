@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.coms;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -14,6 +13,8 @@ package fr.ill.ics.cameo.coms;
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
+
+package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.RemoteException;
 
