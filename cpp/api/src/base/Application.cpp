@@ -326,7 +326,7 @@ void This::handleStop(StopFunctionType function, int stoppingTime) {
 	m_instance.initStopCheck(function, stoppingTime);
 }
 
-void This::cancelWaitings() {
+void This::cancelAll() {
 	m_instance.m_waitingSet->cancelAll();
 }
 

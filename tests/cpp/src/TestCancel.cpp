@@ -36,16 +36,16 @@ int main(int argc, char *argv[]) {
 
 	Server server(endpoint, 0, useProxy);
 
-	// Test the cancelWaitings function.
+	// Test the cancelAll function.
 	{
-		cout << "Starting stopcpp for cancelWaitings" << endl;
+		cout << "Starting stopcpp for cancelAll" << endl;
 
 		unique_ptr<App> stopApplication = server.start("stopcpp");
 
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			This::cancelWaitings();
+			This::cancelAll();
 		});
 
 		State state = stopApplication->waitFor();
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			This::cancelWaitings();
+			This::cancelAll();
 		});
 
 		// Receiving data.

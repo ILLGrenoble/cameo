@@ -241,7 +241,7 @@ public class This {
 		return isAvailable(10000);
 	}
 	
-	static public void cancelWaitings() {
+	static public void cancelAll() {
 		if (instance == null) {
 			return;
 		}

@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 
 	This::handleStop([] {
 		// Cancel the router.
-		This::cancelWaitings();
+		This::cancelAll();
 
 		cout << "Stopped" << endl;
 	});

@@ -28,7 +28,7 @@ public class MultiResponders {
 		This.init(args);
 		
 		This.handleStop(() -> {
-			This.cancelWaitings();
+			This.cancelAll();
 			
 			System.out.println("Stopped");
 		});

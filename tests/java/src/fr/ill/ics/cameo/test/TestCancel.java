@@ -42,9 +42,9 @@ public class TestCancel {
 		Server server = new Server(endpoint, 0, useProxy);
 		
 		try {
-			// Test This.cancelWaitings.
+			// Test This.cancelAll.
 			{
-				System.out.println("Starting stopjava for cancelWaitings");
+				System.out.println("Starting stopjava for cancelAll");
 				
 				App stopApplication = server.start("stopjava");
 	
@@ -54,7 +54,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		This.cancelWaitings();
+				    		This.cancelAll();
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -199,7 +199,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		This.cancelWaitings();
+				    		This.cancelAll();
 				    		
 				    	} catch (InterruptedException e) {
 						}

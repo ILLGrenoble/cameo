@@ -7,7 +7,7 @@ this.init(sys.argv)
 
 def stop():
     print("Stopping...")
-    #cameopy.This.cancelWaitings()
+    #cameopy.This.cancelAll()
     router.cancel()
     print("Stopped")
     

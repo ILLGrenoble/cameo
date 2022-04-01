@@ -167,7 +167,7 @@ public:
 	 */
 	static void handleStop(StopFunctionType function, int stoppingTime = -1);
 
-	static void cancelWaitings();
+	static void cancelAll();
 
 	static bool setRunning(); ///< sets the current instance in RUNNING state
 

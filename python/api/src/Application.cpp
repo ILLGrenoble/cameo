@@ -87,7 +87,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"function"_a,
 				"stoppingTime"_a = -1,
 				py::call_guard<py::gil_scoped_release>())
-	    .def_static("cancelWaitings", &This::cancelWaitings, py::call_guard<py::gil_scoped_release>())
+	    .def_static("cancelAll", &This::cancelAll, py::call_guard<py::gil_scoped_release>())
 	    .def_static("setRunning", &This::setRunning, py::call_guard<py::gil_scoped_release>())
 	    .def_static("setBinaryResult", &This::setBinaryResult,
 	    		"data"_a,

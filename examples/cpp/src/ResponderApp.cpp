@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	This::handleStop([] {
-		This::cancelWaitings();
+		This::cancelAll();
 	});
 
 	std::unique_ptr<coms::basic::Responder> responder;

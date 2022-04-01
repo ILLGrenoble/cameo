@@ -5,7 +5,7 @@ import cameopy
 
 def cancelAll():
     time.sleep(1)
-    cameopy.This.cancelWaitings()
+    cameopy.This.cancelAll()
 
 def cancelWaitFor(instance):
     time.sleep(1)
@@ -48,7 +48,7 @@ server = cameopy.Server(endpoint, 0, useProxy)
 
 def testCancelAll():
 
-    print("Starting stopcpp for cancelWaitings")
+    print("Starting stopcpp for cancelAll")
     
     app = server.start("stopcpp")
     

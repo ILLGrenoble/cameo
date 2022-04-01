@@ -33,7 +33,7 @@ public class ResponderApp {
 		}
 				
 		This.handleStop(() -> {
-			This.cancelWaitings();				
+			This.cancelAll();				
 		});
 		
 		Responder responder = null;
