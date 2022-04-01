@@ -58,11 +58,11 @@ int main(int argc, char *argv[]) {
 
 	// Receive data.
 	while (true) {
-		optional<string> data = subscriber->receive();
+		optional<tuple<string, string>> data = subscriber->receiveTwoParts();
 		if (!data.has_value()) {
 			break;
 		}
-		cout << "Received " << data.value() << endl;
+		cout << "Received " << get<0>(data.value()) << ", " << get<1>(data.value()) << endl;
 	}
 
 	cout << "Finished the application" << endl;

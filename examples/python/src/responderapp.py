@@ -12,9 +12,9 @@ print("Created responder", responder.getName())
 this.setRunning()
 
 while True:
-  request = responder.receive();
+  request = responder.receiveString();
   if request:
-    requestStr = request.get()
+    requestStr = request.getString()
     print("received request", requestStr)
     response = "processed " + requestStr
     request.reply(response)

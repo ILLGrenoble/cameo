@@ -121,7 +121,7 @@ def testKillApplication():
 
     # Receiving data.
     while True:
-        data = subscriber.receive()
+        data = subscriber.receiveString()
         if data:
             print("Received", data)
         else:
@@ -151,7 +151,7 @@ def testCancelSubscriber():
 
      # Receiving data.
     while True:
-        data = subscriber.receive()
+        data = subscriber.receiveString()
         if data:
             print("Received", data)
         else:

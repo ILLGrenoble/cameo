@@ -71,7 +71,7 @@ bool SubscriberZmq::isCanceled() const {
 	return m_canceled;
 }
 
-std::optional<std::string> SubscriberZmq::receiveBinary() {
+std::optional<std::string> SubscriberZmq::receive() {
 
 	while (true) {
 		zmq::message_t firstPart;
@@ -142,11 +142,7 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 	return {};
 }
 
-std::optional<std::string> SubscriberZmq::receive() {
-	return receiveBinary();
-}
-
-std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBinaryParts() {
+std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoParts() {
 
 	while (true) {
 		zmq::message_t firstPart;

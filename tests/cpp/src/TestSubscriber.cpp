@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 
 			string data = "{";
 			data += to_string(k) + ", " + to_string(k * k) + "}";
-			publisher->send(data);
+			publisher->sendTwoParts(to_string(k), data);
 
 			cout << "Sent " << data << endl;
 

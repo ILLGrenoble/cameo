@@ -20,6 +20,7 @@ import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.SubscriberCreationException;
+import fr.ill.ics.cameo.messages.Messages;
 
 
 public class Subscriber {
@@ -53,9 +54,9 @@ public class Subscriber {
 			
 			// Receive data.
 			while (true) {
-				String data = subscriber.receiveString();
+				byte[][] data = subscriber.receiveTwoParts();
 				if (data != null) {
-					System.out.println("Received " + data);
+					System.out.println("Received " + Messages.parseString(data[0]) + ", " + Messages.parseString(data[1]));
 				}
 				else {
 					break;

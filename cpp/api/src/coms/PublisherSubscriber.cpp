@@ -294,16 +294,12 @@ bool Subscriber::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
-std::optional<std::string> Subscriber::receiveBinary() const {
-	return m_impl->receiveBinary();
-}
-
 std::optional<std::string> Subscriber::receive() const {
 	return m_impl->receive();
 }
 
-std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinaryParts() const {
-	return m_impl->receiveTwoBinaryParts();
+std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoParts() const {
+	return m_impl->receiveTwoParts();
 }
 
 void Subscriber::cancel() {

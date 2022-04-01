@@ -137,12 +137,12 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
 	    .def("getExitCode", &App::getExitCode)
 	    .def("getResult",
-		 [](App* instance) {
-			 auto result = instance->getResult();
-			 if (result.has_value() == false)
-				 return py::bytes("");
-			 return py::bytes(result.value());
-		 }, py::call_guard<py::gil_scoped_release>())
+			 [](App* instance) {
+				 auto result = instance->getResult();
+				 if (result.has_value() == false)
+					 return py::bytes("");
+				 return py::bytes(result.value());
+			 }, py::call_guard<py::gil_scoped_release>())
 	    .def("getStringResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
 	    .def("getOutputStreamSocket", &App::getOutputStreamSocket)
 		.def("__str__", &App::toString,
@@ -182,9 +182,28 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getAppEndpoint", &Subscriber::getAppEndpoint)
 	    .def("isEnded", &Subscriber::isEnded)
 	    .def("isCanceled", &Subscriber::isCanceled)
-	    .def("receiveBinary", &Subscriber::receiveBinary, py::call_guard<py::gil_scoped_release>())
-	    .def("receive", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("receiveTwoBinaryParts", &Subscriber::receiveTwoBinaryParts, py::call_guard<py::gil_scoped_release>())
+
+		.def("receive",
+			[](Subscriber* instance) {
+				auto result = instance->receive();
+				 if (result.has_value() == false)
+					 return py::bytes("");
+				 return py::bytes(result.value());
+			}, py::call_guard<py::gil_scoped_release>())
+
+	    .def("receiveString", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
+	    .def("receiveTwoParts",
+			[](Subscriber* instance) {
+				auto result = instance->receiveTwoParts();
+				 if (result.has_value() == false)
+					 return py::tuple();
+
+				 py::tuple tupleResult(2);
+				 tupleResult[0] = py::bytes(std::get<0>(result.value()));
+				 tupleResult[1] = py::bytes(std::get<1>(result.value()));
+
+				 return tupleResult;
+			}, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &Subscriber::toString,
 					py::call_guard<py::gil_scoped_release>());
@@ -197,10 +216,11 @@ PYBIND11_MODULE(cameopy, m) {
 					return py::bytes(result);
 				 }, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &basic::Request::get)
-	    .def("getSecondPart", [](basic::Request* instance) {
-					 auto result = instance->getSecondPart();
-					 return py::bytes(result);
-				 }, py::call_guard<py::gil_scoped_release>())
+	    .def("getSecondPart",
+			[](basic::Request* instance) {
+				 auto result = instance->getSecondPart();
+				 return py::bytes(result);
+			 }, py::call_guard<py::gil_scoped_release>())
 	    .def("setTimeout", &basic::Request::setTimeout,
 	    		"value"_a)
 	    .def("reply", &basic::Request::reply,
@@ -229,15 +249,17 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<multi::Request>(m, "MultiRequest")
 		.def("getObjectId", &multi::Request::getObjectId)
 		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
-		.def("get", [](multi::Request* instance) {
-					 auto result = instance->get();
-					 return py::bytes(result);
-				 }, py::call_guard<py::gil_scoped_release>())
+		.def("get",
+			[](multi::Request* instance) {
+				 auto result = instance->get();
+				 return py::bytes(result);
+			 }, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &multi::Request::get)
-		.def("getSecondPart", [](multi::Request* instance) {
-					 auto result = instance->getSecondPart();
-					 return py::bytes(result);
-				 }, py::call_guard<py::gil_scoped_release>())
+		.def("getSecondPart",
+			[](multi::Request* instance) {
+				 auto result = instance->getSecondPart();
+				 return py::bytes(result);
+			 }, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &multi::Request::setTimeout,
 				"value"_a)
 		.def("reply", &multi::Request::reply,
@@ -295,12 +317,12 @@ PYBIND11_MODULE(cameopy, m) {
 	    		py::call_guard<py::gil_scoped_release>())
 
 		.def("receive",
-				[](Requester* instance) {
-					 auto result = instance->receive();
-					 if (result.has_value() == false)
-						 return py::bytes("");
-					 return py::bytes(result.value());
-				 }, py::call_guard<py::gil_scoped_release>())
+			[](Requester* instance) {
+				 auto result = instance->receive();
+				 if (result.has_value() == false)
+					 return py::bytes("");
+				 return py::bytes(result.value());
+			 }, py::call_guard<py::gil_scoped_release>())
 
 	    .def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())

@@ -21,7 +21,9 @@ request.reply("1st response")
 # Receive second request.
 request = responder.receive();
 
-print("Received request with parts", request.getString(), request.getSecondPart())
+sp = request.getSecondPart()
+
+print("Received request with parts", request.getString(), request.getSecondPart().decode("utf-8"))
 
 res = request.reply("2nd response")
 

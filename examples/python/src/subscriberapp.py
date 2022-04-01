@@ -14,7 +14,7 @@ print("Connected", publisherApp.getNameId())
 subscriber = cameopy.Subscriber.create(publisherApp, "the-publisher")
 
 while True:
-  message = subscriber.receive()
+  message = subscriber.receiveString()
   if message:
     print("Received", message)
   else:

@@ -40,7 +40,7 @@ for i in range(numberOfTimes):
     
     for k in range(20):
         data = "{" + str(k) + ", " + str(k * k) + "}"
-        publisher.send(data)
+        publisher.sendTwoParts(bytes(str(k), "utf-8"), bytes(data, "utf-8"))
     
         print("Sent", data)
         

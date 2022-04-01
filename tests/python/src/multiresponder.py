@@ -21,7 +21,7 @@ def responderProcess():
     # Receive second request.
     request = responder.receive();
     
-    print("Received request with parts", request.getString(), request.getSecondPart())
+    print("Received request with parts", request.getString(), request.getSecondPart().decode("utf-8"))
     
     request.reply("2nd response")
     

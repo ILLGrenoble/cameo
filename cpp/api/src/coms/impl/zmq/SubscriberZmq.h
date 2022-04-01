@@ -37,9 +37,8 @@ public:
 	virtual bool isEnded() const;
 	virtual bool isCanceled() const;
 
-	virtual std::optional<std::string> receiveBinary();
 	virtual std::optional<std::string> receive();
-	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
+	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoParts();
 
 	virtual void cancel();
 

@@ -20,9 +20,9 @@ print("Synchronized with 1 publisher")
 this.setRunning()
 
 while True:
-    data = subscriber.receive()
+    data = subscriber.receiveTwoParts()
     if data:
-        print("Received", data)
+        print("Received", data[0].decode("utf-8"), ",", data[1].decode("utf-8"))
     else:
         break
 

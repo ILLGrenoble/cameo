@@ -133,17 +133,12 @@ public:
 	/**
 	 * Returns a string or nothing if the stream has finished.
 	 */
-	std::optional<std::string> receiveBinary() const;
-
-	/**
-	 * Returns a string or nothing if the stream has finished.
-	 */
 	std::optional<std::string> receive() const;
 
 	/**
 	 * Returns a tuple of strings or nothing if the stream has finished.
 	 */
-	std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts() const;
+	std::optional<std::tuple<std::string, std::string>> receiveTwoParts() const;
 
 	void cancel();
 
