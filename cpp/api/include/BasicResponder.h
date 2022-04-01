@@ -42,13 +42,11 @@ public:
 	std::string getObjectId() const;
 	std::string getRequesterEndpoint() const;
 
-	const std::string& getBinary() const;
-	std::string get() const;
-	const std::string& getSecondBinaryPart() const;
+	const std::string& get() const;
+	const std::string& getSecondPart() const;
 
 	void setTimeout(int value);
 
-	bool replyBinary(const std::string &response);
 	bool reply(const std::string &response);
 
 	ServerAndApp connectToRequester(int options = 0, bool useProxy = false);

@@ -21,8 +21,8 @@ print("Responder: ", str(resp))
 starter = t.connectToStarter()
 
 request = resp.receive();
-print(request.getBinary())
-request.replyBinary("this is a text message")
+print(request.get())
+request.replyString("this is a text message")
 
   # std::unique_ptr<cameo::application::Request> message = responder->receive();
   # CHECK(message->getBinary() == TEXT );

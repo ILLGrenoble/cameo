@@ -44,7 +44,7 @@ for i in range(numberOfTimes):
         request = responder.receive()
         request.reply("done")
 
-        print("Processed", request.get())
+        print("Processed", request.getString())
         
     # Wait for the requester applications.
     for j in range(N):

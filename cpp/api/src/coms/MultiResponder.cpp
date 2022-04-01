@@ -59,15 +59,11 @@ std::string Request::getRequesterEndpoint() const {
 	return m_requesterServerEndpoint.toString();
 }
 
-const std::string& Request::getBinary() const {
+const std::string& Request::get() const {
 	return m_messagePart1;
 }
 
-std::string Request::get() const {
-	return m_messagePart1;
-}
-
-const std::string& Request::getSecondBinaryPart() const {
+const std::string& Request::getSecondPart() const {
 	return m_messagePart2;
 }
 
@@ -83,7 +79,7 @@ Request::Request(const std::string & requesterApplicationName, int requesterAppl
 	m_requesterServerProxyPort = serverProxyPort;
 }
 
-bool Request::replyBinary(const std::string& response) {
+bool Request::reply(const std::string& response) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
@@ -92,10 +88,6 @@ bool Request::replyBinary(const std::string& response) {
 	m_responder->reply(jsonRequest.toString(), response);
 
 	return true;
-}
-
-bool Request::reply(const std::string& response) {
-	return replyBinary(response);
 }
 
 ServerAndApp Request::connectToRequester(int options, bool useProxy) {

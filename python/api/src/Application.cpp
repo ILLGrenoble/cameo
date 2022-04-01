@@ -195,14 +195,17 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<basic::Request>(m, "BasicRequest")
 		.def("getObjectId", &basic::Request::getObjectId)
 	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
-	    .def("getBinary", &basic::Request::getBinary)
-	    .def("get", &basic::Request::get)
-	    .def("getSecondBinaryPart", &basic::Request::getSecondBinaryPart)
+		.def("get", [](basic::Request* instance) {
+					auto result = instance->get();
+					return py::bytes(result);
+				 }, py::call_guard<py::gil_scoped_release>())
+		.def("getString", &basic::Request::get)
+	    .def("getSecondPart", [](basic::Request* instance) {
+					 auto result = instance->getSecondPart();
+					 return py::bytes(result);
+				 }, py::call_guard<py::gil_scoped_release>())
 	    .def("setTimeout", &basic::Request::setTimeout,
 	    		"value"_a)
-	    .def("replyBinary", &basic::Request::replyBinary,
-	    		"response"_a,
-	    		py::call_guard<py::gil_scoped_release>())
 	    .def("reply", &basic::Request::reply,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
@@ -229,14 +232,17 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<multi::Request>(m, "MultiRequest")
 		.def("getObjectId", &multi::Request::getObjectId)
 		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
-		.def("getBinary", &multi::Request::getBinary)
-		.def("get", &multi::Request::get)
-		.def("getSecondBinaryPart", &multi::Request::getSecondBinaryPart)
+		.def("get", [](multi::Request* instance) {
+					 auto result = instance->get();
+					 return py::bytes(result);
+				 }, py::call_guard<py::gil_scoped_release>())
+		.def("getString", &multi::Request::get)
+		.def("getSecondPart", [](multi::Request* instance) {
+					 auto result = instance->getSecondPart();
+					 return py::bytes(result);
+				 }, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &multi::Request::setTimeout,
 				"value"_a)
-		.def("replyBinary", &multi::Request::replyBinary,
-				"response"_a,
-				py::call_guard<py::gil_scoped_release>())
 		.def("reply", &multi::Request::reply,
 				"response"_a,
 				py::call_guard<py::gil_scoped_release>())
@@ -284,17 +290,22 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("getAppName", &Requester::getAppName)
 		.def("getAppId", &Requester::getAppId)
 		.def("getAppEndpoint", &Requester::getAppEndpoint)
-	    .def("sendBinary", &Requester::sendBinary,
-	    		"request"_a,
-	    		py::call_guard<py::gil_scoped_release>())
 	    .def("send", &Requester::send,
 	    		"request"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("sendTwoBinaryParts", &Requester::sendTwoBinaryParts,
+	    .def("sendTwoParts", &Requester::sendTwoParts,
 	    		"request1"_a, "request2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("receiveBinary", &Requester::receiveBinary, py::call_guard<py::gil_scoped_release>())
-	    .def("receive", &Requester::receive, py::call_guard<py::gil_scoped_release>())
+
+		.def("receive",
+				[](Requester* instance) {
+					 auto result = instance->receive();
+					 if (result.has_value() == false)
+						 return py::bytes("");
+					 return py::bytes(result.value());
+				 }, py::call_guard<py::gil_scoped_release>())
+
+	    .def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("isCanceled", &Requester::isCanceled)
         .def("hasTimedout", &Requester::hasTimedout)

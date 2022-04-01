@@ -50,7 +50,7 @@ def requesterProcess(id):
         # Send a simple message.
         requesters[id].send(str(i))
         
-        response = requesters[id].receive()
+        response = requesters[id].receiveString()
         print(id, "receives", response)
         
 

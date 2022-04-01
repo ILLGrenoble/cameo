@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 	// Receive second request.
 	request = responder->receive();
 
-	cout << "Received request " << request->getBinary() << " " << request->getSecondBinaryPart() << endl;
+	cout << "Received request " << request->get() << " " << request->getSecondPart() << endl;
 	request->reply("2nd response");
 
 	// Receive third request.

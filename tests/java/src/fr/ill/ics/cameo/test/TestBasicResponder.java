@@ -77,7 +77,7 @@ public class TestBasicResponder {
 				
 				
 				// Send a simple message.
-				requester.send("request");
+				requester.sendString("request");
 				System.out.println("Response is " + requester.receiveString());
 			
 				
@@ -87,7 +87,7 @@ public class TestBasicResponder {
 				
 				
 				// Send a simple message.
-				requester.send("request");
+				requester.sendString("request");
 				
 				// Wait 1s.
 				System.out.println("Wait so that the responder has replied");
@@ -100,7 +100,7 @@ public class TestBasicResponder {
 				
 				
 				// Send a simple message.
-				requester.send("request after wait");
+				requester.sendString("request after wait");
 				requester.setTimeout(500);
 				
 				String response = requester.receiveString();
@@ -117,7 +117,7 @@ public class TestBasicResponder {
 				
 
 				// Send a simple message.
-				requester.send("request after timeout");
+				requester.sendString("request after timeout");
 				
 				response = requester.receiveString();
 				System.out.println("Response is " + response);

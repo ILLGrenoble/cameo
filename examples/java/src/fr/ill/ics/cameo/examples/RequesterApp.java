@@ -69,7 +69,7 @@ public class RequesterApp {
 			
 			for (int i = 0; i < N; ++i) {
 				// Send a simple message as string.
-				requester.send(requestMessage + "-" + i);
+				requester.sendString(requestMessage + "-" + i);
 				System.out.println("Response is " + requester.receiveString());
 			}
 				

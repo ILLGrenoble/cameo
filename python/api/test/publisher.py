@@ -20,7 +20,7 @@ print("Publisher: ", str(publ))
 starter = t.connectToStarter()
 
 publ.waitForSubscribers()
-publ.sendBinary("this is a text message")
+publ.send("this is a text message")
 publ.send("another message")
 publ.sendEnd()
 print(publisher.isEnded())

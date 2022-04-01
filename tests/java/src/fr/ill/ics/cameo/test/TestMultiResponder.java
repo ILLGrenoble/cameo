@@ -74,7 +74,7 @@ public class TestMultiResponder {
 				
 				
 				// Send a simple message.
-				requester.send("request");
+				requester.sendString("request");
 				System.out.println("Response is " + requester.receiveString());
 			
 				

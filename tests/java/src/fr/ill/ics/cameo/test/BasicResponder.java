@@ -48,23 +48,23 @@ public class BasicResponder {
 			System.out.println("Received request " + request.get());
 
 			// Reply.
-			request.reply("1st response");
+			request.replyString("1st response");
 			
 			// Receive the second request.
 			request = responder.receive();
 			
-			byte[][] data = request.getTwoBinaryParts();
+			byte[][] data = request.getTwoParts();
 			System.out.println("Received request " + Messages.parseString(data[0]) + " " + Messages.parseString(data[1]));
 
 			// Reply.
-			request.reply("2nd response");
+			request.replyString("2nd response");
 			
 			// Receive the third request.
 			request = responder.receive();
 			System.out.println("Received request " + request.get());
 
 			// Reply.
-			request.reply("3rd response");
+			request.replyString("3rd response");
 			
 			System.out.println("Replied 3rd response");			
 			
@@ -81,14 +81,14 @@ public class BasicResponder {
 			}
 			
 			// Reply.
-			request.reply("4th response");
+			request.replyString("4th response");
 			
 			
 			// Receive the fifth request.
 			request = responder.receive();
 			
 			// Reply.
-			request.reply("5th response");
+			request.replyString("5th response");
 			
 			// Test connection.
 			ServerAndApp requester = request.connectToRequester(0, useProxy);

@@ -14,14 +14,14 @@ this.setRunning()
 
 # Receive first request.
 request = responder.receive();
-print("Received request", request.get())
+print("Received request", request.getString())
 
 request.reply("1st response")
 
 # Receive second request.
 request = responder.receive();
 
-print("Received request with parts", request.get(), request.getSecondBinaryPart())
+print("Received request with parts", request.getString(), request.getSecondPart())
 
 res = request.reply("2nd response")
 
@@ -31,7 +31,7 @@ if not res:
 
 # Receive third request without receive on the requester side.
 request = responder.receive();
-print("Received request", request.get())
+print("Received request", request.getString())
 
 # Reply with timeout.
 request.setTimeout(100)
@@ -43,12 +43,12 @@ if not res:
 
 # Receive request after timeout.
 request = responder.receive();
-print("Received request", request.get())
+print("Received request", request.getString())
 
 request.reply("4th response after timeout")
 
 requester = request.connectToRequester(0, useProxy)
-app = requester.getInstance()
+app = requester.getApp()
 
 print("Requester", app.getId())
 

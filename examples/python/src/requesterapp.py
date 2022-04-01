@@ -20,5 +20,5 @@ for i in range(numberOfTimes):
   request = "request-" + str(i)
   requester.send(request)
   print("Sent request")
-  response = requester.receive()
+  response = requester.receiveString()
   print("Response", response)

@@ -91,7 +91,7 @@ public class TestBasicRequester {
 					
 					// Receive the simple request.
 					fr.ill.ics.cameo.coms.basic.Request request = responder.receive();
-		    		request.reply("done");
+		    		request.replyString("done");
 		    		
 		    		System.out.println("Processed " + request);
 				}

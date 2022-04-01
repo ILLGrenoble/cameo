@@ -126,7 +126,7 @@ public class Requester {
 		impl.send(request);
 	}
 	
-	public void send(String request) {
+	public void sendString(String request) {
 		impl.send(request);
 	}
 	

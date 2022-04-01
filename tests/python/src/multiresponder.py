@@ -14,14 +14,14 @@ def responderProcess():
     
     # Receive first request.
     request = responder.receive();
-    print("Received request", request.get())
+    print("Received request", request.getString())
     
     request.reply("1st response")
     
     # Receive second request.
     request = responder.receive();
     
-    print("Received request with parts", request.get(), request.getSecondBinaryPart())
+    print("Received request with parts", request.getString(), request.getSecondPart())
     
     request.reply("2nd response")
     

@@ -60,7 +60,7 @@ public class ResponderApp {
 				System.out.println("Received request " + request.get());
 	
 				// Reply.
-				request.reply("done");
+				request.replyString("done");
 			}
 						
 		} catch (RemoteException e) {

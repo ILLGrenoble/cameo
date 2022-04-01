@@ -59,14 +59,14 @@ public class MultiResponder {
 					System.out.println("Received request " + request.get());
 
 					// Reply.
-					request.reply("1st response");
+					request.replyString("1st response");
 					
 					request = responder.receive();
-					byte[][] data = request.getTwoBinaryParts();
+					byte[][] data = request.getTwoParts();
 					System.out.println("Received request " + Messages.parseString(data[0]) + " " + Messages.parseString(data[1]));
 
 					// Reply.
-					request.reply("2nd response");
+					request.replyString("2nd response");
 
 					router.cancel();
 					

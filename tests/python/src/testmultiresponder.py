@@ -32,13 +32,13 @@ for i in range(numberOfTimes):
     # Send a simple message.
     requester.send("request")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a two-parts message.
-    requester.sendTwoBinaryParts("first", "second")
+    requester.sendTwoParts("first", "second")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
         
     # Wait for the application.

@@ -121,20 +121,12 @@ Endpoint Requester::getAppEndpoint() const {
 	return m_appEndpoint;
 }
 
-void Requester::sendBinary(const std::string& request) {
-	m_impl->sendBinary(request);
-}
-
 void Requester::send(const std::string& request) {
 	m_impl->send(request);
 }
 
-void Requester::sendTwoBinaryParts(const std::string& request1, const std::string& request2) {
-	m_impl->sendTwoBinaryParts(request1, request2);
-}
-
-std::optional<std::string> Requester::receiveBinary() {
-	return m_impl->receiveBinary();
+void Requester::sendTwoParts(const std::string& request1, const std::string& request2) {
+	m_impl->sendTwoParts(request1, request2);
 }
 
 std::optional<std::string> Requester::receive() {

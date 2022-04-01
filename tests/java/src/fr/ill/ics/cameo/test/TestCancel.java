@@ -329,7 +329,7 @@ public class TestCancel {
 				
 				System.out.println("Sending request");
 				
-				requester.send("request");
+				requester.sendString("request");
 				
 				System.out.println("Receiving response");
 				

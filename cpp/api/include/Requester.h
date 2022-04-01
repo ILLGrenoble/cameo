@@ -56,14 +56,8 @@ public:
 	int getAppId() const;
 	Endpoint getAppEndpoint() const;
 
-	void sendBinary(const std::string &request);
 	void send(const std::string &request);
-	void sendTwoBinaryParts(const std::string &request1, const std::string &request2);
-
-	/**
-	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
-	 */
-	std::optional<std::string> receiveBinary();
+	void sendTwoParts(const std::string &request1, const std::string &request2);
 
 	/**
 	 * Returns a string or nothing if the requester is canceled or a timeout occurred.

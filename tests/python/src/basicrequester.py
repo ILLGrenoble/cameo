@@ -22,7 +22,7 @@ for i in range(R):
     # Send and wait for the result.
     requester.send("test")
 
-    response = requester.receive()
+    response = requester.receiveString()
 
     if response:
         print("Received",  response)

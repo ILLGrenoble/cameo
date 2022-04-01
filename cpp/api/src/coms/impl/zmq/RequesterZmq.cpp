@@ -191,7 +191,7 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	m_requester->send(requestPart3Part, zmq::send_flags::none);
 }
 
-void RequesterZmq::sendBinary(const std::string& requestData) {
+void RequesterZmq::send(const std::string& requestData) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
@@ -213,11 +213,7 @@ void RequesterZmq::sendBinary(const std::string& requestData) {
 	sendRequest(jsonRequest.toString(), requestData);
 }
 
-void RequesterZmq::send(const std::string& requestData) {
-	sendBinary(requestData);
-}
-
-void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) {
+void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::string& requestData2) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
@@ -284,7 +280,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 	return false;
 }
 
-std::optional<std::string> RequesterZmq::receiveBinary() {
+std::optional<std::string> RequesterZmq::receive() {
 
 	if (m_canceled) {
 		return {};
@@ -328,10 +324,6 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	}
 
 	return result;
-}
-
-std::optional<std::string> RequesterZmq::receive() {
-	return receiveBinary();
 }
 
 void RequesterZmq::cancel() {

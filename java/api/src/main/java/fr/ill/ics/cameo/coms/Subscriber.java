@@ -57,7 +57,7 @@ public class Subscriber {
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
 		
-		requester.send(jsonRequest.toJSONString());
+		requester.sendString(jsonRequest.toJSONString());
 		String response = requester.receiveString();
 		
 		requester.terminate();

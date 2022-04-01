@@ -34,9 +34,9 @@ def responderProcess(id):
         
         # Receive request.
         request = responder.receive();
-        print("Received request", request.get())
+        print("Received request", request.getString())
     
-        request.reply(str(id) + " to " + request.get())
+        request.reply(str(id) + " to " + request.getString())
     
     #responder.terminate()
 

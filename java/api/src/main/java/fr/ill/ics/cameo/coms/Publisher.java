@@ -138,7 +138,7 @@ public class Publisher {
 					counter++;
 				}
 				
-				request.reply("OK");
+				request.replyString("OK");
 			}
 			
 			return !responder.isCanceled();

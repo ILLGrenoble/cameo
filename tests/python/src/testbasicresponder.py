@@ -35,13 +35,13 @@ for i in range(numberOfTimes):
     # Send a simple message.
     requester.send("request")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a two-parts message.
-    requester.sendTwoBinaryParts("first", "second")
+    requester.sendTwoParts("first", "second")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a simple message but do not receive the response immediately.
@@ -50,13 +50,13 @@ for i in range(numberOfTimes):
     print("Wait so that the responder has timed out")
     time.sleep(1)
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a new simple message.
     requester.send("request after timeout")
 
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Wait for the application.

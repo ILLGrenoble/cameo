@@ -80,7 +80,7 @@ public class MultiResponders {
 							fr.ill.ics.cameo.coms.multi.Request request = responder.receive();
 							System.out.println("Received request " + request.get());
 							
-							request.reply(ft + " to " + request.get());
+							request.replyString(ft + " to " + request.getString());
 						}
 						
 						responder.terminate();

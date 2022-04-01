@@ -57,15 +57,15 @@ public class Request {
 		this.responder = responder;
 	}
 	
-	public byte[] getBinary() {
+	public byte[] get() {
 		return messagePart1;
 	}
 	
-	public String get() {
+	public String getString() {
 		return Messages.parseString(messagePart1);
 	}
 	
-	public byte[][] getTwoBinaryParts() {
+	public byte[][] getTwoParts() {
 		
 		byte[][] result = new byte[2][];
 		result[0] = messagePart1;
@@ -88,7 +88,7 @@ public class Request {
 		return true;
 	}
 	
-	public boolean reply(String response) {
+	public boolean replyString(String response) {
 		return reply(Messages.serialize(response));
 	}
 	
