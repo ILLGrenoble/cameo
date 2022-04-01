@@ -89,9 +89,6 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 	    .def_static("cancelAll", &This::cancelAll, py::call_guard<py::gil_scoped_release>())
 	    .def_static("setRunning", &This::setRunning, py::call_guard<py::gil_scoped_release>())
-	    .def_static("setBinaryResult", &This::setBinaryResult,
-	    		"data"_a,
-	    		py::call_guard<py::gil_scoped_release>())
 	    .def_static("setResult", &This::setResult,
 	    		"data"_a,
 				py::call_guard<py::gil_scoped_release>())
@@ -139,14 +136,14 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getActualState", &App::getActualState, py::call_guard<py::gil_scoped_release>())
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
 	    .def("getExitCode", &App::getExitCode)
-	    .def("getBinaryResult",
+	    .def("getResult",
 		 [](App* instance) {
-			 auto result = instance->getBinaryResult();
+			 auto result = instance->getResult();
 			 if (result.has_value() == false)
 				 return py::bytes("");
 			 return py::bytes(result.value());
 		 }, py::call_guard<py::gil_scoped_release>())
-	    .def("getResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
+	    .def("getStringResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
 	    .def("getOutputStreamSocket", &App::getOutputStreamSocket)
 		.def("__str__", &App::toString,
 		   		py::call_guard<py::gil_scoped_release>());

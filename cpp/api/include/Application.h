@@ -174,7 +174,6 @@ public:
 	/**
 	 * Sets the result.
 	 */
-	static void setBinaryResult(const std::string& data);
 	static void setResult(const std::string& data);
 
 	/**
@@ -390,12 +389,6 @@ public:
 	void cancelWaitFor(); // to unblock another instance
 
 	/**
-	 * Deprecated.
-	 * TODO remove in next version.
-	 */
-	State now();
-
-	/**
 	 * Gets the last state.
 	 */
 	State getLastState();
@@ -415,7 +408,6 @@ public:
 	 */
 	int getExitCode() const;
 
-	std::optional<std::string> getBinaryResult();
 	std::optional<std::string> getResult();
 
 	std::unique_ptr<OutputStreamSocket> getOutputStreamSocket();

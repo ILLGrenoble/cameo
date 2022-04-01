@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 		// Start the application.
 		unique_ptr<App> responderApplication = server.start(applicationName);
 
-		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->now()) << endl;
+		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getActualState()) << endl;
 
 		// Create a subscriber to the application applicationName
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 			return -1;
 		}
 
-		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->now()) << endl;
+		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getActualState()) << endl;
 
 		// Send a simple message.
 		requester->send("request");

@@ -19,7 +19,7 @@ for i  in range(numberOfTimes):
     print( "stopping application ", stopApplication.getNameId())
     stopApplication.stop()
     result = ""
-    if stopApplication.getResult(result):
+    if stopApplication.getStringResult(result):
         print( "stop application returned ", result)
     else:
         print( "stop application has no result" )

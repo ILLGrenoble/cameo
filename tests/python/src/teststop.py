@@ -24,7 +24,7 @@ for i in range(numberOfTimes):
     print("Stopping application", app.getNameId())
     app.stop()
       
-    result = app.getResult()
+    result = app.getStringResult()
       
     # The variable result can be None.
     if result:

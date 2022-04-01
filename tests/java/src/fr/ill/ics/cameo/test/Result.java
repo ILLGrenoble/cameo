@@ -25,7 +25,7 @@ public class Result {
 
 		This.init(args);
 		
-		This.setResult("this is a test result");
+		This.setStringResult("this is a test result");
 		This.terminate();
 		
 		System.out.println("Finished the application");

@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	// Connect to the server.
 	std::unique_ptr<App> publisherApp = server->connect("publisher");
 
-	std::cout << "Application " << *publisherApp << " has state " << toString(publisherApp->now()) << std::endl;
+	std::cout << "Application " << *publisherApp << " has state " << toString(publisherApp->getActualState()) << std::endl;
 
 	// Create a requester.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");

@@ -351,12 +351,8 @@ bool This::setRunning() {
 	return true;
 }
 
-void This::setBinaryResult(const std::string& data) {
-	m_instance.m_server->requestJSON(createSetResultRequest(m_instance.m_id), data);
-}
-
 void This::setResult(const std::string& data) {
-	setBinaryResult(data);
+	m_instance.m_server->requestJSON(createSetResultRequest(m_instance.m_id), data);
 }
 
 State This::getState(int id) const {
@@ -831,12 +827,6 @@ void App::cancelWaitFor() {
 	cancel(m_id);
 }
 
-State App::now() {
-
-	// First implementation used getLastState().
-	return getActualState();
-}
-
 State App::getLastState() {
 	KeyValue keyValue("");
 	return waitFor(0, keyValue, false);
@@ -854,7 +844,7 @@ int App::getExitCode() const {
 	return m_exitCode;
 }
 
-std::optional<std::string> App::getBinaryResult() {
+std::optional<std::string> App::getResult() {
 
 	waitFor();
 
@@ -863,10 +853,6 @@ std::optional<std::string> App::getBinaryResult() {
 	}
 
 	return {};
-}
-
-std::optional<std::string> App::getResult() {
-	return getBinaryResult();
 }
 
 std::unique_ptr<OutputStreamSocket> App::getOutputStreamSocket() {

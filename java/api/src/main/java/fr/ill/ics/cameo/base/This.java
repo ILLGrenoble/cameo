@@ -261,7 +261,7 @@ public class This {
 		}
 	}
 	
-	static public void setResult(String data) {
+	static public void setStringResult(String data) {
 		setResult(Messages.serialize(data));
 	}
 			

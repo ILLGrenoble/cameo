@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 	// Connect to the server.
 	std::unique_ptr<App> responderServer = server->connect("responder");
 
-	std::cout << "Application " << *responderServer << " has state " << toString(responderServer->now()) << std::endl;
+	std::cout << "Application " << *responderServer << " has state " << toString(responderServer->getActualState()) << std::endl;
 
 	// Create a requester.
 	std::unique_ptr<coms::Requester> requester = coms::Requester::create(*responderServer, "the-responder");
