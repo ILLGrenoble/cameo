@@ -48,7 +48,7 @@ public class Publisher {
 			
 			// Sending data.
 			for (int i = 0; i < 100; ++i) {
-				publisher.send("message " + i);
+				publisher.sendString("message " + i);
 			}
 			
 			publisher.terminate();

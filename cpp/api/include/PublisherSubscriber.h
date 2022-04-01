@@ -63,9 +63,8 @@ public:
 	bool waitForSubscribers();
 	void cancelWaitForSubscribers();
 
-	void sendBinary(const std::string &data) const;
 	void send(const std::string &data) const;
-	void sendTwoBinaryParts(const std::string &data1, const std::string &data2) const;
+	void sendTwoParts(const std::string &data1, const std::string &data2) const;
 	void sendEnd() const;
 
 	/**

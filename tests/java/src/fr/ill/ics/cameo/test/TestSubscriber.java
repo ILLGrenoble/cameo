@@ -95,7 +95,7 @@ public class TestSubscriber {
 				for (int k = 0; k < 20; ++k) {
 	
 					String data = "{" + k + ", " + k * k + "}";
-					publisher.send(data);
+					publisher.sendString(data);
 					
 					System.out.println("sent " + data);
 					

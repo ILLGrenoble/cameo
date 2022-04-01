@@ -149,16 +149,12 @@ void Publisher::cancelWaitForSubscribers() {
 	}
 }
 
-void Publisher::sendBinary(const std::string& data) const {
-	m_impl->sendBinary(data);
-}
-
 void Publisher::send(const std::string& data) const {
 	m_impl->send(data);
 }
 
-void Publisher::sendTwoBinaryParts(const std::string& data1, const std::string& data2) const {
-	m_impl->sendTwoBinaryParts(data1, data2);
+void Publisher::sendTwoParts(const std::string& data1, const std::string& data2) const {
+	m_impl->sendTwoParts(data1, data2);
 }
 
 bool Publisher::hasEnded() const {

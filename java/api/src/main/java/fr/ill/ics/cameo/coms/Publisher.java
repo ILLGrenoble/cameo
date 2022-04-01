@@ -168,7 +168,7 @@ public class Publisher {
 		impl.send(data);
 	}
 	
-	public void send(String data) {
+	public void sendString(String data) {
 		impl.send(data);
 	}
 			

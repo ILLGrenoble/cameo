@@ -159,13 +159,10 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getName", &Publisher::getName)
 	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
 	    .def("cancelWaitForSubscribers", &Publisher::cancelWaitForSubscribers, py::call_guard<py::gil_scoped_release>())
-	    .def("sendBinary", &Publisher::sendBinary,
-	    		"data"_a,
-	    		py::call_guard<py::gil_scoped_release>())
 	    .def("send", &Publisher::send,
 	    		"data"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("sendTwoBinaryParts", &Publisher::sendTwoBinaryParts,
+	    .def("sendTwoParts", &Publisher::sendTwoParts,
 	    		"data1"_a, "data2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("sendEnd", &Publisher::sendEnd, py::call_guard<py::gil_scoped_release>())

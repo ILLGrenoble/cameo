@@ -65,7 +65,7 @@ public class PublisherApp {
 			while (true) {
 			
 				// Send a message.
-				publisher.send(serializeToJSON("a message", i));
+				publisher.sendString(serializeToJSON("a message", i));
 				i++;
 				
 				// Sleep for 1s.

@@ -68,19 +68,13 @@ int PublisherZmq::getPublisherPort() const {
 	return m_publisherPort;
 }
 
-void PublisherZmq::sendBinary(const std::string& data) {
-
-	// send a STREAM message by the publisher socket
-	publish(data.c_str(), data.length());
-}
-
 void PublisherZmq::send(const std::string& data) {
 
 	// send a STREAM message by the publisher socket
 	publish(data.c_str(), data.length());
 }
 
-void PublisherZmq::sendTwoBinaryParts(const std::string& data1, const std::string& data2) {
+void PublisherZmq::sendTwoParts(const std::string& data1, const std::string& data2) {
 
 	// send a STREAM message by the publisher socket
 	publishTwoParts(data1.c_str(), data1.length(), data2.c_str(), data2.length());
