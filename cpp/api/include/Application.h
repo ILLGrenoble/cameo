@@ -609,7 +609,7 @@ public:
 		 * \param pid The PID.
 		 * \param applicationState The current application state.
 		 * \param pastApplicationStates The past application states.
-		 * \param args The arguments of the program.
+		 * \param args The arguments of the executable.
 		 */
 		Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates,
 		     const std::string& args);
@@ -633,7 +633,7 @@ public:
 		State getPastStates() const;
 
 		/**
-		 * Gets the arguments of the program.
+		 * Gets the arguments of the executable.
 		 * \return The arguments.
 		 */
 		const std::string& getArgs() const;
