@@ -233,7 +233,10 @@ endif(UNIX)
 #------------------------------------------------------------
 # Doc
 #------------------------------------------------------------
-find_package(Doxygen QUIET)
+
+option(BUILD_DOC "Build documentation" ON)
+
+find_package(Doxygen)
 if (DOXYGEN_FOUND)
   # set input and output files
   set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
@@ -244,7 +247,7 @@ if (DOXYGEN_FOUND)
   message("Doxygen build started")
   
   # note the option ALL which allows to build the docs together with the application
-  add_custom_target( cameo_doc 
+  add_custom_target( doc 
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen"
