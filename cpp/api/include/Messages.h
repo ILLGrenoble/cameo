@@ -63,212 +63,212 @@ namespace message {
 	const int STREAM = 34;
 	const int STREAM_END = 35;
 
-	namespace Event {
-		constexpr const char* CANCEL = "cancel";
-		constexpr const char* STREAM = "stream";
-		constexpr const char* STATUS = "status";
-		constexpr const char* RESULT = "result";
-		constexpr const char* KEYVALUE = "keyvalue";
-	}
+	struct Event {
+		constexpr static const char* CANCEL = "cancel";
+		constexpr static const char* STREAM = "stream";
+		constexpr static const char* STATUS = "status";
+		constexpr static const char* RESULT = "result";
+		constexpr static const char* KEYVALUE = "keyvalue";
+	};
 
-	namespace ApplicationIdentity {
-		constexpr const char* NAME = "name"; // string
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* SERVER = "server"; // string
-		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
-		constexpr const char* STARTER_LINKED = "starterLinked"; // boolean
-	}
+	struct ApplicationIdentity {
+		constexpr static const char* NAME = "name"; // string
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* SERVER = "server"; // string
+		constexpr static const char* STARTER = "starter"; // object
+		constexpr static const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		constexpr static const char* STARTER_LINKED = "starterLinked"; // boolean
+	};
 
-	namespace SyncStreamRequest {
-		constexpr const char* NAME = "name"; // string
-	}
+	struct SyncStreamRequest {
+		constexpr static const char* NAME = "name"; // string
+	};
 
-	namespace StartRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* ARGS = "args"; // repeated string args = 2;
-		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
-		constexpr const char* STARTER_LINKED = "starterLinked"; // boolean
-	}
+	struct StartRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* ARGS = "args"; // repeated string args = 2;
+		constexpr static const char* STARTER = "starter"; // object
+		constexpr static const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		constexpr static const char* STARTER_LINKED = "starterLinked"; // boolean
+	};
 
-	namespace RequestResponse {
-		constexpr const char* VALUE = "value"; // required int32 value = 1;
-		constexpr const char* MESSAGE = "message"; // optional string message = 2;
-	}
+	struct RequestResponse {
+		constexpr static const char* VALUE = "value"; // required int32 value = 1;
+		constexpr static const char* MESSAGE = "message"; // optional string message = 2;
+	};
 
-	namespace SetStopHandlerRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* STOPPING_TIME = "stoppingTime"; // int32
-	}
+	struct SetStopHandlerRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* STOPPING_TIME = "stoppingTime"; // int32
+	};
 
-	namespace StopRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct StopRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace ConnectRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-	}
+	struct ConnectRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+	};
 
-	namespace ConnectWithIdRequest {
-		constexpr const char* ID = "id"; // int32
-	}
+	struct ConnectWithIdRequest {
+		constexpr static const char* ID = "id"; // int32
+	};
 
-	namespace ApplicationConfig {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* DESCRIPTION = "description"; // optional string description = 2;
-		constexpr const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
-		constexpr const char* RESTART = "restart"; // required bool restart = 4;
-		constexpr const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
-		constexpr const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
-	}
+	struct ApplicationConfig {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* DESCRIPTION = "description"; // optional string description = 2;
+		constexpr static const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
+		constexpr static const char* RESTART = "restart"; // required bool restart = 4;
+		constexpr static const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
+		constexpr static const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
+	};
 
-	namespace ApplicationConfigListResponse {
-		constexpr const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
-	}
+	struct ApplicationConfigListResponse {
+		constexpr static const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
+	};
 
-	namespace StatusEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
-		constexpr const char* EXIT_CODE = "exitCode"; // optional
-	}
+	struct StatusEvent {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr static const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr static const char* EXIT_CODE = "exitCode"; // optional
+	};
 
-	namespace ResultEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* DATA = "data"; // required bytes data = 3;
-	}
+	struct ResultEvent {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* DATA = "data"; // required bytes data = 3;
+	};
 
-	namespace ApplicationInfo {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
-		constexpr const char* ARGS = "args"; // required string args = 5;
-		constexpr const char* PID = "pid"; // optional int64 pid = 6;
-	}
+	struct ApplicationInfo {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr static const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr static const char* ARGS = "args"; // required string args = 5;
+		constexpr static const char* PID = "pid"; // optional int64 pid = 6;
+	};
 
-	namespace ApplicationInfoListResponse {
-		constexpr const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
-	}
+	struct ApplicationInfoListResponse {
+		constexpr static const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
+	};
 
-	namespace OutputPortWithIdRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct OutputPortWithIdRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace OutputPortRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-	}
+	struct OutputPortRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+	};
 
-	namespace IsAliveRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct IsAliveRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace IsAliveResponse {
-		constexpr const char* IS_ALIVE = "isAlive"; // required bool isAlive = 1;
-	}
+	struct IsAliveResponse {
+		constexpr static const char* IS_ALIVE = "isAlive"; // required bool isAlive = 1;
+	};
 
-	namespace ApplicationStream {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* MESSAGE = "message"; // required string message = 2;
-		constexpr const char* EOL = "eol"; // boolean
-	}
+	struct ApplicationStream {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* MESSAGE = "message"; // required string message = 2;
+		constexpr static const char* EOL = "eol"; // boolean
+	};
 
-	namespace WriteInputRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* INPUTS = "inputs"; // repeated string parameters = 2;
-	}
+	struct WriteInputRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* INPUTS = "inputs"; // repeated string parameters = 2;
+	};
 
-	namespace KillRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct KillRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace SetStatusRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
-	}
+	struct SetStatusRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
+	};
 
-	namespace GetStatusRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct GetStatusRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace SetResultRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* DATA = "data"; // required bytes data = 2;
-	}
+	struct SetResultRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* DATA = "data"; // required bytes data = 2;
+	};
 
-	namespace Request {
-		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
-		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		constexpr const char* SERVER_ENDPOINT = "serverEndpoint";
-		constexpr const char* SERVER_PROXY_PORT = "serverProxyPort";
-		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
-	}
+	struct Request {
+		constexpr static const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
+		constexpr static const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
+		constexpr static const char* SERVER_ENDPOINT = "serverEndpoint";
+		constexpr static const char* SERVER_PROXY_PORT = "serverProxyPort";
+		constexpr static const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
+	};
 
-	namespace AttachUnregisteredRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* PID = "pid"; // optional int64 pid = 2;
-	}
+	struct AttachUnregisteredRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* PID = "pid"; // optional int64 pid = 2;
+	};
 
-	namespace DetachUnregisteredRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	struct DetachUnregisteredRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace VersionResponse {
-		constexpr const char* MAJOR = "major";
-		constexpr const char* MINOR = "minor";
-		constexpr const char* REVISION = "revision";
-	}
+	struct VersionResponse {
+		constexpr static const char* MAJOR = "major";
+		constexpr static const char* MINOR = "minor";
+		constexpr static const char* REVISION = "revision";
+	};
 
-	namespace StoreKeyValueRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-		constexpr const char* VALUE = "value"; // string
-	}
+	struct StoreKeyValueRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+		constexpr static const char* VALUE = "value"; // string
+	};
 
-	namespace GetKeyValueRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-	}
+	struct GetKeyValueRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+	};
 
-	namespace RemoveKeyRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-	}
+	struct RemoveKeyRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+	};
 
-	namespace KeyEvent {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* NAME = "name"; // string
-		constexpr const char* STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
-		constexpr const char* KEY = "key"; // string
-		constexpr const char* VALUE = "value"; // string
-	}
+	struct KeyEvent {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* NAME = "name"; // string
+		constexpr static const char* STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
+		constexpr static const char* KEY = "key"; // string
+		constexpr static const char* VALUE = "value"; // string
+	};
 
-	namespace RequestPortRequest {
-		constexpr const char* ID = "id"; // int32
-	}
+	struct RequestPortRequest {
+		constexpr static const char* ID = "id"; // int32
+	};
 
-	namespace PortUnavailableRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* PORT = "port"; // int32
-	}
+	struct PortUnavailableRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* PORT = "port"; // int32
+	};
 
-	namespace ReleasePortRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* PORT = "port"; // int32
-	}
+	struct ReleasePortRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* PORT = "port"; // int32
+	};
 
-	namespace PortInfo {
-		constexpr const char* PORT = "port"; // int32
-		constexpr const char* STATUS = "status"; // string
-		constexpr const char* OWNER = "owner"; // string
-	}
+	struct PortInfo {
+		constexpr static const char* PORT = "port"; // int32
+		constexpr static const char* STATUS = "status"; // string
+		constexpr static const char* OWNER = "owner"; // string
+	};
 
-	namespace PortInfoListResponse {
-		constexpr const char* PORT_INFO = "portInfo"; // multiple PortInfo
-	}
+	struct PortInfoListResponse {
+		constexpr static const char* PORT_INFO = "portInfo"; // multiple PortInfo
+	};
 
 }
 
