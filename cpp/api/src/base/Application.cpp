@@ -19,7 +19,6 @@
 #include "CancelEvent.h"
 #include "KeyEvent.h"
 #include "ResultEvent.h"
-#include "StarterServerException.h"
 #include "StatusEvent.h"
 #include "EventStreamSocket.h"
 #include "impl/StreamSocketImpl.h"
