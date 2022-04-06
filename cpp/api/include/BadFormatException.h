@@ -21,9 +21,16 @@
 
 namespace cameo {
 
+/**
+ * Exception for a bad format.
+ */
 class BadFormatException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	BadFormatException(const std::string& message);
 };
 
