@@ -28,7 +28,16 @@ namespace cameo {
 class IdGenerator {
 
 public:
+	/**
+	 * Generates a new id.
+	 * \return An id.
+	 */
 	static int newId();
+
+	/**
+	 * Generates a new string id of the form "cameo.<id>". For example "cameo.15".
+	 * \return A string id.
+	 */
 	static std::string newStringId();
 
 private:

@@ -23,17 +23,37 @@
 
 namespace cameo {
 
+/**
+ * Class defining a cancel event.
+ */
 class CancelEvent : public Event {
 
 	friend std::ostream& operator<<(std::ostream&, const CancelEvent&);
 
 public:
+	/**
+	 * Constructor.
+	 * \param id The application id.
+	 * \param name The application name.
+	 */
 	CancelEvent(int id, const std::string& name);
+
+	/**
+	 * Copy constructor.
+	 * \param event The event to copy.
+	 */
 	CancelEvent(const CancelEvent& event);
 
+	/**
+	 * Clones the event.
+	 * \return The cloned event.
+	 */
 	virtual CancelEvent* clone();
 };
 
+/**
+ * Stream operator for a CancelEvent object.
+ */
 std::ostream& operator<<(std::ostream&, const CancelEvent&);
 
 }

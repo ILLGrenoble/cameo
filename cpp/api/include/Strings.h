@@ -24,27 +24,81 @@ namespace cameo {
 
 const int Null = 0;
 
+/**
+ * Splits the string with delimiter.
+ * \return The list of strings.
+ */
 std::vector<std::string> split(const std::string& str, char c);
 
+/**
+ * Class defining an endpoint.
+ */
 class Endpoint {
 
 	friend std::ostream& operator<<(std::ostream&, const Endpoint&);
 
 public:
+	/**
+	 * Constructor.
+	 * \param protocol The protocol.
+	 * \param address The address, can be an IP or a hostname.
+	 * \param port The port.
+	 */
 	Endpoint(const std::string& protocol, const std::string& address, int port);
+
+	/**
+	 * Constructor with default tcp protocol.
+	 * \param address The address, can be an IP or a hostname.
+	 * \param port The port.
+	 */
 	Endpoint(const std::string& address, int port);
+
+	/**
+	 * Constructor.
+	 */
 	Endpoint();
 
+	/**
+	 * Equality operator.
+	 * \param endpoint The endpoint to compare.
+	 * \return True if equals, false otherwise.
+	 */
 	bool operator==(const Endpoint& endpoint) const;
 
+	/**
+	 * Gets the protocol.
+	 * \return The protocol.
+	 */
 	const std::string& getProtocol() const;
+
+	/**
+	 * Gets the address.
+	 * \return The address.
+	 */
 	const std::string& getAddress() const;
+
+	/**
+	 * Gets the port.
+	 * \return The port.
+	 */
 	int getPort() const;
 
+	/**
+	 * Parses the string into Endpoint.
+	 * \return The parsed endpoint.
+	 */
 	static Endpoint parse(const std::string& str);
 
+	/**
+	 * Returns the endpoint by replacing the port.
+	 * \return The endpoint with same protocol and address but with the port.
+	 */
 	Endpoint withPort(int port) const;
 
+	/**
+	 * Returns a string representation of this endpoint.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:
@@ -53,17 +107,54 @@ private:
 	int m_port;
 };
 
+/**
+ * Class defining an application identity.
+ */
 class ApplicationIdentity {
 
 public:
+	/**
+	 * Constructor.
+	 * \param name The name.
+	 * \param id The id.
+	 * \param endpoint The endpoint.
+	 */
 	ApplicationIdentity(const std::string& name, int id, const Endpoint& endpoint);
+
+	/**
+	 * Constructor.
+	 * \param name The name.
+	 * \param endpoint The endpoint.
+	 */
 	ApplicationIdentity(const std::string& name, const Endpoint& endpoint);
+
+	/**
+	 * Constructor.
+	 */
 	ApplicationIdentity();
 
+	/**
+	 * Gets the name.
+	 * \return The name.
+	 */
 	const std::string& getName() const;
+
+	/**
+	 * Gets the id.
+	 * \return The id.
+	 */
 	int getId() const;
+
+	/**
+	 * Gets the endpoint.
+	 * \return The endpoint.
+	 */
 	const Endpoint& getEndpoint() const;
 
+	/**
+	 * Returns the JSON string representation.
+	 * \return The JSON string representation.
+	 */
 	std::string toJSONString() const;
 
 private:
@@ -72,16 +163,47 @@ private:
 	Endpoint m_endpoint;
 };
 
+/**
+ * Class defining an application identity with starter.
+ */
 class ApplicationWithStarterIdentity {
 
 public:
+	/**
+	 * Constructor.
+	 * \param application The application.
+	 * \param starter The starter application.
+	 */
 	ApplicationWithStarterIdentity(const ApplicationIdentity& application, const ApplicationIdentity& starter);
+
+	/**
+	 * Constructor.
+	 * \param application The application.
+	 */
 	ApplicationWithStarterIdentity(const ApplicationIdentity& application);
 
+	/**
+	 * Gets the application.
+	 * \return The application identity.
+	 */
 	const ApplicationIdentity& getApplication() const;
+
+	/**
+	 * Returns true if starter exists.
+	 * \return True if the starter exists.
+	 */
 	bool hasStarter() const;
+
+	/**
+	 * Gets the starter application.
+	 * \return The starter application.
+	 */
 	const ApplicationIdentity& getStarter() const;
 
+	/**
+	 * Returns the JSON string representation.
+	 * \return The JSON string representation.
+	 */
 	std::string toJSONString() const;
 
 private:
@@ -90,14 +212,33 @@ private:
 	ApplicationIdentity m_starter;
 };
 
+/**
+ * Class defining a string id for the communication identities.
+ */
 struct StringId {
 
+	/**
+	 * Creates the string id.
+	 * \param id The integer id.
+	 * \param name The name.
+	 * \return The composed string id.
+	 */
 	static std::string from(int id, const std::string& name);
+
+	/**
+	 * Creates the string id.
+	 * \param id The string id.
+	 * \param name The name.
+	 * \return The composed string id.
+	 */
 	static std::string from(const std::string& id, const std::string& name);
 };
 
 }
 
+/**
+ * Stream operator for an Endpoint object.
+ */
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif

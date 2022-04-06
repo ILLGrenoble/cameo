@@ -23,20 +23,57 @@
 
 namespace cameo {
 
+/**
+ * Class defining a key event.
+ */
 class KeyEvent : public Event {
 
 	friend std::ostream& operator<<(std::ostream&, const KeyEvent&);
 
 public:
+	/**
+	 * Type of the status.
+	 */
 	enum Status {STORED, REMOVED};
 
+	/**
+	 * Constructor.
+	 * \param id The application id.
+	 * \param name The application name.
+	 * \param status The status of the key.
+	 * \param key The key.
+	 * \param value The value.
+	 */
 	KeyEvent(int id, const std::string& name, Status status, const std::string& key, const std::string& value);
+
+	/**
+	 * Copy constructor.
+	 * \param event The event to copy.
+	 */
 	KeyEvent(const KeyEvent& event);
 
+	/**
+	 * Clones the event.
+	 * \return The cloned event.
+	 */
 	virtual KeyEvent* clone();
 
+	/**
+	 * Gets the status.
+	 * \return The status.
+	 */
 	Status getStatus() const;
+
+	/**
+	 * Gets the key.
+	 * \return The key.
+	 */
 	const std::string& getKey() const;
+
+	/**
+	 * Gets the value.
+	 * \return The value.
+	 */
 	const std::string& getValue() const;
 
 private:
@@ -45,6 +82,9 @@ private:
 	std::string m_value;
 };
 
+/**
+ * Stream operator for a KeyEvent object.
+ */
 std::ostream& operator<<(std::ostream&, const KeyEvent&);
 
 }

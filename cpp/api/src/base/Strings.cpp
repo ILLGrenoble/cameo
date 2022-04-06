@@ -160,7 +160,7 @@ std::string ApplicationIdentity::toJSONString() const {
 	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
 	jsonObject.pushValue(m_endpoint.toString());
 
-	return jsonObject.toString();
+	return jsonObject.dump();
 }
 
 ApplicationWithStarterIdentity::ApplicationWithStarterIdentity(const ApplicationIdentity& application, const ApplicationIdentity& starter) :
@@ -217,7 +217,7 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 		jsonObject.endObject();
 	}
 
-	return jsonObject.toString();
+	return jsonObject.dump();
 }
 
 std::string StringId::from(int id, const std::string& name) {

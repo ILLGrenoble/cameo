@@ -29,17 +29,41 @@ class RequestSocket;
 class StreamSocketImpl;
 class App;
 
+/**
+ * Class defining an output for application streams.
+ */
 class Output {
 
 	friend class OutputStreamSocket;
 
 public:
+	/**
+	 * Constructor.
+	 */
 	Output();
 
+	/**
+	 * Gets the id.
+	 * \return The id.
+	 */
 	int getId() const;
+
+	/**
+	 * Gets the message.
+	 * \return The message.
+	 */
 	const std::string& getMessage() const;
+
+	/**
+	 * Returns the end of line.
+	 * \return True if end of line.
+	 */
 	bool isEndOfLine() const;
 
+	/**
+	 * Returns a string representation of the output.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:
@@ -48,7 +72,9 @@ private:
 	bool m_endOfLine;
 };
 
-
+/**
+ * Class defining an output stream socket.
+ */
 class OutputStreamSocket {
 
 	friend class Server;
@@ -57,14 +83,43 @@ class OutputStreamSocket {
 	void setApplicationId(int id);
 
 public:
+	/**
+	 * Destructor.
+	 */
 	~OutputStreamSocket();
+
+	/**
+	 * Terminates the communication.
+	 */
 	void terminate();
 
+	/**
+	 * Receives an output.
+	 * \return An Output object.
+	 */
 	std::optional<Output> receive();
+
+	/**
+	 * Cancels the receive() waiting call in another thread.
+	 */
 	void cancel();
+
+	/**
+	 * Returns true if the stream ended.
+	 * \return True if ended.
+	 */
 	bool isEnded() const;
+
+	/**
+	 * Returns true if the stream has been canceled.
+	 * \return True if canceled.
+	 */
 	bool isCanceled() const;
 
+	/**
+	 * Returns a string representation of this application.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:

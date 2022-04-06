@@ -26,20 +26,84 @@ namespace cameo {
 class Context;
 class RequestSocketImpl;
 
+/**
+ * Class defining a request socket.
+ */
 class RequestSocket {
 
 public:
+	/**
+	 * Constructor.
+	 * \param context The context.
+	 * \param endpoint The endpoint.
+	 * \param responderIdentity The responder identity.
+	 * \param timeout The timeout.
+	 */
 	RequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity, int timeout = 0);
+
+	/**
+	 * Destructor.
+	 */
 	virtual ~RequestSocket();
 
+	/**
+	 * Sets the timeout.
+	 * \param timeout The timeout.
+	 */
 	void setTimeout(int timeout);
 
+	/**
+	 * Send a request.
+	 * \param request The request.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The response.
+	 */
 	std::string request(const std::string& request, int overrideTimeout = -1);
+
+	/**
+	 * Send a request.
+	 * \param requestPart1 The request part 1.
+	 * \param requestPart2 The request part 2.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The response.
+	 */
 	std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+
+	/**
+	 * Send a request.
+	 * \param requestPart1 The request part 1.
+	 * \param requestPart2 The request part 2.
+	 * \param requestPart3 The request part 3.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The response.
+	 */
 	std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
+	/**
+	 * Send a request.
+	 * \param request The JSON string request.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The JSON object response.
+	 */
 	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
+
+	/**
+	 * Send a request.
+	 * \param requestPart1 The JSON string request part 1.
+	 * \param requestPart2 The request part 2.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The JSON object response.
+	 */
 	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+
+	/**
+	 * Send a request.
+	 * \param requestPart1 The JSON string request part 1.
+	 * \param requestPart2 The request part 2.
+	 * \param requestPart3 The request part 3.
+	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
+	 * \return The JSON object response.
+	 */
 	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 private:

@@ -22,12 +22,27 @@
 
 namespace cameo {
 
+/**
+ * Base class for remote exception.
+ */
 class RemoteException : public std::exception {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	RemoteException(const std::string& message);
-	virtual ~RemoteException() throw();
 
+	/**
+	 * Destructor.
+	 */
+	virtual ~RemoteException() throw() = 0;
+
+	/**
+	 * Function returning the message.
+	 * \return The message.
+	 */
 	virtual const char* what() const throw();
 
 private:

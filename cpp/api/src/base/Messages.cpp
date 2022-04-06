@@ -25,7 +25,7 @@ std::string createSyncRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::SYNC);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createSyncStreamRequest(const std::string& name) {
@@ -37,7 +37,7 @@ std::string createSyncStreamRequest(const std::string& name) {
 	request.pushKey(message::SyncStreamRequest::NAME);
 	request.pushValue(name);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createVersionRequest() {
@@ -46,7 +46,7 @@ std::string createVersionRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::IMPL_VERSION);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createIsAliveRequest(int id) {
@@ -58,7 +58,7 @@ std::string createIsAliveRequest(int id) {
 	request.pushKey(message::IsAliveRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort, bool linked) {
@@ -100,7 +100,7 @@ std::string createStartRequest(const std::string& name, const std::vector<std::s
 		request.pushValue(linked);
 	}
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createSetStopHandlerRequest(int id, int stoppingTime) {
@@ -115,7 +115,7 @@ std::string createSetStopHandlerRequest(int id, int stoppingTime) {
 	request.pushKey(message::SetStopHandlerRequest::STOPPING_TIME);
 	request.pushValue(stoppingTime);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createStopRequest(int id) {
@@ -127,7 +127,7 @@ std::string createStopRequest(int id) {
 	request.pushKey(message::StopRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createKillRequest(int id) {
@@ -139,7 +139,7 @@ std::string createKillRequest(int id) {
 	request.pushKey(message::KillRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createConnectRequest(const std::string& name) {
@@ -151,7 +151,7 @@ std::string createConnectRequest(const std::string& name) {
 	request.pushKey(message::ConnectRequest::NAME);
 	request.pushValue(name);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createConnectWithIdRequest(int id) {
@@ -163,7 +163,7 @@ std::string createConnectWithIdRequest(int id) {
 	request.pushKey(message::ConnectWithIdRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createListRequest() {
@@ -172,7 +172,7 @@ std::string createListRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::LIST);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createAppsRequest() {
@@ -181,7 +181,7 @@ std::string createAppsRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::APPS);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createStreamStatusRequest() {
@@ -190,7 +190,7 @@ std::string createStreamStatusRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::STATUS);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createResponderProxyPortRequest() {
@@ -199,7 +199,7 @@ std::string createResponderProxyPortRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::RESPONDER_PROXY_PORT);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createPublisherProxyPortRequest() {
@@ -208,7 +208,7 @@ std::string createPublisherProxyPortRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::PUBLISHER_PROXY_PORT);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createSubscriberProxyPortRequest() {
@@ -217,7 +217,7 @@ std::string createSubscriberProxyPortRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::SUBSCRIBER_PROXY_PORT);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createOutputPortWithIdRequest(int id) {
@@ -229,7 +229,7 @@ std::string createOutputPortWithIdRequest(int id) {
 	request.pushKey(message::OutputPortWithIdRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createOutputPortRequest(const std::string& name) {
@@ -241,7 +241,7 @@ std::string createOutputPortRequest(const std::string& name) {
 	request.pushKey(message::OutputPortRequest::NAME);
 	request.pushValue(name);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createSetStatusRequest(int id, int32_t state) {
@@ -256,7 +256,7 @@ std::string createSetStatusRequest(int id, int32_t state) {
 	request.pushKey(message::SetStatusRequest::APPLICATION_STATE);
 	request.pushValue(state);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createGetStatusRequest(int id) {
@@ -268,7 +268,7 @@ std::string createGetStatusRequest(int id) {
 	request.pushKey(message::GetStatusRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createSetResultRequest(int id) {
@@ -280,7 +280,7 @@ std::string createSetResultRequest(int id) {
 	request.pushKey(message::SetResultRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createAttachUnregisteredRequest(const std::string& name, long pid) {
@@ -295,7 +295,7 @@ std::string createAttachUnregisteredRequest(const std::string& name, long pid) {
 	request.pushKey(message::AttachUnregisteredRequest::PID);
 	request.pushValue(pid);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createDetachUnregisteredRequest(int id) {
@@ -307,7 +307,7 @@ std::string createDetachUnregisteredRequest(int id) {
 	request.pushKey(message::DetachUnregisteredRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createRequestResponse(int32_t value, const std::string& message) {
@@ -322,7 +322,7 @@ std::string createRequestResponse(int32_t value, const std::string& message) {
 	request.pushKey(message::RequestResponse::MESSAGE);
 	request.pushValue(message);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value) {
@@ -340,7 +340,7 @@ std::string createStoreKeyValueRequest(int id, const std::string& key, const std
 	request.pushKey(message::StoreKeyValueRequest::VALUE);
 	request.pushValue(value);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createGetKeyValueRequest(int id, const std::string& key) {
@@ -355,7 +355,7 @@ std::string createGetKeyValueRequest(int id, const std::string& key) {
 	request.pushKey(message::GetKeyValueRequest::KEY);
 	request.pushValue(key);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createRemoveKeyRequest(int id, const std::string& key) {
@@ -370,7 +370,7 @@ std::string createRemoveKeyRequest(int id, const std::string& key) {
 	request.pushKey(message::RemoveKeyRequest::KEY);
 	request.pushValue(key);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createRequestPortRequest(int id) {
@@ -382,7 +382,7 @@ std::string createRequestPortRequest(int id) {
 	request.pushKey(message::RequestPortRequest::ID);
 	request.pushValue(id);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createPortUnavailableRequest(int id, int port) {
@@ -397,7 +397,7 @@ std::string createPortUnavailableRequest(int id, int port) {
 	request.pushKey(message::PortUnavailableRequest::PORT);
 	request.pushValue(port);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createReleasePortRequest(int id, int port) {
@@ -412,7 +412,7 @@ std::string createReleasePortRequest(int id, int port) {
 	request.pushKey(message::ReleasePortRequest::PORT);
 	request.pushValue(port);
 
-	return request.toString();
+	return request.dump();
 }
 
 std::string createPortsRequest() {
@@ -421,7 +421,7 @@ std::string createPortsRequest() {
 	request.pushKey(message::TYPE);
 	request.pushValue(message::PORTS);
 
-	return request.toString();
+	return request.dump();
 }
 
 }

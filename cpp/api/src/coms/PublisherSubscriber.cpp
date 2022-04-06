@@ -84,7 +84,7 @@ void Publisher::init(const std::string& name) {
 	jsonData.pushValue(m_numberOfSubscribers);
 
 	try {
-		This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
@@ -212,7 +212,7 @@ void Subscriber::synchronize(const App & app) {
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-	requester->send(jsonRequest.toString());
+	requester->send(jsonRequest.dump());
 	std::optional<std::string> response = requester->receive();
 }
 

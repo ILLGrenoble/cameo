@@ -42,21 +42,76 @@ class SubscriberImpl;
 
 }
 
+/**
+ * Factory for the implementation objects.
+ * This implementation of the factory generates ZeroMQ implementations.
+ */
 class ImplFactory {
 
 public:
+	/**
+	 * Creates a context implementation.
+	 * \return A new Context object.
+	 */
 	static std::unique_ptr<Context> createContext();
+
+	/**
+	 * Creates a request socket implementation.
+	 * \param context The context.
+	 * \param endpoint The endpoint.
+	 * \param responderIdentity The responder identity.
+	 * \return A new RequestSocketImpl object.
+	 */
 	static std::unique_ptr<RequestSocketImpl> createRequestSocket(Context * context, const std::string& endpoint, const std::string& responderIdentity);
+
+	/**
+	 * Creates an event stream socket implementation.
+	 * \return A new StreamSocketImpl object.
+	 */
 	static std::unique_ptr<StreamSocketImpl> createEventStreamSocket();
+
+	/**
+	 * Creates an event stream socket with name implementation.
+	 * \param name The name.
+	 * \return A new StreamSocketImpl object.
+	 */
 	static std::unique_ptr<StreamSocketImpl> createOutputStreamSocket(const std::string& name);
 
+	/**
+	 * Creates a publisher implementation.
+	 * \return A new coms::PublisherImpl object.
+	 */
 	static std::unique_ptr<coms::PublisherImpl> createPublisher();
+
+	/**
+	 * Creates a subscriber implementation.
+	 * \return A new coms::SubscriberImpl object.
+	 */
 	static std::unique_ptr<coms::SubscriberImpl> createSubscriber();
 
+	/**
+	 * Creates a basic responder implementation.
+	 * \return A new coms::basic::ResponderImpl object.
+	 */
 	static std::unique_ptr<coms::basic::ResponderImpl> createBasicResponder();
+
+	/**
+	 * Creates a multi responder router implementation.
+	 * \return A new coms::multi::ResponderRouterImpl object.
+	 */
 	static std::unique_ptr<coms::multi::ResponderRouterImpl> createMultiResponderRouter();
+
+	/**
+	 * Creates a multi responder implementation.
+	 * \return A new coms::multi::ResponderImpl object.
+	 */
 	static std::unique_ptr<coms::multi::ResponderImpl> createMultiResponder();
-	static std::unique_ptr<coms::RequesterImpl> createBasicRequester();
+
+	/**
+	 * Creates a requester implementation.
+	 * \return A new coms::RequesterImpl object.
+	 */
+	static std::unique_ptr<coms::RequesterImpl> createRequester();
 };
 
 }

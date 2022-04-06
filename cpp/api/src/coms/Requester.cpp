@@ -40,7 +40,7 @@ Requester::Requester() :
 	m_useProxy(false),
 	m_appId(0) {
 
-	m_impl = ImplFactory::createBasicRequester();
+	m_impl = ImplFactory::createRequester();
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting(std::bind(&Requester::cancel, this)));

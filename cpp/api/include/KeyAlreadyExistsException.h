@@ -21,9 +21,15 @@
 
 namespace cameo {
 
+/**
+ * Exception for a key that already exists.
+ */
 class KeyAlreadyExistsException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	KeyAlreadyExistsException(const std::string& message);
 };
 

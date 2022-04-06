@@ -22,9 +22,16 @@
 namespace cameo {
 namespace coms {
 
+/**
+ * Exception for a responder creation.
+ */
 class ResponderCreationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	ResponderCreationException(const std::string& message);
 };
 

@@ -21,16 +21,45 @@
 
 namespace cameo {
 
+/**
+ * Base class for events.
+ */
 class Event {
 
 public:
+	/**
+	 * Constructor.
+	 * \param id The application id.
+	 * \param name The application name.
+	 */
 	Event(int id, const std::string& name);
+
+	/**
+	 * Copy constructor.
+	 * \param event The event to copy.
+	 */
 	Event(const Event& event);
+
+	/**
+	 * Destructor.
+	 */
 	virtual ~Event();
 
+	/**
+	 * Clones the event.
+	 * \return The cloned event.
+	 */
 	virtual Event* clone() = 0;
 
+	/**
+	 * Gets the application id.
+	 */
 	int getId() const;
+
+	/**
+	 * Gets the application name.
+	 * \return The application name.
+	 */
 	const std::string& getName() const;
 
 protected:

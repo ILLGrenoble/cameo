@@ -21,9 +21,16 @@
 
 namespace cameo {
 
+/**
+ * Exception for an undefined key.
+ */
 class UndefinedKeyException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	UndefinedKeyException(const std::string& message);
 };
 

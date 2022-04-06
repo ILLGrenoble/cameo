@@ -36,9 +36,21 @@ class ConnectionChecker {
 	friend class Server;
 
 public:
+	/**
+	 * Typedef for the function type.
+	 */
 	typedef std::function<void (bool)> FunctionType;
 
+	/**
+	 * Constructor.
+	 * \param server The Cameo server.
+	 * \param handler The handler function.
+	 */
 	ConnectionChecker(Server * server, FunctionType handler);
+
+	/**
+	 * Destructor.
+	 */
 	~ConnectionChecker();
 
 private:

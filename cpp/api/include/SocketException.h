@@ -21,9 +21,16 @@
 
 namespace cameo {
 
+/**
+ * Exception for a socket.
+ */
 class SocketException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	SocketException(const std::string& message);
 };
 

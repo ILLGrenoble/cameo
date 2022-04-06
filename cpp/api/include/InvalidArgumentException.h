@@ -21,9 +21,15 @@
 
 namespace cameo {
 
+/**
+ * Exception for an invalid argument.
+ */
 class InvalidArgumentException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	InvalidArgumentException(const std::string& message);
 };
 

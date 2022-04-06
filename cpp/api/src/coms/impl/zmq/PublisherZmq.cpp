@@ -116,7 +116,7 @@ std::string PublisherZmq::createMessageType(int type) {
 	jsonType.pushKey(message::TYPE);
 	jsonType.pushValue(type);
 
-	return jsonType.toString();
+	return jsonType.dump();
 }
 
 void PublisherZmq::publish(const char* data, std::size_t size) {

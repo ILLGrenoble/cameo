@@ -72,7 +72,7 @@ void StringObject::endArray() {
 	m_writer.EndArray();
 }
 
-std::string StringObject::toString() {
+std::string StringObject::dump() {
 	m_writer.EndObject();
 	return m_buffer.GetString();
 }

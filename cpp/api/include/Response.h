@@ -22,16 +22,42 @@
 
 namespace cameo {
 
+/**
+ * Class defining a response.
+ */
 class Response {
 
 	friend std::ostream& operator<<(std::ostream&, const Response&);
 
 public:
+	/**
+	 * Constructor.
+	 */
 	Response();
+
+	/**
+	 * Constructor.
+	 * \param value The value.
+	 * \param message The message.
+	 */
 	Response(int value, const std::string& message);
 
+	/**
+	 * Gets the value.
+	 * \return The value.
+	 */
 	int getValue() const;
+
+	/**
+	 * Gets the message.
+	 * \return The message.
+	 */
 	const std::string& getMessage() const;
+
+	/**
+	 * Convenient function returning success or not.
+	 * \return True if the response is success.
+	 */
 	bool isSuccess() const;
 
 private:
@@ -39,6 +65,9 @@ private:
 	std::string m_message;
 };
 
+/**
+ * Stream operator for a Response object.
+ */
 std::ostream& operator<<(std::ostream&, const Response&);
 
 }

@@ -70,7 +70,7 @@ bool RequesterZmq::sendSync() {
 	jsonRequest.pushValue(message::SYNC);
 
 	// Send the request.
-	sendRequest(jsonRequest.toString());
+	sendRequest(jsonRequest.dump());
 
 	while (true) {
 
@@ -210,7 +210,7 @@ void RequesterZmq::send(const std::string& requestData) {
 	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
 
 	// Send the request.
-	sendRequest(jsonRequest.toString(), requestData);
+	sendRequest(jsonRequest.dump(), requestData);
 }
 
 void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::string& requestData2) {
@@ -232,7 +232,7 @@ void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::stri
 	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
 
 	// Send the request.
-	sendRequest(jsonRequest.toString(), requestData1, requestData2);
+	sendRequest(jsonRequest.dump(), requestData1, requestData2);
 }
 
 bool RequesterZmq::receiveMessage(zmq::message_t& message) {

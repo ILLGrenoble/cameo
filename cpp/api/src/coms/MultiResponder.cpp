@@ -85,7 +85,7 @@ bool Request::reply(const std::string& response) {
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::RESPONSE);
 
-	m_responder->reply(jsonRequest.toString(), response);
+	m_responder->reply(jsonRequest.dump(), response);
 
 	return true;
 }
@@ -174,7 +174,7 @@ void ResponderRouter::init(const std::string &name) {
 	jsonData.pushValue(m_impl->getResponderPort());
 
 	try {
-		This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");

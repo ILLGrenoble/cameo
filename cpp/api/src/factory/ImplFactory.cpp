@@ -65,7 +65,7 @@ std::unique_ptr<coms::multi::ResponderImpl> ImplFactory::createMultiResponder() 
 	return std::make_unique<coms::multi::ResponderZmq>();
 }
 
-std::unique_ptr<coms::RequesterImpl> ImplFactory::createBasicRequester() {
+std::unique_ptr<coms::RequesterImpl> ImplFactory::createRequester() {
 	return std::make_unique<coms::RequesterZmq>();
 }
 

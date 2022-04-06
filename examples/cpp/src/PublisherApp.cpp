@@ -29,7 +29,7 @@ std::string serializeToJSON(const std::string& message, int i) {
 	object.pushKey("value");
 	object.pushValue(i);
 
-	return object.toString();
+	return object.dump();
 }
 
 int main(int argc, char *argv[]) {
