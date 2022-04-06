@@ -79,15 +79,13 @@ Request::Request(const std::string & requesterApplicationName, int requesterAppl
 	m_requesterServerProxyPort = serverProxyPort;
 }
 
-bool Request::reply(const std::string& response) {
+void Request::reply(const std::string& response) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::RESPONSE);
 
 	m_responder->reply(jsonRequest.dump(), response);
-
-	return true;
 }
 
 ServerAndApp Request::connectToRequester(int options, bool useProxy) {
