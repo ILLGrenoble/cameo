@@ -27,11 +27,6 @@ class StreamSocketImpl;
 
 namespace coms {
 
-namespace legacy {
-	class ResponderImpl;
-	class RequesterImpl;
-}
-
 namespace basic {
 	class ResponderImpl;
 }
