@@ -127,7 +127,7 @@ def testKillApplication():
         else:
             break
 
-    print("Subscriber end of stream", subscriber.isEnded())
+    print("Subscriber end of stream", subscriber.hasEnded())
 
     state = app.waitFor()
 
@@ -157,7 +157,7 @@ def testCancelSubscriber():
         else:
             break
 
-    print("Subscriber end of stream", subscriber.isEnded())
+    print("Subscriber end of stream", subscriber.hasEnded())
     
      # Start kill thread.
     k = threading.Thread(target=killApplication, args=(app,))
