@@ -396,7 +396,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("killAllAndWaitFor", &Server::killAllAndWaitFor,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getApplicationConfigurations", &Server::getApplicationConfigurations, py::call_guard<py::gil_scoped_release>())
+	    .def("getApplicationConfigs", &Server::getApplicationConfigs, py::call_guard<py::gil_scoped_release>())
 	    .def("getApplicationInfos", py::overload_cast<>(&Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
 	    .def("getApplicationInfos", py::overload_cast<const std::string&>(&Server::getApplicationInfos, py::const_),
 	    		"name"_a,

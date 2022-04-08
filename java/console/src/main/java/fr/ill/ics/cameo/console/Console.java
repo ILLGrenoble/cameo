@@ -363,7 +363,7 @@ public class Console {
 	
 	private void processList() {
 		
-		List<App.Config> applicationConfigs = server.getApplicationConfigurations();
+		List<App.Config> applicationConfigs = server.getApplicationConfigs();
 
 		if (applicationConfigs == null) {
 			System.out.println("The server " + endpoint + " is not available.");

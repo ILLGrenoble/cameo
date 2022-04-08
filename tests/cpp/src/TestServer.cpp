@@ -37,7 +37,7 @@ int main(int, char *[]) {
 
 	cout << "Configs" << endl;
 
-	vector<App::Config> configs = server.getApplicationConfigurations();
+	vector<App::Config> configs = server.getApplicationConfigs();
 
 	for (auto c : configs) {
 		cout << c << endl;

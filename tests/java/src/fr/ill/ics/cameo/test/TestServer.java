@@ -38,7 +38,7 @@ public class TestServer {
 		
 		System.out.println("Configs");
 		
-		List<App.Config> configs = server.getApplicationConfigurations();
+		List<App.Config> configs = server.getApplicationConfigs();
 		
 		for (App.Config c : configs) {
 			System.out.println("  " + c.toString());

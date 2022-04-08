@@ -400,7 +400,7 @@ bool Server::isAlive(int id) const {
 	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
 
-std::vector<App::Config> Server::getApplicationConfigurations() const {
+std::vector<App::Config> Server::getApplicationConfigs() const {
 
 	std::vector<App::Config> configs;
 

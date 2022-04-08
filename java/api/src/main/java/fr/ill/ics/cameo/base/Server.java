@@ -625,7 +625,7 @@ public class Server {
 	 * @return List of ApplicationConfig if everything is ok, else null
 	 * @throws ConnectionTimeout
 	 */
-	public List<App.Config> getApplicationConfigurations() {
+	public List<App.Config> getApplicationConfigs() {
 
 		JSONObject request = Messages.createListRequest();
 		JSONObject response = requestSocket.requestJSON(request);

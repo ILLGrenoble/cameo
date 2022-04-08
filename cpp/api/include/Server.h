@@ -177,7 +177,7 @@ public:
 	 * Gets the list of application configurations.
 	 * \return The list of configurations.
 	 */
-	std::vector<App::Config> getApplicationConfigurations() const;
+	std::vector<App::Config> getApplicationConfigs() const;
 
 	/**
 	 * Gets the list of application infos.
