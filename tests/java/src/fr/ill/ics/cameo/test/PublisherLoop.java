@@ -40,7 +40,7 @@ public class PublisherLoop {
 			This.setRunning();
 			
 			// Sending data.
-			while (!publisher.isEnded()) {
+			while (!publisher.hasEnded()) {
 				
 				publisher.sendString("hello");
 				

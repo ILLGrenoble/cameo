@@ -95,7 +95,7 @@ void PublisherZmq::setEnd() {
 	}
 }
 
-bool PublisherZmq::isEnded() {
+bool PublisherZmq::hasEnded() {
 	return m_ended;
 }
 

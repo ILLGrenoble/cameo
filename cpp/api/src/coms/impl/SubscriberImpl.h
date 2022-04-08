@@ -31,7 +31,7 @@ public:
 
 	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity) = 0;
 
-	virtual bool isEnded() const = 0;
+	virtual bool hasEnded() const = 0;
 	virtual bool isCanceled() const = 0;
 
 	virtual std::optional<std::string> receive() = 0;

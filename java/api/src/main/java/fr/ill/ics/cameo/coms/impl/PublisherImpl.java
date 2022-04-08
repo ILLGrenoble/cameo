@@ -26,6 +26,6 @@ public interface PublisherImpl {
 	void send(String data);
 	void sendTwoParts(byte[] data1, byte[] data2);
 	void sendEnd();
-	boolean isEnded();
+	boolean hasEnded();
 	void terminate();
 }

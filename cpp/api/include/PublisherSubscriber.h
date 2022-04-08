@@ -34,47 +34,89 @@ class Responder;
 ///////////////////////////////////////////////////////////////////////////
 // Publisher
 
+/**
+ * Exception for a publisher creation.
+ */
 class PublisherCreationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	PublisherCreationException(const std::string& message);
 };
 
-
+/**
+ * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
+ */
 class Publisher {
 
 	friend class cameo::This;
 
 public:
+	/**
+	 * Destructor.
+	 */
 	~Publisher();
+
+	/**
+	 * Terminates the communication.
+	 */
 	void terminate();
 
 	/**
 	 * Returns the publisher with name.
-	 * throws PublisherCreationException.
+	 * \param name The name.
+	 * \param numberOfSubscribers The number of subscribers.
+	 * \return A new Publisher object.
 	 */
 	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0);
 
+	/**
+	 * Gets the name.
+	 */
 	const std::string& getName() const;
 
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
+	 * \return True if succeeds.
 	 */
 	bool waitForSubscribers();
+
+	/**
+	 * Cancels the waitForSubscribers() call in another thread.
+	 */
 	void cancelWaitForSubscribers();
 
+	/**
+	 * Sends a message in one part.
+	 * \param data The data to send.
+	 */
 	void send(const std::string &data) const;
+
+	/**
+	 * Sends a message in two parts.
+	 * \param data1 The first part.
+	 * \param data2 The second part.
+	 */
 	void sendTwoParts(const std::string &data1, const std::string &data2) const;
+
+	/**
+	 * Sends the end of the stream.
+	 */
 	void sendEnd() const;
 
 	/**
-	 * Deprecated.
-	 * TODO remove in next version.
+	 * Returns true if the stream ended.
+	 * \return True if the stream ended.
 	 */
 	bool hasEnded() const;
 
-	bool isEnded() const;
-
+	/**
+	 * Returns a string representation of the publisher.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 	static const std::string KEY;
@@ -98,50 +140,102 @@ private:
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
+/**
+ * Exception for a subscriber creation.
+ */
 class SubscriberCreationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	SubscriberCreationException(const std::string& message);
 };
 
-
+/**
+ * Class defining a subscriber.
+ */
 class Subscriber {
 
 	friend class cameo::Server;
 	friend class cameo::App;
 
 public:
+	/**
+	 * Destructor.
+	 */
 	~Subscriber();
+
+	/**
+	 * Terminates the communication.
+	 */
 	void terminate();
 
+	/**
+	 * Returns a new subscriber.
+	 * \param app The application where the publisher is defined.
+	 * \param publisherName The name of the publisher.
+	 * \return A new Subscriber object.
+	 */
 	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName);
 
+	/**
+	 * Gets the publisher name.
+	 * \return The publisher name.
+	 */
 	const std::string& getPublisherName() const;
+
+	/**
+	 * Gets the application name.
+	 * \return The application name.
+	 */
 	const std::string& getAppName() const;
+
+	/**
+	 * Gets the application id.
+	 * \return The application id.
+	 */
 	int getAppId() const;
+
+	/**
+	 * Gets the application endpoint.
+	 * \return The application endpoint.
+	 */
 	Endpoint getAppEndpoint() const;
 
 	/**
-	 * Deprecated.
-	 * TODO remove in next version.
+	 * Returns true if the stream ended.
+	 * \return True if the stream ended.
 	 */
 	bool hasEnded() const;
 
-	bool isEnded() const;
+	/**
+	 * Returns true if the subscriber has been canceled.
+	 * \return True if the subscriber has been canceled.
+	 */
 	bool isCanceled() const;
 
 	/**
 	 * Returns a string or nothing if the stream has finished.
+	 * \return The string data or null.
 	 */
 	std::optional<std::string> receive() const;
 
 	/**
 	 * Returns a tuple of strings or nothing if the stream has finished.
+	 * \return The tuple of string data or null.
 	 */
 	std::optional<std::tuple<std::string, std::string>> receiveTwoParts() const;
 
+	/**
+	 * Cancels the subscriber. Unblocks the receive() call in another thread.
+	 */
 	void cancel();
 
+	/**
+	 * Returns a string representation of the subscriber.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:
@@ -159,7 +253,14 @@ private:
 	std::string m_key;
 };
 
+/**
+ * Stream operator for a Publisher object.
+ */
 std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+
+/**
+ * Stream operator for a Subscriber object.
+ */
 std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 
 }

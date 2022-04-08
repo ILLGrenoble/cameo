@@ -110,7 +110,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("terminate", &OutputStreamSocket::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("receive", &OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isEnded", &OutputStreamSocket::isEnded)
+		.def("hasEnded", &OutputStreamSocket::hasEnded)
 		.def("isCanceled", &OutputStreamSocket::isCanceled)
 		.def("__str__", &OutputStreamSocket::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -166,7 +166,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"data1"_a, "data2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("sendEnd", &Publisher::sendEnd, py::call_guard<py::gil_scoped_release>())
-	    .def("isEnded", &Publisher::isEnded)
+	    .def("hasEnded", &Publisher::hasEnded)
 		.def("__str__", &Publisher::toString,
 				py::call_guard<py::gil_scoped_release>());
 
@@ -180,7 +180,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getAppName", &Subscriber::getAppName)
 	    .def("getAppId", &Subscriber::getAppId)
 	    .def("getAppEndpoint", &Subscriber::getAppEndpoint)
-	    .def("isEnded", &Subscriber::isEnded)
+	    .def("hasEnded", &Subscriber::hasEnded)
 	    .def("isCanceled", &Subscriber::isCanceled)
 
 		.def("receive",

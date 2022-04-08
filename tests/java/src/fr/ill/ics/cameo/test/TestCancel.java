@@ -174,7 +174,7 @@ public class TestCancel {
 					}
 				}
 				
-				System.out.println("Subscriber end of stream " + subscriber.isEnded());
+				System.out.println("Subscriber end of stream " + subscriber.hasEnded());
 
 				int state = pubLoopApplication.waitFor();
 
@@ -220,7 +220,7 @@ public class TestCancel {
 					}
 				}
 				
-				System.out.println("Subscriber end of stream " + subscriber.isEnded());
+				System.out.println("Subscriber end of stream " + subscriber.hasEnded());
 
 				// Start thread.
 				Thread killThread = new Thread(new Runnable() {

@@ -133,8 +133,8 @@ public class Subscriber {
 		return appEndpoint;
 	}
 		
-	public boolean isEnded() {
-		return impl.isEnded();
+	public boolean hasEnded() {
+		return impl.hasEnded();
 	}
 	
 	public boolean isCanceled() {

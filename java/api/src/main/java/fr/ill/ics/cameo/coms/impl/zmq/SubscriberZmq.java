@@ -69,7 +69,7 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.subscribe(Messages.Event.STATUS);
 	}
 	
-	public boolean isEnded() {
+	public boolean hasEnded() {
 		return ended;
 	}
 	

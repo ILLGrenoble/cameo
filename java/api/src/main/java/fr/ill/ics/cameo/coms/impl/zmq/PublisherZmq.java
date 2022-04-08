@@ -115,7 +115,7 @@ public class PublisherZmq implements PublisherImpl {
 		}
 	}
 
-	public boolean isEnded() {
+	public boolean hasEnded() {
 		return ended;
 	}
 	

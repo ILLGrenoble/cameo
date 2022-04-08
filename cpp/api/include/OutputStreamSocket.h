@@ -108,7 +108,7 @@ public:
 	 * Returns true if the stream ended.
 	 * \return True if ended.
 	 */
-	bool isEnded() const;
+	bool hasEnded() const;
 
 	/**
 	 * Returns true if the stream has been canceled.

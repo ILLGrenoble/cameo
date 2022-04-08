@@ -11,7 +11,7 @@ public interface OutputStreamSocketImpl {
 	void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser);
 	void setApplicationId(int id);
 	OutputStreamSocket.Output receive();
-	boolean isEnded();
+	boolean hasEnded();
 	boolean isCanceled();
 	void cancel();
 	void terminate();

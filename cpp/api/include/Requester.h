@@ -27,48 +27,121 @@ class RequesterImpl;
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
+/**
+ * Exception for a requester creation.
+ */
 class RequesterCreationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	RequesterCreationException(const std::string& message);
 };
 
-
+/**
+ * Class defining a requester. The request and response must be sent and received sequentially.
+ */
 class Requester {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
 public:
+	/**
+	 * Destructor.
+	 */
 	~Requester();
+
+	/**
+	 * Terminates the communication.
+	 */
 	void terminate();
 
 	/**
-	 * Returns the responder with name.
-	 * throws RequesterCreationException.
+	 * Returns a new responder.
+	 * \param app The application where the responder is defined.
+	 * \param responderName The responder name.
+	 * \return A new Requester object.
 	 */
-	static std::unique_ptr<Requester> create(const App &app, const std::string &name);
+	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
 
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
 	void setPollingTime(int value);
+
+	/**
+	 * Sets the timeout.
+	 * \param value The value.
+	 */
 	void setTimeout(int value);
 
+	/**
+	 * Gets the responder name.
+	 * \return The responder name.
+	 */
 	const std::string& getResponderName() const;
+
+	/**
+	 * Gets the application name.
+	 * \return The application name.
+	 */
 	const std::string& getAppName() const;
+
+	/**
+	 * Gets the application id.
+	 * \return The application id.
+	 */
 	int getAppId() const;
+
+	/**
+	 * Gets the application endpoint.
+	 * \return The application endpoint.
+	 */
 	Endpoint getAppEndpoint() const;
 
+	/**
+	 * Sends a request in one part.
+	 * \param request The request.
+	 */
 	void send(const std::string &request);
+
+	/**
+	 * Sends a request in two parts.
+	 * \param request1 The first part of the request.
+	 * \param request2 The seconds part of the request.
+	 */
 	void sendTwoParts(const std::string &request1, const std::string &request2);
 
 	/**
 	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
+	 * \return The response or null.
 	 */
 	std::optional<std::string> receive();
 
+	/**
+	 * Cancels the requester. Unblocks the receive() call in another thread.
+	 */
 	void cancel();
 
+	/**
+	 * Returns true if the requester has been canceled.
+	 * \return True if the requester has been canceled.
+	 */
 	bool isCanceled() const;
+
+	/**
+	 * Returns true if the requester has timed out.
+	 * \return True if the requester has timed out.
+	 */
 	bool hasTimedout() const;
 
+	/**
+	 * Returns a string representation of the requester.
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:
@@ -85,6 +158,9 @@ private:
 	std::string m_key;
 };
 
+/**
+ * Stream operator for a Requester object.
+ */
 std::ostream& operator<<(std::ostream&, const Requester&);
 
 }

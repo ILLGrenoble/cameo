@@ -180,8 +180,8 @@ public class Publisher {
 		impl.sendEnd();
 	}
 	
-	public boolean isEnded() {
-		return impl.isEnded();
+	public boolean hasEnded() {
+		return impl.hasEnded();
 	}
 	
 	public void terminate() {

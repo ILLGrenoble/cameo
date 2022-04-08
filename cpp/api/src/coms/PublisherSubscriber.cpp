@@ -158,11 +158,7 @@ void Publisher::sendTwoParts(const std::string& data1, const std::string& data2)
 }
 
 bool Publisher::hasEnded() const {
-	return m_impl->isEnded();
-}
-
-bool Publisher::isEnded() const {
-	return m_impl->isEnded();
+	return m_impl->hasEnded();
 }
 
 void Publisher::sendEnd() const {
@@ -283,11 +279,7 @@ Endpoint Subscriber::getAppEndpoint() const {
 }
 
 bool Subscriber::hasEnded() const {
-	return m_impl->isEnded();
-}
-
-bool Subscriber::isEnded() const {
-	return m_impl->isEnded();
+	return m_impl->hasEnded();
 }
 
 bool Subscriber::isCanceled() const {

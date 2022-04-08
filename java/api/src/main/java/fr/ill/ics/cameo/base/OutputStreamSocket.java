@@ -80,8 +80,8 @@ public class OutputStreamSocket {
 		return impl.receive();
 	}
 	
-	public boolean isEnded() {
-		return impl.isEnded();
+	public boolean hasEnded() {
+		return impl.hasEnded();
 	}
 	
 	public boolean isCanceled() {

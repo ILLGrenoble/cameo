@@ -156,7 +156,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		}
 	}
 	
-	public boolean isEnded() {
+	public boolean hasEnded() {
 		return ended;
 	}
 	

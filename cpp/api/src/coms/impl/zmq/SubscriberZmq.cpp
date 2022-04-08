@@ -63,7 +63,7 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 }
 
-bool SubscriberZmq::isEnded() const {
+bool SubscriberZmq::hasEnded() const {
 	return m_ended;
 }
 

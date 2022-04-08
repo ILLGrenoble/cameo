@@ -128,7 +128,7 @@ void OutputStreamSocket::cancel() {
 	m_impl->cancel();
 }
 
-bool OutputStreamSocket::isEnded() const {
+bool OutputStreamSocket::hasEnded() const {
 	return m_ended;
 }
 
