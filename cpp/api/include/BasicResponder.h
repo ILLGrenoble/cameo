@@ -88,12 +88,6 @@ public:
 	const std::string& getSecondPart() const;
 
 	/**
-	 * Sets the timeout.
-	 * \param value The timeout.
-	 */
-	void setTimeout(int value);
-
-	/**
 	 * Replies to the request.
 	 * \param response The response.
 	 */
@@ -123,7 +117,6 @@ private:
 	int m_requesterApplicationId;
 	Endpoint m_requesterServerEndpoint;
 	int m_requesterServerProxyPort;
-	int m_timeout;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -162,15 +155,15 @@ public:
 	const std::string& getName() const;
 
 	/**
-	 * Cancels the responder waiting in another thread.
-	 */
-	void cancel();
-
-	/**
 	 * Receives a request. This is a blocking command until a Request is received.
 	 * \return A Request object.
 	 */
 	std::unique_ptr<Request> receive();
+
+	/**
+	 * Cancels the responder waiting in another thread.
+	 */
+	void cancel();
 
 	/**
 	 * Returns true if it has been canceled.

@@ -17,6 +17,9 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Interface for handlers. 
+ */
 public interface Handler {
 	void handle();
 }

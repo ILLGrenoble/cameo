@@ -17,9 +17,16 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining a cancel event.
+ */
 public class CancelEvent extends Event {
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 */
 	public CancelEvent(int id, String name) {
 		super(id, name);
 	}

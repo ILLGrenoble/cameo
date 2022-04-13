@@ -25,8 +25,8 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
 
 /**
- * Class Responder.
- *
+ * Class defining a responder for the responder router.
+ * Requests are processed sequentially.
  */
 public class Responder {
 	
@@ -46,10 +46,9 @@ public class Responder {
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponderCreationException, ConnectionTimeout
+	 * Creates a new responder.
+	 * @param router The router.
+	 * @return A new Responder object.
 	 */
 	static public Responder create(ResponderRouter router) throws ResponderCreationException {
 		
@@ -59,6 +58,10 @@ public class Responder {
 		return responder;
 	}
 	
+	/**
+	 * Receives a request. This is a blocking command until a Request is received.
+	 * @return A Request object.
+	 */
 	public Request receive() {
 		
 		// Receive the request.
@@ -76,14 +79,24 @@ public class Responder {
 		impl.reply(Messages.serialize(request), response);
 	}
 
+	/**
+	 * Cancels the responder waiting in another thread.
+	 */
 	public void cancel() {
 		impl.cancel();			
 	}
 	
+	/**
+	 * Returns true if it has been canceled.
+	 * @return True if canceled.
+	 */
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
-			
+	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
 		
 		//waiting.remove();

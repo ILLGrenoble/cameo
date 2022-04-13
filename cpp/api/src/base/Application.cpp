@@ -843,6 +843,10 @@ int App::getExitCode() const {
 	return m_exitCode;
 }
 
+State App::getInitialState() const {
+	return m_initialState;
+}
+
 std::optional<std::string> App::getResult() {
 
 	waitFor();

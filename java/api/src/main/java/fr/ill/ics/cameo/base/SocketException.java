@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for a socket.
+ */
 public class SocketException extends RuntimeException {
 
 	private static final long serialVersionUID = -5791375555988608927L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public SocketException(String message) {
 		super(message);
 	}

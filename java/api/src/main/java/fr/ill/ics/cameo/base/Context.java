@@ -17,7 +17,13 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Interface for wrapping the real communication context.
+ */
 public interface Context {
 
+	/**
+	 * Terminates the context.
+	 */
 	void terminate();
 }

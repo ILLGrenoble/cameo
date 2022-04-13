@@ -18,10 +18,17 @@ package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.RemoteException;
 
+/**
+ * Exception for a requester creation.
+ */
 public class RequesterCreationException extends RemoteException {
 	
 	private static final long serialVersionUID = -192329899899759388L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public RequesterCreationException(String message) {
 		super(message);
 	}

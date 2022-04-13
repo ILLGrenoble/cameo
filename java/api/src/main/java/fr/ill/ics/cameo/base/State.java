@@ -19,22 +19,66 @@ package fr.ill.ics.cameo.base;
 import java.util.ArrayList;
 
 /**
- * describe states of application
+ * Class owning the different states of a Cameo applications. 
  *
  */
 public class State {
 	
+	/**
+	 * Unknown state.
+	 */
 	public final static int UNKNOWN = 0;
+	
+	/**
+	 * Starting state.
+	 */
 	public final static int STARTING = 1;
+	
+	/**
+	 * Running state.
+	 */
 	public final static int RUNNING = 2;
+	
+	/**
+	 * Stopping state.
+	 */
 	public final static int STOPPING = 4;
+	
+	/**
+	 * Killing state.
+	 */
 	public final static int KILLING = 8;
+	
+	/**
+	 * Processing error state.
+	 */
 	public final static int PROCESSING_ERROR = 16;
+	
+	/**
+	 * Failure state.
+	 */
 	public final static int ERROR = 32;
+	
+	/**
+	 * Success state.
+	 */
 	public final static int SUCCESS = 64;
+	
+	/**
+	 * Stopped state.
+	 */
 	public final static int STOPPED = 128;
+	
+	/**
+	 * Killed state.
+	 */
 	public final static int KILLED = 256;
 	
+	/**
+	 * Parses the state string.
+	 * @param value The state string.
+	 * @return The state.
+	 */
 	public static int parse(String value) {
 		
 		if (value.equals("UNKNOWN")) {
@@ -62,6 +106,11 @@ public class State {
 		return State.UNKNOWN;
 	}
 			
+	/**
+	 * Converts the list of application states into a string.
+	 * @param applicationStates The list of states.
+	 * @return The string concatenation of the states.
+	 */
 	public static String toString(int applicationStates) {
 		
 		ArrayList<String> states = new ArrayList<String>();

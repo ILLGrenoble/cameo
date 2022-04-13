@@ -29,6 +29,7 @@ class InvalidArgumentException : public RemoteException {
 public:
 	/**
 	 * Constructor.
+	 * \param message The message.
 	 */
 	InvalidArgumentException(const std::string& message);
 };

@@ -27,8 +27,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
- * Class Request.
- * 
+ * Class defining a request received by the multi responder.
  */
 public class Request {
 	
@@ -39,8 +38,16 @@ public class Request {
 	private int requesterApplicationId;
 	private Endpoint requesterServerEndpoint;
 	private int requesterServerProxyPort;
-	private int timeout = 0;
-		
+	
+	/**
+	 * Constructor.
+	 * @param requesterApplicationName The requester application name.
+	 * @param requesterApplicationId The request application id.
+	 * @param serverEndpoint The server endpoint.
+	 * @param serverProxyPort The server proxy port.
+	 * @param messagePart1 The message part 1.
+	 * @param messagePart2 The message part 2.
+	 */
 	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] messagePart1, byte[] messagePart2) {
 		
 		this.messagePart1 = messagePart1;
@@ -56,15 +63,27 @@ public class Request {
 	void setResponder(Responder responder) {
 		this.responder = responder;
 	}
-	
+
+	/**
+	 * Gets the message.
+	 * @return The binary message.
+	 */
 	public byte[] get() {
 		return messagePart1;
 	}
 	
+	/**
+	 * Gets the message in string.
+	 * @return The stringified message.
+	 */
 	public String getString() {
 		return Messages.parseString(messagePart1);
 	}
 	
+	/**
+	 * Gets the two binary message parts.
+	 * @return The two binary parts message. The array has size 2.
+	 */
 	public byte[][] getTwoParts() {
 		
 		byte[][] result = new byte[2][];
@@ -74,24 +93,32 @@ public class Request {
 		return result;
 	}
 	
-	public void setTimeout(int value) {
-		timeout = value;
-	}
-	
-	public boolean reply(byte[] response) {
+	/**
+	 * Replies to the requester.
+	 * @param response The response.
+	 */
+	public void reply(byte[] response) {
 		
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
 
 		responder.reply(jsonRequest, response);
-		
-		return true;
 	}
 	
-	public boolean replyString(String response) {
-		return reply(Messages.serialize(response));
+	/**
+	 * Replies a string to the requester.
+	 * @param response The string response.
+	 */
+	public void replyString(String response) {
+		reply(Messages.serialize(response));
 	}
 	
+	/**
+	 * Connects to the requester.
+	 * @param options Options of connection.
+	 * @param useProxy True if proxy is used.
+	 * @return The ServerAndApp object.
+	 */
 	public ServerAndApp connectToRequester(int options, boolean useProxy) {
 		
 		if (requesterServerEndpoint == null) {
@@ -124,10 +151,19 @@ public class Request {
 		return new ServerAndApp(starterServer, starterInstance);
 	}
 	
+	/**
+	 * Connects to the requester.
+	 * @param options Options of connection.
+	 * @return The ServerAndApp object.
+	 */
 	public ServerAndApp connectToRequester(int options) {
 		return connectToRequester(options, false);
 	}
-	
+
+	/**
+	 * Connects to the requester.
+	 * @return The ServerAndApp object.
+	 */
 	public ServerAndApp connectToRequester() {
 		return connectToRequester(0, false);
 	}

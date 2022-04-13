@@ -25,12 +25,9 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
 /**
- * Class that implements simple asynchronous programming model.
- * There is no connection timeout as they are hidden as bad results.
- * The class is not thread safe and should be used in a single thread.
- * Question? stop/kill can be called concurrently 
- * @author legoc
+ * Class defining a remote Cameo application.
  *
+ * An App instance is created by a Server instance. It represents a real remote application that was started by a real Cameo server.
  */
 public class App extends EventListener {
 
@@ -46,7 +43,9 @@ public class App extends EventListener {
 	private Integer exitCode;
 	
 	/**
-	 * Class defining the Communication Operations Manager (COM).
+	 * Class defining the Communication Operations Manager (COM) for an App instance.
+	 *
+	 * It facilitates the definition of communication objects.
 	 */
 	public static class Com {
 		
@@ -60,22 +59,42 @@ public class App extends EventListener {
 			this.name = name;
 		}
 
+		/**
+		 * Gets the responder proxy port.
+		 * @return The port.
+		 */
 		public int getResponderProxyPort() {
 			return server.getResponderProxyPort();
 		}
 		
+		/**
+		 * Gets the publisher proxy port.
+		 * @return The port.
+		 */
 		public int getPublisherProxyPort() {
 			return server.getPublisherProxyPort();
 		}
 		
+		/**
+		 * Gets the subscriber proxy port.
+		 * @return The port.
+		 */
 		public int getSubscriberProxyPort() {
 			return server.getSubscriberProxyPort();
 		}
 		
+		/**
+		 * Gets the key value.
+		 * @param key The key.
+		 * @return The value associated to key.
+		 */
 		public String getKeyValue(String key) throws UndefinedApplicationException, UndefinedKeyException {
 			return server.getKeyValue(applicationId, key);
 		}
 		
+		/**
+		 * Class defining a getter for a key value.
+		 */
 		public static class KeyValueGetter extends EventListener {
 
 			private Server server;
@@ -92,6 +111,11 @@ public class App extends EventListener {
 				server.registerEventListener(this);
 			}
 			
+			/**
+			 * Gets the value.
+			 * @return The value.
+			 * @throws KeyValueGetterException if the call has been canceled.
+			 */
 			public String get() throws KeyValueGetterException {
 				
 				// Register the waiting.
@@ -153,19 +177,26 @@ public class App extends EventListener {
 				}
 			}
 			
+			/**
+			 * Cancels the get call.
+			 */
 			public void cancel() {
 				this.cancel(id);
 			}
 		}
 		
+		/**
+		 * Creates a KeyValueGetter for a key.
+		 * \return A new KeyValueGetter instance.
+		 */
 		public KeyValueGetter getKeyValueGetter(String key) {
 			return new KeyValueGetter(server, name, applicationId, key);
 		}
 		
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
-		 * @param message
-		 * @return
+		 * @param message The message to parse.
+		 * @return A JSONObject object.
 		 */
 		public JSONObject parse(byte[] message) {
 			try {
@@ -178,6 +209,9 @@ public class App extends EventListener {
 		
 	}
 	
+	/**
+	 * Class defining the configuration of a registered application.
+	 */
 	public static class Config {
 	
 		private String name;
@@ -187,6 +221,15 @@ public class App extends EventListener {
 		private int startingTime;
 		private int stoppingTime;
 	
+		/**
+		 * Constructor.
+		 * @param name The name.
+		 * @param description The description.
+		 * @param singleInstance True if there is only a single instance.
+		 * @param restart True if the application can restart.
+		 * @param startingTime Starting time in seconds.
+		 * @param stoppingTime Stopping time in seconds.
+		 */
 		public Config(String name, String description, boolean singleInstance, boolean restart, int startingTime, int stoppingTime) {
 			super();
 			this.description = description;
@@ -196,27 +239,51 @@ public class App extends EventListener {
 			this.startingTime = startingTime;
 			this.stoppingTime = stoppingTime;
 		}
-	
+
+		/**
+		 * Gets the name.
+		 * @return The name.
+		 */
+		public String getName() {
+			return name;
+		}
+		
+		/**
+		 * Gets the description.
+		 * @return The description.
+		 */
 		public String getDescription() {
 			return description;
 		}
 		
+		/**
+		 * Returns the multiplicity of the application.
+		 * @return True if the application runs only once.
+		 */
 		public boolean hasSingleInstance() {
 			return singleInstance;
 		}
 	
+		/**
+		 * Returns true if the application can restart.
+		 * @return True if the application can restart.
+		 */
 		public boolean canRestart() {
 			return restart;
 		}
 	
-		public String getName() {
-			return name;
-		}
-	
+		/**
+		 * Returns the starting time.
+		 * @return The starting time in seconds.
+		 */
 		public int getStartingTime() {
 			return startingTime;
 		}
 	
+		/**
+		 * Returns the stopping time.
+		 * @return The stopping time in seconds.
+		 */
 		public int getStoppingTime() {
 			return stoppingTime;
 		}
@@ -228,6 +295,9 @@ public class App extends EventListener {
 	
 	}
 
+	/**
+	 * Class showing the information of a running Cameo application.
+	 */
 	public static class Info {
 	
 		private int id;
@@ -237,6 +307,15 @@ public class App extends EventListener {
 		private String name;
 		private long pid;
 	
+		/**
+		 * Constructor.
+		 * @param name The name.
+		 * @param id The Cameo id.
+		 * @param pid The PID.
+		 * @param applicationState The current application state.
+		 * @param pastApplicationStates The past application states.
+		 * @param args The arguments of the executable.
+		 */
 		public Info(String name, int id, long pid, int applicationState, int pastApplicationStates, String args) {
 			super();
 			this.id = id;
@@ -247,26 +326,50 @@ public class App extends EventListener {
 			this.name = name;
 		}
 	
+		/**
+		 * Gets the id.
+		 * @return The id.
+		 */
 		public int getId() {
 			return id;
 		}
 	
-		public int getApplicationState() {
+		/**
+		 * Gets the state.
+		 * @return The state.
+		 */
+		public int getState() {
 			return applicationState;
 		}
 		
-		public int getPastApplicationStates() {
+		/**
+		 * Gets the past states.
+		 * @return the past states.
+		 */
+		public int getPastStates() {
 			return pastApplicationStates;
 		}
 	
+		/**
+		 * Gets the arguments of the executable.
+		 * @return The arguments.
+		 */
 		public String getArgs() {
 			return args;
 		}
 		
+		/**
+		 * Gets the name.
+		 * @return The name.
+		 */
 		public String getName() {
 			return name;
 		}
 		
+		/**
+		 * Gets the PID of the process.
+		 * @return The PID.
+		 */
 		public long getPid() {
 			return pid;
 		}
@@ -278,12 +381,21 @@ public class App extends EventListener {
 	
 	}
 
+	/**
+	 * Class defining a system port associated to a Cameo application.
+	 */
 	public static class Port {
 		
 		private int port;
 		private String status;
 		private String owner;
 		
+		/**
+		 * Constructor.
+		 * @param port The port.
+		 * @param status The status.
+		 * @param owner The owner.
+		 */
 		public Port(int port, String status, String owner) {
 			super();
 			this.port = port;
@@ -291,14 +403,26 @@ public class App extends EventListener {
 			this.owner = owner;
 		}
 	
+		/**
+		 * Gets the port.
+		 * @return The port.
+		 */
 		public int getPort() {
 			return port;
 		}
 	
+		/**
+		 * Gets the status.
+		 * @return The status.
+		 */
 		public String getStatus() {
 			return status;
 		}
 	
+		/**
+		 * Gets the owner.
+		 * @return The owner.
+		 */
 		public String getOwner() {
 			return owner;
 		}
@@ -311,15 +435,15 @@ public class App extends EventListener {
 	App(Server server) {
 		this.server = server;
 	}
-
+	
 	void setId(int id) {
 		this.id = id;
 	}
-	
-	public Server getServer() {
-		return server;
-	}
-	
+
+	/**
+	 * Gets the COM object providing a helper to write the communication classes.
+	 * \return The Com object.
+	 */
 	public Com getCom() {
 		if (com == null) {
 			com = new Com(server, id, getName());
@@ -349,66 +473,90 @@ public class App extends EventListener {
 		lastState = state;
 	}
 	
+	/**
+	 * Gets the id.
+	 * @return the Cameo id.
+	 */
 	public int getId() {
 		return id;
 	}
 	
+	/**
+	 * Returns the use of the proxy.
+	 * @return True if the proxy is used.
+	 */
 	public boolean usesProxy() {
 		return server.usesProxy();
 	}
 	
+	/**
+	 * Gets the endpoint of the server running this remote application.
+	 * @return The endpoint.
+	 */
 	public Endpoint getEndpoint() {
 		return server.getEndpoint();
 	}
 
+	/**
+	 * Gets the status endpoint of the server running this remote application.
+	 * @return The endpoint.
+	 */
 	public Endpoint getStatusEndpoint() {
 		return server.getStatusEndpoint();
 	}
 	
+	/**
+	 * Gets the string concatenation of the name and the id.
+	 * @return the name id.
+	 */
 	public String getNameId() {
 		return getName() + "." + id;
 	}
 	
+	/**
+	 * Returns true if a result was received from the remote application.
+	 * @return True if there is a result.
+	 */
 	public boolean hasResult() {
 		return (resultData != null);
 	}
-	
+
 	/**
-	 * 
-	 * @return true if the instance exists, i.e. the task is executed, otherwise false. 
+	 * Returns the existence of the remote application.
+	 * @return True if the remote application exists which does not mean it is running.
 	 */
 	public boolean exists() {
 		return (id != -1);
 	}
 	
 	/**
-	 * Returns the error message.
-	 * @return
+	 * Gets the error message.
+	 * @return The error message.
 	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 	
+	/**
+	 * Returns the exit code.
+	 * @return The exit code.
+	 */
 	public Integer getExitCode() {
 		return exitCode;
 	}
 	
 	/**
-	 * Returns the initial state of the application when the Instance is created.
-	 * This is the value of the application state when the connect was requested.
-	 * Otherwise the value is UNKNOWN when the Instance is created from a start, stop or kill request. 
-	 * The value returned is not synchronized with the waitFor method. 
-	 * @return
+	 * Returns the initial state of the application when the App is created.
+	 * @return The initial state.
 	 */
 	public int getInitialState() {
 		return initialState;
 	}
-		
+	
 	/**
-	 * Requests the stop of the application.
-	 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
-	 * Or it can be called in parallel with waitFor.
-	 * @return false if it does not succeed, the error message is then set.
+	 * Stops the remote application.
+	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
+	 * @return True if the request succeeded.
 	 */
 	public boolean stop() {
 		try {
@@ -423,10 +571,9 @@ public class App extends EventListener {
 	}
 	
 	/**
-	 * Requests the kill of the application.
-	 * The stop is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
-	 * Or it can be called in parallel with waitFor. 
-	 * @return false if it does not succeed, the error message is then set.
+	 * Kills the remote application.
+	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
+	 * @return True if the request succeeded.
 	 */
 	public boolean kill() {
 		try {
@@ -464,10 +611,6 @@ public class App extends EventListener {
 		}
 	}
 		
-	/**
-	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
-	 * The method is not thread-safe and must not be called concurrently.
-	 */
 	private int waitFor(int states, KeyValue keyValue, boolean blocking) {
 
 		try {
@@ -570,55 +713,98 @@ public class App extends EventListener {
 		}
 	}
 	
+	/**
+	 * Waits for the termination of the application.
+	 * The method is not thread-safe and must not be called concurrently.
+	 * @param keyValue The key value. 
+	 * @return The state when the call returned.
+	 */
 	public int waitFor(KeyValue keyValue) {
 		return waitFor(0, keyValue, true);
 	}
 	
+	/**
+	 * Waits for the termination of the application.
+	 * The method is not thread-safe and must not be called concurrently.
+	 * @param states The states.
+	 * @param blocking True if the call is blocking.
+	 * @return The state when the call returned.
+	 */
 	public int waitFor(int states, boolean blocking) {
 		return waitFor(states, null, blocking);
 	}
 	
+	/**
+	 * Waits for the termination of the application.
+	 * The method is not thread-safe and must not be called concurrently.
+	 * @param states The states.
+	 * @return The state when the call returned.
+	 */
 	public int waitFor(int states) {
 		return waitFor(states, null, true);
 	}
 	
 	/**
-	 * The call is blocking until a terminal state is received i.e. SUCCESS, STOPPED, KILLED, ERROR.
+	 * Waits for the termination of the application.
+	 * The method is not thread-safe and must not be called concurrently.
+	 * @return The state when the call returned.
 	 */
 	public int waitFor() {
 		return waitFor(0);
 	}
-		
+
+	/**
+	 * Cancels the blocking waitFor() in another thread.
+	 */
 	public void cancelWaitFor() {
 		cancel(id);
 	}
 
+	/**
+	 * Returns the actual state and UNKNOWN if the instance does not exist anymore.
+	 * @return The actual state.
+	 */
 	public int getActualState() {
 		return server.getActualState(id);
 	}
 
+	/**
+	 * Returns the past states.
+	 * @return The past states.
+	 */
 	public Set<Integer> getPastStates() {
 		return server.getPastStates(id);
 	}
 	
+	/**
+	 * Gets the last state.
+	 * @return The last state.
+	 */
 	public int getLastState() {
 		return waitFor(0, null, false);
 	}
 	
+	/**
+	 * Terminates the communication. The object is not usable after this call.
+	 */
 	public void terminate() {
 		// Unregister the status.
 		server.unregisterEventListener(this);
 	}
 		
 	/**
-	 * Returns the result of the Instance.
-	 * @return
+	 * Returns the result if there is one.
+	 * @return The result that may not exist.
 	 */
 	public byte[] getResult() {
 		waitFor();
 		return resultData;
 	}
 	
+	/**
+	 * Returns the string result if there is one.
+	 * @return The string result that may not exist.
+	 */
 	public String getStringResult() {
 		byte[] result = getResult();
 		if (result == null) {
@@ -627,6 +813,10 @@ public class App extends EventListener {
 		return Messages.parseString(result);
 	}
 		
+	/**
+	 * Gets the output stream socket.
+	 * @return The output stream socket.
+	 */
 	public OutputStreamSocket getOutputStreamSocket() {
 		return outputSocket;
 	}

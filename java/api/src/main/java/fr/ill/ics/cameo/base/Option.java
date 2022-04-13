@@ -16,10 +16,23 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining the options of the Server.connect() and Server.start() methods.
+ */
 public class Option {
 	
+	/**
+	 * Constant for none.
+	 */
 	public final static int NONE = 0;
+	
+	/**
+	 * Constant for outputstream.
+	 */
 	public final static int OUTPUTSTREAM = 1;
+	
+	/**
+	 * Constant for unlinked.
+	 */
 	public final static int UNLINKED = 2;
 }

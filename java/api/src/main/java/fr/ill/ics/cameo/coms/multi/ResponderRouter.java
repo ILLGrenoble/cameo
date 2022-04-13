@@ -28,8 +28,8 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Responder.
- *
+ * Class defining a responder router.
+ * Requests are dispatched to the multi responders that process them in parallel.
  */
 public class ResponderRouter {
 	
@@ -49,6 +49,10 @@ public class ResponderRouter {
 		waiting.add();
 	}
 	
+	/**
+	 * Sets the polling time.
+	 * @param value The value.
+	 */
 	public void setPollingTime(int value) {
 		impl.setPollingTime(value);
 	}
@@ -81,10 +85,9 @@ public class ResponderRouter {
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponderCreationException, ConnectionTimeout
+	 * Returns the responder router with name.
+	 * @param name The name.
+	 * @return The new ResponderRouter object.
 	 */
 	static public ResponderRouter create(String name) throws ResponderCreationException {
 		
@@ -94,22 +97,39 @@ public class ResponderRouter {
 		return responder;
 	}
 	
+	/**
+	 * Returns the name of the responder.
+	 * @return The name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Cancels the responder router running in another thread.
+	 */
 	public void cancel() {
 		impl.cancel();			
 	}
 	
+	/**
+	 * Returns true if the responder router has been canceled.
+	 * @return True if canceled.
+	 */
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
 
+	/**
+	 * Runs the responder router. This is a blocking call.
+	 */
 	public void run() {
 		impl.run();
 	}
 	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
 		
 		try {

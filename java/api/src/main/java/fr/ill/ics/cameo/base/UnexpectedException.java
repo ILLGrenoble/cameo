@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception when the unexpected happened.
+ */
 public class UnexpectedException extends RuntimeException {
 
 	private static final long serialVersionUID = 8526544898560843343L;
-	
+
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public UnexpectedException(String message) {
 		super(message);
 	}

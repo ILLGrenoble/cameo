@@ -16,15 +16,28 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining a key event.
+ */
 public class KeyEvent extends Event {
 	
+	/**
+	 * Type of the status.
+	 */
 	public enum Status {STORED, REMOVED};
 
 	private Status status;
 	private String key;
 	private String value;
-	
+
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param status The status of the key.
+	 * @param key The key.
+	 * @param value The value.
+	 */
 	public KeyEvent(int id, String name, Status status, String key, String value) {
 		super(id, name);
 		this.status = status;
@@ -32,14 +45,26 @@ public class KeyEvent extends Event {
 		this.value = value;
 	}
 	
+	/**
+	 * Gets the status.
+	 * @return The status.
+	 */
 	public Status getStatus() {
 		return status;
 	}
 	
+	/**
+	 * Gets the key.
+	 * @return The key.
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * Gets the value.
+	 * @return The value.
+	 */
 	public String getValue() {
 		return value;
 	}

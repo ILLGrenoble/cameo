@@ -16,22 +16,46 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining a status event.
+ */
 public class StatusEvent extends Event {
 	
 	private int applicationState;
 	private int pastApplicationStates;
 	private Integer exitCode;
 	
+	/**
+	 * Sync event.
+	 */
 	public final static StatusEvent SYNC = new StatusEvent(-1, "", State.UNKNOWN, State.UNKNOWN);
+	
+	/**
+	 * End event.
+	 */
 	public final static StatusEvent END = new StatusEvent(-2, "", State.UNKNOWN, State.UNKNOWN);
 	
-	public StatusEvent(int id, String name, int applicationState, int pastApplicationStates) {
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param state The current state.
+	 * @param pastStates The past states.
+	 */
+	public StatusEvent(int id, String name, int state, int pastStates) {
 		super(id, name);
-		this.applicationState = applicationState;
-		this.pastApplicationStates = pastApplicationStates;
+		this.applicationState = state;
+		this.pastApplicationStates = pastStates;
 	}
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param state The current state.
+	 * @param pastStates The past states.
+	 * @param exitCode The exit code.
+	 */
 	public StatusEvent(int id, String name, int applicationState, int pastApplicationStates, int exitCode) {
 		super(id, name);
 		this.applicationState = applicationState;
@@ -39,17 +63,25 @@ public class StatusEvent extends Event {
 		this.exitCode = exitCode;
 	}
 	
+	/**
+	 * Gets the current state.
+	 * @return The state.
+	 */
 	public int getState() {
 		return applicationState;
 	}
 	
+	/**
+	 * Gets the past states.
+	 * @return The past states.
+	 */
 	public int getPastStates() {
 		return pastApplicationStates;
 	}
 	
 	/**
 	 * Gets the exit code.
-	 * @return null if the exit code is not defined.
+	 * @return The exit code, null if the exit code is not defined.
 	 */
 	public Integer getExitCode() {
 		return exitCode;

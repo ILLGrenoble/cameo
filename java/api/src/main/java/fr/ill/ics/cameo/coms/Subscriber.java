@@ -30,8 +30,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Subscriber. 
- *
+ * Class defining a subscriber.
  */
 public class Subscriber {
 	
@@ -104,10 +103,10 @@ public class Subscriber {
 	}
 	
 	/**
-	 * Subscribes to the application publisher.
-	 * @param publisherName
-	 * @return
-	 * @throws SubscriberCreationException 
+	 * Returns a new subscriber.
+	 * @param app The application where the publisher is defined.
+	 * @param publisherName The name of the publisher.
+	 * @return A new Subscriber object.
 	 */
 	public static Subscriber create(App app, String publisherName) throws SubscriberCreationException {
 		
@@ -116,59 +115,89 @@ public class Subscriber {
 		
 		return subscriber;
 	}
-			
+	
+	/**
+	 * Gets the publisher name.
+	 * @return The publisher name.
+	 */
 	public String getPublisherName() { 
 		return publisherName;
 	}
 	
+	/**
+	 * Gets the application name.
+	 * @return The application name.
+	 */
 	public String getAppName() {
 		return appName;
 	}
 	
+	/**
+	 * Gets the application id.
+	 * @return The application id.
+	 */
 	public int getAppId() {
 		return appId;
 	}
 
+	/**
+	 * Gets the application endpoint.
+	 * @return The application endpoint.
+	 */
 	public Endpoint getAppEndpoint() {
 		return appEndpoint;
 	}
-		
+	
+	/**
+	 * Returns true if the stream ended.
+	 * @return True if the stream ended.
+	 */
 	public boolean hasEnded() {
 		return impl.hasEnded();
 	}
 	
+	/**
+	 * Returns true if the subscriber has been canceled.
+	 * @return True if the subscriber has been canceled.
+	 */
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
-			
+
 	/**
-	 * 
-	 * @return the byte[] data. If the return value is null, then the stream is finished. 
+	 * Returns the binary data nothing if the stream has finished.
+	 * @return The binary data or null.
 	 */
 	public byte[] receive() {
 		return impl.receive();
 	}
 	
 	/**
-	 * 
-	 * @return the string data. If the return value is null, then the stream is finished. 
+	 * Returns the string data nothing if the stream has finished.
+	 * @return The string data or null.
 	 */
 	public String receiveString() {
 		return impl.receiveString();
 	}
 	
 	/**
-	 * 
-	 * @return the two parts byte[][] data. If the return value is null, then the stream is finished. 
+	 * Returns an array of bytes or nothing if the stream has finished.
+	 * @return The array of bytes or null.
 	 */
 	public byte[][] receiveTwoParts() {
 		return impl.receiveTwoParts();
 	}
 	
+	/**
+	 * Cancels the subscriber. Unblocks the receive() call in another thread.
+	 */
 	public void cancel() {
 		impl.cancel();
 	}
 	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
 		waiting.remove();
 		impl.terminate();

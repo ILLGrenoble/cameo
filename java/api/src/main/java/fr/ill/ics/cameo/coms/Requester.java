@@ -45,7 +45,7 @@ public class Requester {
 	private String key;
 	
 	private Requester() {
-		this.impl = ImplFactory.createBasicRequester();
+		this.impl = ImplFactory.createRequester();
 		waiting.add();
 	}
 

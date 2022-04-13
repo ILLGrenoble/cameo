@@ -16,10 +16,18 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Class defining a time condition.
+ */
 public class TimeCondition {
 
 	private boolean notified = false;
-	
+
+	/**
+	 * Waits for the time.
+	 * @param timeMs Time in milliseconds.
+	 * @return True if notification occurred during the wait.
+	 */
 	public synchronized boolean waitFor(int timeMs) {
 		
 		try {
@@ -31,6 +39,9 @@ public class TimeCondition {
 		return notified;
 	}
 	
+	/**
+	 * Notifies the condition. It unblocks the waitFor() call.
+	 */
 	public synchronized void notifyCondition() {
 		notified = true;
 		notify();

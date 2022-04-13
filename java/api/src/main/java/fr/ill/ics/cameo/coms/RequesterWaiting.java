@@ -18,10 +18,17 @@ package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
+/**
+ * Class defining a waiting for the Requester class.
+ */
 public class RequesterWaiting extends Waiting {
 
 	private Requester requester;
-	
+
+	/**
+	 * Constructor.
+	 * @param requester The requester.
+	 */
 	public RequesterWaiting(Requester requester) {
 		this.requester = requester;
 	}

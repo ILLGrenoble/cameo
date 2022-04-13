@@ -16,15 +16,22 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining an output print thread.
+ */
 public class OutputPrintThread extends Thread {
 
 	private OutputStreamSocket socket;
-	
+
+	/**
+	 * Constructor.
+	 * @param socket The socket.
+	 */
 	public OutputPrintThread(OutputStreamSocket socket) {
 		this.socket = socket;
 	}
 	
+	@Override
 	public void run() {
 		
 		try {
@@ -53,6 +60,9 @@ public class OutputPrintThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Waits for the end of the thread.
+	 */
 	public void waitFor() {
 		try {
 			this.join();

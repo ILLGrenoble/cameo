@@ -17,20 +17,36 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Class defining a filtered event listener.
+ */
 public class FilteredEventListener {
 
 	private EventListener listener;
 	private boolean filtered;
-	
+
+	/**
+	 * Constructor.
+	 * @param listener The listener.
+	 * @param filtered True if filtered.
+	 */
 	public FilteredEventListener(EventListener listener, boolean filtered) {
 		this.listener = listener;
 		this.filtered = filtered;
 	}
 
+	/**
+	 * Returns the listener.
+	 * @return The listener.
+	 */
 	public EventListener getListener() {
 		return listener;
 	}
 
+	/**
+	 * Returns true if is filtered.
+	 * @return True if is filtered.
+	 */
 	public boolean isFiltered() {
 		return filtered;
 	}

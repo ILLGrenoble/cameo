@@ -29,6 +29,7 @@ class KeyAlreadyExistsException : public RemoteException {
 public:
 	/**
 	 * Constructor.
+	 * \param message The message.
 	 */
 	KeyAlreadyExistsException(const std::string& message);
 };

@@ -221,8 +221,6 @@ PYBIND11_MODULE(cameopy, m) {
 				 auto result = instance->getSecondPart();
 				 return py::bytes(result);
 			 }, py::call_guard<py::gil_scoped_release>())
-	    .def("setTimeout", &basic::Request::setTimeout,
-	    		"value"_a)
 	    .def("reply", &basic::Request::reply,
 	    		"response"_a,
 	    		py::call_guard<py::gil_scoped_release>())
@@ -260,8 +258,6 @@ PYBIND11_MODULE(cameopy, m) {
 				 auto result = instance->getSecondPart();
 				 return py::bytes(result);
 			 }, py::call_guard<py::gil_scoped_release>())
-		.def("setTimeout", &multi::Request::setTimeout,
-				"value"_a)
 		.def("reply", &multi::Request::reply,
 				"response"_a,
 				py::call_guard<py::gil_scoped_release>())

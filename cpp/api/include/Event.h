@@ -53,6 +53,7 @@ public:
 
 	/**
 	 * Gets the application id.
+	 * \return The application id.
 	 */
 	int getId() const;
 

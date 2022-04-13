@@ -18,10 +18,17 @@ package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.RemoteException;
 
+/**
+ * Exception for a publisher creation.
+ */
 public class PublisherCreationException extends RemoteException {
 
 	private static final long serialVersionUID = 2440394258939550338L;
-	
+
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public PublisherCreationException(String message) {
 		super(message);
 	}

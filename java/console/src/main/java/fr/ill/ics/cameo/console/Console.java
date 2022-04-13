@@ -422,12 +422,12 @@ public class Console {
 			long pid = info.getPid();
 			if (pid == 0) {
 				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString("-", 10) 
-					+ cellString(State.toString(info.getApplicationState()), 20)
+					+ cellString(State.toString(info.getState()), 20)
 					+ info.getArgs());
 			}
 			else {
 				System.out.println(cellString(info.getName(), maxNameLength) + " " + cellString(info.getId() + "", 10) + cellString(info.getPid() + "", 10) 
-					+ cellString(State.toString(info.getApplicationState()), 20)
+					+ cellString(State.toString(info.getState()), 20)
 					+ info.getArgs());
 			}
 		}

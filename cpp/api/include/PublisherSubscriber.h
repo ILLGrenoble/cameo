@@ -75,6 +75,7 @@ public:
 
 	/**
 	 * Gets the name.
+	 * \return The name.
 	 */
 	const std::string& getName() const;
 

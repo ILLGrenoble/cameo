@@ -23,7 +23,7 @@
 namespace cameo {
 
 /**
- * Class managing the id of cancel publishers.
+ * Class managing the ids of communication objects.
  */
 class IdGenerator {
 

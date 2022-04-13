@@ -22,30 +22,57 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.strings.Endpoint;
 
+/**
+ * Class defining an event stream socket.
+ */
 public class EventStreamSocket {
 	
 	private EventStreamSocketImpl impl;
 	
+	/**
+	 * Constructor.
+	 */
 	public EventStreamSocket() {
 		this.impl = ImplFactory.createEventStreamSocket();
 	}
 
+	/**
+	 * Initializes the socket.
+	 * @param context The context.
+	 * @param endpoint The endpoint.
+	 * @param requestSocket The request socket.
+	 * @param parser The parser.
+	 */
 	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
 		impl.init(context, endpoint, requestSocket, parser);
 	}
 	
+	/**
+	 * Receives an Event.
+	 * @return An Event object.
+	 */
 	public Event receive() {
 		return impl.receive();
 	}
 	
+	/**
+	 * Returns true if canceled.
+	 * @return True if canceled.
+	 */
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
 	
+	/**
+	 * Cancels the socket.
+	 */
 	public void cancel() {
 		impl.cancel();
 	}
 
+	/**
+	 * Terminates the socket.
+	 */
 	public void terminate() {
 		impl.terminate();
 	}

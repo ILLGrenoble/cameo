@@ -20,10 +20,8 @@ package fr.ill.ics.cameo.base;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * The EventListener abstract class receives status messages.
- * The application name is not required, in that case all status messages are received.
- * @author legoc
- *
+ * The EventListener class receives event messages.
+ * The application name is not required, in that case all messages are received.
  */
 public class EventListener {
 
@@ -31,8 +29,8 @@ public class EventListener {
 	private LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	
 	/**
-	 * Gets the name of the application.
-	 * @return
+	 * Gets the application name.
+	 * @return The name.
 	 */
 	public String getName() {
 		return name;
@@ -41,12 +39,16 @@ public class EventListener {
 	/**
 	 * Sets the name of the listener i.e. the application name.
 	 * It is used to filter the messages in the event thread because when the listener is registered, the application id is not known.
-	 * @param name
+	 * @param name The application name.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Pushes the event on the queue.
+	 * @param event The event.
+	 */
 	public void pushEvent(Event event) {
 		try {
 			eventQueue.put(event);
@@ -56,6 +58,10 @@ public class EventListener {
 		}
 	}
 	
+	/**
+	 * Pops the event from the queue.
+	 * @param blocking True if the call is blocking.
+	 */
 	public Event popEvent(boolean blocking) {
 		try {
 			if (blocking) {
@@ -69,10 +75,17 @@ public class EventListener {
 		}
 	}
 	
+	/**
+	 * Pops the event from the queue.
+	 */
 	public Event popEvent() {
 		return popEvent(true);
 	}
-	
+
+	/**
+	 * Pushes a CancelEvent with application id.
+	 * @param id The application id.
+	 */
 	public void cancel(int id) {
 		try {
 			eventQueue.put(new CancelEvent(id, name));

@@ -35,10 +35,6 @@ namespace multi {
 Request::~Request() {
 }
 
-void Request::setTimeout(int value) {
-	m_timeout = value;
-}
-
 void Request::setResponder(Responder* responder) {
 	// Be careful with the pointer, the responder must not be deleted before using this request.
 	m_responder = responder;
@@ -72,8 +68,7 @@ Request::Request(const std::string & requesterApplicationName, int requesterAppl
 	m_messagePart1(messagePart1),
 	m_messagePart2(messagePart2),
 	m_requesterApplicationName(requesterApplicationName),
-	m_requesterApplicationId(requesterApplicationId),
-	m_timeout(0) {
+	m_requesterApplicationId(requesterApplicationId) {
 
 	m_requesterServerEndpoint = Endpoint::parse(serverEndpoint);
 	m_requesterServerProxyPort = serverProxyPort;

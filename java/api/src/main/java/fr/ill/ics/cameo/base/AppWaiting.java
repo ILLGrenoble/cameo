@@ -16,12 +16,20 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Class defining a waiting for an App.
+ *
+ */
 public class AppWaiting extends Waiting {
 
 	private App instance;
-	
-	public AppWaiting(App instance) {
-		this.instance = instance;
+
+	/**
+	 * Constructor.
+	 * @param app The app.
+	 */
+	public AppWaiting(App app) {
+		this.instance = app;
 	}
 	
 	@Override

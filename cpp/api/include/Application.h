@@ -763,6 +763,7 @@ public:
 
 	/**
 	 * Gets the COM object providing a helper to write the communication classes.
+	 * \return The Com object.
 	 */
 	const Com& getCom() const;
 
@@ -786,6 +787,7 @@ public:
 
 	/**
 	 * Stops the remote application.
+	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
 	 * \return True if the request succeeded.
 	 */
 	bool stop();
@@ -798,18 +800,21 @@ public:
 
 	/**
 	 * Waits for the states.
+	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The state when the call returned.
 	 */
 	State waitFor(int states);
 
 	/**
 	 * Waits for the termination of the application.
+	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The terminal state.
 	 */
 	State waitFor();
 
 	/**
 	 * Waits for the key value.
+	 * The method is not thread-safe and must not be called concurrently.
 	 * \param keyValue The key value.
 	 * \return The state when the call returned.
 	 */
@@ -843,6 +848,12 @@ public:
 	 * \return The exit code.
 	 */
 	int getExitCode() const;
+
+	/**
+	 * Gets the initial state.
+	 * \return The initial state.
+	 */
+	State getInitialState() const;
 
 	/**
 	 * Returns the result if there is one.

@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for an undefined application.
+ */
 public class UndefinedApplicationException extends RemoteException {
 
 	private static final long serialVersionUID = 3574191343654911993L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public UndefinedApplicationException(String message) {
 		super(message);
 	}

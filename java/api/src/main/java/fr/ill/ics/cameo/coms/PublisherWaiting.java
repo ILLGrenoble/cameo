@@ -18,10 +18,18 @@ package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
+/**
+ * Class defining a waiting for the Publisher class.
+ *
+ */
 public class PublisherWaiting extends Waiting {
 
 	private Publisher publisher;
-	
+
+	/**
+	 * Constructor.
+	 * @param publisher The publisher.
+	 */
 	public PublisherWaiting(Publisher publisher) {
 		this.publisher = publisher;
 	}

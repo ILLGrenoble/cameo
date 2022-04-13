@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Base class for remote exception.
+ */
 public class RemoteException extends Exception {
 
 	private static final long serialVersionUID = -7302321626481573911L;
-	
+
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public RemoteException(String message) {
 		super(message);
 	}

@@ -28,8 +28,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Responder.
- *
+ * Class defining a basic responder. Requests are processed sequentially.
  */
 public class Responder {
 	
@@ -69,10 +68,9 @@ public class Responder {
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponderCreationException, ConnectionTimeout
+	 * Returns the responder with name.
+	 * @param name The name.
+	 * @return A new Responder object.
 	 */
 	static public Responder create(String name) throws ResponderCreationException {
 		
@@ -82,10 +80,18 @@ public class Responder {
 		return responder;
 	}
 	
+	/**
+	 * Gets the name.
+	 * @return The name. 
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Receives a request. This is a blocking command until a Request is received.
+	 * @return A Request object.
+	 */
 	public Request receive() {
 		
 		// Receive the request.
@@ -103,14 +109,24 @@ public class Responder {
 		impl.reply(Messages.serialize(request), response);
 	}
 
+	/**
+	 * Cancels the responder waiting in another thread.
+	 */
 	public void cancel() {
 		impl.cancel();			
 	}
 	
+	/**
+	 * Returns true if it has been canceled.
+	 * @return True if canceled.
+	 */
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
-			
+	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
 		
 		try {

@@ -18,37 +18,63 @@ package fr.ill.ics.cameo.base;
 
 
 /**
- * Class used by Instance.waitFor() to provide a synchronization with key events.
- *
+ * Class defining a key value.
  */
 public class KeyValue {
-	
+
+	/**
+	 * Type of the status.
+	 */
 	public enum Status {UNDEFINED, STORED, REMOVED};
 
 	private Status status = Status.UNDEFINED;
 	private String key;
 	private String value;
 	
+	/**
+	 * Constructor.
+	 * @param key The key.
+	 */
 	public KeyValue(String key) {
 		this.key = key;
 	}
 	
+	/**
+	 * Sets the status.
+	 * @param status The status.
+	 */
 	public void setStatus(Status status) {
 		this.status = status;
 	}
 	
+	/**
+	 * Sets the value.
+	 * @param value The value.
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 	
+	/**
+	 * Gets the status.
+	 * @return The status.
+	 */
 	public Status getStatus() {
 		return status;
 	}
 	
+	/**
+	 * Gets the key.
+	 * @return The key.
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * Gets the value.
+	 * @return The value.
+	 */
 	public String getValue() {
 		return value;
 	}

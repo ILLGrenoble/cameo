@@ -21,22 +21,36 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Class defining a set of waitings.
+ */
 public class WaitingSet {
 
 	private Set<Waiting> waitingSet = new HashSet<Waiting>();
 
+	/**
+	 * Adds a Waiting object.
+	 * @param waiting The Waiting object.
+	 */
 	public void add(Waiting waiting) {
 		synchronized (waitingSet) {
 			waitingSet.add(waiting);
 		}	
 	}
 	
+	/**
+	 * Removes a Waiting object.
+	 * @param waiting The Waiting object.
+	 */
 	public void remove(Waiting waiting) {
 		synchronized (waitingSet) {
 			waitingSet.remove(waiting);
 		}	
 	}
 	
+	/**
+	 * Cancels all the waitings.
+	 */
 	public void cancelAll() {
 
 		synchronized (waitingSet) {
@@ -49,6 +63,9 @@ public class WaitingSet {
 		}
 	}
 
+	/**
+	 * Terminates all the waitings.
+	 */
 	public void terminateAll() {
 		
 		// Copy the waitings because terminate removes the Waiting object from waitingSet.

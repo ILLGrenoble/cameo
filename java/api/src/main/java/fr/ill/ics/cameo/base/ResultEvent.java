@@ -16,11 +16,19 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining a result event.
+ */
 public class ResultEvent extends Event {
 	
 	private byte[] data;
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param data The result data.
+	 */
 	public ResultEvent(int id, String name, byte[] data) {
 		super(id, name);
 		this.data = data;

@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for an unregistered application.
+ */
 public class UnregisteredApplicationException extends RuntimeException {
 
 	private static final long serialVersionUID = -4856229974519178147L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public UnregisteredApplicationException(String message) {
 		super(message);
 	}

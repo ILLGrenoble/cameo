@@ -36,10 +36,8 @@ import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * The server class is thread-safe except for the connect and terminate methods that must be called respectively 
- * before and after any concurrent calls.
- * @author legoc
- *
+ * Class defining a Cameo remote server.
+ * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
 public class Server {
 
@@ -57,27 +55,41 @@ public class Server {
 	private JSON.Parser parser = new JSON.Parser();
 	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
-	
+
 	/**
-	 * Constructor with endpoint.
-	 * This constructor must be used when the services are related to another cameo server that
-	 * has not started the current application.
-	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set. 
-	 * @param endpoint
-	 */
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 * @param timeout The timeout in milliseconds.
+	 * @param useProxy Uses the proxy or not.
+	 */	
 	public Server(Endpoint endpoint, int timeout, boolean useProxy) {
 		this.useProxy = useProxy;
 		this.initServer(endpoint, timeout);
 	}
 	
+	/**
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 * @param timeout The timeout in milliseconds.
+	 */
 	public Server(Endpoint endpoint, int timeout) {
 		this.initServer(endpoint, timeout);
 	}
-	
+
+	/**
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 */
 	public Server(Endpoint endpoint) {
 		this.initServer(endpoint, 0);	
 	}
-	
+
+	/**
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 * @param timeout The timeout in milliseconds.
+	 * @param useProxy Uses the proxy or not.
+	 */
 	public Server(String endpoint, int timeout, boolean useProxy) {
 		this.useProxy = useProxy;
 		try {
@@ -87,7 +99,12 @@ public class Server {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
 		}
 	}
-	
+
+	/**
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 * @param timeout The timeout in milliseconds.
+	 */
 	public Server(String endpoint, int timeout) {
 		try {
 			this.initServer(Endpoint.parse(endpoint), timeout);
@@ -96,7 +113,11 @@ public class Server {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
 		}
 	}
-	
+
+	/**
+	 * Constructor.
+	 * @param endpoint The endpoint of the remote server.
+	 */
 	public Server(String endpoint) {
 		try {
 			this.initServer(Endpoint.parse(endpoint), 0);
@@ -152,26 +173,50 @@ public class Server {
 		return 10000;
 	}
 	
+	/**
+	 * Gets the timeout.
+	 * @return The timeout.
+	 */
 	public int getTimeout() {
 		return timeout;
 	}
 
+	/**
+	 * Sets the timeout.
+	 * @param value The timeout.
+	 */
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
 	
+	/**
+	 * Gets the endpoint of the server running this remote application.
+	 * @return The endpoint.
+	 */
 	public Endpoint getEndpoint() {
 		return serverEndpoint;
 	}
-		
+	
+	/**
+	 * Gets the version of the server running this remote application.
+	 * @return The version.
+	 */
 	public int[] getVersion() {
 		return serverVersion;
 	}
 	
+	/**
+	 * Returns the use of proxy.
+	 * @return True if the proxy is used to access the remote Cameo server.
+	 */
 	public boolean usesProxy() {
 		return useProxy;
 	}
 	
+	/**
+	 * Gets the status endpoint of the server running this remote application.
+	 * @return The endpoint.
+	 */
 	public Endpoint getStatusEndpoint() {
 		return serverEndpoint.withPort(statusPort);
 	}
@@ -200,11 +245,6 @@ public class Server {
 		return parser.parse(data);
 	}
 	
-	/**
-	 * test connection with server
-	 * @param timeout
-	 * 
-	 */
 	private boolean isConnected(int timeout) {
 
 		try {
@@ -250,10 +290,9 @@ public class Server {
 		return requestSocket;
 	}
 	
-	
 	/**
-	 * Connects to the server. Returns false if there is no connection.
-	 * It must be called to initialize the receiving status.
+	 * Returns true if the remote server is available.
+	 * @param timeout The timeout.
 	 */
 	public boolean isAvailable(int timeout) {
 
@@ -268,6 +307,10 @@ public class Server {
 		return connected;
 	}
 	
+	/**
+	 * Returns true if is available. Uses the timeout if set or 10000ms.
+	 * @return True if is available.
+	 */
 	public boolean isAvailable() {
 		return isAvailable(10000);
 	}
@@ -286,6 +329,9 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Terminates the communications.
+	 */
 	public void terminate() {
 
 		terminateStatusThread();
@@ -293,14 +339,27 @@ public class Server {
 		contextImpl.terminate();
 	}
 	
+	/**
+	 * Registers an event listener.
+	 * @param listener The EventListener object.
+	 * @param filtered True if is filtered.
+	 */
 	public void registerEventListener(EventListener listener, boolean filtered) {
 		eventListeners.add(new FilteredEventListener(listener, filtered));
 	}
 
+	/**
+	 * Registers an event listener.
+	 * @param listener The EventListener object.
+	 */
 	public void registerEventListener(EventListener listener) {
 		eventListeners.add(new FilteredEventListener(listener, true));
 	}
 	
+	/**
+	 * Unregisters an event listener.
+	 * @param listener The EventListener object.
+	 */
 	public void unregisterEventListener(EventListener listener) {
 		
 		for (FilteredEventListener filteredEventListener : eventListeners) {
@@ -314,11 +373,11 @@ public class Server {
 		return eventListeners;
 	}
 
-	public JSONObject requestJSON(JSONObject request) {
+	JSONObject requestJSON(JSONObject request) {
 		return requestSocket.requestJSON(request);
 	}
 	
-	public JSONObject requestJSON(JSONObject request, byte[] data) {
+	JSONObject requestJSON(JSONObject request, byte[] data) {
 		return requestSocket.requestJSON(request, data);
 	}
 
@@ -362,10 +421,6 @@ public class Server {
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
-	/**
-	 * 
-	 * @throws ConnectionTimeout 
-	 */
 	private EventStreamSocket createEventStreamSocket() {
 
 		if (useProxy) {
@@ -382,16 +437,6 @@ public class Server {
 		return eventStreamSocket; 
 	}
 	
-	/**
-	 * send start request with parameters
-	 * 
-	 * @param name
-	 * @param args
-	 * @param linked 
-	 * @param returnResult 
-	 * @return null, if reply is null, else Response
-	 * @throws ConnectionTimeout 
-	 */
 	private Response startApplication(String name, String[] args, boolean linked) throws ConnectionTimeout {
 		
 		JSONObject request;
@@ -409,11 +454,11 @@ public class Server {
 	}
 	
 	/**
-	 * Sends start request with parameters and Result object.
-	 * If the outputStream argument is true, then if the application has enabled output stream, an OutputStreamSocket is created.
-	 * It must be destroyed (OutputPrintThread does it) to avoid blocking in terminate().
-	 * 
-	 * @throws ConnectionTimeout 
+	 * Starts the application with name.
+	 * @param name The name.
+	 * @param args The arguments passed to the executable.
+	 * @param options The options.
+	 * @return The App object representing the remote application.
 	 */
 	public App start(String name, String[] args, int options) {
 		
@@ -459,27 +504,24 @@ public class Server {
 	}
 	
 	/**
-	 * Sends start request without parameters and Result object.
-	 * If the outputStream argument is true, then if the application has enabled output stream, an OutputStreamSocket is created.
-	 * It must be destroyed (OutputPrintThread does it) to avoid blocking in terminate().
-	 * 
-	 * @throws ConnectionTimeout 
+	 * Starts the application with name.
+	 * @param name The name.
+	 * @param options The options.
+	 * @return The App object representing the remote application.
 	 */
 	public App start(String name, int options) {
 		return start(name, null, options);
 	}
 	
+	/**
+	 * Starts the application with name.
+	 * @param name The name.
+	 * @return The App object representing the remote application.
+	 */
 	public App start(String name) {
 		return start(name, 0);
 	}
 		
-	/**
-	 * stop application asynchronous
-	 * 
-	 * @param id
-	 * @return null, if reply is null, else Response
-	 * @throws ConnectionTimeout 
-	 */
 	Response stop(int id, boolean immediately) throws ConnectionTimeout {
 
 		JSONObject request;
@@ -495,7 +537,11 @@ public class Server {
 		
 		return new Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
-		
+	
+	/**
+	 * Function provided by convenience to kill all the applications with name.
+	 * @param name The name of the applications.
+	 */
 	public void killAllAndWaitFor(String name) {
 		
 		List<App> applications = connectAll(name, Option.NONE);
@@ -556,9 +602,10 @@ public class Server {
 	}
 	
 	/**
-	 * 
-	 * @return List of Instance, null if a connection timeout occurs
-	 * @throws ConnectionTimeout
+	 * Connects to all the applications with name.
+	 * @param name The name.
+	 * @param options The options.
+	 * @return The list of App objects representing the remote applications.
 	 */
 	public List<App> connectAll(String name, int options) {
 
@@ -569,20 +616,21 @@ public class Server {
 
 		return getInstancesFromApplicationInfos(response, outputStream);
 	}
-	
+
 	/**
-	 * 
-	 * @return List of Instance, null if a connection timeout occurs
-	 * @throws ConnectionTimeout
+	 * Connects to all the applications with name.
+	 * @param name The name.
+	 * @return The list of App objects representing the remote applications.
 	 */
 	public List<App> connectAll(String name) {
 		return connectAll(name, 0);
 	}
 	
 	/**
-	 * 
-	 * @return Returns the first application with name.
-	 * @throws ConnectionTimeout
+	 * Connects to an application with name.
+	 * @param name The name.
+	 * @param options The options.
+	 * @return The App object representing the remote application.
 	 */
 	public App connect(String name, int options) {
 		List<App> instances = connectAll(name, options);
@@ -594,15 +642,20 @@ public class Server {
 		return instances.get(0);
 	}
 	
+	/**
+	 * Connects to an application with name.
+	 * @param name The name.
+	 * @return The App object representing the remote application.
+	 */
 	public App connect(String name) {
 		return connect(name, 0);
 	}
 	
-	
 	/**
-	 * 
-	 * @return Returns the application with id.
-	 * @throws ConnectionTimeout
+	 * Connects to an application with id.
+	 * @param id The id.
+	 * @param options The options.
+	 * @return The App object representing the remote application.
 	 */
 	public App connect(int id, int options) {
 		
@@ -621,9 +674,8 @@ public class Server {
 	}
 	
 	/**
-	 * 
-	 * @return List of ApplicationConfig if everything is ok, else null
-	 * @throws ConnectionTimeout
+	 * Gets the list of application configurations.
+	 * @return The list of configurations.
 	 */
 	public List<App.Config> getApplicationConfigs() {
 
@@ -652,9 +704,8 @@ public class Server {
 	}
 	
 	/**
-	 * 
-	 * @return List of ApplicationInfoForClient if everything is ok, else null
-	 * @throws ConnectionTimeout 
+	 * Gets the list of application infos.
+	 * @return The list of infos.
 	 */
 	public List<App.Info> getApplicationInfos() {
 
@@ -683,10 +734,9 @@ public class Server {
 	}
 	
 	/**
-	 * 
-	 * @param name
-	 * @return the of application info of the applications with name
-	 * @throws ConnectionTimeout 
+	 * Gets the list of application infos for the applications with name.
+	 * @param name The name of the applications.
+	 * @return The list of infos.
 	 */
 	public List<App.Info> getApplicationInfos(String name) {
 		
@@ -702,7 +752,11 @@ public class Server {
 		return result;
 	}
 	
-
+	/**
+	 * Gets the actual state of an application.
+	 * @param id The id of the application.
+	 * @return The actual state.
+	 */
 	public int getActualState(int id) {
 		
 		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
@@ -710,6 +764,11 @@ public class Server {
 		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
 
+	/**
+	 * Gets the past states of an application.
+	 * @param id The id of the application.
+	 * @return The set of states.
+	 */
 	public Set<Integer> getPastStates(int id) {
 		
 		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
@@ -777,13 +836,6 @@ public class Server {
 		return outputStreamSocket; 
 	}
 	
-	/**
-	 * send request to ask if an application is alive
-	 * 
-	 * @param id
-	 * @return boolean
-	 * @throws ConnectionTimeout 
-	 */
 	private boolean isAlive(int id) {
 
 		JSONObject request = Messages.createIsAliveRequest(id);
@@ -793,13 +845,11 @@ public class Server {
 	}
 	
 	/**
-	 * send parameters to an application
+	 * Send inputs to the input stream of an application.
 	 * 
-	 * @param id
-	 * @param inputs
-	 * @return null, if reply is null, else Response
-	 * @throws WriteException 
-	 * @throws ConnectionTimeout 
+	 * @param id The application id.
+	 * @param inputs The inputs to send.
+	 * @throws WriteException if it is not possible to write the input stream. 
 	 */
 	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
@@ -814,13 +864,11 @@ public class Server {
 	}
 	
 	/**
-	 * send parameters to an application
+	 * Send inputs to the input stream of an application.
 	 * 
-	 * @param id
-	 * @param parametersArray
-	 * @return null, if reply is null, else Response
-	 * @throws WriteException 
-	 * @throws ConnectionTimeout 
+	 * @param id The application id.
+	 * @param input The inputs to send.
+	 * @throws WriteException if it is not possible to write the input stream. 
 	 */
 	public void writeToInputStream(int id, String input) throws WriteException {
 		
@@ -830,14 +878,6 @@ public class Server {
 		writeToInputStream(id, inputArray);
 	}
 	
-	/**
-	 * 
-	 * @param applicationId
-	 * @param key
-	 * @param value
-	 * @throws UndefinedApplicationException 
-	 * @throws UndefinedKeyException 
-	 */
 	void storeKeyValue(int applicationId, String key, String value) throws UndefinedApplicationException, KeyAlreadyExistsException {
 		
 		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
@@ -852,14 +892,6 @@ public class Server {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param applicationId
-	 * @param key
-	 * @return
-	 * @throws UndefinedApplicationException
-	 * @throws UndefinedKeyException
-	 */
 	String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
@@ -879,13 +911,6 @@ public class Server {
 		return null;
 	}
 	
-	/**
-	 * 
-	 * @param applicationId
-	 * @param key
-	 * @throws UndefinedApplicationException
-	 * @throws UndefinedKeyException
-	 */
 	void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
 		JSONObject request = Messages.createRemoveKeyRequest(applicationId, key);
@@ -900,7 +925,7 @@ public class Server {
 		}
 	}
 	
-	public int requestPort(int applicationId) throws UndefinedApplicationException {
+	int requestPort(int applicationId) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createRequestPortRequest(applicationId);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -912,7 +937,7 @@ public class Server {
 		return value;
 	}
 	
-	public void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
+	void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createPortUnavailableRequest(applicationId, port);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -923,7 +948,7 @@ public class Server {
 		}
 	}
 	
-	public void releasePort(int applicationId, int port) throws UndefinedApplicationException {
+	void releasePort(int applicationId, int port) throws UndefinedApplicationException {
 		
 		JSONObject request = Messages.createReleasePortRequest(applicationId, port);
 		JSONObject response = requestSocket.requestJSON(request);
@@ -934,6 +959,10 @@ public class Server {
 		}
 	}
 	
+	/**
+	 * Gets the list of ports owned by the Cameo applications.
+	 * @return The list of ports.
+	 */
 	public List<App.Port> getPorts() {
 		
 		JSONObject request = Messages.createPortsRequest();
@@ -958,9 +987,9 @@ public class Server {
 	}
 	
 	/**
-	 * Creates a connection checker.
-	 * @param handler
-	 * @return
+	 * Creates a connection handler with polling time.
+	 * @param handler The connection handler.
+	 * @return The new ConnectionChecker object.
 	 */
 	public ConnectionChecker createConnectionChecker(ConnectionChecker.Handler handler) {
 		
@@ -971,10 +1000,10 @@ public class Server {
 	}
 	
 	/**
-	 * Creates a connection checker.
-	 * @param handler
-	 * @param pollingTimeMs
-	 * @return
+	 * Creates a connection handler with polling time.
+	 * @param handler The connection handler.
+	 * @param pollingTimeMs The polling time in milliseconds.
+	 * @return The new ConnectionChecker object.
 	 */
 	public ConnectionChecker createConnectionChecker(ConnectionChecker.Handler handler, int pollingTimeMs) {
 		

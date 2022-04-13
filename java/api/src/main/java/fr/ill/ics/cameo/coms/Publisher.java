@@ -30,8 +30,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Publisher.
- *
+ * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
 public class Publisher {
 
@@ -78,12 +77,12 @@ public class Publisher {
 			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
+	 * Returns the publisher with name.
+	 * @param name The name.
+	 * @param numberOfSubscribers The number of subscribers.
+	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
 		
@@ -92,24 +91,27 @@ public class Publisher {
 		
 		return publisher;
 	}
-	
+
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
+	 * Returns the publisher with name.
+	 * @param name The name.
+	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name) throws PublisherCreationException {
 		return create(name, 0);
 	}
-	
+
+	/**
+	 * Gets the name.
+	 * @return The name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
-	 * @return
+	 * @return True if the wait succeeds or false if it was canceled.
 	 */
 	public boolean waitForSubscribers() {
 		
@@ -156,7 +158,7 @@ public class Publisher {
 	}
 	
 	/**
-	 * Cancels the wait for subscribers.
+	 * Cancels the waitForSubscribers() call in another thread.
 	 */
 	public void cancelWaitForSubscribers() {
 		if (responder != null) {
@@ -164,26 +166,49 @@ public class Publisher {
 		}
 	}
 
+	/**
+	 * Sends a message in one binary part.
+	 * @param data The data to send.
+	 */
 	public void send(byte[] data) {
 		impl.send(data);
 	}
 	
+	/**
+	 * Sends a message in one string part.
+	 * @param data The data to send.
+	 */
 	public void sendString(String data) {
 		impl.send(data);
 	}
-			
+	
+	/**
+	 * Sends a message in two binary parts.
+	 * \param data1 The first part.
+	 * \param data2 The second part.
+	 */		
 	public void sendTwoParts(byte[] data1, byte[] data2) {
 		impl.sendTwoParts(data1, data2);
 	}
 	
+	/**
+	 * Sends the end of the stream.
+	 */
 	public void sendEnd() {
 		impl.sendEnd();
 	}
 	
+	/**
+	 * Returns true if the stream ended.
+	 * @return True if the stream ended.
+	 */
 	public boolean hasEnded() {
 		return impl.hasEnded();
 	}
 	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
 		
 		try {

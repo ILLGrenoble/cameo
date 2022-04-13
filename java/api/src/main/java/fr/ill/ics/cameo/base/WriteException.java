@@ -16,11 +16,17 @@
 
 package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception when writing the input stream.
+ */
 public class WriteException extends RemoteException {
 	
 	private static final long serialVersionUID = -9157515657163509208L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public WriteException(String message) {
 		super(message);
 	}
