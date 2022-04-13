@@ -41,6 +41,7 @@ import fr.ill.ics.cameo.strings.StringId;
  */
 public class Server {
 
+	private String serverEndpointString;
 	private Endpoint serverEndpoint;
 	private boolean useProxy = false;
 	private int[] serverVersion = new int[3];
@@ -64,7 +65,7 @@ public class Server {
 	 */	
 	public Server(Endpoint endpoint, int timeout, boolean useProxy) {
 		
-		serverEndpoint = endpoint;
+		this.serverEndpoint = endpoint;
 		this.useProxy = useProxy;
 		this.timeout = timeout;
 		
@@ -78,7 +79,7 @@ public class Server {
 	 */
 	public Server(Endpoint endpoint, int timeout) {
 		
-		serverEndpoint = endpoint;
+		this.serverEndpoint = endpoint;
 		this.timeout = timeout;
 		
 		this.initServer();
@@ -90,7 +91,7 @@ public class Server {
 	 */
 	public Server(Endpoint endpoint) {
 		
-		serverEndpoint = endpoint;
+		this.serverEndpoint = endpoint;
 
 		this.initServer();	
 	}
@@ -102,16 +103,10 @@ public class Server {
 	 * @param useProxy Uses the proxy or not.
 	 */
 	public Server(String endpoint, int timeout, boolean useProxy) {
-		
+
+		this.serverEndpointString = endpoint;
 		this.useProxy = useProxy;
 		this.timeout = timeout;
-		
-		try {
-			serverEndpoint = Endpoint.parse(endpoint);
-		}
-		catch (Exception e) {
-			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}	
 		
 		this.initServer();
 	}
@@ -123,15 +118,9 @@ public class Server {
 	 */
 	public Server(String endpoint, int timeout) {
 
+		this.serverEndpointString = endpoint;
 		this.timeout = timeout;
 		
-		try {
-			serverEndpoint = Endpoint.parse(endpoint);
-		}
-		catch (Exception e) {
-			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}	
-
 		this.initServer();
 	}
 
@@ -141,18 +130,23 @@ public class Server {
 	 */
 	public Server(String endpoint) {
 		
-		try {
-			serverEndpoint = Endpoint.parse(endpoint);
-		}
-		catch (Exception e) {
-			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}	
-
+		this.serverEndpointString = endpoint;
+		
 		this.initServer();
 	}
 	
 	private void initServer() {
-				
+
+		if (serverEndpointString != null) {
+		
+			try {
+				serverEndpoint = Endpoint.parse(serverEndpointString);
+			}
+			catch (Exception e) {
+				throw new InvalidArgumentException(serverEndpointString + " is not a valid endpoint");
+			}
+		}
+		
 		// Init the context and socket.
 		init();
 		

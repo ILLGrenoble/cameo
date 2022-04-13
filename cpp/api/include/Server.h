@@ -318,6 +318,7 @@ private:
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);
 	std::unique_ptr<RequestSocket> createServerRequestSocket();
 
+	std::string m_serverEndpointString;
 	Endpoint m_serverEndpoint;
 	int m_timeout;
 	bool m_useProxy;

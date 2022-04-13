@@ -49,6 +49,15 @@ bool Server::FilteredEventListener::isFiltered() const {
 
 void Server::initServer() {
 
+	if (!m_serverEndpointString.empty()) {
+		try {
+			m_serverEndpoint = Endpoint::parse(m_serverEndpointString);
+		}
+		catch (...) {
+			throw InvalidArgumentException(m_serverEndpointString + " is not a valid endpoint");
+		}
+	}
+
 	// Init the context.
 	initContext();
 
@@ -82,13 +91,7 @@ Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 	m_statusPort(0),
 	m_context(nullptr) {
 
-	try {
-		m_serverEndpoint = Endpoint::parse(endpoint);
-	}
-	catch (...) {
-		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
-	}
-
+	m_serverEndpointString = endpoint;
 	m_serverVersion = {0, 0, 0};
 
 	initServer();
