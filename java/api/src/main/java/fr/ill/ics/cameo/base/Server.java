@@ -63,8 +63,12 @@ public class Server {
 	 * @param useProxy Uses the proxy or not.
 	 */	
 	public Server(Endpoint endpoint, int timeout, boolean useProxy) {
+		
+		serverEndpoint = endpoint;
 		this.useProxy = useProxy;
-		this.initServer(endpoint, timeout);
+		this.timeout = timeout;
+		
+		this.initServer();
 	}
 	
 	/**
@@ -73,7 +77,11 @@ public class Server {
 	 * @param timeout The timeout in milliseconds.
 	 */
 	public Server(Endpoint endpoint, int timeout) {
-		this.initServer(endpoint, timeout);
+		
+		serverEndpoint = endpoint;
+		this.timeout = timeout;
+		
+		this.initServer();
 	}
 
 	/**
@@ -81,7 +89,10 @@ public class Server {
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public Server(Endpoint endpoint) {
-		this.initServer(endpoint, 0);	
+		
+		serverEndpoint = endpoint;
+
+		this.initServer();	
 	}
 
 	/**
@@ -91,13 +102,18 @@ public class Server {
 	 * @param useProxy Uses the proxy or not.
 	 */
 	public Server(String endpoint, int timeout, boolean useProxy) {
+		
 		this.useProxy = useProxy;
+		this.timeout = timeout;
+		
 		try {
-			this.initServer(Endpoint.parse(endpoint), timeout);
+			serverEndpoint = Endpoint.parse(endpoint);
 		}
 		catch (Exception e) {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}
+		}	
+		
+		this.initServer();
 	}
 
 	/**
@@ -106,12 +122,17 @@ public class Server {
 	 * @param timeout The timeout in milliseconds.
 	 */
 	public Server(String endpoint, int timeout) {
+
+		this.timeout = timeout;
+		
 		try {
-			this.initServer(Endpoint.parse(endpoint), timeout);
+			serverEndpoint = Endpoint.parse(endpoint);
 		}
 		catch (Exception e) {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}
+		}	
+
+		this.initServer();
 	}
 
 	/**
@@ -119,19 +140,18 @@ public class Server {
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public Server(String endpoint) {
+		
 		try {
-			this.initServer(Endpoint.parse(endpoint), 0);
+			serverEndpoint = Endpoint.parse(endpoint);
 		}
 		catch (Exception e) {
 			throw new InvalidArgumentException(endpoint + " is not a valid endpoint");
-		}
+		}	
+
+		this.initServer();
 	}
 	
-	private void initServer(Endpoint endpoint, int timeout) {
-		
-		this.timeout = timeout;
-		
-		serverEndpoint = endpoint;
+	private void initServer() {
 				
 		// Init the context and socket.
 		init();

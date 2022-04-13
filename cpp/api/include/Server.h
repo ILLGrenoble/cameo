@@ -282,7 +282,7 @@ public:
 	std::string toString() const;
 
 private:
-	void initServer(const Endpoint& endpoint, int timeoutMs);
+	void initServer();
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;

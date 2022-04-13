@@ -47,66 +47,51 @@ bool Server::FilteredEventListener::isFiltered() const {
 	return m_filtered;
 }
 
-void Server::initServer(const Endpoint& endpoint, int timeoutMs) {
+void Server::initServer() {
 
+	// Init the context.
 	initContext();
-
-	m_serverEndpoint = endpoint;
-
-	// Set the timeout.
-	setTimeout(timeoutMs);
 
 	// Create the request socket. The server endpoint has been defined.
 	initRequestSocket();
 
-	// Manage the ConnectionTimeout exception that can occur.
-	try {
-		// Retrieve the server version.
-		retrieveServerVersion();
+	// Retrieve the server version.
+	retrieveServerVersion();
 
-		// Start the event thread.
-		std::unique_ptr<EventStreamSocket> socket = createEventStreamSocket();
-		m_eventThread.reset(new EventThread(this, socket));
-		m_eventThread->start();
-	}
-	catch (...) {
-		// ...
-	}
+	// Start the event thread.
+	std::unique_ptr<EventStreamSocket> socket = createEventStreamSocket();
+	m_eventThread.reset(new EventThread(this, socket));
+	m_eventThread->start();
 }
 
 Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :
-	m_timeout(0),
+	m_timeout(timeoutMs),
 	m_useProxy(useProxy),
 	m_statusPort(0),
 	m_context(nullptr) {
 
-	m_serverVersion[0] = 0;
-	m_serverVersion[1] = 0;
-	m_serverVersion[2] = 0;
+	m_serverEndpoint = endpoint;
+	m_serverVersion = {0, 0, 0};
 
-	initContext();
-
-	initServer(endpoint, timeoutMs);
+	initServer();
 }
 
 Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
-	m_timeout(0),
+	m_timeout(timeoutMs),
 	m_useProxy(useProxy),
 	m_statusPort(0),
 	m_context(nullptr) {
 
-	m_serverVersion[0] = 0;
-	m_serverVersion[1] = 0;
-	m_serverVersion[2] = 0;
-
-	initContext();
-
 	try {
-		initServer(Endpoint::parse(endpoint), timeoutMs);
+		m_serverEndpoint = Endpoint::parse(endpoint);
 	}
 	catch (...) {
 		throw InvalidArgumentException(endpoint + " is not a valid endpoint");
 	}
+
+	m_serverVersion = {0, 0, 0};
+
+	initServer();
 }
 
 Server::~Server() {
