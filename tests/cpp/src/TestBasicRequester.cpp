@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+
 	This::setRunning();
 
 	int N = 5;
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
 			vector<string> args{(useProxy ? "true" : "false")};
 
 			// Start the application.
-			apps.push_back(server.start(applicationName, args));
+			apps.push_back(server->start(applicationName, args));
 			cout << "Started application " << *apps.back() << endl;
 		}
 

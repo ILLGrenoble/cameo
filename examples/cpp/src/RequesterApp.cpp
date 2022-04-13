@@ -44,12 +44,11 @@ int main(int argc, char *argv[]) {
 	std::unique_ptr<Server> server;
 
 	if (serverEndpoint == "") {
-		server.reset(new Server(This::getServer().getEndpoint()));
+		server = Server::create(This::getServer().getEndpoint());
 	}
 	else {
-		server.reset(new Server(serverEndpoint));
+		server = Server::create(serverEndpoint);
 	}
-
 
 	if (This::isAvailable() && server->isAvailable()) {
 		std::cout << "Connected server " << *server << std::endl;

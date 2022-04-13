@@ -27,23 +27,23 @@ int main(int, char *[]) {
 
 	cout << "Create server" << endl;
 
-	Server server("tcp://localhost:11000", 100, false);
+	unique_ptr<Server> server = Server::create("tcp://localhost:11000", 100, false);
 
 	cout << "Testing connection" << endl;
 
-	if (server.isAvailable()) {
+	if (server->isAvailable()) {
 		cout << "Server available" << endl;
 	}
 
 	cout << "Configs" << endl;
 
-	vector<App::Config> configs = server.getApplicationConfigs();
+	vector<App::Config> configs = server->getApplicationConfigs();
 
 	for (auto c : configs) {
 		cout << c << endl;
 	}
 
-	unique_ptr<App> instance = server.start("simplecpp");
+	unique_ptr<App> instance = server->start("simplecpp");
 
 	if (!instance->exists()) {
 		cout << "App does not exist" << endl;

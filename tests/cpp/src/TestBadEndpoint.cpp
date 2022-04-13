@@ -26,7 +26,7 @@ using namespace cameo;
 int main(int, char *[]) {
 
 	try {
-		Server server("tcp://ferrazpc.ill.fr:7000", 1000);
+		unique_ptr<Server> server = Server::create("tcp://ferrazpc.ill.fr:7000", 1000);
 	}
 	catch (SocketException const & e) {
 		cout << "Socket exception: " << e.what() << endl;
@@ -36,9 +36,9 @@ int main(int, char *[]) {
 	}
 
 	try {
-		Server server("tcp://localhost:9999", 1000);
+		unique_ptr<Server> server = Server::create("tcp://localhost:9999", 1000);
 		cout << "server created" << endl;
-		if (server.isAvailable(1000)) {
+		if (server->isAvailable(1000)) {
 			cout << "server available" << endl;
 		}
 		else {

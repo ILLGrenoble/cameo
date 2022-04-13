@@ -97,6 +97,14 @@ Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 	initServer();
 }
 
+std::unique_ptr<Server> Server::create(const Endpoint& endpoint, int timeoutMs, bool useProxy) {
+	return std::unique_ptr<Server>(new Server(endpoint, timeoutMs, useProxy));
+}
+
+std::unique_ptr<Server> Server::create(const std::string& endpoint, int timeoutMs, bool useProxy) {
+	return std::unique_ptr<Server>(new Server(endpoint, timeoutMs, useProxy));
+}
+
 Server::~Server() {
 	terminate();
 }

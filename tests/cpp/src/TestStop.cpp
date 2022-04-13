@@ -45,12 +45,12 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		unique_ptr<App> stopApplication = server.start("stopcpp");
+		unique_ptr<App> stopApplication = server->start("stopcpp");
 
 		cout << "Waiting 0.1s..." << endl;
 		this_thread::sleep_for(chrono::milliseconds(100));

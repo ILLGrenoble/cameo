@@ -150,6 +150,59 @@ PYBIND11_MODULE(cameopy, m) {
 
 	py::class_<AppArray>(m, "AppArray");
 
+	py::class_<Server>(m, "Server")
+		.def_static("create", py::overload_cast<const std::string&, int, bool>(&Server::create),
+				"endpoint"_a,
+				"timeout"_a = 0,
+				"useProxy"_a = false,
+		   		py::call_guard<py::gil_scoped_release>())
+
+		.def("terminate", &Server::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("setTimeout", &Server::setTimeout,
+				"value"_a)
+		.def("getTimeout", &Server::getTimeout)
+		.def("getEndpoint", &Server::getEndpoint)
+		.def("getVersion", &Server::getVersion)
+		.def("isAvailable", py::overload_cast<>(&Server::isAvailable, py::const_), py::call_guard<py::gil_scoped_release>())
+		.def("isAvailable", py::overload_cast<int>(&Server::isAvailable, py::const_),
+				"timeout"_a,
+				py::call_guard<py::gil_scoped_release>())
+
+		.def("start", py::overload_cast<const std::string&, int>(&Server::start),
+				"name"_a, "options"_a = 0,
+				py::call_guard<py::gil_scoped_release>())
+
+		.def("start", py::overload_cast<const std::string&, const std::vector<std::string>&, int>(&Server::start),
+				"name"_a, "args"_a, "options"_a = 0,
+				py::call_guard<py::gil_scoped_release>())
+		.def("connectAll", &Server::connectAll,
+				"name"_a, "options"_a = 0,
+				py::call_guard<py::gil_scoped_release>())
+		.def("connect", py::overload_cast<const std::string&, int>(&Server::connect),
+				"name"_a, "options"_a = 0,
+				py::call_guard<py::gil_scoped_release>())
+		.def("connect", py::overload_cast<int, int>(&Server::connect),
+				"id"_a, "options"_a = 0,
+				py::call_guard<py::gil_scoped_release>())
+		.def("killAllAndWaitFor", &Server::killAllAndWaitFor,
+				"name"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("getApplicationConfigs", &Server::getApplicationConfigs, py::call_guard<py::gil_scoped_release>())
+		.def("getApplicationInfos", py::overload_cast<>(&Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
+		.def("getApplicationInfos", py::overload_cast<const std::string&>(&Server::getApplicationInfos, py::const_),
+				"name"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("getPorts", &Server::getPorts, py::call_guard<py::gil_scoped_release>())
+		.def("getActualState", &Server::getActualState,
+				"id"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("getPastStates", &Server::getPastStates,
+				"id"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("__str__", &Server::toString,
+				py::call_guard<py::gil_scoped_release>());
+
+
 	py::class_<Publisher>(m, "Publisher")
 	    .def_static("create", &Publisher::create,
 	    		"name"_a,
@@ -356,55 +409,5 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getOwner", &App::Port::getOwner)
 		.def("__str__", &App::Port::toString,
 				py::call_guard<py::gil_scoped_release>());
-
-	py::class_<Server>(m, "Server")
-	    .def(py::init<const std::string&, int, bool>(),
-	    		"endpoint"_a,
-				"timeout"_a = 0,
-				"useProxy"_a = false)
-		.def("terminate", &Server::terminate, py::call_guard<py::gil_scoped_release>())
-	    .def("setTimeout", &Server::setTimeout,
-	    		"value"_a)
-	    .def("getTimeout", &Server::getTimeout)
-	    .def("getEndpoint", &Server::getEndpoint)
-	    .def("getVersion", &Server::getVersion)
-	    .def("isAvailable", py::overload_cast<>(&Server::isAvailable, py::const_), py::call_guard<py::gil_scoped_release>())
-	    .def("isAvailable", py::overload_cast<int>(&Server::isAvailable, py::const_),
-	    		"timeout"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-
-		.def("start", py::overload_cast<const std::string&, int>(&Server::start),
-				"name"_a, "options"_a = 0,
-				py::call_guard<py::gil_scoped_release>())
-
-	    .def("start", py::overload_cast<const std::string&, const std::vector<std::string>&, int>(&Server::start),
-	    		"name"_a, "args"_a, "options"_a = 0,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connectAll", &Server::connectAll,
-	    		"name"_a, "options"_a = 0,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connect", py::overload_cast<const std::string&, int>(&Server::connect),
-	    		"name"_a, "options"_a = 0,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("connect", py::overload_cast<int, int>(&Server::connect),
-	    		"id"_a, "options"_a = 0,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("killAllAndWaitFor", &Server::killAllAndWaitFor,
-	    		"name"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getApplicationConfigs", &Server::getApplicationConfigs, py::call_guard<py::gil_scoped_release>())
-	    .def("getApplicationInfos", py::overload_cast<>(&Server::getApplicationInfos, py::const_), py::call_guard<py::gil_scoped_release>())
-	    .def("getApplicationInfos", py::overload_cast<const std::string&>(&Server::getApplicationInfos, py::const_),
-	    		"name"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getPorts", &Server::getPorts, py::call_guard<py::gil_scoped_release>())
-	    .def("getActualState", &Server::getActualState,
-	    		"id"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("getPastStates", &Server::getPastStates,
-	    		"id"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-		.def("__str__", &Server::toString,
-		   		py::call_guard<py::gil_scoped_release>());
 
 }

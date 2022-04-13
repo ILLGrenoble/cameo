@@ -39,13 +39,13 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<App> resultApplication = server.start("resultcpp");
+		unique_ptr<App> resultApplication = server->start("resultcpp");
 
 		optional<string> result = resultApplication->getResult();
 		if (result.has_value()) {

@@ -51,12 +51,13 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<App> publisherApplication = server.start(applicationName);
+		unique_ptr<App> publisherApplication = server->start(applicationName);
 
 		cout << "Started application " << *publisherApplication << endl;
 

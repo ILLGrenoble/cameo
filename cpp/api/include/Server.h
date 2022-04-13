@@ -58,7 +58,7 @@ public:
 	 * \param timeoutMs The timeout in milliseconds.
 	 * \param useProxy Uses the proxy or not.
 	 */
-	Server(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = false);
+	static std::unique_ptr<Server> create(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = false);
 
 	/**
 	 * Constructor.
@@ -66,7 +66,7 @@ public:
 	 * \param timeoutMs The timeout in milliseconds.
 	 * \param useProxy Uses the proxy or not.
 	 */
-	Server(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
+	static std::unique_ptr<Server> create(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
 
 	/**
 	 * Destructor.
@@ -282,6 +282,9 @@ public:
 	std::string toString() const;
 
 private:
+	Server(const Endpoint& endpoint, int timeoutMs, bool useProxy);
+	Server(const std::string& endpoint, int timeoutMs, bool useProxy);
+
 	void initServer();
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;

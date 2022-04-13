@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Define the shared key.
 	string key = "fr.ill.ics.cameo.test.testkey";
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<App> app = server.start("waitstoragecpp");
+		unique_ptr<App> app = server->start("waitstoragecpp");
 
 		// Define a KeyValue.
 		KeyValue keyValue(key);

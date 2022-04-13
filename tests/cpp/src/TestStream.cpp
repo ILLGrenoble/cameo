@@ -33,10 +33,10 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Start the application.
-	unique_ptr<App> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
+	unique_ptr<App> app = server->start("streamcpp", cameo::OUTPUTSTREAM);
 
 	shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
 	std::thread outputThread([&] {

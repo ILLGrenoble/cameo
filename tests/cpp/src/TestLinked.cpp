@@ -39,15 +39,15 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		{
-			unique_ptr<App> app = server.start("linkedcpp");
+			unique_ptr<App> app = server->start("linkedcpp");
 			State state = app->waitFor(RUNNING);
-			unique_ptr<App> stopApp = server.connect("stopcpp");
+			unique_ptr<App> stopApp = server->connect("stopcpp");
 			state = stopApp->waitFor(RUNNING);
 
 			app->kill();
@@ -60,9 +60,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		{
-			unique_ptr<App> app = server.start("linkedcpp");
+			unique_ptr<App> app = server->start("linkedcpp");
 			State state = app->waitFor(RUNNING);
-			unique_ptr<App> stopApp = server.connect("stopcpp");
+			unique_ptr<App> stopApp = server->connect("stopcpp");
 
 			app->kill();
 			app->waitFor();

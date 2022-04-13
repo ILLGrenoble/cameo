@@ -42,13 +42,13 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<App> app = server.start("veryfastcpp", OUTPUTSTREAM);
+		unique_ptr<App> app = server->start("veryfastcpp", OUTPUTSTREAM);
 
 		State state = app->waitFor();
 

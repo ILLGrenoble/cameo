@@ -51,13 +51,13 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// Args.
 	vector<string> args{argv[2]};
 
 	// Start the application.
-	unique_ptr<App> responderApplication = server.start(applicationName, args);
+	unique_ptr<App> responderApplication = server->start(applicationName, args);
 
 	cout << "Started application " << *responderApplication << endl;
 

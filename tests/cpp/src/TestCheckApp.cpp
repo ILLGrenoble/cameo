@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 		int N = 100;
 
 		for (int j = 0; j < N; ++j) {
-			apps.push_back(server.start("veryfastcpp"));
+			apps.push_back(server->start("veryfastcpp"));
 		}
 
 		int counter = 0;

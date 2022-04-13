@@ -93,10 +93,10 @@ ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 	}
 
 	if (useProxy) {
-		result.server = std::make_unique<Server>(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), options, true);
+		result.server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), options, true);
 	}
 	else {
-		result.server = std::make_unique<Server>(m_requesterServerEndpoint.toString(), options, false);
+		result.server = Server::create(m_requesterServerEndpoint.toString(), options, false);
 	}
 
 	// Iterate the instances to find the id

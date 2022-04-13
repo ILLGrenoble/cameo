@@ -246,7 +246,7 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 void This::initApplication() {
 
 	// Create the local server.
-	m_server = std::make_unique<Server>(m_serverEndpoint, 0, false);
+	m_server = Server::create(m_serverEndpoint, 0, false);
 
 	// Registered apps have the id key.
 	if (!m_registered) {
@@ -372,10 +372,10 @@ ServerAndApp This::connectToStarter(int options, bool useProxy) {
 
 	// Create the server with proxy or not.
 	if (useProxy) {
-		result.server = std::make_unique<Server>(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
+		result.server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
 	}
 	else {
-		result.server = std::make_unique<Server>(m_instance.m_starterEndpoint, 0, false);
+		result.server = Server::create(m_instance.m_starterEndpoint, 0, false);
 	}
 
 	// Iterate the instances to find the id
@@ -424,10 +424,10 @@ void This::initStarterCheck() {
 	// Create the starter server.
 	// If the starter has a running proxy, then use the proxy: it is reasonable.
 	if (m_starterProxyPort != 0) {
-		m_starterServer = std::make_unique<Server>(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
+		m_starterServer = Server::create(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), 0, true);
 	}
 	else {
-		m_starterServer = std::make_unique<Server>(m_starterEndpoint, 0, false);
+		m_starterServer = Server::create(m_starterEndpoint, 0, false);
 	}
 
 	// Register this as event listener.
