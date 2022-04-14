@@ -354,6 +354,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"instance"_a,
 				"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Requester::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &Requester::setTimeout)
 		.def("setPollingTime", &Requester::setPollingTime)

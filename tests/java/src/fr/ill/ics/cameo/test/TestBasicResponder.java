@@ -21,6 +21,7 @@ import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.Requester;
 import fr.ill.ics.cameo.messages.Messages;
 
 
@@ -70,7 +71,8 @@ public class TestBasicResponder {
 				App responderApplication = server.start(applicationName, appArgs);
 				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
 
-				fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(responderApplication, "responder");
+				Requester requester = Requester.create(responderApplication, "responder");
+				requester.init();
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.
@@ -130,9 +132,6 @@ public class TestBasicResponder {
 				// Terminate the requester.
 				requester.terminate();
 			}
-		}
-		catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
 		}
 		finally {
 			server.terminate();

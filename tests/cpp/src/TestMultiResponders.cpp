@@ -74,6 +74,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a requester to the application applicationName
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		requester->init();
 		requesters.push_back(std::move(requester));
 
 		cout << "Created requester" << endl;

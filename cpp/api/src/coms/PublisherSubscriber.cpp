@@ -203,6 +203,7 @@ void Subscriber::terminate() {
 void Subscriber::synchronize(const App & app) {
 
 	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+	requester->init();
 
 	// Send a subscribe request.
 	json::StringObject jsonRequest;

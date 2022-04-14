@@ -21,6 +21,7 @@ import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.Requester;
 import fr.ill.ics.cameo.coms.basic.Request;
 
 
@@ -312,7 +313,8 @@ public class TestCancel {
 				final App thisApp = server.connect(This.getName());
 				
 				// Create the requester.
-				final fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(thisApp, "responder");
+				final Requester requester = Requester.create(thisApp, "responder");
+				requester.init();
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {

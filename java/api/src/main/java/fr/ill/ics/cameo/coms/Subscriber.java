@@ -51,7 +51,8 @@ public class Subscriber {
 	private void synchronize(App app) throws RequesterCreationException {
 		
 		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
-
+		requester.init();
+		
 		// Send a subscribe request.
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);

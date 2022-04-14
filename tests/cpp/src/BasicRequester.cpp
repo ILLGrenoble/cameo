@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 
 	// Create a requester.
 	unique_ptr<coms::Requester> requester = coms::Requester::create(*starter.app, "responder");
+	requester->init();
 
 	cout << "Created requester" << endl;
 

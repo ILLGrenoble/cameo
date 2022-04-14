@@ -226,6 +226,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a requester.
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "responder");
+		requester->init();
 
 		// Start thread.
 		thread cancelThread([&] {

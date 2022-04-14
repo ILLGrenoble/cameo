@@ -32,6 +32,7 @@ for i in range(numberOfTimes):
     print("Started application", applicationName)
 
     requester = cameopy.Requester.create(app, "responder")
+    requester.init()
     
     # Send a simple message.
     requester.send("request")

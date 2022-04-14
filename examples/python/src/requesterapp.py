@@ -15,6 +15,7 @@ responderApp = server.connect("responderpy", 0)
 print("Connected", responderApp.getNameId())
 
 requester = cameopy.Requester.create(responderApp, "the-responder")
+requester.init()
 
 for i in range(numberOfTimes):
   request = "request-" + str(i)

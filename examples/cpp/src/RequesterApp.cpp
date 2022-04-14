@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
 
 	// Create a requester.
 	std::unique_ptr<coms::Requester> requester = coms::Requester::create(*responderServer, "the-responder");
+	requester->init();
 
 	std::cout << "Created requester " << *requester << std::endl;
 

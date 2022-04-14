@@ -43,7 +43,7 @@ public:
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class Requester {
+class Requester : public RemoteObject {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
@@ -54,12 +54,7 @@ public:
 	~Requester();
 
 	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
-
-	/**
-	 * Returns a new responder.
+	 * Returns a new requester.
 	 * \param app The application where the responder is defined.
 	 * \param responderName The responder name.
 	 * \return A new Requester object.
@@ -67,16 +62,33 @@ public:
 	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
 
 	/**
-	 * Sets the polling time.
-	 * \param value The value.
+	 * Initializes the requester.
+	 * \throws RequesterCreationException if the requester cannot be created.
 	 */
-	void setPollingTime(int value);
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Sets the timeout.
 	 * \param value The value.
 	 */
-	void setTimeout(int value);
+	void setTimeout(int value) override;
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	int getTimeout() const override;
+
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
+	void setPollingTime(int value);
 
 	/**
 	 * Gets the responder name.
@@ -142,14 +154,15 @@ public:
 	 * Returns a string representation of the requester.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 private:
-	Requester();
-	void init(const App & app, const std::string & responderName);
+	Requester(const App & app, const std::string & responderName);
 
-	bool m_useProxy;
+	const App & m_app;
 	std::string m_responderName;
+	int m_timeout;
+	bool m_useProxy;
 	std::string m_appName;
 	int m_appId;
 	Endpoint m_appEndpoint;

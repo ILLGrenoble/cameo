@@ -13,6 +13,7 @@ app = starter.getApp()
 
 # Create a requester.
 requester = cameopy.Requester.create(app, "responder")
+requester.init()
 
 this.setRunning()
 

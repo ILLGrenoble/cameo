@@ -207,6 +207,7 @@ def testRequester():
     thisApp = server.connect(cameopy.This.getName())
     
     requester = cameopy.Requester.create(thisApp, "responder")
+    requester.init()
     
     # Start cancel thread.
     tc = threading.Thread(target=cancelRequester, args=(requester, responder,))

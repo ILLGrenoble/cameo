@@ -64,6 +64,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a subscriber to the application applicationName
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		requester->init();
 
 		cout << "Created requester " << *requester << endl;
 

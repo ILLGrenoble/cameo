@@ -67,6 +67,7 @@ public class RequesterApp {
 			
 			// Create a requester.
 			Requester requester = Requester.create(responderServer, "the-responder");
+			requester.init();
 			System.out.println("Created requester " + requester);
 			
 			for (int i = 0; i < N; ++i) {
@@ -78,11 +79,8 @@ public class RequesterApp {
 			// Terminate the requester and server.
 			requester.terminate();
 			server.terminate();
-			
-		} catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
-			
-		} finally {
+		}
+		finally {
 			// Do not forget to terminate This.
 			This.terminate();
 		}

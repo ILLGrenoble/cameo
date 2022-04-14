@@ -36,7 +36,9 @@ RequesterCreationException::RequesterCreationException(const std::string& messag
 }
 
 
-Requester::Requester() :
+Requester::Requester(const App & app, const std::string &responderName) :
+	m_app(app),
+	m_responderName(responderName),
 	m_useProxy(false),
 	m_appId(0) {
 
@@ -54,18 +56,17 @@ void Requester::terminate() {
 	m_impl.reset();
 }
 
-void Requester::init(const App & app, const std::string &responderName) {
+void Requester::init() {
 
-	m_responderName = responderName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
-	m_key = basic::Responder::KEY + "-" + responderName;
-	m_useProxy = app.usesProxy();
+	m_appName = m_app.getName();
+	m_appId = m_app.getId();
+	m_appEndpoint = m_app.getEndpoint();
+	m_key = basic::Responder::KEY + "-" + m_responderName;
+	m_useProxy = m_app.usesProxy();
 
 	// Get the responder data.
 	try {
-		std::string jsonString = app.getCom().getKeyValueGetter(m_key)->get();
+		std::string jsonString = m_app.getCom().getKeyValueGetter(m_key)->get();
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -74,12 +75,12 @@ void Requester::init(const App & app, const std::string &responderName) {
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			int responderPort = app.getCom().getResponderProxyPort();
-			endpoint = app.getEndpoint().withPort(responderPort);
+			int responderPort = m_app.getCom().getResponderProxyPort();
+			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 		else {
 			int responderPort = jsonData[basic::Responder::PORT.c_str()].GetInt();
-			endpoint = app.getEndpoint().withPort(responderPort);
+			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 
 		m_impl->init(endpoint, StringId::from(m_appId, m_key));
@@ -90,19 +91,20 @@ void Requester::init(const App & app, const std::string &responderName) {
 }
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
+	return std::unique_ptr<Requester>(new Requester(app, responderName));
+}
 
-	std::unique_ptr<Requester> requester = std::unique_ptr<Requester>(new Requester());
-	requester->init(app, responderName);
+void Requester::setTimeout(int value) {
+	m_timeout = value;
+	m_impl->setTimeout(value);
+}
 
-	return requester;
+int Requester::getTimeout() const {
+	return m_timeout;
 }
 
 void Requester::setPollingTime(int value) {
 	m_impl->setPollingTime(value);
-}
-
-void Requester::setTimeout(int value) {
-	m_impl->setTimeout(value);
 }
 
 const std::string& Requester::getResponderName() const {

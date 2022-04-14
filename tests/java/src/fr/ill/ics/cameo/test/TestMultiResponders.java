@@ -74,6 +74,7 @@ public class TestMultiResponders {
 				System.out.println("Creating requester");
 				
 				requesters[t] = Requester.create(responderApplication, "responder");
+				requesters[t].init();
 				
 				System.out.println("Created requester");
 				
@@ -117,9 +118,6 @@ public class TestMultiResponders {
 			int state = responderApplication.waitFor();
 			System.out.println("Responder application terminated with state " + State.toString(state));
 			
-		}
-		catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
 		}
 		finally {
 			server.terminate();
