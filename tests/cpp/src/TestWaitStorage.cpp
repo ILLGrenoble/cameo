@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+	server->init();
 
 	// Define the shared key.
 	string key = "fr.ill.ics.cameo.test.testkey";

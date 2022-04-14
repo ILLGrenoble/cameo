@@ -262,6 +262,7 @@ public class Console {
 		// Initialise the server if it is not a help command.
 		if (!commandName.equals("help")) {
 			server = Server.create(endpoint, 0, useProxy);
+			server.init();
 		}
 	}
 	
@@ -595,6 +596,7 @@ public class Console {
 						// create a new Services object in case the shutdown hook happens during the termination
 						// of the main object
 						Server server = Server.create(endpoint);
+						server.init();
 						server.isAvailable();
 						
 						List<App> applications = server.connectAll(appName);
@@ -686,6 +688,7 @@ public class Console {
 				// create a new Services object in case the shutdown hook happens during the termination
 				// of the main object
 				Server server = Server.create(endpoint);
+				server.init();
 				server.isAvailable();
 				
 				List<App> applications = server.connectAll(appName);

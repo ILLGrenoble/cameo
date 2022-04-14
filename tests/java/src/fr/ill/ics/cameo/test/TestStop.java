@@ -43,6 +43,7 @@ public class TestStop {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
+		server.init();
 		
 		try {
 			// Loop the number of times.

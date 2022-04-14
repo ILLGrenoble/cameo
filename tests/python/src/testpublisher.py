@@ -21,7 +21,8 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, 0, useProxy)
+server.init()
 
 for i in range(numberOfTimes):
     

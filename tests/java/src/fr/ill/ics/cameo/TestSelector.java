@@ -200,6 +200,8 @@ public class TestSelector {
 					server = Server.create("tcp://localhost:11000", 100, false);	
 				}
 				
+				server.init();
+				
 				System.out.println("*** Server created ***");
 				break;
 			}

@@ -99,6 +99,8 @@ ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 		result.server = Server::create(m_requesterServerEndpoint.toString(), options, false);
 	}
 
+	result.server->init();
+
 	// Iterate the instances to find the id
 	AppArray instances = result.server->connectAll(m_requesterApplicationName, options);
 

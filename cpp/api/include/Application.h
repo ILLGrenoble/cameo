@@ -17,6 +17,7 @@
 #ifndef CAMEO_APPLICATION_H_
 #define CAMEO_APPLICATION_H_
 
+#include "RemoteObject.h"
 #include "InvalidArgumentException.h"
 #include "UnregisteredApplicationException.h"
 #include "SocketException.h"

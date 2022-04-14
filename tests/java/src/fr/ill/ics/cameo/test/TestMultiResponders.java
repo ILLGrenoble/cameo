@@ -56,7 +56,8 @@ public class TestMultiResponders {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
-
+		server.init();
+		
 		String[] appArgs = new String[] {args[1]};
 		
 		// Start the application.

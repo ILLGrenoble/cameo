@@ -247,6 +247,7 @@ void This::initApplication() {
 
 	// Create the local server.
 	m_server = Server::create(m_serverEndpoint, 0, false);
+	m_server->init();
 
 	// Registered apps have the id key.
 	if (!m_registered) {
@@ -378,6 +379,8 @@ ServerAndApp This::connectToStarter(int options, bool useProxy) {
 		result.server = Server::create(m_instance.m_starterEndpoint, 0, false);
 	}
 
+	result.server->init();
+
 	// Iterate the instances to find the id
 	AppArray instances = result.server->connectAll(m_instance.m_starterName, options);
 
@@ -429,6 +432,8 @@ void This::initStarterCheck() {
 	else {
 		m_starterServer = Server::create(m_starterEndpoint, 0, false);
 	}
+
+	m_starterServer->init();
 
 	// Register this as event listener.
 	m_starterServer->registerEventListener(this, false);

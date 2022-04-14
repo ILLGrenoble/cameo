@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+	server->init();
 
 	// Start the application.
 	unique_ptr<App> app = server->start("stopcpp");

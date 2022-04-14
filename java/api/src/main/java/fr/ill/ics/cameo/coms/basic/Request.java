@@ -135,6 +135,8 @@ public class Request {
 			starterServer = Server.create(requesterServerEndpoint, 0, false);	
 		}
 		
+		starterServer.init();
+		
 		// Iterate the instances to find the id
 		App starterInstance = null;
 		List<App> instances = starterServer.connectAll(requesterApplicationName, options);

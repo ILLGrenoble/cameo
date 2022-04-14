@@ -52,6 +52,8 @@ public class RequesterApp {
 			server = Server.create(This.getEndpoint());
 		}
 		
+		server.init();
+		
 		if (This.isAvailable() && server.isAvailable()) {
 			System.out.println("Connected server " + server);
 		} else {

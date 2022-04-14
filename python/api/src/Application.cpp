@@ -156,7 +156,7 @@ PYBIND11_MODULE(cameopy, m) {
 				"timeout"_a = 0,
 				"useProxy"_a = false,
 		   		py::call_guard<py::gil_scoped_release>())
-
+		.def("init", &Server::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Server::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &Server::setTimeout,
 				"value"_a)

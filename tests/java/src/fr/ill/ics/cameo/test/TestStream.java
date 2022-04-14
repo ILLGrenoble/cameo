@@ -39,6 +39,7 @@ public class TestStream {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
+		server.init();
 		
 		// Start the application.
 		App app = server.start("streamjava", Option.OUTPUTSTREAM);

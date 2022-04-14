@@ -66,6 +66,7 @@ public class TestSubscriber {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
+		server.init();
 		
 		try {
 			for (int i = 0; i < N; i++) {

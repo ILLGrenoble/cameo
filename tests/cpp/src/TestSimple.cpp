@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {

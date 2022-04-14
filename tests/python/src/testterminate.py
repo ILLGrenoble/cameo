@@ -24,7 +24,9 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, 0, useProxy)
+server.init()
+
 thisApp = server.connect(cameopy.This.getName())
 
 print("Creating basic responder and requester")

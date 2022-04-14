@@ -14,39 +14,30 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_OBJECT_H_
-#define CAMEO_OBJECT_H_
+#ifndef CAMEO_REMOTEOBJECT_H_
+#define CAMEO_REMOTEOBJECT_H_
 
-#include <string>
+#include "Object.h"
 
 namespace cameo {
 
 /**
- * Class defining an abstract Cameo object that can be initialized and terminated.
+ * Class defining an abstract Cameo remote object that has timeout.
  */
-class Object {
+class RemoteObject : public Object {
 
 public:
 	/**
-	 * Destructor.
+	 * Sets the timeout.
+	 * \param value The timeout.
 	 */
-	virtual ~Object() {}
+	virtual void setTimeout(int value) = 0;
 
 	/**
-	 * Initializes the object.
+	 * Gets the timeout.
+	 * \return The timeout.
 	 */
-	virtual void init() = 0;
-
-	/**
-	 * Terminates the object.
-	 */
-	virtual void terminate() = 0;
-
-	/**
-	 * Returns a string representation of this application.
-	 * \return The string representation.
-	 */
-	virtual std::string toString() const = 0;
+	virtual int getTimeout() const = 0;
 };
 
 }

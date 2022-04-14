@@ -35,9 +35,6 @@ if not res:
 request = responder.receive();
 print("Received request", request.getString())
 
-# Reply with timeout.
-request.setTimeout(100)
-
 res = request.reply("3rd response")
 
 if not res:

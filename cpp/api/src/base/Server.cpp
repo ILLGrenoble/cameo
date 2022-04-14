@@ -47,7 +47,7 @@ bool Server::FilteredEventListener::isFiltered() const {
 	return m_filtered;
 }
 
-void Server::initServer() {
+void Server::init() {
 
 	if (!m_serverEndpointString.empty()) {
 		try {
@@ -76,25 +76,29 @@ void Server::initServer() {
 Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :
 	m_timeout(timeoutMs),
 	m_useProxy(useProxy),
+	m_responderProxyPort(0),
+	m_publisherProxyPort(0),
+	m_subscriberProxyPort(0),
+	m_serverStatusPort(0),
 	m_statusPort(0),
 	m_context(nullptr) {
 
 	m_serverEndpoint = endpoint;
 	m_serverVersion = {0, 0, 0};
-
-	initServer();
 }
 
 Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 	m_timeout(timeoutMs),
 	m_useProxy(useProxy),
+	m_responderProxyPort(0),
+	m_publisherProxyPort(0),
+	m_subscriberProxyPort(0),
+	m_serverStatusPort(0),
 	m_statusPort(0),
 	m_context(nullptr) {
 
 	m_serverEndpointString = endpoint;
 	m_serverVersion = {0, 0, 0};
-
-	initServer();
 }
 
 std::unique_ptr<Server> Server::create(const Endpoint& endpoint, int timeoutMs, bool useProxy) {

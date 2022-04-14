@@ -457,6 +457,8 @@ public class This {
 			starterServer = Server.create(instance.getStarterEndpoint(), 0, false);	
 		}
 		
+		starterServer.init();
+		
 		// Iterate the instances to find the id
 		App starterInstance = null;
 		List<App> instances = starterServer.connectAll(instance.getStarterName(), options);
@@ -560,6 +562,7 @@ public class This {
 
 		// Create the server.
 		server = Server.create(serverEndpoint, 0, false);
+		server.init();
 		
 		// Init the unregistered application.
 		if (!registered) {
@@ -739,6 +742,8 @@ public class This {
 		else {
 			starterServer = Server.create(starterEndpoint, 0, false);	
 		}
+		
+		starterServer.init();
 
 		// Register this as event listener.
 		starterServer.registerEventListener(eventListener, false);

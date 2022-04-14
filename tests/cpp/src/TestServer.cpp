@@ -28,6 +28,7 @@ int main(int, char *[]) {
 	cout << "Create server" << endl;
 
 	unique_ptr<Server> server = Server::create("tcp://localhost:11000", 100, false);
+	server->init();
 
 	cout << "Testing connection" << endl;
 

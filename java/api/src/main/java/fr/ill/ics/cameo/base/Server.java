@@ -39,7 +39,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-public class Server {
+public class Server implements IRemoteObject {
 
 	private String serverEndpointString;
 	private Endpoint serverEndpoint;
@@ -62,8 +62,6 @@ public class Server {
 		this.serverEndpoint = endpoint;
 		this.useProxy = useProxy;
 		this.timeout = timeout;
-		
-		this.initServer();
 	}
 
 	private Server(String endpoint, int timeout, boolean useProxy) {
@@ -71,8 +69,6 @@ public class Server {
 		this.serverEndpointString = endpoint;
 		this.useProxy = useProxy;
 		this.timeout = timeout;
-		
-		this.initServer();
 	}
 	
 	/**
@@ -129,7 +125,13 @@ public class Server {
 		return new Server(endpoint, 0, false);
 	}
 	
-	private void initServer() {
+	/**
+	 * Initializes the server.
+	 * @throws InvalidArgumentException if the endpoint is not valid.
+	 * @throws SocketException if the socket cannot be created.
+	 * @throws ConnectionTimeout if the connection with the Cameo server fails.
+	 */
+	public void init() {
 
 		if (serverEndpointString != null) {
 		
@@ -142,7 +144,7 @@ public class Server {
 		}
 		
 		// Init the context and socket.
-		init();
+		initContext();
 		
 		// Retrieve the server version.
 		retrieveServerVersion();
@@ -159,7 +161,8 @@ public class Server {
 	/**
 	 * Initializes the context and the request socket. The serverEndpoint must have been set.
 	 */
-	final private void init() {
+	final private void initContext() {
+		
 		contextImpl = ImplFactory.createContext();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString(), StringId.CAMEO_SERVER);
 		

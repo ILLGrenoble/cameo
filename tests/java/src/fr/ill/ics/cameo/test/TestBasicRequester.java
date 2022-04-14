@@ -54,6 +54,7 @@ public class TestBasicRequester {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
+		server.init();
 		
 		try {
 			// Set the state.

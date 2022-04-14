@@ -45,6 +45,7 @@ public class TestSimple {
 		}
 		
 		Server server = Server.create(endpoint, 0, useProxy);
+		server.init();
 		
 		Date d = new Date();
 		

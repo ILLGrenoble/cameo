@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
 		server = Server::create(serverEndpoint);
 	}
 
+	server->init();
+
 	if (This::isAvailable() && server->isAvailable()) {
 		std::cout << "Connected server " << *server << std::endl;
 	}

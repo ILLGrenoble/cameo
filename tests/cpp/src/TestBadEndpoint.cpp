@@ -27,6 +27,7 @@ int main(int, char *[]) {
 
 	try {
 		unique_ptr<Server> server = Server::create("tcp://ferrazpc.ill.fr:7000", 1000);
+		server->init();
 	}
 	catch (SocketException const & e) {
 		cout << "Socket exception: " << e.what() << endl;
@@ -37,6 +38,8 @@ int main(int, char *[]) {
 
 	try {
 		unique_ptr<Server> server = Server::create("tcp://localhost:9999", 1000);
+		server->init();
+
 		cout << "server created" << endl;
 		if (server->isAvailable(1000)) {
 			cout << "server available" << endl;

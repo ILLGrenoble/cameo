@@ -41,7 +41,7 @@ class RequestSocket;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-class Server {
+class Server : public RemoteObject {
 
 	friend class App;
 	friend class This;
@@ -67,28 +67,36 @@ public:
 	 * \param useProxy Uses the proxy or not.
 	 */
 	static std::unique_ptr<Server> create(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
-
+	
 	/**
 	 * Destructor.
 	 */
-	~Server();
+	~Server() override;
+
+	/**
+	 * Initializes the server.
+	 * \throws InvalidArgumentException if the endpoint is not valid.
+	 * \throws SocketException if the socket cannot be created.
+	 * \throws ConnectionTimeout if the connection with the Cameo server fails.
+	 */
+	void init() override;
 
 	/**
 	 * Terminates the communications.
 	 */
-	void terminate();
+	void terminate() override;
 
 	/**
 	 * Sets the timeout.
 	 * \param value The timeout.
 	 */
-	void setTimeout(int value);
+	void setTimeout(int value) override;
 
 	/**
 	 * Gets the timeout.
 	 * \return The timeout.
 	 */
-	int getTimeout() const;
+	int getTimeout() const override;
 
 	/**
 	 * Gets the endpoint of the server running this remote application.
@@ -279,13 +287,12 @@ public:
 	 * Returns a string representation of this application.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 private:
 	Server(const Endpoint& endpoint, int timeoutMs, bool useProxy);
 	Server(const std::string& endpoint, int timeoutMs, bool useProxy);
 
-	void initServer();
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
