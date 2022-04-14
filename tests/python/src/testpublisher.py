@@ -31,6 +31,7 @@ for i in range(numberOfTimes):
     print("Started application", applicationName)
     
     subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber.init()
     
     while True:
         data = subscriber.receiveString()

@@ -79,6 +79,7 @@ int main(int argc, char *argv[]) {
 
 		// The publisher is created after the applications that will wait for it.
 		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
+		publisher->init();
 
 		for (int k = 0; k < 20; ++k) {
 

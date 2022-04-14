@@ -41,9 +41,10 @@ int main(int argc, char *argv[]) {
 		cout << "Creating publisher and waiting for " << numberOfSubscribers << " subscriber(s)..." << endl;
 
 		publisher = coms::Publisher::create("publisher", numberOfSubscribers);
+		publisher->init();
 		publisher->waitForSubscribers();
-
-	} catch (const coms::PublisherCreationException& e) {
+	}
+	catch (const coms::PublisherCreationException& e) {
 		cout << "Publisher error" << endl;
 		return -1;
 	}

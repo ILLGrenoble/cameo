@@ -12,6 +12,7 @@ publisherApp = server.connect("publisherpy", 0)
 print("Connected", publisherApp.getNameId())
 
 subscriber = cameopy.Subscriber.create(publisherApp, "the-publisher")
+subscriber.init()
 
 while True:
   message = subscriber.receiveString()

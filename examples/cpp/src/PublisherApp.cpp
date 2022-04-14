@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
 
 	try {
 		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
+		publisher->init();
 		std::cout << "Created publisher " << *publisher << std::endl;
 
 		publisher->waitForSubscribers();

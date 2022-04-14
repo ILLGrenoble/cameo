@@ -72,6 +72,7 @@ public class SubscriberApp {
 			
 			// Create a subscriber to the publisher named "publisher".
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");
+			subscriber.init();
 			System.out.println("Created subscriber " + subscriber);
 			
 			// Receive data.

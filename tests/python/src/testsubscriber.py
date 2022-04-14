@@ -38,6 +38,7 @@ for i in range(numberOfTimes):
     # Set the publisher to None deletes the previous one and ensures that it is correctly removed.
     publisher = None 
     publisher = cameopy.Publisher.create("publisher")
+    publisher.init()
     
     for k in range(20):
         data = "{" + str(k) + ", " + str(k * k) + "}"

@@ -50,6 +50,7 @@ public class Subscriber {
 			
 			System.out.println("Subscribing publisher...");
 			fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");
+			subscriber.init();
 			System.out.println("Synchronized with 1 publisher");
 			
 			// Receive data.

@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
 
 		// Use a shared_ptr to use it in the thread and the main thread.
 		shared_ptr<coms::Publisher> publisher(coms::Publisher::create("publisher", 1));
+		publisher->init();
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		subscriber->init();
 
 		// Receiving data.
 		while (true) {
@@ -149,6 +151,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		subscriber->init();
 
 		// Start thread.
 		thread cancelThread([] {

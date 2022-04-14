@@ -208,6 +208,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"name"_a,
 	    		"numberOfSubscribers"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
+		.def("init", &Publisher::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Publisher::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &Publisher::getName)
 	    .def("waitForSubscribers", &Publisher::waitForSubscribers, py::call_guard<py::gil_scoped_release>())
@@ -228,6 +229,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"instance"_a,
 	    		"publisherName"_a,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("init", &Subscriber::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Subscriber::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getPublisherName", &Subscriber::getPublisherName)
 	    .def("getAppName", &Subscriber::getAppName)

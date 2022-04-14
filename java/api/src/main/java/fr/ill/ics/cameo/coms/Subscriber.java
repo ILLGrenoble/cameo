@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
+import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
@@ -32,10 +33,11 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a subscriber.
  */
-public class Subscriber {
+public class Subscriber implements IObject {
 	
-	private boolean useProxy = false;
+	private App app;
 	private String publisherName;
+	private boolean useProxy = false;
 	private String appName;
 	private int appId;
 	private Endpoint appEndpoint;
@@ -43,7 +45,9 @@ public class Subscriber {
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	private String key;
 	
-	private Subscriber() {
+	private Subscriber(App app, String publisherName) {
+		this.app = app;
+		this.publisherName = publisherName;
 		this.impl = ImplFactory.createSubscriber();
 		waiting.add();
 	}
@@ -63,9 +67,23 @@ public class Subscriber {
 		requester.terminate();
 	}
 	
-	private void init(App app, String publisherName) throws SubscriberCreationException {
+	/**
+	 * Returns a new subscriber.
+	 * @param app The application where the publisher is defined.
+	 * @param publisherName The name of the publisher.
+	 * @return A new Subscriber object.
+	 */
+	public static Subscriber create(App app, String publisherName) throws SubscriberCreationException {
+		return new Subscriber(app, publisherName);
+	}
+	
+	/**
+	 * Initializes the subscriber.
+	 * @throws SubscriberCreationException if the subscriber cannot be created.
+	 */
+	@Override
+	public void init() throws SubscriberCreationException {
 		
-		this.publisherName = publisherName;
 		this.appName = app.getName();
 		this.appId = app.getId();
 		this.appEndpoint = app.getEndpoint();
@@ -101,20 +119,6 @@ public class Subscriber {
 		catch (KeyValueGetterException | RequesterCreationException e) {
 			throw new SubscriberCreationException("Cannot create subscriber");
 		}
-	}
-	
-	/**
-	 * Returns a new subscriber.
-	 * @param app The application where the publisher is defined.
-	 * @param publisherName The name of the publisher.
-	 * @return A new Subscriber object.
-	 */
-	public static Subscriber create(App app, String publisherName) throws SubscriberCreationException {
-		
-		Subscriber subscriber = new Subscriber();
-		subscriber.init(app, publisherName);
-		
-		return subscriber;
 	}
 	
 	/**
@@ -199,6 +203,7 @@ public class Subscriber {
 	/**
 	 * Terminates the communication.
 	 */
+	@Override
 	public void terminate() {
 		waiting.remove();
 		impl.terminate();

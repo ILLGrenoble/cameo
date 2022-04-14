@@ -164,7 +164,8 @@ public class TestCancel {
 				cancelThread.start();
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
-								
+				subscriber.init();
+				
 				while (true) {
 					String data = subscriber.receiveString();
 					if (data == null) {
@@ -194,7 +195,8 @@ public class TestCancel {
 				final App pubLoopApplication = server.start("publisherloopjava");
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
-
+				subscriber.init();
+				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
 					@Override

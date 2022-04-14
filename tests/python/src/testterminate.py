@@ -51,7 +51,10 @@ tc.join()
 print("Creating publisher and subscriber")
 
 publisher = cameopy.Publisher.create("publisher")
+publisher.init()
+
 subscriber = cameopy.Subscriber.create(thisApp, "publisher")
+subscriber.init()
 
 requester.terminate()
 responder.terminate()

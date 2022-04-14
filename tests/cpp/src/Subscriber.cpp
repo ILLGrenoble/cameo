@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
 
 	// Create a subscriber to the application applicationName.
 	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
+	subscriber->init();
 
 	if (subscriber.get() == 0) {
 		cout << "Subscriber error" << endl;

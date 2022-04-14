@@ -50,7 +50,7 @@ public:
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class Publisher {
+class Publisher : public Object {
 
 	friend class cameo::This;
 
@@ -61,17 +61,22 @@ public:
 	~Publisher();
 
 	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
-
-	/**
 	 * Returns the publisher with name.
 	 * \param name The name.
 	 * \param numberOfSubscribers The number of subscribers.
 	 * \return A new Publisher object.
 	 */
 	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0);
+
+	/**
+	 * Initializes the publisher.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Gets the name.
@@ -118,7 +123,7 @@ public:
 	 * Returns a string representation of the publisher.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 	static const std::string KEY;
 	static const std::string PUBLISHER_PORT;
@@ -128,7 +133,6 @@ public:
 
 private:
 	Publisher(const std::string &name, int numberOfSubscribers);
-	void init(const std::string &name);
 
 	std::string m_name;
 	int m_numberOfSubscribers;
@@ -156,7 +160,7 @@ public:
 /**
  * Class defining a subscriber.
  */
-class Subscriber {
+class Subscriber : public Object {
 
 	friend class cameo::Server;
 	friend class cameo::App;
@@ -168,17 +172,23 @@ public:
 	~Subscriber();
 
 	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
-
-	/**
 	 * Returns a new subscriber.
 	 * \param app The application where the publisher is defined.
 	 * \param publisherName The name of the publisher.
 	 * \return A new Subscriber object.
 	 */
-	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(const App & app, const std::string &publisherName);
+
+	/**
+	 * Initializes the subscriber.
+	 * \throws SubscriberCreationException if the subscriber cannot be created.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Gets the publisher name.
@@ -237,15 +247,15 @@ public:
 	 * Returns a string representation of the subscriber.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 private:
-	Subscriber();
-	void init(const App &app, const std::string &publisherName);
+	Subscriber(const App & app, const std::string &publisherName);
 	void synchronize(const App & app);
 
-	bool m_useProxy;
+	const App & m_app;
 	std::string m_publisherName;
+	bool m_useProxy;
 	std::string m_appName;
 	int m_appId;
 	Endpoint m_appEndpoint;

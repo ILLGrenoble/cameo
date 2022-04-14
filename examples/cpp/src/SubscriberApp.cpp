@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
 
 	// Create a requester.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
+	subscriber->init();
 
 	std::cout << "Created subscriber " << *subscriber << std::endl;
 

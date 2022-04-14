@@ -66,10 +66,10 @@ void Publisher::terminate() {
 	}
 }
 
-void Publisher::init(const std::string& name) {
+void Publisher::init() {
 
 	// Set the key.
-	m_key = KEY + "-" + name;
+	m_key = KEY + "-" + m_name;
 
 	// Init the publisher and synchronizer sockets.
 	m_impl->init(StringId::from(This::getId(), m_key));
@@ -87,16 +87,12 @@ void Publisher::init(const std::string& name) {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+		throw PublisherCreationException("A publisher with the name \"" + m_name + "\" already exists");
 	}
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
-
-	std::unique_ptr<Publisher> publisher = std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
-	publisher->init(name);
-
-	return publisher;
+	return std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
 }
 
 const std::string& Publisher::getName() const {
@@ -183,7 +179,9 @@ SubscriberCreationException::SubscriberCreationException(const std::string& mess
 }
 
 
-Subscriber::Subscriber() :
+Subscriber::Subscriber(const App & app, const std::string &publisherName) :
+	m_app(app),
+	m_publisherName(publisherName),
 	m_useProxy(false) {
 
 	m_impl = ImplFactory::createSubscriber();
@@ -214,18 +212,17 @@ void Subscriber::synchronize(const App & app) {
 	std::optional<std::string> response = requester->receive();
 }
 
-void Subscriber::init(const App & app, const std::string& publisherName) {
+void Subscriber::init() {
 
-	m_publisherName = publisherName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
-	m_key = Publisher::KEY + "-" + publisherName;
-	m_useProxy = app.usesProxy();
+	m_appName = m_app.getName();
+	m_appId = m_app.getId();
+	m_appEndpoint = m_app.getEndpoint();
+	m_key = Publisher::KEY + "-" + m_publisherName;
+	m_useProxy = m_app.usesProxy();
 
 	// Get the publisher data.
 	try {
-		std::string jsonString = app.getCom().getKeyValueGetter(m_key)->get();
+		std::string jsonString = m_app.getCom().getKeyValueGetter(m_key)->get();
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -236,19 +233,19 @@ void Subscriber::init(const App & app, const std::string& publisherName) {
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			int publisherPort = app.getCom().getPublisherProxyPort();
-			endpoint = app.getEndpoint().withPort(publisherPort);
+			int publisherPort = m_app.getCom().getPublisherProxyPort();
+			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 		else {
 			int publisherPort = jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
-			endpoint = app.getEndpoint().withPort(publisherPort);
+			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 
-		m_impl->init(m_appId, endpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key));
+		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_appId, m_key));
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
-			synchronize(app);
+			synchronize(m_app);
 		}
 	}
 	catch (...) {
@@ -256,12 +253,8 @@ void Subscriber::init(const App & app, const std::string& publisherName) {
 	}
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName) {
-
-	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(app, publisherName);
-
-	return subscriber;
+std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {
+	return std::unique_ptr<Subscriber>(new Subscriber(app, publisherName));
 }
 
 const std::string& Subscriber::getPublisherName() const {
