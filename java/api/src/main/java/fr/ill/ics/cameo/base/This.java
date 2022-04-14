@@ -451,10 +451,10 @@ public class This {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = new Server(instance.getStarterEndpoint().withPort(instance.starterProxyPort), 0, true);
+			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), 0, true);
 		}
 		else {
-			starterServer = new Server(instance.getStarterEndpoint(), 0, false);	
+			starterServer = Server.create(instance.getStarterEndpoint(), 0, false);	
 		}
 		
 		// Iterate the instances to find the id
@@ -559,7 +559,7 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = new Server(serverEndpoint, 0, false);
+		server = Server.create(serverEndpoint, 0, false);
 		
 		// Init the unregistered application.
 		if (!registered) {
@@ -734,10 +734,10 @@ public class This {
 		// Create the starter server.
 		// If the starter has a running proxy, then use the proxy: it is reasonable.
 		if (starterProxyPort != 0) {
-			starterServer = new Server(starterEndpoint.withPort(starterProxyPort), 0, true);
+			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), 0, true);
 		}
 		else {
-			starterServer = new Server(starterEndpoint, 0, false);	
+			starterServer = Server.create(starterEndpoint, 0, false);	
 		}
 
 		// Register this as event listener.

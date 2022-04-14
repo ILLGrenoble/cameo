@@ -46,10 +46,10 @@ public class RequesterApp {
 		
 		// The server endpoint is the third argument.
 		if (args.length > 3) {
-			server = new Server(args[2]);
+			server = Server.create(args[2]);
 		}
 		else {	
-			server = new Server(This.getEndpoint());
+			server = Server.create(This.getEndpoint());
 		}
 		
 		if (This.isAvailable() && server.isAvailable()) {

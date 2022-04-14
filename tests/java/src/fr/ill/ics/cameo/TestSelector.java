@@ -194,10 +194,10 @@ public class TestSelector {
 				System.out.println("*** Trying to create server ***");
 				
 				if (useProxy) {
-					server = new Server("tcp://localhost:10000", 100, true);
+					server = Server.create("tcp://localhost:10000", 100, true);
 				}
 				else {
-					server = new Server("tcp://localhost:11000", 100, false);	
+					server = Server.create("tcp://localhost:11000", 100, false);	
 				}
 				
 				System.out.println("*** Server created ***");

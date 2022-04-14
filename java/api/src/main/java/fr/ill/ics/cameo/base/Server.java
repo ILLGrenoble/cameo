@@ -56,16 +56,19 @@ public class Server {
 	private JSON.Parser parser = new JSON.Parser();
 	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
-
-	/**
-	 * Constructor.
-	 * @param endpoint The endpoint of the remote server.
-	 * @param timeout The timeout in milliseconds.
-	 * @param useProxy Uses the proxy or not.
-	 */	
-	public Server(Endpoint endpoint, int timeout, boolean useProxy) {
+	
+	private Server(Endpoint endpoint, int timeout, boolean useProxy) {
 		
 		this.serverEndpoint = endpoint;
+		this.useProxy = useProxy;
+		this.timeout = timeout;
+		
+		this.initServer();
+	}
+
+	private Server(String endpoint, int timeout, boolean useProxy) {
+
+		this.serverEndpointString = endpoint;
 		this.useProxy = useProxy;
 		this.timeout = timeout;
 		
@@ -73,66 +76,57 @@ public class Server {
 	}
 	
 	/**
-	 * Constructor.
+	 * Creates a server.
+	 * @param endpoint The endpoint of the remote server.
+	 * @param timeout The timeout in milliseconds.
+	 * @param useProxy Uses the proxy or not.
+	 */	
+	public static Server create(Endpoint endpoint, int timeout, boolean useProxy) {
+		return new Server(endpoint, timeout, useProxy);
+	}
+	
+	/**
+	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 * @param timeout The timeout in milliseconds.
 	 */
-	public Server(Endpoint endpoint, int timeout) {
-		
-		this.serverEndpoint = endpoint;
-		this.timeout = timeout;
-		
-		this.initServer();
+	public static Server create(Endpoint endpoint, int timeout) {
+		return new Server(endpoint, timeout, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 */
-	public Server(Endpoint endpoint) {
-		
-		this.serverEndpoint = endpoint;
-
-		this.initServer();	
+	public static Server create(Endpoint endpoint) {
+		return new Server(endpoint, 0, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 * @param timeout The timeout in milliseconds.
 	 * @param useProxy Uses the proxy or not.
 	 */
-	public Server(String endpoint, int timeout, boolean useProxy) {
-
-		this.serverEndpointString = endpoint;
-		this.useProxy = useProxy;
-		this.timeout = timeout;
-		
-		this.initServer();
+	public static Server create(String endpoint, int timeout, boolean useProxy) {
+		return new Server(endpoint, timeout, useProxy);
 	}
 
 	/**
-	 * Constructor.
+	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 * @param timeout The timeout in milliseconds.
 	 */
-	public Server(String endpoint, int timeout) {
-
-		this.serverEndpointString = endpoint;
-		this.timeout = timeout;
-		
-		this.initServer();
+	public static Server create(String endpoint, int timeout) {
+		return new Server(endpoint, timeout, false);
 	}
 
 	/**
-	 * Constructor.
+	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 */
-	public Server(String endpoint) {
-		
-		this.serverEndpointString = endpoint;
-		
-		this.initServer();
+	public static Server create(String endpoint) {
+		return new Server(endpoint, 0, false);
 	}
 	
 	private void initServer() {

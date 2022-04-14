@@ -129,10 +129,10 @@ public class Request {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = new Server(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
+			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
 		}
 		else {
-			starterServer = new Server(requesterServerEndpoint, 0, false);	
+			starterServer = Server.create(requesterServerEndpoint, 0, false);	
 		}
 		
 		// Iterate the instances to find the id

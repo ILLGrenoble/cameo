@@ -39,7 +39,7 @@ public class TestCancel {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, 0, useProxy);
 		
 		try {
 			// Test This.cancelAll.

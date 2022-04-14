@@ -51,10 +51,10 @@ public class SubscriberApp {
 		
 		// The server endpoint is the first argument.
 		if (args.length > 1) {
-			server = new Server(args[0]);
+			server = Server.create(args[0]);
 		}
 		else {	
-			server = new Server(This.getEndpoint());
+			server = Server.create(This.getEndpoint());
 		}
 		
 		if (This.isAvailable() && server.isAvailable()) {
