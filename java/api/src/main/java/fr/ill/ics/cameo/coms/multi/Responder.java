@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms.multi;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.ResponderCreationException;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderImpl;
@@ -28,34 +29,33 @@ import fr.ill.ics.cameo.messages.Messages;
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-public class Responder {
+public class Responder implements IObject {
 	
+	private String dealerEndpoint;
 	private ResponderImpl impl;
-	//private ResponderWaiting waiting = new ResponderWaiting(this);
 	
-	private Responder() {
+	private Responder(String dealerEndpoint) {
+		this.dealerEndpoint = dealerEndpoint;
 		this.impl = ImplFactory.createMultiResponder();
-		
-		//waiting.add();
 	}
-	
-	private void init(String endpoint) throws ResponderCreationException {
 
-		// Init with the responder socket.
-		impl.init(endpoint);
-	}
-	
 	/**
 	 * Creates a new responder.
 	 * @param router The router.
 	 * @return A new Responder object.
 	 */
 	static public Responder create(ResponderRouter router) throws ResponderCreationException {
-		
-		Responder responder = new Responder();
-		responder.init(router.getDealerEndpoint());
-		
-		return responder;
+		return new Responder(router.getDealerEndpoint());
+	}
+	
+	/**
+	 * Initializes the responder.
+	 */
+	@Override
+	public void init() {
+
+		// Init with the responder socket.
+		impl.init(dealerEndpoint);
 	}
 	
 	/**
@@ -97,6 +97,7 @@ public class Responder {
 	/**
 	 * Terminates the communication.
 	 */
+	@Override
 	public void terminate() {
 		
 		//waiting.remove();

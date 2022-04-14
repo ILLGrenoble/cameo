@@ -17,7 +17,6 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -86,6 +85,7 @@ public class TestBasicRequester {
 				
 				// Create the responder.
 				fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {
@@ -105,9 +105,6 @@ public class TestBasicRequester {
 				
 				responder.terminate();
 			}
-		}
-		catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
 		}
 		finally {
 			server.terminate();

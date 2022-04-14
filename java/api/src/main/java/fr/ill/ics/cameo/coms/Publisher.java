@@ -118,6 +118,7 @@ public class Publisher {
 		try {
 			// Create the responder.
 			responder = Responder.create(RESPONDER_PREFIX + name);
+			responder.init();
 		
 			// Loop until the number of subscribers is reached.
 			int counter = 0;

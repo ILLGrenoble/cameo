@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
 		cout << "Creating router" << endl;
 
 		router = coms::multi::ResponderRouter::create("responder");
+		router->init();
 	}
 	catch (const coms::ResponderCreationException& e) {
 		cout << "Responder error" << endl;
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]) {
 			cout << "Creating responder" << endl;
 
 			unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+			responder->init();
 
 			cout << "Created responder" << endl;
 

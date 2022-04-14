@@ -187,6 +187,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a responder.
 		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+		responder->init();
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -211,6 +212,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a responder.
 		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+		responder->init();
 
 		// Start thread.
 		thread responderThread([&] {
@@ -256,7 +258,10 @@ int main(int argc, char *argv[]) {
 		cout << "Creating multi responder" << endl;
 
 		unique_ptr<coms::multi::ResponderRouter> router = coms::multi::ResponderRouter::create("responder");
+		router->init();
+
 		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+		responder->init();
 
 		std::thread routerThread([&] {
 			router->run();

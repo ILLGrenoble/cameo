@@ -27,6 +27,7 @@ print("Requester application is", applicationName)
 print("Creating responder")
 
 responder = cameopy.BasicResponder.create("responder")
+responder.init()
 
 N = 5
 

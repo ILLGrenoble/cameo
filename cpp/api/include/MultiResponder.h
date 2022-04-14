@@ -124,7 +124,7 @@ private:
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-class ResponderRouter {
+class ResponderRouter : public Object {
 
 	friend class Responder;
 	friend class Request;
@@ -134,12 +134,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~ResponderRouter();
-
-	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
+	~ResponderRouter() override;
 
 	/**
 	 * Returns the responder router with name.
@@ -147,6 +142,17 @@ public:
 	 * \return The new ResponderRouter object.
 	 */
 	static std::unique_ptr<ResponderRouter> create(const std::string &name);
+
+	/**
+	 * Initializes the responder router.
+	 * \throws ResponderCreationException if the responder cannot be initialized.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Sets the polling time.
@@ -194,7 +200,6 @@ public:
 
 private:
 	ResponderRouter(const std::string &name);
-	void init(const std::string &name);
 
 	const std::string& getDealerEndpoint() const;
 
@@ -212,7 +217,7 @@ private:
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-class Responder {
+class Responder : public Object {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
@@ -221,12 +226,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~Responder();
-
-	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
+	~Responder() override;
 
 	/**
 	 * Creates a new responder.
@@ -234,6 +234,16 @@ public:
 	 * \return A new Responder object.
 	 */
 	static std::unique_ptr<Responder> create(const ResponderRouter& router);
+
+	/**
+	 * Initializes the responder.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Receives a request. This is a blocking command until a Request is received.
@@ -259,11 +269,11 @@ public:
 	std::string toString() const;
 
 private:
-	Responder();
-	void init(const std::string &endpoint);
+	Responder(const std::string& dealerEndpoint);
 
 	void reply(const std::string& type, const std::string& response);
 
+	std::string m_dealerEndpoint;
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };

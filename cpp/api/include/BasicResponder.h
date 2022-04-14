@@ -125,7 +125,7 @@ private:
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-class Responder {
+class Responder : public Object {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
@@ -134,12 +134,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~Responder();
-
-	/**
-	 * Terminates the communication.
-	 */
-	void terminate();
+	~Responder() override;
 
 	/**
 	 * Returns the responder with name.
@@ -147,6 +142,17 @@ public:
 	 * \return A new Responder object.
 	 */
 	static std::unique_ptr<Responder> create(const std::string &name);
+
+	/**
+	 * Initializes the responder.
+	 * \throws ResponderCreationException if the responder cannot be initialized.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
 
 	/**
 	 * Returns the name.
@@ -189,7 +195,6 @@ public:
 
 private:
 	Responder(const std::string &name);
-	void init(const std::string &name);
 
 	void reply(const std::string& type, const std::string& response);
 

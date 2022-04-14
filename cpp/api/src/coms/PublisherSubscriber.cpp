@@ -107,6 +107,7 @@ bool Publisher::waitForSubscribers() {
 
 	try {
 		m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
+		m_responder->init();
 
 		// Loop until the number of subscribers is reached.
 		int counter = 0;

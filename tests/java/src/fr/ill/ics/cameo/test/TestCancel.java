@@ -254,6 +254,7 @@ public class TestCancel {
 				
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -289,6 +290,7 @@ public class TestCancel {
 				
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 
 				// Start thread.
 				Thread responderThread = new Thread(new Runnable() {
@@ -354,7 +356,10 @@ public class TestCancel {
 			{
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+				router.init();
+				
 				final fr.ill.ics.cameo.coms.multi.Responder responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+				responder.init();
 
 				Thread routerThread = new Thread(new Runnable() {
 					@Override
@@ -387,8 +392,6 @@ public class TestCancel {
 				responderThread.join();
 				routerThread.join();
 			}
-			
-			
 		}
 		catch (RemoteException e) {
 			System.err.println("Error: " + e.getMessage());

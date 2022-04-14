@@ -177,6 +177,7 @@ def testResponder():
     print("Creating basic responder and waiting for requests")
     
     responder = cameopy.BasicResponder.create("responder")
+    responder.init()
     
     # Start cancel thread.
     t = threading.Thread(target=cancelResponder, args=(responder,))
@@ -197,6 +198,7 @@ def testRequester():
     print("Creating basic responder and requester")
     
     responder = cameopy.BasicResponder.create("responder")
+    responder.init()
     
     # Start reponder thread.
     tr = threading.Thread(target=loopResponder, args=(responder,))

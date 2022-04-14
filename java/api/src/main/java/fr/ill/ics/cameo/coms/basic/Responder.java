@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms.basic;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -30,7 +31,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-public class Responder {
+public class Responder implements IObject {
 	
 	private String name;
 	private ResponderImpl impl;
@@ -46,8 +47,22 @@ public class Responder {
 		
 		waiting.add();
 	}
+
+	/**
+	 * Returns the responder with name.
+	 * @param name The name.
+	 * @return A new Responder object.
+	 */
+	static public Responder create(String name) throws ResponderCreationException {
+		return new Responder(name);
+	}
 	
-	private void init(String name) throws ResponderCreationException {
+	/**
+	 * Initializes the responder.
+	 * @throws ResponderCreationException if the responder cannot be created.
+	 */
+	@Override
+	public void init() throws ResponderCreationException {
 
 		// Set the key.
 		key = KEY + "-" + name;
@@ -66,20 +81,7 @@ public class Responder {
 			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
-	
-	/**
-	 * Returns the responder with name.
-	 * @param name The name.
-	 * @return A new Responder object.
-	 */
-	static public Responder create(String name) throws ResponderCreationException {
 		
-		Responder responder = new Responder(name);
-		responder.init(name);
-		
-		return responder;
-	}
-	
 	/**
 	 * Gets the name.
 	 * @return The name. 
@@ -127,6 +129,7 @@ public class Responder {
 	/**
 	 * Terminates the communication.
 	 */
+	@Override
 	public void terminate() {
 		
 		try {

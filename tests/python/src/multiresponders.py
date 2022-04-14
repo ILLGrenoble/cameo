@@ -26,6 +26,7 @@ def responderProcess(id):
     print("Creating responder")
     
     responder = cameopy.MultiResponder.create(router)
+    responder.init()
     responders.append(responder)
     
     print("Created responder")
@@ -43,6 +44,7 @@ def responderProcess(id):
 print("Creating router")
 
 router = cameopy.MultiResponderRouter.create("responder")
+router.init()
 
 print("Created router")
 

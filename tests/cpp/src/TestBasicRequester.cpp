@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
 			cout << "Creating responder" << endl;
 
 			responder = coms::basic::Responder::create("responder");
+			responder->init();
 		}
 		catch (const coms::ResponderCreationException& e) {
 			cout << "Responder error" << endl;

@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.ResponderCreationException;
 
@@ -44,6 +43,7 @@ public class MultiResponders {
 			
 			// Create the router.
 			fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+			router.init();
 
 			System.out.println("Created router");
 			
@@ -69,6 +69,7 @@ public class MultiResponders {
 							System.out.println("Creating responder");
 							
 							responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+							responder.init();
 							
 							System.out.println("Created responder");
 						}
@@ -106,9 +107,6 @@ public class MultiResponders {
 			
 			// Terminate the router.
 			router.terminate();
-		}
-		catch (RemoteException e) {
-			System.out.println("Responder error");
 		}
 		finally {
 			This.terminate();			

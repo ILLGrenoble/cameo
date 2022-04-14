@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.messages.Messages;
@@ -38,6 +37,7 @@ public class BasicResponder {
 			
 			// Create the responder.
 			fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+			responder.init();
 			
 			// Set the state.
 			This.setRunning();
@@ -98,11 +98,8 @@ public class BasicResponder {
 			
 			// Terminate the responder.
 			responder.terminate();
-			
-		} catch (RemoteException e) {
-			System.out.println("Responder error");
-			
-		} finally {
+		}
+		finally {
 			This.terminate();			
 		}
 		

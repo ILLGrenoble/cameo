@@ -288,6 +288,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("create", &basic::Responder::create,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("init", &basic::Responder::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &basic::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &basic::Responder::getName)
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
@@ -325,6 +326,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def_static("create", &multi::ResponderRouter::create,
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
+		.def("init", &multi::ResponderRouter::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &multi::ResponderRouter::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("setPollingTime", &multi::ResponderRouter::setPollingTime,
 				"value"_a)
@@ -339,6 +341,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def_static("create", &multi::Responder::create,
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
+		.def("init", &multi::Responder::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &multi::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &multi::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())

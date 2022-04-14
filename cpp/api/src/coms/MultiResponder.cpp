@@ -151,10 +151,10 @@ void ResponderRouter::setPollingTime(int value) {
 	m_impl->setPollingTime(value);
 }
 
-void ResponderRouter::init(const std::string &name) {
+void ResponderRouter::init() {
 
 	// Set the key.
-	m_key = KEY + "-" + name;
+	m_key = KEY + "-" + m_name;
 
 	// Set the dealer endpoint.
 	m_dealerEndpoint = std::string("inproc://") + IdGenerator::newStringId();
@@ -172,7 +172,7 @@ void ResponderRouter::init(const std::string &name) {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+		throw ResponderCreationException("A responder with the name \"" + m_name + "\" already exists");
 	}
 }
 
@@ -181,11 +181,7 @@ const std::string& ResponderRouter::getDealerEndpoint() const {
 }
 
 std::unique_ptr<ResponderRouter> ResponderRouter::create(const std::string& name) {
-
-	std::unique_ptr<ResponderRouter> responder(new ResponderRouter(name));
-	responder->init(name);
-
-	return responder;
+	return std::unique_ptr<ResponderRouter>(new ResponderRouter(name));
 }
 
 const std::string& ResponderRouter::getName() const {
@@ -216,7 +212,8 @@ std::string ResponderRouter::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
-Responder::Responder() {
+Responder::Responder(const std::string& dealerEndpoint) :
+	m_dealerEndpoint(dealerEndpoint) {
 
 	m_impl = ImplFactory::createMultiResponder();
 
@@ -232,18 +229,14 @@ void Responder::terminate() {
 	m_impl.reset();
 }
 
-void Responder::init(const std::string &endpoint) {
+void Responder::init() {
 
 	// Init the responder socket.
-	m_impl->init(endpoint);
+	m_impl->init(m_dealerEndpoint);
 }
 
 std::unique_ptr<Responder> Responder::create(const ResponderRouter& router) {
-
-	std::unique_ptr<Responder> responder(new Responder());
-	responder->init(router.getDealerEndpoint());
-
-	return responder;
+	return std::unique_ptr<Responder>(new Responder(router.getDealerEndpoint()));
 }
 
 void Responder::cancel() {

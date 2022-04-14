@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms.multi;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
@@ -31,7 +32,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-public class ResponderRouter {
+public class ResponderRouter implements IObject {
 	
 	private String name;
 	private ResponderRouterImpl impl;
@@ -48,16 +49,13 @@ public class ResponderRouter {
 		
 		waiting.add();
 	}
-	
+
 	/**
-	 * Sets the polling time.
-	 * @param value The value.
+	 * Initializes the responder router.
+	 * @throws ResponderCreationException when the router cannot be created.
 	 */
-	public void setPollingTime(int value) {
-		impl.setPollingTime(value);
-	}
-	
-	private void init(String name) throws ResponderCreationException {
+	@Override
+	public void init() throws ResponderCreationException {
 
 		// Set the key.
 		key = KEY + "-" + name;
@@ -79,24 +77,28 @@ public class ResponderRouter {
 			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
-	
-	String getDealerEndpoint() {
-		return dealerEndpoint;
-	}
-	
+
 	/**
 	 * Returns the responder router with name.
 	 * @param name The name.
 	 * @return The new ResponderRouter object.
 	 */
 	static public ResponderRouter create(String name) throws ResponderCreationException {
-		
-		ResponderRouter responder = new ResponderRouter(name);
-		responder.init(name);
-		
-		return responder;
+		return new ResponderRouter(name);
 	}
 	
+	/**
+	 * Sets the polling time.
+	 * @param value The value.
+	 */
+	public void setPollingTime(int value) {
+		impl.setPollingTime(value);
+	}
+	
+	String getDealerEndpoint() {
+		return dealerEndpoint;
+	}
+		
 	/**
 	 * Returns the name of the responder.
 	 * @return The name.
@@ -130,6 +132,7 @@ public class ResponderRouter {
 	/**
 	 * Terminates the communication.
 	 */
+	@Override
 	public void terminate() {
 		
 		try {

@@ -7,6 +7,7 @@ this = cameopy.This
 this.init(sys.argv)
 
 responder = cameopy.Responder.create("the-responder")
+responder.init()
 print("Created responder", responder.getName())
 
 this.setRunning()

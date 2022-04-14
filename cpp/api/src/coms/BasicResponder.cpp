@@ -147,10 +147,10 @@ void Responder::terminate() {
 	}
 }
 
-void Responder::init(const std::string &name) {
+void Responder::init() {
 
 	// Set the key.
-	m_key = KEY + "-" + name;
+	m_key = KEY + "-" + m_name;
 
 	// Init the reponder socket.
 	m_impl->init(StringId::from(This::getId(), m_key));
@@ -165,16 +165,12 @@ void Responder::init(const std::string &name) {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+		throw ResponderCreationException("A responder with the name \"" + m_name + "\" already exists");
 	}
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
-
-	std::unique_ptr<Responder> responder(new Responder(name));
-	responder->init(name);
-
-	return responder;
+	return std::unique_ptr<Responder>(new Responder(name));
 }
 
 const std::string& Responder::getName() const {

@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.examples;
 
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.basic.Request;
 import fr.ill.ics.cameo.coms.basic.Responder;
@@ -41,6 +40,7 @@ public class ResponderApp {
 		try {
 			// Create the responder.
 			responder = Responder.create("the-responder");
+			responder.init();
 
 			System.out.println("Created responder " + responder);
 			
@@ -62,11 +62,8 @@ public class ResponderApp {
 				// Reply.
 				request.replyString("done");
 			}
-						
-		} catch (RemoteException e) {
-			System.out.println("Responder error");
-			
-		} finally {
+		}
+		finally {
 			// Do not forget to terminate This and the responder.
 			responder.terminate();
 			This.terminate();			
