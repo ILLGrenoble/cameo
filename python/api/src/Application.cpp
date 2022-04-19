@@ -45,6 +45,10 @@ PYBIND11_MODULE(cameopy, m) {
 	m.attr("STOPPED")            = STOPPED;
 	m.attr("KILLED")             = KILLED;
 
+	// Exceptions
+	py::register_exception<AppException>(m, "AppException");
+	py::register_exception<AppStartException>(m, "AppStartException");
+	py::register_exception<AppConnectException>(m, "AppConnectException");
 
 	// Important note:
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.

@@ -29,6 +29,9 @@ target_link_libraries(testserver PRIVATE Cameo::cameo-api-cpp)
 add_executable(testbadendpoint src/TestBadEndpoint.cpp)
 target_link_libraries(testbadendpoint PRIVATE Cameo::cameo-api-cpp)
 
+add_executable(testappexceptions src/TestAppExceptions.cpp)
+target_link_libraries(testappexceptions PRIVATE Cameo::cameo-api-cpp)
+
 add_executable(simple src/Simple.cpp)
 target_link_libraries(simple PRIVATE Cameo::cameo-api-cpp)
 

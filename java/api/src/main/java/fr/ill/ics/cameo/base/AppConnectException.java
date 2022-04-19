@@ -19,7 +19,7 @@ package fr.ill.ics.cameo.base;
 /**
  * Exception when starting an App.
  */
-public class AppConnectException extends RuntimeException {
+public class AppConnectException extends AppException {
 
 	private static final long serialVersionUID = 733970395937458035L;
 

@@ -37,7 +37,7 @@ public:
 /**
  * Exception when starting an App.
  */
-class AppStartException : public RemoteException {
+class AppStartException : public AppException {
 
 public:
 	/**
@@ -50,7 +50,7 @@ public:
 /**
  * Exception when connecting an App.
  */
-class AppConnectException : public RemoteException {
+class AppConnectException : public AppException {
 
 public:
 	/**

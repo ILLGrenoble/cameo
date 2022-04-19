@@ -23,11 +23,11 @@ AppException::AppException(const std::string& message) :
 }
 
 AppStartException::AppStartException(const std::string& message) :
-	RemoteException(message) {
+	AppException(message) {
 }
 
 AppConnectException::AppConnectException(const std::string& message) :
-	RemoteException(message) {
+	AppException(message) {
 }
 
 }

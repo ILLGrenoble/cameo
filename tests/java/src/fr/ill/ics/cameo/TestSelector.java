@@ -100,6 +100,7 @@ public class TestSelector {
 	public static ArrayList<String> getJavaTests() {
 		ArrayList<String> apps = new ArrayList<String>();
 		
+		apps.add("testappexceptionsjava");
 		apps.add("testsimplejava");
 		apps.add("testveryfastjava");
 		apps.add("teststopjava");
@@ -123,7 +124,8 @@ public class TestSelector {
 	
 	public static ArrayList<String> getCppTests() {
 		ArrayList<String> apps = new ArrayList<String>();
-		
+	
+		apps.add("testappexceptionscpp");
 		apps.add("testsimplecpp");
 		apps.add("testveryfastcpp");
 		apps.add("teststopcpp");
@@ -148,6 +150,7 @@ public class TestSelector {
 	public static ArrayList<String> getPythonTests() {
 		ArrayList<String> apps = new ArrayList<String>();
 		
+		apps.add("testappexceptionspy");		
 		apps.add("testsimplepy");
 		apps.add("testveryfastpy");
 		apps.add("teststoppy");
