@@ -96,7 +96,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("isAvailable", &This::isAvailable,
 	    		"timeout"_a = 10000,
 	    		py::call_guard<py::gil_scoped_release>()) //, py::arg("timeout") = 1000) // this does not work!
-	    .def_static("isStopping", &This::isStopping, py::call_guard<py::gil_scoped_release>())
+	    .def_static("isStopping", &This::isStopping)
 	    .def_static("handleStop", &This::handleStop,
 	    		"function"_a,
 				"stoppingTime"_a = -1,
@@ -125,7 +125,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("receive", &OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("hasEnded", &OutputStreamSocket::hasEnded, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &OutputStreamSocket::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &OutputStreamSocket::isCanceled)
 		.def("__str__", &OutputStreamSocket::toString,
 				py::call_guard<py::gil_scoped_release>());
 
@@ -179,11 +179,9 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("isAvailable", py::overload_cast<int>(&Server::isAvailable, py::const_),
 				"timeout"_a,
 				py::call_guard<py::gil_scoped_release>())
-
 		.def("start", py::overload_cast<const std::string&, int>(&Server::start),
 				"name"_a, "options"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
-
 		.def("start", py::overload_cast<const std::string&, const std::vector<std::string>&, int>(&Server::start),
 				"name"_a, "args"_a, "options"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
@@ -214,7 +212,6 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &Server::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-
 	py::class_<Publisher>(m, "Publisher")
 	    .def_static("create", &Publisher::create,
 	    		"name"_a,
@@ -222,9 +219,9 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &Publisher::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Publisher::terminate, py::call_guard<py::gil_scoped_release>())
-	    .def("getName", &Publisher::getName, py::call_guard<py::gil_scoped_release>())
+	    .def("getName", &Publisher::getName)
 	    .def("cancel", &Publisher::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &Publisher::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &Publisher::isCanceled)
 	    .def("send", &Publisher::send,
 	    		"data"_a,
 	    		py::call_guard<py::gil_scoped_release>())
@@ -269,7 +266,7 @@ PYBIND11_MODULE(cameopy, m) {
 				 return tupleResult;
 			}, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &Subscriber::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &Subscriber::isCanceled)
 		.def("__str__", &Subscriber::toString,
 					py::call_guard<py::gil_scoped_release>());
 
@@ -304,7 +301,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("terminate", &basic::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getName", &basic::Responder::getName)
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &basic::Responder::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &basic::Responder::isCanceled)
 		.def("receive", &basic::Responder::receive, py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &basic::Responder::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -344,7 +341,7 @@ PYBIND11_MODULE(cameopy, m) {
 				"value"_a)
 		.def("getName", &multi::ResponderRouter::getName)
 		.def("cancel", &multi::ResponderRouter::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &multi::ResponderRouter::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &multi::ResponderRouter::isCanceled)
 		.def("run", &multi::ResponderRouter::run, py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &multi::ResponderRouter::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -356,7 +353,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("init", &multi::Responder::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &multi::Responder::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &multi::Responder::cancel, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &multi::Responder::isCanceled, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &multi::Responder::isCanceled)
 		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &multi::Responder::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -391,7 +388,7 @@ PYBIND11_MODULE(cameopy, m) {
 
 	    .def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
-	    .def("isCanceled", &Requester::isCanceled, py::call_guard<py::gil_scoped_release>())
+	    .def("isCanceled", &Requester::isCanceled)
         .def("hasTimedout", &Requester::hasTimedout)
 		.def("__str__", &Requester::toString,
 				py::call_guard<py::gil_scoped_release>());
