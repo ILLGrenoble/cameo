@@ -161,7 +161,7 @@ public class Console {
 		}
 		
 		// Add the tcp:// prefix if necessary.
-		if (!endpoint.startsWith("tcp://")) {
+		if (!endpoint.contains("://")) {
 			endpoint = "tcp://" + endpoint;
 		}
 		
