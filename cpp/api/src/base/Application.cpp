@@ -640,10 +640,6 @@ const std::string& App::getName() const {
 	return EventListener::m_name;
 }
 
-void App::setErrorMessage(const std::string& message) {
-	m_errorMessage = message;
-}
-
 void App::setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket) {
 	if (socket) {
 		m_outputStreamSocket = std::move(socket);
@@ -693,20 +689,11 @@ bool App::hasResult() const {
 	return m_hasResult;
 }
 
-bool App::exists() const {
-	return (m_id != -1);
-}
-
-const std::string& App::getErrorMessage() const {
-	return m_errorMessage;
-}
-
 bool App::stop() {
 	try {
 		Response response = m_server->stop(m_id, false);
-
-	} catch (const ConnectionTimeout& e) {
-		m_errorMessage = e.what();
+	}
+	catch (const ConnectionTimeout& e) {
 		return false;
 	}
 
@@ -716,9 +703,8 @@ bool App::stop() {
 bool App::kill() {
 	try {
 		Response response = m_server->stop(m_id, true);
-
-	} catch (const ConnectionTimeout& e) {
-		m_errorMessage = e.what();
+	}
+	catch (const ConnectionTimeout& e) {
 		return false;
 	}
 
@@ -729,11 +715,6 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting(std::bind(&App::cancelWaitFor, this));
-
-	if (!exists()) {
-		// The application was not launched.
-		return m_lastState;
-	}
 
 	// Test the terminal state.
 	if (m_lastState == SUCCESS

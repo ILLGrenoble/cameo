@@ -43,10 +43,6 @@ public class Subscriber {
 		
 		try {
 			App publisherApplication = server.connect(applicationName);
-			if (!publisherApplication.exists()) {
-				System.err.println("Publisher error");
-				System.exit(-1);
-			}
 			
 			System.out.println("Subscribing publisher...");
 			fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");

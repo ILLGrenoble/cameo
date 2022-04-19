@@ -65,13 +65,6 @@ int main(int argc, char *argv[]) {
 
 			// Start the application.
 			unique_ptr<App> subscriberApplication = server->start(applicationName, applicationArgs);
-
-			if (subscriberApplication->exists()) {
-				cout << "Started application " << *subscriberApplication << endl;
-			}
-			else {
-				cout << "Cannot start subscriber application" << endl;
-			}
 		}
 
 		// Sleep for 1s to let the subscribers wait.

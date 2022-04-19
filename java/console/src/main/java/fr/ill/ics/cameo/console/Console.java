@@ -26,6 +26,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
@@ -533,14 +534,13 @@ public class Console {
 			System.out.println("Application name is missing.");
 			System.exit(1);
 		}
-		
-		App result = server.start(applicationName, applicationArgs);
 
-		if (result.exists()) {
-			System.out.println("Started " + result.getNameId() + ".");			
+		try {
+			App result = server.start(applicationName, applicationArgs);
+			System.out.println("Started " + result.getNameId() + ".");
 		}
-		else {
-			System.out.println("Cannot start " + applicationName + ": " + result.getErrorMessage() + ".");
+		catch (AppException e) {
+			System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
 		}
 	}
 
@@ -668,51 +668,50 @@ public class Console {
 			System.exit(1);
 		}
 		
-		// then start the application
-		final App app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
-		final String appName = app.getName();
-		int appId = app.getId();
-		final String appNameId = app.getNameId();
-		
-		if (app.exists()) {
+		try {
+			// then start the application
+			final App app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
+			final String appName = app.getName();
+			int appId = app.getId();
+			final String appNameId = app.getNameId();
+			
 			System.out.println("Started " + appNameId + ".");
-		}
-		else {
-			System.out.println("Cannot start " + applicationName + ": " + app.getErrorMessage() + ".");
-			return;			
-		}
-		
-		Thread shutdownHook = new Thread(new Runnable() {
-			public void run() {
-				
-				// create a new Services object in case the shutdown hook happens during the termination
-				// of the main object
-				Server server = Server.create(endpoint);
-				server.init();
-				server.isAvailable();
-				
-				List<App> applications = server.connectAll(appName);
-				for (App application : applications) {
-					if (application.getId() == appId) {
-						application.kill();
-						application.waitFor();
-						System.out.println("Killed " + appNameId + ".");
+			
+			Thread shutdownHook = new Thread(new Runnable() {
+				public void run() {
+					
+					// create a new Services object in case the shutdown hook happens during the termination
+					// of the main object
+					Server server = Server.create(endpoint);
+					server.init();
+					server.isAvailable();
+					
+					List<App> applications = server.connectAll(appName);
+					for (App application : applications) {
+						if (application.getId() == appId) {
+							application.kill();
+							application.waitFor();
+							System.out.println("Killed " + appNameId + ".");
+						}
 					}
+	
+					// never forget to terminate the server to properly release JeroMQ objects
+					// otherwise the termination of the application will block
+					server.terminate();
 				}
-
-				// never forget to terminate the server to properly release JeroMQ objects
-				// otherwise the termination of the application will block
-				server.terminate();
-			}
-		});
-		
-		Runtime.getRuntime().addShutdownHook(shutdownHook);
-		
-		// Start the threads and wait for them and the app.
-		int state = startThreadsAndWaitFor(app, shutdownHook);
-		
-		// Finish the application.
-		finishApplication(state, appNameId, app.getExitCode());
+			});
+			
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+			
+			// Start the threads and wait for them and the app.
+			int state = startThreadsAndWaitFor(app, shutdownHook);
+			
+			// Finish the application.
+			finishApplication(state, appNameId, app.getExitCode());
+		}
+		catch (AppException e) {
+			System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
+		}
 	}
 	
 	private void processConnect() {
@@ -728,10 +727,11 @@ public class Console {
 		try {
 			applicationId = Integer.parseInt(applicationName);
 			
-			// We can connect to the application with the id.
-			app = server.connect(applicationId, Option.OUTPUTSTREAM);
-			
-			if (!app.exists()) {
+			try {
+				// We can connect to the application with the id.
+				app = server.connect(applicationId, Option.OUTPUTSTREAM);
+			}
+			catch (AppException e) {
 				System.out.println("Cannot connect : there is no application executing with id " + applicationId + ".");
 				return;
 			}
@@ -759,14 +759,13 @@ public class Console {
 					return;
 				}
 				else {
-					// Start the application as the option 'start' is true.
-					app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);		
-					
-					if (app.exists()) {
+					try {
+						// Start the application as the option 'start' is true.
+						app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
 						System.out.println("Started " + app.getNameId() + ".");
 					}
-					else {
-						System.out.println("Cannot start " + applicationName + " : " + app.getErrorMessage() + ".");
+					catch (AppException e) {
+						System.out.println("Cannot start " + applicationName + " : " + e.getMessage() + ".");
 						return;
 					}
 				}

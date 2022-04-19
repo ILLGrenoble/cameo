@@ -79,12 +79,7 @@ public class TestSubscriber {
 					// Start the subscriber applications that can subscribe whereas the publisher is not created.
 					App subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
 					
-					if (subscriberApplication.exists()) {
-						System.out.println("Started application " + subscriberApplication);
-					}
-					else {
-						System.out.println("Cannot start subscriber application");
-					}
+					System.out.println("Started application " + subscriberApplication);
 				}
 				
 				// Sleep for 1s to let the subscribers wait.

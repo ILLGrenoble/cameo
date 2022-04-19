@@ -140,6 +140,7 @@ public:
 	 * \param args The arguments passed to the executable.
 	 * \param options The options.
 	 * \return The App object representing the remote application.
+	 * \throws AppStartException when the application cannot be started.
 	 */
 	std::unique_ptr<App> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
 
@@ -148,6 +149,7 @@ public:
 	 * \param name The name.
 	 * \param options The options.
 	 * \return The App object representing the remote application.
+	 * \throws AppStartException when the application cannot be started.
 	 */
 	std::unique_ptr<App> start(const std::string& name, int options = 0);
 
@@ -164,6 +166,7 @@ public:
 	 * \param name The name.
 	 * \param options The options.
 	 * \return The App object representing the remote application.
+	 * \throws AppConnectException if there is no running application.
 	 */
 	std::unique_ptr<App> connect(const std::string& name, int options = 0);
 
@@ -172,6 +175,7 @@ public:
 	 * \param id The id.
 	 * \param options The options.
 	 * \return The App object representing the remote application.
+	 * \throws AppConnectException if there is no running application.
 	 */
 	std::unique_ptr<App> connect(int id, int options = 0);
 

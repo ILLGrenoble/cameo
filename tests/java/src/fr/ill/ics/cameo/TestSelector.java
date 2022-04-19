@@ -7,6 +7,7 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
@@ -63,10 +64,9 @@ public class TestSelector {
 	}
 	
 	public static void startApplication(Server server, String appName, String[] appArgs) {
-		
-		App instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
-		if (instance.exists()) {
+		try {
+			App instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
 			// Start output thread.
 			OutputStreamSocket streamSocket = instance.getOutputStreamSocket();
@@ -92,7 +92,7 @@ public class TestSelector {
 			
 			System.out.println("*** Finished " + appName + " ***");
 		}
-		else {
+		catch (AppException e) {
 			System.out.println("*** No application ***");
 		}
 	}

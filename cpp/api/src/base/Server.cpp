@@ -234,7 +234,7 @@ std::unique_ptr<App> Server::start(const std::string& name, const std::vector<st
 
 		int value = response[message::RequestResponse::VALUE].GetInt();
 		if (value == -1) {
-			instance->setErrorMessage(response[message::RequestResponse::MESSAGE].GetString());
+			throw AppStartException(response[message::RequestResponse::MESSAGE].GetString());
 		}
 		else {
 			instance->setId(value);
@@ -245,7 +245,7 @@ std::unique_ptr<App> Server::start(const std::string& name, const std::vector<st
 		}
 	}
 	catch (const ConnectionTimeout& e) {
-		instance->setErrorMessage(e.what());
+		throw AppStartException(e.what());
 	}
 
 	return instance;
@@ -335,8 +335,7 @@ std::unique_ptr<App> Server::connect(const std::string& name, int options) {
 	AppArray instances = connectAll(name, options);
 
 	if (instances.size() == 0) {
-		std::unique_ptr<App> instance = makeInstance();
-		return instance;
+		throw AppConnectException(std::string("No application with name ") + name + " is running.");
 	}
 
 	return std::move(instances[0]);
@@ -380,7 +379,7 @@ std::unique_ptr<App> Server::connect(int id, int options) {
 		}
 	}
 
-	return makeInstance();
+	throw AppConnectException(std::string("No application with id ") + std::to_string(id) + " is running.");
 }
 
 void Server::killAllAndWaitFor(const std::string& name) {

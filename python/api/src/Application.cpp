@@ -123,8 +123,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getNameId", &App::getNameId)
 	    //.def("getCom", &App::getCom)
 	    .def("hasResult", &App::hasResult)
-	    .def("exists", &App::exists)
-	    .def("getErrorMessage", &App::getErrorMessage)
 	    .def("stop", &App::stop, py::call_guard<py::gil_scoped_release>())
 	    .def("kill", &App::kill, py::call_guard<py::gil_scoped_release>())
 	    .def("waitFor", py::overload_cast<>(&App::waitFor), py::call_guard<py::gil_scoped_release>())

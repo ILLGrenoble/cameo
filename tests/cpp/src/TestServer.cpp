@@ -44,15 +44,15 @@ int main(int, char *[]) {
 		cout << c << endl;
 	}
 
-	unique_ptr<App> instance = server->start("simplecpp");
+	try {
+		unique_ptr<App> instance = server->start("simplecpp");
+		State state = instance->waitFor();
 
-	if (!instance->exists()) {
-		cout << "App does not exist" << endl;
+		cout << "Terminated simple with state " << toString(state) << endl;
 	}
-
-	State state = instance->waitFor();
-
-	cout << "Terminated simple with state " << toString(state) << endl;
+	catch (const AppException& e) {
+		cout << "Cannot start application" << endl;
+	}
 
 	return 0;
 }

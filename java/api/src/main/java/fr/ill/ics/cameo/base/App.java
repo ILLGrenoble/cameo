@@ -34,7 +34,6 @@ public class App extends EventListener {
 	private Server server;
 	private int id = -1;
 	private OutputStreamSocket outputSocket;
-	private String errorMessage;
 	private int pastStates = 0;
 	private int initialState = State.UNKNOWN;
 	private int lastState = State.UNKNOWN;
@@ -458,10 +457,6 @@ public class App extends EventListener {
 		}
 	}
 	
-	void setErrorMessage(String message) {
-		errorMessage = message;
-	}
-	
 	void setPastStates(int pastStates) {
 		this.pastStates = pastStates;
 	}
@@ -522,22 +517,6 @@ public class App extends EventListener {
 	}
 
 	/**
-	 * Returns the existence of the remote application.
-	 * @return True if the remote application exists which does not mean it is running.
-	 */
-	public boolean exists() {
-		return (id != -1);
-	}
-	
-	/**
-	 * Gets the error message.
-	 * @return The error message.
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	/**
 	 * Returns the exit code.
 	 * @return The exit code.
 	 */
@@ -561,9 +540,8 @@ public class App extends EventListener {
 	public boolean stop() {
 		try {
 			Response response = server.stop(id, false);
-			
-		} catch (ConnectionTimeout e) {
-			errorMessage = e.getMessage();
+		}
+		catch (ConnectionTimeout e) {
 			return false;
 		}
 		
@@ -578,9 +556,8 @@ public class App extends EventListener {
 	public boolean kill() {
 		try {
 			Response response = server.stop(id, true);
-			
-		} catch (ConnectionTimeout e) {
-			errorMessage = e.getMessage();
+		}
+		catch (ConnectionTimeout e) {
 			return false;
 		}
 		
@@ -617,11 +594,6 @@ public class App extends EventListener {
 			// Register the waiting.
 			waiting.add();
 		
-			// Exit if the app does not exist.
-			if (!exists()) {
-				return lastState;
-			}
-			
 			// Test the terminal state.
 			if (lastState == State.SUCCESS
 					|| lastState == State.STOPPED

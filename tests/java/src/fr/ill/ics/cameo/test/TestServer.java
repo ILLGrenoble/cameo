@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import java.util.List;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 
@@ -45,15 +46,16 @@ public class TestServer {
 			System.out.println("  " + c.toString());
 		}
 		
-		App instance = server.start("simplejava");
+		try {
+			App instance = server.start("simplejava");
 		
-		if (!instance.exists()) {
+			int state = instance.waitFor();
+		
+			System.out.println("Terminated simple with state " + State.toString(state));
+		}
+		catch (AppException e) {
 			System.out.println("App does not exist");
 		}
-		
-		int state = instance.waitFor();
-		
-		System.out.println("Terminated simple with state " + State.toString(state));
 		
 		server.terminate();
 	}

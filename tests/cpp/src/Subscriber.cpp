@@ -39,10 +39,6 @@ int main(int argc, char *argv[]) {
 	Server& server = This::getServer();
 
 	unique_ptr<App> publisherApplication = server.connect(applicationName);
-	if (!publisherApplication->exists()) {
-		cout << "Publisher error" << endl;
-		return -1;
-	}
 
 	// Create a subscriber to the application applicationName.
 	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");

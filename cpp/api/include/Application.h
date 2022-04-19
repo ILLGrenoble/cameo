@@ -26,6 +26,7 @@
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
+#include "AppException.h"
 #include "Response.h"
 #include "Context.h"
 #include "TimeCondition.h"
@@ -776,18 +777,6 @@ public:
 	bool hasResult() const;
 
 	/**
-	 * Returns the existence of the remote application.
-	 * \return True if the remote application exists which does not mean it is running.
-	 */
-	bool exists() const;
-
-	/**
-	 * Gets the error message.
-	 * \return The error message.
-	 */
-	const std::string& getErrorMessage() const;
-
-	/**
 	 * Stops the remote application.
 	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
 	 * \return True if the request succeeded.
@@ -879,7 +868,6 @@ private:
 	App(Server* server);
 
 	void setId(int id);
-	void setErrorMessage(const std::string& message);
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
@@ -888,7 +876,6 @@ private:
 	Server* m_server;
 	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;
 	int m_id;
-	std::string m_errorMessage;
 	Com m_com;
 
 	int m_pastStates;
