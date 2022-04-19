@@ -33,7 +33,7 @@ public class PublisherLoop {
 			fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher", 1);
 			
 			// Synchronize with subscribers.
-			publisher.waitForSubscribers();
+			publisher.init();
 			
 			System.out.println("Synchronized with the subscriber");
 			

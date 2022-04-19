@@ -70,6 +70,7 @@ public:
 
 	/**
 	 * Initializes the publisher.
+	 * Waits for the subscribers if their number is greater than 0. In that case init() is a blocking call.
 	 */
 	void init() override;
 
@@ -85,15 +86,15 @@ public:
 	const std::string& getName() const;
 
 	/**
-	 * Returns true if the wait succeeds or false if it was canceled.
-	 * \return True if succeeds.
+	 * Cancels the init() call in another thread.
 	 */
-	bool waitForSubscribers();
+	void cancel();
 
 	/**
-	 * Cancels the waitForSubscribers() call in another thread.
+	 * Returns true if is canceled.
+	 * \return True if is canceled.
 	 */
-	void cancelWaitForSubscribers();
+	bool isCanceled() const;
 
 	/**
 	 * Sends a message in one part.
@@ -134,12 +135,15 @@ public:
 private:
 	Publisher(const std::string &name, int numberOfSubscribers);
 
+	bool waitForSubscribers();
+
 	std::string m_name;
 	int m_numberOfSubscribers;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<basic::Responder> m_responder;
+	bool m_canceled;
 };
 
 ///////////////////////////////////////////////////////////////////////////

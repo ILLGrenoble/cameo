@@ -40,6 +40,7 @@ public class Publisher {
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
 	private Responder responder = null;
+	private boolean canceled = false;
 	
 	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 	public static final String PUBLISHER_PORT = "publisher_port";
@@ -57,7 +58,7 @@ public class Publisher {
 		waiting.add();
 	}
 	
-	private void init(String name) throws PublisherCreationException {
+	public void init() throws PublisherCreationException {
 		
 		// Set the key.
 		key = KEY + "-" + name;
@@ -76,6 +77,11 @@ public class Publisher {
 		catch (KeyAlreadyExistsException e) {
 			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
 		}
+		
+		// Wait for the subscribers.
+		if (numberOfSubscribers > 0) {
+			waitForSubscribers();
+		}
 	}
 
 	/**
@@ -85,11 +91,7 @@ public class Publisher {
 	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
-		
-		Publisher publisher = new Publisher(name, numberOfSubscribers);
-		publisher.init(name);
-		
-		return publisher;
+		return new Publisher(name, numberOfSubscribers);
 	}
 
 	/**
@@ -113,7 +115,7 @@ public class Publisher {
 	 * Returns true if the wait succeeds or false if it was canceled.
 	 * @return True if the wait succeeds or false if it was canceled.
 	 */
-	public boolean waitForSubscribers() {
+	private boolean waitForSubscribers() {
 		
 		try {
 			// Create the responder.
@@ -159,12 +161,21 @@ public class Publisher {
 	}
 	
 	/**
-	 * Cancels the waitForSubscribers() call in another thread.
+	 * Cancels the init() call in another thread.
 	 */
-	public void cancelWaitForSubscribers() {
+	public void cancel() {
 		if (responder != null) {
+			canceled = true;
 			responder.cancel();
 		}
+	}
+	
+	/**
+	 * Returns true if is canceled.
+	 * @return True if is canceled.
+	 */
+	public boolean isCanceled() {
+		return canceled;
 	}
 
 	/**

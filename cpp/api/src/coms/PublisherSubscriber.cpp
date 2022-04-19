@@ -44,12 +44,12 @@ const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
-	m_name(name), m_numberOfSubscribers(numberOfSubscribers) {
+	m_name(name), m_numberOfSubscribers(numberOfSubscribers), m_canceled(false) {
 
 	m_impl = ImplFactory::createPublisher();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Publisher::cancelWaitForSubscribers, this)));
+	m_waiting.reset(new Waiting(std::bind(&Publisher::cancel, this)));
 }
 
 Publisher::~Publisher() {
@@ -88,6 +88,11 @@ void Publisher::init() {
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		throw PublisherCreationException("A publisher with the name \"" + m_name + "\" already exists");
+	}
+
+	// Wait for the subscribers.
+	if (m_numberOfSubscribers > 0) {
+		waitForSubscribers();
 	}
 }
 
@@ -139,11 +144,16 @@ bool Publisher::waitForSubscribers() {
 	}
 }
 
-void Publisher::cancelWaitForSubscribers() {
+void Publisher::cancel() {
 
 	if (m_responder) {
+		m_canceled = true;
 		m_responder->cancel();
 	}
+}
+
+bool Publisher::isCanceled() const {
+	return m_canceled;
 }
 
 void Publisher::send(const std::string& data) const {

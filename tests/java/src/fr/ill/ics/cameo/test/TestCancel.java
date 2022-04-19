@@ -122,7 +122,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		publisher.cancelWaitForSubscribers();	
+				    		publisher.cancel();	
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -133,11 +133,11 @@ public class TestCancel {
 				
 				System.out.println("Wait for subscribers");
 				
-				boolean synced = publisher.waitForSubscribers();
+				publisher.init();
 							
 				cancelThread.join();
 				
-				System.out.println("Synchronization with the subscriber " + synced);
+				System.out.println("Synchronization with the subscriber " + !publisher.isCanceled());
 				
 				publisher.terminate();
 			}

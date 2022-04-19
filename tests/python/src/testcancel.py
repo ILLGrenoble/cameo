@@ -96,13 +96,12 @@ def testCancelWaitForSubscribers():
     print("Creating publisher and waiting for 1 subscriber...")
 
     publisher = cameopy.Publisher.create("publisher", 1)
-    publisher.init()
 
     # Start thread.
     t = threading.Thread(target=cancelWaitForSubscribers, args=(publisher,))
     t.start()
 
-    synced = publisher.waitForSubscribers()
+    publisher.init()
 
     t.join()
 

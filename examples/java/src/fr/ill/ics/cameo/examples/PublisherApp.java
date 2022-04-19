@@ -52,9 +52,8 @@ public class PublisherApp {
 		try {
 			// Create the publisher not synchronized.
 			publisher = Publisher.create("the-publisher", numberOfSubscribers);
+			publisher.init();
 			System.out.println("Created publisher " + publisher);
-			
-			publisher.waitForSubscribers();
 			System.out.println("Synchronized with " + numberOfSubscribers + " subscriber(s)");
 			
 			// Set the state.

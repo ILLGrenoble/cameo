@@ -86,25 +86,24 @@ int main(int argc, char *argv[]) {
 		cancelThread.join();
 	}
 
-	// Test cancelWaitForSubscribers.
+	// Test cancel
 	{
 		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
 		shared_ptr<coms::Publisher> publisher(coms::Publisher::create("publisher", 1));
-		publisher->init();
 
 		// Start thread.
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(1));
-			publisher->cancelWaitForSubscribers();
+			publisher->cancel();
 		});
 
-		bool synced = publisher->waitForSubscribers();
+		publisher->init();
 
 		cancelThread.join();
 
-		cout << "Synchronization with the subscriber " << synced << endl;
+		cout << "Subscriber canceled " << publisher->isCanceled() << endl;
 	}
 
 	// Test the killing of the application.

@@ -36,7 +36,7 @@ public class PublisherWaiting extends Waiting {
 	
 	@Override
 	public void cancel() {
-		publisher.cancelWaitForSubscribers();
+		publisher.cancel();
 	}
 
 	@Override
