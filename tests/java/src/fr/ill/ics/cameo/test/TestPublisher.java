@@ -20,7 +20,7 @@ import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.SubscriberCreationException;
+import fr.ill.ics.cameo.coms.SubscriberCreateException;
 
 
 public class TestPublisher {
@@ -88,7 +88,7 @@ public class TestPublisher {
 				// Terminate the subscriber.
 				subscriber.terminate();
 			}
-		} catch (SubscriberCreationException e) {
+		} catch (SubscriberCreateException e) {
 			System.out.println("Cannot create subscriber");
 			
 		} finally {

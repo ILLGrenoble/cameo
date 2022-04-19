@@ -37,14 +37,14 @@ class Responder;
 /**
  * Exception for a publisher creation.
  */
-class PublisherCreationException : public RemoteException {
+class PublisherCreateException : public RemoteException {
 
 public:
 	/**
 	 * Constructor.
 	 * \param message The message.
 	 */
-	PublisherCreationException(const std::string& message);
+	PublisherCreateException(const std::string& message);
 };
 
 /**
@@ -152,13 +152,13 @@ private:
 /**
  * Exception for a subscriber creation.
  */
-class SubscriberCreationException : public RemoteException {
+class SubscriberCreateException : public RemoteException {
 
 public:
 	/**
 	 * Constructor.
 	 */
-	SubscriberCreationException(const std::string& message);
+	SubscriberCreateException(const std::string& message);
 };
 
 /**
@@ -185,7 +185,7 @@ public:
 
 	/**
 	 * Initializes the subscriber.
-	 * \throws SubscriberCreationException if the subscriber cannot be created.
+	 * \throws SubscriberCreateException if the subscriber cannot be created.
 	 */
 	void init() override;
 

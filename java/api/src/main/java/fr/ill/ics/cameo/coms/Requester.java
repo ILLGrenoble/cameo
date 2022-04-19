@@ -62,16 +62,16 @@ public class Requester implements IRemoteObject, ICancelable {
 	 * @param responderName The responder name.
 	 * @return A new Requester object.
 	 */
-	static public Requester create(App app, String responderName) throws RequesterCreationException {
+	static public Requester create(App app, String responderName) throws RequesterCreateException {
 		return new Requester(app, responderName);
 	}
 
 	/**
 	 * Initializes the requester.
-	 * @throws RequesterCreationException if the requester cannot be created.
+	 * @throws RequesterCreateException if the requester cannot be created.
 	 */
 	@Override
-	public void init() throws RequesterCreationException {
+	public void init() throws RequesterCreateException {
 		
 		this.appName = app.getName();
 		this.appId = app.getId();
@@ -100,7 +100,7 @@ public class Requester implements IRemoteObject, ICancelable {
 			impl.init(endpoint, StringId.from(appId, key));
 		}
 		catch (KeyValueGetterException e) {
-			throw new RequesterCreationException("");
+			throw new RequesterCreateException("");
 		}
 	}
 

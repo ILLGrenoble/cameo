@@ -14,28 +14,52 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_RESPONDERCREATIONEXCEPTION_H_
-#define CAMEO_RESPONDERCREATIONEXCEPTION_H_
+#ifndef CAMEO_APPEXCEPTION_H_
+#define CAMEO_APPEXCEPTION_H_
 
 #include "RemoteException.h"
 
 namespace cameo {
-namespace coms {
 
 /**
- * Exception for a responder creation.
+ * Exception for an App.
  */
-class ResponderCreationException : public RemoteException {
+class AppException : public RemoteException {
 
 public:
 	/**
 	 * Constructor.
 	 * \param message The message.
 	 */
-	ResponderCreationException(const std::string& message);
+	AppException(const std::string& message);
 };
 
-}
+/**
+ * Exception when starting an App.
+ */
+class AppStartException : public RemoteException {
+
+public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
+	AppStartException(const std::string& message);
+};
+
+/**
+ * Exception when connecting an App.
+ */
+class AppConnectException : public RemoteException {
+
+public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
+	AppConnectException(const std::string& message);
+};
+
 }
 
 #endif

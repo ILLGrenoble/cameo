@@ -14,20 +14,28 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms;
+#ifndef CAMEO_RESPONDERCREATIONEXCEPTION_H_
+#define CAMEO_RESPONDERCREATIONEXCEPTION_H_
+
+#include "RemoteException.h"
+
+namespace cameo {
+namespace coms {
 
 /**
  * Exception for a responder creation.
  */
-public class ResponderCreationException extends RuntimeException {
-	
-	private static final long serialVersionUID = 770038622378735273L;
+class ResponderCreateException : public RemoteException {
 
+public:
 	/**
 	 * Constructor.
-	 * @param message The message.
+	 * \param message The message.
 	 */
-	public ResponderCreationException(String message) {
-		super(message);
-	}
+	ResponderCreateException(const std::string& message);
+};
+
 }
+}
+
+#endif

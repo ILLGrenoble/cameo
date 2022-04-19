@@ -14,15 +14,20 @@
  * limitations under the Licence.
  */
 
-#include "ResponderCreationException.h"
+package fr.ill.ics.cameo.coms;
 
-namespace cameo {
-namespace coms {
+/**
+ * Exception for a subscriber creation.
+ */
+public class SubscriberCreateException extends RuntimeException {
 
-ResponderCreationException::ResponderCreationException(const std::string& message) :
-	RemoteException(message) {
+	private static final long serialVersionUID = -7302321626481573911L;
+
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
+	public SubscriberCreateException(String message) {
+		super(message);
+	}
 }
-
-}
-}
-

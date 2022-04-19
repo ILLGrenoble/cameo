@@ -14,20 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms;
+#include "../../include/ResponderCreateException.h"
 
-/**
- * Exception for a requester creation.
- */
-public class RequesterCreationException extends RuntimeException {
-	
-	private static final long serialVersionUID = -192329899899759388L;
+namespace cameo {
+namespace coms {
 
-	/**
-	 * Constructor.
-	 * @param message The message.
-	 */
-	public RequesterCreationException(String message) {
-		super(message);
-	}
+ResponderCreateException::ResponderCreateException(const std::string& message) :
+	RemoteException(message) {
 }
+
+}
+}
+

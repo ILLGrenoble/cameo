@@ -30,14 +30,14 @@ class RequesterImpl;
 /**
  * Exception for a requester creation.
  */
-class RequesterCreationException : public RemoteException {
+class RequesterCreateException : public RemoteException {
 
 public:
 	/**
 	 * Constructor.
 	 * \param message The message.
 	 */
-	RequesterCreationException(const std::string& message);
+	RequesterCreateException(const std::string& message);
 };
 
 /**
@@ -63,7 +63,7 @@ public:
 
 	/**
 	 * Initializes the requester.
-	 * \throws RequesterCreationException if the requester cannot be created.
+	 * \throws RequesterCreateException if the requester cannot be created.
 	 */
 	void init() override;
 

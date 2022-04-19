@@ -70,13 +70,10 @@ public class PublisherApp {
 				// Sleep for 1s.
 				Thread.sleep(1000);
 			}
-						
-		} catch (RemoteException e) {
-			System.out.println("Publisher error");
-			
-		} catch (InterruptedException e) {
-						
-		} finally {
+		}
+		catch (InterruptedException e) {
+		}
+		finally {
 			// Terminate the publisher and This.
 			publisher.terminate();
 			This.terminate();			

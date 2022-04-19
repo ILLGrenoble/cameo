@@ -52,11 +52,8 @@ public class Publisher {
 			}
 			
 			publisher.terminate();
-			
-		} catch (RemoteException e) {
-			System.out.println("Publisher error");
-			
-		} finally {
+		}
+		finally {
 			This.terminate();			
 		}
 		

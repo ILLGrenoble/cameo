@@ -53,7 +53,7 @@ public class Subscriber implements IObject, ICancelable {
 		waiting.add();
 	}
 	
-	private void synchronize(App app) throws RequesterCreationException {
+	private void synchronize(App app) throws RequesterCreateException {
 		
 		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 		requester.init();
@@ -74,16 +74,16 @@ public class Subscriber implements IObject, ICancelable {
 	 * @param publisherName The name of the publisher.
 	 * @return A new Subscriber object.
 	 */
-	public static Subscriber create(App app, String publisherName) throws SubscriberCreationException {
+	public static Subscriber create(App app, String publisherName) throws SubscriberCreateException {
 		return new Subscriber(app, publisherName);
 	}
 	
 	/**
 	 * Initializes the subscriber.
-	 * @throws SubscriberCreationException if the subscriber cannot be created.
+	 * @throws SubscriberCreateException if the subscriber cannot be created.
 	 */
 	@Override
-	public void init() throws SubscriberCreationException {
+	public void init() throws SubscriberCreateException {
 		
 		this.appName = app.getName();
 		this.appId = app.getId();
@@ -117,8 +117,8 @@ public class Subscriber implements IObject, ICancelable {
 				synchronize(app);
 			}
 		}
-		catch (KeyValueGetterException | RequesterCreationException e) {
-			throw new SubscriberCreationException("Cannot create subscriber");
+		catch (KeyValueGetterException | RequesterCreateException e) {
+			throw new SubscriberCreateException("Cannot create subscriber");
 		}
 	}
 	

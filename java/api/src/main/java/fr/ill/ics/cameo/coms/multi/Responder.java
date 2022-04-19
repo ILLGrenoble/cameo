@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.ResponderCreationException;
+import fr.ill.ics.cameo.coms.ResponderCreateException;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
@@ -45,7 +45,7 @@ public class Responder implements IObject, ICancelable {
 	 * @param router The router.
 	 * @return A new Responder object.
 	 */
-	static public Responder create(ResponderRouter router) throws ResponderCreationException {
+	static public Responder create(ResponderRouter router) throws ResponderCreateException {
 		return new Responder(router.getDealerEndpoint());
 	}
 	

@@ -17,7 +17,7 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.ResponderCreationException;
+import fr.ill.ics.cameo.coms.ResponderCreateException;
 
 
 public class MultiResponders {
@@ -73,7 +73,7 @@ public class MultiResponders {
 							
 							System.out.println("Created responder");
 						}
-						catch (ResponderCreationException e) {
+						catch (ResponderCreateException e) {
 						}
 	
 						for (int i = 0; i < fn; ++i) {

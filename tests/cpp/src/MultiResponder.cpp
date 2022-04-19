@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 		router = coms::multi::ResponderRouter::create("responder");
 		router->init();
 	}
-	catch (const coms::ResponderCreationException& e) {
+	catch (const coms::ResponderCreateException& e) {
 		cout << "Responder error" << endl;
 		return -1;
 	}

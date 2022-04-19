@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 		publisher = coms::Publisher::create("publisher", numberOfSubscribers);
 		publisher->init();
 	}
-	catch (const coms::PublisherCreationException& e) {
+	catch (const coms::PublisherCreateException& e) {
 		cout << "Publisher error" << endl;
 		return -1;
 	}

@@ -23,7 +23,7 @@ import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.ResponderCreationException;
+import fr.ill.ics.cameo.coms.ResponderCreateException;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
@@ -54,16 +54,16 @@ public class Responder implements IObject, ICancelable {
 	 * @param name The name.
 	 * @return A new Responder object.
 	 */
-	static public Responder create(String name) throws ResponderCreationException {
+	static public Responder create(String name) throws ResponderCreateException {
 		return new Responder(name);
 	}
 	
 	/**
 	 * Initializes the responder.
-	 * @throws ResponderCreationException if the responder cannot be created.
+	 * @throws ResponderCreateException if the responder cannot be created.
 	 */
 	@Override
-	public void init() throws ResponderCreationException {
+	public void init() throws ResponderCreateException {
 
 		// Set the key.
 		key = KEY + "-" + name;
@@ -79,7 +79,7 @@ public class Responder implements IObject, ICancelable {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
-			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+			throw new ResponderCreateException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
 		

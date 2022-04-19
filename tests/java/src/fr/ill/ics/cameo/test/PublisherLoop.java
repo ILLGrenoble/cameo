@@ -49,11 +49,8 @@ public class PublisherLoop {
 				} catch (InterruptedException e) {
 				}
 			}
-			
-		} catch (RemoteException e) {
-			System.out.println("Publisher error");
-			
-		} finally {
+		}
+		finally {
 			This.terminate();			
 		}
 		

@@ -397,9 +397,6 @@ public class TestCancel {
 				routerThread.join();
 			}
 		}
-		catch (RemoteException e) {
-			System.err.println("Error: " + e.getMessage());
-		}
 		catch (InterruptedException e) {
 		}
 		finally {

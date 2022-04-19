@@ -13,7 +13,7 @@ def cancelWaitFor(instance):
 
 def cancelWaitForSubscribers(publisher):
     time.sleep(1)
-    publisher.cancelWaitForSubscribers()
+    publisher.cancel()
 
 def killApplication(app):
     time.sleep(1)
@@ -105,7 +105,7 @@ def testCancelWaitForSubscribers():
 
     t.join()
 
-    print("Synchronization with the subscriber", synced)
+    print("Synchronization with the subscriber", not publisher.isCanceled())
 
 
 def testKillApplication():

@@ -33,7 +33,7 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-PublisherCreationException::PublisherCreationException(const std::string& message) :
+PublisherCreateException::PublisherCreateException(const std::string& message) :
 	RemoteException(message) {
 }
 
@@ -87,7 +87,7 @@ void Publisher::init() {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw PublisherCreationException("A publisher with the name \"" + m_name + "\" already exists");
+		throw PublisherCreateException("A publisher with the name \"" + m_name + "\" already exists");
 	}
 
 	// Wait for the subscribers.
@@ -139,7 +139,7 @@ bool Publisher::waitForSubscribers() {
 
 		return !canceled;
 	}
-	catch (const ResponderCreationException& e) {
+	catch (const ResponderCreateException& e) {
 		return false;
 	}
 }
@@ -184,7 +184,7 @@ std::string Publisher::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-SubscriberCreationException::SubscriberCreationException(const std::string& message) :
+SubscriberCreateException::SubscriberCreateException(const std::string& message) :
 	RemoteException(message) {
 }
 
@@ -259,7 +259,7 @@ void Subscriber::init() {
 		}
 	}
 	catch (...) {
-		throw SubscriberCreationException("Cannot create subscriber");
+		throw SubscriberCreateException("Cannot create subscriber");
 	}
 }
 

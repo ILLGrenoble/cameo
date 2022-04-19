@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 		responder->init();
 		std::cout << "Created responder " << *responder << std::endl;
 	}
-	catch (const coms::ResponderCreationException& e) {
+	catch (const coms::ResponderCreateException& e) {
 		std::cout << "Responder error" << std::endl;
 		return -1;
 	}

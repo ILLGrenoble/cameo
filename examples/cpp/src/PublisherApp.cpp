@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 		publisher->init();
 		std::cout << "Created publisher " << *publisher << std::endl;
 	}
-	catch (const coms::PublisherCreationException& e) {
+	catch (const coms::PublisherCreateException& e) {
 		std::cout << "Publisher error" << std::endl;
 		return -1;
 	}

@@ -18,7 +18,7 @@
 #define CAMEO_COMS_MULTI_RESPONDER_H_
 
 #include "Application.h"
-#include "ResponderCreationException.h"
+#include "ResponderCreateException.h"
 
 namespace cameo {
 namespace coms {
@@ -145,7 +145,7 @@ public:
 
 	/**
 	 * Initializes the responder router.
-	 * \throws ResponderCreationException if the responder cannot be initialized.
+	 * \throws ResponderCreateException if the responder cannot be initialized.
 	 */
 	void init() override;
 

@@ -59,7 +59,7 @@ public class Publisher implements ICancelable {
 		waiting.add();
 	}
 	
-	public void init() throws PublisherCreationException {
+	public void init() throws PublisherCreateException {
 		
 		// Set the key.
 		key = KEY + "-" + name;
@@ -76,7 +76,7 @@ public class Publisher implements ICancelable {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
-			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+			throw new PublisherCreateException("A publisher with the name \"" + name + "\" already exists");
 		}
 		
 		// Wait for the subscribers.
@@ -91,7 +91,7 @@ public class Publisher implements ICancelable {
 	 * @param numberOfSubscribers The number of subscribers.
 	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
+	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreateException {
 		return new Publisher(name, numberOfSubscribers);
 	}
 
@@ -100,7 +100,7 @@ public class Publisher implements ICancelable {
 	 * @param name The name.
 	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name) throws PublisherCreationException {
+	static public Publisher create(String name) throws PublisherCreateException {
 		return create(name, 0);
 	}
 
@@ -149,7 +149,7 @@ public class Publisher implements ICancelable {
 			
 			return !responder.isCanceled();
 		}
-		catch (ResponderCreationException e) {
+		catch (ResponderCreateException e) {
 			return false;
 		}
 		finally {

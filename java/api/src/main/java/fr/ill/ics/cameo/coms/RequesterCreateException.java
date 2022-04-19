@@ -17,17 +17,17 @@
 package fr.ill.ics.cameo.coms;
 
 /**
- * Exception for a subscriber creation.
+ * Exception for a requester creation.
  */
-public class SubscriberCreationException extends RuntimeException {
-
-	private static final long serialVersionUID = -7302321626481573911L;
+public class RequesterCreateException extends RuntimeException {
+	
+	private static final long serialVersionUID = -192329899899759388L;
 
 	/**
 	 * Constructor.
 	 * @param message The message.
 	 */
-	public SubscriberCreationException(String message) {
+	public RequesterCreateException(String message) {
 		super(message);
 	}
 }
