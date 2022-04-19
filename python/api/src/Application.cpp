@@ -46,9 +46,19 @@ PYBIND11_MODULE(cameopy, m) {
 	m.attr("KILLED")             = KILLED;
 
 	// Exceptions
+	py::register_exception<InvalidArgumentException>(m, "InvalidArgumentException");
+	py::register_exception<SocketException>(m, "SocketException");
+	py::register_exception<ConnectionTimeout>(m, "ConnectionTimeout");
+
 	py::register_exception<AppException>(m, "AppException");
 	py::register_exception<AppStartException>(m, "AppStartException");
 	py::register_exception<AppConnectException>(m, "AppConnectException");
+
+	py::register_exception<ResponderCreateException>(m, "ResponderCreateException");
+	py::register_exception<RequesterCreateException>(m, "RequesterCreateException");
+
+	py::register_exception<PublisherCreateException>(m, "PublisherCreateException");
+	py::register_exception<SubscriberCreateException>(m, "SubscriberCreateException");
 
 	// Important note:
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.
