@@ -43,7 +43,7 @@ public:
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class Requester : public RemoteObject {
+class Requester : public RemoteObject, public Cancelable {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
@@ -83,6 +83,17 @@ public:
 	 * \return The timeout.
 	 */
 	int getTimeout() const override;
+
+	/**
+	 * Cancels the requester. Unblocks the receive() call in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the requester has been canceled.
+	 * \return True if the requester has been canceled.
+	 */
+	bool isCanceled() const override;
 
 	/**
 	 * Sets the polling time.
@@ -132,17 +143,6 @@ public:
 	 * \return The response or null.
 	 */
 	std::optional<std::string> receive();
-
-	/**
-	 * Cancels the requester. Unblocks the receive() call in another thread.
-	 */
-	void cancel();
-
-	/**
-	 * Returns true if the requester has been canceled.
-	 * \return True if the requester has been canceled.
-	 */
-	bool isCanceled() const;
 
 	/**
 	 * Returns true if the requester has timed out.

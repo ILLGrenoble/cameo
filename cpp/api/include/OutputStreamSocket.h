@@ -17,6 +17,7 @@
 #ifndef CAMEO_OUTPUTSTREAMSOCKET_H_
 #define CAMEO_OUTPUTSTREAMSOCKET_H_
 
+#include "Cancelable.h"
 #include "Event.h"
 #include "Strings.h"
 #include <memory>
@@ -75,7 +76,7 @@ private:
 /**
  * Class defining an output stream socket.
  */
-class OutputStreamSocket {
+class OutputStreamSocket : public Cancelable {
 
 	friend class Server;
 	friend class App;
@@ -89,6 +90,17 @@ public:
 	~OutputStreamSocket();
 
 	/**
+	 * Cancels the receive() waiting call in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the stream has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
 	 * Terminates the communication.
 	 */
 	void terminate();
@@ -100,21 +112,10 @@ public:
 	std::optional<Output> receive();
 
 	/**
-	 * Cancels the receive() waiting call in another thread.
-	 */
-	void cancel();
-
-	/**
 	 * Returns true if the stream ended.
 	 * \return True if ended.
 	 */
 	bool hasEnded() const;
-
-	/**
-	 * Returns true if the stream has been canceled.
-	 * \return True if canceled.
-	 */
-	bool isCanceled() const;
 
 	/**
 	 * Returns a string representation of this application.

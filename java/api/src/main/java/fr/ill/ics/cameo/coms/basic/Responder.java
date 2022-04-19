@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms.basic;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
@@ -31,7 +32,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-public class Responder implements IObject {
+public class Responder implements IObject, ICancelable {
 	
 	private String name;
 	private ResponderImpl impl;
@@ -114,6 +115,7 @@ public class Responder implements IObject {
 	/**
 	 * Cancels the responder waiting in another thread.
 	 */
+	@Override
 	public void cancel() {
 		impl.cancel();			
 	}
@@ -122,6 +124,7 @@ public class Responder implements IObject {
 	 * Returns true if it has been canceled.
 	 * @return True if canceled.
 	 */
+	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}

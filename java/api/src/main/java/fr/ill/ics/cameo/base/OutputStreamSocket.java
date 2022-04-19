@@ -25,7 +25,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 /**
  * Class defining an output stream thread.
  */
-public class OutputStreamSocket {
+public class OutputStreamSocket implements ICancelable {
 	
 	/**
 	 * Class defining an output.
@@ -110,6 +110,23 @@ public class OutputStreamSocket {
 		this.applicationId = id;
 		impl.setApplicationId(id);
 	}
+
+	/**
+	 * Cancels the socket.
+	 */
+	@Override
+	public void cancel() {
+		impl.cancel();
+	}
+	
+	/**
+	 * Returns true if has canceled.
+	 * @return True if has canceled.
+	 */
+	@Override
+	public boolean isCanceled() {
+		return impl.isCanceled();
+	}
 	
 	/**
 	 * Receives an output.
@@ -126,22 +143,7 @@ public class OutputStreamSocket {
 	public boolean hasEnded() {
 		return impl.hasEnded();
 	}
-	
-	/**
-	 * Returns true if has canceled.
-	 * @return True if has canceled.
-	 */
-	public boolean isCanceled() {
-		return impl.isCanceled();
-	}
-	
-	/**
-	 * Cancels the socket.
-	 */
-	public void cancel() {
-		impl.cancel();
-	}
-	
+
 	/**
 	 * Terminates the socket.
 	 */

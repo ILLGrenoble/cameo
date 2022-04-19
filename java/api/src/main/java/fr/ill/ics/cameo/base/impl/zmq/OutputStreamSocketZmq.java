@@ -23,6 +23,7 @@ import org.json.simple.parser.ParseException;
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.RequestSocket;
@@ -160,13 +161,13 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		return ended;
 	}
 	
-	public boolean isCanceled() {
-		return canceled;
-	}
-	
 	public void cancel() {
 		cancelSocket.sendMore(Messages.Event.CANCEL);
 		cancelSocket.send(Messages.Event.CANCEL);
+	}
+	
+	public boolean isCanceled() {
+		return canceled;
 	}
 	
 	public void terminate() {

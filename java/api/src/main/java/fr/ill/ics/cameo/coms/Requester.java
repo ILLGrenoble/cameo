@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.IRemoteObject;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
@@ -33,7 +34,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-public class Requester implements IRemoteObject {
+public class Requester implements IRemoteObject, ICancelable {
 
 	private App app;
 	private String responderName;
@@ -206,6 +207,7 @@ public class Requester implements IRemoteObject {
 	/**
 	 * Cancels the requester. Unblocks the receive() call in another thread.
 	 */
+	@Override
 	public void cancel() {
 		impl.cancel();			
 	}
@@ -214,6 +216,7 @@ public class Requester implements IRemoteObject {
 	 * Returns true if the requester has been canceled.
 	 * @return True if the requester has been canceled.
 	 */
+	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}

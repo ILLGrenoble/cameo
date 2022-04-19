@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
@@ -33,7 +34,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a subscriber.
  */
-public class Subscriber implements IObject {
+public class Subscriber implements IObject, ICancelable {
 	
 	private App app;
 	private String publisherName;
@@ -160,14 +161,6 @@ public class Subscriber implements IObject {
 	public boolean hasEnded() {
 		return impl.hasEnded();
 	}
-	
-	/**
-	 * Returns true if the subscriber has been canceled.
-	 * @return True if the subscriber has been canceled.
-	 */
-	public boolean isCanceled() {
-		return impl.isCanceled();
-	}
 
 	/**
 	 * Returns the binary data nothing if the stream has finished.
@@ -192,12 +185,22 @@ public class Subscriber implements IObject {
 	public byte[][] receiveTwoParts() {
 		return impl.receiveTwoParts();
 	}
-	
+
 	/**
 	 * Cancels the subscriber. Unblocks the receive() call in another thread.
 	 */
+	@Override
 	public void cancel() {
 		impl.cancel();
+	}
+	
+	/**
+	 * Returns true if the subscriber has been canceled.
+	 * @return True if the subscriber has been canceled.
+	 */
+	@Override
+	public boolean isCanceled() {
+		return impl.isCanceled();
 	}
 	
 	/**

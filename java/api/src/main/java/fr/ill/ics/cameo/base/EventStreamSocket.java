@@ -25,7 +25,7 @@ import fr.ill.ics.cameo.strings.Endpoint;
 /**
  * Class defining an event stream socket.
  */
-public class EventStreamSocket {
+public class EventStreamSocket implements ICancelable {
 	
 	private EventStreamSocketImpl impl;
 	
@@ -46,6 +46,23 @@ public class EventStreamSocket {
 	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
 		impl.init(context, endpoint, requestSocket, parser);
 	}
+
+	/**
+	 * Cancels the socket.
+	 */
+	@Override
+	public void cancel() {
+		impl.cancel();
+	}
+	
+	/**
+	 * Returns true if canceled.
+	 * @return True if canceled.
+	 */
+	@Override
+	public boolean isCanceled() {
+		return impl.isCanceled();
+	}
 	
 	/**
 	 * Receives an Event.
@@ -54,22 +71,7 @@ public class EventStreamSocket {
 	public Event receive() {
 		return impl.receive();
 	}
-	
-	/**
-	 * Returns true if canceled.
-	 * @return True if canceled.
-	 */
-	public boolean isCanceled() {
-		return impl.isCanceled();
-	}
-	
-	/**
-	 * Cancels the socket.
-	 */
-	public void cancel() {
-		impl.cancel();
-	}
-
+		
 	/**
 	 * Terminates the socket.
 	 */

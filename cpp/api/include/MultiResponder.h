@@ -124,7 +124,7 @@ private:
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-class ResponderRouter : public Object {
+class ResponderRouter : public Object, public Cancelable {
 
 	friend class Responder;
 	friend class Request;
@@ -155,6 +155,17 @@ public:
 	void terminate() override;
 
 	/**
+	 * Cancels the responder router running in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the responder router has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
 	 * Sets the polling time.
 	 * \param value The value.
 	 */
@@ -172,21 +183,10 @@ public:
 	void run();
 
 	/**
-	 * Cancels the responder router running in another thread.
-	 */
-	void cancel();
-
-	/**
-	 * Returns true if the responder router has been canceled.
-	 * \return True if canceled.
-	 */
-	bool isCanceled() const;
-
-	/**
 	 * Returns a string representation of the responder router.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 	/**
 	 * Constant uuid for the unique responder key.
@@ -217,7 +217,7 @@ private:
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-class Responder : public Object {
+class Responder : public Object, public Cancelable {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
@@ -246,27 +246,27 @@ public:
 	void terminate() override;
 
 	/**
+	 * Cancels the responder waiting in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if it has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
 	 * Receives a request. This is a blocking command until a Request is received.
 	 * \return A Request object.
 	 */
 	std::unique_ptr<Request> receive();
 
 	/**
-	 * Cancels the responder waiting in another thread.
-	 */
-	void cancel();
-
-	/**
-	 * Returns true if it has been canceled.
-	 * \return True if canceled.
-	 */
-	bool isCanceled() const;
-
-	/**
 	 * Returns a string representation of the responder.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 private:
 	Responder(const std::string& dealerEndpoint);

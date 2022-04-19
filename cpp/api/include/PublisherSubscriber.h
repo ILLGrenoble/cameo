@@ -50,7 +50,7 @@ public:
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class Publisher : public Object {
+class Publisher : public Object, public Cancelable {
 
 	friend class cameo::This;
 
@@ -80,21 +80,21 @@ public:
 	void terminate() override;
 
 	/**
-	 * Gets the name.
-	 * \return The name.
-	 */
-	const std::string& getName() const;
-
-	/**
 	 * Cancels the init() call in another thread.
 	 */
-	void cancel();
+	void cancel() override;
 
 	/**
 	 * Returns true if is canceled.
 	 * \return True if is canceled.
 	 */
-	bool isCanceled() const;
+	bool isCanceled() const override;
+
+	/**
+	 * Gets the name.
+	 * \return The name.
+	 */
+	const std::string& getName() const;
 
 	/**
 	 * Sends a message in one part.
@@ -164,7 +164,7 @@ public:
 /**
  * Class defining a subscriber.
  */
-class Subscriber : public Object {
+class Subscriber : public Object, public Cancelable {
 
 	friend class cameo::Server;
 	friend class cameo::App;
@@ -193,6 +193,17 @@ public:
 	 * Terminates the communication.
 	 */
 	void terminate() override;
+
+	/**
+	 * Cancels the subscriber. Unblocks the receive() call in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the subscriber has been canceled.
+	 * \return True if the subscriber has been canceled.
+	 */
+	bool isCanceled() const override;
 
 	/**
 	 * Gets the publisher name.
@@ -225,12 +236,6 @@ public:
 	bool hasEnded() const;
 
 	/**
-	 * Returns true if the subscriber has been canceled.
-	 * \return True if the subscriber has been canceled.
-	 */
-	bool isCanceled() const;
-
-	/**
 	 * Returns a string or nothing if the stream has finished.
 	 * \return The string data or null.
 	 */
@@ -241,11 +246,6 @@ public:
 	 * \return The tuple of string data or null.
 	 */
 	std::optional<std::tuple<std::string, std::string>> receiveTwoParts() const;
-
-	/**
-	 * Cancels the subscriber. Unblocks the receive() call in another thread.
-	 */
-	void cancel();
 
 	/**
 	 * Returns a string representation of the subscriber.

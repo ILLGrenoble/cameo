@@ -125,7 +125,7 @@ private:
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-class Responder : public Object {
+class Responder : public Object, public Cancelable {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
@@ -155,6 +155,17 @@ public:
 	void terminate() override;
 
 	/**
+	 * Cancels the responder waiting in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if it has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
 	 * Returns the name.
 	 * \return The name.
 	 */
@@ -167,21 +178,10 @@ public:
 	std::unique_ptr<Request> receive();
 
 	/**
-	 * Cancels the responder waiting in another thread.
-	 */
-	void cancel();
-
-	/**
-	 * Returns true if it has been canceled.
-	 * \return True if canceled.
-	 */
-	bool isCanceled() const;
-
-	/**
 	 * Returns a string representation of the responder.
 	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 	/**
 	 * Constant uuid for the unique responder key.

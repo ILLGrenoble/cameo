@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -32,7 +33,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-public class Publisher {
+public class Publisher implements ICancelable {
 
 	private String name;
 	private int numberOfSubscribers;
@@ -163,6 +164,7 @@ public class Publisher {
 	/**
 	 * Cancels the init() call in another thread.
 	 */
+	@Override
 	public void cancel() {
 		if (responder != null) {
 			canceled = true;
@@ -174,6 +176,7 @@ public class Publisher {
 	 * Returns true if is canceled.
 	 * @return True if is canceled.
 	 */
+	@Override
 	public boolean isCanceled() {
 		return canceled;
 	}

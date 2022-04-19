@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.coms.multi;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
@@ -32,7 +33,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-public class ResponderRouter implements IObject {
+public class ResponderRouter implements IObject, ICancelable {
 	
 	private String name;
 	private ResponderRouterImpl impl;
@@ -110,6 +111,7 @@ public class ResponderRouter implements IObject {
 	/**
 	 * Cancels the responder router running in another thread.
 	 */
+	@Override
 	public void cancel() {
 		impl.cancel();			
 	}
@@ -118,6 +120,7 @@ public class ResponderRouter implements IObject {
 	 * Returns true if the responder router has been canceled.
 	 * @return True if canceled.
 	 */
+	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
