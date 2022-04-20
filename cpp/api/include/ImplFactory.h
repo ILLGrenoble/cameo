@@ -18,6 +18,7 @@
 #define CAMEO_IMPLFACTORY_H_
 
 #include <memory>
+#include <mutex>
 
 namespace cameo {
 
@@ -49,6 +50,17 @@ class SubscriberImpl;
 class ImplFactory {
 
 public:
+	/**
+	 * Gets the default context implementation.
+	 * \return The default Context object.
+	 */
+	static std::shared_ptr<Context> getDefaultContext();
+
+	/**
+	 * Terminates the default context implementation.
+	 */
+	static void terminateDefaultContext();
+
 	/**
 	 * Creates a context implementation.
 	 * \return A new Context object.
@@ -112,6 +124,10 @@ public:
 	 * \return A new coms::RequesterImpl object.
 	 */
 	static std::unique_ptr<coms::RequesterImpl> createRequester();
+
+private:
+	static std::mutex m_mutex;
+	static std::shared_ptr<Context> m_defaultContext;
 };
 
 }

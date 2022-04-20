@@ -696,7 +696,7 @@ void Server::unregisterEventListener(EventListener * listener) {
 
 void Server::initContext() {
 	// Set the impl.
-	m_context = ImplFactory::createContext();
+	m_context = ImplFactory::getDefaultContext();
 }
 
 void Server::initRequestSocket() {

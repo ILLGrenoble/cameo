@@ -35,6 +35,21 @@ import fr.ill.ics.cameo.coms.impl.zmq.SubscriberZmq;
  */
 public class ImplFactory {
 
+	private static Context context;
+	
+	/**
+	 * Gets the default context.
+	 * @return The default Context object.
+	 */
+	public static synchronized Context getDefaultContext() {
+		
+		if (context == null) {
+			context = new ContextZmq();
+		}
+		
+		return context;
+	}
+
 	/**
 	 * Creates a context.
 	 * @return A Context object.

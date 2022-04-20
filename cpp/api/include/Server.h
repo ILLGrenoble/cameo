@@ -342,7 +342,7 @@ private:
 	int m_subscriberProxyPort;
 	int m_serverStatusPort;
 	int m_statusPort;
-	std::unique_ptr<Context> m_context;
+	std::shared_ptr<Context> m_context;
 	std::unique_ptr<RequestSocket> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;

@@ -49,7 +49,7 @@ public class Server implements IRemoteObject {
 	private int subscriberProxyPort;
 	private int serverStatusPort;
 	private int statusPort;
-	private Context contextImpl;
+	private Context context;
 	private int timeout = 0; // default value because of ZeroMQ design
 	private RequestSocket requestSocket;
 	private JSON.Parser parser = new JSON.Parser();
@@ -162,7 +162,7 @@ public class Server implements IRemoteObject {
 	 */
 	final private void initContext() {
 		
-		contextImpl = ImplFactory.createContext();
+		context = ImplFactory.getDefaultContext();
 		requestSocket = this.createRequestSocket(serverEndpoint.toString(), StringId.CAMEO_SERVER);
 		
 		// Get the status port.
@@ -232,7 +232,7 @@ public class Server implements IRemoteObject {
 	}
 	
 	Context getContext() {
-		return contextImpl;
+		return context;
 	}
 	
 	int getResponderProxyPort() {
@@ -281,21 +281,21 @@ public class Server implements IRemoteObject {
 	
 	RequestSocket createRequestSocket(String endpoint, String responderIdentity) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(contextImpl, endpoint, responderIdentity, timeout, parser);
+		RequestSocket requestSocket = new RequestSocket(context, endpoint, responderIdentity, timeout, parser);
 		
 		return requestSocket;
 	}
 	
 	RequestSocket createRequestSocket(String endpoint, String responderIdentity, int timeout) throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(contextImpl, endpoint, responderIdentity, timeout, parser);
+		RequestSocket requestSocket = new RequestSocket(context, endpoint, responderIdentity, timeout, parser);
 		
 		return requestSocket;
 	}
 	
 	RequestSocket createServerRequestSocket() throws SocketException {
 		
-		RequestSocket requestSocket = new RequestSocket(contextImpl, serverEndpoint.toString(), StringId.CAMEO_SERVER, timeout, parser);
+		RequestSocket requestSocket = new RequestSocket(context, serverEndpoint.toString(), StringId.CAMEO_SERVER, timeout, parser);
 		
 		return requestSocket;
 	}
@@ -346,7 +346,6 @@ public class Server implements IRemoteObject {
 
 		terminateStatusThread();
 		requestSocket.terminate();
-		contextImpl.terminate();
 	}
 	
 	/**
@@ -442,7 +441,7 @@ public class Server implements IRemoteObject {
 		}
 
 		EventStreamSocket eventStreamSocket = new EventStreamSocket();
-		eventStreamSocket.init(contextImpl, serverEndpoint.withPort(statusPort), requestSocket, parser);
+		eventStreamSocket.init(context, serverEndpoint.withPort(statusPort), requestSocket, parser);
 		
 		return eventStreamSocket; 
 	}
@@ -847,7 +846,7 @@ public class Server implements IRemoteObject {
 			port = statusPort;
 		}
 		
-		outputStreamSocket.init(contextImpl, serverEndpoint.withPort(port), requestSocket, parser);
+		outputStreamSocket.init(context, serverEndpoint.withPort(port), requestSocket, parser);
 		
 		return outputStreamSocket; 
 	}
