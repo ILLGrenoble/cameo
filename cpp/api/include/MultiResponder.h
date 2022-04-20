@@ -62,12 +62,6 @@ public:
 	~Request();
 
 	/**
-	 * Gets the object id.
-	 * \return The object id.
-	 */
-	std::string getObjectId() const;
-
-	/**
 	 * Gets the requester endpoint.
 	 * \return The requester endpoint.
 	 */

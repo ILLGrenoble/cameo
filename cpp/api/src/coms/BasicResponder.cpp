@@ -40,17 +40,6 @@ void Request::setResponder(Responder* responder) {
 	m_responder = responder;
 }
 
-std::string Request::getObjectId() const {
-
-	// Local id is missing.
-	return "request:"
-		+ m_requesterApplicationName
-		+ "."
-		+ std::to_string(m_requesterApplicationId)
-		+ "@"
-		+ m_requesterServerEndpoint.toString();
-}
-
 std::string Request::getRequesterEndpoint() const {
 	return m_requesterServerEndpoint.toString();
 }

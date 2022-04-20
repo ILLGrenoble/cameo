@@ -271,7 +271,6 @@ PYBIND11_MODULE(cameopy, m) {
 					py::call_guard<py::gil_scoped_release>());
 
 	py::class_<basic::Request>(m, "BasicRequest")
-		.def("getObjectId", &basic::Request::getObjectId)
 	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
 		.def("get", [](basic::Request* instance) {
 					auto result = instance->get();
@@ -308,7 +307,6 @@ PYBIND11_MODULE(cameopy, m) {
 
 
 	py::class_<multi::Request>(m, "MultiRequest")
-		.def("getObjectId", &multi::Request::getObjectId)
 		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
 		.def("get",
 			[](multi::Request* instance) {
