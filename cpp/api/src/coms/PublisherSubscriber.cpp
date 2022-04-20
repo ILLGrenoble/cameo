@@ -250,7 +250,7 @@ void Subscriber::init() {
 		}
 	}
 	catch (...) {
-		throw InitException("Cannot create subscriber");
+		throw InitException("Cannot initialize subscriber");
 	}
 }
 

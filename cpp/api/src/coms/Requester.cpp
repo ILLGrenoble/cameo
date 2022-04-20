@@ -81,7 +81,7 @@ void Requester::init() {
 		m_impl->init(endpoint, StringId::from(m_appId, m_key));
 	}
 	catch (...) {
-		throw InitException("Cannot create requester");
+		throw InitException("Cannot initialize requester");
 	}
 }
 
