@@ -17,10 +17,9 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.AppException;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.PublisherCreateException;
-import fr.ill.ics.cameo.coms.ResponderCreateException;
 
 
 public class TestAppExceptions {
@@ -71,7 +70,7 @@ public class TestAppExceptions {
 			try {
 				basicResponder2.init();
 			}
-			catch (ResponderCreateException e) {
+			catch (InitException e) {
 				basicResponder2.terminate();
 				System.out.println("Basic responder cannot be created: " + e.getMessage());
 			}
@@ -90,7 +89,7 @@ public class TestAppExceptions {
 			try {
 				multiResponder2.init();
 			}
-			catch (ResponderCreateException e) {
+			catch (InitException e) {
 				multiResponder2.terminate();
 				System.out.println("Multi responder cannot be created: " + e.getMessage());
 			}
@@ -109,7 +108,7 @@ public class TestAppExceptions {
 			try {
 				publisher2.init();
 			}
-			catch (PublisherCreateException e) {
+			catch (InitException e) {
 				publisher2.terminate();
 				System.out.println("Publisher cannot be created: " + e.getMessage());
 			}

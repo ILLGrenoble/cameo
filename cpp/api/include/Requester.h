@@ -28,19 +28,6 @@ class RequesterImpl;
 // Requester
 
 /**
- * Exception for a requester creation.
- */
-class RequesterCreateException : public RemoteException {
-
-public:
-	/**
-	 * Constructor.
-	 * \param message The message.
-	 */
-	RequesterCreateException(const std::string& message);
-};
-
-/**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
 class Requester : public RemoteObject, public Cancelable {
@@ -63,7 +50,7 @@ public:
 
 	/**
 	 * Initializes the requester.
-	 * \throws RequesterCreateException if the requester cannot be created.
+	 * \throws InitException if the requester cannot be created.
 	 */
 	void init() override;
 

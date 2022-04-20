@@ -22,6 +22,7 @@ import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.IRemoteObject;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.basic.Responder;
@@ -62,16 +63,16 @@ public class Requester implements IRemoteObject, ICancelable {
 	 * @param responderName The responder name.
 	 * @return A new Requester object.
 	 */
-	static public Requester create(App app, String responderName) throws RequesterCreateException {
+	static public Requester create(App app, String responderName) {
 		return new Requester(app, responderName);
 	}
 
 	/**
 	 * Initializes the requester.
-	 * @throws RequesterCreateException if the requester cannot be created.
+	 * @throws InitException if the requester cannot be created.
 	 */
 	@Override
-	public void init() throws RequesterCreateException {
+	public void init() throws InitException {
 		
 		this.appName = app.getName();
 		this.appId = app.getId();
@@ -100,7 +101,7 @@ public class Requester implements IRemoteObject, ICancelable {
 			impl.init(endpoint, StringId.from(appId, key));
 		}
 		catch (KeyValueGetterException e) {
-			throw new RequesterCreateException("");
+			throw new InitException("Cannot initialize requester");
 		}
 	}
 

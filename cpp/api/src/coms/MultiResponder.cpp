@@ -162,7 +162,7 @@ void ResponderRouter::init() {
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		m_impl.reset();
-		throw ResponderCreateException("A responder with the name \"" + m_name + "\" already exists");
+		throw InitException("A responder with the name \"" + m_name + "\" already exists");
 	}
 }
 

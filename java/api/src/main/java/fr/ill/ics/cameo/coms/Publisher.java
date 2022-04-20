@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -59,7 +60,11 @@ public class Publisher implements ICancelable {
 		waiting.add();
 	}
 	
-	public void init() throws PublisherCreateException {
+	/**
+	 * Initializes the publisher.
+	 * @throws InitException if the publisher cannot be initialized.
+	 */
+	public void init() throws InitException {
 		
 		// Set the key.
 		key = KEY + "-" + name;
@@ -78,7 +83,7 @@ public class Publisher implements ICancelable {
 		catch (KeyAlreadyExistsException e) {
 			impl.terminate();
 			impl = null;
-			throw new PublisherCreateException("A publisher with the name \"" + name + "\" already exists");
+			throw new InitException("A publisher with the name \"" + name + "\" already exists");
 		}
 		
 		// Wait for the subscribers.
@@ -93,7 +98,7 @@ public class Publisher implements ICancelable {
 	 * @param numberOfSubscribers The number of subscribers.
 	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreateException {
+	static public Publisher create(String name, int numberOfSubscribers) {
 		return new Publisher(name, numberOfSubscribers);
 	}
 
@@ -102,7 +107,7 @@ public class Publisher implements ICancelable {
 	 * @param name The name.
 	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name) throws PublisherCreateException {
+	static public Publisher create(String name) {
 		return create(name, 0);
 	}
 
@@ -151,7 +156,7 @@ public class Publisher implements ICancelable {
 			
 			return !responder.isCanceled();
 		}
-		catch (ResponderCreateException e) {
+		catch (InitException e) {
 			return false;
 		}
 		finally {

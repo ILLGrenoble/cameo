@@ -31,11 +31,6 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-RequesterCreateException::RequesterCreateException(const std::string& message) :
-	RemoteException(message) {
-}
-
-
 Requester::Requester(const App & app, const std::string &responderName) :
 	m_app(app),
 	m_responderName(responderName),
@@ -86,7 +81,7 @@ void Requester::init() {
 		m_impl->init(endpoint, StringId::from(m_appId, m_key));
 	}
 	catch (...) {
-		throw RequesterCreateException("Cannot create requester");
+		throw InitException("Cannot create requester");
 	}
 }
 

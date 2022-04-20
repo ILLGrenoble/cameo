@@ -17,10 +17,10 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.SubscriberCreateException;
 
 
 public class TestPublisher {
@@ -88,10 +88,12 @@ public class TestPublisher {
 				// Terminate the subscriber.
 				subscriber.terminate();
 			}
-		} catch (SubscriberCreateException e) {
+		}
+		catch (InitException e) {
 			System.out.println("Cannot create subscriber");
 			
-		} finally {
+		}
+		finally {
 			server.terminate();
 			This.terminate();
 		}

@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 		publisher = coms::Publisher::create("publisher", 1);
 		publisher->init();
 	}
-	catch (const coms::PublisherCreateException& e) {
+	catch (const InitException& e) {
 		cout << "Publisher error" << endl;
 		return -1;
 	}

@@ -54,11 +54,7 @@ PYBIND11_MODULE(cameopy, m) {
 	py::register_exception<AppStartException>(m, "AppStartException");
 	py::register_exception<AppConnectException>(m, "AppConnectException");
 
-	py::register_exception<ResponderCreateException>(m, "ResponderCreateException");
-	py::register_exception<RequesterCreateException>(m, "RequesterCreateException");
-
-	py::register_exception<PublisherCreateException>(m, "PublisherCreateException");
-	py::register_exception<SubscriberCreateException>(m, "SubscriberCreateException");
+	py::register_exception<InitException>(m, "InitException");
 
 	// Important note:
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.

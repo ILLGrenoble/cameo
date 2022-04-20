@@ -25,7 +25,6 @@ import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Subscriber;
-import fr.ill.ics.cameo.coms.SubscriberCreateException;
 
 public class SubscriberApp {
 

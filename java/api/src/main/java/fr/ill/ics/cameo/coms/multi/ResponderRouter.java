@@ -21,10 +21,10 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.IdGenerator;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.ResponderCreateException;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderRouterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.strings.StringId;
@@ -53,10 +53,10 @@ public class ResponderRouter implements IObject, ICancelable {
 
 	/**
 	 * Initializes the responder router.
-	 * @throws ResponderCreateException when the router cannot be created.
+	 * @throws InitException when the router cannot be initialized.
 	 */
 	@Override
-	public void init() throws ResponderCreateException {
+	public void init() throws InitException {
 
 		// Set the key.
 		key = KEY + "-" + name;
@@ -77,7 +77,7 @@ public class ResponderRouter implements IObject, ICancelable {
 		catch (KeyAlreadyExistsException e) {
 			impl.terminate();
 			impl = null;
-			throw new ResponderCreateException("A responder with the name \"" + name + "\" already exists");
+			throw new InitException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
 
@@ -86,7 +86,7 @@ public class ResponderRouter implements IObject, ICancelable {
 	 * @param name The name.
 	 * @return The new ResponderRouter object.
 	 */
-	static public ResponderRouter create(String name) throws ResponderCreateException {
+	static public ResponderRouter create(String name) {
 		return new ResponderRouter(name);
 	}
 	

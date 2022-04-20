@@ -27,6 +27,7 @@
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
 #include "AppException.h"
+#include "InitException.h"
 #include "Response.h"
 #include "Context.h"
 #include "TimeCondition.h"

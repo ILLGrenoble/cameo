@@ -14,20 +14,20 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms;
+package fr.ill.ics.cameo.base;
 
 /**
- * Exception for a subscriber creation.
+ * Exception for a responder creation.
  */
-public class SubscriberCreateException extends RuntimeException {
-
-	private static final long serialVersionUID = -7302321626481573911L;
+public class InitException extends RuntimeException {
+	
+	private static final long serialVersionUID = 770038622378735273L;
 
 	/**
 	 * Constructor.
 	 * @param message The message.
 	 */
-	public SubscriberCreateException(String message) {
+	public InitException(String message) {
 		super(message);
 	}
 }

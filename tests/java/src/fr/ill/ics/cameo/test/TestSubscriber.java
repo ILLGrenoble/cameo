@@ -19,9 +19,9 @@ package fr.ill.ics.cameo.test;
 import java.util.List;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.PublisherCreateException;
 
 /**
  * The test is not a real test because the subscribers are not synchronized.
@@ -112,7 +112,7 @@ public class TestSubscriber {
 				publisher.terminate();
 			}
 		}
-		catch (PublisherCreateException e) {
+		catch (InitException e) {
 			System.out.println("Publisher error");
 		}
 		finally {

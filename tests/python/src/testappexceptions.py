@@ -31,7 +31,7 @@ basicResponder2 = cameopy.BasicResponder.create("basic-responder")
 
 try:
     basicResponder2.init()
-except cameopy.ResponderCreateException:
+except cameopy.InitException:
     print("Responder cannot be initialized")
   
     
@@ -42,7 +42,7 @@ multiResponder2 = cameopy.MultiResponderRouter.create("multi-responder")
 
 try:
     multiResponder2.init()
-except cameopy.ResponderCreateException:
+except cameopy.InitException:
     print("Responder cannot be initialized")
 
 
@@ -53,5 +53,5 @@ publisher2 = cameopy.Publisher.create("publisher")
 
 try:
     publisher2.init()
-except cameopy.PublisherCreateException:
+except cameopy.InitException:
     print("Publisher cannot be initialized")

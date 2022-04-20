@@ -33,11 +33,6 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-PublisherCreateException::PublisherCreateException(const std::string& message) :
-	RemoteException(message) {
-}
-
-
 const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 const std::string Publisher::PUBLISHER_PORT = "publisher_port";
 const std::string Publisher::RESPONDER_PREFIX = "publisher:";
@@ -88,7 +83,7 @@ void Publisher::init() {
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		m_impl.reset();
-		throw PublisherCreateException("A publisher with the name \"" + m_name + "\" already exists");
+		throw InitException("A publisher with the name \"" + m_name + "\" already exists");
 	}
 
 	// Wait for the subscribers.
@@ -140,7 +135,7 @@ bool Publisher::waitForSubscribers() {
 
 		return !canceled;
 	}
-	catch (const ResponderCreateException& e) {
+	catch (const InitException& e) {
 		return false;
 	}
 }
@@ -184,11 +179,6 @@ std::string Publisher::toString() const {
 
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
-
-SubscriberCreateException::SubscriberCreateException(const std::string& message) :
-	RemoteException(message) {
-}
-
 
 Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_app(app),
@@ -260,7 +250,7 @@ void Subscriber::init() {
 		}
 	}
 	catch (...) {
-		throw SubscriberCreateException("Cannot create subscriber");
+		throw InitException("Cannot create subscriber");
 	}
 }
 

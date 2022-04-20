@@ -18,7 +18,6 @@
 #define CAMEO_COMS_BASIC_RESPONDER_H_
 
 #include "Application.h"
-#include "ResponderCreateException.h"
 
 namespace cameo {
 
@@ -139,7 +138,7 @@ public:
 
 	/**
 	 * Initializes the responder.
-	 * \throws ResponderCreateException if the responder cannot be initialized.
+	 * \throws InitException if the responder cannot be initialized.
 	 */
 	void init() override;
 

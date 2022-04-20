@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 	try {
 		basicResponder2->init();
 	}
-	catch (const coms::ResponderCreateException& e) {
+	catch (const InitException& e) {
 		cout << "Basic responder cannot be created: " << e.what() << endl;
 	}
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 	try {
 		multiResponder2->init();
 	}
-	catch (const coms::ResponderCreateException& e) {
+	catch (const InitException& e) {
 		cout << "Multi responder cannot be created: " << e.what() << endl;
 	}
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 	try {
 		publisher2->init();
 	}
-	catch (const coms::PublisherCreateException& e) {
+	catch (const InitException& e) {
 		cout << "Publisher cannot be created: " << e.what() << endl;
 	}
 

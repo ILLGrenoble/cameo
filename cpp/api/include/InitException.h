@@ -14,20 +14,26 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms;
+#ifndef CAMEO_INITEXCEPTION_H_
+#define CAMEO_INITEXCEPTION_H_
+
+#include "RemoteException.h"
+
+namespace cameo {
 
 /**
- * Exception for a requester creation.
+ * Exception for an initialization.
  */
-public class RequesterCreateException extends RuntimeException {
-	
-	private static final long serialVersionUID = -192329899899759388L;
+class InitException : public RemoteException {
 
+public:
 	/**
 	 * Constructor.
-	 * @param message The message.
+	 * \param message The message.
 	 */
-	public RequesterCreateException(String message) {
-		super(message);
-	}
+	InitException(const std::string& message);
+};
+
 }
+
+#endif

@@ -14,15 +14,13 @@
  * limitations under the Licence.
  */
 
-#include "../../include/ResponderCreateException.h"
+#include "InitException.h"
 
 namespace cameo {
-namespace coms {
 
-ResponderCreateException::ResponderCreateException(const std::string& message) :
+InitException::InitException(const std::string& message) :
 	RemoteException(message) {
 }
 
-}
 }
 

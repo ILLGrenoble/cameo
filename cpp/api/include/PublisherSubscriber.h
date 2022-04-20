@@ -35,19 +35,6 @@ class Responder;
 // Publisher
 
 /**
- * Exception for a publisher creation.
- */
-class PublisherCreateException : public RemoteException {
-
-public:
-	/**
-	 * Constructor.
-	 * \param message The message.
-	 */
-	PublisherCreateException(const std::string& message);
-};
-
-/**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
 class Publisher : public Object, public Cancelable {
@@ -150,18 +137,6 @@ private:
 // Subscriber
 
 /**
- * Exception for a subscriber creation.
- */
-class SubscriberCreateException : public RemoteException {
-
-public:
-	/**
-	 * Constructor.
-	 */
-	SubscriberCreateException(const std::string& message);
-};
-
-/**
  * Class defining a subscriber.
  */
 class Subscriber : public Object, public Cancelable {
@@ -185,7 +160,7 @@ public:
 
 	/**
 	 * Initializes the subscriber.
-	 * \throws SubscriberCreateException if the subscriber cannot be created.
+	 * \throws InitException if the subscriber cannot be created.
 	 */
 	void init() override;
 

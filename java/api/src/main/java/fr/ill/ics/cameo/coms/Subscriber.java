@@ -19,9 +19,10 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
+import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
@@ -53,7 +54,7 @@ public class Subscriber implements IObject, ICancelable {
 		waiting.add();
 	}
 	
-	private void synchronize(App app) throws RequesterCreateException {
+	private void synchronize(App app) {
 		
 		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 		requester.init();
@@ -74,16 +75,16 @@ public class Subscriber implements IObject, ICancelable {
 	 * @param publisherName The name of the publisher.
 	 * @return A new Subscriber object.
 	 */
-	public static Subscriber create(App app, String publisherName) throws SubscriberCreateException {
+	public static Subscriber create(App app, String publisherName) {
 		return new Subscriber(app, publisherName);
 	}
 	
 	/**
 	 * Initializes the subscriber.
-	 * @throws SubscriberCreateException if the subscriber cannot be created.
+	 * @throws InitException if the subscriber cannot be created.
 	 */
 	@Override
-	public void init() throws SubscriberCreateException {
+	public void init() throws InitException {
 		
 		this.appName = app.getName();
 		this.appId = app.getId();
@@ -117,8 +118,8 @@ public class Subscriber implements IObject, ICancelable {
 				synchronize(app);
 			}
 		}
-		catch (KeyValueGetterException | RequesterCreateException e) {
-			throw new SubscriberCreateException("Cannot create subscriber");
+		catch (KeyValueGetterException e) {
+			throw new InitException("Cannot create subscriber");
 		}
 	}
 	

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 		router = coms::multi::ResponderRouter::create("responder");
 		router->init();
 	}
-	catch (const coms::ResponderCreateException& e) {
+	catch (const InitException& e) {
 		cout << "Responder error" << endl;
 		return -1;
 	}
