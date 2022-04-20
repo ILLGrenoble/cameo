@@ -29,7 +29,7 @@ print("Received request with parts", request.getString(), request.getSecondPart(
 res = request.reply("2nd response")
 
 if not res:
-    print("Error, no timeout expected with", request.getObjectId())    
+    print("Error, no timeout expected with", request)    
 
 
 # Receive third request without receive on the requester side.
@@ -39,7 +39,7 @@ print("Received request", request.getString())
 res = request.reply("3rd response")
 
 if not res:
-    print("Timeout with", request.getObjectId())    
+    print("Timeout with", request)    
 
 # Receive request after timeout.
 request = responder.receive();

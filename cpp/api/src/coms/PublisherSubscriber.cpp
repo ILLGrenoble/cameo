@@ -87,6 +87,7 @@ void Publisher::init() {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
+		m_impl.reset();
 		throw PublisherCreateException("A publisher with the name \"" + m_name + "\" already exists");
 	}
 

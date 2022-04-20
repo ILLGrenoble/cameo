@@ -16,10 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.PublisherCreateException;
+import fr.ill.ics.cameo.coms.ResponderCreateException;
 
 
 public class TestAppExceptions {
@@ -27,12 +28,6 @@ public class TestAppExceptions {
 	public static void main(String[] args) {
 		
 		This.init(args);
-		
-		int numberOfTimes = 1;
-		
-		if (args.length > 1) {
-			numberOfTimes = Integer.parseInt(args[0]);
-		}
 		
 		boolean useProxy = false;
 		String endpoint = "tcp://localhost:11000";
@@ -47,26 +42,78 @@ public class TestAppExceptions {
 		server.init();
 		
 		try {
-			// loop the number of times.
-			for (int i = 0; i < numberOfTimes; ++i) {
-
-				try {
-					// start the application.
-					server.start("fuzz");
-				}
-				catch (AppException e) {
-					System.out.println("Application fuzz cannot be started");
-				}
-				
-				try {
-					// Connect the application.
-					server.connect("fuzz");
-				}
-				catch (AppException e) {
-					System.out.println("Application fuzz cannot be connected");
-				}
-	
+			try {
+				// start the application.
+				server.start("fuzz");
 			}
+			catch (AppException e) {
+				System.out.println("Application fuzz cannot be started");
+			}
+			
+			try {
+				// Connect the application.
+				server.connect("fuzz");
+			}
+			catch (AppException e) {
+				System.out.println("Application fuzz cannot be connected");
+			}
+
+			// Test basic responder.
+			System.out.println("Creating basic responder");
+
+			fr.ill.ics.cameo.coms.basic.Responder basicResponder = fr.ill.ics.cameo.coms.basic.Responder.create("basic-responder");
+			basicResponder.init();
+
+			System.out.println("Created basic responder");
+
+			fr.ill.ics.cameo.coms.basic.Responder basicResponder2 = fr.ill.ics.cameo.coms.basic.Responder.create("basic-responder");
+			
+			try {
+				basicResponder2.init();
+			}
+			catch (ResponderCreateException e) {
+				basicResponder2.terminate();
+				System.out.println("Basic responder cannot be created: " + e.getMessage());
+			}
+			
+
+			// Test multi responder.
+			System.out.println("Creating multi responder");
+
+			fr.ill.ics.cameo.coms.multi.ResponderRouter multiResponder = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("multi-responder");
+			multiResponder.init();
+
+			System.out.println("Created multi responder");
+
+			fr.ill.ics.cameo.coms.multi.ResponderRouter multiResponder2 = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("multi-responder");
+			
+			try {
+				multiResponder2.init();
+			}
+			catch (ResponderCreateException e) {
+				multiResponder2.terminate();
+				System.out.println("Multi responder cannot be created: " + e.getMessage());
+			}
+			
+			
+			// Test publisher.
+			System.out.println("Creating publisher");
+
+			fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher");
+			publisher.init();
+
+			System.out.println("Created publisher");
+
+			fr.ill.ics.cameo.coms.Publisher publisher2 = fr.ill.ics.cameo.coms.Publisher.create("publisher");
+			
+			try {
+				publisher2.init();
+			}
+			catch (PublisherCreateException e) {
+				publisher2.terminate();
+				System.out.println("Publisher cannot be created: " + e.getMessage());
+			}
+			
 		}
 		finally {
 			// Do not forget to terminate the server and application.

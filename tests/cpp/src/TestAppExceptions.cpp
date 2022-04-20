@@ -22,12 +22,6 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	int numberOfTimes = 1;
-
-	if (argc > 2) {
-		numberOfTimes = stoi(argv[1]);
-	}
-
 	This::init(argc, argv);
 
 	bool useProxy = false;
@@ -42,24 +36,76 @@ int main(int argc, char *argv[]) {
 	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
 	server->init();
 
-	// Loop the number of times.
-	for (int i = 0; i < numberOfTimes; ++i) {
+	// Test start.
+	try {
+		// Start the application.
+		unique_ptr<App> app = server->start("fuzz");
+	}
+	catch (const AppException& e) {
+		cout << "Application fuzz cannot be started" << endl;
+	}
 
-		try {
-			// Start the application.
-			unique_ptr<App> app = server->start("fuzz");
-		}
-		catch (const AppException& e) {
-			cout << "Application fuzz cannot be started" << endl;
-		}
+	// Test connect.
+	try {
+		// Connect the application.
+		unique_ptr<App> app = server->connect("fuzz");
+	}
+	catch (const AppException& e) {
+		cout << "Application fuzz cannot be connected" << endl;
+	}
 
-		try {
-			// Connect the application.
-			unique_ptr<App> app = server->connect("fuzz");
-		}
-		catch (const AppException& e) {
-			cout << "Application fuzz cannot be connected" << endl;
-		}
+
+	// Test basic responder.
+	cout << "Creating basic responder" << endl;
+
+	unique_ptr<coms::basic::Responder> basicResponder = coms::basic::Responder::create("basic-responder");
+	basicResponder->init();
+
+	cout << "Created basic responder" << endl;
+
+	unique_ptr<coms::basic::Responder> basicResponder2 = coms::basic::Responder::create("basic-responder");
+
+	try {
+		basicResponder2->init();
+	}
+	catch (const coms::ResponderCreateException& e) {
+		cout << "Basic responder cannot be created: " << e.what() << endl;
+	}
+
+
+	// Test multi responder.
+	cout << "Creating multi responder" << endl;
+
+	unique_ptr<coms::multi::ResponderRouter> multiResponder = coms::multi::ResponderRouter::create("multi-responder");
+	multiResponder->init();
+
+	cout << "Created multi responder" << endl;
+
+	unique_ptr<coms::multi::ResponderRouter> multiResponder2 = coms::multi::ResponderRouter::create("multi-responder");
+
+	try {
+		multiResponder2->init();
+	}
+	catch (const coms::ResponderCreateException& e) {
+		cout << "Multi responder cannot be created: " << e.what() << endl;
+	}
+
+
+	// Test publisher.
+	cout << "Creating publisher" << endl;
+
+	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
+	publisher->init();
+
+	cout << "Created publisher" << endl;
+
+	unique_ptr<coms::Publisher> publisher2 = coms::Publisher::create("publisher");
+
+	try {
+		publisher2->init();
+	}
+	catch (const coms::PublisherCreateException& e) {
+		cout << "Publisher cannot be created: " << e.what() << endl;
 	}
 
 	return 0;

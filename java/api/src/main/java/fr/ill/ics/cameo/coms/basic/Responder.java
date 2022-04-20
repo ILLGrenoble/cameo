@@ -79,6 +79,8 @@ public class Responder implements IObject, ICancelable {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
+			impl.terminate();
+			impl = null;
 			throw new ResponderCreateException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
@@ -135,15 +137,17 @@ public class Responder implements IObject, ICancelable {
 	@Override
 	public void terminate() {
 		
-		try {
-			This.getCom().removeKey(key);
+		if (impl != null) {
+			try {
+				This.getCom().removeKey(key);
+			}
+			catch (UndefinedKeyException e) {
+				// No need to treat.
+			}
+			
+			waiting.remove();
+			impl.terminate();
 		}
-		catch (UndefinedKeyException e) {
-			// No need to treat.
-		}
-		
-		waiting.remove();
-		impl.terminate();
 	}
 
 	@Override

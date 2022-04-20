@@ -4,7 +4,6 @@ import cameopy
 this = cameopy.This
 this.init(sys.argv)
 
-numberOfTimes = 1 if len(sys.argv) < 3 else int(sys.argv[1])
 useProxy = False if len(sys.argv) < 4 else (sys.argv[2] == "true") 
 
 endpoint = "tcp://localhost:11000";
@@ -14,14 +13,45 @@ if useProxy:
 server = cameopy.Server.create(endpoint, 0, useProxy)
 server.init()
 
-for i in range(numberOfTimes):
-    try:   
-        server.start("fuzz")
-    except cameopy.AppStartException:
-        print("Application fuzz cannot be started")    
+try:   
+    server.start("fuzz")
+except cameopy.AppStartException:
+    print("Application fuzz cannot be started")    
+
+try:   
+    server.connect("fuzz")    
+except cameopy.AppConnectException:
+    print("Application fuzz cannot be connected")
     
-    try:   
-        server.connect("fuzz")    
-    except cameopy.AppConnectException:
-        print("Application fuzz cannot be connected")
+
+basicResponder = cameopy.BasicResponder.create("basic-responder")
+basicResponder.init()
+
+basicResponder2 = cameopy.BasicResponder.create("basic-responder")
+
+try:
+    basicResponder2.init()
+except cameopy.ResponderCreateException:
+    print("Responder cannot be initialized")
+  
     
+multiResponder = cameopy.MultiResponderRouter.create("multi-responder")
+multiResponder.init()
+
+multiResponder2 = cameopy.MultiResponderRouter.create("multi-responder")
+
+try:
+    multiResponder2.init()
+except cameopy.ResponderCreateException:
+    print("Responder cannot be initialized")
+
+
+publisher = cameopy.Publisher.create("publisher")
+publisher.init()
+
+publisher2 = cameopy.Publisher.create("publisher")
+
+try:
+    publisher2.init()
+except cameopy.PublisherCreateException:
+    print("Publisher cannot be initialized")
