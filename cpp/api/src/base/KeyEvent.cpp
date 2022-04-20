@@ -21,21 +21,21 @@
 namespace cameo {
 
 KeyEvent::KeyEvent(int id, const std::string& name, Status status, const std::string& key, const std::string& value) :
-	Event(id, name),
-	m_status(status),
-	m_key(key),
-	m_value(value) {
+	Event{id, name},
+	m_status{status},
+	m_key{key},
+	m_value{value} {
 }
 
 KeyEvent::KeyEvent(const KeyEvent& event) :
-	Event(event),
-	m_status(event.m_status),
-	m_key(event.m_key),
-	m_value(event.m_value) {
+	Event{event},
+	m_status{event.m_status},
+	m_key{event.m_key},
+	m_value{event.m_value} {
 }
 
 KeyEvent* KeyEvent::clone() {
-	return new KeyEvent(*this);
+	return new KeyEvent{*this};
 }
 
 KeyEvent::Status KeyEvent::getStatus() const {

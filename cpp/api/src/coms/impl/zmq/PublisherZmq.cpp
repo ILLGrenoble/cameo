@@ -25,8 +25,8 @@ namespace cameo {
 namespace coms {
 
 PublisherZmq::PublisherZmq() :
-	m_publisherPort(0),
-	m_ended(false) {
+	m_publisherPort{0},
+	m_ended{false} {
 }
 
 PublisherZmq::~PublisherZmq() {
@@ -38,20 +38,20 @@ void PublisherZmq::init(const std::string& publisherIdentity) {
 	m_publisherIdentity = publisherIdentity;
 
 	// Create a socket for publishing.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
-	m_publisher.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
+	ContextZmq * contextImpl {dynamic_cast<ContextZmq *>(This::getCom().getContext())};
+	m_publisher.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::pub});
 
 	// Connect to the proxy.
-	Endpoint subscriberProxyEndpoint = This::getEndpoint().withPort(This::getCom().getSubscriberProxyPort());
+	Endpoint subscriberProxyEndpoint {This::getEndpoint().withPort(This::getCom().getSubscriberProxyPort())};
 	m_publisher->connect(subscriberProxyEndpoint.toString());
 
-	std::string endpointPrefix("tcp://*:");
+	std::string endpointPrefix {"tcp://*:"};
 
 	// Loop to find an available port for the publisher.
 	while (true) {
 
-		int port = This::getCom().requestPort();
-		std::string pubEndpoint = endpointPrefix + std::to_string(port);
+		int port {This::getCom().requestPort()};
+		std::string pubEndpoint {endpointPrefix + std::to_string(port)};
 
 		try {
 			m_publisher->bind(pubEndpoint.c_str());
@@ -84,11 +84,11 @@ void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher) {
 		// send a STREAM_END message by the publisher socket
-		zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+		zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 		m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-		std::string messageType = createMessageType(message::STREAM_END);
-		zmq::message_t typePart(messageType.c_str(), messageType.length());
+		std::string messageType {createMessageType(message::STREAM_END)};
+		zmq::message_t typePart {messageType.c_str(), messageType.length()};
 		m_publisher->send(typePart, zmq::send_flags::none);
 
 		m_ended = true;
@@ -121,30 +121,30 @@ std::string PublisherZmq::createMessageType(int type) {
 
 void PublisherZmq::publish(const char* data, std::size_t size) {
 
-	zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-	std::string messageType = createMessageType(message::STREAM);
-	zmq::message_t typePart(messageType.c_str(), messageType.length());
+	std::string messageType {createMessageType(message::STREAM)};
+	zmq::message_t typePart {messageType.c_str(), messageType.length()};
 	m_publisher->send(typePart, zmq::send_flags::sndmore);
 
-	zmq::message_t dataPart(data, size);
+	zmq::message_t dataPart {data, size};
 	m_publisher->send(dataPart, zmq::send_flags::none);
 }
 
 void PublisherZmq::publishTwoParts(const char* data1, std::size_t size1, const char* data2, std::size_t size2) {
 
-	zmq::message_t identityPart(m_publisherIdentity.c_str(), m_publisherIdentity.length());
+	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
-	std::string messageType = createMessageType(message::STREAM);
-	zmq::message_t typePart(messageType.c_str(), messageType.length());
+	std::string messageType {createMessageType(message::STREAM)};
+	zmq::message_t typePart {messageType.c_str(), messageType.length()};
 	m_publisher->send(typePart, zmq::send_flags::sndmore);
 
-	zmq::message_t data1Part(data1, size1);
+	zmq::message_t data1Part {data1, size1};
 	m_publisher->send(data1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t data2Part(data2, size2);
+	zmq::message_t data2Part {data2, size2};
 	m_publisher->send(data2Part, zmq::send_flags::none);
 }
 

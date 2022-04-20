@@ -25,7 +25,7 @@ using namespace std;
 namespace cameo {
 
 Waiting::Waiting(Waiting::Function function)
-: m_function(function) {
+: m_function{function} {
 
 	// Add the object in the waiting set if This exists.
 	if (This::m_instance.m_inited) {

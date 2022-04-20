@@ -27,7 +27,7 @@ namespace coms {
 namespace multi {
 
 ResponderZmq::ResponderZmq() :
-	m_canceled(false) {
+	m_canceled{false} {
 }
 
 ResponderZmq::~ResponderZmq() {
@@ -37,13 +37,13 @@ ResponderZmq::~ResponderZmq() {
 void ResponderZmq::init(const std::string& endpoint) {
 
 	// Create a socket REP.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
-	m_responder.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::rep));
+	ContextZmq * contextImpl {dynamic_cast<ContextZmq *>(This::getCom().getContext())};
+	m_responder.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::rep});
 
 	// Connect to the dealer.
 	m_responder->connect(endpoint);
 
-	m_cancelEndpoint = std::string("inproc://") + IdGenerator::newStringId();
+	m_cancelEndpoint = std::string{"inproc://"} + IdGenerator::newStringId();
 	m_responder->bind(m_cancelEndpoint);
 }
 
@@ -54,7 +54,7 @@ void ResponderZmq::cancel() {
 	jsonRequest.pushValue(message::CANCEL);
 
 	// Create a request socket connected directly to the responder.
-	std::unique_ptr<RequestSocket> requestSocket = This::getCom().createRequestSocket(m_cancelEndpoint, "");
+	std::unique_ptr<RequestSocket> requestSocket {This::getCom().createRequestSocket(m_cancelEndpoint, "")};
 	requestSocket->requestJSON(jsonRequest.dump());
 }
 
@@ -64,7 +64,7 @@ bool ResponderZmq::isCanceled() {
 
 std::unique_ptr<Request> ResponderZmq::receive() {
 
-	m_responderIdentity.reset(new zmq::message_t());
+	m_responderIdentity.reset(new zmq::message_t{});
 
 	while (true) {
 
@@ -89,24 +89,24 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 		json::Object jsonRequest;
 		json::parse(jsonRequest, requestPart);
 
-		int type = jsonRequest[message::TYPE].GetInt();
+		int type {jsonRequest[message::TYPE].GetInt()};
 
 		// Create the reply.
 		std::unique_ptr<zmq::message_t> reply;
 
 		if (type == message::REQUEST) {
 
-			std::string name = jsonRequest[message::Request::APPLICATION_NAME].GetString();
-			int id = jsonRequest[message::Request::APPLICATION_ID].GetInt();
-			std::string serverEndpoint = jsonRequest[message::Request::SERVER_ENDPOINT].GetString();
-			int serverProxyPort = jsonRequest[message::Request::SERVER_PROXY_PORT].GetInt();
+			std::string name {jsonRequest[message::Request::APPLICATION_NAME].GetString()};
+			int id {jsonRequest[message::Request::APPLICATION_ID].GetInt()};
+			std::string serverEndpoint {jsonRequest[message::Request::SERVER_ENDPOINT].GetString()};
+			int serverProxyPort {jsonRequest[message::Request::SERVER_PROXY_PORT].GetInt()};
 
 			// Get the second part for the message.
 			zmq::message_t secondPart;
 			if (!m_responder->recv(secondPart, zmq::recv_flags::none).has_value()) {
 				return {};
 			}
-			std::string message1(secondPart.data<char>(), secondPart.size());
+			std::string message1 {secondPart.data<char>(), secondPart.size()};
 			std::string message2;
 
 			// Set message 2 if it exists.
@@ -115,16 +115,16 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 				if (!m_responder->recv(thirdPart, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
-				message2 = std::string(thirdPart.data<char>(), thirdPart.size());
+				message2 = std::string{thirdPart.data<char>(), thirdPart.size()};
 			}
 
 			// Create the request.
-			return std::unique_ptr<Request>(new Request(name,
+			return std::unique_ptr<Request>{new Request{name,
 					id,
 					serverEndpoint,
 					serverProxyPort,
 					message1,
-					message2));
+					message2}};
 		}
 		else if (type == message::CANCEL) {
 			m_canceled = true;
@@ -169,14 +169,14 @@ void ResponderZmq::reply(const std::string& responsePart1, const std::string& re
 
 zmq::message_t * ResponderZmq::responseToRequest() {
 
-	std::string result = createRequestResponse(0, "OK");
+	std::string result {createRequestResponse(0, "OK")};
 
 	return new zmq::message_t(result.c_str(), result.size());
 }
 
 zmq::message_t * ResponderZmq::responseToCancelResponder() {
 
-	std::string result = createRequestResponse(0, "OK");
+	std::string result {createRequestResponse(0, "OK")};
 
 	return new zmq::message_t(result.c_str(), result.size());
 }

@@ -24,8 +24,8 @@
 namespace cameo {
 
 OutputStreamSocketZmq::OutputStreamSocketZmq(const std::string& name) :
-	m_name(name),
-	m_context(nullptr) {
+	m_name{name},
+	m_context{nullptr} {
 }
 
 OutputStreamSocketZmq::~OutputStreamSocketZmq() {
@@ -36,21 +36,18 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 	m_context = dynamic_cast<ContextZmq *>(context);
 
-	std::stringstream cancelEndpoint;
-
-	// We define a unique name that depends on the event stream socket object because there can be many (instances).
-	cancelEndpoint << "inproc://cancel." << IdGenerator::newId();
+	std::string cancelEndpoint {std::string("inproc://" + IdGenerator::newStringId())};
 
 	// Create the sockets.
-	m_cancelSocket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::pub));
-	m_cancelSocket->bind(cancelEndpoint.str());
+	m_cancelSocket = std::unique_ptr<zmq::socket_t>{new zmq::socket_t{m_context->getContext(), zmq::socket_type::pub}};
+	m_cancelSocket->bind(cancelEndpoint);
 
-	m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::sub));
+	m_socket = std::unique_ptr<zmq::socket_t>{new zmq::socket_t{m_context->getContext(), zmq::socket_type::sub}};
 
 	std::vector<std::string> topicsList;
 
 	// Get the topic id.
-	std::string topicId = StringId::from(message::Event::STREAM, m_name);
+	std::string topicId {StringId::from(message::Event::STREAM, m_name)};
 
 	topicsList.push_back(topicId);
 	topicsList.push_back(message::Event::CANCEL);
@@ -60,7 +57,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 	}
 
 	m_socket->connect(endpoint.toString().c_str());
-	m_socket->connect(cancelEndpoint.str().c_str());
+	m_socket->connect(cancelEndpoint.c_str());
 
 	// Wait for the connection to be ready.
 	// Poll subscriber.
@@ -90,7 +87,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 void OutputStreamSocketZmq::send(const std::string& data) {
 
-	zmq::message_t messageData(data.c_str(), data.size());
+	zmq::message_t messageData {data.c_str(), data.size()};
 	m_socket->send(messageData, zmq::send_flags::none);
 }
 
@@ -99,10 +96,10 @@ std::string OutputStreamSocketZmq::receive(bool blocking) {
 	// Use the message interface.
 	zmq::message_t message;
 
-	zmq::recv_flags flags = (blocking ? zmq::recv_flags::none : zmq::recv_flags::dontwait);
+	zmq::recv_flags flags = {(blocking ? zmq::recv_flags::none : zmq::recv_flags::dontwait)};
 	if (m_socket->recv(message, flags).has_value()) {
 		// The message exists.
-		return std::string(message.data<char>(), message.size());
+		return std::string{message.data<char>(), message.size()};
 	}
 
 	return "";
@@ -111,12 +108,12 @@ std::string OutputStreamSocketZmq::receive(bool blocking) {
 void OutputStreamSocketZmq::cancel() {
 
 	if (m_cancelSocket.get() != nullptr) {
-		std::string data(message::Event::CANCEL);
+		std::string data {message::Event::CANCEL};
 
-		zmq::message_t typePart(data.c_str(), data.length());
+		zmq::message_t typePart {data.c_str(), data.length()};
 		m_cancelSocket->send(typePart, zmq::send_flags::sndmore);
 
-		zmq::message_t dataPart(data.c_str(), data.length());
+		zmq::message_t dataPart {data.c_str(), data.length()};
 		m_cancelSocket->send(dataPart, zmq::send_flags::none);
 	}
 }

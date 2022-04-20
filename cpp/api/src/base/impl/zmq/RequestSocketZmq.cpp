@@ -28,7 +28,10 @@ using namespace std;
 namespace cameo {
 
 RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoint, const std::string& responderIdentity) :
-	m_context(dynamic_cast<ContextZmq *>(context)), m_endpoint(endpoint), m_responderIdentity(responderIdentity), m_timeout(0) {
+	m_context{dynamic_cast<ContextZmq *>(context)},
+	m_endpoint{endpoint},
+	m_responderIdentity{responderIdentity},
+	m_timeout{0} {
 
 	init();
 }
@@ -50,7 +53,7 @@ void RequestSocketZmq::setSocketLinger() {
 	// After some tests, the value seems reasonable.
 	// If a Server instance is not reachable, the context that contains the message in timeout will block during this linger period.
 	if (m_timeout > 0) {
-		int lingerValue = 100;
+		int lingerValue {100};
 		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
 	}
 }
@@ -58,11 +61,11 @@ void RequestSocketZmq::setSocketLinger() {
 void RequestSocketZmq::init() {
 
 	// Reset if the socket is null.
-	if (m_socket.get() == nullptr) {
-		m_socket = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(m_context->getContext(), zmq::socket_type::req));
+	if (!m_socket) {
+		m_socket = std::unique_ptr<zmq::socket_t>{new zmq::socket_t{m_context->getContext(), zmq::socket_type::req}};
 
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
-		int value = 0;
+		int value {0};
 		m_socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
 
 		try {
@@ -84,13 +87,13 @@ void RequestSocketZmq::reset() {
 
 std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 
-	int timeout = m_timeout;
+	int timeout {m_timeout};
 	if (overrideTimeout > -1) {
 		timeout = overrideTimeout;
 	}
 
 	if (timeout == -2) {
-		return unique_ptr<zmq::message_t>(nullptr);
+		return {};
 	}
 
 	if (timeout > 0) {
@@ -122,7 +125,7 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 		return {};
 	}
 
-	unique_ptr<zmq::message_t> reply(new zmq::message_t());
+	unique_ptr<zmq::message_t> reply {new zmq::message_t{}};
 	if (m_socket->recv(*reply.get(), zmq::recv_flags::none).has_value()) {
 		return reply;
 	}
@@ -136,19 +139,19 @@ std::string RequestSocketZmq::request(const std::string& request, int overrideTi
 	init();
 
 	// Prepare the request parts.
-	zmq::message_t identityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t identityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_socket->send(identityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_socket->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart(request.c_str(), request.length());
+	zmq::message_t requestPart {request.c_str(), request.length()};
 	m_socket->send(requestPart, zmq::send_flags::none);
 
 	// Receive and return the response.
-	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response {receive(overrideTimeout)};
 
-	return std::string(response->data<char>(), response->size());
+	return std::string{response->data<char>(), response->size()};
 }
 
 std::string RequestSocketZmq::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
@@ -157,22 +160,22 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	init();
 
 	// Prepare the request parts.
-	zmq::message_t identityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t identityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_socket->send(identityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_socket->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.length());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.length()};
 	m_socket->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.length());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.length()};
 	m_socket->send(requestPart2Part, zmq::send_flags::none);
 
 	// Receive and return the response.
-	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response {receive(overrideTimeout)};
 
-	return std::string(response->data<char>(), response->size());
+	return std::string{response->data<char>(), response->size()};
 }
 
 std::string RequestSocketZmq::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
@@ -181,25 +184,25 @@ std::string RequestSocketZmq::request(const std::string& requestPart1, const std
 	init();
 
 	// Prepare the request parts.
-	zmq::message_t identityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t identityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_socket->send(identityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_socket->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.length());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.length()};
 	m_socket->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.length());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.length()};
 	m_socket->send(requestPart2Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart3Part(requestPart3.c_str(), requestPart3.length());
+	zmq::message_t requestPart3Part {requestPart3.c_str(), requestPart3.length()};
 	m_socket->send(requestPart3Part, zmq::send_flags::none);
 
 	// Receive and return the response.
-	std::unique_ptr<zmq::message_t> response = receive(overrideTimeout);
+	std::unique_ptr<zmq::message_t> response {receive(overrideTimeout)};
 
-	return std::string(response->data<char>(), response->size());
+	return std::string{response->data<char>(), response->size()};
 }
 
 }

@@ -26,9 +26,9 @@ namespace coms {
 constexpr int SYNC_TIMEOUT = 200;
 
 RequesterZmq::RequesterZmq() :
-	m_pollingTime(100),
-	m_timeout(0),
-	m_contextImpl(nullptr) {
+	m_pollingTime{100},
+	m_timeout{0},
+	m_contextImpl{nullptr} {
 
 	m_canceled.store(false);
 	m_timedout.store(false);
@@ -52,13 +52,13 @@ void RequesterZmq::initSocket() {
 
 	if (!m_requester) {
 		// Create a socket REQ.
-		m_requester.reset(new zmq::socket_t(m_contextImpl->getContext(), zmq::socket_type::req));
+		m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::req});
 
 		// Connect to the endpoint.
 		m_requester->connect(m_endpoint.toString());
 
 		// Configure the socket to not wait at close time.
-		int linger = 0;
+		int linger {0};
 		m_requester->setsockopt(ZMQ_LINGER, &linger, sizeof(linger));
 	}
 }
@@ -132,13 +132,13 @@ void RequesterZmq::sendRequest(const std::string& request) {
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart(request.c_str(), request.size());
+	zmq::message_t requestPart {request.c_str(), request.size()};
 	m_requester->send(requestPart, zmq::send_flags::none);
 }
 
@@ -151,17 +151,17 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in two parts.
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
 	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
 	m_requester->send(requestPart2Part, zmq::send_flags::none);
 }
 
@@ -174,20 +174,20 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in three parts.
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
 	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
 	m_requester->send(requestPart2Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart3Part(requestPart3.c_str(), requestPart3.size());
+	zmq::message_t requestPart3Part {requestPart3.c_str(), requestPart3.size()};
 	m_requester->send(requestPart3Part, zmq::send_flags::none);
 }
 
@@ -238,7 +238,7 @@ void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::stri
 bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 
 	// Define the number of iterations.
-	int n = 0;
+	int n {0};
 	if (m_pollingTime > 0) {
 		n = m_timeout / m_pollingTime + 1;
 	}
@@ -249,7 +249,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 	};
 
 	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
-	int i = 0;
+	int i {0};
 	while (i < n || m_timeout == 0) {
 
 		// Check if the requester has been canceled.
@@ -308,7 +308,7 @@ std::optional<std::string> RequesterZmq::receive() {
 	json::Object jsonType;
 	json::parse(jsonType, typePart);
 
-	int type = jsonType[message::TYPE].GetInt();
+	int type {jsonType[message::TYPE].GetInt()};
 
 	std::optional<std::string> result;
 

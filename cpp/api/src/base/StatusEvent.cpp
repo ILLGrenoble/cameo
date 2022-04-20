@@ -21,21 +21,21 @@
 namespace cameo {
 
 StatusEvent::StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode) :
-	Event(id, name),
-	m_state(state),
-	m_pastStates(pastStates),
-	m_exitCode(exitCode) {
+	Event{id, name},
+	m_state{state},
+	m_pastStates{pastStates},
+	m_exitCode{exitCode} {
 }
 
 StatusEvent::StatusEvent(const StatusEvent& event) :
-	Event(event),
-	m_state(event.m_state),
-	m_pastStates(event.m_pastStates),
-	m_exitCode(event.m_exitCode) {
+	Event{event},
+	m_state{event.m_state},
+	m_pastStates{event.m_pastStates},
+	m_exitCode{event.m_exitCode} {
 }
 
 StatusEvent* StatusEvent::clone() {
-	return new StatusEvent(*this);
+	return new StatusEvent{*this};
 }
 
 State StatusEvent::getState() const {

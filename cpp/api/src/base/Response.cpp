@@ -19,12 +19,12 @@
 namespace cameo {
 
 Response::Response(int value, const std::string& message) :
-	m_value(value),
-	m_message(message) {
+	m_value{value},
+	m_message{message} {
 }
 
 Response::Response() :
-	m_value(0) {
+	m_value{0} {
 }
 
 int Response::getValue() const {

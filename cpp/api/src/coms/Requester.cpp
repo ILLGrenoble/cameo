@@ -32,15 +32,15 @@ namespace coms {
 // Requester
 
 Requester::Requester(const App & app, const std::string &responderName) :
-	m_app(app),
-	m_responderName(responderName),
-	m_useProxy(false),
-	m_appId(0) {
+	m_app{app},
+	m_responderName{responderName},
+	m_useProxy{false},
+	m_appId{0} {
 
 	m_impl = ImplFactory::createRequester();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Requester::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Requester::cancel, this)});
 }
 
 Requester::~Requester() {
@@ -61,7 +61,7 @@ void Requester::init() {
 
 	// Get the responder data.
 	try {
-		std::string jsonString = m_app.getCom().getKeyValueGetter(m_key)->get();
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -70,11 +70,11 @@ void Requester::init() {
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			int responderPort = m_app.getCom().getResponderProxyPort();
+			int responderPort {m_app.getCom().getResponderProxyPort()};
 			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 		else {
-			int responderPort = jsonData[basic::Responder::PORT.c_str()].GetInt();
+			int responderPort {jsonData[basic::Responder::PORT.c_str()].GetInt()};
 			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 
@@ -86,7 +86,7 @@ void Requester::init() {
 }
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
-	return std::unique_ptr<Requester>(new Requester(app, responderName));
+	return std::unique_ptr<Requester>{new Requester(app, responderName)};
 }
 
 void Requester::setTimeout(int value) {
@@ -144,7 +144,7 @@ bool Requester::hasTimedout() const {
 
 std::string Requester::toString() const {
 
-	return std::string("req.") + m_responderName
+	return std::string{"req."} + m_responderName
 		+ ":" + m_appName
 		+ "." + std::to_string(m_appId)
 		+ "@" + m_appEndpoint.toString();

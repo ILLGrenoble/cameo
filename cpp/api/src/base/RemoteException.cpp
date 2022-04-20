@@ -19,7 +19,7 @@
 namespace cameo {
 
 RemoteException::RemoteException(const std::string& message) :
-	m_message(message) {
+	m_message{message} {
 }
 
 RemoteException::~RemoteException() throw() {

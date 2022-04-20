@@ -23,31 +23,31 @@
 namespace cameo {
 
 EventThread::EventThread(Server * server, std::unique_ptr<EventStreamSocket>& socket) :
-	m_server(server) {
+	m_server{server} {
 	m_socket = std::move(socket);
 }
 
 EventThread::~EventThread() {
 
-	if (m_thread != nullptr) {
+	if (m_thread) {
 		m_thread->join();
 	}
 }
 
 void EventThread::start() {
 
-	m_thread.reset(new std::thread([this] {
+	m_thread.reset(new std::thread{[this] {
 
 		while (true) {
-			std::unique_ptr<Event> event = m_socket->receive();
+			std::unique_ptr<Event> event {m_socket->receive()};
 
-			if (event.get() == nullptr) {
+			if (!event) {
 				// The stream is canceled.
 				return;
 			}
 
 			// Forward the event to the listeners.
-			auto eventListeners = m_server->getEventListeners();
+			auto eventListeners {m_server->getEventListeners()};
 			for (auto listener : eventListeners) {
 
 				// If the application name is null, all the status are pushed, otherwise, filter on the name.
@@ -56,14 +56,14 @@ void EventThread::start() {
 					|| listener.getListener()->getName() == event->getName()) {
 
 					// Clone the event is necessary because the event is passed to different listeners working in different threads.
-					std::unique_ptr<Event> clonedEvent(event->clone());
+					std::unique_ptr<Event> clonedEvent {event->clone()};
 
 					// Push the cloned event.
 					listener.getListener()->pushEvent(clonedEvent);
 				}
 			}
 		}
-	}));
+	}});
 }
 
 void EventThread::cancel() {

@@ -21,16 +21,16 @@
 namespace cameo {
 
 ResultEvent::ResultEvent(int id, const std::string& name, const std::string& data) :
-	Event(id, name),
-	m_data(data) {
+	Event{id, name},
+	m_data{data} {
 }
 
 ResultEvent::ResultEvent(const ResultEvent& event) :
-	Event(event), m_data(event.m_data) {
+	Event{event}, m_data{event.m_data} {
 }
 
 ResultEvent* ResultEvent::clone() {
-	return new ResultEvent(*this);
+	return new ResultEvent{*this};
 }
 
 const std::string& ResultEvent::getData() const {

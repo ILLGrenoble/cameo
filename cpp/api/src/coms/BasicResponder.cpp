@@ -53,11 +53,11 @@ const std::string& Request::getSecondPart() const {
 }
 
 Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2) :
-	m_responder(nullptr),
-	m_messagePart1(messagePart1),
-	m_messagePart2(messagePart2),
-	m_requesterApplicationName(requesterApplicationName),
-	m_requesterApplicationId(requesterApplicationId) {
+	m_responder{nullptr},
+	m_messagePart1{messagePart1},
+	m_messagePart2{messagePart2},
+	m_requesterApplicationName{requesterApplicationName},
+	m_requesterApplicationId{requesterApplicationId} {
 
 	m_requesterServerEndpoint = Endpoint::parse(serverEndpoint);
 	m_requesterServerProxyPort = serverProxyPort;
@@ -105,7 +105,7 @@ ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 
 std::string Request::toString() const {
 
-	return std::string("[id=") + std::to_string(m_requesterApplicationId) + "]";
+	return std::string{"[id="} + std::to_string(m_requesterApplicationId) + "]";
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -115,12 +115,12 @@ const std::string Responder::KEY = "responder-676e576d-6102-42d8-ae24-222a7000df
 const std::string Responder::PORT = "port";
 
 Responder::Responder(const std::string& name) :
-	m_name(name) {
+	m_name{name} {
 
 	m_impl = ImplFactory::createBasicResponder();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Responder::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Responder::cancel, this)});
 }
 
 Responder::~Responder() {
@@ -160,7 +160,7 @@ void Responder::init() {
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
-	return std::unique_ptr<Responder>(new Responder(name));
+	return std::unique_ptr<Responder>{new Responder(name)};
 }
 
 const std::string& Responder::getName() const {
@@ -174,7 +174,7 @@ void Responder::cancel() {
 std::unique_ptr<Request> Responder::receive() {
 
 	// Receive the request.
-	std::unique_ptr<Request> request = m_impl->receive();
+	std::unique_ptr<Request> request {m_impl->receive()};
 
 	// Do not set the responder if the request is null which happens after a cancel.
 	if (request) {
@@ -194,7 +194,7 @@ bool Responder::isCanceled() const {
 
 std::string Responder::toString() const {
 
-	return std::string("rep.") + m_name
+	return std::string{"rep."} + m_name
 		+ ":" + This::getName()
 		+ "." + std::to_string(This::getId())
 		+ "@" + This::getEndpoint().toString();

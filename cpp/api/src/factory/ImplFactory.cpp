@@ -34,11 +34,11 @@ std::shared_ptr<Context> ImplFactory::m_defaultContext;
 
 std::shared_ptr<Context> ImplFactory::getDefaultContext() {
 
-	std::unique_lock<std::mutex> lock(m_mutex);
+	std::unique_lock<std::mutex> lock {m_mutex};
 
 	if (!m_defaultContext) {
 		// A ZeroMQ context is thread safe and shareable.
-		m_defaultContext = std::shared_ptr<Context>(new ContextZmq());
+		m_defaultContext = std::shared_ptr<Context>{new ContextZmq{}};
 	}
 
 	return m_defaultContext;
@@ -46,7 +46,7 @@ std::shared_ptr<Context> ImplFactory::getDefaultContext() {
 
 void ImplFactory::terminateDefaultContext() {
 
-	std::unique_lock<std::mutex> lock(m_mutex);
+	std::unique_lock<std::mutex> lock {m_mutex};
 	m_defaultContext.reset();
 }
 

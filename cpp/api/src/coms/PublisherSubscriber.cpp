@@ -39,12 +39,14 @@ const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
-	m_name(name), m_numberOfSubscribers(numberOfSubscribers), m_canceled(false) {
+	m_name{name},
+	m_numberOfSubscribers{numberOfSubscribers},
+	m_canceled{false} {
 
 	m_impl = ImplFactory::createPublisher();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Publisher::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Publisher::cancel, this)});
 }
 
 Publisher::~Publisher() {
@@ -93,7 +95,7 @@ void Publisher::init() {
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
-	return std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
+	return std::unique_ptr<Publisher>{new Publisher(name, numberOfSubscribers)};
 }
 
 const std::string& Publisher::getName() const {
@@ -111,7 +113,7 @@ bool Publisher::waitForSubscribers() {
 
 		while (counter < m_numberOfSubscribers) {
 
-			std::unique_ptr<basic::Request> request = m_responder->receive();
+			std::unique_ptr<basic::Request> request {m_responder->receive()};
 
 			if (!request) {
 				return false;
@@ -121,7 +123,7 @@ bool Publisher::waitForSubscribers() {
 			json::Object jsonRequest;
 			json::parse(jsonRequest, request->get());
 
-			int type = jsonRequest[message::TYPE].GetInt();
+			int type {jsonRequest[message::TYPE].GetInt()};
 
 			if (type == SUBSCRIBE_PUBLISHER) {
 				counter++;
@@ -170,7 +172,7 @@ void Publisher::sendEnd() const {
 
 std::string Publisher::toString() const {
 
-	return std::string("pub.") + getName()
+	return std::string{"pub."} + getName()
 		+ ":" + This::getName()
 		+ "." + std::to_string(This::getId())
 		+ "@" + This::getEndpoint().toString();
@@ -181,14 +183,14 @@ std::string Publisher::toString() const {
 // Subscriber
 
 Subscriber::Subscriber(const App & app, const std::string &publisherName) :
-	m_app(app),
-	m_publisherName(publisherName),
-	m_useProxy(false) {
+	m_app{app},
+	m_publisherName{publisherName},
+	m_useProxy{false} {
 
 	m_impl = ImplFactory::createSubscriber();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Subscriber::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Subscriber::cancel, this)});
 }
 
 Subscriber::~Subscriber() {
@@ -201,7 +203,7 @@ void Subscriber::terminate() {
 
 void Subscriber::synchronize(const App & app) {
 
-	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+	std::unique_ptr<Requester> requester {Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)};
 	requester->init();
 
 	// Send a subscribe request.
@@ -210,7 +212,7 @@ void Subscriber::synchronize(const App & app) {
 	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
 	requester->send(jsonRequest.dump());
-	std::optional<std::string> response = requester->receive();
+	std::optional<std::string> response {requester->receive()};
 }
 
 void Subscriber::init() {
@@ -223,22 +225,22 @@ void Subscriber::init() {
 
 	// Get the publisher data.
 	try {
-		std::string jsonString = m_app.getCom().getKeyValueGetter(m_key)->get();
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
 
-		int numberOfSubscribers = jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
+		int numberOfSubscribers {jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt()};
 
 		Endpoint endpoint;
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			int publisherPort = m_app.getCom().getPublisherProxyPort();
+			int publisherPort {m_app.getCom().getPublisherProxyPort()};
 			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 		else {
-			int publisherPort = jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
+			int publisherPort {jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt()};
 			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 
@@ -255,7 +257,7 @@ void Subscriber::init() {
 }
 
 std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {
-	return std::unique_ptr<Subscriber>(new Subscriber(app, publisherName));
+	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName)};
 }
 
 const std::string& Subscriber::getPublisherName() const {
@@ -296,7 +298,7 @@ void Subscriber::cancel() {
 
 std::string Subscriber::toString() const {
 
-	return std::string("sub.") + getPublisherName()
+	return std::string{"sub."} + getPublisherName()
 		+ ":" + getAppName()
 		+ "." + std::to_string(getAppId())
 		+ "@" + getAppEndpoint().toString();

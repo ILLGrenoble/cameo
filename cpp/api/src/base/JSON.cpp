@@ -79,7 +79,7 @@ std::string StringObject::dump() {
 
 bool parse(Object & object, const std::string& string) {
 
-	rapidjson::ParseResult ok = object.Parse(static_cast<const char *>(string.c_str()), string.size());
+	rapidjson::ParseResult ok {object.Parse(static_cast<const char *>(string.c_str()), string.size())};
 	if (!ok) {
 		return false;
 	}

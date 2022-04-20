@@ -26,7 +26,8 @@
 namespace cameo {
 
 Output::Output() :
-	m_id(0), m_endOfLine(false) {
+	m_id{0},
+	m_endOfLine{false} {
 }
 
 int Output::getId() const {
@@ -42,13 +43,13 @@ bool Output::isEndOfLine() const {
 }
 
 std::string Output::toString() const {
-	return std::string("[id=") + std::to_string(m_id) + ", message=" + m_message + " eol=" + std::to_string(m_endOfLine) + "]";
+	return std::string{"[id="} + std::to_string(m_id) + ", message=" + m_message + " eol=" + std::to_string(m_endOfLine) + "]";
 }
 
 OutputStreamSocket::OutputStreamSocket(const std::string& name) :
-	m_applicationId(-1),
-	m_ended(false),
-	m_canceled(false) {
+	m_applicationId{-1},
+	m_ended{false},
+	m_canceled{false} {
 
 	m_impl = ImplFactory::createOutputStreamSocket(name);
 }
@@ -72,7 +73,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 
 	// Loop on receive() because in case of configuration multiple=yes, messages can come from different instances.
 	while (true) {
-		std::string messageType(m_impl->receive());
+		std::string messageType {m_impl->receive()};
 
 		// Cancel can only come from this instance.
 		if (messageType == message::Event::CANCEL) {
@@ -81,20 +82,20 @@ std::optional<Output> OutputStreamSocket::receive() {
 		}
 
 		// Get the second part of the message.
-		std::string message = m_impl->receive();
+		std::string message {m_impl->receive()};
 
 		// Get the JSON event.
 		json::Object event;
 		json::parse(event, message);
 
-		int type = event[message::TYPE].GetInt();
+		int type {event[message::TYPE].GetInt()};
 
 		// Continue if type of message is SYNC_STREAM. Theses messages are only used for the poller.
 		if (type == message::SYNC_STREAM) {
 			continue;
 		}
 
-		int id = event[message::ApplicationStream::ID].GetInt();
+		int id {event[message::ApplicationStream::ID].GetInt()};
 
 		// Filter on the application id so that only the messages concerning the instance applicationId are processed.
 		// Others are ignored.
@@ -107,8 +108,8 @@ std::optional<Output> OutputStreamSocket::receive() {
 			}
 
 			// Here the type of message is STREAM.
-			std::string line = event[message::ApplicationStream::MESSAGE].GetString();
-			bool endOfLine = event[message::ApplicationStream::EOL].GetBool();
+			std::string line {event[message::ApplicationStream::MESSAGE].GetString()};
+			bool endOfLine {event[message::ApplicationStream::EOL].GetBool()};
 
 			Output output;
 			output.m_id = id;
@@ -137,7 +138,7 @@ bool OutputStreamSocket::isCanceled() const {
 }
 
 std::string OutputStreamSocket::toString() const {
-	return std::string("[applicationId=") + std::to_string(m_applicationId) + "]";
+	return std::string{"[applicationId="} + std::to_string(m_applicationId) + "]";
 }
 
 }

@@ -25,7 +25,7 @@ int IdGenerator::newId() {
 }
 
 std::string IdGenerator::newStringId() {
-	return std::string("cameo.") + std::to_string(newId());
+	return std::string{"cameo."} + std::to_string(newId());
 }
 
 }

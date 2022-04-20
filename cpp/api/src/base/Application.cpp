@@ -116,23 +116,32 @@ State This::parseState(const std::string& value) {
 
 	if (value == "UNKNOWN") {
 		return UNKNOWN;
-	} else if (value == "STARTING") {
+	}
+	else if (value == "STARTING") {
 		return STARTING;
-	} else if (value == "RUNNING") {
+	}
+	else if (value == "RUNNING") {
 		return RUNNING;
-	} else if (value == "STOPPING") {
+	}
+	else if (value == "STOPPING") {
 		return STOPPING;
-	} else if (value == "KILLING") {
+	}
+	else if (value == "KILLING") {
 		return KILLING;
-	} else if (value == "PROCESSING_ERROR") {
+	}
+	else if (value == "PROCESSING_ERROR") {
 		return PROCESSING_ERROR;
-	} else if (value == "ERROR") {
+	}
+	else if (value == "ERROR") {
 		return FAILURE;
-	} else if (value == "SUCCESS") {
+	}
+	else if (value == "SUCCESS") {
 		return SUCCESS;
-	} else if (value == "STOPPED") {
+	}
+	else if (value == "STOPPED") {
 		return STOPPED;
-	} else if (value == "KILLED") {
+	}
+	else if (value == "KILLED") {
 		return KILLED;
 	}
 
@@ -183,12 +192,12 @@ void This::terminateImpl() {
 
 
 This::This() :
-	m_id(-1),
-	m_registered(false),
-	m_starterId(0),
-	m_starterProxyPort(0),
-	m_starterLinked(false),
-	m_inited(false) {
+	m_id{-1},
+	m_registered{false},
+	m_starterId{0},
+	m_starterProxyPort{0},
+	m_starterLinked{false},
+	m_inited{false} {
 }
 
 void This::initApplication(int argc, char *argv[]) {
@@ -197,7 +206,7 @@ void This::initApplication(int argc, char *argv[]) {
 		throw InvalidArgumentException("Missing info argument");
 	}
 
-	std::string info(argv[argc - 1]);
+	std::string info {argv[argc - 1]};
 
 	// Get the info object.
 	json::Object infoObject;
@@ -251,7 +260,7 @@ void This::initApplication() {
 
 	// Registered apps have the id key.
 	if (!m_registered) {
-		int id = initUnregisteredApplication();
+		int id {initUnregisteredApplication()};
 		if (id == -1) {
 			throw UnregisteredApplicationException(std::string("Maximum number of applications ") + m_name + " reached");
 		}
@@ -270,7 +279,7 @@ void This::initApplication() {
 	}
 
 	// Init com.
-	m_com = std::unique_ptr<Com>(new Com(m_server.get(), m_id));
+	m_com = std::unique_ptr<Com>{new Com(m_server.get(), m_id)};
 
 	// Inited.
 	m_inited = true;
@@ -331,7 +340,7 @@ void This::cancelAll() {
 }
 
 int This::initUnregisteredApplication() {
-	json::Object response = m_server->requestJSON(createAttachUnregisteredRequest(m_name, GET_PROCESS_PID()));
+	json::Object response {m_server->requestJSON(createAttachUnregisteredRequest(m_name, GET_PROCESS_PID()))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
@@ -341,9 +350,9 @@ void This::terminateUnregisteredApplication() {
 }
 
 bool This::setRunning() {
-	json::Object response = m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, RUNNING));
+	json::Object response {m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, RUNNING))};
 
-	int value = response[message::RequestResponse::VALUE].GetInt();
+	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
 		return false;
 	}
@@ -357,7 +366,7 @@ void This::setResult(const std::string& data) {
 
 State This::getState(int id) const {
 
-	json::Object event = m_server->requestJSON(createGetStatusRequest(id));
+	json::Object event {m_server->requestJSON(createGetStatusRequest(id))};
 
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
@@ -397,9 +406,9 @@ ServerAndApp This::connectToStarter(int options, bool useProxy) {
 void This::stop() {
 
 	// Use a request socket to avoid any race condition.
-	std::unique_ptr<RequestSocket> requestSocket = m_server->createServerRequestSocket();
+	std::unique_ptr<RequestSocket> requestSocket{m_server->createServerRequestSocket()};
 
-	std::string request = createStopRequest(m_id);
+	std::string request {createStopRequest(m_id)};
 	requestSocket->requestJSON(request);
 }
 
@@ -439,7 +448,7 @@ void This::initStarterCheck() {
 	m_starterServer->registerEventListener(this, false);
 
 	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
-	State state = m_starterServer->getActualState(m_starterId);
+	State state {m_starterServer->getActualState(m_starterId)};
 
 	// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
 	if (state == UNKNOWN) {
@@ -456,7 +465,7 @@ void This::checkStates() {
 	// Do not parallelize the calls to the request socket.
 	while (true) {
 		// Wait for a new incoming status.
-		std::unique_ptr<Event> event = EventListener::popEvent();
+		std::unique_ptr<Event> event {EventListener::popEvent()};
 
 		// Test if the socket is canceled.
 		if (event.get() == nullptr || dynamic_cast<CancelEvent *>(event.get()) != nullptr) {
@@ -465,10 +474,10 @@ void This::checkStates() {
 
 		// Filter events coming from this.
 		if (event->getId() == m_id) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state = status->getState();
+				State state {status->getState()};
 
 				// Call the stop function if stop has been requested.
 				if (state == STOPPING) {
@@ -483,10 +492,10 @@ void This::checkStates() {
 
 		// Filter events coming from starter.
 		if (event->getId() == m_starterId) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state = status->getState();
+				State state {status->getState()};
 
 				// Stop this application if it was linked.
 				if (state == STOPPED || state == KILLED || state == SUCCESS || state == FAILURE) {
@@ -497,7 +506,7 @@ void This::checkStates() {
 	}
 
 	// Reset the stop function here because in case of Python callback, it is necessary to do it here rather than in the This destructor.
-	m_stopFunction = StopFunctionType();
+	m_stopFunction = StopFunctionType{};
 }
 
 std::string This::toString() {
@@ -508,8 +517,8 @@ std::string This::toString() {
 // Instance
 
 App::Com::Com(Server * server) :
-	m_server(server),
-	m_applicationId(-1) {
+	m_server{server},
+	m_applicationId{-1} {
 }
 
 int App::Com::getResponderProxyPort() const {
@@ -534,9 +543,9 @@ App::Com::KeyValueGetterException::KeyValueGetterException(const std::string& me
 }
 
 App::Com::KeyValueGetter::KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key) :
-	m_server(server),
-	m_id(id),
-	m_key(key) {
+	m_server{server},
+	m_id{id},
+	m_key{key} {
 
 	EventListener::setName(name);
 
@@ -551,7 +560,7 @@ App::Com::KeyValueGetter::~KeyValueGetter() {
 std::string App::Com::KeyValueGetter::get() {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
-	Waiting scopedWaiting(std::bind(&App::Com::KeyValueGetter::cancel, this));
+	Waiting scopedWaiting {std::bind(&App::Com::KeyValueGetter::cancel, this)};
 
 	try {
 		return m_server->getKeyValue(m_id, m_key);
@@ -562,13 +571,13 @@ std::string App::Com::KeyValueGetter::get() {
 
 	while (true) {
 		// Waits for a new incoming status.
-		std::unique_ptr<Event> event = EventListener::popEvent();
+		std::unique_ptr<Event> event {EventListener::popEvent()};
 
 		if (event->getId() == m_id) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state = status->getState();
+				State state {status->getState()};
 
 				// Test the terminal state.
 				if (state == SUCCESS
@@ -579,8 +588,8 @@ std::string App::Com::KeyValueGetter::get() {
 				}
 			}
 			else {
-
-				if (KeyEvent * keyEvent = dynamic_cast<KeyEvent *>(event.get())) {
+				KeyEvent * keyEvent {dynamic_cast<KeyEvent *>(event.get())};
+				if (keyEvent) {
 					if (keyEvent->getKey() == m_key) {
 						// Set the status and value.
 						if (keyEvent->getStatus() == KeyEvent::Status::STORED) {
@@ -603,18 +612,18 @@ void App::Com::KeyValueGetter::cancel() {
 }
 
 std::unique_ptr<App::Com::KeyValueGetter> App::Com::getKeyValueGetter(const std::string& key) const {
-	return std::unique_ptr<App::Com::KeyValueGetter>(new App::Com::KeyValueGetter(m_server, m_name, m_applicationId, key));
+	return std::unique_ptr<App::Com::KeyValueGetter>{new App::Com::KeyValueGetter(m_server, m_name, m_applicationId, key)};
 }
 
 App::App(Server * server) :
-	m_server(server),
-	m_id(-1),
-	m_com(server),
-	m_pastStates(0),
-	m_initialState(UNKNOWN),
-	m_lastState(UNKNOWN),
-	m_hasResult(false),
-	m_exitCode(-1) {
+	m_server{server},
+	m_id{-1},
+	m_com{server},
+	m_pastStates{0},
+	m_initialState{UNKNOWN},
+	m_lastState{UNKNOWN},
+	m_hasResult{false},
+	m_exitCode{-1} {
 }
 
 App::~App() {
@@ -691,7 +700,7 @@ bool App::hasResult() const {
 
 bool App::stop() {
 	try {
-		Response response = m_server->stop(m_id, false);
+		Response response {m_server->stop(m_id, false)};
 	}
 	catch (const ConnectionTimeout& e) {
 		return false;
@@ -702,7 +711,7 @@ bool App::stop() {
 
 bool App::kill() {
 	try {
-		Response response = m_server->stop(m_id, true);
+		Response response {m_server->stop(m_id, true)};
 	}
 	catch (const ConnectionTimeout& e) {
 		return false;
@@ -714,7 +723,7 @@ bool App::kill() {
 State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
-	Waiting scopedWaiting(std::bind(&App::cancelWaitFor, this));
+	Waiting scopedWaiting {std::bind(&App::cancelWaitFor, this)};
 
 	// Test the terminal state.
 	if (m_lastState == SUCCESS
@@ -733,7 +742,7 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	while (true) {
 		// Waits for a new incoming status.
-		std::unique_ptr<Event> event = popEvent(blocking);
+		std::unique_ptr<Event> event {popEvent(blocking)};
 
 		// The non-blocking call returns a null message.
 		if (event.get() == nullptr) {
@@ -741,10 +750,10 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 		}
 
 		if (event->getId() == m_id) {
-			StatusEvent * status = dynamic_cast<StatusEvent *>(event.get());
+			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state = status->getState();
+				State state {status->getState()};
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
@@ -795,12 +804,12 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 }
 
 State App::waitFor(int states) {
-	KeyValue keyValue("");
+	KeyValue keyValue {""};
 	return waitFor(states, keyValue, true);
 }
 
 State App::waitFor() {
-	KeyValue keyValue("");
+	KeyValue keyValue {""};
 	return waitFor(0, keyValue, true);
 }
 
@@ -813,7 +822,7 @@ void App::cancelWaitFor() {
 }
 
 State App::getLastState() {
-	KeyValue keyValue("");
+	KeyValue keyValue {""};
 	return waitFor(0, keyValue, false);
 }
 
@@ -855,14 +864,13 @@ std::string App::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Configuration
 
-App::Config::Config(const std::string& name, const std::string& description, bool singleInstance, bool restart, int startingTime, int stoppingTime) {
-
-	m_name = name;
-	m_description = description;
-	m_singleInstance = singleInstance;
-	m_restart = restart;
-	m_startingTime = startingTime;
-	m_stoppingTime = stoppingTime;
+App::Config::Config(const std::string& name, const std::string& description, bool singleInstance, bool restart, int startingTime, int stoppingTime) :
+	m_name{name},
+	m_description{description},
+	m_singleInstance{singleInstance},
+	m_restart{restart},
+	m_startingTime{startingTime},
+	m_stoppingTime{stoppingTime} {
 }
 
 const std::string& App::Config::getName() const {
@@ -903,12 +911,12 @@ std::string App::Config::toString() const {
 // Info
 
 App::Info::Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates, const std::string& args) :
-	m_id(id),
-	m_pid(pid),
-	m_applicationState(applicationState),
-	m_pastApplicationStates(pastApplicationStates),
-	m_args(args),
-	m_name(name) {
+	m_id{id},
+	m_pid{pid},
+	m_applicationState{applicationState},
+	m_pastApplicationStates{pastApplicationStates},
+	m_args{args},
+	m_name{name} {
 }
 
 int App::Info::getId() const {
@@ -936,7 +944,7 @@ int App::Info::getPid() const {
 }
 
 std::string App::Info::toString() const {
-	return std::string("[name=")  + m_name
+	return std::string{"[name="}  + m_name
 		+ ", id=" + std::to_string(m_id)
 		+ ", state=" + cameo::toString(m_applicationState)
 		+ ", args=" + m_args + "]";
@@ -946,9 +954,9 @@ std::string App::Info::toString() const {
 // Port
 
 App::Port::Port(int port, const std::string& status, const std::string& owner) :
-	m_port(port),
-	m_status(status),
-	m_owner(owner) {
+	m_port{port},
+	m_status{status},
+	m_owner{owner} {
 }
 
 int App::Port::getPort() const {
@@ -965,7 +973,7 @@ const std::string& App::Port::getOwner() const {
 
 std::string App::Port::toString() const {
 
-	return std::string("[port=") + std::to_string(m_port)
+	return std::string{"[port="} + std::to_string(m_port)
 			+ ", status=" + m_status
 			+ ", owner=" + m_owner + "]";
 }
