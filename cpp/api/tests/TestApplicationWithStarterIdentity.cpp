@@ -18,6 +18,10 @@ int main(int, char *[]) {
 	ApplicationWithStarterIdentity identity(application, starter);
 
 	string jsonString = identity.toJSONString();
+
+	cout << "json = " << jsonString << endl;
+
+
 	json::Object jsonIdentity;
 	json::parse(jsonIdentity, jsonString);
 

@@ -15,12 +15,11 @@
  */
 
 #include "Strings.h"
-
-#include "JSON.h"
 #include "Messages.h"
+#include "BadFormatException.h"
 #include <regex>
 #include <ostream>
-#include "../../include/BadFormatException.h"
+#include <iostream>
 
 namespace cameo {
 
@@ -145,9 +144,7 @@ const Endpoint& ApplicationIdentity::getEndpoint() const {
 	return m_endpoint;
 }
 
-std::string ApplicationIdentity::toJSONString() const {
-
-	json::StringObject jsonObject;
+void ApplicationIdentity::toJSON(json::StringObject& jsonObject) const {
 
 	jsonObject.pushKey(message::ApplicationIdentity::NAME);
 	jsonObject.pushValue(m_name);
@@ -159,6 +156,13 @@ std::string ApplicationIdentity::toJSONString() const {
 
 	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
 	jsonObject.pushValue(m_endpoint.toString());
+}
+
+std::string ApplicationIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+
+	toJSON(jsonObject);
 
 	return jsonObject.dump();
 }
@@ -186,20 +190,9 @@ const ApplicationIdentity& ApplicationWithStarterIdentity::getStarter() const {
 	return m_starter;
 }
 
-std::string ApplicationWithStarterIdentity::toJSONString() const {
+void ApplicationWithStarterIdentity::toJSON(json::StringObject& jsonObject) const {
 
-	json::StringObject jsonObject;
-
-	jsonObject.pushKey(message::ApplicationIdentity::NAME);
-	jsonObject.pushValue(m_application.getName());
-
-	if (m_application.getId() != Null) {
-		jsonObject.pushKey(message::ApplicationIdentity::ID);
-		jsonObject.pushValue(m_application.getId());
-	}
-
-	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
-	jsonObject.pushValue(m_application.getEndpoint().toString());
+	m_application.toJSON(jsonObject);
 
 	if (m_hasStarter) {
 		jsonObject.pushKey(message::ApplicationIdentity::STARTER);
@@ -216,6 +209,13 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 
 		jsonObject.endObject();
 	}
+}
+
+std::string ApplicationWithStarterIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+
+	toJSON(jsonObject);
 
 	return jsonObject.dump();
 }

@@ -17,6 +17,7 @@
 #ifndef CAMEO_STRINGS_H_
 #define CAMEO_STRINGS_H_
 
+#include "JSON.h"
 #include <string>
 #include <vector>
 
@@ -152,6 +153,12 @@ public:
 	const Endpoint& getEndpoint() const;
 
 	/**
+	 * adds this object to a json object.
+	 * \param jsonObject A json::StringObject object.
+	 */
+	void toJSON(json::StringObject& jsonObject) const;
+
+	/**
 	 * Returns the JSON string representation.
 	 * \return The JSON string representation.
 	 */
@@ -199,6 +206,12 @@ public:
 	 * \return The starter application.
 	 */
 	const ApplicationIdentity& getStarter() const;
+
+	/**
+	 * adds this object to a json object.
+	 * \param jsonObject A json::StringObject object.
+	 */
+	void toJSON(json::StringObject& jsonObject) const;
 
 	/**
 	 * Returns the JSON string representation.
