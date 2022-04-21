@@ -7,7 +7,7 @@
 using namespace std;
 using namespace cameo;
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 
 	Endpoint myEndpoint("gamma75", 9000);
 	ApplicationIdentity application("my-app", 31, myEndpoint);

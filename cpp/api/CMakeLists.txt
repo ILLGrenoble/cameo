@@ -18,7 +18,7 @@ set(ConfigPackageLocation ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME})
 set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
-option(CAMEO_API_CPP_TESTS "Compiling the test programs" OFF)
+option(CAMEO_API_CPP_TESTS "Compiling the unit test programs" OFF)
 option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
@@ -266,7 +266,7 @@ include(CPack)
 # Tests
 #------------------------------------------------------------
 if(CAMEO_API_CPP_TESTS)
-# Note: execute ctest --verbose to have more details 
-enable_testing()
-add_subdirectory(tests)
-endif(CAMEO_API_CPP_TESTS)
+  # Note: execute ctest --verbose to have more details 
+  enable_testing()
+  add_subdirectory(tests)
+  endif(CAMEO_API_CPP_TESTS)

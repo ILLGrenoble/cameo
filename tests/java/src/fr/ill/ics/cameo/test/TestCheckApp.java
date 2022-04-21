@@ -43,7 +43,7 @@ public class TestCheckApp {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = Server.create(endpoint, useProxy);
+		Server server = Server.create(endpoint, 0, useProxy);
 		server.init();
 		
 		try {
