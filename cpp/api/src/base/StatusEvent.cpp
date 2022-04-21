@@ -15,7 +15,7 @@
  */
 
 #include "StatusEvent.h"
-
+#include "JSON.h"
 #include <iostream>
 
 namespace cameo {
@@ -50,10 +50,29 @@ int StatusEvent::getExitCode() const {
 	return m_exitCode;
 }
 
+std::string StatusEvent::toString() const {
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue("status");
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("state");
+	jsonObject.pushValue(cameo::toString(m_state));
+
+	jsonObject.pushKey("past_states");
+	jsonObject.pushValue(cameo::toString(m_pastStates));
+
+	return jsonObject.dump();
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::StatusEvent& status) {
-	os << "name=" << status.m_name
-		<< "\nid=" << status.m_id
-		<< "\nstate=" << status.m_state;
+	os << status.toString();
 
 	return os;
 }

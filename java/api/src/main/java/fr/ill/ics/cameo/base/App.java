@@ -22,7 +22,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
  * Class defining a remote Cameo application.
@@ -289,7 +291,16 @@ public class App extends EventListener {
 		
 		@Override
 		public String toString() {
-			return "[name=" + name + ", description=" + description + ", single instance=" + singleInstance + ", restart=" + restart + ", starting time=" + startingTime + ", stopping time=" + stoppingTime + "]";
+			JSONObject result = new JSONObject();
+			
+			result.put("name", name);
+			result.put("description", description);
+			result.put("single", singleInstance);
+			result.put("restart", restart);
+			result.put("starting_time", startingTime);
+			result.put("stopping_time", stoppingTime);
+			
+			return result.toJSONString();
 		}
 	
 	}
@@ -375,7 +386,15 @@ public class App extends EventListener {
 	
 		@Override
 		public String toString() {
-			return "[name=" + name + ", id=" + id + ", state=" + applicationState + ", pastStates=" + pastApplicationStates + ", args=" + args + "]";
+			JSONObject result = new JSONObject();
+			
+			result.put("name", name);
+			result.put("id", id);
+			result.put("state", applicationState);
+			result.put("past_states", pastApplicationStates);
+			result.put("args", args);
+			
+			return result.toJSONString();
 		}
 	
 	}
@@ -426,6 +445,16 @@ public class App extends EventListener {
 			return owner;
 		}
 		
+		@Override
+		public String toString() {
+			JSONObject result = new JSONObject();
+			
+			result.put("port", port);
+			result.put("status", status);
+			result.put("owner", owner);
+			
+			return result.toJSONString();
+		}		
 	}
 
 	private Com com;
@@ -795,7 +824,7 @@ public class App extends EventListener {
 	
 	@Override
 	public String toString() {
-		return getName() + "." + id + "@" + server.getEndpoint();
+		return new AppIdentity(getName(), id, new ServerIdentity(server.getEndpoint().toString(), server.usesProxy())).toString();
 	}
 
 }

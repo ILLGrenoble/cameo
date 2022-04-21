@@ -117,12 +117,6 @@ public:
 	 */
 	bool hasEnded() const;
 
-	/**
-	 * Returns a string representation of this application.
-	 * \return The string representation.
-	 */
-	std::string toString() const;
-
 private:
 	OutputStreamSocket(const std::string& name);
 	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);

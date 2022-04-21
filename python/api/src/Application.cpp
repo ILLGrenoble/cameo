@@ -121,9 +121,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("receive", &OutputStreamSocket::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &OutputStreamSocket::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("hasEnded", &OutputStreamSocket::hasEnded, py::call_guard<py::gil_scoped_release>())
-		.def("isCanceled", &OutputStreamSocket::isCanceled)
-		.def("__str__", &OutputStreamSocket::toString,
-				py::call_guard<py::gil_scoped_release>());
+		.def("isCanceled", &OutputStreamSocket::isCanceled);
 
 	py::class_<App>(m, "App")
 		.def("terminate", &App::terminate, py::call_guard<py::gil_scoped_release>())

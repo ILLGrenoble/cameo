@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
+
 /**
  * Class a response for Cameo server requests.
  */
@@ -60,7 +62,12 @@ public class Response {
 
 	@Override
 	public String toString() {
-		return "Response [value=" + value + ", message=" + message + "]";
+		JSONObject result = new JSONObject();
+		
+		result.put("value", value);
+		result.put("message", message);
+		
+		return result.toJSONString();
 	}
 	
 }

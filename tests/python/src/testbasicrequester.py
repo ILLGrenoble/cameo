@@ -20,7 +20,7 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server.create(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
 server.init()
 
 print("Requester application is", applicationName)
@@ -28,6 +28,8 @@ print("Creating responder")
 
 responder = cameopy.BasicResponder.create("responder")
 responder.init()
+
+print("Created responder", responder)
 
 N = 5
 
@@ -46,12 +48,12 @@ for i in range(numberOfTimes):
         request = responder.receive()
         request.reply("done")
 
-        print("Processed", request.getString())
+        print("Processed", request)
         
     # Wait for the requester applications.
     for j in range(N):
         apps[j].waitFor()
-        print("Finished application", apps[j].getNameId())
+        print("Finished application", apps[j])
 
 print("Finished the application")
 

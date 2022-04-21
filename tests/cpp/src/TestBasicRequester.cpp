@@ -79,16 +79,10 @@ int main(int argc, char *argv[]) {
 
 		unique_ptr<coms::basic::Responder> responder;
 
-		try {
-			cout << "Creating responder" << endl;
+		responder = coms::basic::Responder::create("responder");
+		responder->init();
 
-			responder = coms::basic::Responder::create("responder");
-			responder->init();
-		}
-		catch (const InitException& e) {
-			cout << "Responder error" << endl;
-			return -1;
-		}
+		cout << "Created responder " << *responder << endl;
 
 		// Process the requests, the requester application sends 10 requests.
 		for (int j = 0; j < N * 10; ++j) {

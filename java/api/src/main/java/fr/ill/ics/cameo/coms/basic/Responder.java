@@ -27,6 +27,8 @@ import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -152,7 +154,13 @@ public class Responder implements IObject, ICancelable {
 
 	@Override
 	public String toString() {
-		return "req." + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "basic-responder");
+		result.put("name", name);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 	
 }

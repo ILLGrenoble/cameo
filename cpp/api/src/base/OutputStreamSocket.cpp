@@ -43,7 +43,18 @@ bool Output::isEndOfLine() const {
 }
 
 std::string Output::toString() const {
-	return std::string{"[id="} + std::to_string(m_id) + ", message=" + m_message + " eol=" + std::to_string(m_endOfLine) + "]";
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("message");
+	jsonObject.pushValue(m_message);
+
+	jsonObject.pushKey("eol");
+	jsonObject.pushValue(m_endOfLine);
+
+	return jsonObject.dump();
 }
 
 OutputStreamSocket::OutputStreamSocket(const std::string& name) :
@@ -135,10 +146,6 @@ bool OutputStreamSocket::hasEnded() const {
 
 bool OutputStreamSocket::isCanceled() const {
 	return m_canceled;
-}
-
-std::string OutputStreamSocket::toString() const {
-	return std::string{"[applicationId="} + std::to_string(m_applicationId) + "]";
 }
 
 }

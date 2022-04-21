@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
+
 /**
  * Class defining a status event.
  */
@@ -86,11 +88,6 @@ public class StatusEvent extends Event {
 	public Integer getExitCode() {
 		return exitCode;
 	}
-
-	@Override
-	public String toString() {
-		return "ApplicationStatus [id=" + id + ", applicationState=" + State.toString(applicationState) + ", name=" + name + "]";
-	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -122,6 +119,19 @@ public class StatusEvent extends Event {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "status");
+		result.put("id", id);
+		result.put("name", name);
+		result.put("state", State.toString(applicationState));
+		result.put("exit_code", exitCode);
+		
+		return result.toJSONString();
 	}
 	
 }

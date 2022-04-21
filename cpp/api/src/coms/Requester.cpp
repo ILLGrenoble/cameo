@@ -144,11 +144,22 @@ bool Requester::hasTimedout() const {
 
 std::string Requester::toString() const {
 
-	return std::string{"req."} + m_responderName
-		+ ":" + m_appName
-		+ "." + std::to_string(m_appId)
-		+ "@" + m_appEndpoint.toString();
+	json::StringObject jsonObject;
 
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"requester"});
+
+	jsonObject.pushKey("responder");
+	jsonObject.pushValue(m_responderName);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+
+	AppIdentity appIdentity {m_appName, m_appId, ServerIdentity{m_appEndpoint.toString(), false}};
+	appIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 std::ostream& operator<<(std::ostream& os, const Requester& requester) {

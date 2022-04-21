@@ -226,6 +226,74 @@ private:
 };
 
 /**
+ * Class defining a Server identity.
+ */
+class ServerIdentity {
+
+public:
+	constexpr static const char* ENDPOINT = "endpoint";
+	constexpr static const char* PROXY = "proxy";
+
+	/**
+	 * Constructor.
+	 * \param endpoint The endpoint.
+	 * \param proxy The proxy.
+	 */
+	ServerIdentity(const std::string& endpoint, bool proxy);
+
+	/**
+	 * adds this object to a json object.
+	 * \param jsonObject A json::StringObject object.
+	 */
+	void toJSON(json::StringObject& jsonObject) const;
+
+	/**
+	 * Returns the JSON string representation.
+	 * \return The JSON string representation.
+	 */
+	std::string toJSONString() const;
+
+private:
+	std::string m_endpoint;
+	bool m_proxy;
+};
+
+/**
+ * Class defining an App identity.
+ */
+class AppIdentity {
+
+public:
+	constexpr static const char* NAME = "name";
+	constexpr static const char* ID = "id";
+	constexpr static const char* SERVER = "server";
+
+	/**
+	 * Constructor.
+	 * \param name The name.
+	 * \param id The id.
+	 */
+	AppIdentity(const std::string& name, int id, const ServerIdentity& server);
+
+	/**
+	 * adds this object to a json object.
+	 * \param jsonObject A json::StringObject object.
+	 */
+	void toJSON(json::StringObject& jsonObject) const;
+
+	/**
+	 * Returns the JSON string representation.
+	 * \return The JSON string representation.
+	 */
+	std::string toJSONString() const;
+
+private:
+	std::string m_name;
+	int m_id;
+	ServerIdentity m_server;
+};
+
+/**
  * Class defining a string id for the communication identities.
  */
 struct StringId {

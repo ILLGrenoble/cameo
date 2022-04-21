@@ -11,10 +11,10 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server.create(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
 server.init()
 
 for i in range(numberOfTimes):    
     app = server.start("veryfastpy")
     state = app.waitFor()
-    print("Finished the application", app.getNameId(), "with state", cameopy.toString(state), "and code", app.getExitCode())
+    print("Finished the application", app, "with state", cameopy.toString(state), "and code", app.getExitCode())

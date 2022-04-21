@@ -60,6 +60,12 @@ public:
 	 */
 	bool isSuccess() const;
 
+	/**
+	 * Returns a stringified representation of this event.
+	 * \return A stringified representation of this event.
+	 */
+	std::string toString() const;
+
 private:
 	int m_value;
 	std::string m_message;

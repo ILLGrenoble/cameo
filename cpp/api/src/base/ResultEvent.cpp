@@ -15,7 +15,7 @@
  */
 
 #include "ResultEvent.h"
-
+#include "JSON.h"
 #include <iostream>
 
 namespace cameo {
@@ -37,9 +37,23 @@ const std::string& ResultEvent::getData() const {
 	return m_data;
 }
 
-std::ostream& operator<<(std::ostream& os, const cameo::ResultEvent& status) {
-	os << "name=" << status.m_name
-		<< "\nid=" << status.m_id;
+std::string ResultEvent::toString() const {
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue("result");
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	return jsonObject.dump();
+}
+
+std::ostream& operator<<(std::ostream& os, const ResultEvent& event) {
+	os << event.toString();
 
 	return os;
 }

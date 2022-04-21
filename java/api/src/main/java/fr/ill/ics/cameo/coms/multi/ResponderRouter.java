@@ -27,6 +27,8 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderRouterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -155,7 +157,14 @@ public class ResponderRouter implements IObject, ICancelable {
 
 	@Override
 	public String toString() {
-		return "repr." + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "multi-responder-router");
+		result.put("name", name);
+		result.put("dealer", dealerEndpoint);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 	
 }

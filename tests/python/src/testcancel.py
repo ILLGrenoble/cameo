@@ -44,7 +44,7 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server.create(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
 server.init()
 
 def testCancelAll():
@@ -66,7 +66,7 @@ def testCancelAll():
     
     t.join()
     
-    print("End of stopcpp with state", state)
+    print("End of stopcpp with state", cameopy.toString(state))
 
 
 def testCancelWaitFor():
@@ -88,7 +88,7 @@ def testCancelWaitFor():
     
     t.join()
     
-    print("End of stopcpp with state", state)
+    print("End of stopcpp with state", cameopy.toString(state))
 
     
 def testCancelWaitForSubscribers():
@@ -133,7 +133,7 @@ def testKillApplication():
 
     state = app.waitFor()
 
-    print("End of publisherlooppy with state ", state)
+    print("End of publisherlooppy with state", cameopy.toString(state))
 
     t.join()
 

@@ -172,11 +172,21 @@ void Publisher::sendEnd() const {
 
 std::string Publisher::toString() const {
 
-	return std::string{"pub."} + getName()
-		+ ":" + This::getName()
-		+ "." + std::to_string(This::getId())
-		+ "@" + This::getEndpoint().toString();
+	json::StringObject jsonObject;
 
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"publisher"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+	AppIdentity thisIdentity {This::getName(), This::getId(), ServerIdentity{This::getServer().getEndpoint().toString(), This::getServer().usesProxy()}};
+	thisIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -298,11 +308,22 @@ void Subscriber::cancel() {
 
 std::string Subscriber::toString() const {
 
-	return std::string{"sub."} + getPublisherName()
-		+ ":" + getAppName()
-		+ "." + std::to_string(getAppId())
-		+ "@" + getAppEndpoint().toString();
+	json::StringObject jsonObject;
 
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"subscriber"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_publisherName);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+
+	AppIdentity appIdentity {m_appName, m_appId, ServerIdentity{m_appEndpoint.toString(), false}};
+	appIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {

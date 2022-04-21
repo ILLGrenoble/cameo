@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	cout << "Created router" << endl;
+	cout << "Created router " << *router << endl;
 
 	This::setRunning();
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 		responder = coms::multi::Responder::create(*router);
 		responder->init();
 
-		cout << "Created responder" << endl;
+		cout << "Created responder " << *responder << endl;
 
 		// Receive first request.
 		unique_ptr<coms::multi::Request> request = responder->receive();

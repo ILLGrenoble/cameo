@@ -16,3 +16,9 @@ target_link_libraries(testapplicationwithstarteridentity PRIVATE Cameo::cameo-ap
 target_include_directories(testapplicationwithstarteridentity PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include/ )
 target_include_directories(testapplicationwithstarteridentity SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/ )
 add_test(applicationwithstarteridentity testapplicationwithstarteridentity)
+
+add_executable(testidentities TestIdentities.cpp)
+target_link_libraries(testidentities PRIVATE Cameo::cameo-api-cpp)
+target_include_directories(testidentities PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../include/ )
+target_include_directories(testidentities SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/ )
+add_test(identities testidentities)

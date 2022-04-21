@@ -161,7 +161,6 @@ void ApplicationIdentity::toJSON(json::StringObject& jsonObject) const {
 std::string ApplicationIdentity::toJSONString() const {
 
 	json::StringObject jsonObject;
-
 	toJSON(jsonObject);
 
 	return jsonObject.dump();
@@ -214,11 +213,61 @@ void ApplicationWithStarterIdentity::toJSON(json::StringObject& jsonObject) cons
 std::string ApplicationWithStarterIdentity::toJSONString() const {
 
 	json::StringObject jsonObject;
-
 	toJSON(jsonObject);
 
 	return jsonObject.dump();
 }
+
+ServerIdentity::ServerIdentity(const std::string& endpoint, bool proxy) :
+	m_endpoint{endpoint},
+	m_proxy{proxy} {
+}
+
+void ServerIdentity::toJSON(json::StringObject& jsonObject) const {
+
+	jsonObject.pushKey(ENDPOINT);
+	jsonObject.pushValue(m_endpoint);
+
+	jsonObject.pushKey(PROXY);
+	jsonObject.pushValue(m_proxy);
+}
+
+std::string ServerIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
+}
+
+AppIdentity::AppIdentity(const std::string& name, int id, const ServerIdentity& server) :
+	m_name{name},
+	m_id{id},
+	m_server{server} {
+}
+
+void AppIdentity::toJSON(json::StringObject& jsonObject) const {
+
+	jsonObject.pushKey(NAME);
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey(ID);
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey(SERVER);
+	jsonObject.startObject();
+	m_server.toJSON(jsonObject);
+	jsonObject.endObject();
+}
+
+std::string AppIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
+}
+
 
 std::string StringId::from(int id, const std::string& name) {
 	return std::to_string(id) + ":" + name;

@@ -57,6 +57,12 @@ public:
 	 */
 	const std::string& getData() const;
 
+	/**
+	 * Returns a stringified representation of this event.
+	 * \return A stringified representation of this event.
+	 */
+	std::string toString() const;
+
 private:
 	std::string m_data;
 };

@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
+
 /**
  * Class defining a result event.
  */
@@ -33,12 +35,7 @@ public class ResultEvent extends Event {
 		super(id, name);
 		this.data = data;
 	}
-	
-	@Override
-	public String toString() {
-		return "ApplicationResult [id=" + id + ", name=" + name + "]";
-	}
-	
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -67,6 +64,17 @@ public class ResultEvent extends Event {
 
 	public byte[] getData() {
 		return data;
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "result");
+		result.put("id", id);
+		result.put("name", name);
+		
+		return result.toJSONString();
 	}
 	
 }

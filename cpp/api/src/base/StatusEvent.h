@@ -72,6 +72,12 @@ public:
 	 */
 	int getExitCode() const;
 
+	/**
+	 * Returns a stringified representation of this event.
+	 * \return A stringified representation of this event.
+	 */
+	std::string toString() const;
+
 private:
 	State m_state;
 	State m_pastStates;

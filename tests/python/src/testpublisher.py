@@ -21,7 +21,7 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server.create(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
 server.init()
 
 for i in range(numberOfTimes):
@@ -32,6 +32,8 @@ for i in range(numberOfTimes):
     
     subscriber = cameopy.Subscriber.create(app, "publisher")
     subscriber.init()
+    
+    print("Created subscriber", subscriber)
     
     while True:
         data = subscriber.receiveString()

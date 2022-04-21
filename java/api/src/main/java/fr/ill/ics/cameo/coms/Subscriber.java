@@ -29,7 +29,9 @@ import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -215,6 +217,12 @@ public class Subscriber implements IObject, ICancelable {
 
 	@Override
 	public String toString() {
-		return "sub." + publisherName + ":" + appName + "." + appId + "@" + appEndpoint;
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "subscriber");
+		result.put("name", publisherName);
+		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 }

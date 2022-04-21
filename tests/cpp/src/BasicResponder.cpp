@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	cout << "Created responder" << endl;
+	cout << "Created responder " << *responder << endl;
 
 	This::setRunning();
 

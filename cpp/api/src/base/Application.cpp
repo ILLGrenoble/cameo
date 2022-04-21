@@ -510,7 +510,7 @@ void This::checkStates() {
 }
 
 std::string This::toString() {
-	return m_instance.m_name + "." + std::to_string(m_instance.m_id) + "@" + m_instance.m_serverEndpoint.toString();
+	return AppIdentity{m_instance.m_name, m_instance.m_id, ServerIdentity{m_instance.m_server->getEndpoint().toString(), m_instance.m_server->usesProxy()}}.toJSONString();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -684,10 +684,7 @@ Endpoint App::getStatusEndpoint() const {
 }
 
 std::string App::getNameId() const {
-	std::stringstream os;
-	os << m_name << "." << m_id;
-
-	return os.str();
+	return m_name + "." + std::to_string(m_id);
 }
 
 const App::Com& App::getCom() const {
@@ -858,7 +855,7 @@ std::unique_ptr<OutputStreamSocket> App::getOutputStreamSocket() {
 }
 
 std::string App::toString() const {
-	return m_name + "." + std::to_string(m_id) + "@" + m_server->getEndpoint().toString();
+	return AppIdentity{m_name, m_id, ServerIdentity{m_server->getEndpoint().toString(), m_server->usesProxy()}}.toJSONString();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -899,12 +896,27 @@ int App::Config::getStoppingTime() const {
 
 std::string App::Config::toString() const {
 
-	return std::string("[name=") + m_name
-			+ ", description=" + m_description
-			+ ", single instance=" + std::to_string(m_singleInstance)
-			+ ", restart=" + std::to_string(m_restart)
-			+ ", starting time=" + std::to_string(m_startingTime)
-			+ ", stopping time=" + std::to_string(m_stoppingTime) + "]";
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("description");
+	jsonObject.pushValue(m_description);
+
+	jsonObject.pushKey("single");
+	jsonObject.pushValue(m_singleInstance);
+
+	jsonObject.pushKey("restart");
+	jsonObject.pushValue(m_restart);
+
+	jsonObject.pushKey("starting_time");
+	jsonObject.pushValue(m_startingTime);
+
+	jsonObject.pushKey("stopping_time");
+	jsonObject.pushValue(m_stoppingTime);
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -944,10 +956,25 @@ int App::Info::getPid() const {
 }
 
 std::string App::Info::toString() const {
-	return std::string{"[name="}  + m_name
-		+ ", id=" + std::to_string(m_id)
-		+ ", state=" + cameo::toString(m_applicationState)
-		+ ", args=" + m_args + "]";
+
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("state");
+	jsonObject.pushValue(cameo::toString(m_applicationState));
+
+	jsonObject.pushKey("past_states");
+	jsonObject.pushValue(cameo::toString(m_pastApplicationStates));
+
+	jsonObject.pushKey("args");
+	jsonObject.pushValue(m_args);
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -973,9 +1000,18 @@ const std::string& App::Port::getOwner() const {
 
 std::string App::Port::toString() const {
 
-	return std::string{"[port="} + std::to_string(m_port)
-			+ ", status=" + m_status
-			+ ", owner=" + m_owner + "]";
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("port");
+	jsonObject.pushValue(m_port);
+
+	jsonObject.pushKey("status");
+	jsonObject.pushValue(m_status);
+
+	jsonObject.pushKey("owner");
+	jsonObject.pushValue(m_owner);
+
+	return jsonObject.dump();
 }
 
 std::string toString(cameo::State applicationStates) {

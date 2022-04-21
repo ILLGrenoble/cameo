@@ -76,6 +76,12 @@ public:
 	 */
 	const std::string& getValue() const;
 
+	/**
+	 * Returns a stringified representation of this event.
+	 * \return A stringified representation of this event.
+	 */
+	std::string toString() const;
+
 private:
 	Status m_status;
 	std::string m_key;

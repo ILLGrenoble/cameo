@@ -17,10 +17,14 @@
 package fr.ill.ics.cameo.base;
 
 
+import org.json.simple.JSONObject;
+
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
  * Class defining an output stream thread.
@@ -75,7 +79,13 @@ public class OutputStreamSocket implements ICancelable {
 	
 		@Override
 		public String toString() {
-			return "[id=" + id + ", message=" + message + " eol=" + endOfLine + "]";
+			JSONObject result = new JSONObject();
+			
+			result.put("id", id);
+			result.put("message", message);
+			result.put("eol", endOfLine);
+			
+			return result.toJSONString();
 		}
 	
 	}
@@ -149,11 +159,6 @@ public class OutputStreamSocket implements ICancelable {
 	 */
 	public void terminate() {
 		impl.terminate();
-	}
-	
-	@Override
-	public String toString() {
-		return "[applicationId=" + applicationId + "]";
 	}
 
 }

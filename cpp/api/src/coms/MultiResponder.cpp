@@ -105,7 +105,19 @@ ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 
 std::string Request::toString() const {
 
-	return std::string{"[id="} + std::to_string(m_requesterApplicationId) + "]";
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"multi-request"});
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+
+	AppIdentity appIdentity {m_requesterApplicationName, m_requesterApplicationId, ServerIdentity{m_requesterServerEndpoint.toString(), false}};
+	appIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -193,10 +205,24 @@ bool ResponderRouter::isCanceled() const {
 
 std::string ResponderRouter::toString() const {
 
-	return std::string{"repr."} + m_name
-		+ ":" + This::getName()
-		+ "." + std::to_string(This::getId())
-		+ "@" + This::getEndpoint().toString();
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"multi-responder-router"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("dealer");
+	jsonObject.pushValue(m_dealerEndpoint);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+	AppIdentity thisIdentity {This::getName(), This::getId(), ServerIdentity{This::getServer().getEndpoint().toString(), This::getServer().usesProxy()}};
+	thisIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -256,10 +282,21 @@ bool Responder::isCanceled() const {
 
 std::string Responder::toString() const {
 
-	return std::string{"repm"}
-		+ ":" + This::getName()
-		+ "." + std::to_string(This::getId())
-		+ "@" + This::getEndpoint().toString();
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"multi-responder"});
+
+	jsonObject.pushKey("dealer");
+	jsonObject.pushValue(m_dealerEndpoint);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+	AppIdentity thisIdentity {This::getName(), This::getId(), ServerIdentity{This::getServer().getEndpoint().toString(), This::getServer().usesProxy()}};
+	thisIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {

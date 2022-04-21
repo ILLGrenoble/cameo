@@ -29,6 +29,8 @@ import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -248,6 +250,12 @@ public class Publisher implements ICancelable {
 		
 	@Override
 	public String toString() {
-		return "pub." + getName() + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "publisher");
+		result.put("name", name);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 }

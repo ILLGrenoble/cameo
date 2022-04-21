@@ -24,6 +24,8 @@ import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
  * Class defining a responder for the responder router.
@@ -108,7 +110,13 @@ public class Responder implements IObject, ICancelable {
 
 	@Override
 	public String toString() {
-		return "repm:" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "multi-responder");
+		result.put("dealer", dealerEndpoint);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 	
 }

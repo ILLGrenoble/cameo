@@ -49,6 +49,12 @@ public:
 	 * \return The cloned event.
 	 */
 	virtual CancelEvent* clone();
+
+	/**
+	 * Returns a stringified representation of this event.
+	 * \return A stringified representation of this event.
+	 */
+	std::string toString() const;
 };
 
 /**

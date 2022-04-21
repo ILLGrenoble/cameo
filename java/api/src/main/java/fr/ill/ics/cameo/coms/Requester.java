@@ -30,7 +30,9 @@ import fr.ill.ics.cameo.coms.basic.Responder;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -242,6 +244,12 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 	
 	@Override
 	public String toString() {
-		return "req." + responderName + ":" + appName + "." + appId + "@" + appEndpoint;
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "requester");
+		result.put("name", responderName);
+		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 }

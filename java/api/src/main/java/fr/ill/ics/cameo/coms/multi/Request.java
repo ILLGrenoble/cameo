@@ -24,7 +24,9 @@ import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
  * Class defining a request received by the multi responder.
@@ -172,7 +174,12 @@ public class Request {
 
 	@Override
 	public String toString() {
-		return "Request [id=" + requesterApplicationId + "]";
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "multi-request");
+		result.put("app", new AppIdentity(requesterApplicationName, requesterApplicationId, new ServerIdentity(requesterServerEndpoint.toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 
 	

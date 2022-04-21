@@ -20,7 +20,7 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server.create(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
 server.init()
 
 print("Responder application is", applicationName)
@@ -33,6 +33,8 @@ for i in range(numberOfTimes):
 
     requester = cameopy.Requester.create(app, "responder")
     requester.init()
+    
+    print("Created requester", requester)
     
     # Send a simple message.
     requester.send("request")

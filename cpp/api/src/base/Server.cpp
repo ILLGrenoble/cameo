@@ -796,7 +796,7 @@ std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
 }
 
 std::string Server::toString() const {
-	return std::string{"server@"} + m_serverEndpoint.toString();
+	return ServerIdentity{m_serverEndpoint.toString(), m_useProxy}.toJSONString();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

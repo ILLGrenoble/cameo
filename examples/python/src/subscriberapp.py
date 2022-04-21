@@ -9,10 +9,12 @@ this.init(sys.argv)
 server = this.getServer()
 publisherApp = server.connect("publisherpy", 0)
 
-print("Connected", publisherApp.getNameId())
+print("Connected", publisherApp)
 
 subscriber = cameopy.Subscriber.create(publisherApp, "the-publisher")
 subscriber.init()
+
+print("Created subscriber", subscriber)
 
 while True:
   message = subscriber.receiveString()

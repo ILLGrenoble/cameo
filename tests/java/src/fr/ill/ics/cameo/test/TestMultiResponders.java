@@ -54,7 +54,7 @@ public class TestMultiResponders {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = Server.create(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
 		server.init();
 		
 		String[] appArgs = new String[] {args[1]};

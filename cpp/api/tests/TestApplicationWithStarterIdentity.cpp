@@ -19,9 +19,6 @@ int main(int, char *[]) {
 
 	string jsonString = identity.toJSONString();
 
-	cout << "json = " << jsonString << endl;
-
-
 	json::Object jsonIdentity;
 	json::parse(jsonIdentity, jsonString);
 

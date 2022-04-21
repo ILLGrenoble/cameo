@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
+
 /**
  * Class defining a key event.
  */
@@ -107,5 +109,20 @@ public class KeyEvent extends Event {
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "key");
+		result.put("id", id);
+		result.put("name", name);
+		result.put("key", key);
+		result.put("status", status);
+		result.put("value", value);
+		
+		return result.toJSONString();
+	}
+
 	
 }

@@ -32,6 +32,7 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
@@ -1015,7 +1016,7 @@ public class Server implements IObject, ITimeoutable {
 
 	@Override
 	public String toString() {
-		return "server@" + serverEndpoint;
+		return new ServerIdentity(serverEndpoint.toString(), useProxy).toString();
 	}
 
 }
