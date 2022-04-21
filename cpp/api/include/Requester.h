@@ -30,7 +30,7 @@ class RequesterImpl;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class Requester : public RemoteObject, public Cancelable {
+class Requester : public Object, public Timeoutable, public Cancelable {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
@@ -38,7 +38,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~Requester();
+	~Requester() override;
 
 	/**
 	 * Returns a new requester.

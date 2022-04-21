@@ -20,7 +20,6 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
-import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;

@@ -45,7 +45,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~Publisher();
+	~Publisher() override;
 
 	/**
 	 * Returns the publisher with name.
@@ -148,7 +148,7 @@ public:
 	/**
 	 * Destructor.
 	 */
-	~Subscriber();
+	~Subscriber() override;
 
 	/**
 	 * Returns a new subscriber.

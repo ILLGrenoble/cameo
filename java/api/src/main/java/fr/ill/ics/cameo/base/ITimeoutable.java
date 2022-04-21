@@ -1,9 +1,9 @@
 package fr.ill.ics.cameo.base;
 
 /**
- * Interface defining an abstract Cameo remote object that has timeout.
+ * Interface defining an interface for objects that have timeout.
  */
-public interface IRemoteObject extends IObject {
+public interface ITimeoutable {
 
 	/**
 	 * Sets the timeout.

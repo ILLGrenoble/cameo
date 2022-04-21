@@ -24,7 +24,6 @@ import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Context;
 import fr.ill.ics.cameo.base.Event;
-import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.KeyEvent;
 import fr.ill.ics.cameo.base.RequestSocket;

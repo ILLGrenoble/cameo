@@ -38,7 +38,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-public class Server implements IRemoteObject {
+public class Server implements IObject, ITimeoutable {
 
 	private String serverEndpointString;
 	private Endpoint serverEndpoint;
@@ -182,21 +182,23 @@ public class Server implements IRemoteObject {
 		
 		return 10000;
 	}
-	
-	/**
-	 * Gets the timeout.
-	 * @return The timeout.
-	 */
-	public int getTimeout() {
-		return timeout;
-	}
 
 	/**
 	 * Sets the timeout.
 	 * @param value The timeout.
 	 */
+	@Override
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
+	}
+	
+	/**
+	 * Gets the timeout.
+	 * @return The timeout.
+	 */
+	@Override
+	public int getTimeout() {
+		return timeout;
 	}
 	
 	/**

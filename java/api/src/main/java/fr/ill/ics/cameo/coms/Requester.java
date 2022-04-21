@@ -19,9 +19,10 @@ package fr.ill.ics.cameo.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
-import fr.ill.ics.cameo.base.IRemoteObject;
+import fr.ill.ics.cameo.base.ICancelable;
+import fr.ill.ics.cameo.base.IObject;
+import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
@@ -35,7 +36,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-public class Requester implements IRemoteObject, ICancelable {
+public class Requester implements IObject, ITimeoutable, ICancelable {
 
 	private App app;
 	private String responderName;

@@ -41,7 +41,7 @@ class RequestSocket;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-class Server : public RemoteObject {
+class Server : public Object, public Timeoutable {
 
 	friend class App;
 	friend class This;

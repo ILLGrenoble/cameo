@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 
 

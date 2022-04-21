@@ -14,19 +14,22 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_REMOTEOBJECT_H_
-#define CAMEO_REMOTEOBJECT_H_
-
-#include "Object.h"
+#ifndef CAMEO_TIMEOUTABLE_H_
+#define CAMEO_TIMEOUTABLE_H_
 
 namespace cameo {
 
 /**
- * Class defining an abstract Cameo remote object that has timeout.
+ * Class defining an interface for objects that have a timeout.
  */
-class RemoteObject : public Object {
+class Timeoutable {
 
 public:
+	/**
+	 * Destructor.
+	 */
+	virtual ~Timeoutable() {}
+
 	/**
 	 * Sets the timeout.
 	 * \param value The timeout.
