@@ -76,7 +76,7 @@ public:
 	/**
 	 * Initializes the server.
 	 * \throws InvalidArgumentException if the endpoint is not valid.
-	 * \throws SocketException if the socket cannot be created.
+	 * \throws InitException if the server cannot be initialized.
 	 * \throws ConnectionTimeout if the connection with the Cameo server fails.
 	 */
 	void init() override;

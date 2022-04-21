@@ -58,19 +58,24 @@ void Server::init() {
 		}
 	}
 
-	// Init the context.
-	initContext();
+	try {
+		// Init the context.
+		initContext();
 
-	// Create the request socket. The server endpoint has been defined.
-	initRequestSocket();
+		// Create the request socket. The server endpoint has been defined.
+		initRequestSocket();
 
-	// Retrieve the server version.
-	retrieveServerVersion();
+		// Retrieve the server version.
+		retrieveServerVersion();
 
-	// Start the event thread.
-	std::unique_ptr<EventStreamSocket> socket {createEventStreamSocket()};
-	m_eventThread.reset(new EventThread{this, socket});
-	m_eventThread->start();
+		// Start the event thread.
+		std::unique_ptr<EventStreamSocket> socket {createEventStreamSocket()};
+		m_eventThread.reset(new EventThread{this, socket});
+		m_eventThread->start();
+	}
+	catch (const SocketException& e) {
+		throw InitException(std::string{"Cannot initialize the server:"} + e.what());
+	}
 }
 
 Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :

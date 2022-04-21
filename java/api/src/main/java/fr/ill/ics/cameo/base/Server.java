@@ -127,7 +127,7 @@ public class Server implements IObject, ITimeoutable {
 	/**
 	 * Initializes the server.
 	 * @throws InvalidArgumentException if the endpoint is not valid.
-	 * @throws SocketException if the socket cannot be created.
+	 * @throws InitException if the server cannot be initialized.
 	 * @throws ConnectionTimeout if the connection with the Cameo server fails.
 	 */
 	public void init() {
@@ -141,19 +141,24 @@ public class Server implements IObject, ITimeoutable {
 				throw new InvalidArgumentException(serverEndpointString + " is not a valid endpoint");
 			}
 		}
-		
-		// Init the context and socket.
-		initContext();
-		
-		// Retrieve the server version.
-		retrieveServerVersion();
-		
-		// Start the status thread if it is possible.
-		EventStreamSocket streamSocket = createEventStreamSocket();
-		
-		if (streamSocket != null) {
-			eventThread = new EventThread(this, streamSocket);
-			eventThread.start();
+
+		try {
+			// Init the context and socket.
+			initContext();
+			
+			// Retrieve the server version.
+			retrieveServerVersion();
+			
+			// Start the status thread if it is possible.
+			EventStreamSocket streamSocket = createEventStreamSocket();
+			
+			if (streamSocket != null) {
+				eventThread = new EventThread(this, streamSocket);
+				eventThread.start();
+			}
+		}
+		catch (SocketException e) {
+			throw new InitException("Cannot initialize server: " + e.getMessage());
 		}
 	}
 	
