@@ -129,10 +129,10 @@ public class Request {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
+			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), true);
 		}
 		else {
-			starterServer = Server.create(requesterServerEndpoint, 0, false);	
+			starterServer = Server.create(requesterServerEndpoint, false);
 		}
 		
 		starterServer.init();

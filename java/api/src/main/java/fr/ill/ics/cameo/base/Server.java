@@ -56,64 +56,42 @@ public class Server implements IObject, ITimeoutable {
 	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
 	
-	private Server(Endpoint endpoint, int timeout, boolean useProxy) {
+	private Server(Endpoint endpoint, boolean useProxy) {
 		
 		this.serverEndpoint = endpoint;
 		this.useProxy = useProxy;
-		this.timeout = timeout;
 	}
 
-	private Server(String endpoint, int timeout, boolean useProxy) {
+	private Server(String endpoint, boolean useProxy) {
 
 		this.serverEndpointString = endpoint;
 		this.useProxy = useProxy;
-		this.timeout = timeout;
 	}
 	
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param timeout The timeout in milliseconds.
 	 * @param useProxy Uses the proxy or not.
 	 */	
-	public static Server create(Endpoint endpoint, int timeout, boolean useProxy) {
-		return new Server(endpoint, timeout, useProxy);
+	public static Server create(Endpoint endpoint, boolean useProxy) {
+		return new Server(endpoint, useProxy);
 	}
 	
-	/**
-	 * Creates a server.
-	 * @param endpoint The endpoint of the remote server.
-	 * @param timeout The timeout in milliseconds.
-	 */
-	public static Server create(Endpoint endpoint, int timeout) {
-		return new Server(endpoint, timeout, false);
-	}
-
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public static Server create(Endpoint endpoint) {
-		return new Server(endpoint, 0, false);
+		return new Server(endpoint, false);
 	}
 
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param timeout The timeout in milliseconds.
 	 * @param useProxy Uses the proxy or not.
 	 */
-	public static Server create(String endpoint, int timeout, boolean useProxy) {
-		return new Server(endpoint, timeout, useProxy);
-	}
-
-	/**
-	 * Creates a server.
-	 * @param endpoint The endpoint of the remote server.
-	 * @param timeout The timeout in milliseconds.
-	 */
-	public static Server create(String endpoint, int timeout) {
-		return new Server(endpoint, timeout, false);
+	public static Server create(String endpoint, boolean useProxy) {
+		return new Server(endpoint, useProxy);
 	}
 
 	/**
@@ -121,7 +99,7 @@ public class Server implements IObject, ITimeoutable {
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public static Server create(String endpoint) {
-		return new Server(endpoint, 0, false);
+		return new Server(endpoint, false);
 	}
 	
 	/**

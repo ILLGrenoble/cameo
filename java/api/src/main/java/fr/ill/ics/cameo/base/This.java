@@ -451,10 +451,10 @@ public class This {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), 0, true);
+			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), true);
 		}
 		else {
-			starterServer = Server.create(instance.getStarterEndpoint(), 0, false);	
+			starterServer = Server.create(instance.getStarterEndpoint(), false);
 		}
 		
 		starterServer.init();
@@ -561,7 +561,7 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = Server.create(serverEndpoint, 0, false);
+		server = Server.create(serverEndpoint, false);
 		server.init();
 		
 		// Init the unregistered application.
@@ -737,10 +737,10 @@ public class This {
 		// Create the starter server.
 		// If the starter has a running proxy, then use the proxy: it is reasonable.
 		if (starterProxyPort != 0) {
-			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), 0, true);
+			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), true);
 		}
 		else {
-			starterServer = Server.create(starterEndpoint, 0, false);	
+			starterServer = Server.create(starterEndpoint, false);
 		}
 		
 		starterServer.init();

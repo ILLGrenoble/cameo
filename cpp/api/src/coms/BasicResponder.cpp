@@ -82,10 +82,10 @@ ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 	}
 
 	if (useProxy) {
-		result.server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), options, true);
+		result.server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
 	}
 	else {
-		result.server = Server::create(m_requesterServerEndpoint.toString(), options, false);
+		result.server = Server::create(m_requesterServerEndpoint.toString(), false);
 	}
 
 	result.server->init();

@@ -26,18 +26,20 @@ using namespace cameo;
 int main(int, char *[]) {
 
 	try {
-		unique_ptr<Server> server = Server::create("tcp://ferrazpc.ill.fr:7000", 1000);
+		unique_ptr<Server> server = Server::create("tcp://ferrazpc.ill.fr:7000");
+		server->setTimeout(1000);
 		server->init();
 	}
-	catch (SocketException const & e) {
-		cout << "Socket exception: " << e.what() << endl;
+	catch (InitException const & e) {
+		cout << "Init exception: " << e.what() << endl;
 	}
 	catch (exception const & e) {
 		cout << "The server has bad endpoint: " << e.what() << endl;
 	}
 
 	try {
-		unique_ptr<Server> server = Server::create("tcp://localhost:9999", 1000);
+		unique_ptr<Server> server = Server::create("tcp://localhost:9999");
+		server->setTimeout(1000);
 		server->init();
 
 		cout << "server created" << endl;
@@ -48,8 +50,8 @@ int main(int, char *[]) {
 			cout << "server not available" << endl;
 		}
 	}
-	catch (SocketException const & e) {
-		cout << "Socket exception: " << e.what() << endl;
+	catch (InitException const & e) {
+		cout << "Init exception: " << e.what() << endl;
 	}
 	catch (exception const & e) {
 		cout << "The server has bad endpoint: " << e.what() << endl;

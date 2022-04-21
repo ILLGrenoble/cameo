@@ -159,9 +159,8 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<AppArray>(m, "AppArray");
 
 	py::class_<Server>(m, "Server")
-		.def_static("create", py::overload_cast<const std::string&, int, bool>(&Server::create),
+		.def_static("create", py::overload_cast<const std::string&, bool>(&Server::create),
 				"endpoint"_a,
-				"timeout"_a = 0,
 				"useProxy"_a = false,
 		   		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Server::init, py::call_guard<py::gil_scoped_release>())

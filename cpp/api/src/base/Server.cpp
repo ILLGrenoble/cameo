@@ -78,9 +78,9 @@ void Server::init() {
 	}
 }
 
-Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :
+Server::Server(const Endpoint& endpoint, bool useProxy) :
 	m_serverEndpoint{endpoint},
-	m_timeout{timeoutMs},
+	m_timeout{0},
 	m_useProxy{useProxy},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
@@ -92,9 +92,9 @@ Server::Server(const Endpoint& endpoint, int timeoutMs, bool useProxy) :
 	m_serverVersion = {0, 0, 0};
 }
 
-Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
+Server::Server(const std::string& endpoint, bool useProxy) :
 	m_serverEndpointString{endpoint},
-	m_timeout{timeoutMs},
+	m_timeout{0},
 	m_useProxy{useProxy},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
@@ -106,12 +106,12 @@ Server::Server(const std::string& endpoint, int timeoutMs, bool useProxy) :
 	m_serverVersion = {0, 0, 0};
 }
 
-std::unique_ptr<Server> Server::create(const Endpoint& endpoint, int timeoutMs, bool useProxy) {
-	return std::unique_ptr<Server>{new Server(endpoint, timeoutMs, useProxy)};
+std::unique_ptr<Server> Server::create(const Endpoint& endpoint, bool useProxy) {
+	return std::unique_ptr<Server>{new Server(endpoint, useProxy)};
 }
 
-std::unique_ptr<Server> Server::create(const std::string& endpoint, int timeoutMs, bool useProxy) {
-	return std::unique_ptr<Server>{new Server(endpoint, timeoutMs, useProxy)};
+std::unique_ptr<Server> Server::create(const std::string& endpoint, bool useProxy) {
+	return std::unique_ptr<Server>{new Server(endpoint, useProxy)};
 }
 
 Server::~Server() {

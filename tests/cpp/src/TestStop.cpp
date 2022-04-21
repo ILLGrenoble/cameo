@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
 	server->init();
 
 	// Loop the number of times.
