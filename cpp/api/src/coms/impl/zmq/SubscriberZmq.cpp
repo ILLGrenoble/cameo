@@ -28,9 +28,9 @@ namespace cameo {
 namespace coms {
 
 SubscriberZmq::SubscriberZmq() :
-	m_appId(0),
-	m_ended(false),
-	m_canceled(false) {
+	m_appId{0},
+	m_ended{false},
+	m_canceled{false} {
 }
 
 SubscriberZmq::~SubscriberZmq() {
@@ -44,16 +44,16 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_canceled = false;
 
 	// Create a socket for publishing.
-	ContextZmq* contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
-	m_subscriber.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::sub));
+	ContextZmq * contextImpl {dynamic_cast<ContextZmq *>(This::getCom().getContext())};
+	m_subscriber.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::sub});
 	m_subscriber->connect(endpoint.toString());
 
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 
 	// First define the cancel endpoint.
-	m_cancelEndpoint = std::string("inproc://" + IdGenerator::newStringId());
+	m_cancelEndpoint = std::string{"inproc://" + IdGenerator::newStringId()};
 
-	m_cancelPublisher = std::unique_ptr<zmq::socket_t>(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::pub));
+	m_cancelPublisher = std::unique_ptr<zmq::socket_t>{new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::pub}};
 	m_cancelPublisher->bind(m_cancelEndpoint);
 
 	m_subscriber->connect(m_cancelEndpoint);
@@ -63,7 +63,7 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 }
 
-bool SubscriberZmq::isEnded() const {
+bool SubscriberZmq::hasEnded() const {
 	return m_ended;
 }
 
@@ -71,7 +71,7 @@ bool SubscriberZmq::isCanceled() const {
 	return m_canceled;
 }
 
-std::optional<std::string> SubscriberZmq::receiveBinary() {
+std::optional<std::string> SubscriberZmq::receive() {
 
 	while (true) {
 		zmq::message_t firstPart;
@@ -79,7 +79,7 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 			return {};
 		}
 
-		std::string first(static_cast<char*>(firstPart.data()), firstPart.size());
+		std::string first {static_cast<char*>(firstPart.data()), firstPart.size()};
 
 		if (first == m_publisherIdentity) {
 
@@ -88,20 +88,20 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 				return {};
 			}
 
-			std::string messageType(static_cast<char*>(typePart.data()), typePart.size());
+			std::string messageType {static_cast<char*>(typePart.data()), typePart.size()};
 
 			// Get the JSON object.
 			json::Object jsonType;
 			json::parse(jsonType, messageType);
 
-			int type = jsonType[message::TYPE].GetInt();
+			int type {jsonType[message::TYPE].GetInt()};
 
 			if (type == message::STREAM) {
 				zmq::message_t dataPart;
 				if (!m_subscriber->recv(dataPart, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
-				return std::string(static_cast<char*>(dataPart.data()), dataPart.size());
+				return std::string {static_cast<char*>(dataPart.data()), dataPart.size()};
 			}
 			else if (type == message::STREAM_END) {
 				m_ended = true;
@@ -122,16 +122,16 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 			json::Object status;
 			json::parse(status, statusPart);
 
-			int id = status[message::StatusEvent::ID].GetInt();
+			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
+				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == application::SUCCESS
-					|| state == application::STOPPED
-					|| state == application::KILLED
-					|| state == application::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}
@@ -142,11 +142,7 @@ std::optional<std::string> SubscriberZmq::receiveBinary() {
 	return {};
 }
 
-std::optional<std::string> SubscriberZmq::receive() {
-	return receiveBinary();
-}
-
-std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBinaryParts() {
+std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoParts() {
 
 	while (true) {
 		zmq::message_t firstPart;
@@ -154,7 +150,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 			return {};
 		}
 
-		std::string first(static_cast<char*>(firstPart.data()), firstPart.size());
+		std::string first {static_cast<char*>(firstPart.data()), firstPart.size()};
 
 		if (first == m_publisherIdentity) {
 
@@ -163,13 +159,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 				return {};
 			}
 
-			std::string messageType(static_cast<char*>(typePart.data()), typePart.size());
+			std::string messageType {static_cast<char*>(typePart.data()), typePart.size()};
 
 			// Get the JSON object.
 			json::Object jsonType;
 			json::parse(jsonType, messageType);
 
-			int type = jsonType[message::TYPE].GetInt();
+			int type {jsonType[message::TYPE].GetInt()};
 
 			if (type == message::STREAM) {
 
@@ -179,13 +175,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 				if (!m_subscriber->recv(data1Part, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
-				std::string data1 = std::string(static_cast<char*>(data1Part.data()), data1Part.size());
+				std::string data1 {static_cast<char*>(data1Part.data()), data1Part.size()};
 
 				zmq::message_t data2Part;
 				if (!m_subscriber->recv(data2Part, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
-				std::string data2 = std::string(static_cast<char*>(data2Part.data()), data2Part.size());
+				std::string data2 {static_cast<char*>(data2Part.data()), data2Part.size()};
 
 				return std::make_tuple(data1, data2);
 			}
@@ -207,16 +203,16 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 			json::Object status;
 			json::parse(status, statusPart);
 
-			int id = status[message::StatusEvent::ID].GetInt();
+			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				application::State state = status[message::StatusEvent::APPLICATION_STATE].GetInt();
+				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == application::SUCCESS
-					|| state == application::STOPPED
-					|| state == application::KILLED
-					|| state == application::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}
@@ -229,12 +225,12 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoBin
 
 void SubscriberZmq::cancel() {
 
-	std::string messageType(message::Event::CANCEL);
-	zmq::message_t typePart(messageType.c_str(), messageType.length());
+	std::string messageType {message::Event::CANCEL};
+	zmq::message_t typePart {messageType.c_str(), messageType.length()};
 	m_cancelPublisher->send(typePart, zmq::send_flags::sndmore);
 
-	std::string data(message::Event::CANCEL);
-	zmq::message_t dataPart(data.c_str(), data.length());
+	std::string data {message::Event::CANCEL};
+	zmq::message_t dataPart {data.c_str(), data.length()};
 	m_cancelPublisher->send(dataPart, zmq::send_flags::none);
 }
 

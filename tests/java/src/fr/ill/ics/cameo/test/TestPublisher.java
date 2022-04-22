@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.SubscriberCreationException;
 
 
 public class TestPublisher {
@@ -54,17 +54,19 @@ public class TestPublisher {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
 			// Loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// Start the application.
-				Instance publisherApplication = server.start(applicationName);
+				App publisherApplication = server.start(applicationName);
 				System.out.println("Started application " + publisherApplication);
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");
+				subscriber.init();
 				System.out.println("Created subscriber " + subscriber);
 				
 				// Receiving data.
@@ -81,15 +83,17 @@ public class TestPublisher {
 				
 				// Wait for the application.
 				int state = publisherApplication.waitFor();
-				System.out.println("Publisher application terminated with state " + Application.State.toString(state));
+				System.out.println("Publisher application terminated with state " + State.toString(state));
 				
 				// Terminate the subscriber.
 				subscriber.terminate();
 			}
-		} catch (SubscriberCreationException e) {
+		}
+		catch (InitException e) {
 			System.out.println("Cannot create subscriber");
 			
-		} finally {
+		}
+		finally {
 			server.terminate();
 			This.terminate();
 		}

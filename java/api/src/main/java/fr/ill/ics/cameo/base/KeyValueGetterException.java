@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,12 +14,19 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
+/**
+ * Class defining an exception when getting a key value fails.
+ */
 public class KeyValueGetterException extends RemoteException {
 
 	private static final long serialVersionUID = 8288957337240690562L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public KeyValueGetterException(String message) {
 		super(message);
 	}

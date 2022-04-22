@@ -12,13 +12,14 @@ this.init(sys.argv)
 server = this.getServer()
 responderApp = server.connect("responderpy", 0)
 
-print("Connected", responderApp.getNameId())
+print("Connected", responderApp)
 
 requester = cameopy.Requester.create(responderApp, "the-responder")
+requester.init()
 
 for i in range(numberOfTimes):
   request = "request-" + str(i)
   requester.send(request)
   print("Sent request")
-  response = requester.receive()
+  response = requester.receiveString()
   print("Response", response)

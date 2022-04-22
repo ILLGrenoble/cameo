@@ -29,19 +29,19 @@ std::string serializeToJSON(const std::string& message, int i) {
 	object.pushKey("value");
 	object.pushValue(i);
 
-	return object.toString();
+	return object.dump();
 }
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	int numberOfSubscribers = 0;
 	if (argc > 2) {
 		numberOfSubscribers = std::stoi(argv[1]);
 	}
 
-	if (application::This::isAvailable()) {
+	if (This::isAvailable()) {
 		std::cout << "Connected" << std::endl;
 	}
 
@@ -49,16 +49,15 @@ int main(int argc, char *argv[]) {
 
 	try {
 		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
+		publisher->init();
 		std::cout << "Created publisher " << *publisher << std::endl;
-
-		publisher->waitForSubscribers();
 	}
-	catch (const coms::PublisherCreationException& e) {
+	catch (const InitException& e) {
 		std::cout << "Publisher error" << std::endl;
 		return -1;
 	}
 
-	application::This::setRunning();
+	This::setRunning();
 
 	std::cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << std::endl;
 

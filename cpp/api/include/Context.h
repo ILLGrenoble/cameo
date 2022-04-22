@@ -19,10 +19,20 @@
 
 namespace cameo {
 
+/**
+ * Base class for the communication context.
+ */
 class Context {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	Context() {};
+
+	/**
+	 * Destructor.
+	 */
 	virtual ~Context() {};
 };
 

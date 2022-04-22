@@ -35,72 +35,46 @@ namespace basic {
 Request::~Request() {
 }
 
-void Request::setTimeout(int value) {
-	m_timeout = value;
-}
-
 void Request::setResponder(Responder* responder) {
 	// Be careful with the pointer, the responder must not be deleted before using this request.
 	m_responder = responder;
-}
-
-std::string Request::getObjectId() const {
-
-	// Local id is missing.
-	return "request:"
-		+ m_requesterApplicationName
-		+ "."
-		+ std::to_string(m_requesterApplicationId)
-		+ "@"
-		+ m_requesterServerEndpoint.toString();
 }
 
 std::string Request::getRequesterEndpoint() const {
 	return m_requesterServerEndpoint.toString();
 }
 
-const std::string& Request::getBinary() const {
+const std::string& Request::get() const {
 	return m_messagePart1;
 }
 
-std::string Request::get() const {
-	return m_messagePart1;
-}
-
-const std::string& Request::getSecondBinaryPart() const {
+const std::string& Request::getSecondPart() const {
 	return m_messagePart2;
 }
 
 Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2) :
-	m_responder(nullptr),
-	m_messagePart1(messagePart1),
-	m_messagePart2(messagePart2),
-	m_requesterApplicationName(requesterApplicationName),
-	m_requesterApplicationId(requesterApplicationId),
-	m_timeout(0) {
+	m_responder{nullptr},
+	m_messagePart1{messagePart1},
+	m_messagePart2{messagePart2},
+	m_requesterApplicationName{requesterApplicationName},
+	m_requesterApplicationId{requesterApplicationId} {
 
 	m_requesterServerEndpoint = Endpoint::parse(serverEndpoint);
 	m_requesterServerProxyPort = serverProxyPort;
 }
 
-bool Request::replyBinary(const std::string& response) {
+void Request::reply(const std::string& response) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::RESPONSE);
 
-	m_responder->reply(jsonRequest.toString(), response);
-
-	return true;
+	m_responder->reply(jsonRequest.dump(), response);
 }
 
-bool Request::reply(const std::string& response) {
-	return replyBinary(response);
-}
+ServerAndApp Request::connectToRequester(int options, bool useProxy) {
 
-application::ServerAndInstance Request::connectToRequester(int options, bool useProxy) {
-
-	application::ServerAndInstance result;
+	ServerAndApp result;
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -108,18 +82,20 @@ application::ServerAndInstance Request::connectToRequester(int options, bool use
 	}
 
 	if (useProxy) {
-		result.server = std::make_unique<Server>(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), options, true);
+		result.server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
 	}
 	else {
-		result.server = std::make_unique<Server>(m_requesterServerEndpoint.toString(), options, false);
+		result.server = Server::create(m_requesterServerEndpoint.toString(), false);
 	}
 
+	result.server->init();
+
 	// Iterate the instances to find the id
-	application::InstanceArray instances = result.server->connectAll(m_requesterApplicationName, options);
+	AppArray instances = result.server->connectAll(m_requesterApplicationName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_requesterApplicationId) {
-			result.instance = std::unique_ptr<application::Instance>(std::move(*i));
+			result.app = std::unique_ptr<App>(std::move(*i));
 			break;
 		}
 	}
@@ -129,7 +105,19 @@ application::ServerAndInstance Request::connectToRequester(int options, bool use
 
 std::string Request::toString() const {
 
-	return std::string("[id=") + std::to_string(m_requesterApplicationId) + "]";
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"basic-request"});
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+
+	AppIdentity appIdentity {m_requesterApplicationName, m_requesterApplicationId, ServerIdentity{m_requesterServerEndpoint.toString(), false}};
+	appIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -139,12 +127,12 @@ const std::string Responder::KEY = "responder-676e576d-6102-42d8-ae24-222a7000df
 const std::string Responder::PORT = "port";
 
 Responder::Responder(const std::string& name) :
-	m_name(name) {
+	m_name{name} {
 
 	m_impl = ImplFactory::createBasicResponder();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Responder::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Responder::cancel, this)});
 }
 
 Responder::~Responder() {
@@ -154,19 +142,19 @@ Responder::~Responder() {
 void Responder::terminate() {
 
 	if (m_impl) {
-		application::This::getCom().removeKey(m_key);
+		This::getCom().removeKey(m_key);
 
 		m_impl.reset();
 	}
 }
 
-void Responder::init(const std::string &name) {
+void Responder::init() {
 
 	// Set the key.
-	m_key = KEY + "-" + name;
+	m_key = KEY + "-" + m_name;
 
 	// Init the reponder socket.
-	m_impl->init(StringId::from(application::This::getId(), m_key));
+	m_impl->init(StringId::from(This::getId(), m_key));
 
 	// Store the responder data.
 	json::StringObject jsonData;
@@ -175,19 +163,16 @@ void Responder::init(const std::string &name) {
 	jsonData.pushValue(m_impl->getResponderPort());
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+		m_impl.reset();
+		throw InitException("A responder with the name \"" + m_name + "\" already exists");
 	}
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {
-
-	std::unique_ptr<Responder> responder(new Responder(name));
-	responder->init(name);
-
-	return responder;
+	return std::unique_ptr<Responder>{new Responder(name)};
 }
 
 const std::string& Responder::getName() const {
@@ -201,7 +186,7 @@ void Responder::cancel() {
 std::unique_ptr<Request> Responder::receive() {
 
 	// Receive the request.
-	std::unique_ptr<Request> request = m_impl->receive();
+	std::unique_ptr<Request> request {m_impl->receive()};
 
 	// Do not set the responder if the request is null which happens after a cancel.
 	if (request) {
@@ -221,10 +206,21 @@ bool Responder::isCanceled() const {
 
 std::string Responder::toString() const {
 
-	return std::string("rep.") + m_name
-		+ ":" + application::This::getName()
-		+ "." + std::to_string(application::This::getId())
-		+ "@" + application::This::getEndpoint().toString();
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"basic-responder"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+	AppIdentity thisIdentity {This::getName(), This::getId(), ServerIdentity{This::getServer().getEndpoint().toString(), This::getServer().usesProxy()}};
+	thisIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 std::ostream& operator<<(std::ostream& os, const Request& request) {

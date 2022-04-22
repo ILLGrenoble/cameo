@@ -21,9 +21,15 @@
 
 namespace cameo {
 
+/**
+ * Exception for a connection timeout.
+ */
 class ConnectionTimeout : public std::runtime_error {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	ConnectionTimeout();
 };
 

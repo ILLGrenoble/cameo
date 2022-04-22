@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -34,28 +34,29 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
-	// Test the cancelWaitings function.
+	// Test the cancelAll function.
 	{
-		cout << "Starting stopcpp for cancelWaitings" << endl;
+		cout << "Starting stopcpp for cancelAll" << endl;
 
-		unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<App> stopApplication = server->start("stopcpp");
 
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			application::This::cancelWaitings();
+			This::cancelAll();
 		});
 
-		application::State state = stopApplication->waitFor();
+		State state = stopApplication->waitFor();
 
-		cout << "End of waitFor with state " << application::toString(state) << endl;
+		cout << "End of waitFor with state " << toString(state) << endl;
 
 		stopApplication->stop();
 		state = stopApplication->waitFor();
 
-		cout << "End of stopcpp with state " << application::toString(state) << endl;
+		cout << "End of stopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 	}
@@ -65,27 +66,27 @@ int main(int argc, char *argv[]) {
 		cout << "Starting stopcpp for cancelWaitFor" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> stopApplication(server.start("stopcpp"));
+		shared_ptr<App> stopApplication(server->start("stopcpp"));
 
 		// Start thread.
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(1));
-			stopApplication->cancelWaitFor();
+			stopApplication->cancel();
 		});
 
-		application::State state = stopApplication->waitFor();
+		State state = stopApplication->waitFor();
 
-		cout << "End of waitFor with state " << application::toString(state) << endl;
+		cout << "End of waitFor with state " << toString(state) << endl;
 
 		stopApplication->stop();
 		state = stopApplication->waitFor();
 
-		cout << "End of stopcpp with state " << application::toString(state) << endl;
+		cout << "End of stopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 	}
 
-	// Test cancelWaitForSubscribers.
+	// Test cancel
 	{
 		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
@@ -95,14 +96,14 @@ int main(int argc, char *argv[]) {
 		// Start thread.
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(1));
-			publisher->cancelWaitForSubscribers();
+			publisher->cancel();
 		});
 
-		bool synced = publisher->waitForSubscribers();
+		publisher->init();
 
 		cancelThread.join();
 
-		cout << "Synchronization with the subscriber " << synced << endl;
+		cout << "Subscriber canceled " << publisher->isCanceled() << endl;
 	}
 
 	// Test the killing of the application.
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for killing" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<App> pubLoopApplication(server->start("publisherloopcpp"));
 
 		// Start thread.
 		thread killThread([&] {
@@ -120,6 +121,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		subscriber->init();
 
 		// Receiving data.
 		while (true) {
@@ -132,9 +134,9 @@ int main(int argc, char *argv[]) {
 
 		cout << "Subscriber end of stream " << subscriber->hasEnded() << endl;
 
-		application::State state = pubLoopApplication->waitFor();
+		State state = pubLoopApplication->waitFor();
 
-		cout << "End of publisherloopcpp with state " << application::toString(state) << endl;
+		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		killThread.join();
 	}
@@ -144,15 +146,16 @@ int main(int argc, char *argv[]) {
 		cout << "Starting publisherloopcpp for testing cancel of a subscriber" << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<application::Instance> pubLoopApplication(server.start("publisherloopcpp"));
+		shared_ptr<App> pubLoopApplication(server->start("publisherloopcpp"));
 
 		// Create a subscriber.
 		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		subscriber->init();
 
 		// Start thread.
 		thread cancelThread([] {
 			this_thread::sleep_for(chrono::seconds(1));
-			application::This::cancelWaitings();
+			This::cancelAll();
 		});
 
 		// Receiving data.
@@ -172,9 +175,9 @@ int main(int argc, char *argv[]) {
 			pubLoopApplication->kill();
 		});
 
-		application::State state = pubLoopApplication->waitFor();
+		State state = pubLoopApplication->waitFor();
 
-		cout << "End of publisherloopcpp with state " << application::toString(state) << endl;
+		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		cancelThread.join();
 		killThread.join();
@@ -186,6 +189,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a responder.
 		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+		responder->init();
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -210,6 +214,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a responder.
 		unique_ptr<coms::basic::Responder> responder = coms::basic::Responder::create("responder");
+		responder->init();
 
 		// Start thread.
 		thread responderThread([&] {
@@ -219,10 +224,11 @@ int main(int argc, char *argv[]) {
 		});
 
 		// Get this app.
-		unique_ptr<application::Instance> thisApp = server.connect(application::This::getName());
+		unique_ptr<App> thisApp = server->connect(This::getName());
 
 		// Create a requester.
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "responder");
+		requester->init();
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -255,7 +261,10 @@ int main(int argc, char *argv[]) {
 		cout << "Creating multi responder" << endl;
 
 		unique_ptr<coms::multi::ResponderRouter> router = coms::multi::ResponderRouter::create("responder");
+		router->init();
+
 		unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+		responder->init();
 
 		std::thread routerThread([&] {
 			router->run();

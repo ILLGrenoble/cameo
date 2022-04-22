@@ -21,18 +21,51 @@
 
 namespace cameo {
 
+/**
+ * Class defining a key value.
+ */
 class KeyValue {
 
 public:
+	/**
+	 * Type of the status.
+	 */
 	enum Status {UNDEFINED, STORED, REMOVED};
 
+	/**
+	 * Constructor.
+	 * \param key The key.
+	 */
 	KeyValue(const std::string& key);
 
+	/**
+	 * Sets the status.
+	 * \param status The status.
+	 */
 	void setStatus(Status status);
+
+	/**
+	 * Sets the value.
+	 * \param value The value.
+	 */
 	void setValue(const std::string& value);
 
+	/**
+	 * Gets the status.
+	 * \return The status.
+	 */
 	Status getStatus() const;
+
+	/**
+	 * Gets the key.
+	 * \return The key.
+	 */
 	const std::string& getKey() const;
+
+	/**
+	 * Gets the value.
+	 * \return The value.
+	 */
 	const std::string& getValue() const;
 
 private:

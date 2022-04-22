@@ -20,7 +20,8 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
 
 print("Subscriber application is", applicationName)
 
@@ -37,10 +38,13 @@ for i in range(numberOfTimes):
     # Set the publisher to None deletes the previous one and ensures that it is correctly removed.
     publisher = None 
     publisher = cameopy.Publisher.create("publisher")
+    publisher.init()
+    
+    print("Created publisher", publisher)
     
     for k in range(20):
         data = "{" + str(k) + ", " + str(k * k) + "}"
-        publisher.send(data)
+        publisher.sendTwoParts(bytes(str(k), "utf-8"), bytes(data, "utf-8"))
     
         print("Sent", data)
         
@@ -52,7 +56,7 @@ for i in range(numberOfTimes):
     
     for app in apps:
         app.waitFor()
-        print("Finished the application", app.getNameId())
+        print("Finished the application", app)
         
 
 print("Finished the application")

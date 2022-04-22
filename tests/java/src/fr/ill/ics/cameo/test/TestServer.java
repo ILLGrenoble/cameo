@@ -18,9 +18,10 @@ package fr.ill.ics.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 
 public class TestServer {
 
@@ -28,7 +29,9 @@ public class TestServer {
 
 		System.out.println("Create server");
 		
-		Server server = new Server("tcp://localhost:11000", 0, false);
+		Server server = Server.create("tcp://localhost:11000", false);
+		server.setTimeout(100);
+		server.init();
 		
 		System.out.println("Testing connection");
 		
@@ -38,21 +41,22 @@ public class TestServer {
 		
 		System.out.println("Configs");
 		
-		List<Application.Configuration> configs = server.getApplicationConfigurations();
+		List<App.Config> configs = server.getApplicationConfigs();
 		
-		for (Application.Configuration c : configs) {
+		for (App.Config c : configs) {
 			System.out.println("  " + c.toString());
 		}
 		
-		Instance instance = server.start("simplejava");
+		try {
+			App instance = server.start("simplejava");
 		
-		if (!instance.exists()) {
+			int state = instance.waitFor();
+		
+			System.out.println("Terminated simple with state " + State.toString(state));
+		}
+		catch (AppException e) {
 			System.out.println("App does not exist");
 		}
-		
-		int state = instance.waitFor();
-		
-		System.out.println("Terminated simple with state " + Application.State.toString(state));
 		
 		server.terminate();
 	}

@@ -19,8 +19,8 @@
 namespace cameo {
 
 KeyValue::KeyValue(const std::string& key) :
-	m_status(Status::UNDEFINED),
-	m_key(key) {
+	m_status{Status::UNDEFINED},
+	m_key{key} {
 }
 
 void KeyValue::setStatus(Status status) {

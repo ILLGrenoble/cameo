@@ -1,21 +1,40 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms.basic;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ICancelable;
+import fr.ill.ics.cameo.base.IObject;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.coms.ResponderCreationException;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Responder.
- *
+ * Class defining a basic responder. Requests are processed sequentially.
  */
-public class Responder {
+public class Responder implements IObject, ICancelable {
 	
 	private String name;
 	private ResponderImpl impl;
@@ -31,8 +50,22 @@ public class Responder {
 		
 		waiting.add();
 	}
+
+	/**
+	 * Returns the responder with name.
+	 * @param name The name.
+	 * @return A new Responder object.
+	 */
+	static public Responder create(String name) throws InitException {
+		return new Responder(name);
+	}
 	
-	private void init(String name) throws ResponderCreationException {
+	/**
+	 * Initializes the responder.
+	 * @throws InitException if the responder cannot be created.
+	 */
+	@Override
+	public void init() throws InitException {
 
 		// Set the key.
 		key = KEY + "-" + name;
@@ -48,28 +81,24 @@ public class Responder {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
-			throw new ResponderCreationException("A responder with the name \"" + name + "\" already exists");
+			impl.terminate();
+			impl = null;
+			throw new InitException("A responder with the name \"" + name + "\" already exists");
 		}
 	}
-	
+		
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponderCreationException, ConnectionTimeout
+	 * Gets the name.
+	 * @return The name. 
 	 */
-	static public Responder create(String name) throws ResponderCreationException {
-		
-		Responder responder = new Responder(name);
-		responder.init(name);
-		
-		return responder;
-	}
-	
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Receives a request. This is a blocking command until a Request is received.
+	 * @return A Request object.
+	 */
 	public Request receive() {
 		
 		// Receive the request.
@@ -87,30 +116,51 @@ public class Responder {
 		impl.reply(Messages.serialize(request), response);
 	}
 
+	/**
+	 * Cancels the responder waiting in another thread.
+	 */
+	@Override
 	public void cancel() {
 		impl.cancel();			
 	}
 	
+	/**
+	 * Returns true if it has been canceled.
+	 * @return True if canceled.
+	 */
+	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
-			
+	
+	/**
+	 * Terminates the communication.
+	 */
+	@Override
 	public void terminate() {
 		
-		try {
-			This.getCom().removeKey(key);
+		if (impl != null) {
+			try {
+				This.getCom().removeKey(key);
+			}
+			catch (UndefinedKeyException e) {
+				// No need to treat.
+			}
+			
+			waiting.remove();
+			impl.terminate();
 		}
-		catch (UndefinedKeyException e) {
-			// No need to treat.
-		}
-		
-		waiting.remove();
-		impl.terminate();
 	}
 
 	@Override
 	public String toString() {
-		return "req." + name + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "basic-responder");
+		result.put("name", name);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 	
 }

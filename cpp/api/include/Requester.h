@@ -27,62 +27,129 @@ class RequesterImpl;
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-class RequesterCreationException : public RemoteException {
-
-public:
-	RequesterCreationException(const std::string& message);
-};
-
-
-class Requester {
+/**
+ * Class defining a requester. The request and response must be sent and received sequentially.
+ */
+class Requester : public Object, public Timeoutable, public Cancelable {
 
 	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
 public:
-	~Requester();
-	void terminate();
+	/**
+	 * Destructor.
+	 */
+	~Requester() override;
 
 	/**
-	 * Returns the responder with name.
-	 * throws RequesterCreationException.
+	 * Returns a new requester.
+	 * \param app The application where the responder is defined.
+	 * \param responderName The responder name.
+	 * \return A new Requester object.
 	 */
-	static std::unique_ptr<Requester> create(const application::Instance &app, const std::string &name);
+	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
 
+	/**
+	 * Initializes the requester.
+	 * \throws InitException if the requester cannot be created.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
+
+	/**
+	 * Sets the timeout.
+	 * \param value The value.
+	 */
+	void setTimeout(int value) override;
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	int getTimeout() const override;
+
+	/**
+	 * Cancels the requester. Unblocks the receive() call in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the requester has been canceled.
+	 * \return True if the requester has been canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
 	void setPollingTime(int value);
-	void setTimeout(int value);
 
+	/**
+	 * Gets the responder name.
+	 * \return The responder name.
+	 */
 	const std::string& getResponderName() const;
+
+	/**
+	 * Gets the application name.
+	 * \return The application name.
+	 */
 	const std::string& getAppName() const;
+
+	/**
+	 * Gets the application id.
+	 * \return The application id.
+	 */
 	int getAppId() const;
+
+	/**
+	 * Gets the application endpoint.
+	 * \return The application endpoint.
+	 */
 	Endpoint getAppEndpoint() const;
 
-	void sendBinary(const std::string &request);
-	void send(const std::string &request);
-	void sendTwoBinaryParts(const std::string &request1, const std::string &request2);
-
 	/**
-	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
+	 * Sends a request in one part.
+	 * \param request The request.
 	 */
-	std::optional<std::string> receiveBinary();
+	void send(const std::string &request);
+
+	/**
+	 * Sends a request in two parts.
+	 * \param request1 The first part of the request.
+	 * \param request2 The seconds part of the request.
+	 */
+	void sendTwoParts(const std::string &request1, const std::string &request2);
 
 	/**
 	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
+	 * \return The response or null.
 	 */
 	std::optional<std::string> receive();
 
-	void cancel();
-
-	bool isCanceled() const;
+	/**
+	 * Returns true if the requester has timed out.
+	 * \return True if the requester has timed out.
+	 */
 	bool hasTimedout() const;
 
-	std::string toString() const;
+	/**
+	 * Returns a string representation of the requester.
+	 * \return The string representation.
+	 */
+	std::string toString() const override;
 
 private:
-	Requester();
-	void init(const application::Instance & app, const std::string & responderName);
+	Requester(const App & app, const std::string & responderName);
 
-	bool m_useProxy;
+	const App & m_app;
 	std::string m_responderName;
+	int m_timeout;
+	bool m_useProxy;
 	std::string m_appName;
 	int m_appId;
 	Endpoint m_appEndpoint;
@@ -91,6 +158,9 @@ private:
 	std::string m_key;
 };
 
+/**
+ * Stream operator for a Requester object.
+ */
 std::ostream& operator<<(std::ostream&, const Requester&);
 
 }

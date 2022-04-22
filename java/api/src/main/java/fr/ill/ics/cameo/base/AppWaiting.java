@@ -14,12 +14,32 @@
  * limitations under the Licence.
  */
 
-#include "StarterServerException.h"
+package fr.ill.ics.cameo.base;
 
-namespace cameo {
+/**
+ * Class defining a waiting for an App.
+ *
+ */
+public class AppWaiting extends Waiting {
 
-StarterServerException::StarterServerException() :
-	RemoteException("The starter application is not managed by Cameo") {
-}
+	private App instance;
 
+	/**
+	 * Constructor.
+	 * @param app The app.
+	 */
+	public AppWaiting(App app) {
+		this.instance = app;
+	}
+	
+	@Override
+	public void cancel() {
+		instance.cancel();
+	}
+
+	@Override
+	public void terminate() {
+		instance.terminate();		
+	}
+	
 }

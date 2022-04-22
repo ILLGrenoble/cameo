@@ -16,6 +16,9 @@
 
 package fr.ill.ics.cameo.base;
 
+/**
+ * Class providing a simple connection checker.
+ */
 public class ConnectionChecker {
 
 	public static interface Handler {
@@ -27,8 +30,8 @@ public class ConnectionChecker {
 	private Handler handler;
 	private Thread thread = null;
 	private TimeCondition waitCondition = new TimeCondition();
-		
-	public ConnectionChecker(Server server, Handler handler) {
+	
+	ConnectionChecker(Server server, Handler handler) {
 		this.server = server;
 		this.handler = handler;
 	}
@@ -56,7 +59,10 @@ public class ConnectionChecker {
 		
 		thread.start();
 	}
-	
+
+	/**
+	 * Terminates the checker.
+	 */
 	public synchronized void terminate() {
 		if (thread != null) {
 			waitCondition.notifyCondition();

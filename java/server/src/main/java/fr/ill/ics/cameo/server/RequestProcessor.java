@@ -64,7 +64,7 @@ public class RequestProcessor {
 		Log.logger().finer("Received Sync message");
 		
 		// Send sync message for synchronizing subscribers.
-		manager.sendStatus(-1, "", ApplicationState.UNKNOWN, ApplicationState.UNKNOWN, -1);
+		manager.sendStatus(-1, "", ApplicationState.NIL, ApplicationState.NIL, -1);
 		
 		// Return the reply.
 		JSONObject response = new JSONObject();

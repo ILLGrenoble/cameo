@@ -19,7 +19,8 @@ package fr.ill.ics.cameo.base;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
- * The EventThread class forwards the events from the EventStreamSocket socket to the registered listeners.
+ * Class defining an Event thread.
+ * It forwards the events from the EventStreamSocket socket to the registered listeners.
  */
 class EventThread extends Thread {
 
@@ -30,7 +31,8 @@ class EventThread extends Thread {
 		this.server = server;
 		this.socket = socket;
 	}
-	
+
+	@Override	
 	public void run() {
 		
 		try {
@@ -60,6 +62,9 @@ class EventThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Cancels the thread which unblocks the run() call.
+	 */
 	public void cancel() {
 		socket.cancel();
 	}

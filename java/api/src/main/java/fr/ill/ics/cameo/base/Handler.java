@@ -14,15 +14,13 @@
  * limitations under the Licence.
  */
 
-#include "ResponderCreationException.h"
 
-namespace cameo {
-namespace coms {
+package fr.ill.ics.cameo.base;
 
-ResponderCreationException::ResponderCreationException(const std::string& message) :
-	RemoteException(message) {
-}
-
-}
+/**
+ * Interface for handlers. 
+ */
+public interface Handler {
+	void handle();
 }
 

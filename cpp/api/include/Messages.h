@@ -22,286 +22,741 @@
 
 namespace cameo {
 
+/**
+ * Namespace for the messages exchanged.
+ */
 namespace message {
 
+	/**
+	 * Type constant.
+	 */
 	constexpr const char* TYPE = "type";
 
+	/**
+	 * Sync type value.
+	 */
 	const int SYNC = 1;
+
+	/**
+	 * Sync stream type value.
+	 */
 	const int SYNC_STREAM = 2;
+
+	/**
+	 * Start type value.
+	 */
 	const int START = 3;
+
+	/**
+	 * Stop type value.
+	 */
 	const int STOP = 4;
+
+	/**
+	 * Connect type value.
+	 */
 	const int CONNECT = 5;
+
+	/**
+	 * Connect with id type value.
+	 */
 	const int CONNECT_WITH_ID = 6;
+
+	/**
+	 * Apps type value.
+	 */
 	const int APPS = 7;
+
+	/**
+	 * Output port type value.
+	 */
 	const int OUTPUT_PORT = 8;
+
+	/**
+	 * Output port with id type value.
+	 */
 	const int OUTPUT_PORT_WITH_ID = 9;
+
+	/**
+	 * Is alive type value.
+	 */
 	const int IS_ALIVE = 10;
+
+	/**
+	 * Write input type value.
+	 */
 	const int WRITE_INPUT = 11;
+
+	/**
+	 * Kill type value.
+	 */
 	const int KILL = 12;
+
+	/**
+	 * Status type value.
+	 */
 	const int STATUS = 13;
+
+	/**
+	 * List type value.
+	 */
 	const int LIST = 14;
+
+	/**
+	 * Set status port type value.
+	 */
 	const int SET_STATUS = 15;
+
+	/**
+	 * Get status type value.
+	 */
 	const int GET_STATUS = 16;
+
+	/**
+	 * Responder proxy port type value.
+	 */
 	const int RESPONDER_PROXY_PORT = 36;
+
+	/**
+	 * Publisher proxy port type value.
+	 */
 	const int PUBLISHER_PROXY_PORT = 17;
+
+	/**
+	 * Subscriber proxy port type value.
+	 */
 	const int SUBSCRIBER_PROXY_PORT = 18;
+
+	/**
+	 * Cancel type value.
+	 */
 	const int CANCEL = 19;
+
+	/**
+	 * Set result type value.
+	 */
 	const int SET_RESULT = 20;
+
+	/**
+	 * Request type value.
+	 */
 	const int REQUEST = 21;
+
+	/**
+	 * Response type value.
+	 */
 	const int RESPONSE = 22;
+
+	/**
+	 * Attach unregistered type value.
+	 */
 	const int ATTACH_UNREGISTERED = 23;
+
+	/**
+	 * Detach unregistered type value.
+	 */
 	const int DETACH_UNREGISTERED = 24;
+
+	/**
+	 * Implementation version type value.
+	 */
 	const int IMPL_VERSION = 25;
+
+	/**
+	 * Store key value type value.
+	 */
 	const int STORE_KEY_VALUE = 26;
+
+	/**
+	 * Get key value type value.
+	 */
 	const int GET_KEY_VALUE = 27;
+
+	/**
+	 * Remove key type value.
+	 */
 	const int REMOVE_KEY = 28;
+
+	/**
+	 * Request port type value.
+	 */
 	const int REQUEST_PORT = 29;
+
+	/**
+	 * Port unavailable type value.
+	 */
 	const int PORT_UNAVAILABLE = 30;
+
+	/**
+	 * Release port type value.
+	 */
 	const int RELEASE_PORT = 31;
+
+	/**
+	 * Ports type value.
+	 */
 	const int PORTS = 32;
+
+	/**
+	 * Set stop handler type value.
+	 */
 	const int SET_STOP_HANDLER = 33;
+
+	/**
+	 * Stream type value.
+	 */
 	const int STREAM = 34;
+
+	/**
+	 * Stream end type value.
+	 */
 	const int STREAM_END = 35;
 
-	namespace Event {
-		constexpr const char* CANCEL = "cancel";
-		constexpr const char* STREAM = "stream";
-		constexpr const char* STATUS = "status";
-		constexpr const char* RESULT = "result";
-		constexpr const char* KEYVALUE = "keyvalue";
-	}
+	/**
+	 * Event message constants.
+	 */
+	struct Event {
+		constexpr static const char* CANCEL = "cancel";
+		constexpr static const char* STREAM = "stream";
+		constexpr static const char* STATUS = "status";
+		constexpr static const char* RESULT = "result";
+		constexpr static const char* KEYVALUE = "keyvalue";
+	};
 
-	namespace ApplicationIdentity {
-		constexpr const char* NAME = "name"; // string
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* SERVER = "server"; // string
-		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
-		constexpr const char* STARTER_LINKED = "starterLinked"; // boolean
-	}
+	/**
+	 * Application identity message constants.
+	 */
+	struct ApplicationIdentity {
+		constexpr static const char* NAME = "name"; // string
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* SERVER = "server"; // string
+		constexpr static const char* STARTER = "starter"; // object
+		constexpr static const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		constexpr static const char* STARTER_LINKED = "starterLinked"; // boolean
+	};
 
-	namespace SyncStreamRequest {
-		constexpr const char* NAME = "name"; // string
-	}
+	/**
+	 * Sync stream request message constants.
+	 */
+	struct SyncStreamRequest {
+		constexpr static const char* NAME = "name"; // string
+	};
 
-	namespace StartRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* ARGS = "args"; // repeated string args = 2;
-		constexpr const char* STARTER = "starter"; // object
-		constexpr const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
-		constexpr const char* STARTER_LINKED = "starterLinked"; // boolean
-	}
+	/**
+	 * Start request message constants.
+	 */
+	struct StartRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* ARGS = "args"; // repeated string args = 2;
+		constexpr static const char* STARTER = "starter"; // object
+		constexpr static const char* STARTER_PROXY_PORT = "starterProxyPort"; // int32
+		constexpr static const char* STARTER_LINKED = "starterLinked"; // boolean
+	};
 
-	namespace RequestResponse {
-		constexpr const char* VALUE = "value"; // required int32 value = 1;
-		constexpr const char* MESSAGE = "message"; // optional string message = 2;
-	}
+	/**
+	 * Request response message constants.
+	 */
+	struct RequestResponse {
+		constexpr static const char* VALUE = "value"; // required int32 value = 1;
+		constexpr static const char* MESSAGE = "message"; // optional string message = 2;
+	};
 
-	namespace SetStopHandlerRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* STOPPING_TIME = "stoppingTime"; // int32
-	}
+	/**
+	 * Set stop handler request message constants.
+	 */
+	struct SetStopHandlerRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* STOPPING_TIME = "stoppingTime"; // int32
+	};
 
-	namespace StopRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Stop request message constants.
+	 */
+	struct StopRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace ConnectRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-	}
+	/**
+	 * Connect request message constants.
+	 */
+	struct ConnectRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+	};
 
-	namespace ConnectWithIdRequest {
-		constexpr const char* ID = "id"; // int32
-	}
+	/**
+	 * Connect with id request message constants.
+	 */
+	struct ConnectWithIdRequest {
+		constexpr static const char* ID = "id"; // int32
+	};
 
-	namespace ApplicationConfig {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* DESCRIPTION = "description"; // optional string description = 2;
-		constexpr const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
-		constexpr const char* RESTART = "restart"; // required bool restart = 4;
-		constexpr const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
-		constexpr const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
-	}
+	/**
+	 * Application config message constants.
+	 */
+	struct ApplicationConfig {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* DESCRIPTION = "description"; // optional string description = 2;
+		constexpr static const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
+		constexpr static const char* RESTART = "restart"; // required bool restart = 4;
+		constexpr static const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
+		constexpr static const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;
+	};
 
-	namespace ApplicationConfigListResponse {
-		constexpr const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
-	}
+	/**
+	 * Application config list response message constants.
+	 */
+	struct ApplicationConfigListResponse {
+		constexpr static const char* APPLICATION_CONFIG = "applicationConfig"; // repeated ApplicationConfig applicationConfig = 1;
+	};
 
-	namespace StatusEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
-		constexpr const char* EXIT_CODE = "exitCode"; // optional
-	}
+	/**
+	 * Status event message constants.
+	 */
+	struct StatusEvent {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr static const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr static const char* EXIT_CODE = "exitCode"; // optional
+	};
 
-	namespace ResultEvent {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* DATA = "data"; // required bytes data = 3;
-	}
+	/**
+	 * Result event message constants.
+	 */
+	struct ResultEvent {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* DATA = "data"; // required bytes data = 3;
+	};
 
-	namespace ApplicationInfo {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* NAME = "name"; // required string name = 2;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
-		constexpr const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
-		constexpr const char* ARGS = "args"; // required string args = 5;
-		constexpr const char* PID = "pid"; // optional int64 pid = 6;
-	}
+	/**
+	 * Application info message constants.
+	 */
+	struct ApplicationInfo {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* NAME = "name"; // required string name = 2;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 3;
+		constexpr static const char* PAST_APPLICATION_STATES = "pastApplicationStates"; // required int32 pastApplicationStates = 4;
+		constexpr static const char* ARGS = "args"; // required string args = 5;
+		constexpr static const char* PID = "pid"; // optional int64 pid = 6;
+	};
 
-	namespace ApplicationInfoListResponse {
-		constexpr const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
-	}
+	/**
+	 * Application info list response message constants.
+	 */
+	struct ApplicationInfoListResponse {
+		constexpr static const char* APPLICATION_INFO = "applicationInfo"; // repeated ApplicationInfo applicationInfo = 1;
+	};
 
-	namespace OutputPortWithIdRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Output port with id request message constants.
+	 */
+	struct OutputPortWithIdRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace OutputPortRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-	}
+	/**
+	 * Output port request message constants.
+	 */
+	struct OutputPortRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+	};
 
-	namespace IsAliveRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Is alive request message constants.
+	 */
+	struct IsAliveRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace IsAliveResponse {
-		constexpr const char* IS_ALIVE = "isAlive"; // required bool isAlive = 1;
-	}
+	/**
+	 * Is alive response message constants.
+	 */
+	struct IsAliveResponse {
+		constexpr static const char* IS_ALIVE = "isAlive"; // required bool isAlive = 1;
+	};
 
-	namespace ApplicationStream {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* MESSAGE = "message"; // required string message = 2;
-		constexpr const char* EOL = "eol"; // boolean
-	}
+	/**
+	 * Application stream message constants.
+	 */
+	struct ApplicationStream {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* MESSAGE = "message"; // required string message = 2;
+		constexpr static const char* EOL = "eol"; // boolean
+	};
 
-	namespace WriteInputRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* INPUTS = "inputs"; // repeated string parameters = 2;
-	}
+	/**
+	 * Write input request message constants.
+	 */
+	struct WriteInputRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* INPUTS = "inputs"; // repeated string parameters = 2;
+	};
 
-	namespace KillRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Kill request message constants.
+	 */
+	struct KillRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace SetStatusRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
-	}
+	/**
+	 * Set status request message constants.
+	 */
+	struct SetStatusRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* APPLICATION_STATE = "applicationState"; // required int32 applicationState = 2;
+	};
 
-	namespace GetStatusRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Get status message constants.
+	 */
+	struct GetStatusRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace SetResultRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-		constexpr const char* DATA = "data"; // required bytes data = 2;
-	}
+	/**
+	 * Set result request message constants.
+	 */
+	struct SetResultRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* DATA = "data"; // required bytes data = 2;
+	};
 
-	namespace Request {
-		constexpr const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
-		constexpr const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
-		constexpr const char* SERVER_ENDPOINT = "serverEndpoint";
-		constexpr const char* SERVER_PROXY_PORT = "serverProxyPort";
-		constexpr const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
-	}
+	/**
+	 * Request message constants.
+	 */
+	struct Request {
+		constexpr static const char* APPLICATION_NAME = "applicationName"; // required string applicationName = 1;
+		constexpr static const char* APPLICATION_ID = "applicationId"; // required int32 applicationId = 2;
+		constexpr static const char* SERVER_ENDPOINT = "serverEndpoint";
+		constexpr static const char* SERVER_PROXY_PORT = "serverProxyPort";
+		constexpr static const char* REQUESTER_PORT = "requesterPort"; // required int32 requesterPort = 7;
+	};
 
-	namespace AttachUnregisteredRequest {
-		constexpr const char* NAME = "name"; // required string name = 1;
-		constexpr const char* PID = "pid"; // optional int64 pid = 2;
-	}
+	/**
+	 * Attach unregistered request message constants.
+	 */
+	struct AttachUnregisteredRequest {
+		constexpr static const char* NAME = "name"; // required string name = 1;
+		constexpr static const char* PID = "pid"; // optional int64 pid = 2;
+	};
 
-	namespace DetachUnregisteredRequest {
-		constexpr const char* ID = "id"; // required int32 id = 1;
-	}
+	/**
+	 * Detach unregistered request message constants.
+	 */
+	struct DetachUnregisteredRequest {
+		constexpr static const char* ID = "id"; // required int32 id = 1;
+	};
 
-	namespace VersionResponse {
-		constexpr const char* MAJOR = "major";
-		constexpr const char* MINOR = "minor";
-		constexpr const char* REVISION = "revision";
-	}
+	/**
+	 * Version response message constants.
+	 */
+	struct VersionResponse {
+		constexpr static const char* MAJOR = "major";
+		constexpr static const char* MINOR = "minor";
+		constexpr static const char* REVISION = "revision";
+	};
 
-	namespace StoreKeyValueRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-		constexpr const char* VALUE = "value"; // string
-	}
+	/**
+	 * Store key value request message constants.
+	 */
+	struct StoreKeyValueRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+		constexpr static const char* VALUE = "value"; // string
+	};
 
-	namespace GetKeyValueRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-	}
+	/**
+	 * Get key value request message constants.
+	 */
+	struct GetKeyValueRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+	};
 
-	namespace RemoveKeyRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* KEY = "key"; // string
-	}
+	/**
+	 * Remove key request message constants.
+	 */
+	struct RemoveKeyRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* KEY = "key"; // string
+	};
 
-	namespace KeyEvent {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* NAME = "name"; // string
-		constexpr const char* STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
-		constexpr const char* KEY = "key"; // string
-		constexpr const char* VALUE = "value"; // string
-	}
+	/**
+	 * Key event message constants.
+	 */
+	struct KeyEvent {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* NAME = "name"; // string
+		constexpr static const char* STATUS = "status"; // long STORE_KEY_VALUE or REMOVE_KEY
+		constexpr static const char* KEY = "key"; // string
+		constexpr static const char* VALUE = "value"; // string
+	};
 
-	namespace RequestPortRequest {
-		constexpr const char* ID = "id"; // int32
-	}
+	/**
+	 * Request port request message constants.
+	 */
+	struct RequestPortRequest {
+		constexpr static const char* ID = "id"; // int32
+	};
 
-	namespace PortUnavailableRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* PORT = "port"; // int32
-	}
+	/**
+	 * Port unavailable message constants.
+	 */
+	struct PortUnavailableRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* PORT = "port"; // int32
+	};
 
-	namespace ReleasePortRequest {
-		constexpr const char* ID = "id"; // int32
-		constexpr const char* PORT = "port"; // int32
-	}
+	/**
+	 * Release port request message constants.
+	 */
+	struct ReleasePortRequest {
+		constexpr static const char* ID = "id"; // int32
+		constexpr static const char* PORT = "port"; // int32
+	};
 
-	namespace PortInfo {
-		constexpr const char* PORT = "port"; // int32
-		constexpr const char* STATUS = "status"; // string
-		constexpr const char* OWNER = "owner"; // string
-	}
+	/**
+	 * Port info message constants.
+	 */
+	struct PortInfo {
+		constexpr static const char* PORT = "port"; // int32
+		constexpr static const char* STATUS = "status"; // string
+		constexpr static const char* OWNER = "owner"; // string
+	};
 
-	namespace PortInfoListResponse {
-		constexpr const char* PORT_INFO = "portInfo"; // multiple PortInfo
-	}
+	/**
+	 * Port info list response message constants.
+	 */
+	struct PortInfoListResponse {
+		constexpr static const char* PORT_INFO = "portInfo"; // multiple PortInfo
+	};
 
 }
 
+/**
+ * Creates a sync request.
+ * \return The JSON string.
+ */
 std::string createSyncRequest();
+
+/**
+ * Creates a sync stream request.
+ * \param name The name.
+ * \return The JSON string.
+ */
 std::string createSyncStreamRequest(const std::string& name);
+
+/**
+ * Creates a version request.
+ * \return The JSON string.
+ */
 std::string createVersionRequest();
+
+/**
+ * Creates a start request.
+ * \param name The name.
+ * \param args The arguments.
+ * \param thisName This application name.
+ * \param thisId This application id.
+ * \param thisEndpoint This application endpoint.
+ * \param thisProxyPort This application proxy port.
+ * \param linked True if the application is linked.
+ * \return The JSON string.
+ */
 std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort, bool linked);
+
+/**
+ * Creates a set stop handler request.
+ * \param id The id.
+ * \param stoppingTime The stopping time.
+ * \return The JSON string.
+ */
 std::string createSetStopHandlerRequest(int id, int stoppingTime);
+
+/**
+ * Creates a stop request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createStopRequest(int id);
+
+/**
+ * Creates a kill request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createKillRequest(int id);
+
+/**
+ * Creates a connect request.
+ * \param name The name.
+ * \return The JSON string.
+ */
 std::string createConnectRequest(const std::string& name);
+
+/**
+ * Creates a connect with id request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createConnectWithIdRequest(int id);
+
+/**
+ * Creates a is alive request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createIsAliveRequest(int id);
+
+/**
+ * Creates a list request.
+ * \return The JSON string.
+ */
 std::string createListRequest();
+
+/**
+ * Creates an apps request.
+ * \return The JSON string.
+ */
 std::string createAppsRequest();
+
+/**
+ * Creates a stream status request.
+ * \return The JSON string.
+ */
 std::string createStreamStatusRequest();
+
+/**
+ * Creates a set status request.
+ * \param id The id.
+ * \param state The state.
+ * \return The JSON string.
+ */
 std::string createSetStatusRequest(int id, int32_t state);
+
+/**
+ * Creates a get status request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createGetStatusRequest(int id);
+
+/**
+ * Creates a responder proxy port request.
+ * \return The JSON string.
+ */
 std::string createResponderProxyPortRequest();
+
+/**
+ * Creates a publisher proxy port request.
+ * \return The JSON string.
+ */
 std::string createPublisherProxyPortRequest();
+
+/**
+ * Creates a subscriber proxy port request.
+ * \return The JSON string.
+ */
 std::string createSubscriberProxyPortRequest();
+
+/**
+ * Creates a set result request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createSetResultRequest(int id);
+
+/**
+ * Creates an attach unregistered request.
+ * \param name The name.
+ * \param pid The PID.
+ * \return The JSON string.
+ */
 std::string createAttachUnregisteredRequest(const std::string& name, long pid);
+
+/**
+ * Creates a detached unregistered request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createDetachUnregisteredRequest(int id);
+
+/**
+ * Creates an output port with id request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createOutputPortWithIdRequest(int id);
+
+/**
+ * Creates an output port request.
+ * \param name The name.
+ * \return The JSON string.
+ */
 std::string createOutputPortRequest(const std::string& name);
+
+/**
+ * Creates a request response.
+ * \param value The value.
+ * \param message The message.
+ * \return The JSON string.
+ */
 std::string createRequestResponse(int32_t value, const std::string& message);
+
+/**
+ * Creates a store key value request.
+ * \param id The id.
+ * \param key The key.
+ * \param value The value.
+ * \return The JSON string.
+ */
 std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
+
+/**
+ * Creates a get key value request.
+ * \param id The id.
+ * \param key The key.
+ * \return The JSON string.
+ */
 std::string createGetKeyValueRequest(int id, const std::string& key);
+
+/**
+ * Creates a remove key request.
+ * \param id The id.
+ * \param key The key.
+ * \return The JSON string.
+ */
 std::string createRemoveKeyRequest(int id, const std::string& key);
+
+/**
+ * Creates a request port request.
+ * \param id The id.
+ * \return The JSON string.
+ */
 std::string createRequestPortRequest(int id);
+
+/**
+ * Creates a port unavailable request.
+ * \param id The id.
+ * \param port The port.
+ * \return The JSON string.
+ */
 std::string createPortUnavailableRequest(int id, int port);
+
+/**
+ * Creates a release port request.
+ * \param id The id.
+ * \param port The port.
+ * \return The JSON string.
+ */
 std::string createReleasePortRequest(int id, int port);
+
+/**
+ * Creates a ports request.
+ * \return The JSON string.
+ */
 std::string createPortsRequest();
 
 }

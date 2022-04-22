@@ -27,14 +27,14 @@ WaitingSet::WaitingSet() {
 
 void WaitingSet::add(Waiting * waiting) {
 
-	lock_guard<mutex> lock(m_mutex);
+	lock_guard<mutex> lock {m_mutex};
 
 	m_set.insert(waiting);
 }
 
 void WaitingSet::remove(Waiting * waiting) {
 
-	lock_guard<mutex> lock(m_mutex);
+	lock_guard<mutex> lock {m_mutex};
 
 	set<Waiting *>::iterator it = m_set.find(waiting);
 
@@ -45,7 +45,7 @@ void WaitingSet::remove(Waiting * waiting) {
 
 void WaitingSet::cancelAll() {
 
-	lock_guard<mutex> lock(m_mutex);
+	lock_guard<mutex> lock {m_mutex};
 
 	for (set<Waiting *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
 		(*it)->cancel();

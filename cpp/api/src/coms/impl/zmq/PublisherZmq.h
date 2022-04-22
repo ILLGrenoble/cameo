@@ -22,11 +22,6 @@
 #include <zmq.hpp>
 
 namespace cameo {
-
-namespace application {
-	class This;
-}
-
 namespace coms {
 
 class PublisherZmq : public PublisherImpl {
@@ -38,11 +33,10 @@ public:
 	virtual void init(const std::string& publisherIdentity);
 	virtual int getPublisherPort() const;
 
-	virtual void sendBinary(const std::string& data);
 	virtual void send(const std::string& data);
-	virtual void sendTwoBinaryParts(const std::string& data1, const std::string& data2);
+	virtual void sendTwoParts(const std::string& data1, const std::string& data2);
 	virtual void setEnd();
-	virtual bool isEnded();
+	virtual bool hasEnded();
 	virtual void terminate();
 
 private:

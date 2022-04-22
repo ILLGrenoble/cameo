@@ -26,23 +26,36 @@ namespace cameo {
 class Context;
 class RequestSocket;
 class StreamSocketImpl;
+class App;
 
-namespace application {
-
-class Instance;
-
-}
-
+/**
+ * Class defining an event stream socket.
+ */
 class EventStreamSocket {
 
 	friend class Server;
-	friend class application::Instance;
+	friend class App;
 
 public:
+	/**
+	 * Destructor.
+	 */
 	~EventStreamSocket();
+
+	/**
+	 * Terminates the communication.
+	 */
 	void terminate();
 
+	/**
+	 * Receives the event.
+	 * \param blocking True if the call is blocking.
+	 */
 	std::unique_ptr<Event> receive(bool blocking = true);
+
+	/**
+	 * Cancels the socket. Any waiting receive() call is unblocked.
+	 */
 	void cancel();
 
 private:

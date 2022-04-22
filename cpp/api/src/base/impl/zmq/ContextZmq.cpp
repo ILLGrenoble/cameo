@@ -20,7 +20,7 @@
 namespace cameo {
 
 ContextZmq::ContextZmq() : Context(),
-	m_context(new zmq::context_t(1)) {
+	m_context{new zmq::context_t{1}} {
 }
 
 ContextZmq::~ContextZmq() {

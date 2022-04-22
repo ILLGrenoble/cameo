@@ -5,7 +5,7 @@
 using namespace std;
 using namespace cameo;
 
-int main(int argc, char *argv[]) {
+int main(int, char *[]) {
 
 	Endpoint endpoint("gamma75", 9999);
 

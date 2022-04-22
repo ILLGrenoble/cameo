@@ -21,7 +21,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 		
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	std::string serverEndpoint;
 	if (argc > 2) {
@@ -31,24 +31,26 @@ int main(int argc, char *argv[]) {
 	std::unique_ptr<Server> server;
 
 	if (serverEndpoint == "") {
-		server.reset(new Server(application::This::getServer().getEndpoint()));
-
-	} else {
-		server.reset(new Server(serverEndpoint));
+		server = Server::create(This::getServer().getEndpoint());
+	}
+	else {
+		server = Server::create(serverEndpoint);
 	}
 
+	server->init();
 
-	if (application::This::isAvailable() && server->isAvailable()) {
+	if (This::isAvailable() && server->isAvailable()) {
 		std::cout << "Connected server " << *server << std::endl;
 	}
 
 	// Connect to the server.
-	std::unique_ptr<application::Instance> publisherApp = server->connect("publisher");
+	std::unique_ptr<App> publisherApp = server->connect("publisher");
 
-	std::cout << "Application " << *publisherApp << " has state " << application::toString(publisherApp->now()) << std::endl;
+	std::cout << "Application " << *publisherApp << " has state " << toString(publisherApp->getActualState()) << std::endl;
 
 	// Create a requester.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
+	subscriber->init();
 
 	std::cout << "Created subscriber " << *subscriber << std::endl;
 

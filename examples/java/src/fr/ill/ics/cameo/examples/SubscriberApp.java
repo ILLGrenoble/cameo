@@ -20,12 +20,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Subscriber;
-import fr.ill.ics.cameo.coms.SubscriberCreationException;
 
 public class SubscriberApp {
 
@@ -51,11 +50,13 @@ public class SubscriberApp {
 		
 		// The server endpoint is the first argument.
 		if (args.length > 1) {
-			server = new Server(args[0]);
+			server = Server.create(args[0]);
 		}
 		else {	
-			server = new Server(This.getEndpoint());
+			server = Server.create(This.getEndpoint());
 		}
+		
+		server.init();
 		
 		if (This.isAvailable() && server.isAvailable()) {
 			System.out.println("Connected server " + server);
@@ -65,11 +66,12 @@ public class SubscriberApp {
 		
 		try {
 			// Connect to the publisher application.
-			Instance publisherApp = server.connect("publisher");
-			System.out.println("Application " + publisherApp + " has state " + Application.State.toString(publisherApp.getActualState()));
+			App publisherApp = server.connect("publisher");
+			System.out.println("Application " + publisherApp + " has state " + State.toString(publisherApp.getActualState()));
 			
 			// Create a subscriber to the publisher named "publisher".
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");
+			subscriber.init();
 			System.out.println("Created subscriber " + subscriber);
 			
 			// Receive data.
@@ -90,11 +92,8 @@ public class SubscriberApp {
 				
 			// Terminate the subscriber.
 			subscriber.terminate();
-			
-		} catch (SubscriberCreationException e) {
-			System.out.println("Cannot create subscriber");
-			
-		} finally {
+		}
+		finally {
 			// Do not forget to terminate This.
 			This.terminate();
 		}

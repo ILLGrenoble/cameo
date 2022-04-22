@@ -14,19 +14,20 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_STARTERSERVEREXCEPTION_H_
-#define CAMEO_STARTERSERVEREXCEPTION_H_
+package fr.ill.ics.cameo.base;
 
-#include "RemoteException.h"
+/**
+ * Exception for a responder creation.
+ */
+public class InitException extends RuntimeException {
+	
+	private static final long serialVersionUID = 770038622378735273L;
 
-namespace cameo {
-
-class StarterServerException : public RemoteException {
-
-public:
-	StarterServerException();
-};
-
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
+	public InitException(String message) {
+		super(message);
+	}
 }
-
-#endif

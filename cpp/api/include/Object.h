@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.coms;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +14,42 @@ package fr.ill.ics.cameo.coms;
  * limitations under the Licence.
  */
 
-import fr.ill.ics.cameo.base.RemoteException;
+#ifndef CAMEO_OBJECT_H_
+#define CAMEO_OBJECT_H_
 
-public class PublisherDestructionException extends RemoteException {
-	
-	private static final long serialVersionUID = 8083849907842136934L;
-		
-	public PublisherDestructionException(String message) {
-		super(message);
-	}
+#include <string>
+
+namespace cameo {
+
+/**
+ * Class defining an abstract Cameo object that can be initialized and terminated.
+ */
+class Object {
+
+public:
+	/**
+	 * Destructor.
+	 */
+	virtual ~Object() {}
+
+	/**
+	 * Initializes the object.
+	 */
+	virtual void init() = 0;
+
+	/**
+	 * Terminates the object.
+	 */
+	virtual void terminate() = 0;
+
+	/**
+	 * Returns a string representation of this application.
+	 * \return The string representation.
+	 */
+	virtual std::string toString() const = 0;
+};
+
 }
+
+#endif
+

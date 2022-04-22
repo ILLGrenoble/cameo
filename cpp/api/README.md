@@ -43,10 +43,19 @@ Two packages are created:
 
 
 ## Running tests
-To compile also the with the test programs:
+To compile the test programs:
 ```
 cmake -S . -B build/ -DCAMEO_API_CPP_TESTS=ON ..
 cmake --build build/
 ```
 
-Developers can follow the instructions [here](doc/DEVEL.md)
+To run the tests:
+```
+cd build
+ctest --verbose
+```
+
+Or directly:
+```
+ctest --test-dir build  --verbose
+```

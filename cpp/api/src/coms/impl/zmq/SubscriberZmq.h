@@ -34,12 +34,11 @@ public:
 
 	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity);
 
-	virtual bool isEnded() const;
+	virtual bool hasEnded() const;
 	virtual bool isCanceled() const;
 
-	virtual std::optional<std::string> receiveBinary();
 	virtual std::optional<std::string> receive();
-	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoBinaryParts();
+	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoParts();
 
 	virtual void cancel();
 

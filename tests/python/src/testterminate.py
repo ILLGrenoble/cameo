@@ -24,18 +24,22 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
+
 thisApp = server.connect(cameopy.This.getName())
 
 print("Creating basic responder and requester")
     
 responder = cameopy.BasicResponder.create("responder")
+responder.init()
 
 # Start reponder thread.
 tr = threading.Thread(target=loopResponder, args=(responder,))
 tr.start()
     
 requester = cameopy.Requester.create(thisApp, "responder")
+requester.init()
     
 # Start cancel thread.
 tc = threading.Thread(target=cancelRequester, args=(requester, responder,))
@@ -47,7 +51,10 @@ tc.join()
 print("Creating publisher and subscriber")
 
 publisher = cameopy.Publisher.create("publisher")
+publisher.init()
+
 subscriber = cameopy.Subscriber.create(thisApp, "publisher")
+subscriber.init()
 
 requester.terminate()
 responder.terminate()

@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,12 +14,19 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for a socket.
+ */
 public class SocketException extends RuntimeException {
 
 	private static final long serialVersionUID = -5791375555988608927L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public SocketException(String message) {
 		super(message);
 	}

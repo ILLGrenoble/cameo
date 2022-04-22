@@ -19,7 +19,7 @@
 namespace cameo {
 
 UnregisteredApplicationException::UnregisteredApplicationException(const std::string& message) :
-	RemoteException(message) {
+	RemoteException{message} {
 }
 
 }

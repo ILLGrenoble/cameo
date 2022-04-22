@@ -15,12 +15,11 @@
  */
 
 #include "Strings.h"
-
-#include "BadFormatException.h"
-#include "JSON.h"
 #include "Messages.h"
+#include "BadFormatException.h"
 #include <regex>
 #include <ostream>
+#include <iostream>
 
 namespace cameo {
 
@@ -28,8 +27,8 @@ std::vector<std::string> split(const std::string& str, char c) {
 
 	std::vector<std::string> result;
 
-	std::string::size_type lastIndex = 0;
-	std::string::size_type index = str.find(c);
+	std::string::size_type lastIndex {0};
+	std::string::size_type index {str.find(c)};
 	while (index != std::string::npos) {
 		result.push_back(str.substr(lastIndex, index - lastIndex));
 		lastIndex = index + 1;
@@ -40,20 +39,20 @@ std::vector<std::string> split(const std::string& str, char c) {
 	return result;
 }
 
-Endpoint::Endpoint(const std::string& protocol, const std::string& address, int port) {
-	m_protocol = protocol;
-	m_address = address;
-	m_port = port;
+Endpoint::Endpoint(const std::string& protocol, const std::string& address, int port) :
+	m_protocol{protocol},
+	m_address{address},
+	m_port{port} {
 }
 
-Endpoint::Endpoint(const std::string& address, int port) {
-	m_protocol = "tcp";
-	m_address = address;
-	m_port = port;
+Endpoint::Endpoint(const std::string& address, int port) :
+	m_protocol{"tcp"},
+	m_address{address},
+	m_port{port} {
 }
 
 Endpoint::Endpoint() :
-	m_port(0) {
+	m_port{0} {
 }
 
 bool Endpoint::operator==(const Endpoint& endpoint) const {
@@ -76,16 +75,16 @@ int Endpoint::getPort() const {
 
 Endpoint Endpoint::parse(const std::string& str) {
 
-	std::vector<std::string> tokens = split(str, ':');
+	std::vector<std::string> tokens {split(str, ':')};
 
 	if (tokens.size() != 3) {
 		throw BadFormatException("Bad format for endpoint " + str);
 	}
 
-	std::string protocol = tokens[0];
-	std::string substr = tokens[1];
+	std::string protocol {tokens[0]};
+	std::string substr {tokens[1]};
 
-	std::string address = substr.substr(2);
+	std::string address {substr.substr(2)};
 
 	try {
 		address = substr.substr(2);
@@ -94,7 +93,7 @@ Endpoint Endpoint::parse(const std::string& str) {
 		throw BadFormatException("Bad format for endpoint " + str);
 	}
 
-	int port = 0;
+	int port {0};
 
 	try {
 		port = stoi(tokens[2]);
@@ -103,11 +102,11 @@ Endpoint Endpoint::parse(const std::string& str) {
 		throw BadFormatException("Bad format for endpoint " + str);
 	}
 
-	return Endpoint(protocol, address, port);
+	return Endpoint{protocol, address, port};
 }
 
 Endpoint Endpoint::withPort(int port) const {
-	return Endpoint(m_protocol, m_address, port);
+	return Endpoint{m_protocol, m_address, port};
 }
 
 std::string Endpoint::toString() const {
@@ -118,19 +117,19 @@ std::string Endpoint::toString() const {
 }
 
 ApplicationIdentity::ApplicationIdentity(const std::string& name, int id, const Endpoint& endpoint) :
-	m_name(name),
-	m_id(id),
-	m_endpoint(endpoint) {
+	m_name{name},
+	m_id{id},
+	m_endpoint{endpoint} {
 }
 
 ApplicationIdentity::ApplicationIdentity(const std::string& name, const Endpoint& endpoint) :
-	m_name(name),
-	m_id(Null),
-	m_endpoint(endpoint) {
+	m_name{name},
+	m_id{Null},
+	m_endpoint{endpoint} {
 }
 
 ApplicationIdentity::ApplicationIdentity() :
-	m_id(Null) {
+	m_id{Null} {
 }
 
 const std::string& ApplicationIdentity::getName() const {
@@ -145,9 +144,7 @@ const Endpoint& ApplicationIdentity::getEndpoint() const {
 	return m_endpoint;
 }
 
-std::string ApplicationIdentity::toJSONString() const {
-
-	json::StringObject jsonObject;
+void ApplicationIdentity::toJSON(json::StringObject& jsonObject) const {
 
 	jsonObject.pushKey(message::ApplicationIdentity::NAME);
 	jsonObject.pushValue(m_name);
@@ -159,19 +156,25 @@ std::string ApplicationIdentity::toJSONString() const {
 
 	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
 	jsonObject.pushValue(m_endpoint.toString());
+}
 
-	return jsonObject.toString();
+std::string ApplicationIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
 }
 
 ApplicationWithStarterIdentity::ApplicationWithStarterIdentity(const ApplicationIdentity& application, const ApplicationIdentity& starter) :
-	m_application(application),
-	m_hasStarter(true),
-	m_starter(starter) {
+	m_application{application},
+	m_hasStarter{true},
+	m_starter{starter} {
 }
 
 ApplicationWithStarterIdentity::ApplicationWithStarterIdentity(const ApplicationIdentity& application) :
-	m_application(application),
-	m_hasStarter(false) {
+	m_application{application},
+	m_hasStarter{false} {
 }
 
 const ApplicationIdentity& ApplicationWithStarterIdentity::getApplication() const {
@@ -186,20 +189,9 @@ const ApplicationIdentity& ApplicationWithStarterIdentity::getStarter() const {
 	return m_starter;
 }
 
-std::string ApplicationWithStarterIdentity::toJSONString() const {
+void ApplicationWithStarterIdentity::toJSON(json::StringObject& jsonObject) const {
 
-	json::StringObject jsonObject;
-
-	jsonObject.pushKey(message::ApplicationIdentity::NAME);
-	jsonObject.pushValue(m_application.getName());
-
-	if (m_application.getId() != Null) {
-		jsonObject.pushKey(message::ApplicationIdentity::ID);
-		jsonObject.pushValue(m_application.getId());
-	}
-
-	jsonObject.pushKey(message::ApplicationIdentity::SERVER);
-	jsonObject.pushValue(m_application.getEndpoint().toString());
+	m_application.toJSON(jsonObject);
 
 	if (m_hasStarter) {
 		jsonObject.pushKey(message::ApplicationIdentity::STARTER);
@@ -216,9 +208,66 @@ std::string ApplicationWithStarterIdentity::toJSONString() const {
 
 		jsonObject.endObject();
 	}
-
-	return jsonObject.toString();
 }
+
+std::string ApplicationWithStarterIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
+}
+
+ServerIdentity::ServerIdentity(const std::string& endpoint, bool proxy) :
+	m_endpoint{endpoint},
+	m_proxy{proxy} {
+}
+
+void ServerIdentity::toJSON(json::StringObject& jsonObject) const {
+
+	jsonObject.pushKey(ENDPOINT);
+	jsonObject.pushValue(m_endpoint);
+
+	jsonObject.pushKey(PROXY);
+	jsonObject.pushValue(m_proxy);
+}
+
+std::string ServerIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
+}
+
+AppIdentity::AppIdentity(const std::string& name, int id, const ServerIdentity& server) :
+	m_name{name},
+	m_id{id},
+	m_server{server} {
+}
+
+void AppIdentity::toJSON(json::StringObject& jsonObject) const {
+
+	jsonObject.pushKey(NAME);
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey(ID);
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey(SERVER);
+	jsonObject.startObject();
+	m_server.toJSON(jsonObject);
+	jsonObject.endObject();
+}
+
+std::string AppIdentity::toJSONString() const {
+
+	json::StringObject jsonObject;
+	toJSON(jsonObject);
+
+	return jsonObject.dump();
+}
+
 
 std::string StringId::from(int id, const std::string& name) {
 	return std::to_string(id) + ":" + name;

@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -36,16 +36,13 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-	Server& server = application::This::getServer();
+	Server& server = This::getServer();
 
-	unique_ptr<application::Instance> publisherApplication = server.connect(applicationName);
-	if (!publisherApplication->exists()) {
-		cout << "Publisher error" << endl;
-		return -1;
-	}
+	unique_ptr<App> publisherApplication = server.connect(applicationName);
 
 	// Create a subscriber to the application applicationName.
 	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
+	subscriber->init();
 
 	if (subscriber.get() == 0) {
 		cout << "Subscriber error" << endl;
@@ -54,15 +51,15 @@ int main(int argc, char *argv[]) {
 
 	cout << "Synchronized with 1 publisher" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Receive data.
 	while (true) {
-		optional<string> data = subscriber->receive();
+		optional<tuple<string, string>> data = subscriber->receiveTwoParts();
 		if (!data.has_value()) {
 			break;
 		}
-		cout << "Received " << data.value() << endl;
+		cout << "Received " << get<0>(data.value()) << ", " << get<1>(data.value()) << endl;
 	}
 
 	cout << "Finished the application" << endl;

@@ -12,7 +12,8 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
 
 for i in range(numberOfTimes):
     
@@ -21,10 +22,10 @@ for i in range(numberOfTimes):
   
     print("Waiting...")
     time.sleep(0.1)
-    print("Stopping application", app.getNameId())
+    print("Stopping application", app)
     app.stop()
       
-    result = app.getResult()
+    result = app.getStringResult()
       
     # The variable result can be None.
     if result:

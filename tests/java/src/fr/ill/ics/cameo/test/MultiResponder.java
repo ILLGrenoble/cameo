@@ -16,9 +16,8 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.ResponderCreationException;
 import fr.ill.ics.cameo.messages.Messages;
 
 
@@ -33,6 +32,7 @@ public class MultiResponder {
 			
 			// Create the router.
 			fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+			router.init();
 
 			System.out.println("Created router");
 			
@@ -49,24 +49,25 @@ public class MultiResponder {
 						System.out.println("Creating responder");
 						
 						responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+						responder.init();
 						
 						System.out.println("Created responder");
 					}
-					catch (ResponderCreationException e) {
+					catch (InitException e) {
 					}
 					
 					fr.ill.ics.cameo.coms.multi.Request request = responder.receive();
 					System.out.println("Received request " + request.get());
 
 					// Reply.
-					request.reply("1st response");
+					request.replyString("1st response");
 					
 					request = responder.receive();
-					byte[][] data = request.getTwoBinaryParts();
+					byte[][] data = request.getTwoParts();
 					System.out.println("Received request " + Messages.parseString(data[0]) + " " + Messages.parseString(data[1]));
 
 					// Reply.
-					request.reply("2nd response");
+					request.replyString("2nd response");
 
 					router.cancel();
 					
@@ -86,9 +87,6 @@ public class MultiResponder {
 			
 			// Terminate the router.
 			router.terminate();
-		}
-		catch (RemoteException e) {
-			System.out.println("Responder error");
 		}
 		finally {
 			This.terminate();			

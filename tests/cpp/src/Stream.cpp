@@ -25,9 +25,9 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	application::This::setRunning();
+	This::setRunning();
 
 	int i = 0;
 	while (i < 20) {

@@ -21,19 +21,39 @@
 #include <vector>
 #include <memory>
 
+/**
+ * Namespace for ZeroMQ.
+ */
 namespace zmq {
 
+	/**
+	 * Forward declaration of the context class.
+	 */
 	class context_t;
 }
 
 namespace cameo {
 
+/**
+ * Class wrapping the ZeroMQ context.
+ */
 class ContextZmq : public Context {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	ContextZmq();
+
+	/**
+	 * Destructor.
+	 */
 	virtual ~ContextZmq();
 
+	/**
+	 * Gets the real ZeroMQ context.
+	 * \return The context.
+	 */
 	zmq::context_t& getContext();
 
 private:

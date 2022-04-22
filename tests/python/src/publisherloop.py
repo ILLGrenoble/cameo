@@ -6,8 +6,7 @@ this = cameopy.This
 this.init(sys.argv)
 
 publisher = cameopy.Publisher.create("publisher", 1)
-
-publisher.waitForSubscribers()
+publisher.init()
 
 this.setRunning()
 

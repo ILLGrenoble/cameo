@@ -18,7 +18,7 @@ package fr.ill.ics.cameo.test;
 
 import java.util.Date;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -44,7 +44,8 @@ public class TestSimple {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		Date d = new Date();
 		
@@ -53,7 +54,7 @@ public class TestSimple {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// start the application.
-				Instance application = server.start("simplejava");
+				App application = server.start("simplejava");
 	
 				// the getString is blocking until the application finishes
 				application.waitFor();

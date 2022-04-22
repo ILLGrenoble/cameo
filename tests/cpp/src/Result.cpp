@@ -22,12 +22,12 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	cout << "Waiting 1s..." << endl;
 	this_thread::sleep_for(chrono::seconds(1));
 
-	application::This::setResult("test result");
+	This::setResult("test result");
 
 	cout << "Finished the application" << endl;
 

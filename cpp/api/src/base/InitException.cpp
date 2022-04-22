@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.coms;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +14,13 @@ package fr.ill.ics.cameo.coms;
  * limitations under the Licence.
  */
 
-import fr.ill.ics.cameo.base.RemoteException;
+#include "InitException.h"
 
-public class PublisherCreationException extends RemoteException {
+namespace cameo {
 
-	private static final long serialVersionUID = 2440394258939550338L;
-	
-	public PublisherCreationException(String message) {
-		super(message);
-	}
+InitException::InitException(const std::string& message) :
+	RemoteException(message) {
 }
+
+}
+

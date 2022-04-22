@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
@@ -60,17 +61,10 @@ int main(int argc, char *argv[]) {
 
 			// Pass the name of the application in argument.
 			vector<string> applicationArgs;
-			applicationArgs.push_back(application::This::getName());
+			applicationArgs.push_back(This::getName());
 
 			// Start the application.
-			unique_ptr<application::Instance> subscriberApplication = server.start(applicationName, applicationArgs);
-
-			if (subscriberApplication->exists()) {
-				cout << "Started application " << *subscriberApplication << endl;
-			}
-			else {
-				cout << "Cannot start subscriber application" << endl;
-			}
+			unique_ptr<App> subscriberApplication = server->start(applicationName, applicationArgs);
 		}
 
 		// Sleep for 1s to let the subscribers wait.
@@ -78,12 +72,13 @@ int main(int argc, char *argv[]) {
 
 		// The publisher is created after the applications that will wait for it.
 		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
+		publisher->init();
 
 		for (int k = 0; k < 20; ++k) {
 
 			string data = "{";
 			data += to_string(k) + ", " + to_string(k * k) + "}";
-			publisher->send(data);
+			publisher->sendTwoParts(to_string(k), data);
 
 			cout << "Sent " << data << endl;
 
@@ -94,7 +89,7 @@ int main(int argc, char *argv[]) {
 		publisher->sendEnd();
 
 		// Wait for the end of the applications.
-		application::InstanceArray instances = server.connectAll(applicationName);
+		AppArray instances = server->connectAll(applicationName);
 
 		for (size_t i = 0; i < instances.size(); i++) {
 			instances[i]->waitFor();

@@ -27,31 +27,33 @@ int main(int, char *[]) {
 
 	cout << "Create server" << endl;
 
-	Server server("tcp://localhost:11000", 0, false);
+	unique_ptr<Server> server = Server::create("tcp://localhost:11000", false);
+	server->setTimeout(100);
+	server->init();
 
 	cout << "Testing connection" << endl;
 
-	if (server.isAvailable()) {
+	if (server->isAvailable()) {
 		cout << "Server available" << endl;
 	}
 
 	cout << "Configs" << endl;
 
-	vector<application::Configuration> configs = server.getApplicationConfigurations();
+	vector<App::Config> configs = server->getApplicationConfigs();
 
 	for (auto c : configs) {
 		cout << c << endl;
 	}
 
-	unique_ptr<application::Instance> instance = server.start("simplecpp");
+	try {
+		unique_ptr<App> instance = server->start("simplecpp");
+		State state = instance->waitFor();
 
-	if (!instance->exists()) {
-		cout << "App does not exist" << endl;
+		cout << "Terminated simple with state " << toString(state) << endl;
 	}
-
-	application::State state = instance->waitFor();
-
-	cout << "Terminated simple with state " << application::toString(state) << endl;
+	catch (const AppException& e) {
+		cout << "Cannot start application" << endl;
+	}
 
 	return 0;
 }

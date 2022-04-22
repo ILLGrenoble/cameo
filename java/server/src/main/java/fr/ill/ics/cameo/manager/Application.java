@@ -36,8 +36,8 @@ public abstract class Application extends ApplicationConfig {
 	protected int id;
 	protected ProcessHandlerImpl processHandle;
 	
-	protected int applicationState = ApplicationState.UNKNOWN;
-	protected int pastApplicationStates = ApplicationState.UNKNOWN;
+	protected int applicationState = ApplicationState.NIL;
+	protected int pastApplicationStates = ApplicationState.NIL;
 	protected ProcessState processState = ProcessState.UNKNOWN;
 	protected boolean hasStopHandler = false;
 	protected boolean hasToStop = false;

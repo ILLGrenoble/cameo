@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,16 +14,32 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
 
+/**
+ * Class defining a key event.
+ */
 public class KeyEvent extends Event {
 	
+	/**
+	 * Type of the status.
+	 */
 	public enum Status {STORED, REMOVED};
 
 	private Status status;
 	private String key;
 	private String value;
-	
+
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param status The status of the key.
+	 * @param key The key.
+	 * @param value The value.
+	 */
 	public KeyEvent(int id, String name, Status status, String key, String value) {
 		super(id, name);
 		this.status = status;
@@ -32,14 +47,26 @@ public class KeyEvent extends Event {
 		this.value = value;
 	}
 	
+	/**
+	 * Gets the status.
+	 * @return The status.
+	 */
 	public Status getStatus() {
 		return status;
 	}
 	
+	/**
+	 * Gets the key.
+	 * @return The key.
+	 */
 	public String getKey() {
 		return key;
 	}
 
+	/**
+	 * Gets the value.
+	 * @return The value.
+	 */
 	public String getValue() {
 		return value;
 	}
@@ -82,5 +109,20 @@ public class KeyEvent extends Event {
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "key");
+		result.put("id", id);
+		result.put("name", name);
+		result.put("key", key);
+		result.put("status", status);
+		result.put("value", value);
+		
+		return result.toJSONString();
+	}
+
 	
 }

@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -16,11 +15,19 @@ package fr.ill.ics.cameo.base;
  */
 
 
+package fr.ill.ics.cameo.base;
 
+/**
+ * Exception for an invalid argument.
+ */
 public class InvalidArgumentException extends RuntimeException {
 
 	private static final long serialVersionUID = 2165952528959938049L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public InvalidArgumentException(String message) {
 		super(message);
 	}

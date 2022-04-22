@@ -16,12 +16,20 @@
 
 package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.Instance.Com.KeyValueGetter;
+import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 
+/**
+ * Class defining a waiting for the KeyValueGetter class.
+ *
+ */
 public class KeyValueGetterWaiting extends Waiting {
 
 	private KeyValueGetter getter;
-	
+
+	/**
+	 * Constructor.
+	 * @param getter The getter.
+	 */
 	public KeyValueGetterWaiting(KeyValueGetter getter) {
 		this.getter = getter;
 	}

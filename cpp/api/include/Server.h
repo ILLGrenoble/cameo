@@ -31,19 +31,20 @@
 
 namespace cameo {
 
-namespace application {
-	class This;
-}
-
+class This;
 class EventListener;
 class EventThread;
 class Context;
 class RequestSocket;
 
-class Server {
+/**
+ * Class defining a Cameo remote server.
+ * A Server object is not a server responding to requests but the representation of a remote Cameo server.
+ */
+class Server : public Object, public Timeoutable {
 
-	friend class application::Instance;
-	friend class application::This;
+	friend class App;
+	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
 	friend std::ostream& operator<<(std::ostream&, const Server&);
@@ -51,74 +52,188 @@ class Server {
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
-	Server(const Endpoint& endpoint, int timeoutMs = 0, bool useProxy = false);
-	Server(const std::string& endpoint, int timeoutMs = 0, bool useProxy = false);
-	~Server();
-	void terminate();
+	/**
+	 * Constructor.
+	 * \param endpoint The endpoint of the remote server.
+	 * \param useProxy Uses the proxy or not.
+	 */
+	static std::unique_ptr<Server> create(const Endpoint& endpoint, bool useProxy = false);
 
-	void setTimeout(int value);
+	/**
+	 * Constructor.
+	 * \param endpoint The endpoint of the remote server.
+	 * \param timeoutMs The timeout in milliseconds.
+	 * \param useProxy Uses the proxy or not.
+	 */
+	static std::unique_ptr<Server> create(const std::string& endpoint, bool useProxy = false);
+	
+	/**
+	 * Destructor.
+	 */
+	~Server() override;
 
-	int getTimeout() const;
+	/**
+	 * Initializes the server.
+	 * \throws InvalidArgumentException if the endpoint is not valid.
+	 * \throws InitException if the server cannot be initialized.
+	 * \throws ConnectionTimeout if the connection with the Cameo server fails.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communications.
+	 */
+	void terminate() override;
+
+	/**
+	 * Sets the timeout.
+	 * \param value The timeout.
+	 */
+	void setTimeout(int value) override;
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	int getTimeout() const override;
+
+	/**
+	 * Gets the endpoint of the server running this remote application.
+	 * \return The endpoint.
+	 */
 	Endpoint getEndpoint() const;
+
+	/**
+	 * Gets the status endpoint of the server running this remote application.
+	 * \return The endpoint.
+	 */
 	Endpoint getStatusEndpoint() const;
+
+	/**
+	 * Gets the version of the server running this remote application.
+	 * \return The version.
+	 */
 	std::array<int, 3> getVersion() const;
+
+	/**
+	 * Returns the use of proxy.
+	 * \return True if the proxy is used to access the remote Cameo server.
+	 */
 	bool usesProxy() const;
 
+	/**
+	 * Returns true if the remote server is available.
+	 * \param timeout The timeout.
+	 */
 	bool isAvailable(int timeout) const;
 
 	/**
 	 * Returns true if is available. Uses the timeout if set or 10000ms.
+	 * \return True if is available.
 	 */
 	bool isAvailable() const;
 
-	std::unique_ptr<application::Instance> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
-	std::unique_ptr<application::Instance> start(const std::string& name, int options = 0);
-	application::InstanceArray connectAll(const std::string& name, int options = 0);
-	std::unique_ptr<application::Instance> connect(const std::string& name, int options = 0);
-	std::unique_ptr<application::Instance> connect(int id, int options = 0);
+	/**
+	 * Starts the application with name.
+	 * \param name The name.
+	 * \param args The arguments passed to the executable.
+	 * \param options The options.
+	 * \return The App object representing the remote application.
+	 * \throws AppStartException when the application cannot be started.
+	 */
+	std::unique_ptr<App> start(const std::string& name, const std::vector<std::string> &args, int options = 0);
 
 	/**
-	 * throws ConnectionTimeout
+	 * Starts the application with name.
+	 * \param name The name.
+	 * \param options The options.
+	 * \return The App object representing the remote application.
+	 * \throws AppStartException when the application cannot be started.
+	 */
+	std::unique_ptr<App> start(const std::string& name, int options = 0);
+
+	/**
+	 * Connects to all the applications with name.
+	 * \param name The name.
+	 * \param options The options.
+	 * \return The array of App objects representing the remote applications.
+	 */
+	AppArray connectAll(const std::string& name, int options = 0);
+
+	/**
+	 * Connects to an application with name.
+	 * \param name The name.
+	 * \param options The options.
+	 * \return The App object representing the remote application.
+	 * \throws AppConnectException if there is no running application.
+	 */
+	std::unique_ptr<App> connect(const std::string& name, int options = 0);
+
+	/**
+	 * Connects to an application with id.
+	 * \param id The id.
+	 * \param options The options.
+	 * \return The App object representing the remote application.
+	 * \throws AppConnectException if there is no running application.
+	 */
+	std::unique_ptr<App> connect(int id, int options = 0);
+
+	/**
+	 * Function provided by convenience to kill all the applications with name.
+	 * \param name The name of the applications.
 	 */
 	void killAllAndWaitFor(const std::string& name);
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the list of application configurations.
+	 * \return The list of configurations.
 	 */
-	std::vector<application::Configuration> getApplicationConfigurations() const;
+	std::vector<App::Config> getApplicationConfigs() const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the list of application infos.
+	 * \return The list of infos.
 	 */
-	std::vector<application::Info> getApplicationInfos() const;
+	std::vector<App::Info> getApplicationInfos() const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the list of application infos for the applications with name.
+	 * \param name The name of the applications.
+	 * \return The list of infos.
 	 */
-	std::vector<application::Info> getApplicationInfos(const std::string& name) const;
+	std::vector<App::Info> getApplicationInfos(const std::string& name) const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the list of ports owned by the Cameo applications.
+	 * \return The list of ports.
 	 */
-	std::vector<application::Port> getPorts() const;
+	std::vector<App::Port> getPorts() const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the actual state of an application.
+	 * \param id The id of the application.
+	 * \return The actual state.
 	 */
-	application::State getActualState(int id) const;
+	State getActualState(int id) const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Gets the past states of an application.
+	 * \param id The id of the application.
+	 * \return The set of states.
 	 */
-	std::set<application::State> getPastStates(int id) const;
+	std::set<State> getPastStates(int id) const;
 
 	/**
-	 * throws ConnectionTimeout
+	 * Creates an event stream socket.
+	 * \return The new EventStreamSocket object.
 	 */
 	std::unique_ptr<EventStreamSocket> createEventStreamSocket();
 
 	/**
 	 * Creates a connection handler with polling time.
+	 * \param handler The connection handler.
+	 * \param pollingTimeMs The polling time in milliseconds.
+	 * \return The new ConnectionChecker object.
 	 */
 	std::unique_ptr<ConnectionChecker> createConnectionChecker(ConnectionCheckerType handler, int pollingTimeMs = 10000);
 
@@ -128,9 +243,23 @@ public:
 	class FilteredEventListener {
 
 	public:
+		/**
+		 * Constructor.
+		 * \param listener The event listener.
+		 * \param filtered True if is filtered.
+		 */
 		FilteredEventListener(EventListener * listener, bool filtered) : m_listener(listener), m_filtered(filtered) {}
 
+		/**
+		 * Gets the listener.
+		 * \return The EventListener object.
+		 */
 		EventListener * getListener() const;
+
+		/**
+		 * Returns true if is filtered.
+		 * \return True if is filtered.
+		 */
 		bool isFiltered() const;
 
 	private:
@@ -140,31 +269,38 @@ public:
 
 	/**
 	 * Gets the event listeners. Copies the list.
+	 * \return The list of FilteredEventListener objects.
 	 */
 	std::vector<FilteredEventListener> getEventListeners();
 
 	/**
 	 * Registers an event listener.
+	 * \param listener The EventListener object.
+	 * \param filtered True if is filtered.
 	 */
 	void registerEventListener(EventListener * listener, bool filtered = true);
 
 	/**
 	 * Unregisters an event listener.
+	 * \param listener The EventListener object.
 	 */
 	void unregisterEventListener(EventListener * listener);
 
 	/**
-	 *
+	 * Returns a string representation of this application.
+	 * \return The string representation.
 	 */
-	std::string toString() const;
+	std::string toString() const override;
 
 private:
-	void initServer(const Endpoint& endpoint, int timeoutMs);
+	Server(const Endpoint& endpoint, bool useProxy);
+	Server(const std::string& endpoint, bool useProxy);
+
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
 	int getSubscriberProxyPort() const;
 
-	std::unique_ptr<application::Instance> makeInstance();
+	std::unique_ptr<App> makeInstance();
 	bool isAlive(int id) const;
 
 	Response stop(int id, bool immediately) const;
@@ -195,6 +331,7 @@ private:
 	std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout);
 	std::unique_ptr<RequestSocket> createServerRequestSocket();
 
+	std::string m_serverEndpointString;
 	Endpoint m_serverEndpoint;
 	int m_timeout;
 	bool m_useProxy;
@@ -204,7 +341,7 @@ private:
 	int m_subscriberProxyPort;
 	int m_serverStatusPort;
 	int m_statusPort;
-	std::unique_ptr<Context> m_context;
+	std::shared_ptr<Context> m_context;
 	std::unique_ptr<RequestSocket> m_requestSocket;
 
 	std::mutex m_eventListenersMutex;
@@ -214,6 +351,9 @@ private:
 	const static std::string CAMEO_SERVER;
 };
 
+/**
+ * Stream operator for a Server object.
+ */
 std::ostream& operator<<(std::ostream&, const Server&);
 
 }

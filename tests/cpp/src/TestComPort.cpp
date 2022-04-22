@@ -31,25 +31,25 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	Server& server = application::This::getServer();
+	Server& server = This::getServer();
 
-	int port = application::This::getCom().requestPort();
+	int port = This::getCom().requestPort();
 	cout << "Received port " << port << endl;
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<application::Instance> app = server.start("comportcpp");
+		unique_ptr<App> app = server.start("comportcpp");
 
 		app->waitFor();
 
 		cout << "Finished the application " << *app << endl;
 	}
 
-	port = application::This::getCom().requestPort();
+	port = This::getCom().requestPort();
 	cout << "Received port " << port << " that must be greater than first port" << endl;
 
 	return 0;

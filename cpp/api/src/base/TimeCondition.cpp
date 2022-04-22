@@ -22,7 +22,7 @@
 namespace cameo {
 	
 TimeCondition::TimeCondition() :
-	m_notified(false) {
+	m_notified{false} {
 }
 
 TimeCondition::~TimeCondition() {
@@ -30,11 +30,11 @@ TimeCondition::~TimeCondition() {
 	
 bool TimeCondition::wait(long timeMs) {
 
-	std::unique_lock<std::mutex> lock(m_conditionMutex);
+	std::unique_lock<std::mutex> lock {m_conditionMutex};
 
 	if (!m_notified) {
 		// Return true if the notification is occurring before the timeout.
-		return (m_condition.wait_for(lock, std::chrono::milliseconds(timeMs)) == std::cv_status::no_timeout);
+		return (m_condition.wait_for(lock, std::chrono::milliseconds{timeMs}) == std::cv_status::no_timeout);
 	}
 	
 	// The notification has occurred.
@@ -43,7 +43,7 @@ bool TimeCondition::wait(long timeMs) {
 
 void TimeCondition::notify() {
 
-	std::unique_lock<std::mutex> lock(m_conditionMutex);
+	std::unique_lock<std::mutex> lock {m_conditionMutex};
 
 	m_notified = true;	
 	m_condition.notify_one();

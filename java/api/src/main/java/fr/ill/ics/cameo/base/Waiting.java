@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,12 +14,17 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
+
 /**
- * The class implementation must be here to access the package protected member of This.
+ * Base class for the waiting classes.
  * The class enables to cancel waitings and terminate the execution (used by This.terminate). 
  */
 public abstract class Waiting {
 
+	/**
+	 * Adds this object to the set of waitings.
+	 */
 	public void add() {
 		// Add the waiting if This exists.
 		if (This.instance != null) {
@@ -28,6 +32,9 @@ public abstract class Waiting {
 		}	
 	}
 	
+	/**
+	 * Removes this object from the set of waitings.
+	 */
 	public void remove() {
 		// Remove the waiting if This exists.
 		if (This.instance != null) {
@@ -35,6 +42,13 @@ public abstract class Waiting {
 		}
 	}
 	
+	/**
+	 * Cancels the waiting.
+	 */
 	public abstract void cancel();
+	
+	/**
+	 * Terminates the waiting object.
+	 */
 	public abstract void terminate();
 }

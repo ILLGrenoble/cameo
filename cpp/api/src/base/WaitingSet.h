@@ -32,11 +32,26 @@ class Waiting;
 class WaitingSet {
 
 public:
+	/**
+	 * Constructor.
+	 */
 	WaitingSet();
 
+	/**
+	 * Adds a Waiting object.
+	 * \param waiting The Waiting object.
+	 */
 	void add(Waiting * waiting);
+
+	/**
+	 * Removes a Waiting object.
+	 * \param waiting The Waiting object.
+	 */
 	void remove(Waiting * waiting);
 
+	/**
+	 * Cancels all the Waiting objects.
+	 */
 	void cancelAll();
 
 private:

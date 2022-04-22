@@ -33,23 +33,20 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
-PublisherCreationException::PublisherCreationException(const std::string& message) :
-	RemoteException(message) {
-}
-
-
 const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 const std::string Publisher::PUBLISHER_PORT = "publisher_port";
 const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 
 Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
-	m_name(name), m_numberOfSubscribers(numberOfSubscribers) {
+	m_name{name},
+	m_numberOfSubscribers{numberOfSubscribers},
+	m_canceled{false} {
 
 	m_impl = ImplFactory::createPublisher();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Publisher::cancelWaitForSubscribers, this)));
+	m_waiting.reset(new Waiting{std::bind(&Publisher::cancel, this)});
 }
 
 Publisher::~Publisher() {
@@ -59,20 +56,20 @@ Publisher::~Publisher() {
 void Publisher::terminate() {
 
 	if (m_impl) {
-		application::This::getCom().removeKey(m_key);
+		This::getCom().removeKey(m_key);
 
 		m_responder.reset();
 		m_impl.reset();
 	}
 }
 
-void Publisher::init(const std::string& name) {
+void Publisher::init() {
 
 	// Set the key.
-	m_key = KEY + "-" + name;
+	m_key = KEY + "-" + m_name;
 
 	// Init the publisher and synchronizer sockets.
-	m_impl->init(StringId::from(application::This::getId(), m_key));
+	m_impl->init(StringId::from(This::getId(), m_key));
 
 	// Store the publisher data.
 	json::StringObject jsonData;
@@ -84,19 +81,21 @@ void Publisher::init(const std::string& name) {
 	jsonData.pushValue(m_numberOfSubscribers);
 
 	try {
-		application::This::getCom().storeKeyValue(m_key, jsonData.toString());
+		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
 	catch (const KeyAlreadyExistsException& e) {
-		throw PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+		m_impl.reset();
+		throw InitException("A publisher with the name \"" + m_name + "\" already exists");
+	}
+
+	// Wait for the subscribers.
+	if (m_numberOfSubscribers > 0) {
+		waitForSubscribers();
 	}
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
-
-	std::unique_ptr<Publisher> publisher = std::unique_ptr<Publisher>(new Publisher(name, numberOfSubscribers));
-	publisher->init(name);
-
-	return publisher;
+	return std::unique_ptr<Publisher>{new Publisher(name, numberOfSubscribers)};
 }
 
 const std::string& Publisher::getName() const {
@@ -107,13 +106,14 @@ bool Publisher::waitForSubscribers() {
 
 	try {
 		m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
+		m_responder->init();
 
 		// Loop until the number of subscribers is reached.
 		int counter = 0;
 
 		while (counter < m_numberOfSubscribers) {
 
-			std::unique_ptr<basic::Request> request = m_responder->receive();
+			std::unique_ptr<basic::Request> request {m_responder->receive()};
 
 			if (!request) {
 				return false;
@@ -123,7 +123,7 @@ bool Publisher::waitForSubscribers() {
 			json::Object jsonRequest;
 			json::parse(jsonRequest, request->get());
 
-			int type = jsonRequest[message::TYPE].GetInt();
+			int type {jsonRequest[message::TYPE].GetInt()};
 
 			if (type == SUBSCRIBE_PUBLISHER) {
 				counter++;
@@ -137,36 +137,33 @@ bool Publisher::waitForSubscribers() {
 
 		return !canceled;
 	}
-	catch (const ResponderCreationException& e) {
+	catch (const InitException& e) {
 		return false;
 	}
 }
 
-void Publisher::cancelWaitForSubscribers() {
+void Publisher::cancel() {
 
 	if (m_responder) {
+		m_canceled = true;
 		m_responder->cancel();
 	}
 }
 
-void Publisher::sendBinary(const std::string& data) const {
-	m_impl->sendBinary(data);
+bool Publisher::isCanceled() const {
+	return m_canceled;
 }
 
 void Publisher::send(const std::string& data) const {
 	m_impl->send(data);
 }
 
-void Publisher::sendTwoBinaryParts(const std::string& data1, const std::string& data2) const {
-	m_impl->sendTwoBinaryParts(data1, data2);
+void Publisher::sendTwoParts(const std::string& data1, const std::string& data2) const {
+	m_impl->sendTwoParts(data1, data2);
 }
 
 bool Publisher::hasEnded() const {
-	return m_impl->isEnded();
-}
-
-bool Publisher::isEnded() const {
-	return m_impl->isEnded();
+	return m_impl->hasEnded();
 }
 
 void Publisher::sendEnd() const {
@@ -175,28 +172,35 @@ void Publisher::sendEnd() const {
 
 std::string Publisher::toString() const {
 
-	return std::string("pub.") + getName()
-		+ ":" + application::This::getName()
-		+ "." + std::to_string(application::This::getId())
-		+ "@" + application::This::getEndpoint().toString();
+	json::StringObject jsonObject;
 
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"publisher"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+	AppIdentity thisIdentity {This::getName(), This::getId(), ServerIdentity{This::getServer().getEndpoint().toString(), This::getServer().usesProxy()}};
+	thisIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-SubscriberCreationException::SubscriberCreationException(const std::string& message) :
-	RemoteException(message) {
-}
-
-
-Subscriber::Subscriber() :
-	m_useProxy(false) {
+Subscriber::Subscriber(const App & app, const std::string &publisherName) :
+	m_app{app},
+	m_publisherName{publisherName},
+	m_useProxy{false} {
 
 	m_impl = ImplFactory::createSubscriber();
 
 	// Create the waiting here.
-	m_waiting.reset(new Waiting(std::bind(&Subscriber::cancel, this)));
+	m_waiting.reset(new Waiting{std::bind(&Subscriber::cancel, this)});
 }
 
 Subscriber::~Subscriber() {
@@ -207,67 +211,63 @@ void Subscriber::terminate() {
 	m_impl.reset();
 }
 
-void Subscriber::synchronize(const application::Instance & app) {
+void Subscriber::synchronize(const App & app) {
 
-	std::unique_ptr<Requester> requester = Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName);
+	std::unique_ptr<Requester> requester {Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)};
+	requester->init();
 
 	// Send a subscribe request.
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-	requester->send(jsonRequest.toString());
-	std::optional<std::string> response = requester->receive();
+	requester->send(jsonRequest.dump());
+	std::optional<std::string> response {requester->receive()};
 }
 
-void Subscriber::init(const application::Instance & app, const std::string& publisherName) {
+void Subscriber::init() {
 
-	m_publisherName = publisherName;
-	m_appName = app.getName();
-	m_appId = app.getId();
-	m_appEndpoint = app.getEndpoint();
-	m_key = Publisher::KEY + "-" + publisherName;
-	m_useProxy = app.usesProxy();
+	m_appName = m_app.getName();
+	m_appId = m_app.getId();
+	m_appEndpoint = m_app.getEndpoint();
+	m_key = Publisher::KEY + "-" + m_publisherName;
+	m_useProxy = m_app.usesProxy();
 
 	// Get the publisher data.
 	try {
-		std::string jsonString = app.getCom().getKeyValueGetter(m_key)->get();
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
 
-		int numberOfSubscribers = jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt();
+		int numberOfSubscribers {jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt()};
 
 		Endpoint endpoint;
 
 		// The endpoint depends on the use of the proxy.
 		if (m_useProxy) {
-			int publisherPort = app.getCom().getPublisherProxyPort();
-			endpoint = app.getEndpoint().withPort(publisherPort);
+			int publisherPort {m_app.getCom().getPublisherProxyPort()};
+			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 		else {
-			int publisherPort = jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt();
-			endpoint = app.getEndpoint().withPort(publisherPort);
+			int publisherPort {jsonData[Publisher::PUBLISHER_PORT.c_str()].GetInt()};
+			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 
-		m_impl->init(m_appId, endpoint, app.getStatusEndpoint(), StringId::from(m_appId, m_key));
+		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_appId, m_key));
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
-			synchronize(app);
+			synchronize(m_app);
 		}
 	}
 	catch (...) {
-		throw SubscriberCreationException("Cannot create subscriber");
+		throw InitException("Cannot initialize subscriber");
 	}
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(application::Instance & app, const std::string &publisherName) {
-
-	std::unique_ptr<Subscriber> subscriber = std::unique_ptr<Subscriber>(new Subscriber());
-	subscriber->init(app, publisherName);
-
-	return subscriber;
+std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {
+	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName)};
 }
 
 const std::string& Subscriber::getPublisherName() const {
@@ -287,27 +287,19 @@ Endpoint Subscriber::getAppEndpoint() const {
 }
 
 bool Subscriber::hasEnded() const {
-	return m_impl->isEnded();
-}
-
-bool Subscriber::isEnded() const {
-	return m_impl->isEnded();
+	return m_impl->hasEnded();
 }
 
 bool Subscriber::isCanceled() const {
 	return m_impl->isCanceled();
 }
 
-std::optional<std::string> Subscriber::receiveBinary() const {
-	return m_impl->receiveBinary();
-}
-
 std::optional<std::string> Subscriber::receive() const {
 	return m_impl->receive();
 }
 
-std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoBinaryParts() const {
-	return m_impl->receiveTwoBinaryParts();
+std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoParts() const {
+	return m_impl->receiveTwoParts();
 }
 
 void Subscriber::cancel() {
@@ -316,11 +308,22 @@ void Subscriber::cancel() {
 
 std::string Subscriber::toString() const {
 
-	return std::string("sub.") + getPublisherName()
-		+ ":" + getAppName()
-		+ "." + std::to_string(getAppId())
-		+ "@" + getAppEndpoint().toString();
+	json::StringObject jsonObject;
 
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"subscriber"});
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_publisherName);
+
+	jsonObject.pushKey("app");
+	jsonObject.startObject();
+
+	AppIdentity appIdentity {m_appName, m_appId, ServerIdentity{m_appEndpoint.toString(), false}};
+	appIdentity.toJSON(jsonObject);
+	jsonObject.endObject();
+
+	return jsonObject.dump();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {

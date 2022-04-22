@@ -22,7 +22,7 @@
 namespace cameo {
 
 ConnectionChecker::ConnectionChecker(Server * server, ConnectionChecker::FunctionType handler) : m_server(server), m_function(handler) {
-	m_waitCondition.reset(new TimeCondition());
+	m_waitCondition.reset(new TimeCondition{});
 }
 
 ConnectionChecker::~ConnectionChecker() {
@@ -33,13 +33,13 @@ void ConnectionChecker::loop(int timeoutMs, int pollingTimeMs) {
 
 	// Loop until the condition is notified.
 	while (true) {
-		bool stopped = m_waitCondition->wait(pollingTimeMs);
+		bool stopped {m_waitCondition->wait(pollingTimeMs)};
 		if (stopped) {
 			return;
 		}
 
 		// Check the server.
-		bool available = (m_server->isAvailable(timeoutMs));
+		bool available {m_server->isAvailable(timeoutMs)};
 
 		// Apply the handler.
 		m_function(available);
@@ -52,12 +52,12 @@ void ConnectionChecker::startThread(int timeoutMs, int pollingTimeMs) {
 	stopThread();
 
 	// Start the thread.
-	m_thread = std::unique_ptr<std::thread>(new std::thread(std::bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs)));
+	m_thread = std::unique_ptr<std::thread>{new std::thread(std::bind(&ConnectionChecker::loop, this, timeoutMs, pollingTimeMs))};
 }
 
 void ConnectionChecker::stopThread() {
 
-	if (m_thread.get() != nullptr) {
+	if (m_thread) {
 		m_waitCondition->notify();
 		m_thread->join();
 	}

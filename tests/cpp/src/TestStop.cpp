@@ -21,8 +21,8 @@ using namespace std;
 using namespace cameo;
 
 struct StateHandler {
-	void operator()(application::State state) {
-		cout << "Received state " << application::toString(state) << endl;
+	void operator()(State state) {
+		cout << "Received state " << toString(state) << endl;
 	}
 };
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -45,12 +45,13 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		unique_ptr<application::Instance> stopApplication = server.start("stopcpp");
+		unique_ptr<App> stopApplication = server->start("stopcpp");
 
 		cout << "Waiting 0.1s..." << endl;
 		this_thread::sleep_for(chrono::milliseconds(100));

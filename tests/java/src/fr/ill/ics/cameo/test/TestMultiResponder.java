@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.Requester;
 import fr.ill.ics.cameo.messages.Messages;
 
 
@@ -55,7 +55,8 @@ public class TestMultiResponder {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
 			
@@ -63,18 +64,19 @@ public class TestMultiResponder {
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
 				// Start the application.
-				Instance responderApplication = server.start(applicationName);
-				System.out.println("Started application " + responderApplication + " with state " + Application.State.toString(responderApplication.getActualState()));
+				App responderApplication = server.start(applicationName);
+				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
 
-				fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(responderApplication, "responder");
+				Requester requester = Requester.create(responderApplication, "responder");
+				requester.init();
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.
-				System.out.println("Application " + responderApplication + " has state " + Application.State.toString(responderApplication.getActualState()));
+				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getActualState()));
 				
 				
 				// Send a simple message.
-				requester.send("request");
+				requester.sendString("request");
 				System.out.println("Response is " + requester.receiveString());
 			
 				
@@ -83,14 +85,11 @@ public class TestMultiResponder {
 				System.out.println("Response is " + requester.receiveString());
 				
 				int state = responderApplication.waitFor();
-				System.out.println("Responder application terminated with state " + Application.State.toString(state));			
+				System.out.println("Responder application terminated with state " + State.toString(state));			
 				
 				// Terminate the requester.
 				requester.terminate();
 			}
-		}
-		catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
 		}
 		finally {
 			server.terminate();

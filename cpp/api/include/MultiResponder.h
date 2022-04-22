@@ -18,10 +18,13 @@
 #define CAMEO_COMS_MULTI_RESPONDER_H_
 
 #include "Application.h"
-#include "ResponderCreationException.h"
 
 namespace cameo {
 namespace coms {
+
+/**
+ * Namespace for the multi implementation of the responder.
+ */
 namespace multi {
 
 class Responder;
@@ -32,29 +35,67 @@ class ResponderRouterImpl;
 ///////////////////////////////////////////////////////////////////////////
 // Request
 
+/**
+ * Class defining a request received by the multi responder.
+ */
 class Request {
 
 	friend class Responder;
 	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
+	/**
+	 * Constructor.
+	 * \param requesterApplicationName The requester application name.
+	 * \param requesterApplicationId The request application id.
+	 * \param serverEndpoint The server endpoint.
+	 * \param serverProxyPort The server proxy port.
+	 * \param messagePart1 The message part 1.
+	 * \param messagePart2 The message part 2.
+	 */
 	Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2);
+
+	/**
+	 * Destructor.
+	 */
 	~Request();
 
-	std::string getObjectId() const;
+	/**
+	 * Gets the requester endpoint.
+	 * \return The requester endpoint.
+	 */
 	std::string getRequesterEndpoint() const;
 
-	const std::string& getBinary() const;
-	std::string get() const;
-	const std::string& getSecondBinaryPart() const;
+	/**
+	 * Gets the first part.
+	 * \return The first part.
+	 */
+	const std::string& get() const;
 
-	void setTimeout(int value);
+	/**
+	 * Gets the second part.
+	 * \return The second part.
+	 */
+	const std::string& getSecondPart() const;
 
-	bool replyBinary(const std::string &response);
-	bool reply(const std::string &response);
+	/**
+	 * Replies to the request.
+	 * \param response The response.
+	 */
+	void reply(const std::string &response);
 
-	application::ServerAndInstance connectToRequester(int options = 0, bool useProxy = false);
+	/**
+	 * Connects to the requester application.
+	 * \param options The options to the connection.
+	 * \param useProxy Use the proxy to connect.
+	 * \return The ServerAndApp pair.
+	 */
+	ServerAndApp connectToRequester(int options = 0, bool useProxy = false);
 
+	/**
+	 * Returns a string representation of the request
+	 * \return The string representation.
+	 */
 	std::string toString() const;
 
 private:
@@ -67,47 +108,91 @@ private:
 	int m_requesterApplicationId;
 	Endpoint m_requesterServerEndpoint;
 	int m_requesterServerProxyPort;
-	int m_timeout;
 };
 
 ///////////////////////////////////////////////////////////////////////////
 // ResponderRouter
 
-class ResponderRouter {
+/**
+ * Class defining a responder router.
+ * Requests are dispatched to the multi responders that process them in parallel.
+ */
+class ResponderRouter : public Object, public Cancelable {
 
 	friend class Responder;
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const ResponderRouter&);
 
 public:
-	~ResponderRouter();
-	void terminate();
+	/**
+	 * Destructor.
+	 */
+	~ResponderRouter() override;
 
-	/** \brief Returns the responder with name.
-	 * throws ResponderCreationException.
+	/**
+	 * Returns the responder router with name.
+	 * \param name The name.
+	 * \return The new ResponderRouter object.
 	 */
 	static std::unique_ptr<ResponderRouter> create(const std::string &name);
 
+	/**
+	 * Initializes the responder router.
+	 * \throws InitException if the responder cannot be initialized.
+	 */
+	void init() override;
+
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
+
+	/**
+	 * Cancels the responder router running in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if the responder router has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
 	void setPollingTime(int value);
 
-	/// Returns the name of the responder
+	/**
+	 * Returns the name of the responder.
+	 * \return The name.
+	 */
 	const std::string& getName() const;
 
-	void cancel();
-
+	/**
+	 * Runs the responder router. This is a blocking call.
+	 */
 	void run();
 
-	/** check if it has been canceled */
-	bool isCanceled() const;
+	/**
+	 * Returns a string representation of the responder router.
+	 * \return The string representation.
+	 */
+	std::string toString() const override;
 
-	std::string toString() const;
-
+	/**
+	 * Constant uuid for the unique responder key.
+	 */
 	static const std::string KEY;
+
+	/**
+	 * Constant uuid for the unique responder port.
+	 */
 	static const std::string PORT;
 
 private:
 	ResponderRouter(const std::string &name);
-	void init(const std::string &name);
 
 	const std::string& getDealerEndpoint() const;
 
@@ -121,44 +206,84 @@ private:
 ///////////////////////////////////////////////////////////////////////////
 // Responder
 
-class Responder {
+/**
+ * Class defining a responder for the responder router.
+ * Requests are processed sequentially.
+ */
+class Responder : public Object, public Cancelable {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
 
 public:
-	~Responder();
-	void terminate();
+	/**
+	 * Destructor.
+	 */
+	~Responder() override;
 
-	/** \brief Returns the responder with name.
-	 * throws ResponderCreationException.
+	/**
+	 * Creates a new responder.
+	 * \param router The router.
+	 * \return A new Responder object.
 	 */
 	static std::unique_ptr<Responder> create(const ResponderRouter& router);
 
-	void cancel();
+	/**
+	 * Initializes the responder.
+	 */
+	void init() override;
 
-	/** \brief Receive a request
-	 * blocking command
+	/**
+	 * Terminates the communication.
+	 */
+	void terminate() override;
+
+	/**
+	 * Cancels the responder waiting in another thread.
+	 */
+	void cancel() override;
+
+	/**
+	 * Returns true if it has been canceled.
+	 * \return True if canceled.
+	 */
+	bool isCanceled() const override;
+
+	/**
+	 * Receives a request. This is a blocking command until a Request is received.
+	 * \return A Request object.
 	 */
 	std::unique_ptr<Request> receive();
 
-	/** check if it has been canceled */
-	bool isCanceled() const;
-
-	std::string toString() const;
+	/**
+	 * Returns a string representation of the responder.
+	 * \return The string representation.
+	 */
+	std::string toString() const override;
 
 private:
-	Responder();
-	void init(const std::string &endpoint);
+	Responder(const std::string& dealerEndpoint);
 
 	void reply(const std::string& type, const std::string& response);
 
+	std::string m_dealerEndpoint;
 	std::unique_ptr<ResponderImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 };
 
+/**
+ * Stream operator for a Request object.
+ */
 std::ostream& operator<<(std::ostream&, const Request&);
+
+/**
+ * Stream operator for a ResponderRouter object.
+ */
 std::ostream& operator<<(std::ostream&, const ResponderRouter&);
+
+/**
+ * Stream operator for a Responder object.
+ */
 std::ostream& operator<<(std::ostream&, const Responder&);
 
 }

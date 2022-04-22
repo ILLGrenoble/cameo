@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -16,12 +15,19 @@ package fr.ill.ics.cameo.base;
  */
 
 
+package fr.ill.ics.cameo.base;
 
+/**
+ * Exception for connection timeout.
+ */
 public class ConnectionTimeout extends RuntimeException {
 
 	private static final long serialVersionUID = 2620802382339649353L;
 
+	/**
+	 * Constructor.
+	 */
 	public ConnectionTimeout() {
-		super("connection timeout");
+		super("Connection timeout");
 	}
 }

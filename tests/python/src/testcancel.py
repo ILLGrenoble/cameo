@@ -5,15 +5,15 @@ import cameopy
 
 def cancelAll():
     time.sleep(1)
-    cameopy.This.cancelWaitings()
+    cameopy.This.cancelAll()
 
 def cancelWaitFor(instance):
     time.sleep(1)
-    instance.cancelWaitFor()
+    instance.cancel()
 
 def cancelWaitForSubscribers(publisher):
     time.sleep(1)
-    publisher.cancelWaitForSubscribers()
+    publisher.cancel()
 
 def killApplication(app):
     time.sleep(1)
@@ -44,11 +44,12 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
 
 def testCancelAll():
 
-    print("Starting stopcpp for cancelWaitings")
+    print("Starting stopcpp for cancelAll")
     
     app = server.start("stopcpp")
     
@@ -65,7 +66,7 @@ def testCancelAll():
     
     t.join()
     
-    print("End of stopcpp with state", state)
+    print("End of stopcpp with state", cameopy.toString(state))
 
 
 def testCancelWaitFor():
@@ -87,7 +88,7 @@ def testCancelWaitFor():
     
     t.join()
     
-    print("End of stopcpp with state", state)
+    print("End of stopcpp with state", cameopy.toString(state))
 
     
 def testCancelWaitForSubscribers():
@@ -100,11 +101,11 @@ def testCancelWaitForSubscribers():
     t = threading.Thread(target=cancelWaitForSubscribers, args=(publisher,))
     t.start()
 
-    synced = publisher.waitForSubscribers()
+    publisher.init()
 
     t.join()
 
-    print("Synchronization with the subscriber", synced)
+    print("Synchronization with the subscriber", not publisher.isCanceled())
 
 
 def testKillApplication():
@@ -118,20 +119,21 @@ def testKillApplication():
     t.start()
 
     subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber.init()
 
     # Receiving data.
     while True:
-        data = subscriber.receive()
+        data = subscriber.receiveString()
         if data:
             print("Received", data)
         else:
             break
 
-    print("Subscriber end of stream", subscriber.isEnded())
+    print("Subscriber end of stream", subscriber.hasEnded())
 
     state = app.waitFor()
 
-    print("End of publisherlooppy with state ", state)
+    print("End of publisherlooppy with state", cameopy.toString(state))
 
     t.join()
 
@@ -144,6 +146,7 @@ def testCancelSubscriber():
 
     # Create a subscriber.
     subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber.init()
     
     # Start cancel thread.
     t = threading.Thread(target=cancelAll)
@@ -151,13 +154,13 @@ def testCancelSubscriber():
 
      # Receiving data.
     while True:
-        data = subscriber.receive()
+        data = subscriber.receiveString()
         if data:
             print("Received", data)
         else:
             break
 
-    print("Subscriber end of stream", subscriber.isEnded())
+    print("Subscriber end of stream", subscriber.hasEnded())
     
      # Start kill thread.
     k = threading.Thread(target=killApplication, args=(app,))
@@ -176,6 +179,7 @@ def testResponder():
     print("Creating basic responder and waiting for requests")
     
     responder = cameopy.BasicResponder.create("responder")
+    responder.init()
     
     # Start cancel thread.
     t = threading.Thread(target=cancelResponder, args=(responder,))
@@ -196,6 +200,7 @@ def testRequester():
     print("Creating basic responder and requester")
     
     responder = cameopy.BasicResponder.create("responder")
+    responder.init()
     
     # Start reponder thread.
     tr = threading.Thread(target=loopResponder, args=(responder,))
@@ -204,6 +209,7 @@ def testRequester():
     thisApp = server.connect(cameopy.This.getName())
     
     requester = cameopy.Requester.create(thisApp, "responder")
+    requester.init()
     
     # Start cancel thread.
     tc = threading.Thread(target=cancelRequester, args=(requester, responder,))

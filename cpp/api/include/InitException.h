@@ -14,17 +14,24 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_BADFORMATEXCEPTION_H_
-#define CAMEO_BADFORMATEXCEPTION_H_
+#ifndef CAMEO_INITEXCEPTION_H_
+#define CAMEO_INITEXCEPTION_H_
 
 #include "RemoteException.h"
 
 namespace cameo {
 
-class BadFormatException : public RemoteException {
+/**
+ * Exception for an initialization.
+ */
+class InitException : public RemoteException {
 
 public:
-	BadFormatException(const std::string& message);
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
+	InitException(const std::string& message);
 };
 
 }

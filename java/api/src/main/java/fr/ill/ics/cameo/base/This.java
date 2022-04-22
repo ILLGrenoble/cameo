@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.base;
 
 import java.util.List;
@@ -7,11 +23,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
-import fr.ill.ics.cameo.base.Application.Handler;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 
+/**
+ * Class managing the current Cameo application.
+ *
+ * The application can be launched by the Cameo console or another Cameo App.
+ */
 public class This {
 	
 	static This instance;
@@ -34,6 +54,11 @@ public class This {
 	private Server server;
 	private Server starterServer;
 	
+	/**
+	 * Class defining the Communication Operations Manager (COM) for this application.
+	 *
+	 * It facilitates the definition of communication objects.
+	 */
 	public static class Com {
 		
 		private Server server;
@@ -44,22 +69,44 @@ public class This {
 			this.applicationId = applicationId;
 		}
 
+		/**
+		 * Gets the communication context. Shall be a ZeroMQ context i.e. a ContextZmq instance.
+		 * @return The context.
+		 */
 		public Context getContext() {
 			return server.getContext();
 		}
 		
+		/**
+		 * Gets the responder proxy port.
+		 * @return The port.
+		 */
 		public int getResponderProxyPort() {
 			return server.getResponderProxyPort();
 		}
 		
+		/**
+		 * Gets the publisher proxy port.
+		 * @return The port.
+		 */
 		public int getPublisherProxyPort() {
 			return server.getPublisherProxyPort();
 		}
 		
+		/**
+		 * Gets the subscriber proxy port.
+		 * @return The port.
+		 */
 		public int getSubscriberProxyPort() {
 			return server.getSubscriberProxyPort();
 		}
 		
+		/**
+		 * Stores the key value in the Cameo server.
+		 * @param key The key.
+		 * @param value The value.
+		 * @throws KeyAlreadyExistsException if the key is already stored.
+		 */
 		public void storeKeyValue(String key, String value) throws KeyAlreadyExistsException {
 			try {
 				server.storeKeyValue(applicationId, key, value);
@@ -70,6 +117,12 @@ public class This {
 			}
 		}
 		
+		/**
+		 * Gets the key value from the Cameo server.
+		 * @param key The key.
+		 * @return The value associated to key.
+		 * @throws UndefinedKeyException if the key is not found.
+		 */
 		public String getKeyValue(String key) throws UndefinedKeyException {
 			try {
 				return server.getKeyValue(applicationId, key);
@@ -81,6 +134,11 @@ public class This {
 			return null;
 		}
 		
+		/**
+		 * Removes the key from the Cameo server.
+		 * @param key The key.
+		 * @throws UndefinedKeyException if the key is not found.
+		 */
 		public void removeKey(String key) throws UndefinedKeyException {
 			try {
 				server.removeKey(applicationId, key);
@@ -91,6 +149,10 @@ public class This {
 			}
 		}
 		
+		/**
+		 * Requests a new port from the Cameo server.
+		 * @return An available port.
+		 */
 		public int requestPort() {
 			try {
 				return server.requestPort(applicationId);
@@ -102,6 +164,10 @@ public class This {
 			return -1;
 		}
 		
+		/**
+		 * Tells the Cameo server that the port is not availaible i.e. another application onws it.
+		 * @param port The port.
+		 */
 		public void setPortUnavailable(int port) {
 			try {
 				server.setPortUnavailable(applicationId, port);
@@ -112,6 +178,10 @@ public class This {
 			}
 		}
 		
+		/**
+		 * Releases the port so that the Cameo server will be able to return it in a future request.
+		 * @param port The port.
+		 */
 		public void releasePort(int port) {
 			try {
 				server.releasePort(applicationId, port);
@@ -122,18 +192,26 @@ public class This {
 			}
 		}
 
+		/**
+		 * Creates a request socket.
+		 * @return A new request socket.
+		 */
 		public RequestSocket createRequestSocket(String endpoint, String responderIdentity) {
 			return server.createRequestSocket(endpoint, responderIdentity);
 		}
 		
+		/**
+		 * Creates a request socket with a timeout.
+		 * @return A new request socket.
+		 */
 		public RequestSocket createRequestSocket(String endpoint, String responderIdentity, int timeout) {
 			return server.createRequestSocket(endpoint, responderIdentity, timeout);
 		}
 		
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
-		 * @param message
-		 * @return
+		 * @param message The message to parse.
+		 * @return A JSONObject object.
 		 */
 		public JSONObject parse(byte[] message) {
 			
@@ -145,6 +223,11 @@ public class This {
 			}
 		}
 		
+		/**
+		 * Method provided by convenience to simplify the parsing of JSON messages.
+		 * @param message The message to parse.
+		 * @return A JSONObject object.
+		 */
 		public JSONObject parse(String message) {
 		
 			try {
@@ -161,14 +244,27 @@ public class This {
 	private Handler stopHandler;
 	private Thread checkStatesThread = null;
 	
+	/**
+	 * Initializes this application from the main arguments.
+	 * @param args The program arguments.
+	 */
 	static public void init(String[] args) {
 		instance = new This(args);
 	}
 	
+	/**
+	 * Initializes this application with direct parameters.
+	 * @param name The Cameo name.
+	 * @param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
+	 */
 	static public void init(String name, String endpoint) {
 		instance = new This(name, endpoint);
 	}
-			
+	
+	/**
+	 * Returns the Cameo name of this application.
+	 * @return The Cameo name.
+	 */
 	static public String getName() {
 		if (instance == null) {
 			return null;		
@@ -176,6 +272,10 @@ public class This {
 		return instance.name;
 	}
 
+	/**
+	 * Returns the Cameo id of this application.
+	 * @return The Cameo id.
+	 */
 	static public int getId() {
 		if (instance == null) {
 			return 0;		
@@ -183,6 +283,10 @@ public class This {
 		return instance.id;
 	}
 	
+	/**
+	 * Gets the timeout.
+	 * @return The timeout value.
+	 */
 	public int getTimeout() {
 		if (instance == null) {
 			return 0;		
@@ -190,6 +294,10 @@ public class This {
 		return instance.server.getTimeout();
 	}
 
+	/**
+	 * Sets the timeout.
+	 * @param value The timeout value.
+	 */
 	public void setTimeout(int timeout) {
 		if (instance == null) {
 			return;		
@@ -197,6 +305,10 @@ public class This {
 		instance.server.setTimeout(timeout);
 	}
 	
+	/**
+	 * Returns the endpoint of the Cameo server.
+	 * @return The Cameo endpoint.
+	 */
 	static public Endpoint getEndpoint() {
 		if (instance == null) {
 			return null;		
@@ -204,17 +316,30 @@ public class This {
 		return instance.serverEndpoint;
 	}
 	
+	/**
+	 * Returns the Cameo server that owns this application.
+	 * @return The Server instance.
+	 */
 	static public Server getServer() {
 		if (instance == null) {
 			return null;		
 		}
 		return instance.server;
 	}
-		
+	
+	/**
+	 * Returns the COM object.
+	 * @return The Com object.
+	 */
 	static public Com getCom() {
 		return com;
 	}
 	
+	/**
+	 * Returns true if the Cameo server that owns this application is available.
+	 * @param timeout The timeout value.
+	 * @return True if the Cameo replies within the timeout.
+	 */
 	static public boolean isAvailable(int timeout) {
 		if (instance == null) {
 			return false;		
@@ -222,21 +347,35 @@ public class This {
 		return instance.server.isAvailable(timeout);
 	}
 	
+	/**
+	 * Returns true if the Cameo server that owns this application is available.
+	 * @return True if the Cameo replies within the timeout.
+	 */
 	static public boolean isAvailable() {
 		return isAvailable(10000);
 	}
 	
-	static public void cancelWaitings() {
+	/**
+	 * Cancels all the waiting calls.
+	 */
+	static public void cancelAll() {
 		if (instance == null) {
 			return;
 		}
 		instance.waitingSet.cancelAll();
 	}
 	
+	/**
+	 * Terminates the application.
+	 */
 	static public void terminate() {
 		instance.terminateAll();
 	}
 
+	/**
+	 * Sets the result.
+	 * @param data The string result.
+	 */
 	static public void setResult(byte[] data) {
 		JSONObject response = instance.server.requestJSON(Messages.createSetResultRequest(getId()), data);
 		
@@ -246,17 +385,20 @@ public class This {
 		}
 	}
 	
-	static public void setResult(String data) {
+	/**
+	 * Sets the string result.
+	 * @param data The string result.
+	 */
+	static public void setStringResult(String data) {
 		setResult(Messages.serialize(data));
 	}
 			
 	/**
-	 * Sets the owner application RUNNING.
-	 * @return
-	 * @throws StateException, ConnectionTimeout
+	 * Sets this application in RUNNING state.
+	 * @return True or false.
 	 */
 	static public boolean setRunning() {
-		JSONObject request = Messages.createSetStatusRequest(getId(), Application.State.RUNNING);
+		JSONObject request = Messages.createSetStatusRequest(getId(), State.RUNNING);
 		JSONObject response = instance.server.requestJSON(request);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
@@ -267,34 +409,39 @@ public class This {
 	}
 
 	/**
-	 * Returns true if the application is in STOPPING state. Can be used when the application is already polling.
-	 * @return
+	 * Returns true if the application is in STOPPING state.
+	 * @return True or false.
 	 */
 	static public boolean isStopping() {
-		return (instance.getState(getId()) == Application.State.STOPPING);
+		return (instance.getState(getId()) == State.STOPPING);
 	}
 	
 	/**
-	 * Sets the stop handler with stopping time that overrides the one that may be defined in the configuration of the server.
-	 * @param handler
+	 * Sets the stop handler with stopping time that overrides the one that may be defined in the
+	 * configuration of the server.
+	 * @param handler The stop handler.
+	 * @param stoppingTime The stopping time in milliseconds.
 	 */
 	static public void handleStop(final Handler handler, int stoppingTime) {
 		instance.initStopCheck(handler, stoppingTime);
 	}
 	
 	/**
-	 * Sets the stop handler with default stopping time.
-	 * @param handler
+	 * Sets the stop handler with stopping time that overrides the one that may be defined in the
+	 * configuration of the server.
+	 * @param handler The stop handler.
 	 */
 	static public void handleStop(final Handler handler) {
 		handleStop(handler, -1);
 	}
 	
 	/**
+	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
-	 * @return
+	 * @param options The options passed to connect the starter app.
+	 * @param useProxy True if the proxy is used to connect to the starter app.
 	 */
-	static public ServerAndInstance connectToStarter(int options, boolean useProxy) {
+	static public ServerAndApp connectToStarter(int options, boolean useProxy) {
 		
 		if (instance.getStarterEndpoint() == null) {
 			return null;
@@ -304,16 +451,18 @@ public class This {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = new Server(instance.getStarterEndpoint().withPort(instance.starterProxyPort), 0, true);
+			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), true);
 		}
 		else {
-			starterServer = new Server(instance.getStarterEndpoint(), 0, false);	
+			starterServer = Server.create(instance.getStarterEndpoint(), false);
 		}
 		
+		starterServer.init();
+		
 		// Iterate the instances to find the id
-		Instance starterInstance = null;
-		List<Instance> instances = starterServer.connectAll(instance.getStarterName(), options);
-		for (Instance i : instances) {
+		App starterInstance = null;
+		List<App> instances = starterServer.connectAll(instance.getStarterName(), options);
+		for (App i : instances) {
 			if (i.getId() == instance.getStarterId()) {
 				starterInstance = i;
 				break;
@@ -324,33 +473,26 @@ public class This {
 			return null;
 		}
 		
-		return new ServerAndInstance(starterServer, starterInstance);
+		return new ServerAndApp(starterServer, starterInstance);
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Connects to the starter application, i.e. the application which started this application.
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
+	 * @param options The options passed to connect the starter app.
 	 */
-	static public ServerAndInstance connectToStarter(int options) {
+	static public ServerAndApp connectToStarter(int options) {
 		return connectToStarter(options, false);
 	}
-	
+
 	/**
-	 * 
-	 * @return
+	 * Connects to the starter application, i.e. the application which started this application.
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 */
-	static public ServerAndInstance connectToStarter() {
+	static public ServerAndApp connectToStarter() {
 		return connectToStarter(0, false);
 	}
 	
-	
-	/**
-	 * Constructor with application arguments.
-	 * This constructor must be used when the services are related to the cameo server that
-	 * has started the current application.
-	 * Some methods may throw the runtime ConnectionTimeout exception, so it is recommended to catch the exception at a global scope if a timeout is set.
-	 * @param args
-	 */
 	private This(String[] args) {
 		
 		// Analyse the args to get the info.
@@ -419,7 +561,8 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = new Server(serverEndpoint, 0, false);
+		server = Server.create(serverEndpoint, false);
+		server.init();
 		
 		// Init the unregistered application.
 		if (!registered) {
@@ -525,7 +668,7 @@ public class This {
 			checkStatesThread = new Thread(new Runnable() {
 				public void run() {
 					// Warning, this method is executed in a parallel thread.
-					int state = Application.State.UNKNOWN; 
+					int state = State.NIL; 
 					
 					while (true) {
 						// waits for a new incoming status
@@ -539,7 +682,7 @@ public class This {
 								StatusEvent status = (StatusEvent)event;
 								state = status.getState();
 													
-								if (state == Application.State.STOPPING) {
+								if (state == State.STOPPING) {
 									if (stopHandler != null) {
 										stopHandler.handle();
 									}
@@ -560,7 +703,7 @@ public class This {
 								state = status.getState();
 
 								// Stop this application if it was linked.
-								if (state == Application.State.STOPPED || state == Application.State.KILLED || state == Application.State.SUCCESS || state == Application.State.ERROR) {
+								if (state == State.STOPPED || state == State.KILLED || state == State.SUCCESS || state == State.FAILURE) {
 									stop();
 								}
 							}
@@ -594,11 +737,13 @@ public class This {
 		// Create the starter server.
 		// If the starter has a running proxy, then use the proxy: it is reasonable.
 		if (starterProxyPort != 0) {
-			starterServer = new Server(starterEndpoint.withPort(starterProxyPort), 0, true);
+			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), true);
 		}
 		else {
-			starterServer = new Server(starterEndpoint, 0, false);	
+			starterServer = Server.create(starterEndpoint, false);
 		}
+		
+		starterServer.init();
 
 		// Register this as event listener.
 		starterServer.registerEventListener(eventListener, false);
@@ -606,8 +751,8 @@ public class This {
 		// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
 		int state = starterServer.getActualState(starterId);
 
-		// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
-		if (state == Application.State.UNKNOWN) {
+		// Stop this app if the starter is already terminated i.e. the state is NIL.
+		if (state == State.NIL) {
 			stop();
 		}
 		else {
@@ -628,7 +773,5 @@ public class This {
 	public String toString() {
 		return name + "." + id + "@" + serverEndpoint;
 	}
-	
-	
 	
 }

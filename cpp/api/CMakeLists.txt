@@ -18,7 +18,7 @@ set(ConfigPackageLocation ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME})
 set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
 #--------------- Options
-option(CAMEO_API_CPP_TESTS "Compiling the test programs" OFF)
+option(CAMEO_API_CPP_TESTS "Compiling the unit test programs" OFF)
 option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
 if(NOT DEFINED ${CMAKE_BUILD_TYPE})
@@ -233,7 +233,10 @@ endif(UNIX)
 #------------------------------------------------------------
 # Doc
 #------------------------------------------------------------
-find_package(Doxygen QUIET)
+
+option(BUILD_DOC "Build documentation" ON)
+
+find_package(Doxygen)
 if (DOXYGEN_FOUND)
   # set input and output files
   set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
@@ -244,7 +247,7 @@ if (DOXYGEN_FOUND)
   message("Doxygen build started")
   
   # note the option ALL which allows to build the docs together with the application
-  add_custom_target( cameo_doc 
+  add_custom_target( doc 
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen"
@@ -263,7 +266,7 @@ include(CPack)
 # Tests
 #------------------------------------------------------------
 if(CAMEO_API_CPP_TESTS)
-# Note: execute ctest --verbose to have more details 
-enable_testing()
-add_subdirectory(tests)
-endif(CAMEO_API_CPP_TESTS)
+  # Note: execute ctest --verbose to have more details 
+  enable_testing()
+  add_subdirectory(tests)
+  endif(CAMEO_API_CPP_TESTS)

@@ -26,9 +26,9 @@ namespace coms {
 constexpr int SYNC_TIMEOUT = 200;
 
 RequesterZmq::RequesterZmq() :
-	m_pollingTime(100),
-	m_timeout(0),
-	m_contextImpl(nullptr) {
+	m_pollingTime{100},
+	m_timeout{0},
+	m_contextImpl{nullptr} {
 
 	m_canceled.store(false);
 	m_timedout.store(false);
@@ -52,13 +52,13 @@ void RequesterZmq::initSocket() {
 
 	if (!m_requester) {
 		// Create a socket REQ.
-		m_requester.reset(new zmq::socket_t(m_contextImpl->getContext(), zmq::socket_type::req));
+		m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::req});
 
 		// Connect to the endpoint.
 		m_requester->connect(m_endpoint.toString());
 
 		// Configure the socket to not wait at close time.
-		int linger = 0;
+		int linger {0};
 		m_requester->setsockopt(ZMQ_LINGER, &linger, sizeof(linger));
 	}
 }
@@ -70,7 +70,7 @@ bool RequesterZmq::sendSync() {
 	jsonRequest.pushValue(message::SYNC);
 
 	// Send the request.
-	sendRequest(jsonRequest.toString());
+	sendRequest(jsonRequest.dump());
 
 	while (true) {
 
@@ -94,7 +94,7 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 	m_responderIdentity = responderIdentity;
 
 	// Get the context.
-	m_contextImpl = dynamic_cast<ContextZmq *>(application::This::getCom().getContext());
+	m_contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 
 	m_timeout = SYNC_TIMEOUT;
 
@@ -132,13 +132,13 @@ void RequesterZmq::sendRequest(const std::string& request) {
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart(request.c_str(), request.size());
+	zmq::message_t requestPart {request.c_str(), request.size()};
 	m_requester->send(requestPart, zmq::send_flags::none);
 }
 
@@ -151,17 +151,17 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in two parts.
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
 	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
 	m_requester->send(requestPart2Part, zmq::send_flags::none);
 }
 
@@ -174,75 +174,71 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	initSocket();
 
 	// Add the responder identity as first part.
-	zmq::message_t responderIdentityPart(m_responderIdentity.c_str(), m_responderIdentity.size());
+	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
 	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in three parts.
-	zmq::message_t requestPart1Part(requestPart1.c_str(), requestPart1.size());
+	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
 	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part(requestPart2.c_str(), requestPart2.size());
+	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
 	m_requester->send(requestPart2Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart3Part(requestPart3.c_str(), requestPart3.size());
+	zmq::message_t requestPart3Part {requestPart3.c_str(), requestPart3.size()};
 	m_requester->send(requestPart3Part, zmq::send_flags::none);
 }
 
-void RequesterZmq::sendBinary(const std::string& requestData) {
-
-	json::StringObject jsonRequest;
-	jsonRequest.pushKey(message::TYPE);
-	jsonRequest.pushValue(message::REQUEST);
-
-	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
-	jsonRequest.pushValue(application::This::getName());
-
-	jsonRequest.pushKey(message::Request::APPLICATION_ID);
-	jsonRequest.pushValue(application::This::getId());
-
-	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
-	jsonRequest.pushValue(application::This::getEndpoint().toString());
-
-	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
-	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
-
-	// Send the request.
-	sendRequest(jsonRequest.toString(), requestData);
-}
-
 void RequesterZmq::send(const std::string& requestData) {
-	sendBinary(requestData);
-}
-
-void RequesterZmq::sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2) {
 
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::REQUEST);
 
 	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
-	jsonRequest.pushValue(application::This::getName());
+	jsonRequest.pushValue(This::getName());
 
 	jsonRequest.pushKey(message::Request::APPLICATION_ID);
-	jsonRequest.pushValue(application::This::getId());
+	jsonRequest.pushValue(This::getId());
 
 	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
-	jsonRequest.pushValue(application::This::getEndpoint().toString());
+	jsonRequest.pushValue(This::getEndpoint().toString());
 
 	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
-	jsonRequest.pushValue(application::This::getCom().getResponderProxyPort());
+	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
 
 	// Send the request.
-	sendRequest(jsonRequest.toString(), requestData1, requestData2);
+	sendRequest(jsonRequest.dump(), requestData);
+}
+
+void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::string& requestData2) {
+
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::REQUEST);
+
+	jsonRequest.pushKey(message::Request::APPLICATION_NAME);
+	jsonRequest.pushValue(This::getName());
+
+	jsonRequest.pushKey(message::Request::APPLICATION_ID);
+	jsonRequest.pushValue(This::getId());
+
+	jsonRequest.pushKey(message::Request::SERVER_ENDPOINT);
+	jsonRequest.pushValue(This::getEndpoint().toString());
+
+	jsonRequest.pushKey(message::Request::SERVER_PROXY_PORT);
+	jsonRequest.pushValue(This::getCom().getResponderProxyPort());
+
+	// Send the request.
+	sendRequest(jsonRequest.dump(), requestData1, requestData2);
 }
 
 bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 
 	// Define the number of iterations.
-	int n = 0;
+	int n {0};
 	if (m_pollingTime > 0) {
 		n = m_timeout / m_pollingTime + 1;
 	}
@@ -253,7 +249,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 	};
 
 	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
-	int i = 0;
+	int i {0};
 	while (i < n || m_timeout == 0) {
 
 		// Check if the requester has been canceled.
@@ -284,7 +280,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 	return false;
 }
 
-std::optional<std::string> RequesterZmq::receiveBinary() {
+std::optional<std::string> RequesterZmq::receive() {
 
 	if (m_canceled) {
 		return {};
@@ -312,7 +308,7 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	json::Object jsonType;
 	json::parse(jsonType, typePart);
 
-	int type = jsonType[message::TYPE].GetInt();
+	int type {jsonType[message::TYPE].GetInt()};
 
 	std::optional<std::string> result;
 
@@ -328,10 +324,6 @@ std::optional<std::string> RequesterZmq::receiveBinary() {
 	}
 
 	return result;
-}
-
-std::optional<std::string> RequesterZmq::receive() {
-	return receiveBinary();
 }
 
 void RequesterZmq::cancel() {

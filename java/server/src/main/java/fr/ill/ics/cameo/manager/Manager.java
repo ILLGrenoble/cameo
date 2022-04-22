@@ -592,7 +592,7 @@ public class Manager extends ConfigLoader {
 	
 	public synchronized void setApplicationState(Application application, int applicationState, int exitValue) {
 		
-		// States are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED.
+		// States are : NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, FAILURE, SUCCESS, STOPPED, KILLED.
 		// Set the status of the application
 		application.setState(applicationState);
 		
@@ -600,7 +600,7 @@ public class Manager extends ConfigLoader {
 		sendStatus(application.getId(), application.getName(), applicationState, application.getPastApplicationStates(), exitValue);
 				
 		// Remove the application for terminal states.
-		if (applicationState == ApplicationState.ERROR
+		if (applicationState == ApplicationState.FAILURE
 			|| applicationState == ApplicationState.STOPPED
 			|| applicationState == ApplicationState.KILLED
 			|| applicationState == ApplicationState.SUCCESS) {
@@ -635,7 +635,7 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		int currentState = application.getApplicationState();
 		
-		// States are : UNKNOWN, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, ERROR, SUCCESS, STOPPED, KILLED.
+		// States are: NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, FAILURE, SUCCESS, STOPPED, KILLED.
 		// State that can be set by the client : RUNNING
 		if (state == ApplicationState.RUNNING) {
 			// current state can only be STARTING
@@ -677,7 +677,7 @@ public class Manager extends ConfigLoader {
 		
 		if (!applicationMap.containsKey(id)) {
 			status.setName("?");
-			status.setApplicationState(ApplicationState.UNKNOWN);
+			status.setApplicationState(ApplicationState.NIL);
 			status.setPastApplicationStates(0);
 		}
 		else {

@@ -200,7 +200,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				manager.setApplicationState(application, ApplicationState.KILLED);
 			}
 			else if (!onTermination()) {
-				manager.setApplicationState(application, ApplicationState.ERROR);
+				manager.setApplicationState(application, ApplicationState.FAILURE);
 			}
 			else {
 				manager.setApplicationState(application, ApplicationState.STOPPED);
@@ -226,7 +226,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			Log.logger().info("Application " + application.getNameId() + " has terminated");
 			
 			if (!onTermination()) {
-				manager.setApplicationState(application, ApplicationState.ERROR, exitValue);
+				manager.setApplicationState(application, ApplicationState.FAILURE, exitValue);
 			}
 			else {
 				if (application.hasToStop()) {

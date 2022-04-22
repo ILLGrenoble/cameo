@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -42,14 +42,15 @@ public class TestStop {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
 			// Loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 				
 				// Start the application.
-				Instance stopApplication = server.start("stopjava");
+				App stopApplication = server.start("stopjava");
 	
 				System.out.println("Waiting 0.1s...");
 				

@@ -23,13 +23,13 @@ package fr.ill.ics.cameo.manager;
  */
 public class ApplicationState {
 	
-	public final static int UNKNOWN = 0;
+	public final static int NIL = 0;
 	public final static int STARTING = 1;
 	public final static int RUNNING = 2;
 	public final static int STOPPING = 4;
 	public final static int KILLING = 8;
 	public final static int PROCESSING_ERROR = 16;
-	public final static int ERROR = 32;
+	public final static int FAILURE = 32;
 	public final static int SUCCESS = 64;
 	public final static int STOPPED = 128;
 	public final static int KILLED = 256;

@@ -25,14 +25,14 @@ std::atomic_bool stopping(false);
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	application::This::handleStop([&] {
+	This::handleStop([&] {
 		cout << "Stop handler executed" << endl;
 		stopping.store(true);
 	});
 
-	application::This::setRunning();
+	This::setRunning();
 
 	int i = 0;
 	while (!stopping.load()) {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 		i++;
 	}
 
-	application::This::setResult("2189");
+	This::setResult("2189");
 
 	cout << "Finished the application" << endl;
 

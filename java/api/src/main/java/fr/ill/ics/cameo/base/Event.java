@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,23 +14,39 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
+/**
+ * Base class for events.
+ */
 public class Event {
 	
 	protected int id;
 	protected String name;
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 */
 	public Event(int id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
+	/**
+	 * Gets the application id.
+	 * @return The application id.
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the application name.
+	 * @return The application name.
+	 */	
 	public String getName() {
 		return name;
 	}

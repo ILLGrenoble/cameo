@@ -41,6 +41,8 @@ public:
 
 	/**
 	 * Waits for a notification. Returns false if the time has been reached. True if notified.
+	 * \param timeMs The time in milliseconds.
+	 * \return True if the notification has been done, false otherwise.
 	 */
 	bool wait(long timeMs);
 

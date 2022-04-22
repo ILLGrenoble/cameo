@@ -21,9 +21,16 @@
 
 namespace cameo {
 
+/**
+ * Exception for an undefined application.
+ */
 class UndefinedApplicationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	UndefinedApplicationException(const std::string& message);
 };
 

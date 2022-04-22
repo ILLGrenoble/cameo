@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.coms;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +14,35 @@ package fr.ill.ics.cameo.coms;
  * limitations under the Licence.
  */
 
-import fr.ill.ics.cameo.base.RemoteException;
+#ifndef CAMEO_CANCELABLE_H_
+#define CAMEO_CANCELABLE_H_
 
-public class SubscriberCreationException extends RemoteException {
+namespace cameo {
 
-	private static final long serialVersionUID = -7302321626481573911L;
-	
-	public SubscriberCreationException(String message) {
-		super(message);
-	}
+/**
+ * Class defining an interface for cancelable objects.
+ */
+class Cancelable {
+
+public:
+	/**
+	 * Destructor.
+	 */
+	virtual ~Cancelable() {}
+
+	/**
+	 * Cancels the object.
+	 */
+	virtual void cancel() = 0;
+
+	/**
+	 * Returns true if is canceled.
+	 * \return True if is canceled.
+	 */
+	virtual bool isCanceled() const = 0;
+};
+
 }
+
+#endif
+

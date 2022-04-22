@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -43,36 +43,37 @@ public class TestLinked {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		// Loop the number of times.
 		for (int i = 0; i < numberOfTimes; ++i) {
 			
 			{
-				Instance app = server.start("linkedjava");
-				app.waitFor(Application.State.RUNNING);
-				Instance stopApp = server.connect("stopjava");
-				stopApp.waitFor(Application.State.RUNNING);
+				App app = server.start("linkedjava");
+				app.waitFor(State.RUNNING);
+				App stopApp = server.connect("stopjava");
+				stopApp.waitFor(State.RUNNING);
 				
 				app.kill();
 				app.waitFor();
 				
 				int state = stopApp.waitFor();
 				
-				System.out.println("First application stop finished with state " + Application.State.toString(state));
+				System.out.println("First application stop finished with state " + State.toString(state));
 			}
 			
 			{
-				Instance app = server.start("linkedjava");
-				app.waitFor(Application.State.RUNNING);
-				Instance stopApp = server.connect("stopjava");
+				App app = server.start("linkedjava");
+				app.waitFor(State.RUNNING);
+				App stopApp = server.connect("stopjava");
 				
 				app.kill();
 				app.waitFor();
 				
 				int state = stopApp.waitFor();
 				
-				System.out.println("Second application stop finished with state " + Application.State.toString(state));
+				System.out.println("Second application stop finished with state " + State.toString(state));
 			}
 		}
 		

@@ -15,7 +15,7 @@
  */
 
 #include "CancelEvent.h"
-
+#include "JSON.h"
 #include <iostream>
 
 namespace cameo {
@@ -32,9 +32,23 @@ CancelEvent* CancelEvent::clone() {
 	return new CancelEvent(*this);
 }
 
+std::string CancelEvent::toString() const {
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue("cancel");
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	return jsonObject.dump();
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::CancelEvent& event) {
-	os << "name=" << event.m_name
-		<< "\nid=" << event.m_id;
+	os << event.toString();
 
 	return os;
 }

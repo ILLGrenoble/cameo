@@ -19,7 +19,7 @@
 namespace cameo {
 
 ConnectionTimeout::ConnectionTimeout() :
-	std::runtime_error("connection timeout") {
+	std::runtime_error{"connection timeout"} {
 }
 
 }

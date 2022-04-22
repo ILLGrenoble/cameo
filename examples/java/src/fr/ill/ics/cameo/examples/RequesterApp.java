@@ -16,10 +16,9 @@
 
 package fr.ill.ics.cameo.examples;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Requester;
 
@@ -46,11 +45,13 @@ public class RequesterApp {
 		
 		// The server endpoint is the third argument.
 		if (args.length > 3) {
-			server = new Server(args[2]);
+			server = Server.create(args[2]);
 		}
 		else {	
-			server = new Server(This.getEndpoint());
+			server = Server.create(This.getEndpoint());
 		}
+		
+		server.init();
 		
 		if (This.isAvailable() && server.isAvailable()) {
 			System.out.println("Connected server " + server);
@@ -60,27 +61,25 @@ public class RequesterApp {
 		
 		try {
 			// Connect to the server.
-			Instance responderServer = server.connect("responder");
-			System.out.println("Application " + responderServer + " has state " + Application.State.toString(responderServer.getActualState()));
+			App responderServer = server.connect("responder");
+			System.out.println("Application " + responderServer + " has state " + State.toString(responderServer.getActualState()));
 			
 			// Create a requester.
 			Requester requester = Requester.create(responderServer, "the-responder");
+			requester.init();
 			System.out.println("Created requester " + requester);
 			
 			for (int i = 0; i < N; ++i) {
 				// Send a simple message as string.
-				requester.send(requestMessage + "-" + i);
+				requester.sendString(requestMessage + "-" + i);
 				System.out.println("Response is " + requester.receiveString());
 			}
 				
 			// Terminate the requester and server.
 			requester.terminate();
 			server.terminate();
-			
-		} catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
-			
-		} finally {
+		}
+		finally {
 			// Do not forget to terminate This.
 			This.terminate();
 		}

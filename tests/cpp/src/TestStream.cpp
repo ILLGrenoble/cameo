@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -33,10 +33,11 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Start the application.
-	unique_ptr<application::Instance> app = server.start("streamcpp", cameo::OUTPUTSTREAM);
+	unique_ptr<App> app = server->start("streamcpp", cameo::OUTPUTSTREAM);
 
 	shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
 	std::thread outputThread([&] {

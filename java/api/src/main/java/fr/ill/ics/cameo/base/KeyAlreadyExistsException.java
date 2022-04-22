@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,12 +14,19 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for a key that already exists.
+ */
 public class KeyAlreadyExistsException extends RemoteException {
 
 	private static final long serialVersionUID = -3629600566663993697L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public KeyAlreadyExistsException(String message) {
 		super(message);
 	}

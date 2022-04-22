@@ -7,7 +7,7 @@ this.init(sys.argv)
 
 def stop():
     print("Stopping...")
-    #cameopy.This.cancelWaitings()
+    #cameopy.This.cancelAll()
     router.cancel()
     print("Stopped")
     
@@ -26,6 +26,7 @@ def responderProcess(id):
     print("Creating responder")
     
     responder = cameopy.MultiResponder.create(router)
+    responder.init()
     responders.append(responder)
     
     print("Created responder")
@@ -34,15 +35,16 @@ def responderProcess(id):
         
         # Receive request.
         request = responder.receive();
-        print("Received request", request.get())
+        print("Received request", request.getString())
     
-        request.reply(str(id) + " to " + request.get())
+        request.reply(str(id) + " to " + request.getString())
     
     #responder.terminate()
 
 print("Creating router")
 
 router = cameopy.MultiResponderRouter.create("responder")
+router.init()
 
 print("Created router")
 

@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,6 +14,7 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
 
 import fr.ill.ics.cameo.base.impl.EventStreamSocketImpl;
@@ -22,30 +22,59 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.strings.Endpoint;
 
-public class EventStreamSocket {
+/**
+ * Class defining an event stream socket.
+ */
+public class EventStreamSocket implements ICancelable {
 	
 	private EventStreamSocketImpl impl;
 	
+	/**
+	 * Constructor.
+	 */
 	public EventStreamSocket() {
 		this.impl = ImplFactory.createEventStreamSocket();
 	}
 
+	/**
+	 * Initializes the socket.
+	 * @param context The context.
+	 * @param endpoint The endpoint.
+	 * @param requestSocket The request socket.
+	 * @param parser The parser.
+	 */
 	public void init(Context context, Endpoint endpoint, RequestSocket requestSocket, Parser parser) {
 		impl.init(context, endpoint, requestSocket, parser);
 	}
-	
-	public Event receive() {
-		return impl.receive();
+
+	/**
+	 * Cancels the socket.
+	 */
+	@Override
+	public void cancel() {
+		impl.cancel();
 	}
 	
+	/**
+	 * Returns true if canceled.
+	 * @return True if canceled.
+	 */
+	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
 	}
 	
-	public void cancel() {
-		impl.cancel();
+	/**
+	 * Receives an Event.
+	 * @return An Event object.
+	 */
+	public Event receive() {
+		return impl.receive();
 	}
-
+		
+	/**
+	 * Terminates the socket.
+	 */
 	public void terminate() {
 		impl.terminate();
 	}

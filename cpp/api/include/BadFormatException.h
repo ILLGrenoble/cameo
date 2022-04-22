@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,13 +14,26 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+#ifndef CAMEO_BADFORMATEXCEPTION_H_
+#define CAMEO_BADFORMATEXCEPTION_H_
 
+#include "RemoteException.h"
 
-public class OutputStreamException extends RemoteException {
+namespace cameo {
 
-	private static final long serialVersionUID = 3536260018945993726L;
+/**
+ * Exception for a bad format.
+ */
+class BadFormatException : public RemoteException {
 
-	public OutputStreamException(String message) {
-		super(message);
-	}
+public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
+	BadFormatException(const std::string& message);
+};
+
 }
+
+#endif

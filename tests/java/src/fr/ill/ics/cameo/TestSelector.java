@@ -6,7 +6,8 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
@@ -63,10 +64,9 @@ public class TestSelector {
 	}
 	
 	public static void startApplication(Server server, String appName, String[] appArgs) {
-		
-		Instance instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
-		if (instance.exists()) {
+		try {
+			App instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
 			// Start output thread.
 			OutputStreamSocket streamSocket = instance.getOutputStreamSocket();
@@ -92,7 +92,7 @@ public class TestSelector {
 			
 			System.out.println("*** Finished " + appName + " ***");
 		}
-		else {
+		catch (AppException e) {
 			System.out.println("*** No application ***");
 		}
 	}
@@ -100,6 +100,7 @@ public class TestSelector {
 	public static ArrayList<String> getJavaTests() {
 		ArrayList<String> apps = new ArrayList<String>();
 		
+		apps.add("testappexceptionsjava");
 		apps.add("testsimplejava");
 		apps.add("testveryfastjava");
 		apps.add("teststopjava");
@@ -123,7 +124,8 @@ public class TestSelector {
 	
 	public static ArrayList<String> getCppTests() {
 		ArrayList<String> apps = new ArrayList<String>();
-		
+	
+		apps.add("testappexceptionscpp");
 		apps.add("testsimplecpp");
 		apps.add("testveryfastcpp");
 		apps.add("teststopcpp");
@@ -148,6 +150,7 @@ public class TestSelector {
 	public static ArrayList<String> getPythonTests() {
 		ArrayList<String> apps = new ArrayList<String>();
 		
+		apps.add("testappexceptionspy");		
 		apps.add("testsimplepy");
 		apps.add("testveryfastpy");
 		apps.add("teststoppy");
@@ -194,11 +197,15 @@ public class TestSelector {
 				System.out.println("*** Trying to create server ***");
 				
 				if (useProxy) {
-					server = new Server("tcp://localhost:10000", 100, true);
+					server = Server.create("tcp://localhost:10000", true);
+					
 				}
 				else {
-					server = new Server("tcp://localhost:11000", 100, false);	
+					server = Server.create("tcp://localhost:11000", false);	
 				}
+				
+				server.setTimeout(100);
+				server.init();
 				
 				System.out.println("*** Server created ***");
 				break;

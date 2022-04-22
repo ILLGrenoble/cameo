@@ -21,7 +21,8 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
 
 # Args.
 args = [sys.argv[2]]
@@ -34,12 +35,13 @@ requesters = []
 N = 5
 for id in range(N):
     
-    print("Creating requester...")
+    print("Creating requester")
     
     requester = cameopy.Requester.create(app, "responder")
+    requester.init()
     requesters.append(requester)
         
-    print("Created requester")
+    print("Created requester", requester)
 
 
 tds = []
@@ -50,7 +52,7 @@ def requesterProcess(id):
         # Send a simple message.
         requesters[id].send(str(i))
         
-        response = requesters[id].receive()
+        response = requesters[id].receiveString()
         print(id, "receives", response)
         
 

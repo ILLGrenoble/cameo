@@ -26,13 +26,32 @@ namespace cameo {
 class Server;
 class EventStreamSocket;
 
+/**
+ * Class defining an event thread.
+ */
 class EventThread {
 
 public:
+	/**
+	 * Constructor.
+	 * \param server The server.
+	 * \param socket The socket.
+	 */
 	EventThread(Server * server, std::unique_ptr<EventStreamSocket>& socket);
+
+	/**
+	 * Destructor.
+	 */
 	~EventThread();
 
+	/**
+	 * Starts the event thread.
+	 */
 	void start();
+
+	/**
+	 * Cancels the event thread.
+	 */
 	void cancel();
 
 private:

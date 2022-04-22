@@ -18,10 +18,10 @@ package fr.ill.ics.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.PublisherCreationException;
 
 /**
  * The test is not a real test because the subscribers are not synchronized.
@@ -65,7 +65,8 @@ public class TestSubscriber {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
 			for (int i = 0; i < N; i++) {
@@ -76,14 +77,9 @@ public class TestSubscriber {
 					String[] applicationArgs = {This.getName()};
 					
 					// Start the subscriber applications that can subscribe whereas the publisher is not created.
-					Instance subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
+					App subscriberApplication = server.start(subscriberApplicationName, applicationArgs);
 					
-					if (subscriberApplication.exists()) {
-						System.out.println("Started application " + subscriberApplication);
-					}
-					else {
-						System.out.println("Cannot start subscriber application");
-					}
+					System.out.println("Started application " + subscriberApplication);
 				}
 				
 				// Sleep for 1s to let the subscribers wait.
@@ -91,11 +87,13 @@ public class TestSubscriber {
 				
 				// The publisher is created after the applications that will wait for it.
 				fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher");
+				publisher.init();
 				
 				for (int k = 0; k < 20; ++k) {
 	
+					String ks = k + "";
 					String data = "{" + k + ", " + k * k + "}";
-					publisher.send(data);
+					publisher.sendTwoParts(ks.getBytes(), data.getBytes());
 					
 					System.out.println("sent " + data);
 					
@@ -106,15 +104,15 @@ public class TestSubscriber {
 				publisher.sendEnd();
 				
 				// So we must kill all the subscribers.
-				List<Instance> subscriberApplications = server.connectAll(subscriberApplicationName);
-				for (Instance subscriberApplication : subscriberApplications) {
+				List<App> subscriberApplications = server.connectAll(subscriberApplicationName);
+				for (App subscriberApplication : subscriberApplications) {
 					subscriberApplication.waitFor();
 				}
 				
 				publisher.terminate();
 			}
 		}
-		catch (PublisherCreationException e) {
+		catch (InitException e) {
 			System.out.println("Publisher error");
 		}
 		finally {

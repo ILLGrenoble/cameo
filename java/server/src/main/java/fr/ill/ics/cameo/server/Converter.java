@@ -27,8 +27,8 @@ public class Converter {
 
 	public static String toString(int state) {
 		
-		if (state == ApplicationState.UNKNOWN) {
-			return "UNKNOWN";
+		if (state == ApplicationState.NIL) {
+			return "NIL";
 		} else if (state == ApplicationState.STARTING) {
 			return "STARTING";
 		} else if (state == ApplicationState.RUNNING) {
@@ -39,8 +39,8 @@ public class Converter {
 			return "KILLING";
 		} else if (state == ApplicationState.PROCESSING_ERROR) {
 			return "PROCESSING_ERROR";
-		} else if (state == ApplicationState.ERROR) {
-			return "ERROR";
+		} else if (state == ApplicationState.FAILURE) {
+			return "FAILURE";
 		} else if (state == ApplicationState.SUCCESS) {
 			return "SUCCESS";
 		} else if (state == ApplicationState.STOPPED) {
@@ -49,7 +49,7 @@ public class Converter {
 			return "KILLED";
 		}
 		
-		return "UNKNOWN";		
+		return "NIL";		
 	}
 	
 	public static Msg reply(JSONObject response) {

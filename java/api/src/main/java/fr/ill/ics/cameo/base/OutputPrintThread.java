@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,22 +14,29 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
-
+/**
+ * Class defining an output print thread.
+ */
 public class OutputPrintThread extends Thread {
 
 	private OutputStreamSocket socket;
-	
+
+	/**
+	 * Constructor.
+	 * @param socket The socket.
+	 */
 	public OutputPrintThread(OutputStreamSocket socket) {
 		this.socket = socket;
 	}
 	
+	@Override
 	public void run() {
 		
 		try {
 			while (true) {
-				Application.Output stream = socket.receive();
+				OutputStreamSocket.Output stream = socket.receive();
 				
 				if (stream == null) {
 					// The stream is finished.
@@ -54,6 +60,9 @@ public class OutputPrintThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Waits for the end of the thread.
+	 */
 	public void waitFor() {
 		try {
 			this.join();

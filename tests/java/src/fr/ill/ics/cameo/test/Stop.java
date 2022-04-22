@@ -52,7 +52,7 @@ public class Stop {
 			String result = "";
 			result += end.getTime() - begin.getTime();
 			
-			This.setResult(result);
+			This.setStringResult(result);
 			
 			System.out.println("Finished the application");
 		}

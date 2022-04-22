@@ -23,7 +23,8 @@ public class TestBadEndpoint {
 	public static void main(String[] args) {
 		
 		try {
-			new Server("tcp://abcd.ill.fr:7000", 1000);
+			Server server = Server.create("tcp://abcd.ill.fr:7000");
+			server.init();
 		}
 		catch (Exception e) {
 			System.out.println("The server has bad endpoint");
@@ -31,14 +32,9 @@ public class TestBadEndpoint {
 		}
 
 		try {
-			Server server = new Server("tcp://localhost:9999", 1000);
-			System.out.println("server created");
-			if (server.isAvailable(1000)) {
-				System.out.println("server available");
-			}
-			else {
-				System.out.println("server not available");
-			}
+			Server server = Server.create("tcp://localhost:9999");
+			server.setTimeout(1000);
+			server.init();
 		}
 		catch (Exception e) {
 			System.out.println("The server has bad endpoint");

@@ -23,7 +23,9 @@ namespace coms {
 namespace multi {
 
 ResponderRouterZmq::ResponderRouterZmq() :
-	m_pollingTime(100),	m_responderPort(0), m_canceled(false) {
+	m_pollingTime{100},
+	m_responderPort{0},
+	m_canceled{false} {
 }
 
 ResponderRouterZmq::~ResponderRouterZmq() {
@@ -33,23 +35,23 @@ ResponderRouterZmq::~ResponderRouterZmq() {
 void ResponderRouterZmq::init(const std::string &responderIdentity, const std::string &dealerEndpoint) {
 
 	// Create a socket ROUTER.
-	ContextZmq *contextImpl = dynamic_cast<ContextZmq*>(application::This::getCom().getContext());
-	m_router.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::router));
+	ContextZmq * contextImpl {dynamic_cast<ContextZmq*>(This::getCom().getContext())};
+	m_router.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::router});
 
 	// Set the identity.
 	m_router->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
 	// Connect to the proxy.
-	Endpoint proxyEndpoint = application::This::getEndpoint().withPort(application::This::getCom().getResponderProxyPort());
+	Endpoint proxyEndpoint {This::getEndpoint().withPort(This::getCom().getResponderProxyPort())};
 	m_router->connect(proxyEndpoint.toString());
 
-	std::string endpointPrefix("tcp://*:");
+	std::string endpointPrefix {"tcp://*:"};
 
 	// Loop to find an available port for the responder.
 	while (true) {
 
-		int port = application::This::getCom().requestPort();
-		std::string repEndpoint = endpointPrefix + std::to_string(port);
+		int port {This::getCom().requestPort()};
+		std::string repEndpoint {endpointPrefix + std::to_string(port)};
 
 		try {
 			m_router->bind(repEndpoint.c_str());
@@ -57,12 +59,12 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 			break;
 		}
 		catch (...) {
-			application::This::getCom().setPortUnavailable(port);
+			This::getCom().setPortUnavailable(port);
 		}
 	}
 
 	// Create a socket DEALER.
-	m_dealer.reset(new zmq::socket_t(contextImpl->getContext(), zmq::socket_type::dealer));
+	m_dealer.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::dealer});
 	m_dealer->bind(dealerEndpoint);
 }
 
@@ -141,7 +143,7 @@ void ResponderRouterZmq::terminate() {
 		m_dealer.reset();
 
 		// Release the responder port.
-		application::This::getCom().releasePort(m_responderPort);
+		This::getCom().releasePort(m_responderPort);
 	}
 }
 

@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -42,7 +42,8 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Define the shared key.
 	string key = "fr.ill.ics.cameo.test.testkey";
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<application::Instance> app = server.start("waitstoragecpp");
+		unique_ptr<App> app = server->start("waitstoragecpp");
 
 		// Define a KeyValue.
 		KeyValue keyValue(key);
@@ -67,9 +68,9 @@ int main(int argc, char *argv[]) {
 		app->waitFor(keyValue);
 		cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
 
-		application::State state = app->waitFor();
+		State state = app->waitFor();
 
-		cout << "finished the application " << *app << " with state " << application::toString(state) << endl;
+		cout << "finished the application " << *app << " with state " << toString(state) << endl;
 	}
 
 	return 0;

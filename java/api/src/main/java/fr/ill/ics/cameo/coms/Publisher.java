@@ -1,7 +1,25 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms;
 
 import org.json.simple.JSONObject;
 
+import fr.ill.ics.cameo.base.ICancelable;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
@@ -11,13 +29,14 @@ import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
 
 /**
- * Class Publisher.
- *
+ * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-public class Publisher {
+public class Publisher implements ICancelable {
 
 	private String name;
 	private int numberOfSubscribers;
@@ -25,6 +44,7 @@ public class Publisher {
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
 	private Responder responder = null;
+	private boolean canceled = false;
 	
 	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 	public static final String PUBLISHER_PORT = "publisher_port";
@@ -42,7 +62,11 @@ public class Publisher {
 		waiting.add();
 	}
 	
-	private void init(String name) throws PublisherCreationException {
+	/**
+	 * Initializes the publisher.
+	 * @throws InitException if the publisher cannot be initialized.
+	 */
+	public void init() throws InitException {
 		
 		// Set the key.
 		key = KEY + "-" + name;
@@ -59,47 +83,54 @@ public class Publisher {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
 		}
 		catch (KeyAlreadyExistsException e) {
-			throw new PublisherCreationException("A publisher with the name \"" + name + "\" already exists");
+			impl.terminate();
+			impl = null;
+			throw new InitException("A publisher with the name \"" + name + "\" already exists");
+		}
+		
+		// Wait for the subscribers.
+		if (numberOfSubscribers > 0) {
+			waitForSubscribers();
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
+	 * Returns the publisher with name.
+	 * @param name The name.
+	 * @param numberOfSubscribers The number of subscribers.
+	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name, int numberOfSubscribers) throws PublisherCreationException {
-		
-		Publisher publisher = new Publisher(name, numberOfSubscribers);
-		publisher.init(name);
-		
-		return publisher;
+	static public Publisher create(String name, int numberOfSubscribers) {
+		return new Publisher(name, numberOfSubscribers);
 	}
-	
+
 	/**
-	 * 
-	 * @param name
-	 * @return
-	 * @throws PublisherCreationException, ConnectionTimeout
+	 * Returns the publisher with name.
+	 * @param name The name.
+	 * @return A new Publisher object.
 	 */
-	static public Publisher create(String name) throws PublisherCreationException {
+	static public Publisher create(String name) {
 		return create(name, 0);
 	}
-	
+
+	/**
+	 * Gets the name.
+	 * @return The name.
+	 */
 	public String getName() {
 		return name;
 	}
 	
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
-	 * @return
+	 * @return True if the wait succeeds or false if it was canceled.
 	 */
-	public boolean waitForSubscribers() {
+	private boolean waitForSubscribers() {
 		
 		try {
 			// Create the responder.
 			responder = Responder.create(RESPONDER_PREFIX + name);
+			responder.init();
 		
 			// Loop until the number of subscribers is reached.
 			int counter = 0;
@@ -122,12 +153,12 @@ public class Publisher {
 					counter++;
 				}
 				
-				request.reply("OK");
+				request.replyString("OK");
 			}
 			
 			return !responder.isCanceled();
 		}
-		catch (ResponderCreationException e) {
+		catch (InitException e) {
 			return false;
 		}
 		finally {
@@ -140,49 +171,91 @@ public class Publisher {
 	}
 	
 	/**
-	 * Cancels the wait for subscribers.
+	 * Cancels the init() call in another thread.
 	 */
-	public void cancelWaitForSubscribers() {
+	@Override
+	public void cancel() {
 		if (responder != null) {
+			canceled = true;
 			responder.cancel();
 		}
 	}
+	
+	/**
+	 * Returns true if is canceled.
+	 * @return True if is canceled.
+	 */
+	@Override
+	public boolean isCanceled() {
+		return canceled;
+	}
 
+	/**
+	 * Sends a message in one binary part.
+	 * @param data The data to send.
+	 */
 	public void send(byte[] data) {
 		impl.send(data);
 	}
 	
-	public void send(String data) {
+	/**
+	 * Sends a message in one string part.
+	 * @param data The data to send.
+	 */
+	public void sendString(String data) {
 		impl.send(data);
 	}
-			
+	
+	/**
+	 * Sends a message in two binary parts.
+	 * \param data1 The first part.
+	 * \param data2 The second part.
+	 */		
 	public void sendTwoParts(byte[] data1, byte[] data2) {
 		impl.sendTwoParts(data1, data2);
 	}
 	
+	/**
+	 * Sends the end of the stream.
+	 */
 	public void sendEnd() {
 		impl.sendEnd();
 	}
 	
-	public boolean isEnded() {
-		return impl.isEnded();
+	/**
+	 * Returns true if the stream ended.
+	 * @return True if the stream ended.
+	 */
+	public boolean hasEnded() {
+		return impl.hasEnded();
 	}
 	
+	/**
+	 * Terminates the communication.
+	 */
 	public void terminate() {
-		
-		try {
-			This.getCom().removeKey(key);
+
+		if (impl != null) {
+			try {
+				This.getCom().removeKey(key);
+			}
+			catch (UndefinedKeyException e) {
+				// No need to treat.
+			}
+			
+			waiting.remove();
+			impl.terminate();
 		}
-		catch (UndefinedKeyException e) {
-			// No need to treat.
-		}
-		
-		waiting.remove();
-		impl.terminate();
 	}
 		
 	@Override
 	public String toString() {
-		return "pub." + getName() + ":" + This.getName() + "." + This.getId() + "@" + This.getEndpoint();
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "publisher");
+		result.put("name", name);
+		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 }

@@ -1,18 +1,35 @@
+/*
+ * Copyright 2015 Institut Laue-Langevin
+ *
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+
 package fr.ill.ics.cameo.coms.multi;
 
 import java.util.List;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.ServerAndInstance;
+import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
- * Class Request.
- * 
+ * Class defining a request received by the multi responder.
  */
 public class Request {
 	
@@ -23,8 +40,16 @@ public class Request {
 	private int requesterApplicationId;
 	private Endpoint requesterServerEndpoint;
 	private int requesterServerProxyPort;
-	private int timeout = 0;
-		
+	
+	/**
+	 * Constructor.
+	 * @param requesterApplicationName The requester application name.
+	 * @param requesterApplicationId The request application id.
+	 * @param serverEndpoint The server endpoint.
+	 * @param serverProxyPort The server proxy port.
+	 * @param messagePart1 The message part 1.
+	 * @param messagePart2 The message part 2.
+	 */
 	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] messagePart1, byte[] messagePart2) {
 		
 		this.messagePart1 = messagePart1;
@@ -40,16 +65,28 @@ public class Request {
 	void setResponder(Responder responder) {
 		this.responder = responder;
 	}
-	
-	public byte[] getBinary() {
+
+	/**
+	 * Gets the message.
+	 * @return The binary message.
+	 */
+	public byte[] get() {
 		return messagePart1;
 	}
 	
-	public String get() {
+	/**
+	 * Gets the message in string.
+	 * @return The stringified message.
+	 */
+	public String getString() {
 		return Messages.parseString(messagePart1);
 	}
 	
-	public byte[][] getTwoBinaryParts() {
+	/**
+	 * Gets the two binary message parts.
+	 * @return The two binary parts message. The array has size 2.
+	 */
+	public byte[][] getTwoParts() {
 		
 		byte[][] result = new byte[2][];
 		result[0] = messagePart1;
@@ -58,25 +95,33 @@ public class Request {
 		return result;
 	}
 	
-	public void setTimeout(int value) {
-		timeout = value;
-	}
-	
-	public boolean reply(byte[] response) {
+	/**
+	 * Replies to the requester.
+	 * @param response The response.
+	 */
+	public void reply(byte[] response) {
 		
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
 
 		responder.reply(jsonRequest, response);
-		
-		return true;
 	}
 	
-	public boolean reply(String response) {
-		return reply(Messages.serialize(response));
+	/**
+	 * Replies a string to the requester.
+	 * @param response The string response.
+	 */
+	public void replyString(String response) {
+		reply(Messages.serialize(response));
 	}
 	
-	public ServerAndInstance connectToRequester(int options, boolean useProxy) {
+	/**
+	 * Connects to the requester.
+	 * @param options Options of connection.
+	 * @param useProxy True if proxy is used.
+	 * @return The ServerAndApp object.
+	 */
+	public ServerAndApp connectToRequester(int options, boolean useProxy) {
 		
 		if (requesterServerEndpoint == null) {
 			return null;
@@ -85,16 +130,18 @@ public class Request {
 		Server starterServer;
 		
 		if (useProxy) {
-			starterServer = new Server(requesterServerEndpoint.withPort(requesterServerProxyPort), 0, true);
+			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), true);
 		}
 		else {
-			starterServer = new Server(requesterServerEndpoint, 0, false);	
+			starterServer = Server.create(requesterServerEndpoint, false);
 		}
 		
+		starterServer.init();
+		
 		// Iterate the instances to find the id
-		Instance starterInstance = null;
-		List<Instance> instances = starterServer.connectAll(requesterApplicationName, options);
-		for (Instance i : instances) {
+		App starterInstance = null;
+		List<App> instances = starterServer.connectAll(requesterApplicationName, options);
+		for (App i : instances) {
 			if (i.getId() == requesterApplicationId) {
 				starterInstance = i;
 				break;
@@ -105,20 +152,34 @@ public class Request {
 			return null;
 		}
 		
-		return new ServerAndInstance(starterServer, starterInstance);
+		return new ServerAndApp(starterServer, starterInstance);
 	}
 	
-	public ServerAndInstance connectToRequester(int options) {
+	/**
+	 * Connects to the requester.
+	 * @param options Options of connection.
+	 * @return The ServerAndApp object.
+	 */
+	public ServerAndApp connectToRequester(int options) {
 		return connectToRequester(options, false);
 	}
-	
-	public ServerAndInstance connectToRequester() {
+
+	/**
+	 * Connects to the requester.
+	 * @return The ServerAndApp object.
+	 */
+	public ServerAndApp connectToRequester() {
 		return connectToRequester(0, false);
 	}
 
 	@Override
 	public String toString() {
-		return "Request [id=" + requesterApplicationId + "]";
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "multi-request");
+		result.put("app", new AppIdentity(requesterApplicationName, requesterApplicationId, new ServerIdentity(requesterServerEndpoint.toString(), false)).toJSON());
+		
+		return result.toJSONString();
 	}
 
 	

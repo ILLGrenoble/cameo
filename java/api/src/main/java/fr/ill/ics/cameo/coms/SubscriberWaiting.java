@@ -18,10 +18,17 @@ package fr.ill.ics.cameo.coms;
 
 import fr.ill.ics.cameo.base.Waiting;
 
+/**
+ * Class defining a waiting for the Subscriber class.
+ */
 public class SubscriberWaiting extends Waiting {
 
 	private Subscriber subscriber;
 	
+	/**
+	 * Constructor.
+	 * @param subscriber The subscriber.
+	 */
 	public SubscriberWaiting(Subscriber subscriber) {
 		this.subscriber = subscriber;
 	}

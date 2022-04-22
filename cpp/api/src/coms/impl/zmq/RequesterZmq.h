@@ -37,11 +37,9 @@ public:
 	virtual void setTimeout(int value);
 
 	virtual void init(const Endpoint& endpoint, const std::string& responderIdentity);
-	virtual void sendBinary(const std::string& requestData);
 	virtual void send(const std::string& requestData);
-	virtual void sendTwoBinaryParts(const std::string& requestData1, const std::string& requestData2);
+	virtual void sendTwoParts(const std::string& requestData1, const std::string& requestData2);
 
-	virtual std::optional<std::string> receiveBinary();
 	virtual std::optional<std::string> receive();
 
 	virtual void cancel();

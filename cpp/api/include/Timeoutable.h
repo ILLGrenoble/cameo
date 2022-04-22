@@ -14,24 +14,36 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.base;
+#ifndef CAMEO_TIMEOUTABLE_H_
+#define CAMEO_TIMEOUTABLE_H_
 
-public class InstanceWaiting extends Waiting {
+namespace cameo {
 
-	private Instance instance;
-	
-	public InstanceWaiting(Instance instance) {
-		this.instance = instance;
-	}
-	
-	@Override
-	public void cancel() {
-		instance.cancelWaitFor();
-	}
+/**
+ * Class defining an interface for objects that have a timeout.
+ */
+class Timeoutable {
 
-	@Override
-	public void terminate() {
-		instance.terminate();		
-	}
-	
+public:
+	/**
+	 * Destructor.
+	 */
+	virtual ~Timeoutable() {}
+
+	/**
+	 * Sets the timeout.
+	 * \param value The timeout.
+	 */
+	virtual void setTimeout(int value) = 0;
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	virtual int getTimeout() const = 0;
+};
+
 }
+
+#endif
+

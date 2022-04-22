@@ -19,7 +19,7 @@
 namespace cameo {
 
 UndefinedKeyException::UndefinedKeyException(const std::string& message) :
-	RemoteException(message) {
+	RemoteException{message} {
 }
 
 }

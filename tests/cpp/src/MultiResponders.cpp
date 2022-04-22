@@ -23,11 +23,11 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	application::This::handleStop([] {
+	This::handleStop([] {
 		// Cancel the router.
-		application::This::cancelWaitings();
+		This::cancelAll();
 
 		cout << "Stopped" << endl;
 	});
@@ -46,15 +46,16 @@ int main(int argc, char *argv[]) {
 		cout << "Creating router" << endl;
 
 		router = coms::multi::ResponderRouter::create("responder");
+		router->init();
 	}
-	catch (const coms::ResponderCreationException& e) {
+	catch (const InitException& e) {
 		cout << "Responder error" << endl;
 		return -1;
 	}
 
-	cout << "Created router" << endl;
+	cout << "Created router " << *router << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	int N = 5;
 
@@ -67,8 +68,9 @@ int main(int argc, char *argv[]) {
 			cout << "Creating responder" << endl;
 
 			unique_ptr<coms::multi::Responder> responder = coms::multi::Responder::create(*router);
+			responder->init();
 
-			cout << "Created responder" << endl;
+			cout << "Created responder " << *responder << endl;
 
 			for (int i = 0; i < numberOfTimes; ++i) {
 

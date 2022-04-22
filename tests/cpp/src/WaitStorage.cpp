@@ -24,7 +24,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string key = "fr.ill.ics.cameo.test.testkey";
 
@@ -38,11 +38,11 @@ int main(int argc, char *argv[]) {
 	try {
 		// Sleep 100ms.
 		this_thread::sleep_for(chrono::milliseconds(100));
-		application::This::getCom().storeKeyValue(key, buffer.GetString());
+		This::getCom().storeKeyValue(key, buffer.GetString());
 
 		// Sleep 100ms.
 		this_thread::sleep_for(chrono::milliseconds(100));
-		application::This::getCom().removeKey(key);
+		This::getCom().removeKey(key);
 	}
 	catch (const UndefinedKeyException& e) {
 	}

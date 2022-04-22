@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,12 +14,19 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
-
+/**
+ * Exception for an undefined key.
+ */
 public class UndefinedKeyException extends RemoteException {
 
 	private static final long serialVersionUID = 4525518598669069859L;
 
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
 	public UndefinedKeyException(String message) {
 		super(message);
 	}

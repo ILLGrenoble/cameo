@@ -16,10 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
+import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.SubscriberCreationException;
+import fr.ill.ics.cameo.messages.Messages;
 
 
 public class Subscriber {
@@ -41,21 +42,18 @@ public class Subscriber {
 		Server server = This.getServer();
 		
 		try {
-			Instance publisherApplication = server.connect(applicationName);
-			if (!publisherApplication.exists()) {
-				System.err.println("Publisher error");
-				System.exit(-1);
-			}
+			App publisherApplication = server.connect(applicationName);
 			
 			System.out.println("Subscribing publisher...");
 			fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");
+			subscriber.init();
 			System.out.println("Synchronized with 1 publisher");
 			
 			// Receive data.
 			while (true) {
-				String data = subscriber.receiveString();
+				byte[][] data = subscriber.receiveTwoParts();
 				if (data != null) {
-					System.out.println("Received " + data);
+					System.out.println("Received " + Messages.parseString(data[0]) + ", " + Messages.parseString(data[1]));
 				}
 				else {
 					break;
@@ -63,10 +61,11 @@ public class Subscriber {
 			}
 			
 			System.out.println("Finished stream");
-			
-		} catch (SubscriberCreationException e) {
+		}
+		catch (InitException e) {
 			System.out.println("Cannot create subscriber");
-		} finally {
+		}
+		finally {
 			This.terminate();
 		}
 		

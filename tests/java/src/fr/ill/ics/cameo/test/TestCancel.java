@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Application;
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.coms.Requester;
 import fr.ill.ics.cameo.coms.basic.Request;
 
 
@@ -39,14 +39,15 @@ public class TestCancel {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
-			// Test This.cancelWaitings.
+			// Test This.cancelAll.
 			{
-				System.out.println("Starting stopjava for cancelWaitings");
+				System.out.println("Starting stopjava for cancelAll");
 				
-				Instance stopApplication = server.start("stopjava");
+				App stopApplication = server.start("stopjava");
 	
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -54,7 +55,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		This.cancelWaitings();
+				    		This.cancelAll();
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -65,12 +66,12 @@ public class TestCancel {
 				
 				int state = stopApplication.waitFor();
 	
-				System.out.println("End of waitFor with state " + Application.State.toString(state));
+				System.out.println("End of waitFor with state " + State.toString(state));
 	
 				stopApplication.stop();
 				state = stopApplication.waitFor();
 	
-				System.out.println("End of stopjava with state " + Application.State.toString(state));
+				System.out.println("End of stopjava with state " + State.toString(state));
 	
 				cancelThread.join();
 			}
@@ -79,7 +80,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting stopjava for cancelWaitFor");
 				
-				final Instance stopApplication = server.start("stopjava");
+				final App stopApplication = server.start("stopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -87,7 +88,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		stopApplication.cancelWaitFor();
+				    		stopApplication.cancel();
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -98,12 +99,12 @@ public class TestCancel {
 				
 				int state = stopApplication.waitFor();
 				
-				System.out.println("End of waitFor with state " + Application.State.toString(state));
+				System.out.println("End of waitFor with state " + State.toString(state));
 	
 				stopApplication.stop();
 				state = stopApplication.waitFor();
 	
-				System.out.println("End of stopjava with state " + Application.State.toString(state));
+				System.out.println("End of stopjava with state " + State.toString(state));
 	
 				cancelThread.join();
 			}
@@ -120,7 +121,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		publisher.cancelWaitForSubscribers();	
+				    		publisher.cancel();	
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -131,11 +132,11 @@ public class TestCancel {
 				
 				System.out.println("Wait for subscribers");
 				
-				boolean synced = publisher.waitForSubscribers();
+				publisher.init();
 							
 				cancelThread.join();
 				
-				System.out.println("Synchronization with the subscriber " + synced);
+				System.out.println("Synchronization with the subscriber " + !publisher.isCanceled());
 				
 				publisher.terminate();
 			}
@@ -144,7 +145,7 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for killing");
 				
-				final Instance pubLoopApplication = server.start("publisherloopjava");
+				final App pubLoopApplication = server.start("publisherloopjava");
 	
 				// Start thread
 				Thread cancelThread = new Thread(new Runnable() {
@@ -162,7 +163,8 @@ public class TestCancel {
 				cancelThread.start();
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
-								
+				subscriber.init();
+				
 				while (true) {
 					String data = subscriber.receiveString();
 					if (data == null) {
@@ -174,11 +176,11 @@ public class TestCancel {
 					}
 				}
 				
-				System.out.println("Subscriber end of stream " + subscriber.isEnded());
+				System.out.println("Subscriber end of stream " + subscriber.hasEnded());
 
 				int state = pubLoopApplication.waitFor();
 
-				System.out.println("End of waitFor " + Application.State.toString(state));
+				System.out.println("End of waitFor " + State.toString(state));
 	
 				cancelThread.join();
 				
@@ -189,17 +191,18 @@ public class TestCancel {
 			{
 				System.out.println("Starting publisherloopjava for testing cancel of a subscriber");
 				
-				final Instance pubLoopApplication = server.start("publisherloopjava");
+				final App pubLoopApplication = server.start("publisherloopjava");
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
-
+				subscriber.init();
+				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
 					@Override
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		This.cancelWaitings();
+				    		This.cancelAll();
 				    		
 				    	} catch (InterruptedException e) {
 						}
@@ -220,7 +223,7 @@ public class TestCancel {
 					}
 				}
 				
-				System.out.println("Subscriber end of stream " + subscriber.isEnded());
+				System.out.println("Subscriber end of stream " + subscriber.hasEnded());
 
 				// Start thread.
 				Thread killThread = new Thread(new Runnable() {
@@ -239,7 +242,7 @@ public class TestCancel {
 				
 				int state = pubLoopApplication.waitFor();
 
-				System.out.println("End of waitFor " + Application.State.toString(state));
+				System.out.println("End of waitFor " + State.toString(state));
 	
 				cancelThread.join();
 				killThread.join();
@@ -253,6 +256,7 @@ public class TestCancel {
 				
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -288,6 +292,7 @@ public class TestCancel {
 				
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 
 				// Start thread.
 				Thread responderThread = new Thread(new Runnable() {
@@ -306,10 +311,11 @@ public class TestCancel {
 
 				
 				// Get this app.
-				final Instance thisApp = server.connect(This.getName());
+				final App thisApp = server.connect(This.getName());
 				
 				// Create the requester.
-				final fr.ill.ics.cameo.coms.Requester requester = fr.ill.ics.cameo.coms.Requester.create(thisApp, "responder");
+				final Requester requester = Requester.create(thisApp, "responder");
+				requester.init();
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -329,7 +335,7 @@ public class TestCancel {
 				
 				System.out.println("Sending request");
 				
-				requester.send("request");
+				requester.sendString("request");
 				
 				System.out.println("Receiving response");
 				
@@ -353,7 +359,10 @@ public class TestCancel {
 			{
 				// Create the responder.
 				final fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+				router.init();
+				
 				final fr.ill.ics.cameo.coms.multi.Responder responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+				responder.init();
 
 				Thread routerThread = new Thread(new Runnable() {
 					@Override
@@ -386,11 +395,6 @@ public class TestCancel {
 				responderThread.join();
 				routerThread.join();
 			}
-			
-			
-		}
-		catch (RemoteException e) {
-			System.err.println("Error: " + e.getMessage());
 		}
 		catch (InterruptedException e) {
 		}

@@ -16,8 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Instance;
-import fr.ill.ics.cameo.base.RemoteException;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.This;
 
@@ -53,7 +52,8 @@ public class TestBasicRequester {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = new Server(endpoint, 0, useProxy);
+		Server server = Server.create(endpoint, useProxy);
+		server.init();
 		
 		try {
 			// Set the state.
@@ -64,7 +64,7 @@ public class TestBasicRequester {
 			// loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 
-				Instance[] requesterApps = new Instance[N];
+				App[] requesterApps = new App[N];
 				
 				// Start the requester applications.
 				for (int j = 0; j < N; ++j) {
@@ -85,13 +85,14 @@ public class TestBasicRequester {
 				
 				// Create the responder.
 				fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				responder.init();
 				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {
 					
 					// Receive the simple request.
 					fr.ill.ics.cameo.coms.basic.Request request = responder.receive();
-		    		request.reply("done");
+		    		request.replyString("done");
 		    		
 		    		System.out.println("Processed " + request);
 				}
@@ -104,9 +105,6 @@ public class TestBasicRequester {
 				
 				responder.terminate();
 			}
-		}
-		catch (RemoteException e) {
-			System.out.println("Requester error:" + e);
 		}
 		finally {
 			server.terminate();

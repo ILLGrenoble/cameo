@@ -15,34 +15,34 @@
  */
 
 #include "StatusEvent.h"
-
+#include "JSON.h"
 #include <iostream>
 
 namespace cameo {
 
-StatusEvent::StatusEvent(int id, const std::string& name, application::State state, application::State pastStates, int exitCode) :
-	Event(id, name),
-	m_state(state),
-	m_pastStates(pastStates),
-	m_exitCode(exitCode) {
+StatusEvent::StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode) :
+	Event{id, name},
+	m_state{state},
+	m_pastStates{pastStates},
+	m_exitCode{exitCode} {
 }
 
 StatusEvent::StatusEvent(const StatusEvent& event) :
-	Event(event),
-	m_state(event.m_state),
-	m_pastStates(event.m_pastStates),
-	m_exitCode(event.m_exitCode) {
+	Event{event},
+	m_state{event.m_state},
+	m_pastStates{event.m_pastStates},
+	m_exitCode{event.m_exitCode} {
 }
 
 StatusEvent* StatusEvent::clone() {
-	return new StatusEvent(*this);
+	return new StatusEvent{*this};
 }
 
-application::State StatusEvent::getState() const {
+State StatusEvent::getState() const {
 	return m_state;
 }
 
-application::State StatusEvent::getPastStates() const {
+State StatusEvent::getPastStates() const {
 	return m_pastStates;
 }
 
@@ -50,10 +50,29 @@ int StatusEvent::getExitCode() const {
 	return m_exitCode;
 }
 
+std::string StatusEvent::toString() const {
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue("status");
+
+	jsonObject.pushKey("id");
+	jsonObject.pushValue(m_id);
+
+	jsonObject.pushKey("name");
+	jsonObject.pushValue(m_name);
+
+	jsonObject.pushKey("state");
+	jsonObject.pushValue(cameo::toString(m_state));
+
+	jsonObject.pushKey("past_states");
+	jsonObject.pushValue(cameo::toString(m_pastStates));
+
+	return jsonObject.dump();
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::StatusEvent& status) {
-	os << "name=" << status.m_name
-		<< "\nid=" << status.m_id
-		<< "\nstate=" << status.m_state;
+	os << status.toString();
 
 	return os;
 }

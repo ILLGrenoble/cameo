@@ -25,19 +25,19 @@ using namespace std;
 namespace cameo {
 
 Waiting::Waiting(Waiting::Function function)
-: m_function(function) {
+: m_function{function} {
 
 	// Add the object in the waiting set if This exists.
-	if (application::This::m_instance.m_inited) {
-		application::This::m_instance.m_waitingSet->add(this);
+	if (This::m_instance.m_inited) {
+		This::m_instance.m_waitingSet->add(this);
 	}
 }
 
 Waiting::~Waiting() {
 
 	// Remove the object in the waiting set if This exists.
-	if (application::This::m_instance.m_inited) {
-		application::This::m_instance.m_waitingSet->remove(this);
+	if (This::m_instance.m_inited) {
+		This::m_instance.m_waitingSet->remove(this);
 	}
 }
 

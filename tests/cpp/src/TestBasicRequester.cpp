@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -51,15 +51,17 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
-	application::This::setRunning();
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
+
+	This::setRunning();
 
 	int N = 5;
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		application::InstanceArray apps;
+		AppArray apps;
 
 		// Start the requester applications.
 		for (int j = 0; j < N; ++j) {
@@ -68,7 +70,7 @@ int main(int argc, char *argv[]) {
 			vector<string> args{(useProxy ? "true" : "false")};
 
 			// Start the application.
-			apps.push_back(server.start(applicationName, args));
+			apps.push_back(server->start(applicationName, args));
 			cout << "Started application " << *apps.back() << endl;
 		}
 
@@ -77,15 +79,10 @@ int main(int argc, char *argv[]) {
 
 		unique_ptr<coms::basic::Responder> responder;
 
-		try {
-			cout << "Creating responder" << endl;
+		responder = coms::basic::Responder::create("responder");
+		responder->init();
 
-			responder = coms::basic::Responder::create("responder");
-		}
-		catch (const coms::ResponderCreationException& e) {
-			cout << "Responder error" << endl;
-			return -1;
-		}
+		cout << "Created responder " << *responder << endl;
 
 		// Process the requests, the requester application sends 10 requests.
 		for (int j = 0; j < N * 10; ++j) {

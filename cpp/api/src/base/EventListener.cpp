@@ -45,12 +45,8 @@ std::unique_ptr<Event> EventListener::popEvent(bool blocking) {
 	return m_eventQueue.poll();
 }
 
-std::unique_ptr<Event> EventListener::popEvent() {
-	return popEvent(true);
-}
-
 void EventListener::cancel(int id) {
-	std::unique_ptr<Event> event(new CancelEvent(id, m_name));
+	std::unique_ptr<Event> event {new CancelEvent(id, m_name)};
 	m_eventQueue.push(event);
 }
 

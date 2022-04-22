@@ -21,9 +21,16 @@
 
 namespace cameo {
 
+/**
+ * Exception for an unregistered application.
+ */
 class UnregisteredApplicationException : public RemoteException {
 
 public:
+	/**
+	 * Constructor.
+	 * \param message The message.
+	 */
 	UnregisteredApplicationException(const std::string& message);
 };
 

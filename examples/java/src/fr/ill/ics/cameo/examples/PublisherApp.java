@@ -52,9 +52,8 @@ public class PublisherApp {
 		try {
 			// Create the publisher not synchronized.
 			publisher = Publisher.create("the-publisher", numberOfSubscribers);
+			publisher.init();
 			System.out.println("Created publisher " + publisher);
-			
-			publisher.waitForSubscribers();
 			System.out.println("Synchronized with " + numberOfSubscribers + " subscriber(s)");
 			
 			// Set the state.
@@ -65,19 +64,16 @@ public class PublisherApp {
 			while (true) {
 			
 				// Send a message.
-				publisher.send(serializeToJSON("a message", i));
+				publisher.sendString(serializeToJSON("a message", i));
 				i++;
 				
 				// Sleep for 1s.
 				Thread.sleep(1000);
 			}
-						
-		} catch (RemoteException e) {
-			System.out.println("Publisher error");
-			
-		} catch (InterruptedException e) {
-						
-		} finally {
+		}
+		catch (InterruptedException e) {
+		}
+		finally {
 			// Terminate the publisher and This.
 			publisher.terminate();
 			This.terminate();			

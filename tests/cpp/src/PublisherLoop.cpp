@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	unique_ptr<coms::Publisher> publisher;
 
@@ -30,16 +30,16 @@ int main(int argc, char *argv[]) {
 		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
 		publisher = coms::Publisher::create("publisher", 1);
-		publisher->waitForSubscribers();
+		publisher->init();
 	}
-	catch (const coms::PublisherCreationException& e) {
+	catch (const InitException& e) {
 		cout << "Publisher error" << endl;
 		return -1;
 	}
 
 	cout << "Synchronized with the subscriber" << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// sending data
 	while (true) {

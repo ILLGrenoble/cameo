@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -16,19 +15,24 @@ package fr.ill.ics.cameo.base;
  */
 
 
+package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
 
+/**
+ * Class defining a cancel event.
+ */
 public class CancelEvent extends Event {
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 */
 	public CancelEvent(int id, String name) {
 		super(id, name);
 	}
-	
-	@Override
-	public String toString() {
-		return "ApplicationCancel [id=" + id + ", name=" + name + "]";
-	}
-	
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -53,6 +57,17 @@ public class CancelEvent extends Event {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "cancel");
+		result.put("id", id);
+		result.put("name", name);
+		
+		return result.toJSONString();
 	}
 	
 }

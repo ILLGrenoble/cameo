@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	unique_ptr<coms::multi::ResponderRouter> router;
 
@@ -31,15 +31,16 @@ int main(int argc, char *argv[]) {
 		cout << "Creating router" << endl;
 
 		router = coms::multi::ResponderRouter::create("responder");
+		router->init();
 	}
-	catch (const coms::ResponderCreationException& e) {
+	catch (const InitException& e) {
 		cout << "Responder error" << endl;
 		return -1;
 	}
 
-	cout << "Created router" << endl;
+	cout << "Created router " << *router << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	unique_ptr<coms::multi::Responder> responder;
 
@@ -48,8 +49,9 @@ int main(int argc, char *argv[]) {
 		cout << "Creating responder" << endl;
 
 		responder = coms::multi::Responder::create(*router);
+		responder->init();
 
-		cout << "Created responder" << endl;
+		cout << "Created responder " << *responder << endl;
 
 		// Receive first request.
 		unique_ptr<coms::multi::Request> request = responder->receive();
@@ -60,7 +62,7 @@ int main(int argc, char *argv[]) {
 		// Receive second request.
 		request = responder->receive();
 
-		cout << "Received request " << request->getBinary() << " " << request->getSecondBinaryPart() << endl;
+		cout << "Received request " << request->get() << " " << request->getSecondPart() << endl;
 		request->reply("2nd response");
 
 		router->cancel();

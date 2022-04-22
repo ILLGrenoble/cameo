@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.RemoteException;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -33,27 +32,24 @@ public class PublisherLoop {
 			fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher", 1);
 			
 			// Synchronize with subscribers.
-			publisher.waitForSubscribers();
+			publisher.init();
 			
 			System.out.println("Synchronized with the subscriber");
 			
 			This.setRunning();
 			
 			// Sending data.
-			while (!publisher.isEnded()) {
+			while (!publisher.hasEnded()) {
 				
-				publisher.send("hello");
+				publisher.sendString("hello");
 				
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 				}
 			}
-			
-		} catch (RemoteException e) {
-			System.out.println("Publisher error");
-			
-		} finally {
+		}
+		finally {
 			This.terminate();			
 		}
 		

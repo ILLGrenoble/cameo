@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	if (argc > 2) {
@@ -36,15 +36,16 @@ int main(int argc, char *argv[]) {
 		cout << "Creating responder" << endl;
 
 		responder = coms::basic::Responder::create("responder");
+		responder->init();
 	}
-	catch (const coms::ResponderCreationException& e) {
+	catch (const InitException& e) {
 		cout << "Responder error" << endl;
 		return -1;
 	}
 
-	cout << "Created responder" << endl;
+	cout << "Created responder " << *responder << endl;
 
-	application::This::setRunning();
+	This::setRunning();
 
 	// Receive first request.
 	unique_ptr<coms::basic::Request> request = responder->receive();
@@ -55,7 +56,7 @@ int main(int argc, char *argv[]) {
 	// Receive second request.
 	request = responder->receive();
 
-	cout << "Received request " << request->getBinary() << " " << request->getSecondBinaryPart() << endl;
+	cout << "Received request " << request->get() << " " << request->getSecondPart() << endl;
 	request->reply("2nd response");
 
 	// Receive third request.
@@ -82,8 +83,8 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	application::ServerAndInstance requester = request->connectToRequester(0, useProxy);
-	cout << "Requester " << *requester.instance << endl;
+	ServerAndApp requester = request->connectToRequester(0, useProxy);
+	cout << "Requester " << *requester.app << endl;
 
 	cout << "Finished the application" << endl;
 

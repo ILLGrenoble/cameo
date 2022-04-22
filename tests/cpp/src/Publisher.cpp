@@ -24,7 +24,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	int numberOfSubscribers = 1;
 
@@ -41,14 +41,14 @@ int main(int argc, char *argv[]) {
 		cout << "Creating publisher and waiting for " << numberOfSubscribers << " subscriber(s)..." << endl;
 
 		publisher = coms::Publisher::create("publisher", numberOfSubscribers);
-		publisher->waitForSubscribers();
-
-	} catch (const coms::PublisherCreationException& e) {
+		publisher->init();
+	}
+	catch (const InitException& e) {
 		cout << "Publisher error" << endl;
 		return -1;
 	}
 
-	application::This::setRunning();
+	This::setRunning();
 
 	cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
 

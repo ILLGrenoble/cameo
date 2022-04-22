@@ -28,9 +28,9 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
-	application::This::handleStop([&] {
+	This::handleStop([&] {
 		cout << "Stop handler executed" << endl;
 	});
 
@@ -43,17 +43,18 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// Start the application.
-		unique_ptr<application::Instance> app = server.start("simplecpp");
+		unique_ptr<App> app = server->start("simplecpp");
 
-		application::State state = app->waitFor();
+		State state = app->waitFor();
 
-		cout << "Finished the application " << *app << " with state " << application::toString(state) << " and code " << app->getExitCode() << endl;
+		cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 	}
 
 	return 0;

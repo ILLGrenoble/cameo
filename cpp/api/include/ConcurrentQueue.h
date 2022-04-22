@@ -49,6 +49,7 @@ public:
 
 	/**
 	 * Gets the front item if the queue is not empty. Returns a null pointer otherwise.
+	 * \return An item that is null if the queue is empty.
 	 */
 	std::unique_ptr<Type> poll() {
 
@@ -65,6 +66,7 @@ public:
 
 	/**
 	 * Gets the front item. Blocking call until there is an item.
+	 * \return An item that cannot be null.
 	 */
 	std::unique_ptr<Type> pop() {
 
@@ -81,6 +83,7 @@ public:
 
 	/**
 	 * Pushes an item.
+	 * \param item An item.
 	 */
 	void push(std::unique_ptr<Type> & item) {
 
@@ -92,6 +95,7 @@ public:
 
 	/**
 	 * Returns the size of the queue.
+	 * \return The size of the queue.
 	 */
 	typename std::queue<Type *>::size_type size() {
 

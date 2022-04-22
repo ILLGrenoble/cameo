@@ -1,4 +1,3 @@
-package fr.ill.ics.cameo.base;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -15,23 +14,28 @@ package fr.ill.ics.cameo.base;
  * limitations under the Licence.
  */
 
+package fr.ill.ics.cameo.base;
 
+import org.json.simple.JSONObject;
 
-
+/**
+ * Class defining a result event.
+ */
 public class ResultEvent extends Event {
 	
 	private byte[] data;
 	
+	/**
+	 * Constructor.
+	 * @param id The application id.
+	 * @param name The application name.
+	 * @param data The result data.
+	 */
 	public ResultEvent(int id, String name, byte[] data) {
 		super(id, name);
 		this.data = data;
 	}
-	
-	@Override
-	public String toString() {
-		return "ApplicationResult [id=" + id + ", name=" + name + "]";
-	}
-	
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -60,6 +64,17 @@ public class ResultEvent extends Event {
 
 	public byte[] getData() {
 		return data;
+	}
+	
+	@Override
+	public String toString() {
+		JSONObject result = new JSONObject();
+		
+		result.put("type", "result");
+		result.put("id", id);
+		result.put("name", name);
+		
+		return result.toJSONString();
 	}
 	
 }

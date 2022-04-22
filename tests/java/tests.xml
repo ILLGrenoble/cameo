@@ -5,6 +5,10 @@
 	<applications>
 		
 		<!-- Java apps -->
+
+		<application name="testappexceptionsjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestAppExceptions"/>	
+		</application>
 		
 		<application name="simplejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Simple"/>
@@ -145,6 +149,10 @@
 
 		<!-- C++ apps -->
 		
+		<application name="testappexceptionscpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testappexceptions"/>
+		</application>
+		
 		<application name="simplecpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="simple"/>
 		</application>
@@ -284,6 +292,10 @@
 		
 		
 		<!-- Python apps -->
+		
+		<application name="testappexceptionspy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testappexceptions.py"/>	
+		</application>
 		
 		<application name="simplepy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/simple.py"/>

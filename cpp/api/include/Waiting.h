@@ -21,14 +21,31 @@
 
 namespace cameo {
 
+/**
+ * Class defining a waiting that can be canceled. It is used in blocking calls.
+ */
 class Waiting {
 
 public:
+	/**
+	 * Type of the cancel function.
+	 */
 	typedef std::function<void ()> Function;
 
-	Waiting(Function function);
+	/**
+	 * Constructor.
+	 * \param cancelFunction The cancel function.
+	 */
+	Waiting(Function cancelFunction);
+
+	/**
+	 * Destructor.
+	 */
 	~Waiting();
 
+	/**
+	 * Cancels the waiting by calling the cancel function.
+	 */
 	void cancel();
 
 private:

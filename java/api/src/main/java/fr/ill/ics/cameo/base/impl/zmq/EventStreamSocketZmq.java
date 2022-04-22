@@ -178,16 +178,16 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
 		return event;
 	}
-	
-	public boolean isCanceled() {
-		return canceled;
-	}
-	
+
 	public void cancel() {
 		cancelSocket.sendMore(Messages.Event.CANCEL);
 		cancelSocket.send(Messages.Event.CANCEL);
 	}
-
+	
+	public boolean isCanceled() {
+		return canceled;
+	}
+		
 	public void terminate() {
 		context.destroySocket(subscriberSocket);
 	}

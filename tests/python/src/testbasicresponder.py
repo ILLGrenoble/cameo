@@ -20,7 +20,8 @@ endpoint = "tcp://localhost:11000";
 if useProxy:
     endpoint = "tcp://localhost:10000";
 
-server = cameopy.Server(endpoint, 0, useProxy)
+server = cameopy.Server.create(endpoint, useProxy)
+server.init()
 
 print("Responder application is", applicationName)
 
@@ -31,17 +32,20 @@ for i in range(numberOfTimes):
     print("Started application", applicationName)
 
     requester = cameopy.Requester.create(app, "responder")
+    requester.init()
+    
+    print("Created requester", requester)
     
     # Send a simple message.
     requester.send("request")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a two-parts message.
-    requester.sendTwoBinaryParts("first", "second")
+    requester.sendTwoParts("first", "second")
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a simple message but do not receive the response immediately.
@@ -50,13 +54,13 @@ for i in range(numberOfTimes):
     print("Wait so that the responder has timed out")
     time.sleep(1)
     
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Send a new simple message.
     requester.send("request after timeout")
 
-    response = requester.receive()
+    response = requester.receiveString()
     print("Response is", response)
     
     # Wait for the application.

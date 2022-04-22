@@ -15,16 +15,17 @@
  */
 
 #include "Response.h"
+#include "JSON.h"
 
 namespace cameo {
 
 Response::Response(int value, const std::string& message) :
-	m_value(value),
-	m_message(message) {
+	m_value{value},
+	m_message{message} {
 }
 
 Response::Response() :
-	m_value(0) {
+	m_value{0} {
 }
 
 int Response::getValue() const {
@@ -39,8 +40,21 @@ bool Response::isSuccess() const {
 	return (m_value != -1);
 }
 
+std::string Response::toString() const {
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("value");
+	jsonObject.pushValue(m_value);
+
+	jsonObject.pushKey("message");
+	jsonObject.pushValue(m_message);
+
+	return jsonObject.dump();
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Response& response) {
-	os << "value=" << response.m_value << "\nmessage=" << response.m_message;
+	os << response.toString();
+
 	return os;
 }
 

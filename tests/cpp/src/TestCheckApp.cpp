@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
@@ -42,18 +42,19 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the applications.
-		vector<unique_ptr<application::Instance>> apps;
+		vector<unique_ptr<App>> apps;
 
 		int N = 100;
 
 		for (int j = 0; j < N; ++j) {
-			apps.push_back(server.start("veryfastcpp"));
+			apps.push_back(server->start("veryfastcpp"));
 		}
 
 		int counter = 0;
@@ -62,7 +63,7 @@ int main(int argc, char *argv[]) {
 		while (counter < N) {
 
 			for (int j = 0; j < N; ++j) {
-				if (!appFinished[j] && apps[j]->getLastState() == application::SUCCESS) {
+				if (!appFinished[j] && apps[j]->getLastState() == SUCCESS) {
 					counter++;
 					appFinished[j] = true;
 					cout << "App " << j << " finished" << endl;

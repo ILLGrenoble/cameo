@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	string applicationName;
 
@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
@@ -60,12 +61,13 @@ int main(int argc, char *argv[]) {
 		vector<string> args{(useProxy ? "true" : "false")};
 
 		// Start the application.
-		unique_ptr<application::Instance> responderApplication = server.start(applicationName, args);
+		unique_ptr<App> responderApplication = server->start(applicationName, args);
 
-		cout << "Started application " << *responderApplication << " with state " << application::toString(responderApplication->now()) << endl;
+		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getActualState()) << endl;
 
 		// Create a subscriber to the application applicationName
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		requester->init();
 
 		cout << "Created requester " << *requester << endl;
 
@@ -74,7 +76,7 @@ int main(int argc, char *argv[]) {
 			return -1;
 		}
 
-		cout << "Application " << *responderApplication << " has state " << application::toString(responderApplication->now()) << endl;
+		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getActualState()) << endl;
 
 		// Send a simple message.
 		requester->send("request");
@@ -83,7 +85,7 @@ int main(int argc, char *argv[]) {
 		cout << "Response is " << response.value() << endl;
 
 		// Send a two-parts message.
-		requester->sendTwoBinaryParts("first", "second");
+		requester->sendTwoParts("first", "second");
 
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;
@@ -122,9 +124,9 @@ int main(int argc, char *argv[]) {
 		cout << "Response is " << response.value() << endl;
 
 		// Wait for the end of the application.
-		application::State state = responderApplication->waitFor();
+		State state = responderApplication->waitFor();
 
-		cout << "Responder application terminated with state " << application::toString(state) << endl;
+		cout << "Responder application terminated with state " << toString(state) << endl;
 		cout << "Finished the application" << endl;
 	}
 

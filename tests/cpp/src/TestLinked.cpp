@@ -22,7 +22,7 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
-	application::This::init(argc, argv);
+	This::init(argc, argv);
 
 	int numberOfTimes = 1;
 
@@ -39,16 +39,17 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:10000";
 	}
 
-	Server server(endpoint, 0, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	server->init();
 
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		{
-			unique_ptr<application::Instance> app = server.start("linkedcpp");
-			application::State state = app->waitFor(application::RUNNING);
-			unique_ptr<application::Instance> stopApp = server.connect("stopcpp");
-			state = stopApp->waitFor(application::RUNNING);
+			unique_ptr<App> app = server->start("linkedcpp");
+			State state = app->waitFor(RUNNING);
+			unique_ptr<App> stopApp = server->connect("stopcpp");
+			state = stopApp->waitFor(RUNNING);
 
 			app->kill();
 			app->waitFor();
@@ -56,13 +57,13 @@ int main(int argc, char *argv[]) {
 			// The stop app must be killed automatically.
 			state = stopApp->waitFor();
 
-			cout << "First application stop finished with state " << application::toString(state) << endl;
+			cout << "First application stop finished with state " << toString(state) << endl;
 		}
 
 		{
-			unique_ptr<application::Instance> app = server.start("linkedcpp");
-			application::State state = app->waitFor(application::RUNNING);
-			unique_ptr<application::Instance> stopApp = server.connect("stopcpp");
+			unique_ptr<App> app = server->start("linkedcpp");
+			State state = app->waitFor(RUNNING);
+			unique_ptr<App> stopApp = server->connect("stopcpp");
 
 			app->kill();
 			app->waitFor();
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
 			// The stop app must be killed automatically.
 			state = stopApp->waitFor();
 
-			cout << "Second application stop finished with state " << application::toString(state) << endl;
+			cout << "Second application stop finished with state " << toString(state) << endl;
 		}
 	}
 
