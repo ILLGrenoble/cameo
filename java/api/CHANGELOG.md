@@ -1,6 +1,18 @@
 2.0.0
 -----
 
+* Messaging architecture reviewed to support proxies for responders and publishers.
+* Linked applications.
+* Added interfaces IObject, ITimeoutable, ICancelable.
+* Renamed Instance into App, etc.
+* Use of init() for Server and coms classes.
+* Requester/Responder basic reimplementation.
+* Requester/Responder multi reimplementation.
+* New port strategy for coms classes.
+* InitException replaces creation exceptions.
+* Removed exists() from App and throw an exception if the application does not exist.
+* One ZeroMQ context shared between all the servers.
+
 1.1.0
 -----
 

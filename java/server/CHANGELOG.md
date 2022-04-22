@@ -3,6 +3,8 @@
 
 * Messaging architecture reviewed to support proxies for responders and publishers.
 * Implementation of the linked apps i.e. stop an app when its parent dies.
+* UNKNOWN state renamed into NIL.
+* Use of $PID is deprecated.
 
 1.1.0
 -----
