@@ -798,8 +798,8 @@ public class Server implements IObject, ITimeoutable {
 			result.add(State.PROCESSING_ERROR);
 		}
 		
-		if ((applicationStates & State.ERROR) != 0) {
-			result.add(State.ERROR);
+		if ((applicationStates & State.FAILURE) != 0) {
+			result.add(State.FAILURE);
 		}
 		
 		if ((applicationStates & State.SUCCESS) != 0) {

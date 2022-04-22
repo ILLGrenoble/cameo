@@ -549,7 +549,7 @@ public class Console {
 		int state = app.waitFor(State.SUCCESS 
 				| State.STOPPED 
 				| State.KILLED 
-				| State.ERROR 
+				| State.FAILURE 
 				| State.PROCESSING_ERROR);
 
 		if (state == State.PROCESSING_ERROR) {
@@ -645,7 +645,7 @@ public class Console {
 		else if (state == State.KILLED) {
 			System.out.println("The application " + appNameId + " has been killed.");
 		}
-		else if (state == State.ERROR) {
+		else if (state == State.FAILURE) {
 			if (exitCode != null) {
 				System.out.println("The application " + appNameId + " terminated with error " + exitCode + ".");
 				

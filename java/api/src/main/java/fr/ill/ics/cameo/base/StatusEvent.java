@@ -30,12 +30,12 @@ public class StatusEvent extends Event {
 	/**
 	 * Sync event.
 	 */
-	public final static StatusEvent SYNC = new StatusEvent(-1, "", State.UNKNOWN, State.UNKNOWN);
+	public final static StatusEvent SYNC = new StatusEvent(-1, "", State.NIL, State.NIL);
 	
 	/**
 	 * End event.
 	 */
-	public final static StatusEvent END = new StatusEvent(-2, "", State.UNKNOWN, State.UNKNOWN);
+	public final static StatusEvent END = new StatusEvent(-2, "", State.NIL, State.NIL);
 	
 	/**
 	 * Constructor.

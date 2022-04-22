@@ -37,8 +37,8 @@ public class App extends EventListener {
 	private int id = -1;
 	private OutputStreamSocket outputSocket;
 	private int pastStates = 0;
-	private int initialState = State.UNKNOWN;
-	private int lastState = State.UNKNOWN;
+	private int initialState = State.NIL;
+	private int lastState = State.NIL;
 	private byte[] resultData;
 	private AppWaiting waiting = new AppWaiting(this);
 	private Integer exitCode;
@@ -145,7 +145,7 @@ public class App extends EventListener {
 								if (state == State.SUCCESS 
 									|| state == State.STOPPED
 									|| state == State.KILLED					
-									|| state == State.ERROR) {
+									|| state == State.FAILURE) {
 									throw new KeyValueGetterException("Application terminated");
 								}
 								
@@ -607,7 +607,7 @@ public class App extends EventListener {
 			if (state == State.SUCCESS 
 					|| state == State.STOPPED
 					|| state == State.KILLED
-					|| state == State.ERROR) {
+					|| state == State.FAILURE) {
 				
 				// Unregister here.
 				if (status.getId() == this.id) {
@@ -627,7 +627,7 @@ public class App extends EventListener {
 			if (lastState == State.SUCCESS
 					|| lastState == State.STOPPED
 					|| lastState == State.KILLED
-					|| lastState == State.ERROR) {
+					|| lastState == State.FAILURE) {
 				// The application is already terminated.
 				return lastState;
 			}
@@ -665,7 +665,7 @@ public class App extends EventListener {
 						if (state == State.SUCCESS 
 							|| state == State.STOPPED
 							|| state == State.KILLED					
-							|| state == State.ERROR) {
+							|| state == State.FAILURE) {
 							break;
 						}
 						
@@ -762,7 +762,7 @@ public class App extends EventListener {
 	}
 
 	/**
-	 * Returns the actual state and UNKNOWN if the instance does not exist anymore.
+	 * Returns the actual state or NIL if the instance does not exist anymore.
 	 * @return The actual state.
 	 */
 	public int getActualState() {

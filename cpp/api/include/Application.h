@@ -92,7 +92,7 @@ typedef int32_t State;
 /**
  * Unknown state.
  */
-const State UNKNOWN          = 0;
+const State NIL          = 0;
 
 /**
  * Starting state.
@@ -825,7 +825,7 @@ public:
 	State getLastState();
 
 	/**
-	 * Returns the actual state and UNKNOWN if the instance does not exist anymore.
+	 * Returns the actual state and NIL if the instance does not exist anymore.
 	 * \return The actual state.
 	 */
 	State getActualState() const;

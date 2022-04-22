@@ -668,7 +668,7 @@ public class This {
 			checkStatesThread = new Thread(new Runnable() {
 				public void run() {
 					// Warning, this method is executed in a parallel thread.
-					int state = State.UNKNOWN; 
+					int state = State.NIL; 
 					
 					while (true) {
 						// waits for a new incoming status
@@ -703,7 +703,7 @@ public class This {
 								state = status.getState();
 
 								// Stop this application if it was linked.
-								if (state == State.STOPPED || state == State.KILLED || state == State.SUCCESS || state == State.ERROR) {
+								if (state == State.STOPPED || state == State.KILLED || state == State.SUCCESS || state == State.FAILURE) {
 									stop();
 								}
 							}
@@ -751,8 +751,8 @@ public class This {
 		// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
 		int state = starterServer.getActualState(starterId);
 
-		// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
-		if (state == State.UNKNOWN) {
+		// Stop this app if the starter is already terminated i.e. the state is NIL.
+		if (state == State.NIL) {
 			stop();
 		}
 		else {

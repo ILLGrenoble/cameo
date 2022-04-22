@@ -126,7 +126,7 @@ public class SubscriberZmq implements SubscriberImpl {
 					if (state == State.SUCCESS 
 							|| state == State.STOPPED
 							|| state == State.KILLED
-							|| state == State.ERROR) {
+							|| state == State.FAILURE) {
 						// Exit because the remote application has terminated.
 						return null;
 					}
@@ -188,7 +188,7 @@ public class SubscriberZmq implements SubscriberImpl {
 					if (state == State.SUCCESS 
 							|| state == State.STOPPED
 							|| state == State.KILLED
-							|| state == State.ERROR) {
+							|| state == State.FAILURE) {
 						// Exit because the remote application has terminated.
 						return null;
 					}

@@ -114,8 +114,8 @@ std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string&
 
 State This::parseState(const std::string& value) {
 
-	if (value == "UNKNOWN") {
-		return UNKNOWN;
+	if (value == "NIL") {
+		return NIL;
 	}
 	else if (value == "STARTING") {
 		return STARTING;
@@ -145,7 +145,7 @@ State This::parseState(const std::string& value) {
 		return KILLED;
 	}
 
-	return UNKNOWN;
+	return NIL;
 }
 
 void This::init(int argc, char *argv[]) {
@@ -450,8 +450,8 @@ void This::initStarterCheck() {
 	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
 	State state {m_starterServer->getActualState(m_starterId)};
 
-	// Stop this app if the starter is already terminated i.e. the state is UNKNOWN.
-	if (state == UNKNOWN) {
+	// Stop this app if the starter is already terminated i.e. the state is NIL.
+	if (state == NIL) {
 		stop();
 	}
 	else {
@@ -620,8 +620,8 @@ App::App(Server * server) :
 	m_id{-1},
 	m_com{server},
 	m_pastStates{0},
-	m_initialState{UNKNOWN},
-	m_lastState{UNKNOWN},
+	m_initialState{NIL},
+	m_lastState{NIL},
 	m_hasResult{false},
 	m_exitCode{-1} {
 }
@@ -1055,7 +1055,7 @@ std::string toString(cameo::State applicationStates) {
 	}
 
 	if (states.size() == 0) {
-		return "UNKNOWN";
+		return "NIL";
 	}
 
 	if (states.size() == 1) {

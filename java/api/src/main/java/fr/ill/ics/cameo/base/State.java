@@ -27,7 +27,7 @@ public class State {
 	/**
 	 * Unknown state.
 	 */
-	public final static int UNKNOWN = 0;
+	public final static int NIL = 0;
 	
 	/**
 	 * Starting state.
@@ -57,7 +57,7 @@ public class State {
 	/**
 	 * Failure state.
 	 */
-	public final static int ERROR = 32;
+	public final static int FAILURE = 32;
 	
 	/**
 	 * Success state.
@@ -81,8 +81,8 @@ public class State {
 	 */
 	public static int parse(String value) {
 		
-		if (value.equals("UNKNOWN")) {
-			return State.UNKNOWN;
+		if (value.equals("NIL")) {
+			return State.NIL;
 		} else if (value.equals("STARTING")) {
 			return State.STARTING;
 		} else if (value.equals("RUNNING")) {
@@ -93,8 +93,8 @@ public class State {
 			return State.KILLING;
 		} else if (value.equals("PROCESSING_ERROR")) {
 			return State.PROCESSING_ERROR;
-		} else if (value.equals("ERROR")) {
-			return State.ERROR;
+		} else if (value.equals("FAILURE")) {
+			return State.FAILURE;
 		} else if (value.equals("SUCCESS")) {
 			return State.SUCCESS;
 		} else if (value.equals("STOPPED")) {
@@ -103,7 +103,7 @@ public class State {
 			return State.KILLED;
 		}
 		
-		return State.UNKNOWN;
+		return State.NIL;
 	}
 			
 	/**
@@ -135,8 +135,8 @@ public class State {
 			states.add("PROCESSING_ERROR");
 		}
 		
-		if ((applicationStates & State.ERROR) != 0) {
-			states.add("ERROR");
+		if ((applicationStates & State.FAILURE) != 0) {
+			states.add("FAILURE");
 		}
 		
 		if ((applicationStates & State.SUCCESS) != 0) {
@@ -152,7 +152,7 @@ public class State {
 		}
 		
 		if (states.size() == 0) {
-			return "UNKNOWN";
+			return "NIL";
 		}
 		
 		if (states.size() == 1) {
