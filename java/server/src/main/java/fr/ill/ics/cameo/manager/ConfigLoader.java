@@ -115,17 +115,18 @@ public abstract class ConfigLoader {
 		
 		ConfigManager.getInstance().setConfigParent(configFile.getParent());
 		
-		// Load the configuration
+		// Load the configuration.
 		Log.logger().fine("Loading config");
 		org.jdom2.Document configXML = null;
 		SAXBuilder builder = new SAXBuilder();
 		
 		try {
 			configXML = builder.build(configFile);
-						
-		} catch (JDOMException e) {
+		}
+		catch (JDOMException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
@@ -134,26 +135,24 @@ public abstract class ConfigLoader {
 	
 	private org.jdom2.Document buildXml(InputStream stream) {
 		
-		// Load the configuration
+		// Load the configuration.
 		Log.logger().fine("Loading config");
 		org.jdom2.Document configXML = null;
 		SAXBuilder builder = new SAXBuilder();
 		
 		try {
 			configXML = builder.build(stream);
-						
-		} catch (JDOMException e) {
+		}
+		catch (JDOMException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
 		return configXML;
 	}
 	
-	/**
-	 * Load config of applications from xml file
-	 */
 	private void loadXml(org.jdom2.Document configXML) {
 		
 		Element root = configXML.getRootElement();
@@ -188,7 +187,8 @@ public abstract class ConfigLoader {
 		String sleepTimeString = root.getAttributeValue(SLEEP_TIME);
 		try {
 			sleepTime = Integer.parseInt(sleepTimeString);
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			// Set default value.
 		}
 					
@@ -199,7 +199,8 @@ public abstract class ConfigLoader {
 		String pollingTimeString = root.getAttributeValue(POLLING_TIME);
 		try {
 			pollingTime = Integer.parseInt(pollingTimeString);
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			// Set default value.
 		}
 		
@@ -221,9 +222,11 @@ public abstract class ConfigLoader {
 			
 			String logDirectory = item.getAttributeValue(LOG_DIRECTORY);
 			
+			// If the attribute is absent then there is no log.
 			if (DEFAULT.equals(logDirectory)) {
 				application.setLogPath(ConfigManager.getInstance().getLogPath());	
-			} else {
+			}
+			else {
 				application.setLogPath(logDirectory);
 			}
 						
@@ -256,7 +259,7 @@ public abstract class ConfigLoader {
 			application.setRestart(item.getAttributeValue(RESTART));
 			application.setEnvironmentFile(item.getAttributeValue(ENVIRONMENT));
 			
-			// Start command
+			// Start command.
 			Element startItem = item.getChild(START);
 			if (startItem == null) {
 				continue;
@@ -265,15 +268,17 @@ public abstract class ConfigLoader {
 			String[] startArgs = loadArgs(startItem);
 			application.setStartArgs(startArgs);
 			
-			// Stop command
+			// Stop command.
 			Element stopItem = item.getChild(STOP);
 			if (stopItem != null) {
 				application.setStopExecutable(stopItem.getAttributeValue(EXECUTABLE));
 				String[] stopArgs = loadArgs(stopItem);
 				application.setStopArgs(stopArgs);
+				
+				checkStopArgs(stopArgs);
 			}
 
-			// Error command
+			// Error command.
 			Element errorItem = item.getChild(ERROR);
 			if (errorItem != null) {
 				application.setErrorExecutable(errorItem.getAttributeValue(EXECUTABLE));
@@ -286,26 +291,22 @@ public abstract class ConfigLoader {
 		
 	}
 	
-	private void loadXml(InputStream configStream) {
+	private void checkStopArgs(String[] args) {
 		
-		
+		for (String arg : args) {
+			if ("$PID".equals(arg)) {
+				Log.logger().warning("Using the $PID argument is deprecated");
+			}
+		}
 	}
 
-	/**
-	 * Resturns the list of available applications.
-	 * @return
-	 */
+	private void loadXml(InputStream configStream) {
+	}
+
 	public List<ApplicationConfig> getAvailableApplications() {
 		return applicationList;
 	}
 	
-	/**
-	 * verify command from user and return ApplicationConfig
-	 * 
-	 * @param commandArray
-	 * @throws UnknownApplicationException
-	 * @return ApplicationConfig
-	 */
 	protected ApplicationConfig verifyApplicationExistence(String name) throws UnknownApplicationException {
 
 		ApplicationConfig ApplicationConfig = null;
@@ -328,9 +329,6 @@ public abstract class ConfigLoader {
 		return ApplicationConfig;
 	}
 
-	/**
-	 * show config of applications, only used to debug
-	 */
 	protected void displayApplicationConfigs() {
 		
 		Log.logger().fine("List of applications");

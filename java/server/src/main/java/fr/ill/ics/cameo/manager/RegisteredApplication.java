@@ -160,13 +160,26 @@ public class RegisteredApplication extends Application {
 		ArrayList<String> commandList = new ArrayList<String>();
 		commandList.add(stopExecutable);
 		
+		boolean argPID = false;
+		
+		// Use of $PID is deprecated.
 		if (stopArgs != null) {
 			for (int i = 0; i < stopArgs.length; i++) {
+				
+				if ("$PID".equals(stopArgs[i])) {
+					argPID = true;
+				}
+				
 				String arg = stopArgs[i].replace("$PID", pid);
 				commandList.add(arg);
 			}
 		}
 		
+		// Add the PID if not present.
+		if (!argPID) {
+			commandList.add(pid);
+		}
+				
 		// Prepare the command
 		String command[] = new String[commandList.size()];
 		commandList.toArray(command);

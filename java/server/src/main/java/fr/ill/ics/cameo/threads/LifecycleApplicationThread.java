@@ -165,6 +165,8 @@ public class LifecycleApplicationThread extends ApplicationThread {
 			// Test if application is stopped nicely.
 			if (application.hasToBeKilled()) {
 				manager.setApplicationState(application, ApplicationState.KILLING);
+				
+				Log.logger().info("Application " + application.getNameId() + " is being killed");
 			}
 			else {
 				manager.setApplicationState(application, ApplicationState.STOPPING);
@@ -176,10 +178,10 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				double time = System.currentTimeMillis();
 				
 				if (application.getStoppingTime() > 0) {
-					Log.logger().info("Application " + application.getNameId() + " is waited to stop before " + application.getStoppingTime() + "s");
+					Log.logger().info("Application " + application.getNameId() + " is expected to stop before " + application.getStoppingTime() + "s");
 				}
 				else {
-					Log.logger().info("Application " + application.getNameId() + " is waited to stop");
+					Log.logger().info("Application " + application.getNameId() + " is expected to stop");
 				}
 
 				// In case stopping time is -1, we wait indefinitely.
