@@ -757,7 +757,7 @@ public class App extends EventListener {
 	/**
 	 * Cancels the blocking waitFor() in another thread.
 	 */
-	public void cancelWaitFor() {
+	public void cancel() {
 		cancel(id);
 	}
 

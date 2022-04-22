@@ -816,7 +816,7 @@ public:
 	/**
 	 * Cancels the blocking waitFor() in another thread.
 	 */
-	void cancelWaitFor();
+	void cancel();
 
 	/**
 	 * Gets the last state.

@@ -137,7 +137,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("waitFor", py::overload_cast<int>(&App::waitFor),
 	    		"states"_a,
 	    		py::call_guard<py::gil_scoped_release>())
-	    .def("cancelWaitFor", &App::cancelWaitFor, py::call_guard<py::gil_scoped_release>())
+	    .def("cancel", &App::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("getLastState", &App::getLastState, py::call_guard<py::gil_scoped_release>())
 	    .def("getActualState", &App::getActualState, py::call_guard<py::gil_scoped_release>())
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())

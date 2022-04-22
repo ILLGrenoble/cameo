@@ -9,7 +9,7 @@ def cancelAll():
 
 def cancelWaitFor(instance):
     time.sleep(1)
-    instance.cancelWaitFor()
+    instance.cancel()
 
 def cancelWaitForSubscribers(publisher):
     time.sleep(1)

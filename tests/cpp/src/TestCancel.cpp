@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		// Start thread.
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(1));
-			stopApplication->cancelWaitFor();
+			stopApplication->cancel();
 		});
 
 		State state = stopApplication->waitFor();

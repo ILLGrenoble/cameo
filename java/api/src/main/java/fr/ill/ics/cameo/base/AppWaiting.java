@@ -34,7 +34,7 @@ public class AppWaiting extends Waiting {
 	
 	@Override
 	public void cancel() {
-		instance.cancelWaitFor();
+		instance.cancel();
 	}
 
 	@Override

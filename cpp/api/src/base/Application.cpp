@@ -720,7 +720,7 @@ bool App::kill() {
 State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
-	Waiting scopedWaiting {std::bind(&App::cancelWaitFor, this)};
+	Waiting scopedWaiting {std::bind(&App::cancel, this)};
 
 	// Test the terminal state.
 	if (m_lastState == SUCCESS
@@ -814,8 +814,8 @@ State App::waitFor(KeyValue& keyValue) {
 	return waitFor(0, keyValue, true);
 }
 
-void App::cancelWaitFor() {
-	cancel(m_id);
+void App::cancel() {
+	EventListener::cancel(m_id);
 }
 
 State App::getLastState() {

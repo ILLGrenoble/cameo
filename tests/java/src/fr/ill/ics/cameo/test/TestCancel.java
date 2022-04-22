@@ -88,7 +88,7 @@ public class TestCancel {
 				    public void run() {
 				    	try {
 				    		Thread.sleep(1000);
-				    		stopApplication.cancelWaitFor();
+				    		stopApplication.cancel();
 				    		
 				    	} catch (InterruptedException e) {
 						}
