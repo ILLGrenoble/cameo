@@ -8,6 +8,7 @@
 * Use of init() for Server and coms classes.
 * Requester/Responder basic reimplementation.
 * Requester/Responder multi reimplementation.
+* Publisher/Subscriber reimplementation.
 * New port strategy for coms classes.
 * InitException replaces creation exceptions.
 * Removed exists() from App and throw an exception if the application does not exist.
