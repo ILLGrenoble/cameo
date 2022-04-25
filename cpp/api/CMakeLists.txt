@@ -214,14 +214,14 @@ if(UNIX)
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
     COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md"
     COMMENT "Compressing changelog"
 	)
   
   add_custom_target(changelog
 	ALL
 	#	DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
-	COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/ChangeLog > ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
+	COMMAND gzip -cn9 ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md > ${CMAKE_CURRENT_BINARY_DIR}/changelog.gz
 	)
   
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
