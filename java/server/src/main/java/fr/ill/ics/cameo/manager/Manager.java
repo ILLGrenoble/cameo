@@ -251,10 +251,16 @@ public class Manager extends ConfigLoader {
 	
 	private void removeApplication(Application application) {
 		
-		// Iterate on the ports of the application to remove them.
+		// Iterate on the ports of the application.
+		String listOfPorts = "";
+		
 		HashMap<String, Integer> ports = application.getPorts();
 		for (Entry<String, Integer> e : ports.entrySet()) {
-			PortManager.getInstance().removePort(e.getValue());	
+			listOfPorts += " " + e.getValue();
+		}
+		
+		if (!ports.isEmpty()) {
+			Log.logger().fine("Application " + application.getNameId() + " has released ports" + listOfPorts);
 		}
 		
 		// Remove the application from the port manager.
