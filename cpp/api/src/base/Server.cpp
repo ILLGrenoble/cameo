@@ -264,7 +264,7 @@ Response Server::stop(int id, bool immediately) const {
 		request = createKillRequest(id);
 	}
 	else {
-		request = createStopRequest(id);
+		request = createStopRequest(id, false);
 	}
 
 	json::Object response {m_requestSocket->requestJSON(request)};

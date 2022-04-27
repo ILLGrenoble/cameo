@@ -732,7 +732,7 @@ public class Console {
 				app = server.connect(applicationId, Option.OUTPUTSTREAM);
 			}
 			catch (AppException e) {
-				System.out.println("Cannot connect : there is no application executing with id " + applicationId + ".");
+				System.out.println("Cannot connect: there is no application executing with id " + applicationId + ".");
 				return;
 			}
 		}
@@ -765,7 +765,7 @@ public class Console {
 						System.out.println("Started " + app.getNameId() + ".");
 					}
 					catch (AppException e) {
-						System.out.println("Cannot start " + applicationName + " : " + e.getMessage() + ".");
+						System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
 						return;
 					}
 				}

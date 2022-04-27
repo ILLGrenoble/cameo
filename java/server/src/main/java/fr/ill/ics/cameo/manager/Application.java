@@ -42,6 +42,7 @@ public abstract class Application extends ApplicationConfig {
 	protected boolean hasStopHandler = false;
 	protected boolean hasToStop = false;
 	protected boolean hasToStopImmediately = false;
+	protected boolean hasToStopDueToLink = false;
 	protected StreamApplicationThread streamThread = null;
 	protected boolean streamThreadStarted = false;
 	private HashMap<String, String> keyValues = new HashMap<String, String>();
@@ -111,6 +112,10 @@ public abstract class Application extends ApplicationConfig {
 	synchronized public boolean hasToStop() {
 		return hasToStop;
 	}
+	
+	synchronized public boolean hasToStopDueToLink() {
+		return hasToStopDueToLink;
+	}
 
 	/**
 	 * The application is killed if a kill is requested or it has no stop handler or stopping time is 0.
@@ -179,9 +184,10 @@ public abstract class Application extends ApplicationConfig {
 		}	
 	}
 	
-	synchronized void setHasToStop(boolean hasToStop, boolean immediately) {
+	synchronized void setHasToStop(boolean hasToStop, boolean immediately, boolean link) {
 		this.hasToStop = hasToStop;
 		this.hasToStopImmediately = immediately;
+		this.hasToStopDueToLink = link;
 	}
 	
 	synchronized void setStreamThread(StreamApplicationThread thread) {
@@ -230,8 +236,6 @@ public abstract class Application extends ApplicationConfig {
 			return;
 		}
 		
-		Log.logger().fine("Application " + this.getNameId() + " is launching error executable");
-		
 		// Build the command arguments
 		ArrayList<String> commandList = new ArrayList<String>();
 		commandList.add(errorExecutable);
@@ -271,7 +275,7 @@ public abstract class Application extends ApplicationConfig {
 			Log.logger().fine("Application " + this.getNameId() + " has error processed executed in " + (end.getTime() - begin.getTime()) + "ms");
 			
 		} catch (IOException e) {
-			Log.logger().severe("Application " + this.getNameId() + " has not executed error process : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " cannot execute error process: " + e.getMessage());
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			

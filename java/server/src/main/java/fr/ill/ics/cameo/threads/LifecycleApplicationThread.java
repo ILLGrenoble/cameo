@@ -159,7 +159,14 @@ public class LifecycleApplicationThread extends ApplicationThread {
 
 		// If the application has to stop.
 		if (application.hasToStop()) {
-			Log.logger().info("Application " + application.getNameId() + " has to stop");
+			
+			if (application.hasToStopDueToLink()) {
+				Log.logger().info("Application " + application.getNameId() + " has to stop because it is linked to its starter");
+			}
+			else {
+				Log.logger().info("Application " + application.getNameId() + " has to stop");
+			}
+			
 			manager.setApplicationProcessState(application, ProcessState.ZOMBIE);
 			
 			// Test if application is stopped nicely.

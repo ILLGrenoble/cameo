@@ -92,6 +92,7 @@ public class Messages {
 
 	public static class StopRequest {
 		public static final String ID = "id"; // required int32 id = 1;
+		public static final String LINK = "link";
 	}
 
 	public static class ConnectRequest {
@@ -427,13 +428,15 @@ public class Messages {
 	 * create stop request
 	 * 
 	 * @param id
+	 * @param link
 	 * @return request
 	 */
-	public static JSONObject createStopRequest(int id) {
+	public static JSONObject createStopRequest(int id, boolean link) {
 
 		JSONObject request = new JSONObject();
 		request.put(Messages.TYPE, Messages.STOP);
 		request.put(Messages.StopRequest.ID, id);
+		request.put(Messages.StopRequest.LINK, link);
 
 		return request;
 	}

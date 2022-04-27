@@ -84,7 +84,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 			}
 			catch (IOException e) {
-				Log.logger().severe("Application " + application.getNameId() + " cannot write stream to file : " + e.getMessage());
+				Log.logger().severe("Application " + application.getNameId() + " cannot write stream to file: " + e.getMessage());
 			}
 		}
 
@@ -149,7 +149,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			}
 		}
 		catch (IOException e) {
-			Log.logger().severe("Application " + application.getNameId() + " cannot read stream : " + e.getMessage());
+			Log.logger().severe("Application " + application.getNameId() + " cannot read stream: " + e.getMessage());
 		}
 	}
 	
@@ -215,7 +215,7 @@ public class StreamApplicationThread extends ApplicationThread {
 				}
 				
 			} catch (IOException e) {
-				Log.logger().severe("Application " + application.getNameId() + " cannot close log file : " + e.getMessage());
+				Log.logger().severe("Application " + application.getNameId() + " cannot close log file: " + e.getMessage());
 			}
 			
 		}
@@ -257,7 +257,7 @@ public class StreamApplicationThread extends ApplicationThread {
 			fileOutputStream = new FileOutputStream(file);
 		}
 		catch (IOException e) {
-			Log.logger().severe("Application " + application.getNameId() + " cannot create file " + file.getAbsolutePath() + " : " + e.getMessage());
+			Log.logger().severe("Application " + application.getNameId() + " cannot create file " + file.getAbsolutePath() + ": " + e.getMessage());
 		}
 	}
 }

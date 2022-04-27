@@ -118,7 +118,7 @@ std::string createSetStopHandlerRequest(int id, int stoppingTime) {
 	return request.dump();
 }
 
-std::string createStopRequest(int id) {
+std::string createStopRequest(int id, bool link) {
 
 	json::StringObject request;
 	request.pushKey(message::TYPE);
@@ -126,6 +126,9 @@ std::string createStopRequest(int id) {
 
 	request.pushKey(message::StopRequest::ID);
 	request.pushValue(id);
+
+	request.pushKey(message::StopRequest::LINK);
+	request.pushValue(link);
 
 	return request.dump();
 }

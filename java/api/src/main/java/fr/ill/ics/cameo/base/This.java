@@ -765,7 +765,7 @@ public class This {
 		// Use a request socket to avoid any race condition.
 		RequestSocket requestSocket = server.createServerRequestSocket();
 		
-		JSONObject request = Messages.createStopRequest(id);
+		JSONObject request = Messages.createStopRequest(id, true);
 		requestSocket.requestJSON(request);
 	}
 

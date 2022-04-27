@@ -142,7 +142,7 @@ public class RegisteredApplication extends Application {
 			Log.logger().info("Application " + this.getNameId() + " has pid " + this.processHandle.getPid());
 															
 		} catch (IOException e) {
-			Log.logger().severe("Application " + this.getNameId() + " has not executed : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " cannot be executed: " + e.getMessage());
 		}
 	}
 	
@@ -197,7 +197,7 @@ public class RegisteredApplication extends Application {
 			builder.start();
 			
 		} catch (IOException e) {
-			Log.logger().severe("Application " + this.getNameId() + " has not executed stop process : " + e.getMessage());
+			Log.logger().severe("Application " + this.getNameId() + " cannot execute stop process: " + e.getMessage());
 			e.printStackTrace();
 		}
 		Log.logger().info("Application " + this.getNameId() + " has stop process finished");

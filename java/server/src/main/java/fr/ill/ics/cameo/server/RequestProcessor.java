@@ -242,7 +242,7 @@ public class RequestProcessor {
 		Log.logger().finer("Received Stop request");
 		
 		try {
-			String applicationName = manager.stopApplication(JSON.getInt(request, Messages.StopRequest.ID));
+			String applicationName = manager.stopApplication(JSON.getInt(request, Messages.StopRequest.ID), JSON.getBoolean(request, Messages.StopRequest.LINK));
 
 			// Return the reply.
 			JSONObject response = new JSONObject();

@@ -274,6 +274,7 @@ namespace message {
 	 */
 	struct StopRequest {
 		constexpr static const char* ID = "id"; // required int32 id = 1;
+		constexpr static const char* LINK = "link";
 	};
 
 	/**
@@ -578,9 +579,10 @@ std::string createSetStopHandlerRequest(int id, int stoppingTime);
 /**
  * Creates a stop request.
  * \param id The id.
+ * \param link True if the stop is because the app is linked to its parent which is stopping.
  * \return The JSON string.
  */
-std::string createStopRequest(int id);
+std::string createStopRequest(int id, bool link);
 
 /**
  * Creates a kill request.

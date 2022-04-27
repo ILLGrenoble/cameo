@@ -151,7 +151,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 				// Here, the application id is different from id, then re-iterate.
 			}
 			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response : " + messageValue);
+				throw new UnexpectedException("Cannot parse response: " + messageValue);
 			}
 		}
 	}

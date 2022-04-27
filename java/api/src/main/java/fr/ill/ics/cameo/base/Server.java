@@ -528,7 +528,7 @@ public class Server implements IObject, ITimeoutable {
 			request = Messages.createKillRequest(id);
 		}
 		else {
-			request = Messages.createStopRequest(id);
+			request = Messages.createStopRequest(id, false);
 		}
 		
 		JSONObject response = requestSocket.requestJSON(request);

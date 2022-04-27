@@ -301,7 +301,7 @@ public class Manager extends ConfigLoader {
 		// Create the stream thread.
 		if (application.isWritingStream() || application.hasOutputStream()) {
 			if (application.getLogPath() != null) {
-				Log.logger().fine("Application " + application.getNameId() + " has stream to log file '" + application.getLogPath() + "'");
+				Log.logger().fine("Application " + application.getNameId() + " has stream written to log file '" + application.getLogPath() + "'");
 			}
 			else {
 				Log.logger().fine("Application " + application.getNameId() + " has stream");
@@ -331,9 +331,10 @@ public class Manager extends ConfigLoader {
 	 * stop application
 	 * 
 	 * @param id
+	 * @param i 
 	 * @throws IdNotFoundException
 	 */
-	public synchronized String stopApplication(int id) throws IdNotFoundException {
+	public synchronized String stopApplication(int id, boolean link) throws IdNotFoundException {
 		
 		Application application = applicationMap.get(id);
 		
@@ -347,7 +348,7 @@ public class Manager extends ConfigLoader {
 			}
 			else {
 				// The following call will have no effect if it was already called.
-				application.setHasToStop(true, false);
+				application.setHasToStop(true, false, link);
 			}
 			return name;
 		}
@@ -375,7 +376,7 @@ public class Manager extends ConfigLoader {
 				removeApplication(application);
 			}
 			else {
-				application.setHasToStop(true, true);
+				application.setHasToStop(true, true, false);
 			}
 			return name;
 		}
@@ -401,7 +402,7 @@ public class Manager extends ConfigLoader {
 					removeApplication(application);
 				}
 				else {
-					application.setHasToStop(true, true);
+					application.setHasToStop(true, true, false);
 				}
 				application.kill();
 			}
@@ -576,7 +577,7 @@ public class Manager extends ConfigLoader {
 				writer.flush();
 			}
 			catch (IOException e) {
-				Log.logger().severe("Enable to write to input for application " + application.getNameId());
+				Log.logger().severe("Unable to write to input for application " + application.getNameId());
 				try {
 					writer.close();
 				}

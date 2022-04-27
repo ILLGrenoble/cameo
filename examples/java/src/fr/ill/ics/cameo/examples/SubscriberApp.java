@@ -82,8 +82,8 @@ public class SubscriberApp {
 					
 					JSONObject object = deserializeToJSON(message);
 					
-					System.out.println("\tmessage : " + (String)object.get("message"));
-					System.out.println("\tvalue : " + (Long)object.get("value"));
+					System.out.println("\tmessage: " + (String)object.get("message"));
+					System.out.println("\tvalue: " + (Long)object.get("value"));
 					
 				} else {
 					break;

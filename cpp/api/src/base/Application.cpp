@@ -408,7 +408,7 @@ void This::stop() {
 	// Use a request socket to avoid any race condition.
 	std::unique_ptr<RequestSocket> requestSocket{m_server->createServerRequestSocket()};
 
-	std::string request {createStopRequest(m_id)};
+	std::string request {createStopRequest(m_id, true)};
 	requestSocket->requestJSON(request);
 }
 
