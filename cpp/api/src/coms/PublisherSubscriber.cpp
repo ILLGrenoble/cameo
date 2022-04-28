@@ -319,7 +319,7 @@ std::string Subscriber::toString() const {
 	jsonObject.pushKey("app");
 	jsonObject.startObject();
 
-	AppIdentity appIdentity {m_appName, m_appId, ServerIdentity{m_appEndpoint.toString(), false}};
+	AppIdentity appIdentity {m_appName, m_appId, ServerIdentity{m_appEndpoint.toString(), m_useProxy}};
 	appIdentity.toJSON(jsonObject);
 	jsonObject.endObject();
 

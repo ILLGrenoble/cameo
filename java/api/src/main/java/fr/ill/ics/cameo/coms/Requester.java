@@ -248,7 +248,7 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 		
 		result.put("type", "requester");
 		result.put("name", responderName);
-		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), false)).toJSON());
+		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON());
 		
 		return result.toJSONString();
 	}

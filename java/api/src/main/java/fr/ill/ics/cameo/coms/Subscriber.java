@@ -221,7 +221,7 @@ public class Subscriber implements IObject, ICancelable {
 		
 		result.put("type", "subscriber");
 		result.put("name", publisherName);
-		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), false)).toJSON());
+		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON());
 		
 		return result.toJSONString();
 	}
