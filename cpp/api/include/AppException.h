@@ -22,42 +22,16 @@
 namespace cameo {
 
 /**
- * Exception for an App.
- */
-class AppException : public RemoteException {
-
-public:
-	/**
-	 * Constructor.
-	 * \param message The message.
-	 */
-	AppException(const std::string& message);
-};
-
-/**
  * Exception when starting an App.
  */
-class AppStartException : public AppException {
+class StartException : public RemoteException {
 
 public:
 	/**
 	 * Constructor.
 	 * \param message The message.
 	 */
-	AppStartException(const std::string& message);
-};
-
-/**
- * Exception when connecting an App.
- */
-class AppConnectException : public AppException {
-
-public:
-	/**
-	 * Constructor.
-	 * \param message The message.
-	 */
-	AppConnectException(const std::string& message);
+	StartException(const std::string& message);
 };
 
 }

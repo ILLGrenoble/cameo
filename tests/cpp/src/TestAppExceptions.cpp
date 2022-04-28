@@ -41,19 +41,16 @@ int main(int argc, char *argv[]) {
 		// Start the application.
 		unique_ptr<App> app = server->start("fuzz");
 	}
-	catch (const AppException& e) {
+	catch (const StartException& e) {
 		cout << "Application fuzz cannot be started" << endl;
 	}
 
-	// Test connect.
-	try {
-		// Connect the application.
-		unique_ptr<App> app = server->connect("fuzz");
-	}
-	catch (const AppException& e) {
+	// Connect the application.
+	unique_ptr<App> app = server->connect("fuzz");
+
+	if (!app) {
 		cout << "Application fuzz cannot be connected" << endl;
 	}
-
 
 	// Test basic responder.
 	cout << "Creating basic responder" << endl;

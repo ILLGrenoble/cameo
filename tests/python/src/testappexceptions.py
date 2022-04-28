@@ -15,12 +15,12 @@ server.init()
 
 try:   
     server.start("fuzz")
-except cameopy.AppStartException:
+except cameopy.StartException:
     print("Application fuzz cannot be started")    
 
-try:   
-    server.connect("fuzz")    
-except cameopy.AppConnectException:
+app = server.connect("fuzz")    
+
+if app is None:
     print("Application fuzz cannot be connected")
     
 

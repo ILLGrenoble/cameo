@@ -51,7 +51,7 @@ int main(int, char *[]) {
 
 		cout << "Terminated simple with state " << toString(state) << endl;
 	}
-	catch (const AppException& e) {
+	catch (const StartException& e) {
 		cout << "Cannot start application" << endl;
 	}
 

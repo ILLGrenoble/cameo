@@ -7,11 +7,11 @@ import java.security.CodeSource;
 import java.util.ArrayList;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.StartException;
 
 public class TestSelector {
 
@@ -92,7 +92,7 @@ public class TestSelector {
 			
 			System.out.println("*** Finished " + appName + " ***");
 		}
-		catch (AppException e) {
+		catch (StartException e) {
 			System.out.println("*** No application ***");
 		}
 	}

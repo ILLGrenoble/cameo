@@ -164,8 +164,7 @@ public:
 	 * Connects to an application with name.
 	 * \param name The name.
 	 * \param options The options.
-	 * \return The App object representing the remote application.
-	 * \throws AppConnectException if there is no running application.
+	 * \return The App object representing the remote application or null if there is no such application.
 	 */
 	std::unique_ptr<App> connect(const std::string& name, int options = 0);
 
@@ -173,8 +172,7 @@ public:
 	 * Connects to an application with id.
 	 * \param id The id.
 	 * \param options The options.
-	 * \return The App object representing the remote application.
-	 * \throws AppConnectException if there is no running application.
+	 * \return The App object representing the remote application or null if there is no such application.
 	 */
 	std::unique_ptr<App> connect(int id, int options = 0);
 

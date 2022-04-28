@@ -18,16 +18,8 @@
 
 namespace cameo {
 
-AppException::AppException(const std::string& message) :
+StartException::StartException(const std::string& message) :
 	RemoteException(message) {
-}
-
-AppStartException::AppStartException(const std::string& message) :
-	AppException(message) {
-}
-
-AppConnectException::AppConnectException(const std::string& message) :
-	AppException(message) {
 }
 
 }

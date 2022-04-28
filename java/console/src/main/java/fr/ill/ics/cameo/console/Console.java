@@ -26,12 +26,12 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Option;
 import fr.ill.ics.cameo.base.OutputPrintThread;
 import fr.ill.ics.cameo.base.OutputStreamSocket;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.StartException;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.UnexpectedException;
 
@@ -539,7 +539,7 @@ public class Console {
 			App result = server.start(applicationName, applicationArgs);
 			System.out.println("Started " + result.getNameId() + ".");
 		}
-		catch (AppException e) {
+		catch (StartException e) {
 			System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
 		}
 	}
@@ -709,7 +709,7 @@ public class Console {
 			// Finish the application.
 			finishApplication(state, appNameId, app.getExitCode());
 		}
-		catch (AppException e) {
+		catch (StartException e) {
 			System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
 		}
 	}
@@ -727,11 +727,10 @@ public class Console {
 		try {
 			applicationId = Integer.parseInt(applicationName);
 			
-			try {
-				// We can connect to the application with the id.
-				app = server.connect(applicationId, Option.OUTPUTSTREAM);
-			}
-			catch (AppException e) {
+			// We can connect to the application with the id.
+			app = server.connect(applicationId, Option.OUTPUTSTREAM);
+
+			if (app == null) {
 				System.out.println("Cannot connect: there is no application executing with id " + applicationId + ".");
 				return;
 			}
@@ -764,7 +763,7 @@ public class Console {
 						app = server.start(applicationName, applicationArgs, Option.OUTPUTSTREAM);
 						System.out.println("Started " + app.getNameId() + ".");
 					}
-					catch (AppException e) {
+					catch (StartException e) {
 						System.out.println("Cannot start " + applicationName + ": " + e.getMessage() + ".");
 						return;
 					}

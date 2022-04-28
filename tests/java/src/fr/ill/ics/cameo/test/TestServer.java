@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.test;
 import java.util.List;
 
 import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.AppException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.StartException;
 import fr.ill.ics.cameo.base.State;
 
 public class TestServer {
@@ -54,7 +54,7 @@ public class TestServer {
 		
 			System.out.println("Terminated simple with state " + State.toString(state));
 		}
-		catch (AppException e) {
+		catch (StartException e) {
 			System.out.println("App does not exist");
 		}
 		

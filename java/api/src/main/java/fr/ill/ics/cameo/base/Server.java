@@ -454,7 +454,7 @@ public class Server implements IObject, ITimeoutable {
 	 * @param args The arguments passed to the executable.
 	 * @param options The options.
 	 * @return The App object representing the remote application.
-	 * @throws AppStartException if the application cannot be started.
+	 * @throws StartException if the application cannot be started.
 	 */
 	public App start(String name, String[] args, int options) {
 		
@@ -478,7 +478,7 @@ public class Server implements IObject, ITimeoutable {
 			Response response = startApplication(name, args, linked);
 			
 			if (response.getValue() == -1) {
-				throw new AppStartException(response.getMessage());
+				throw new StartException(response.getMessage());
 			}
 			else {
 				instance.setId(response.getValue());
@@ -489,7 +489,7 @@ public class Server implements IObject, ITimeoutable {
 			}
 		}
 		catch (ConnectionTimeout e) {
-			throw new AppStartException(e.getMessage());
+			throw new StartException(e.getMessage());
 		}
 				
 		return instance;
@@ -504,7 +504,7 @@ public class Server implements IObject, ITimeoutable {
 	 * @param name The name.
 	 * @param options The options.
 	 * @return The App object representing the remote application.
-	 * @throws AppStartException if the application cannot be started.
+	 * @throws StartException if the application cannot be started.
 	 */
 	public App start(String name, int options) {
 		return start(name, null, options);
@@ -514,7 +514,7 @@ public class Server implements IObject, ITimeoutable {
 	 * Starts the application with name.
 	 * @param name The name.
 	 * @return The App object representing the remote application.
-	 * @throws AppStartException if the application cannot be started.
+	 * @throws StartException if the application cannot be started.
 	 */
 	public App start(String name) {
 		return start(name, 0);
@@ -628,14 +628,13 @@ public class Server implements IObject, ITimeoutable {
 	 * Connects to an application with name.
 	 * @param name The name.
 	 * @param options The options.
-	 * @return The App object representing the remote application.
-	 * @throws AppConnectException if no application is running.
+	 * @return The App object representing the remote application or null if no application is running.
 	 */
 	public App connect(String name, int options) {
 		List<App> instances = connectAll(name, options);
 		
 		if (instances.size() == 0) {
-			throw new AppConnectException("No application with name " + name + " is running.");
+			return null;
 		}
 		
 		return instances.get(0);
@@ -644,8 +643,7 @@ public class Server implements IObject, ITimeoutable {
 	/**
 	 * Connects to an application with name.
 	 * @param name The name.
-	 * @return The App object representing the remote application.
-	 * @throws AppConnectException if no application is running.
+	 * @return The App object representing the remote application or null if no application is running.
 	 */
 	public App connect(String name) {
 		return connect(name, 0);
@@ -655,8 +653,7 @@ public class Server implements IObject, ITimeoutable {
 	 * Connects to an application with id.
 	 * @param id The id.
 	 * @param options The options.
-	 * @return The App object representing the remote application.
-	 * @throws AppConnectException if no application is running.
+	 * @return The App object representing the remote application or null if no application is running.
 	 */
 	public App connect(int id, int options) {
 		
@@ -668,7 +665,7 @@ public class Server implements IObject, ITimeoutable {
 		List<App> instances = getInstancesFromApplicationInfos(response, outputStream);
 
 		if (instances.size() == 0) {
-			throw new AppConnectException("No application with id " + id + " is running.");
+			return null;
 		}
 		
 		return instances.get(0);

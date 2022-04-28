@@ -50,9 +50,7 @@ PYBIND11_MODULE(cameopy, m) {
 	py::register_exception<SocketException>(m, "SocketException");
 	py::register_exception<ConnectionTimeout>(m, "ConnectionTimeout");
 
-	py::register_exception<AppException>(m, "AppException");
-	py::register_exception<AppStartException>(m, "AppStartException");
-	py::register_exception<AppConnectException>(m, "AppConnectException");
+	py::register_exception<StartException>(m, "StartException");
 
 	py::register_exception<InitException>(m, "InitException");
 

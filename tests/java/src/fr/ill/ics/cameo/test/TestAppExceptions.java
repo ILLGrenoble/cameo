@@ -16,9 +16,10 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.AppException;
+import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.base.StartException;
 import fr.ill.ics.cameo.base.This;
 
 
@@ -45,15 +46,14 @@ public class TestAppExceptions {
 				// start the application.
 				server.start("fuzz");
 			}
-			catch (AppException e) {
+			catch (StartException e) {
 				System.out.println("Application fuzz cannot be started");
 			}
 			
-			try {
-				// Connect the application.
-				server.connect("fuzz");
-			}
-			catch (AppException e) {
+			// Connect the application.
+			App app = server.connect("fuzz");
+
+			if (app == null) {
 				System.out.println("Application fuzz cannot be connected");
 			}
 
