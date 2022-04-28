@@ -154,7 +154,7 @@ public final class PortManager {
 	 * Remove the ports of the application. 
 	 * @param applicationId the application id
 	 */
-	public void removeApplication(int applicationId) {
+	public HashSet<Integer> removeApplication(int applicationId) {
 		
 		// Remove the ports of the application.
 		HashSet<Integer> ports = getApplicationPorts(applicationId);
@@ -165,6 +165,8 @@ public final class PortManager {
 		
 		// Remove the application.
 		applicationPorts.remove(applicationId);
+		
+		return ports;
 	}
 	
 	/**

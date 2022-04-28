@@ -46,7 +46,6 @@ public abstract class Application extends ApplicationConfig {
 	protected StreamApplicationThread streamThread = null;
 	protected boolean streamThreadStarted = false;
 	private HashMap<String, String> keyValues = new HashMap<String, String>();
-	private HashMap<String, Integer> ports = new HashMap<String, Integer>();
 	
 	public Application(Endpoint endpoint, int id) {
 		super();
@@ -129,10 +128,6 @@ public abstract class Application extends ApplicationConfig {
 	
 	synchronized public StreamApplicationThread getStreamThread() {
 		return this.streamThread;
-	}
-
-	synchronized public HashMap<String, Integer> getPorts() {
-		return ports;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////

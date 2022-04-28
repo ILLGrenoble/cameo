@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -251,20 +252,22 @@ public class Manager extends ConfigLoader {
 	
 	private void removeApplication(Application application) {
 		
+		// Remove the application from the port manager.
+		HashSet<Integer> ports = PortManager.getInstance().removeApplication(application.getId());
+		
 		// Iterate on the ports of the application.
 		String listOfPorts = "";
 		
-		HashMap<String, Integer> ports = application.getPorts();
-		for (Entry<String, Integer> e : ports.entrySet()) {
-			listOfPorts += " " + e.getValue();
+		for (Integer p : ports) {
+			listOfPorts += " " + p;
 		}
 		
 		if (!ports.isEmpty()) {
 			Log.logger().fine("Application " + application.getNameId() + " has released ports" + listOfPorts);
 		}
-		
-		// Remove the application from the port manager.
-		PortManager.getInstance().removeApplication(application.getId());
+		else {
+			Log.logger().fine("Application " + application.getNameId() + " has no ports to release");
+		}
 		
 		// Remove the application from the map.
 		applicationMap.remove(application.getId());
