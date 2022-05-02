@@ -92,7 +92,7 @@ public:
 	 * \param useProxy Use the proxy to connect.
 	 * \return The ServerAndApp pair.
 	 */
-	ServerAndApp connectToRequester(int options = 0, bool useProxy = false);
+	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false);
 
 	/**
 	 * Returns a string representation of the request.

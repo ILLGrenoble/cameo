@@ -72,35 +72,37 @@ void Request::reply(const std::string& response) {
 	m_responder->reply(jsonRequest.dump(), response);
 }
 
-ServerAndApp Request::connectToRequester(int options, bool useProxy) {
-
-	ServerAndApp result;
+std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy) {
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
 		return {};
 	}
 
+	std::unique_ptr<Server> server;
+
 	if (useProxy) {
-		result.server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
+		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
 	}
 	else {
-		result.server = Server::create(m_requesterServerEndpoint.toString(), false);
+		server = Server::create(m_requesterServerEndpoint.toString(), false);
 	}
 
-	result.server->init();
+	server->init();
+
+	std::unique_ptr<App> app;
 
 	// Iterate the instances to find the id
-	AppArray instances = result.server->connectAll(m_requesterApplicationName, options);
+	AppArray instances = server->connectAll(m_requesterApplicationName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_requesterApplicationId) {
-			result.app = std::unique_ptr<App>(std::move(*i));
+			app = std::unique_ptr<App>(std::move(*i));
 			break;
 		}
 	}
 
-	return result;
+	return std::unique_ptr<ServerAndApp>(new ServerAndApp(server, app));
 }
 
 std::string Request::toString() const {

@@ -83,8 +83,8 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	ServerAndApp requester = request->connectToRequester(0, useProxy);
-	cout << "Requester " << *requester.app << endl;
+	std::unique_ptr<ServerAndApp> requester = request->connectToRequester(0, useProxy);
+	cout << "Requester " << requester->getApp() << endl;
 
 	cout << "Finished the application" << endl;
 

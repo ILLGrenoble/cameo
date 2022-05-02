@@ -30,4 +30,6 @@ for i in range(R):
 
     time.sleep(0.1)
 
+starter.terminate()
+
 print("Finished the application")

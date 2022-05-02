@@ -29,12 +29,12 @@ int main(int argc, char *argv[]) {
 		useProxy = (string(argv[1]) == "true");
 	}
 
-	ServerAndApp starter = This::connectToStarter(0, useProxy);
+	std::unique_ptr<ServerAndApp> starter = This::connectToStarter(0, useProxy);
 
 	cout << "Connected to started" << endl;
 
 	// Create a requester.
-	unique_ptr<coms::Requester> requester = coms::Requester::create(*starter.app, "responder");
+	unique_ptr<coms::Requester> requester = coms::Requester::create(starter->getApp(), "responder");
 	requester->init();
 
 	cout << "Created requester" << endl;

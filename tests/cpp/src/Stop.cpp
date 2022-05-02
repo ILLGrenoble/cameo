@@ -21,11 +21,11 @@
 using namespace std;
 using namespace cameo;
 
-std::atomic_bool stopping(false);
-
 int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
+
+	std::atomic_bool stopping(false);
 
 	This::handleStop([&] {
 		cout << "Stop handler executed" << endl;

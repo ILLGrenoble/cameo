@@ -51,12 +51,22 @@ namespace cameo {
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
 
-std::unique_ptr<Server> ServerAndApp::getServer() {
-	return std::move(server);
+ServerAndApp::ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app) :
+	m_server(std::move(server)), m_app(std::move(app)) {
 }
 
-std::unique_ptr<App> ServerAndApp::getApp() {
-	return std::move(app);
+Server& ServerAndApp::getServer() {
+	return *m_server.get();
+}
+
+App& ServerAndApp::getApp() {
+	return *m_app.get();
+}
+
+void ServerAndApp::terminate() {
+
+	m_server->terminate();
+	m_app->terminate();
 }
 
 
@@ -371,36 +381,38 @@ State This::getState(int id) const {
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-ServerAndApp This::connectToStarter(int options, bool useProxy) {
-
-	ServerAndApp result;
+std::unique_ptr<ServerAndApp> This::connectToStarter(int options, bool useProxy) {
 
 	// Create the starter server.
 	if (m_instance.m_starterEndpoint.getAddress() == "") {
 		return {};
 	}
 
+	std::unique_ptr<Server> server;
+
 	// Create the server with proxy or not.
 	if (useProxy) {
-		result.server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), true);
+		server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), true);
 	}
 	else {
-		result.server = Server::create(m_instance.m_starterEndpoint, false);
+		server = Server::create(m_instance.m_starterEndpoint, false);
 	}
 
-	result.server->init();
+	server->init();
+
+	std::unique_ptr<App> app;
 
 	// Iterate the instances to find the id
-	AppArray instances = result.server->connectAll(m_instance.m_starterName, options);
+	AppArray instances = server->connectAll(m_instance.m_starterName, options);
 
 	for (auto i = instances.begin(); i != instances.end(); ++i) {
 		if ((*i)->getId() == m_instance.m_starterId) {
-			result.app = std::unique_ptr<App>(std::move(*i));
+			app = std::unique_ptr<App>(std::move(*i));
 			break;
 		}
 	}
 
-	return result;
+	return std::unique_ptr<ServerAndApp>(new ServerAndApp(server, app));
 }
 
 void This::stop() {

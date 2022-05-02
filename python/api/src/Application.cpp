@@ -34,7 +34,7 @@ PYBIND11_MODULE(cameopy, m) {
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
-	m.attr("NIL")            = NIL;
+	m.attr("NIL")                = NIL;
 	m.attr("STARTING")           = STARTING;
 	m.attr("RUNNING")            = RUNNING;
 	m.attr("STOPPING")           = STOPPING;
@@ -59,8 +59,9 @@ PYBIND11_MODULE(cameopy, m) {
 	// If the policy is not set, the bindings are blocking other Python running threads.
 
 	py::class_<ServerAndApp>(m, "ServerAndApp")
-		    .def("getServer", &ServerAndApp::getServer)
-			.def("getApp", &ServerAndApp::getApp);
+		    .def("getServer", &ServerAndApp::getServer, py::return_value_policy::reference)
+			.def("getApp", &ServerAndApp::getApp, py::return_value_policy::reference)
+			.def("terminate", &ServerAndApp::terminate, py::call_guard<py::gil_scoped_release>());
 
 	py::class_<This>(m, "This")
 	    .def_static(

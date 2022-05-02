@@ -74,12 +74,36 @@ class App;
 /**
  * Helper class to provide an App instance and its associated Server instance.
  */
-struct ServerAndApp {
-	std::unique_ptr<Server> server;
-	std::unique_ptr<App> app;
+class ServerAndApp {
 
-	std::unique_ptr<Server> getServer();
-	std::unique_ptr<App> getApp();
+public:
+	/**
+	 * Constructor.
+	 * \param server The server.
+	 * \param app The app started by the server.
+	 */
+	ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app);
+
+	/**
+	 * Gets the server.
+	 * \return The server.
+	 */
+	Server& getServer();
+
+	/**
+	 * Gets the app.
+	 * \return The app.
+	 */
+	App& getApp();
+
+	/**
+	 * Terminates the server and app.
+	 */
+	void terminate();
+
+private:
+	std::unique_ptr<Server> m_server;
+	std::unique_ptr<App> m_app;
 };
 
 /**
@@ -358,7 +382,7 @@ public:
 	 * \param options The options passed to connect the starter app.
 	 * \param useProxy True if the proxy is used to connect to the starter app.
 	 */
-	static ServerAndApp connectToStarter(int options = 0, bool useProxy = false);
+	static std::unique_ptr<ServerAndApp> connectToStarter(int options = 0, bool useProxy = false);
 
 	/**
 	 * Returns a string representation of this application.
