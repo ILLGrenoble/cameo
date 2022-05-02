@@ -51,6 +51,9 @@ namespace cameo {
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
 
+ServerAndApp::ServerAndApp() {
+}
+
 ServerAndApp::ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app) :
 	m_server(std::move(server)), m_app(std::move(app)) {
 }

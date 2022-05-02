@@ -78,6 +78,11 @@ class ServerAndApp {
 
 public:
 	/**
+	 * Empty constructor.
+	 */
+	ServerAndApp();
+
+	/**
 	 * Constructor.
 	 * \param server The server.
 	 * \param app The app started by the server.
