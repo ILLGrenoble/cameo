@@ -43,7 +43,7 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
 #------------------------------------------------------------
 # CPack
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../CPackConfigCommon.in)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
   include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
 endif()
