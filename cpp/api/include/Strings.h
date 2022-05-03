@@ -272,6 +272,7 @@ public:
 	 * Constructor.
 	 * \param name The name.
 	 * \param id The id.
+	 * \param server The server identity.
 	 */
 	AppIdentity(const std::string& name, int id, const ServerIdentity& server);
 

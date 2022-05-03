@@ -62,7 +62,6 @@ public:
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param timeoutMs The timeout in milliseconds.
 	 * \param useProxy Uses the proxy or not.
 	 */
 	static std::unique_ptr<Server> create(const std::string& endpoint, bool useProxy = false);

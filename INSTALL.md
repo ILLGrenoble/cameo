@@ -71,3 +71,10 @@ $ ./build_and_package.sh <build_directory>
 The script provides the following .deb packages located in <build_directory>/packages/
 They can be installed using package manager.
 
+### Generate the documentation
+
+Generate the C++ Doxygen:
+
+```
+$ cmake --build . --target doc
+```

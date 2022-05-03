@@ -48,6 +48,10 @@ const std::string& Request::get() const {
 	return m_messagePart1;
 }
 
+const std::string& Request::getFirstPart() const {
+	return m_messagePart1;
+}
+
 const std::string& Request::getSecondPart() const {
 	return m_messagePart2;
 }

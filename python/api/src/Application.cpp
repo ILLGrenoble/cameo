@@ -269,7 +269,12 @@ PYBIND11_MODULE(cameopy, m) {
 					return py::bytes(result);
 				 }, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &basic::Request::get)
-	    .def("getSecondPart",
+		.def("getFirstPart",
+			[](basic::Request* instance) {
+				 auto result = instance->getFirstPart();
+				 return py::bytes(result);
+			 }, py::call_guard<py::gil_scoped_release>())
+		.def("getSecondPart",
 			[](basic::Request* instance) {
 				 auto result = instance->getSecondPart();
 				 return py::bytes(result);
@@ -306,6 +311,11 @@ PYBIND11_MODULE(cameopy, m) {
 				 return py::bytes(result);
 			 }, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &multi::Request::get)
+		.def("getFirstPart",
+			[](multi::Request* instance) {
+				 auto result = instance->getFirstPart();
+				 return py::bytes(result);
+			 }, py::call_guard<py::gil_scoped_release>())
 		.def("getSecondPart",
 			[](multi::Request* instance) {
 				 auto result = instance->getSecondPart();

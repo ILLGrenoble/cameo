@@ -73,6 +73,12 @@ public:
 	const std::string& get() const;
 
 	/**
+	 * Gets the first part.
+	 * \return The first part.
+	 */
+	const std::string& getFirstPart() const;
+
+	/**
 	 * Gets the second part.
 	 * \return The second part.
 	 */
