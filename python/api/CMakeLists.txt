@@ -14,7 +14,7 @@ include(FetchContent)
 
 
 # in order to find FindZeroMQ.cmake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/api)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 
 #------------------------------------------------------------
 # Dependencies

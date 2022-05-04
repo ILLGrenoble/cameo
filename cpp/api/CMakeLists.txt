@@ -35,7 +35,7 @@ endif()
 # Dependencies
 #------------------------------------------------------------
 # this is needed when including this file as subdir
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 
 find_package(ZeroMQ REQUIRED)
 find_package (Threads REQUIRED)
@@ -200,7 +200,7 @@ install(
   FILES
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/FindZeroMQ.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/FindZeroMQ.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT ${component_development}
   )

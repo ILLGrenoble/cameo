@@ -3,6 +3,7 @@
 BASE_BUILD_DIR=${1:-/dev/shm/cameo/}
 [ "$BASE_BUILD_DIR" != "${BASE_BUILD_DIR#/}" ] || BASE_BUILD_DIR=$PWD/$BASE_BUILD_DIR
 
+source_dir_cpp=cpp/api
 packages_dir=${BASE_BUILD_DIR}/packages
 mkdir ${packages_dir} -p
 #mvn  install
@@ -18,17 +19,27 @@ do
 	build_dir=$BASE_BUILD_DIR/$source_dir
 	cmake -S $source_dir -B $build_dir/ || exit 1
 	cmake --build $build_dir || exit 1
-	cpack -V --config $build_dir/CPackConfig.cmake -B $build_dir/packaging/ || exit 2
+	cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging/ || exit 2
 	mvPack
 done
 
+
+
+
+#---------- Server proxy (C++)
+source_dir=cpp/proxy
+build_dir=$BASE_BUILD_DIR/$source_dir
+cmake -S $source_dir -B $build_dir -DCMAKE_INSTALL_PREFIX=/usr/ -DCMAKE_MODULE_PATH=$source_dir/../ # with this it adds x86_64-linux-gnu to the path when running cpack
+cmake --build $build_dir 
+cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging 
+mvPack
+
 #--------------- API
 #---------- C++
-source_dir_cpp=cpp/api
 build_dir=$BASE_BUILD_DIR/$source_dir_cpp
 cmake -S $source_dir_cpp -B $build_dir -DCMAKE_INSTALL_PREFIX=/usr/ # with this it adds x86_64-linux-gnu to the path when running cpack
 cmake --build $build_dir 
-cpack -V --config $build_dir/CPackConfig.cmake -B $build_dir/packaging 
+cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging 
 mvPack
 
 #---------- Python
@@ -36,5 +47,6 @@ source_dir=python/api
 build_dir=$BASE_BUILD_DIR/$source_dir
 cmake -S $source_dir -B $build_dir -DCMAKE_PREFIX_PATH=$BASE_BUILD_DIR/$source_dir_cpp || exit 1
 cmake --build $build_dir || exit 1
-cpack -V --config $build_dir/CPackConfig.cmake -B $build_dir/packaging/ || exit 1
+cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging/ || exit 1
 mvPack
+
