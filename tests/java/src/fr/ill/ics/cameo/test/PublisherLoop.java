@@ -45,7 +45,8 @@ public class PublisherLoop {
 				
 				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 				}
 			}
 		}

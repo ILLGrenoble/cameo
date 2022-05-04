@@ -29,23 +29,32 @@ public class Converter {
 		
 		if (state == ApplicationState.NIL) {
 			return "NIL";
-		} else if (state == ApplicationState.STARTING) {
+		}
+		else if (state == ApplicationState.STARTING) {
 			return "STARTING";
-		} else if (state == ApplicationState.RUNNING) {
+		}
+		else if (state == ApplicationState.RUNNING) {
 			return "RUNNING";
-		} else if (state == ApplicationState.STOPPING) {
+		}
+		else if (state == ApplicationState.STOPPING) {
 			return "STOPPING";
-		} else if (state == ApplicationState.KILLING) {
+		}
+		else if (state == ApplicationState.KILLING) {
 			return "KILLING";
-		} else if (state == ApplicationState.PROCESSING_ERROR) {
+		}
+		else if (state == ApplicationState.PROCESSING_ERROR) {
 			return "PROCESSING_ERROR";
-		} else if (state == ApplicationState.FAILURE) {
+		}
+		else if (state == ApplicationState.FAILURE) {
 			return "FAILURE";
-		} else if (state == ApplicationState.SUCCESS) {
+		}
+		else if (state == ApplicationState.SUCCESS) {
 			return "SUCCESS";
-		} else if (state == ApplicationState.STOPPED) {
+		}
+		else if (state == ApplicationState.STOPPED) {
 			return "STOPPED";
-		} else if (state == ApplicationState.KILLED) {
+		}
+		else if (state == ApplicationState.KILLED) {
 			return "KILLED";
 		}
 		

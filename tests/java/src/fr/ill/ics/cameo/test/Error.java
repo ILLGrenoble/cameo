@@ -22,7 +22,8 @@ public class Error {
 		
 		try {
 			Thread.sleep(50);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 		}
 		
 		System.err.println("Error");

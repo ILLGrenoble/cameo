@@ -83,23 +83,32 @@ public class State {
 		
 		if (value.equals("NIL")) {
 			return State.NIL;
-		} else if (value.equals("STARTING")) {
+		}
+		else if (value.equals("STARTING")) {
 			return State.STARTING;
-		} else if (value.equals("RUNNING")) {
+		}
+		else if (value.equals("RUNNING")) {
 			return State.RUNNING;
-		} else if (value.equals("STOPPING")) {
+		}
+		else if (value.equals("STOPPING")) {
 			return State.STOPPING;
-		} else if (value.equals("KILLING")) {
+		}
+		else if (value.equals("KILLING")) {
 			return State.KILLING;
-		} else if (value.equals("PROCESSING_ERROR")) {
+		}
+		else if (value.equals("PROCESSING_ERROR")) {
 			return State.PROCESSING_ERROR;
-		} else if (value.equals("FAILURE")) {
+		}
+		else if (value.equals("FAILURE")) {
 			return State.FAILURE;
-		} else if (value.equals("SUCCESS")) {
+		}
+		else if (value.equals("SUCCESS")) {
 			return State.SUCCESS;
-		} else if (value.equals("STOPPED")) {
+		}
+		else if (value.equals("STOPPED")) {
 			return State.STOPPED;
-		} else if (value.equals("KILLED")) {
+		}
+		else if (value.equals("KILLED")) {
 			return State.KILLED;
 		}
 		

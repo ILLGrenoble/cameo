@@ -63,7 +63,8 @@ public class ApplicationConfig {
 				throw new NullPointerException();
 			}
 			this.name = name;
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			System.err.println("Error with attribute 'name' in configuration file, 'name' is necessary");
 			System.exit(-1);
 		}
@@ -76,7 +77,8 @@ public class ApplicationConfig {
 	public void setDescription(String description) {
 		if (description == null) {
 			this.description = "";
-		} else {
+		}
+		else {
 			this.description = description;
 		}
 	}
@@ -99,7 +101,8 @@ public class ApplicationConfig {
 				throw new NullPointerException();
 			}
 			this.startExecutable = executable;
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			System.err.println("Error with attribute 'executable' in configuration file, 'executable' is necessary");
 			System.exit(-1);
 		}
@@ -155,12 +158,15 @@ public class ApplicationConfig {
 			if (startingTime == null) {
 				// default value
 				this.startingTime = 0;
-			} else if (startingTime.equals(INF)) {
+			}
+			else if (startingTime.equals(INF)) {
 				this.startingTime = -1;
-			} else {
+			}
+			else {
 				this.startingTime = Integer.parseInt(startingTime);
 			}
-		} catch (java.lang.NumberFormatException e) {
+		}
+		catch (java.lang.NumberFormatException e) {
 			System.err.println("Error with value of attribute 'starting_time' in configuration file");
 			System.exit(-1);
 		}
@@ -185,11 +191,14 @@ public class ApplicationConfig {
 	public void setOutputStream(String value) {
 		if (value == null) {
 			this.outputStream = true;
-		} else if (value.equalsIgnoreCase("yes")) {
+		}
+		else if (value.equalsIgnoreCase("yes")) {
 			this.outputStream = true;
-		} else if (value.equalsIgnoreCase("no")) {
+		}
+		else if (value.equalsIgnoreCase("no")) {
 			this.outputStream = false;
-		} else {
+		}
+		else {
 			System.err.println("Error with attribute 'output_stream' in configuration file");
 			System.exit(-1);
 		}
@@ -219,13 +228,15 @@ public class ApplicationConfig {
 		try {
 			if (stoppingTime == null) {
 				this.stoppingTime = 10;
-			} else if (stoppingTime.equals(INF)) {
+			}
+			else if (stoppingTime.equals(INF)) {
 				this.stoppingTime = -1;
-			} else {
+			}
+			else {
 				this.stoppingTime = Integer.parseInt(stoppingTime);
 			}
-			
-		} catch (java.lang.NumberFormatException e) {
+		}
+		catch (java.lang.NumberFormatException e) {
 			System.err.println("Error with attribute 'stopping_time' in configuration file");
 			System.exit(-1);
 		}
@@ -241,9 +252,11 @@ public class ApplicationConfig {
 		}
 		else if (value.equalsIgnoreCase("no")) {
 			this.runSingle = true;
-		} else if (value.equalsIgnoreCase("yes")) {
+		}
+		else if (value.equalsIgnoreCase("yes")) {
 			this.runSingle = false;
-		} else {
+		}
+		else {
 			System.err.println("Error with attribute 'multiple' in configuration file");
 			System.exit(-1);
 		}
@@ -256,11 +269,14 @@ public class ApplicationConfig {
 	public void setRestart(String value) {
 		if (value == null) {
 			this.restart = false; 
-		} else if (value.equalsIgnoreCase("yes")) {
+		}
+		else if (value.equalsIgnoreCase("yes")) {
 			this.restart = true;
-		} else if (value.equalsIgnoreCase("no")) {
+		}
+		else if (value.equalsIgnoreCase("no")) {
 			this.restart = false;
-		} else {
+		}
+		else {
 			System.err.println("Error with attribute 'restart' in configuration file");
 			System.exit(-1);
 		}
@@ -285,12 +301,14 @@ public class ApplicationConfig {
 	public void setInfoArg(String value) {
 		if (value == null) {
 			this.infoArg = true;
-		} else if (value.equalsIgnoreCase("yes")) {
+		}
+		else if (value.equalsIgnoreCase("yes")) {
 			this.infoArg = true;
-		} else if (value.equalsIgnoreCase("no")) {
+		}
+		else if (value.equalsIgnoreCase("no")) {
 			this.infoArg = false;	
-			
-		} else {
+		}
+		else {
 			System.err.println("Error with attribute 'info_arg' in configuration file");
 			System.exit(-1);
 		}

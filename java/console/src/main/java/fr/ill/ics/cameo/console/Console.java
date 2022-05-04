@@ -155,7 +155,8 @@ public class Console {
 			Map<String, String> environment = System.getenv();
 			if (environment.containsKey(CAMEO_SERVER)) {
 				endpoint = environment.get(CAMEO_SERVER);
-			} else {
+			}
+			else {
 				// Default endpoint.
 				endpoint = "tcp://localhost:7000";
 			}
@@ -509,8 +510,8 @@ public class Console {
 					applicationName = info.getName();
 				}
 			}
-				
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			// Do nothing.
 		}
 		

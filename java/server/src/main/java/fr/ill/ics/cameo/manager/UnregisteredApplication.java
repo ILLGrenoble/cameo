@@ -19,11 +19,12 @@ public class UnregisteredApplication extends Application {
 				processHandle = ProcessHandlerImpl.ofPid(pid);
 				
 				Log.logger().info("Unregistered application " + this.getNameId() + " has pid " + pid);
-				
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Log.logger().info("Unregistered application " + this.getNameId() + " has no process handle");
 			}
-		} else {
+		}
+		else {
 			Log.logger().info("Unregistered application " + this.getNameId() + " has no pid");
 		}
 	}

@@ -34,7 +34,8 @@ public class SubscriberApp {
 		JSONObject object = null;
 		try {
 			object = (JSONObject)parser.parse(jsonMessage);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			System.err.println("Parse error");
 		}
 		
@@ -60,7 +61,8 @@ public class SubscriberApp {
 		
 		if (This.isAvailable() && server.isAvailable()) {
 			System.out.println("Connected server " + server);
-		} else {
+		}
+		else {
 			System.exit(-1);
 		}
 		
@@ -85,7 +87,8 @@ public class SubscriberApp {
 					System.out.println("\tmessage: " + (String)object.get("message"));
 					System.out.println("\tvalue: " + (Long)object.get("value"));
 					
-				} else {
+				}
+				else {
 					break;
 				}
 			}

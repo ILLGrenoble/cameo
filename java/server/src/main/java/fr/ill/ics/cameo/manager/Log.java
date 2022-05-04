@@ -87,10 +87,11 @@ public final class Log {
 
 			// first log
 			instance.logger.fine("Logs written to " + ConfigManager.getInstance().getLogPath() + "/cameo.log");
-			
-		} catch (SecurityException e) {
+		}
+		catch (SecurityException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

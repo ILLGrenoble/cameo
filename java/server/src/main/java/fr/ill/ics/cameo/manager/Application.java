@@ -268,12 +268,12 @@ public abstract class Application extends ApplicationConfig {
 			
 			Date end = new Date();
 			Log.logger().fine("Application " + this.getNameId() + " has error processed executed in " + (end.getTime() - begin.getTime()) + "ms");
-			
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Log.logger().severe("Application " + this.getNameId() + " cannot execute error process: " + e.getMessage());
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			
+		}
+		catch (InterruptedException e) {
 		}
 		Log.logger().info("Application " + this.getNameId() + " has error process finished");
 	}

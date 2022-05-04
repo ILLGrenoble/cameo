@@ -168,7 +168,7 @@ public abstract class ConfigLoader {
 			String[] proxyPorts = proxyPortsString.split(",");
 			
 			if (proxyPorts.length < 3) {
-				Log.logger().severe("Error, " + PROXY_PORTS + " must contain three ports");
+				Log.logger().severe("Error: " + PROXY_PORTS + " must contain three ports");
 			}
 			else {
 				ConfigManager.getInstance().setResponderProxyPort(proxyPorts[0].strip());

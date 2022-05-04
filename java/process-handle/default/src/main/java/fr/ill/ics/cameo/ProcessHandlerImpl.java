@@ -45,8 +45,10 @@ public class ProcessHandlerImpl {
 		
 		try {
 			onProcessExit.get();
-		} catch (InterruptedException e) {
-		} catch (ExecutionException e) {
+		}
+		catch (InterruptedException e) {
+		}
+		catch (ExecutionException e) {
 		}
 	}
 }

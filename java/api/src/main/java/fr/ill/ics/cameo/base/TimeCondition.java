@@ -32,7 +32,8 @@ public class TimeCondition {
 		
 		try {
 			super.wait(timeMs);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			return true;
 		}
 		

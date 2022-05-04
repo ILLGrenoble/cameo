@@ -102,7 +102,8 @@ public class KeyValue {
 			if (other.value != null) {
 				return false;
 			}
-		} else if (!value.equals(other.value)) {
+		}
+		else if (!value.equals(other.value)) {
 			return false;
 		}
 		return true;

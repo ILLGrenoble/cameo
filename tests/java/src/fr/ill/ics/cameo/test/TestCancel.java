@@ -56,8 +56,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		This.cancelAll();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -89,8 +89,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		stopApplication.cancel();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -122,8 +122,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		publisher.cancel();	
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -154,8 +154,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		pubLoopApplication.kill();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -170,8 +170,8 @@ public class TestCancel {
 					if (data == null) {
 						System.out.println("Exiting loop");
 						break;
-						
-					} else {
+					}
+					else {
 						System.out.println("Received " + data);
 					}
 				}
@@ -203,8 +203,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		This.cancelAll();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -217,8 +217,8 @@ public class TestCancel {
 					if (data == null) {
 						System.out.println("Exiting loop");
 						break;
-						
-					} else {
+					}
+					else {
 						System.out.println("Received " + data);
 					}
 				}
@@ -232,8 +232,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		pubLoopApplication.kill();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -265,8 +265,8 @@ public class TestCancel {
 				    	try {
 				    		Thread.sleep(1000);
 				    		responder.cancel();	
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});
@@ -325,8 +325,8 @@ public class TestCancel {
 				    		Thread.sleep(1000);
 				    		requester.cancel();
 				    		responder.cancel();
-				    		
-				    	} catch (InterruptedException e) {
+				    	}
+				    	catch (InterruptedException e) {
 						}
 				    }
 				});

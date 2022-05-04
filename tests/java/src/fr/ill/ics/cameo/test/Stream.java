@@ -30,7 +30,8 @@ public class Stream {
 			System.out.println("Printing " + i);
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 			}
 			i++;
 		}

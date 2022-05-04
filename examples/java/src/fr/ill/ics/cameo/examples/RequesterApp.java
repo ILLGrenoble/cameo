@@ -55,7 +55,8 @@ public class RequesterApp {
 		
 		if (This.isAvailable() && server.isAvailable()) {
 			System.out.println("Connected server " + server);
-		} else {
+		}
+		else {
 			System.exit(-1);
 		}
 		

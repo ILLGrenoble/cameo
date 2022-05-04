@@ -376,7 +376,8 @@ public class Server {
 				// A sleep is used to avoid to have too many requests that "block" the zeromq queue.
 				try {
 					Thread.sleep(ConfigManager.getInstance().getSleepTime());
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 				}
 			}
 
@@ -430,8 +431,8 @@ public class Server {
 					return;
 				}
 			}
-
-		} catch (IOException E) {
+		}
+		catch (IOException E) {
 			// handle
 		}
 	}

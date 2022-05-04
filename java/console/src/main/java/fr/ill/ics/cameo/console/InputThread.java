@@ -71,20 +71,24 @@ public class InputThread extends Thread {
 					if (readSize > 1) {
 						try {
 							server.writeToInputStream(applicationID, input);
-						} catch (RemoteException e) {
+						}
+						catch (RemoteException e) {
 							System.err.println("cannot write to input stream: " + e.getMessage());
 						}
 					}
 					
-				} else {
+				}
+				else {
 					try {
 						Thread.sleep(50);
-					} catch (InterruptedException e) {
+					}
+					catch (InterruptedException e) {
 						// do nothing
 					}
 				}
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			// error
 		}
 	}
@@ -94,7 +98,8 @@ public class InputThread extends Thread {
 			running = false;
 			try {
 				this.join();
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 			}
 		}	
 	}

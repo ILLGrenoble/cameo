@@ -213,8 +213,8 @@ public class StreamApplicationThread extends ApplicationThread {
 					fileOutputStream.close();
 					fileOutputStream = null;
 				}
-				
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				Log.logger().severe("Application " + application.getNameId() + " cannot close log file: " + e.getMessage());
 			}
 			

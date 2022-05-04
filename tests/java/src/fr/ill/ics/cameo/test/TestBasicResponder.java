@@ -95,7 +95,8 @@ public class TestBasicResponder {
 				System.out.println("Wait so that the responder has replied");
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 				}
 				
 				System.out.println("Response is " + requester.receiveString());

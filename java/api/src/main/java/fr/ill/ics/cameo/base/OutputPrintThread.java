@@ -50,11 +50,11 @@ public class OutputPrintThread extends Thread {
 					System.out.print(stream.getMessage());
 				}
 			}
-			
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-			
-		} finally {
+		}
+		finally {
 			// destroy the socket, because it is no longer needed
 			socket.terminate();
 		}
@@ -66,7 +66,8 @@ public class OutputPrintThread extends Thread {
 	public void waitFor() {
 		try {
 			this.join();
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			// do nothing
 		}
 	}

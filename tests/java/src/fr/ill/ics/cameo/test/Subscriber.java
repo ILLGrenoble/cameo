@@ -33,8 +33,8 @@ public class Subscriber {
 		if (args.length > 1) {
 			applicationName = args[0];
 			System.out.println("Publisher application is " + applicationName);
-			
-		} else {
+		}
+		else {
 			System.err.println("Arguments: [application name]");
 			System.exit(-1);
 		}

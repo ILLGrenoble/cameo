@@ -74,7 +74,8 @@ public class TestPublisher {
 					String data = subscriber.receiveString();
 					if (data != null) {
 						System.out.println("Received " + data);
-					} else {
+					}
+					else {
 						break;
 					}
 				}

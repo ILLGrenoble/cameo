@@ -68,7 +68,8 @@ public class ConnectionChecker {
 			waitCondition.notifyCondition();
 			try {
 				thread.join();
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 			}
 		}
 	}

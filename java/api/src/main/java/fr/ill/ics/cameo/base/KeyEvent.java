@@ -91,7 +91,8 @@ public class KeyEvent extends Event {
 			if (other.name != null) {
 				return false;
 			}
-		} else if (!name.equals(other.name)) {
+		}
+		else if (!name.equals(other.name)) {
 			return false;
 		}
 		if (key != other.key) {
@@ -104,7 +105,8 @@ public class KeyEvent extends Event {
 			if (other.value != null) {
 				return false;
 			}
-		} else if (!value.equals(other.value)) {
+		}
+		else if (!value.equals(other.value)) {
 			return false;
 		}
 		return true;

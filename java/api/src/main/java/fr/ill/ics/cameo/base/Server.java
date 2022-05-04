@@ -246,10 +246,11 @@ public class Server implements IObject, ITimeoutable {
 		try {
 			requestSocket.requestJSON(Messages.createSyncRequest(), timeout);
 			return true;
-
-		} catch (ConnectionTimeout e) {
+		}
+		catch (ConnectionTimeout e) {
 			// do nothing, timeout
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			// do nothing
 		}
 		
