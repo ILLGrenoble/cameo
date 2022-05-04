@@ -42,6 +42,9 @@ public final class ConfigManager {
 	private Endpoint subscriberProxyHostEndpoint;
 	private boolean proxies;
 	
+	private final static int DEFAULT_MAX_APPLICATIONS = 65536;
+	private final static int DEFAULT_PORT = 7000;
+	
 	private ConfigManager() {
 		super();
 	}
@@ -65,7 +68,8 @@ public final class ConfigManager {
 	public void setLogPath(String path) {
 		if (path == null) {
 			logPath = ".";
-		} else {
+		}
+		else {
 			logPath = path;
 		}	
 	}
@@ -101,18 +105,18 @@ public final class ConfigManager {
 	public void setMaxNumberOfApplications(String number) {
 		try {
 			if (number == null) {
-				maxNumberOfApplications = 65536;
+				maxNumberOfApplications = DEFAULT_MAX_APPLICATIONS;
 			}
 			else {
 				maxNumberOfApplications = Integer.parseInt(number);
 			}
 			
 			if (maxNumberOfApplications <= 0) {
-				throw new NumberFormatException("Error, the property 'max_applications' must be strictly positive");
+				throw new NumberFormatException("Error: the property 'max_applications' must be strictly positive");
 			}
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, the property 'max_applications' is required");
+			System.err.println("Error: the property 'max_applications' is required");
 			System.exit(-1);
 		}
 	}
@@ -153,6 +157,10 @@ public final class ConfigManager {
 	
 	private int defineBasePort(String portString) {
 		
+		if (portString == null) {
+			return DEFAULT_PORT;
+		}
+		
 		int port = 0;
 		
 		try {
@@ -162,7 +170,7 @@ public final class ConfigManager {
 			PortManager.getInstance().setBasePort(port + 1);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, the property 'port' is required");
+			System.err.println("Error: the property 'port' is required");
 			System.exit(-1);
 		}
 		
@@ -229,7 +237,7 @@ public final class ConfigManager {
 			responderProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, responder proxy port is not an integer");
+			System.err.println("Error: responder proxy port is not an integer");
 		}
 		
 		String localhost;
@@ -263,7 +271,7 @@ public final class ConfigManager {
 			publisherProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, publisher proxy port is not an integer");
+			System.err.println("Error: publisher proxy port is not an integer");
 		}
 	}
 	
@@ -273,7 +281,7 @@ public final class ConfigManager {
 			subscriberProxyPort = Integer.parseInt(portString);
 		}
 		catch (java.lang.NumberFormatException e) {
-			System.err.println("Error, subscriber proxy port is not an integer");
+			System.err.println("Error: subscriber proxy port is not an integer");
 		}
 		
 		String localhost;
