@@ -12,14 +12,13 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
-
 # in order to find FindZeroMQ.cmake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/api)
 
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
-#list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/api/build/)
 #message(STATUS ${CMAKE_MODULE_PATH})
 find_package(cameo-api-cpp-static 2.0.0 REQUIRED) # provided by the C++ API
 find_package(pybind11 2.4.3 QUIET)
