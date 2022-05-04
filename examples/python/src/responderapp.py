@@ -6,14 +6,14 @@ import cameopy
 this = cameopy.This
 this.init(sys.argv)
 
-responder = cameopy.Responder.create("the-responder")
+responder = cameopy.BasicResponder.create("the-responder")
 responder.init()
 print("Created responder", responder.getName())
 
 this.setRunning()
 
 while True:
-  request = responder.receiveString();
+  request = responder.receive();
   if request:
     requestStr = request.getString()
     print("received request", requestStr)
