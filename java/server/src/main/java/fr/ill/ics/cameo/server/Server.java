@@ -43,7 +43,7 @@ public class Server {
 	private Zmq.Context context;
 	private Zmq.Socket socket;
 	private String configFileName;
-	private String proxyPath = Paths.get("build", "cpp", "proxy").toString(); // Default path, useful for tests and examples.
+	private String proxyPath = "";
 	private Process repProxyProcess;
 	private Process pubProxyProcess;
 	private InputStream configStream;
@@ -89,7 +89,7 @@ public class Server {
 			return;
 		}
 		
-		// Start the two rep proxy program.
+		// Start the two proxy programs.
 		Path repProxyPath = Paths.get(proxyPath, CAMEO_REP_PROXY);
 		
 		String repProxyCommandList[] = new String[2];
