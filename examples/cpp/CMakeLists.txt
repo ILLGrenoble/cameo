@@ -2,7 +2,7 @@
 # Project
 #------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
 project(cameo-examples VERSION 1.0.0 LANGUAGES CXX)
