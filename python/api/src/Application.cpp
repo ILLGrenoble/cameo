@@ -30,7 +30,7 @@ using namespace cameo::coms;
 
 PYBIND11_MODULE(cameopy, m) {
 
-	m.doc() = "Python binding of C++ API"; // optional module docstring
+	m.doc() = "Python binding of Cameo C++ API"; // optional module docstring
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
