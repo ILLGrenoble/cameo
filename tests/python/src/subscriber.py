@@ -13,7 +13,7 @@ server = this.getServer()
 
 app = server.connect(applicationName, 0)
 
-subscriber = cameopy.Subscriber.create(app, "publisher")
+subscriber = cameopy.coms.Subscriber.create(app, "publisher")
 subscriber.init()
 
 print("Synchronized with 1 publisher")

@@ -95,7 +95,7 @@ def testCancelWaitForSubscribers():
 
     print("Creating publisher and waiting for 1 subscriber...")
 
-    publisher = cameopy.Publisher.create("publisher", 1)
+    publisher = cameopy.coms.Publisher.create("publisher", 1)
 
     # Start thread.
     t = threading.Thread(target=cancelWaitForSubscribers, args=(publisher,))
@@ -118,7 +118,7 @@ def testKillApplication():
     t = threading.Thread(target=killApplication, args=(app,))
     t.start()
 
-    subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber = cameopy.coms.Subscriber.create(app, "publisher")
     subscriber.init()
 
     # Receiving data.
@@ -145,7 +145,7 @@ def testCancelSubscriber():
     app = server.start("publisherlooppy")
 
     # Create a subscriber.
-    subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber = cameopy.coms.Subscriber.create(app, "publisher")
     subscriber.init()
     
     # Start cancel thread.
@@ -178,7 +178,7 @@ def testResponder():
     
     print("Creating basic responder and waiting for requests")
     
-    responder = cameopy.BasicResponder.create("responder")
+    responder = cameopy.coms.basic.Responder.create("responder")
     responder.init()
     
     # Start cancel thread.
@@ -199,7 +199,7 @@ def testRequester():
     
     print("Creating basic responder and requester")
     
-    responder = cameopy.BasicResponder.create("responder")
+    responder = cameopy.coms.basic.Responder.create("responder")
     responder.init()
     
     # Start reponder thread.
@@ -208,7 +208,7 @@ def testRequester():
     
     thisApp = server.connect(cameopy.This.getName())
     
-    requester = cameopy.Requester.create(thisApp, "responder")
+    requester = cameopy.coms.Requester.create(thisApp, "responder")
     requester.init()
     
     # Start cancel thread.

@@ -58,6 +58,9 @@ PYBIND11_MODULE(cameopy, m) {
 	// The call_guard policy is set to py::gil_scoped_release for all bindings except for getters and setters that use a local member of the object.
 	// If the policy is not set, the bindings are blocking other Python running threads.
 
+	///////////////////////////////////////////////////////////////////////////
+	// base
+
 	py::class_<ServerAndApp>(m, "ServerAndApp")
 		    .def("getServer", &ServerAndApp::getServer, py::return_value_policy::reference)
 			.def("getApp", &ServerAndApp::getApp, py::return_value_policy::reference)
@@ -204,7 +207,46 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &Server::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Publisher>(m, "Publisher")
+	///////////////////////////////////////////////////////////////////////////
+	// app
+	py::module am = m.def_submodule("app", "App module");
+
+	py::class_<App::Config>(am, "Config")
+		.def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
+		.def("getName", &App::Config::getName)
+		.def("getDescription", &App::Config::getDescription)
+		.def("hasSingleInstance", &App::Config::hasSingleInstance)
+		.def("canRestart", &App::Config::canRestart)
+		.def("getStartingTime", &App::Config::getStartingTime)
+		.def("getStoppingTime", &App::Config::getStoppingTime)
+		.def("__str__", &App::Config::toString,
+				py::call_guard<py::gil_scoped_release>());
+
+	py::class_<App::Info>(am, "Info")
+		.def(py::init<const std::string&, int, int, State, State, const std::string&>())
+		.def("getId", &App::Info::getId)
+		.def("getState", &App::Info::getState)
+		.def("getPastStates", &App::Info::getPastStates)
+		.def("getArgs", &App::Info::getArgs)
+		.def("getName", &App::Info::getName)
+		.def("getPid", &App::Info::getPid)
+		.def("__str__", &App::Info::toString,
+				py::call_guard<py::gil_scoped_release>());
+
+	py::class_<App::Port>(am, "Port")
+		.def(py::init<int, const std::string&, const std::string&>())
+		.def("getPort", &App::Port::getPort)
+		.def("getStatus", &App::Port::getStatus)
+		.def("getOwner", &App::Port::getOwner)
+		.def("__str__", &App::Port::toString,
+				py::call_guard<py::gil_scoped_release>());
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// coms
+	py::module cm = m.def_submodule("coms", "Communication patterns module");
+
+	py::class_<Publisher>(cm, "Publisher")
 	    .def_static("create", &Publisher::create,
 	    		"name"_a,
 	    		"numberOfSubscribers"_a = 0,
@@ -225,7 +267,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &Publisher::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<Subscriber>(m, "Subscriber")
+	py::class_<Subscriber>(cm, "Subscriber")
 	    .def_static("create", &Subscriber::create,
 	    		"instance"_a,
 	    		"publisherName"_a,
@@ -262,7 +304,47 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &Subscriber::toString,
 					py::call_guard<py::gil_scoped_release>());
 
-	py::class_<basic::Request>(m, "BasicRequest")
+	py::class_<Requester>(cm, "Requester")
+		.def_static("create", &Requester::create,
+				"instance"_a,
+				"name"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
+		.def("terminate", &Requester::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("setTimeout", &Requester::setTimeout)
+		.def("setPollingTime", &Requester::setPollingTime)
+		.def("getName", &Requester::getResponderName)
+		.def("getAppName", &Requester::getAppName)
+		.def("getAppId", &Requester::getAppId)
+		.def("getAppEndpoint", &Requester::getAppEndpoint)
+		.def("send", &Requester::send,
+				"request"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("sendTwoParts", &Requester::sendTwoParts,
+				"request1"_a, "request2"_a,
+				py::call_guard<py::gil_scoped_release>())
+
+		.def("receive",
+			[](Requester* instance) {
+				 auto result = instance->receive();
+				 if (result.has_value() == false)
+					 return py::bytes("");
+				 return py::bytes(result.value());
+			 }, py::call_guard<py::gil_scoped_release>())
+
+		.def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
+		.def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
+		.def("isCanceled", &Requester::isCanceled)
+		.def("hasTimedout", &Requester::hasTimedout)
+		.def("__str__", &Requester::toString,
+				py::call_guard<py::gil_scoped_release>());
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// coms basic
+	py::module cbm = cm.def_submodule("basic", "Communication patterns basic module");
+
+	py::class_<basic::Request>(cbm, "Request")
 	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
 		.def("get", [](basic::Request* instance) {
 					auto result = instance->get();
@@ -289,7 +371,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &basic::Request::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<basic::Responder>(m, "BasicResponder")
+	py::class_<basic::Responder>(cbm, "Responder")
 	    .def_static("create", &basic::Responder::create,
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
@@ -303,7 +385,11 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>());
 
 
-	py::class_<multi::Request>(m, "MultiRequest")
+	///////////////////////////////////////////////////////////////////////////
+	// coms basic
+	py::module cmm = cm.def_submodule("multi", "Communication patterns multi module");
+
+	py::class_<multi::Request>(cmm, "Request")
 		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
 		.def("get",
 			[](multi::Request* instance) {
@@ -331,7 +417,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &multi::Request::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<multi::ResponderRouter>(m, "MultiResponderRouter")
+	py::class_<multi::ResponderRouter>(cmm, "ResponderRouter")
 		.def_static("create", &multi::ResponderRouter::create,
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
@@ -346,7 +432,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("__str__", &multi::ResponderRouter::toString,
 				py::call_guard<py::gil_scoped_release>());
 
-	py::class_<multi::Responder>(m, "MultiResponder")
+	py::class_<multi::Responder>(cmm, "Responder")
 		.def_static("create", &multi::Responder::create,
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
@@ -356,71 +442,6 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("isCanceled", &multi::Responder::isCanceled)
 		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &multi::Responder::toString,
-				py::call_guard<py::gil_scoped_release>());
-
-	py::class_<Requester>(m, "Requester")
-	    .def_static("create", &Requester::create,
-	    		"instance"_a,
-				"name"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
-		.def("terminate", &Requester::terminate, py::call_guard<py::gil_scoped_release>())
-		.def("setTimeout", &Requester::setTimeout)
-		.def("setPollingTime", &Requester::setPollingTime)
-	    .def("getName", &Requester::getResponderName)
-		.def("getAppName", &Requester::getAppName)
-		.def("getAppId", &Requester::getAppId)
-		.def("getAppEndpoint", &Requester::getAppEndpoint)
-	    .def("send", &Requester::send,
-	    		"request"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-	    .def("sendTwoParts", &Requester::sendTwoParts,
-	    		"request1"_a, "request2"_a,
-	    		py::call_guard<py::gil_scoped_release>())
-
-		.def("receive",
-			[](Requester* instance) {
-				 auto result = instance->receive();
-				 if (result.has_value() == false)
-					 return py::bytes("");
-				 return py::bytes(result.value());
-			 }, py::call_guard<py::gil_scoped_release>())
-
-	    .def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
-	    .def("isCanceled", &Requester::isCanceled)
-        .def("hasTimedout", &Requester::hasTimedout)
-		.def("__str__", &Requester::toString,
-				py::call_guard<py::gil_scoped_release>());
-
-	py::class_<App::Config>(m, "AppConfig")
-	    .def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
-	    .def("getName", &App::Config::getName)
-	    .def("getDescription", &App::Config::getDescription)
-	    .def("hasSingleInstance", &App::Config::hasSingleInstance)
-	    .def("canRestart", &App::Config::canRestart)
-	    .def("getStartingTime", &App::Config::getStartingTime)
-	    .def("getStoppingTime", &App::Config::getStoppingTime)
-		.def("__str__", &App::Config::toString,
-				py::call_guard<py::gil_scoped_release>());
-
-	py::class_<App::Info>(m, "AppInfo")
-	    .def(py::init<const std::string&, int, int, State, State, const std::string&>())
-	    .def("getId", &App::Info::getId)
-	    .def("getState", &App::Info::getState)
-	    .def("getPastStates", &App::Info::getPastStates)
-	    .def("getArgs", &App::Info::getArgs)
-	    .def("getName", &App::Info::getName)
-	    .def("getPid", &App::Info::getPid)
-		.def("__str__", &App::Info::toString,
-				py::call_guard<py::gil_scoped_release>());
-
-	py::class_<App::Port>(m, "AppPort")
-	    .def(py::init<int, const std::string&, const std::string&>())
-	    .def("getPort", &App::Port::getPort)
-	    .def("getStatus", &App::Port::getStatus)
-	    .def("getOwner", &App::Port::getOwner)
-		.def("__str__", &App::Port::toString,
 				py::call_guard<py::gil_scoped_release>());
 
 }

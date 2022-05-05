@@ -8,7 +8,7 @@ this.init(sys.argv)
 def responderProcess():
     print("Creating responder")
     
-    responder = cameopy.MultiResponder.create(router)
+    responder = cameopy.coms.multi.Responder.create(router)
     responder.init()
     
     print("Created responder")
@@ -31,7 +31,7 @@ def responderProcess():
 
 print("Creating router")
 
-router = cameopy.MultiResponderRouter.create("responder")
+router = cameopy.coms.multi.ResponderRouter.create("responder")
 router.init()
 
 print("Created router")

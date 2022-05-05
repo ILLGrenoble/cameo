@@ -14,7 +14,7 @@ responderApp = server.connect("responderpy", 0)
 
 print("Connected", responderApp)
 
-requester = cameopy.Requester.create(responderApp, "the-responder")
+requester = cameopy.coms.Requester.create(responderApp, "the-responder")
 requester.init()
 
 for i in range(numberOfTimes):

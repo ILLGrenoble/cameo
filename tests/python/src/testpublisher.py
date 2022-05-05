@@ -30,7 +30,7 @@ for i in range(numberOfTimes):
     
     print("Started application", applicationName)
     
-    subscriber = cameopy.Subscriber.create(app, "publisher")
+    subscriber = cameopy.coms.Subscriber.create(app, "publisher")
     subscriber.init()
     
     print("Created subscriber", subscriber)

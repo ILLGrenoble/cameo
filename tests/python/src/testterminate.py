@@ -31,14 +31,14 @@ thisApp = server.connect(cameopy.This.getName())
 
 print("Creating basic responder and requester")
     
-responder = cameopy.BasicResponder.create("responder")
+responder = cameopy.coms.basic.Responder.create("responder")
 responder.init()
 
 # Start reponder thread.
 tr = threading.Thread(target=loopResponder, args=(responder,))
 tr.start()
     
-requester = cameopy.Requester.create(thisApp, "responder")
+requester = cameopy.coms.Requester.create(thisApp, "responder")
 requester.init()
     
 # Start cancel thread.
@@ -50,10 +50,10 @@ tc.join()
 
 print("Creating publisher and subscriber")
 
-publisher = cameopy.Publisher.create("publisher")
+publisher = cameopy.coms.Publisher.create("publisher")
 publisher.init()
 
-subscriber = cameopy.Subscriber.create(thisApp, "publisher")
+subscriber = cameopy.coms.Subscriber.create(thisApp, "publisher")
 subscriber.init()
 
 requester.terminate()

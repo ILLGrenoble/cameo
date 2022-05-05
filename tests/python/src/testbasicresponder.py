@@ -31,7 +31,7 @@ for i in range(numberOfTimes):
     app = server.start(applicationName, args)
     print("Started application", applicationName)
 
-    requester = cameopy.Requester.create(app, "responder")
+    requester = cameopy.coms.Requester.create(app, "responder")
     requester.init()
     
     print("Created requester", requester)

@@ -12,7 +12,7 @@ starter = this.connectToStarter(0, useProxy)
 app = starter.getApp()
 
 # Create a requester.
-requester = cameopy.Requester.create(app, "responder")
+requester = cameopy.coms.Requester.create(app, "responder")
 requester.init()
 
 this.setRunning()

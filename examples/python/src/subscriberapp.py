@@ -11,7 +11,7 @@ publisherApp = server.connect("publisherpy", 0)
 
 print("Connected", publisherApp)
 
-subscriber = cameopy.Subscriber.create(publisherApp, "the-publisher")
+subscriber = cameopy.coms.Subscriber.create(publisherApp, "the-publisher")
 subscriber.init()
 
 print("Created subscriber", subscriber)

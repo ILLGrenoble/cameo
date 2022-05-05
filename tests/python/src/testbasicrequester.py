@@ -26,7 +26,7 @@ server.init()
 print("Requester application is", applicationName)
 print("Creating responder")
 
-responder = cameopy.BasicResponder.create("responder")
+responder = cameopy.coms.basic.Responder.create("responder")
 responder.init()
 
 print("Created responder", responder)

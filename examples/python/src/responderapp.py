@@ -6,7 +6,7 @@ import cameopy
 this = cameopy.This
 this.init(sys.argv)
 
-responder = cameopy.BasicResponder.create("the-responder")
+responder = cameopy.coms.basic.Responder.create("the-responder")
 responder.init()
 print("Created responder", responder.getName())
 

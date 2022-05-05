@@ -8,7 +8,7 @@ useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
 
 print("Creating responder")
 
-responder = cameopy.BasicResponder.create("responder")
+responder = cameopy.coms.basic.Responder.create("responder")
 responder.init()
 
 this.setRunning()

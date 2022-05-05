@@ -37,7 +37,7 @@ for id in range(N):
     
     print("Creating requester")
     
-    requester = cameopy.Requester.create(app, "responder")
+    requester = cameopy.coms.Requester.create(app, "responder")
     requester.init()
     requesters.append(requester)
         

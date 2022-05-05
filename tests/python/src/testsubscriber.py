@@ -37,7 +37,7 @@ for i in range(numberOfTimes):
     
     # Set the publisher to None deletes the previous one and ensures that it is correctly removed.
     publisher = None 
-    publisher = cameopy.Publisher.create("publisher")
+    publisher = cameopy.coms.Publisher.create("publisher")
     publisher.init()
     
     print("Created publisher", publisher)
