@@ -209,6 +209,9 @@ PYBIND11_MODULE(cameopy, m) {
 
 	///////////////////////////////////////////////////////////////////////////
 	// app
+	//
+	// Submodules can be part of a different C++ library: https://hopstorawpointers.blogspot.com/2018/06/pybind11-and-python-sub-modules.html
+
 	py::module am = m.def_submodule("app", "App module");
 
 	py::class_<App::Config>(am, "Config")
