@@ -94,7 +94,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		int id {event[message::KeyEvent::ID].GetInt()};
 		std::string name {event[message::KeyEvent::NAME].GetString()};
-		long status {event[message::KeyEvent::STATUS].GetInt64()};
+		long status {event[message::KeyEvent::STATUS].GetInt()};
 		std::string key {event[message::KeyEvent::KEY].GetString()};
 		std::string value {event[message::KeyEvent::VALUE].GetString()};
 
