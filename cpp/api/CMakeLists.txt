@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo-api-cpp
-  VERSION 2.0.0
+  VERSION 2.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -98,11 +98,14 @@ target_include_directories(${LIBNAME}
 get_target_property(obj_INTERFACE_LINK_LIBRARIES ${LIBNAME}-obj INTERFACE_LINK_LIBRARIES)
 get_target_property(obj_INTERFACE_COMPILE_FEATURES ${LIBNAME}-obj INTERFACE_COMPILE_FEATURES)
 get_target_property(obj_INTERFACE_INCLUDE_DIRECTORIES ${LIBNAME}-obj INTERFACE_INCLUDE_DIRECTORIES)
+
+# Inherit link libraries from obj
+target_link_libraries(${LIBNAME} PUBLIC "${obj_INTERFACE_LINK_LIBRARIES}")
+
 set_target_properties(${LIBNAME} PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
-  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
   INTERFACE_COMPILE_FEATURES ${obj_INTERFACE_COMPILE_FEATURES}
   INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
   )

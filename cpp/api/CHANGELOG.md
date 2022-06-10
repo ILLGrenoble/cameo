@@ -1,3 +1,8 @@
+2.0.1
+-----
+
+* Corrected missing dependencies in dynamic library.
+
 2.0.0
 -----
 
