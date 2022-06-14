@@ -1,3 +1,8 @@
+2.0.1
+-----
+
+* Managing bad requests.
+
 2.0.0
 -----
 
