@@ -1,2 +1,2 @@
 #!/bin/sh
-java --illegal-access=deny -jar "`dirname $0`/../@JAVA_INSTALL_DIR@/@PROJECT_JAR_FILE_NAME@" "$@"
+java -jar "`dirname $0`/../@JAVA_INSTALL_DIR@/@PROJECT_JAR_FILE_NAME@" "$@"

@@ -222,28 +222,24 @@ public class Server {
 		// Wait for the requests.
 		while (true) {
 
-			Zmq.Msg message = null;
-			Zmq.Msg reply = null;
+			Zmq.Msg reply = new Zmq.Msg();
 
 			try {
 				// Receive the multi-part message.
-				message = Zmq.Msg.recvMsg(socket);
-
+				Zmq.Msg message = Zmq.Msg.recvMsg(socket);
+				
 				if (message == null) {
 					break;
 				}
 
 				// Get all the parts. 
 				byte[][] data = message.getAllData();
-		
+				
 				// Get the identity of the router.
 				byte[] proxyIdentity = data[0];
 		
 				// Get the identity of the requester.
 				byte[] requesterIdentity = data[2];
-
-				// Prepare the reply.
-				reply = new Zmq.Msg();
 				
 				// Add the necessary parts.
 				reply.add(proxyIdentity);
@@ -353,23 +349,15 @@ public class Server {
 					process.processSetStopHandlerRequest(request, reply, manager);
 				}
 				else {
-					System.err.println("Unknown request type " + type);
-					message.send(socket);
+					Log.logger().info("Unknown request type " + type);
 				}
 
 				// Send reply to the client.
-				if (reply != null) {
-					reply.send(socket);
-				}
+				reply.send(socket);
 			}
-			catch (ParseException e) {
-				System.err.println("Cannot parse request");
-				
-				// Reply bad request if no reply was sent.
-				if (reply != null) {
-					reply.add("Bad request");
-					reply.send(socket);
-				}
+			catch (Throwable e) {
+				Log.logger().info("Cannot process request");
+				reply.send(socket);
 			}
 			finally {
 				// Do not use the garbage collector since Java 9 because it is causing a memory leak.
