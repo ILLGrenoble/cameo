@@ -14,7 +14,7 @@ Testing is performed using the doctest framework.
 For convenience, the packages for some major distributions are listed in the following:
 
  - CENTOS 8: `yum install -y cmake pybind11-devel`
- - Ubuntu bionic: `sudo apt install libzmq3-dev`
+ - Ubuntu: `sudo apt install libzmq3-dev python3-dev python3-distutils`
  *N.B.* `pybind11-dev` has version 2.0.1 while 2.4.3 is needed -> most recent version automatically downloaded and compiled from source
 
 ## How to compile and install
