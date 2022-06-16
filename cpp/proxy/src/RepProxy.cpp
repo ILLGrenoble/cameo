@@ -52,18 +52,44 @@ int main(int argc, char *argv[]) {
 		if (items[0].revents & ZMQ_POLLIN) {
 
 			zmq::message_t fromIdentity, empty, toIdentity, message;
+
+			// From identity.
 			if (!router.recv(fromIdentity, zmq::recv_flags::none)) {
 				continue;
 			}
+
+			if (!fromIdentity.more()) {
+				continue;
+			}
+
+			// Empty.
 			if (!router.recv(empty, zmq::recv_flags::none)) {
 				continue;
 			}
+
+			if (!empty.more()) {
+				continue;
+			}
+
+			// To identity.
 			if (!router.recv(toIdentity, zmq::recv_flags::none)) {
 				continue;
 			}
+
+			if (!toIdentity.more()) {
+				continue;
+			}
+
+			// Empty.
 			if (!router.recv(empty, zmq::recv_flags::none)) {
 				continue;
 			}
+
+			if (!empty.more()) {
+				continue;
+			}
+
+			// Message content.
 			if (!router.recv(message, zmq::recv_flags::none)) {
 				continue;
 			}
