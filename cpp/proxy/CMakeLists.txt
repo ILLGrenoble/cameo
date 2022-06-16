@@ -18,12 +18,6 @@ include(FetchContent)
 # name of the target library
 set(LIBNAME ${PROJECT_NAME})
 
-if (NOT DEFINED CMAKE_CXX_STANDARD)
-  # specify the C++ standard
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED True)
-endif()
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 
 find_package(ZeroMQ REQUIRED)

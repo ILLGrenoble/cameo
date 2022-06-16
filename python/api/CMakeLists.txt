@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20.0)
+cmake_minimum_required(VERSION 3.4...3.18)
 
 # Project name and version
 project(cameopy
@@ -22,13 +22,14 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 #list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
 #message(STATUS ${CMAKE_MODULE_PATH})
 find_package(cameo-api-cpp-static 2.0.0 REQUIRED) # provided by the C++ API
-find_package(pybind11 2.4.3 QUIET)
-find_package (Python REQUIRED)
+find_package(Python COMPONENTS Interpreter Development)
+find_package(pybind11 2.9.2 CONFIG)
+
 if(NOT pybind11_FOUND)
   message(WARNING "Using pybind11 from GIT repository")
   FetchContent_Declare(pybind11
 	GIT_REPOSITORY https://github.com/pybind/pybind11.git
-	GIT_TAG v2.4.3
+	GIT_TAG v2.9.2
 	GIT_SHALLOW True
 	)
   FetchContent_GetProperties(pybind11)
