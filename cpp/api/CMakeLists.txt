@@ -21,7 +21,7 @@ set(component_development CAMEO_API_CPP_DEVELOPMENT)
 option(CAMEO_API_CPP_TESTS "Compiling the unit test programs" OFF)
 option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
-if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")

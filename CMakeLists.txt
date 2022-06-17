@@ -11,7 +11,7 @@ option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
 option(CAMEO_TESTS "Compile the tests" OFF)
 option(CAMEO_EXAMPLES "Compile the examples" OFF)
 
-if(NOT DEFINED ${CMAKE_BUILD_TYPE})
+if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
