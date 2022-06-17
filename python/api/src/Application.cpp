@@ -301,7 +301,7 @@ PYBIND11_MODULE(cameopy, m) {
 				 tupleResult[1] = py::bytes(std::get<1>(result.value()));
 
 				 return tupleResult;
-			}, py::call_guard<py::gil_scoped_release>())
+			}/*, py::call_guard<py::gil_scoped_release>()*/) // Temporarily removed because causes a crash on Ubuntu 22
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Subscriber::isCanceled)
 		.def("__str__", &Subscriber::toString,
