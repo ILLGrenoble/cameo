@@ -23,7 +23,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 #message(STATUS ${CMAKE_MODULE_PATH})
 find_package(cameo-api-cpp-static 2.0.0 REQUIRED) # provided by the C++ API
 find_package(Python COMPONENTS Interpreter Development)
-find_package(pybind11 2.9.2 CONFIG)
+find_package(pybind11 2.9 CONFIG)
 
 if(NOT pybind11_FOUND)
   message(WARNING "Using pybind11 from GIT repository")
