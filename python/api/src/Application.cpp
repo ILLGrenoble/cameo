@@ -144,12 +144,14 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getActualState", &App::getActualState, py::call_guard<py::gil_scoped_release>())
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
 	    .def("getExitCode", &App::getExitCode)
-	    .def("getResult",
-			 [](App* instance) {
-				 auto result = instance->getResult();
-				 if (result.has_value() == false)
-					 return py::bytes("");
-				 return py::bytes(result.value());
+	    .def("getResult", [](App* instance) {
+				auto result = instance->getResult();
+				std::optional<py::bytes> bytesResult;
+				if (result.has_value()) {
+					bytesResult = py::bytes(result.value());
+				}
+				return bytesResult;
+
 			 }, py::call_guard<py::gil_scoped_release>())
 	    .def("getStringResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
 	    .def("getOutputStreamSocket", &App::getOutputStreamSocket)
@@ -282,25 +284,24 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getAppId", &Subscriber::getAppId)
 	    .def("getAppEndpoint", &Subscriber::getAppEndpoint)
 	    .def("hasEnded", &Subscriber::hasEnded)
-		.def("receive",
-			[](Subscriber* instance) {
+		.def("receive", [](Subscriber* instance) {
 				auto result = instance->receive();
-				 if (result.has_value() == false)
-					 return py::bytes("");
-				 return py::bytes(result.value());
+				std::optional<py::bytes> bytesResult;
+				if (result.has_value()) {
+					bytesResult = py::bytes(result.value());
+				}
+				return bytesResult;
+
 			}, py::call_guard<py::gil_scoped_release>())
 	    .def("receiveString", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
-	    .def("receiveTwoParts",
-			[](Subscriber* instance) {
+	    .def("receiveTwoParts", [](Subscriber* instance) {
 				auto result = instance->receiveTwoParts();
-				 if (result.has_value() == false)
-					 return py::tuple();
+				std::optional<py::tuple> tupleResult;
+				if (result.has_value()) {
+					 tupleResult = py::make_tuple(py::bytes(std::get<0>(result.value())), py::bytes(std::get<1>(result.value())));
+				}
+				return tupleResult;
 
-				 py::tuple tupleResult(2);
-				 tupleResult[0] = py::bytes(std::get<0>(result.value()));
-				 tupleResult[1] = py::bytes(std::get<1>(result.value()));
-
-				 return tupleResult;
 			}/*, py::call_guard<py::gil_scoped_release>()*/) // Temporarily removed because causes a crash on Ubuntu 22
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Subscriber::isCanceled)
@@ -327,12 +328,14 @@ PYBIND11_MODULE(cameopy, m) {
 				"request1"_a, "request2"_a,
 				py::call_guard<py::gil_scoped_release>())
 
-		.def("receive",
-			[](Requester* instance) {
-				 auto result = instance->receive();
-				 if (result.has_value() == false)
-					 return py::bytes("");
-				 return py::bytes(result.value());
+		.def("receive", [](Requester* instance) {
+				auto result = instance->receive();
+				std::optional<py::bytes> bytesResult;
+				if (result.has_value()) {
+					bytesResult = py::bytes(result.value());
+				}
+				return bytesResult;
+
 			 }, py::call_guard<py::gil_scoped_release>())
 
 		.def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
@@ -350,19 +353,17 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<basic::Request>(cbm, "Request")
 	    .def("getRequesterEndpoint", &basic::Request::getRequesterEndpoint)
 		.def("get", [](basic::Request* instance) {
-					auto result = instance->get();
-					return py::bytes(result);
-				 }, py::call_guard<py::gil_scoped_release>())
+				auto result = instance->get();
+				return py::bytes(result);
+			}, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &basic::Request::get)
-		.def("getFirstPart",
-			[](basic::Request* instance) {
-				 auto result = instance->getFirstPart();
-				 return py::bytes(result);
+		.def("getFirstPart", [](basic::Request* instance) {
+				auto result = instance->getFirstPart();
+				return py::bytes(result);
 			 }, py::call_guard<py::gil_scoped_release>())
-		.def("getSecondPart",
-			[](basic::Request* instance) {
-				 auto result = instance->getSecondPart();
-				 return py::bytes(result);
+		.def("getSecondPart", [](basic::Request* instance) {
+				auto result = instance->getSecondPart();
+				return py::bytes(result);
 			 }, py::call_guard<py::gil_scoped_release>())
 	    .def("reply", &basic::Request::reply,
 	    		"response"_a,
@@ -394,22 +395,19 @@ PYBIND11_MODULE(cameopy, m) {
 
 	py::class_<multi::Request>(cmm, "Request")
 		.def("getRequesterEndpoint", &multi::Request::getRequesterEndpoint)
-		.def("get",
-			[](multi::Request* instance) {
-				 auto result = instance->get();
-				 return py::bytes(result);
-			 }, py::call_guard<py::gil_scoped_release>())
+		.def("get", [](multi::Request* instance) {
+				auto result = instance->get();
+				return py::bytes(result);
+			}, py::call_guard<py::gil_scoped_release>())
 		.def("getString", &multi::Request::get)
-		.def("getFirstPart",
-			[](multi::Request* instance) {
-				 auto result = instance->getFirstPart();
-				 return py::bytes(result);
-			 }, py::call_guard<py::gil_scoped_release>())
-		.def("getSecondPart",
-			[](multi::Request* instance) {
-				 auto result = instance->getSecondPart();
-				 return py::bytes(result);
-			 }, py::call_guard<py::gil_scoped_release>())
+		.def("getFirstPart", [](multi::Request* instance) {
+				auto result = instance->getFirstPart();
+				return py::bytes(result);
+			}, py::call_guard<py::gil_scoped_release>())
+		.def("getSecondPart", [](multi::Request* instance) {
+				auto result = instance->getSecondPart();
+				return py::bytes(result);
+			}, py::call_guard<py::gil_scoped_release>())
 		.def("reply", &multi::Request::reply,
 				"response"_a,
 				py::call_guard<py::gil_scoped_release>())
