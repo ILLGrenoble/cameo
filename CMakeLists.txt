@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo
-  VERSION 2.0.1
+  VERSION 2.0.2
   LANGUAGES C 
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )

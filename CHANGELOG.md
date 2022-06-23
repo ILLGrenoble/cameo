@@ -1,3 +1,8 @@
+2.0.2
+-----
+
+* Corrected GIL management in python binding.
+
 2.0.1
 -----
 
