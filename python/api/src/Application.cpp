@@ -145,14 +145,21 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
 	    .def("getExitCode", &App::getExitCode)
 	    .def("getResult", [](App* instance) {
+
+				// Release the GIL for the blocking call getResult().
+				py::gil_scoped_release release;
+
 				auto result = instance->getResult();
+
+				// Acquire the GIL for security.
+				py::gil_scoped_acquire acquire;
+
 				std::optional<py::bytes> bytesResult;
 				if (result.has_value()) {
 					bytesResult = py::bytes(result.value());
 				}
 				return bytesResult;
-
-			 }, py::call_guard<py::gil_scoped_release>())
+			 })
 	    .def("getStringResult", &App::getResult, py::call_guard<py::gil_scoped_release>())
 	    .def("getOutputStreamSocket", &App::getOutputStreamSocket)
 		.def("__str__", &App::toString,
@@ -285,24 +292,38 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("getAppEndpoint", &Subscriber::getAppEndpoint)
 	    .def("hasEnded", &Subscriber::hasEnded)
 		.def("receive", [](Subscriber* instance) {
+
+				// Release the GIL for the blocking call getResult().
+				py::gil_scoped_release release;
+
 				auto result = instance->receive();
+
+				// Acquire the GIL for security.
+				py::gil_scoped_acquire acquire;
+
 				std::optional<py::bytes> bytesResult;
 				if (result.has_value()) {
 					bytesResult = py::bytes(result.value());
 				}
 				return bytesResult;
-
-			}, py::call_guard<py::gil_scoped_release>())
+			})
 	    .def("receiveString", &Subscriber::receive, py::call_guard<py::gil_scoped_release>())
 	    .def("receiveTwoParts", [](Subscriber* instance) {
+
+				// Release the GIL for the blocking call getResult().
+				py::gil_scoped_release release;
+
 				auto result = instance->receiveTwoParts();
+
+				// Acquire the GIL for security: creation of py::tuple crashes on Ubuntu 22 otherwise.
+				py::gil_scoped_acquire acquire;
+
 				std::optional<py::tuple> tupleResult;
 				if (result.has_value()) {
 					 tupleResult = py::make_tuple(py::bytes(std::get<0>(result.value())), py::bytes(std::get<1>(result.value())));
 				}
 				return tupleResult;
-
-			}/*, py::call_guard<py::gil_scoped_release>()*/) // Temporarily removed because causes a crash on Ubuntu 22
+			})
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Subscriber::isCanceled)
 		.def("__str__", &Subscriber::toString,
@@ -329,14 +350,21 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 
 		.def("receive", [](Requester* instance) {
+
+				// Release the GIL for the blocking call getResult().
+				py::gil_scoped_release release;
+
 				auto result = instance->receive();
+
+				// Acquire the GIL for security.
+				py::gil_scoped_acquire acquire;
+
 				std::optional<py::bytes> bytesResult;
 				if (result.has_value()) {
 					bytesResult = py::bytes(result.value());
 				}
 				return bytesResult;
-
-			 }, py::call_guard<py::gil_scoped_release>())
+			 })
 
 		.def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 		.def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
