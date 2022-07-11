@@ -43,9 +43,14 @@ set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY ">=")
 
 set(CPACK_DEBIAN_${component_runtime}_PACKAGE_DEPENDS "libzmq5")
 set(CPACK_DEBIAN_${component_development}_PACKAGE_DEPENDS "")
+set(CPACK_RPM_${component_runtime}_PACKAGE_REQUIRES "cameo-server >= 2.0.0, zeromq")
+set(CPACK_RPM_${component_development}_PACKAGE_DEPENDS "")
 
 set(CPACK_DEBIAN_${component_runtime}_PACKAGE_NAME ${LIBNAME}-lib)
 set(CPACK_DEBIAN_${component_development}_PACKAGE_NAME ${LIBNAME}-dev)
+set(CPACK_RPM_${component_runtime}_PACKAGE_NAME ${LIBNAME}-lib)
+set(CPACK_RPM_${component_development}_PACKAGE_NAME ${LIBNAME}-devel)
+
 
 set(CPACK_DEBIAN_${component_development}_PACKAGE_SECTION "libdevel")
 # #if((${CMAKE_BUILD_TYPE} EQUAL "Debug") OR (${CMAKE_BUILD_TYPE} EQUAL "RelWithDebInfo"))
