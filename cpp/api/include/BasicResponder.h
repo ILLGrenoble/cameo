@@ -55,7 +55,7 @@ public:
 	 * \param messagePart1 The message part 1.
 	 * \param messagePart2 The message part 2.
 	 */
-	Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2);
+	Request(const std::string& requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2);
 
 	/**
 	 * Destructor.
@@ -96,9 +96,10 @@ public:
 	 * Connects to the requester application.
 	 * \param options The options to the connection.
 	 * \param useProxy Use the proxy to connect.
+	 * \param timeout Timeout for the server initialization.
 	 * \return The ServerAndApp pair.
 	 */
-	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false);
+	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false, int timeout = 0);
 
 	/**
 	 * Returns a string representation of the request.

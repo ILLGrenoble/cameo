@@ -63,6 +63,7 @@ PYBIND11_MODULE(cameopy, m) {
 
 	py::class_<ServerAndApp>(m, "ServerAndApp")
 		    .def("getServer", &ServerAndApp::getServer, py::return_value_policy::reference)
+			.def("hasApp", &ServerAndApp::hasApp)
 			.def("getApp", &ServerAndApp::getApp, py::return_value_policy::reference)
 			.def("terminate", &ServerAndApp::terminate, py::call_guard<py::gil_scoped_release>());
 
@@ -107,6 +108,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("connectToStarter", &This::connectToStarter,
 	    		"options"_a = 0,
 				"useProxy"_a = false,
+				"timeout"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def_static("__str__", &This::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -399,6 +401,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def("connectToRequester", &basic::Request::connectToRequester,
 	    		"options"_a = 0,
 				"useProxy"_a = false,
+				"timeout"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &basic::Request::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -442,6 +445,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("connectToRequester", &multi::Request::connectToRequester,
 				"options"_a = 0,
 				"useProxy"_a = false,
+				"timeout"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &multi::Request::toString,
 				py::call_guard<py::gil_scoped_release>());

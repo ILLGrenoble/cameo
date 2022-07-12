@@ -96,6 +96,11 @@ public:
 	Server& getServer();
 
 	/**
+	 * Returns true if the App instance exists.
+	 */
+	bool hasApp() const;
+
+	/**
 	 * Gets the app.
 	 * \return The app.
 	 */
@@ -386,8 +391,9 @@ public:
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * \param options The options passed to connect the starter app.
 	 * \param useProxy True if the proxy is used to connect to the starter app.
+	 * \param timeout Timeout for the server initialization.
 	 */
-	static std::unique_ptr<ServerAndApp> connectToStarter(int options = 0, bool useProxy = false);
+	static std::unique_ptr<ServerAndApp> connectToStarter(int options = 0, bool useProxy = false, int timeout = 0);
 
 	/**
 	 * Returns a string representation of this application.

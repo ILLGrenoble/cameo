@@ -1,3 +1,8 @@
+2.0.3
+-----
+
+* Added parameter timeout in connectTo methods and functions.
+
 2.0.2
 -----
 

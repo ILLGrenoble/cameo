@@ -94,9 +94,10 @@ public:
 	 * Connects to the requester application.
 	 * \param options The options to the connection.
 	 * \param useProxy Use the proxy to connect.
+	 * \param timeout Timeout for the server initialization.
 	 * \return The ServerAndApp pair.
 	 */
-	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false);
+	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false, int timeout = 0);
 
 	/**
 	 * Returns a string representation of the request

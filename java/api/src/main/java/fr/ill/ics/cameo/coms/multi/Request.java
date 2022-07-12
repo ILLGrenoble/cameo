@@ -21,6 +21,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.ServerAndApp;
 import fr.ill.ics.cameo.messages.Messages;
@@ -119,15 +120,17 @@ public class Request {
 	 * Connects to the requester.
 	 * @param options Options of connection.
 	 * @param useProxy True if proxy is used.
+	 * @param timeout Timeout for the server initialization.
 	 * @return The ServerAndApp object.
 	 */
-	public ServerAndApp connectToRequester(int options, boolean useProxy) {
+	public ServerAndApp connectToRequester(int options, boolean useProxy, int timeout) {
 		
 		if (requesterServerEndpoint == null) {
 			return null;
 		}
 		
-		Server starterServer;
+		Server starterServer = null;
+		App starterInstance = null;
 		
 		if (useProxy) {
 			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), true);
@@ -136,23 +139,39 @@ public class Request {
 			starterServer = Server.create(requesterServerEndpoint, false);
 		}
 		
-		starterServer.init();
+		starterServer.setTimeout(timeout);
 		
-		// Iterate the instances to find the id
-		App starterInstance = null;
-		List<App> instances = starterServer.connectAll(requesterApplicationName, options);
-		for (App i : instances) {
-			if (i.getId() == requesterApplicationId) {
-				starterInstance = i;
-				break;
+		try {
+			starterServer.init();
+			
+			// Iterate the instances to find the id
+			List<App> instances = starterServer.connectAll(requesterApplicationName, options);
+			for (App i : instances) {
+				if (i.getId() == requesterApplicationId) {
+					starterInstance = i;
+					break;
+				}
+			}
+			
+			if (starterInstance == null) {
+				return null;
 			}
 		}
-		
-		if (starterInstance == null) {
-			return null;
-		}
+		catch (ConnectionTimeout e) {
+			// Timeout while initializing the server.
+		}	
 		
 		return new ServerAndApp(starterServer, starterInstance);
+	}
+	
+	/**
+	 * Connects to the requester.
+	 * @param options Options of connection.
+	 * @param useProxy True if proxy is used.
+	 * @return The ServerAndApp object.
+	 */
+	public ServerAndApp connectToRequester(int options, boolean useProxy) {
+		return connectToRequester(options, useProxy, 0);
 	}
 	
 	/**
@@ -161,7 +180,7 @@ public class Request {
 	 * @return The ServerAndApp object.
 	 */
 	public ServerAndApp connectToRequester(int options) {
-		return connectToRequester(options, false);
+		return connectToRequester(options, false, 0);
 	}
 
 	/**
@@ -169,7 +188,7 @@ public class Request {
 	 * @return The ServerAndApp object.
 	 */
 	public ServerAndApp connectToRequester() {
-		return connectToRequester(0, false);
+		return connectToRequester(0, false, 0);
 	}
 
 	@Override

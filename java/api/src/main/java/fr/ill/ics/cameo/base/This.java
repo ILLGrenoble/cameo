@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.base;
 
+import java.net.ConnectException;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -440,15 +441,17 @@ public class This {
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @param options The options passed to connect the starter app.
 	 * @param useProxy True if the proxy is used to connect to the starter app.
+	 * @param timeout Timeout for the server initialization.
 	 */
-	static public ServerAndApp connectToStarter(int options, boolean useProxy) {
+	static public ServerAndApp connectToStarter(int options, boolean useProxy, int timeout) {
 		
 		if (instance.getStarterEndpoint() == null) {
 			return null;
 		}
 		
 		// Create the server with proxy or not.
-		Server starterServer;
+		Server starterServer = null;
+		App starterInstance = null;
 		
 		if (useProxy) {
 			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), true);
@@ -457,23 +460,39 @@ public class This {
 			starterServer = Server.create(instance.getStarterEndpoint(), false);
 		}
 		
-		starterServer.init();
+		starterServer.setTimeout(timeout);
 		
-		// Iterate the instances to find the id
-		App starterInstance = null;
-		List<App> instances = starterServer.connectAll(instance.getStarterName(), options);
-		for (App i : instances) {
-			if (i.getId() == instance.getStarterId()) {
-				starterInstance = i;
-				break;
+		try {
+			starterServer.init();
+			
+			// Iterate the instances to find the id
+			List<App> instances = starterServer.connectAll(instance.getStarterName(), options);
+			for (App i : instances) {
+				if (i.getId() == instance.getStarterId()) {
+					starterInstance = i;
+					break;
+				}
+			}
+			
+			if (starterInstance == null) {
+				return null;
 			}
 		}
-		
-		if (starterInstance == null) {
-			return null;
+		catch (ConnectionTimeout e) {
+			// Timeout while initializing the server.
 		}
-		
+			
 		return new ServerAndApp(starterServer, starterInstance);
+	}
+	
+	/**
+	 * Connects to the starter application, i.e. the application which started this application.
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
+	 * @param options The options passed to connect the starter app.
+	 * @param useProxy True if the proxy is used to connect to the starter app.
+	 */
+	static public ServerAndApp connectToStarter(int options, boolean useProxy) {
+		return connectToStarter(options, useProxy, 0);
 	}
 	
 	/**
@@ -482,7 +501,7 @@ public class This {
 	 * @param options The options passed to connect the starter app.
 	 */
 	static public ServerAndApp connectToStarter(int options) {
-		return connectToStarter(options, false);
+		return connectToStarter(options, false, 0);
 	}
 
 	/**
@@ -490,7 +509,7 @@ public class This {
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 */
 	static public ServerAndApp connectToStarter() {
-		return connectToStarter(0, false);
+		return connectToStarter(0, false, 0);
 	}
 	
 	private This(String[] args) {

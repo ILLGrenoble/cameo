@@ -76,7 +76,7 @@ void Request::reply(const std::string& response) {
 	m_responder->reply(jsonRequest.dump(), response);
 }
 
-std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy) {
+std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy, int timeout) {
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -84,6 +84,7 @@ std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useP
 	}
 
 	std::unique_ptr<Server> server;
+	std::unique_ptr<App> app;
 
 	if (useProxy) {
 		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
@@ -92,18 +93,25 @@ std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useP
 		server = Server::create(m_requesterServerEndpoint.toString(), false);
 	}
 
-	server->init();
+	// Set the server init timeout.
+	server->setTimeout(timeout);
 
-	std::unique_ptr<App> app;
+	try {
+		// Init the server.
+		server->init();
 
-	// Iterate the instances to find the id
-	AppArray instances = server->connectAll(m_requesterApplicationName, options);
+		// Iterate the instances to find the id.
+		AppArray instances = server->connectAll(m_requesterApplicationName, options);
 
-	for (auto i = instances.begin(); i != instances.end(); ++i) {
-		if ((*i)->getId() == m_requesterApplicationId) {
-			app = std::unique_ptr<App>(std::move(*i));
-			break;
+		for (auto i = instances.begin(); i != instances.end(); ++i) {
+			if ((*i)->getId() == m_requesterApplicationId) {
+				app = std::unique_ptr<App>(std::move(*i));
+				break;
+			}
 		}
+	}
+	catch (...) {
+		// Timeout while initializing the server.
 	}
 
 	return std::unique_ptr<ServerAndApp>(new ServerAndApp(server, app));
