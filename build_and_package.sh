@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-CPACK_GENERATORS="DEB;RPM"
+CPACK_GENERATORS="DEB"
 
 BASE_BUILD_DIR=${1:-/dev/shm/cameo/}
 [ "$BASE_BUILD_DIR" != "${BASE_BUILD_DIR#/}" ] || BASE_BUILD_DIR=$PWD/$BASE_BUILD_DIR
@@ -12,7 +12,14 @@ mkdir ${packages_dir} -p
 #mvn  install
 
 function mvPack(){
-	mv ${build_dir}/packaging/*.{rpm,deb} ${packages_dir}/
+	case $CPACK_GENERATORS in
+		*DEB*)
+			mv ${build_dir}/packaging/*.deb ${packages_dir}/
+			;;
+		*RPM*)
+			mv ${build_dir}/packaging/*.rpm ${packages_dir}/
+			;;
+	esac
 }
 
 #--------------- JAVA
