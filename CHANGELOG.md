@@ -1,4 +1,4 @@
-2.0.3
+2.0.3 (not released)
 -----
 
 * Added parameter timeout in connectTo methods and functions.
