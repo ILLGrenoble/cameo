@@ -96,7 +96,8 @@ public:
 	Server& getServer();
 
 	/**
-	 * Returns true if the App instance exists.
+	 * Returns the App instance existence. The instance may not exist if it was not possible to connect it.
+	 * \return true if the App instance exists.
 	 */
 	bool hasApp() const;
 
