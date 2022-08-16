@@ -1,3 +1,8 @@
+2.0.2 (not released)
+-----
+
+* Corrected logger level to take into account FINE and FINEST values.
+
 2.0.1
 -----
 

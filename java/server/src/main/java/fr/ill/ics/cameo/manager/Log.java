@@ -57,8 +57,6 @@ public final class Log {
 	}
 	
 	public static void init() {
-
-		instance.logger.setLevel(Level.FINE);
 		
 		try {
 			File logDirectory = new File(ConfigManager.getInstance().getLogPath());
@@ -69,10 +67,12 @@ public final class Log {
 			}
 			
 			Level logLevel = Level.parse(ConfigManager.getInstance().getLogLevel().toUpperCase());
+			instance.logger.setLevel(logLevel);
 			
 			FileHandler fileHandler = new FileHandler(ConfigManager.getInstance().getLogPath() + "/cameo.log", false);
 			fileHandler.setFormatter(new LogFormatter());
 			fileHandler.setLevel(logLevel);
+			
 			instance.logger.addHandler(fileHandler);
 			
 			if (logConsole) {

@@ -2,6 +2,7 @@
 -----
 
 * Added parameter timeout in connectTo methods and functions.
+* Corrected server logger level to take into account FINE and FINEST values.
 
 2.0.2
 -----
