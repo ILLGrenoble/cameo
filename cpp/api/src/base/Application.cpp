@@ -460,7 +460,7 @@ void This::initStopCheck(StopFunctionType function, int stoppingTime) {
 void This::initStarterCheck() {
 
 	// Create the starter server.
-	// If the starter has a running proxy, then use the proxy: it is reasonable.
+	// If the starter has a running proxy, then use the proxy is reasonable.
 	if (m_starterProxyPort != 0) {
 		m_starterServer = Server::create(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), true);
 	}
