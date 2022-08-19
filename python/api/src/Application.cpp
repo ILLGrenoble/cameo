@@ -34,6 +34,7 @@ PYBIND11_MODULE(cameopy, m) {
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
+	m.attr("UNLINKED")           = cameo::UNLINKED;
 	m.attr("NIL")                = NIL;
 	m.attr("STARTING")           = STARTING;
 	m.attr("RUNNING")            = RUNNING;
