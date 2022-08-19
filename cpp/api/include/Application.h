@@ -20,6 +20,7 @@
 #include "Object.h"
 #include "Cancelable.h"
 #include "Timeoutable.h"
+#include "BadFormatException.h"
 #include "InvalidArgumentException.h"
 #include "UnregisteredApplicationException.h"
 #include "SocketException.h"

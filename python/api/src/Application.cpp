@@ -47,12 +47,13 @@ PYBIND11_MODULE(cameopy, m) {
 	m.attr("KILLED")             = KILLED;
 
 	// Exceptions
+
+	py::register_exception<BadFormatException>(m, "BadFormatException");
+	py::register_exception<UnregisteredApplicationException>(m, "UnregisteredApplicationException");
 	py::register_exception<InvalidArgumentException>(m, "InvalidArgumentException");
 	py::register_exception<SocketException>(m, "SocketException");
 	py::register_exception<ConnectionTimeout>(m, "ConnectionTimeout");
-
 	py::register_exception<StartException>(m, "StartException");
-
 	py::register_exception<InitException>(m, "InitException");
 
 	// Important note:
