@@ -2,8 +2,6 @@ package fr.ill.ics.cameo.strings;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.messages.Messages;
-
 public class AppIdentity {
 
 	private String name;

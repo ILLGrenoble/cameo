@@ -48,7 +48,6 @@ PYBIND11_MODULE(cameopy, m) {
 
 	// Exceptions
 
-	py::register_exception<BadFormatException>(m, "BadFormatException");
 	py::register_exception<UnregisteredApplicationException>(m, "UnregisteredApplicationException");
 	py::register_exception<InvalidArgumentException>(m, "InvalidArgumentException");
 	py::register_exception<SocketException>(m, "SocketException");

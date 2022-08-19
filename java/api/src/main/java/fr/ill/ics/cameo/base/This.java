@@ -16,7 +16,6 @@
 
 package fr.ill.ics.cameo.base;
 
-import java.net.ConnectException;
 import java.util.List;
 
 import org.json.simple.JSONObject;

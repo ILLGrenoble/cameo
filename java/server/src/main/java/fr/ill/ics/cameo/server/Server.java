@@ -27,7 +27,6 @@ import java.util.jar.Manifest;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;

@@ -22,9 +22,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
-import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.ServerIdentity;
 
 /**
  * Class defining an output stream thread.
