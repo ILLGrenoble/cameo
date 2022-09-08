@@ -369,6 +369,9 @@ public class This {
 	 * Terminates the application.
 	 */
 	static public void terminate() {
+		if (instance == null) {
+			return;
+		}
 		instance.terminateAll();
 	}
 
