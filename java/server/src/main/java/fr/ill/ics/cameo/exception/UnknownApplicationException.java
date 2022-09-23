@@ -19,8 +19,13 @@ package fr.ill.ics.cameo.exception;
 public class UnknownApplicationException extends Exception {
 
 	private static final long serialVersionUID = -5719153178597114747L;
+	private String name;
+
+	public UnknownApplicationException(String name) {
+		this.name = name;
+	}
 
 	public String getMessage() {
-		return "Unknown application" ;
+		return "Unknown application '" + name + "'";
 	}
 }

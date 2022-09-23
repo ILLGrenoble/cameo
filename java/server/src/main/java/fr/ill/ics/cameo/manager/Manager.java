@@ -225,7 +225,7 @@ public class Manager extends ConfigLoader {
 		return -1;
 	}
 
-	private int findId() throws MaxNumberOfApplicationsReached {
+	private int findId(String name) throws MaxNumberOfApplicationsReached {
 
 		// First iteration.
 		int id = findFreeId(maxId + 1, MAX_ID + 1);
@@ -244,7 +244,7 @@ public class Manager extends ConfigLoader {
 		
 		if (id == -1) {
 			Log.logger().info("Max number of applications reached");
-			throw new MaxNumberOfApplicationsReached();
+			throw new MaxNumberOfApplicationsReached(name);
 		}
 		
 		return id;
@@ -296,7 +296,7 @@ public class Manager extends ConfigLoader {
 		verifyNumberOfInstances(config.getName(), config.runsSingle());
 
 		// Find an id, throws an exception if there is no id available.
-		int id = findId();
+		int id = findId(name);
 		
 		// Create the application. The proxy host endpoint is passed.
 		Application application = new RegisteredApplication(ConfigManager.getInstance().getHostEndpoint(), id, config, args, starter, starterProxyPort, starterLinked);
@@ -516,12 +516,12 @@ public class Manager extends ConfigLoader {
 					if (single) {
 						Log.logger().info("Application with name " + application.getName() + " is already executing with id " + application.getId());
 				
-						throw new ApplicationAlreadyExecuting();
+						throw new ApplicationAlreadyExecuting(application.getName());
 					}
 					else if (counter >= ConfigManager.getInstance().getMaxNumberOfApplications()) {
 						Log.logger().info("Max number of applications reached");
 						
-						throw new MaxNumberOfApplicationsReached();
+						throw new MaxNumberOfApplicationsReached(application.getName());
 					}
 				}
 			}
@@ -710,7 +710,7 @@ public class Manager extends ConfigLoader {
 		verifyNumberOfInstances(name, false);
 		
 		// Find an id, throws an exception if there is no id available.
-		int id = findId();
+		int id = findId(name);
 		
 		// Create the application.
 		//Application application = new UnregisteredApplication(ConfigManager.getInstance().getResponderProxyHostEndpoint(), id, name, pid);

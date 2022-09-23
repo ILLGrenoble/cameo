@@ -19,8 +19,13 @@ package fr.ill.ics.cameo.exception;
 public class MaxNumberOfApplicationsReached extends Exception {
 
 	private static final long serialVersionUID = -679186322182419615L;
+	private String name;
+	
+	public MaxNumberOfApplicationsReached(String name) {
+		this.name = name;
+	}
 
 	public String getMessage() {
-		return "Maximum number of applications reached";
+		return "Cannot start '" + name + "' because the maximum number of applications is reached";
 	}
 }

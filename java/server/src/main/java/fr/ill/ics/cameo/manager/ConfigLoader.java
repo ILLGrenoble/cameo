@@ -324,7 +324,7 @@ public abstract class ConfigLoader {
 		}
 
 		if (!isPresent) {
-			throw new UnknownApplicationException();
+			throw new UnknownApplicationException(name);
 		}
 		return ApplicationConfig;
 	}

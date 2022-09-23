@@ -2,6 +2,7 @@
 -----
 
 * Corrected logger level to take into account FINE and FINEST values.
+* Added application name in some exceptions.
 
 2.0.1
 -----

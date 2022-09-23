@@ -3,6 +3,7 @@
 
 * Added parameter timeout in connectTo methods and functions.
 * Corrected server logger level to take into account FINE and FINEST values.
+* Added application name in some server exceptions propagated to client.
 
 2.0.2
 -----
