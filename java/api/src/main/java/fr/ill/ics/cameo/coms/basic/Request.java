@@ -121,7 +121,7 @@ public class Request {
 	 * Connects to the requester.
 	 * @param options Options of connection.
 	 * @param useProxy True if proxy is used.
-	 * @param timeout Timeout for the server initialization.
+	 * @param timeout Timeout for the server used for the initialization and subsequent requests.
 	 * @return The ServerAndApp object.
 	 */
 	public ServerAndApp connectToRequester(int options, boolean useProxy, int timeout) {

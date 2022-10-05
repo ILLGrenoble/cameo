@@ -1,4 +1,4 @@
-2.0.2 (not released)
+2.0.2
 -----
 
 * Corrected logger level to take into account FINE and FINEST values.

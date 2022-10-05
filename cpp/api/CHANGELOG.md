@@ -1,7 +1,7 @@
-2.0.2 (not released)
+2.0.2
 -----
 
-* Added timeout parameter in connectTo functions.
+* Added timeout parameter to connectToStarter() and connectToRequester() functions.
 
 2.0.1
 -----
