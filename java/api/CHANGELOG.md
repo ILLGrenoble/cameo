@@ -1,4 +1,4 @@
-2.0.2 (not released)
+2.0.2
 -----
 
 * App.Config replaces hasSingleInstance() with getMultiple().

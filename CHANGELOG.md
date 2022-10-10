@@ -1,4 +1,4 @@
-2.0.3 (not released)
+2.0.4
 -----
 
 * Implemented the max number of applications for an application defined with an integer multiple attribute in config file.
