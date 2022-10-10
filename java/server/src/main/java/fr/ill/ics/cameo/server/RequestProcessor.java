@@ -25,9 +25,9 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
-import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.exception.MaxGlobalNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
@@ -159,7 +159,7 @@ public class RequestProcessor {
 			
 			reply.add(Messages.serialize(response));
 		}
-		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
+		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | MaxGlobalNumberOfApplicationsReached e) {
 			
 			JSONObject response = new JSONObject();
 			response.put(Messages.RequestResponse.VALUE, Long.valueOf(-1));
@@ -492,7 +492,7 @@ public class RequestProcessor {
 			JSONObject config = new JSONObject();
 			config.put(Messages.ApplicationConfig.NAME, application.getName());
 			config.put(Messages.ApplicationConfig.DESCRIPTION, application.getDescription());
-			config.put(Messages.ApplicationConfig.RUNS_SINGLE, application.runsSingle());
+			config.put(Messages.ApplicationConfig.RUNS_SINGLE, application.runSingle());
 			config.put(Messages.ApplicationConfig.RESTART, application.isRestart());
 			config.put(Messages.ApplicationConfig.STARTING_TIME, application.getStartingTime());
 			config.put(Messages.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
@@ -665,7 +665,7 @@ public class RequestProcessor {
 			
 			reply.add(Messages.serialize(response));
 		}
-		catch (MaxNumberOfApplicationsReached | ApplicationAlreadyExecuting e) {
+		catch (MaxNumberOfApplicationsReached | MaxGlobalNumberOfApplicationsReached e) {
 			// Return the reply.
 			JSONObject response = new JSONObject();
 			response.put(Messages.RequestResponse.VALUE, -1);

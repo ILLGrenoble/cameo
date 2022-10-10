@@ -1,3 +1,9 @@
+2.0.3 (not released)
+-----
+
+* Implemented the max number of applications for an application defined with an integer multiple attribute in config file.
+* Corrected the check of the max global number of running applications.
+
 2.0.3
 -----
 
@@ -29,4 +35,4 @@
 1.0.0
 -----
 
-* Replaced protobuf by JSON.
+* Replaced protobuf with JSON.

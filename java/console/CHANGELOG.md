@@ -4,7 +4,7 @@
 1.0.0
 -----
 
-* Replaced protobuf by JSON.
+* Replaced protobuf with JSON.
 * Added server and version commands.
 * Removed test command as it is an alias to exec.
 * Added long names --app and --endpoint for -a and -e options.

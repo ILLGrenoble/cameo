@@ -118,6 +118,7 @@ public class TestSelector {
 		apps.add("teststreamjava");
 		apps.add("testcheckappjava");
 		apps.add("testlinkedjava");
+		apps.add("testmaxappsjava");
 		
 		return apps;
 	}

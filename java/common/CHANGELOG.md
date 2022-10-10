@@ -9,7 +9,7 @@
 1.0.0
 -----
 
-* Replaced protobuf by JSON.
+* Replaced protobuf with JSON.
 
 0.1.4
 -----

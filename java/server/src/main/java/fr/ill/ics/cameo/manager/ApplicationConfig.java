@@ -34,7 +34,8 @@ public class ApplicationConfig {
 	protected boolean outputStream = true;
 	protected int outputStreamPort = -1;
 	protected int stoppingTime = 10; // Default value is 10s
-	protected boolean runSingle;
+	protected boolean runSingle = false;
+	protected int runMaxApplications = -1; // Indicates infinity
 	protected boolean restart = false;
 	protected boolean infoArg;
 	protected HashMap<String, String> environmentVariables = new HashMap<String, String>(); 
@@ -247,19 +248,55 @@ public class ApplicationConfig {
 	}
 
 	public void setRunMultiple(String value) {
+		
 		if (value == null) {
 			this.runSingle = false;
+			this.runMaxApplications = 1;
+			return;
 		}
-		else if (value.equalsIgnoreCase("no")) {
+		
+		try {
+			int integerValue = Integer.parseInt(value);
+			
+			// Check if the value is strictly positive.
+			if (integerValue > 0) {
+				this.runMaxApplications = integerValue;
+				return;
+			}
+			else {
+				System.err.println("Error with attribute 'multiple' in configuration file, value must be strictly positive");
+				System.exit(-1);
+			}
+		}
+		catch (java.lang.NumberFormatException e) {
+			// The value is not an integer, continue.
+		}
+				
+		// Check if the value is 'yes' or 'no' or INF.
+		if (value.equalsIgnoreCase("no")) {
 			this.runSingle = true;
+			this.runMaxApplications = 1;
 		}
-		else if (value.equalsIgnoreCase("yes")) {
+		else if (value.equalsIgnoreCase("yes") || value.equalsIgnoreCase(INF)) {
 			this.runSingle = false;
+			this.runMaxApplications = -1;
 		}
 		else {
 			System.err.println("Error with attribute 'multiple' in configuration file");
 			System.exit(-1);
 		}
+	}
+	
+	public boolean runSingle() {
+		return runSingle;
+	}
+	
+	public void setRunMaxApplications(int runMaxApplications) {
+		this.runMaxApplications = runMaxApplications;
+	}
+	
+	public int runMaxApplications() {
+		return runMaxApplications;
 	}
 	
 	public void setRestart(boolean restart) {
@@ -282,10 +319,6 @@ public class ApplicationConfig {
 		}
 	}
 	
-	public boolean runsSingle() {
-		return runSingle;
-	}
-
 	public boolean isRestart() {
 		return restart;
 	}

@@ -30,7 +30,8 @@ public class RegisteredApplication extends Application {
 		this.setOutputStream(config.hasOutputStream());
 		this.setOutputStreamPort(config.getOutputStreamPort());
 		this.setStoppingTime(config.getStoppingTime());
-		this.setRunMultiple(config.runsSingle());
+		this.setRunMultiple(config.runSingle());
+		this.setRunMaxApplications(config.runMaxApplications());
 		this.setRestart(config.isRestart());
 		this.setInfoArg(config.hasInfoArg());
 

@@ -145,6 +145,14 @@
 		<application name="testlinkedjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.TestLinked"/>
 		</application>
+		
+		<application name="maxstopjava" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="10" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
+		</application>
+		
+		<application name="testmaxappsjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestMaxApps 11"/>
+		</application>
 	
 
 		<!-- C++ apps -->
@@ -288,7 +296,6 @@
 		<application name="testlinkedcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testlinked"/>
 		</application>
-		
 		
 		
 		<!-- Python apps -->

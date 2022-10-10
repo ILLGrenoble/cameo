@@ -1,3 +1,10 @@
+2.0.3 (not released)
+-----
+
+* Implemented the max number of applications for an application defined with an integer multiple attribute.
+* Corrected the check of the max global number of running applications.
+
+
 2.0.2
 -----
 
@@ -40,7 +47,7 @@
 1.0.0
 -----
 
-* Replaced protobuf by JSON.
+* Replaced protobuf with JSON.
 * In StreamApplicationThread, replaced reader.readLine() by a specialised readCharacters() method to manage properly the input streams (output from the cameo server, input from the process).
 * Added server version request.
 * Reviewed log messages.

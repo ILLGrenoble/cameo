@@ -16,16 +16,16 @@
 
 package fr.ill.ics.cameo.exception;
 
-public class ApplicationAlreadyExecuting extends Exception {
+public class MaxGlobalNumberOfApplicationsReached extends Exception {
 
-	private static final long serialVersionUID = -8962060462712890982L;
+	private static final long serialVersionUID = -564543760445565040L;
 	private String name;
 	
-	public ApplicationAlreadyExecuting(String name) {
+	public MaxGlobalNumberOfApplicationsReached(String name) {
 		this.name = name;
 	}
 
 	public String getMessage() {
-		return "The application '" + name + "' is already executing";
+		return "Cannot start '" + name + "' because the maximum global number of running applications is reached";
 	}
 }

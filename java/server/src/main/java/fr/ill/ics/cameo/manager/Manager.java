@@ -31,9 +31,9 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Context;
-import fr.ill.ics.cameo.exception.ApplicationAlreadyExecuting;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.exception.MaxGlobalNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
@@ -225,7 +225,7 @@ public class Manager extends ConfigLoader {
 		return -1;
 	}
 
-	private int findId(String name) throws MaxNumberOfApplicationsReached {
+	private int findId(String name) throws MaxGlobalNumberOfApplicationsReached {
 
 		// First iteration.
 		int id = findFreeId(maxId + 1, MAX_ID + 1);
@@ -244,7 +244,7 @@ public class Manager extends ConfigLoader {
 		
 		if (id == -1) {
 			Log.logger().info("Max number of applications reached");
-			throw new MaxNumberOfApplicationsReached(name);
+			throw new MaxGlobalNumberOfApplicationsReached(name);
 		}
 		
 		return id;
@@ -287,13 +287,13 @@ public class Manager extends ConfigLoader {
 	 * @throws MaxNumberOfApplicationsReached
 	 * @throws ApplicationAlreadyExecuting
 	 */
-	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) throws UnknownApplicationException, MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public synchronized Application startApplication(String name, String[] args, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) throws UnknownApplicationException, MaxNumberOfApplicationsReached, MaxGlobalNumberOfApplicationsReached {
 		
 		ApplicationConfig config = this.verifyApplicationExistence(name);
 		Log.logger().fine("Trying to start " + name);
 
 		// Verify if the application is already running.
-		verifyNumberOfInstances(config.getName(), config.runsSingle());
+		verifyNumberOfInstances(config.getName(), config.runMaxApplications());
 
 		// Find an id, throws an exception if there is no id available.
 		int id = findId(name);
@@ -446,7 +446,7 @@ public class Manager extends ConfigLoader {
 												application.hasToStop(), 
 												application.hasOutputStream(), 
 												application.isWritingStream(), 
-												application.runsSingle(), 
+												application.runSingle(), 
 												application.isRestart(), 
 												application.hasInfoArg(), 
 												application.getName(), 
@@ -492,8 +492,16 @@ public class Manager extends ConfigLoader {
 	 * @param config
 	 * @throws ApplicationAlreadyExecuting
 	 * @throws MaxNumberOfApplicationsReached 
+	 * @throws MaxGlobalNumberOfApplicationsReached 
 	 */
-	private void verifyNumberOfInstances(String name, boolean single) throws ApplicationAlreadyExecuting, MaxNumberOfApplicationsReached {
+	private void verifyNumberOfInstances(String name, int maxNumber) throws MaxNumberOfApplicationsReached, MaxGlobalNumberOfApplicationsReached {
+		
+		// Verify the global number of running apps.
+		if (applicationMap.size() == ConfigManager.getInstance().getMaxNumberOfApplications()) {
+			Log.logger().info("Global max number of running applications reached");
+			
+			throw new MaxGlobalNumberOfApplicationsReached(name);
+		}
 		
 		// Count the application instances.
 		int counter = 0;
@@ -513,13 +521,8 @@ public class Manager extends ConfigLoader {
 					// Increment the counter.
 					++counter;
 					
-					if (single) {
-						Log.logger().info("Application with name " + application.getName() + " is already executing with id " + application.getId());
-				
-						throw new ApplicationAlreadyExecuting(application.getName());
-					}
-					else if (counter >= ConfigManager.getInstance().getMaxNumberOfApplications()) {
-						Log.logger().info("Max number of applications reached");
+					if (maxNumber != -1 && counter >= maxNumber) {
+						Log.logger().info("Max number of running applications (" + maxNumber + ") reached for application " + name);
 						
 						throw new MaxNumberOfApplicationsReached(application.getName());
 					}
@@ -704,10 +707,10 @@ public class Manager extends ConfigLoader {
 		application.sendEndOfStream();
 	}
 
-	public int newStartedUnregisteredApplication(String name, long pid) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public int newStartedUnregisteredApplication(String name, long pid) throws MaxNumberOfApplicationsReached, MaxGlobalNumberOfApplicationsReached {
 		
 		// Verify if the application is already running.
-		verifyNumberOfInstances(name, false);
+		verifyNumberOfInstances(name, -1);
 		
 		// Find an id, throws an exception if there is no id available.
 		int id = findId(name);
@@ -728,7 +731,7 @@ public class Manager extends ConfigLoader {
 		return id;
 	}
 	
-	public int newStartedUnregisteredApplication(String name) throws MaxNumberOfApplicationsReached, ApplicationAlreadyExecuting {
+	public int newStartedUnregisteredApplication(String name) throws MaxNumberOfApplicationsReached, MaxGlobalNumberOfApplicationsReached {
 		return newStartedUnregisteredApplication(name, 0);
 	}
 

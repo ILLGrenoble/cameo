@@ -26,6 +26,6 @@ public class MaxNumberOfApplicationsReached extends Exception {
 	}
 
 	public String getMessage() {
-		return "Cannot start '" + name + "' because the maximum number of applications is reached";
+		return "Cannot start '" + name + "' because its maximum number of running applications is reached";
 	}
 }
