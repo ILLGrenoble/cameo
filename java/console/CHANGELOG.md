@@ -1,3 +1,8 @@
+2.0.1 (not released)
+-----
+
+* Display the max number of apps in list result.
+
 2.0.0
 -----
 

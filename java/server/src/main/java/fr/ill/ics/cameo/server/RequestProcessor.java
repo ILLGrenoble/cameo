@@ -493,6 +493,7 @@ public class RequestProcessor {
 			config.put(Messages.ApplicationConfig.NAME, application.getName());
 			config.put(Messages.ApplicationConfig.DESCRIPTION, application.getDescription());
 			config.put(Messages.ApplicationConfig.RUNS_SINGLE, application.runSingle());
+			config.put(Messages.ApplicationConfig.MULTIPLE, application.runMaxApplications());
 			config.put(Messages.ApplicationConfig.RESTART, application.isRestart());
 			config.put(Messages.ApplicationConfig.STARTING_TIME, application.getStartingTime());
 			config.put(Messages.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());

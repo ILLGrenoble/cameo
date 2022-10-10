@@ -9,7 +9,12 @@ import org.json.simple.parser.ParseException;
  * Helper class to convert more easily JSONObject values.
  */
 public class JSON {
-
+	
+	public static boolean hasKey(JSONObject object, String key) {
+		Object value = object.get(key);
+		return (value != null);
+	}
+	
 	public static String getString(JSONObject object, String key) {
 		return (String)object.get(key);
 	}

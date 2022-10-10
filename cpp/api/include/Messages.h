@@ -298,6 +298,7 @@ namespace message {
 		constexpr static const char* NAME = "name"; // required string name = 1;
 		constexpr static const char* DESCRIPTION = "description"; // optional string description = 2;
 		constexpr static const char* RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
+		constexpr static const char* MULTIPLE = "multiple";
 		constexpr static const char* RESTART = "restart"; // required bool restart = 4;
 		constexpr static const char* STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
 		constexpr static const char* STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;

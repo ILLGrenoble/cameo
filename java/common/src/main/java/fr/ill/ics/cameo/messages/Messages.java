@@ -107,6 +107,7 @@ public class Messages {
 		public static final String NAME = "name"; // required string name = 1;
 		public static final String DESCRIPTION = "description"; // optional string description = 2;
 		public static final String RUNS_SINGLE = "runsSingle"; // required bool runsSingle = 3;
+		public static final String MULTIPLE = "multiple"; // required bool runsSingle = 3;
 		public static final String RESTART = "restart"; // required bool restart = 4;
 		public static final String STARTING_TIME = "startingTime"; // required int32 startingTime = 5;
 		public static final String STOPPING_TIME = "stoppingTime"; // required int32 stoppingTime = 7;

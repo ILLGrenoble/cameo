@@ -1,3 +1,9 @@
+2.0.1
+-----
+
+* Added JSON.hasKey() method.
+* Added attribute MULTIPLE in ApplicationConfig.
+
 2.0.0
 -----
 

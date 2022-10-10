@@ -230,7 +230,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def(py::init<const std::string&, const std::string&, bool, bool, int, int>())
 		.def("getName", &App::Config::getName)
 		.def("getDescription", &App::Config::getDescription)
-		.def("hasSingleInstance", &App::Config::hasSingleInstance)
+		.def("getMultiple", &App::Config::getMultiple)
 		.def("canRestart", &App::Config::canRestart)
 		.def("getStartingTime", &App::Config::getStartingTime)
 		.def("getStoppingTime", &App::Config::getStoppingTime)

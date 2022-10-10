@@ -86,6 +86,7 @@ public class Console {
 		
 	private static String NAME = "Name";
 	private static String DESCRIPTION = "Description";
+	private static String MAX_APPS = "#Max";
 	private static String ID = "ID";
 	private static String PID = "PID";
 	private static String STATUS = "Status";
@@ -378,8 +379,9 @@ public class Console {
 		}
 		
 		// Calculate max lengths of name and description.
-		int maxNameLength = NAME.length() + 1;
-		int maxDescriptionLength = DESCRIPTION.length() + 1;
+		int maxNameLength = NAME.length();
+		int maxDescriptionLength = DESCRIPTION.length();
+		int maxMaxAppsLength = MAX_APPS.length();
 				
 		for (App.Config config : applicationConfigs) {
 			if (config.getName().length() > maxNameLength) {
@@ -388,14 +390,32 @@ public class Console {
 			if (config.getDescription().length() > maxNameLength) {
 				maxDescriptionLength = config.getDescription().length();
 			}
+			
+			int multiple = config.getMultiple();
+			int digits = 1;
+			
+			if (multiple == -1) {
+				digits = 1;
+			}
+			else {
+				digits = (int)Math.log10(multiple) + 1;
+			}
+			
+			if (digits > maxMaxAppsLength) {
+				maxMaxAppsLength = digits;
+			}
 		}
 		
+		System.out.println("maxMaxAppsLength = " + maxMaxAppsLength);
+		
 		// Print headers.
-		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
-		printLine(maxNameLength + maxDescriptionLength + 1);
+		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(MAX_APPS, maxMaxAppsLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
+		printLine(maxNameLength + maxMaxAppsLength + maxDescriptionLength + 2);
 		
 		for (App.Config config : applicationConfigs) {
-			System.out.println(cellString(config.getName(), maxNameLength) + " " + config.getDescription());
+			
+			String maxApps = (config.getMultiple() == -1 ? "-" : String.valueOf(config.getMultiple()));
+			System.out.println(cellString(config.getName(), maxNameLength) + " " + maxApps + " " + config.getDescription());
 		}		
 	}
 	

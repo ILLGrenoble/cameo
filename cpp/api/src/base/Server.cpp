@@ -419,14 +419,25 @@ std::vector<App::Config> Server::getApplicationConfigs() const {
 
 		std::string name {config[message::ApplicationConfig::NAME].GetString()};
 		std::string description {config[message::ApplicationConfig::DESCRIPTION].GetString()};
-		bool runsSingle {config[message::ApplicationConfig::RUNS_SINGLE].GetBool()};
+
+		int multiple {1};
+		if (config.HasMember(message::ApplicationConfig::MULTIPLE)) {
+			multiple = config[message::ApplicationConfig::MULTIPLE].GetInt();
+		}
+		else {
+			// For backwards compatibility.
+			if (config.HasMember(message::ApplicationConfig::RUNS_SINGLE)) {
+				multiple = (config[message::ApplicationConfig::RUNS_SINGLE].GetBool() ? 1 : -1);
+			}
+		}
+
 		bool restart {config[message::ApplicationConfig::RESTART].GetBool()};
 		int startingTime {config[message::ApplicationConfig::STARTING_TIME].GetInt()};
 		int stoppingTime {config[message::ApplicationConfig::STOPPING_TIME].GetInt()};
 
 		App::Config applicationConfig{name,
 				description,
-				runsSingle,
+				multiple,
 				restart,
 				startingTime,
 				stoppingTime};

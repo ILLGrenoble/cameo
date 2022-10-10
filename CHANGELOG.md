@@ -3,6 +3,7 @@
 
 * Implemented the max number of applications for an application defined with an integer multiple attribute in config file.
 * Corrected the check of the max global number of running applications.
+* Display the max number of applications in console list result.
 
 2.0.3
 -----

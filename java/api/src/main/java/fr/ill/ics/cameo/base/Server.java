@@ -691,12 +691,23 @@ public class Server implements IObject, ITimeoutable {
 			
 			String name = JSON.getString(config, Messages.ApplicationConfig.NAME);
 			String description = JSON.getString(config, Messages.ApplicationConfig.DESCRIPTION);
-			boolean runsSingle = JSON.getBoolean(config, Messages.ApplicationConfig.RUNS_SINGLE);
+			
+			int multiple = 1;
+			if (JSON.hasKey(config, Messages.ApplicationConfig.MULTIPLE)) {
+				multiple = JSON.getInt(config, Messages.ApplicationConfig.MULTIPLE);
+			}
+			else {
+				// For backwards compatibility.
+				if (JSON.hasKey(config, Messages.ApplicationConfig.RUNS_SINGLE)) {
+					multiple = (JSON.getBoolean(config, Messages.ApplicationConfig.RUNS_SINGLE) ? 1 : -1);
+				}
+			}
+			
 			boolean restart = JSON.getBoolean(config, Messages.ApplicationConfig.RESTART);
 			int startingTime = JSON.getInt(config, Messages.ApplicationConfig.STARTING_TIME);
 			int stoppingTime = JSON.getInt(config, Messages.ApplicationConfig.STOPPING_TIME);
 		
-			applications.add(new App.Config(name, description, runsSingle, restart, startingTime, stoppingTime));
+			applications.add(new App.Config(name, description, multiple, restart, startingTime, stoppingTime));
 		}
 	
 		return applications;

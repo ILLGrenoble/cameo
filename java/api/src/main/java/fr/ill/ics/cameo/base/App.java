@@ -217,7 +217,7 @@ public class App extends EventListener {
 	
 		private String name;
 		private String description;
-		private boolean singleInstance;
+		private int multiple;
 		private boolean restart;
 		private int startingTime;
 		private int stoppingTime;
@@ -226,15 +226,15 @@ public class App extends EventListener {
 		 * Constructor.
 		 * @param name The name.
 		 * @param description The description.
-		 * @param singleInstance True if there is only a single instance.
+		 * @param multiple The maximum number of running apps.
 		 * @param restart True if the application can restart.
 		 * @param startingTime Starting time in seconds.
 		 * @param stoppingTime Stopping time in seconds.
 		 */
-		public Config(String name, String description, boolean singleInstance, boolean restart, int startingTime, int stoppingTime) {
+		public Config(String name, String description, int multiple, boolean restart, int startingTime, int stoppingTime) {
 			super();
 			this.description = description;
-			this.singleInstance = singleInstance;
+			this.multiple = multiple;
 			this.restart = restart;
 			this.name = name;
 			this.startingTime = startingTime;
@@ -259,10 +259,10 @@ public class App extends EventListener {
 		
 		/**
 		 * Returns the multiplicity of the application.
-		 * @return True if the application runs only once.
+		 * @return The maximum number of running apps.
 		 */
-		public boolean hasSingleInstance() {
-			return singleInstance;
+		public int getMultiple() {
+			return multiple;
 		}
 	
 		/**
@@ -295,7 +295,7 @@ public class App extends EventListener {
 			
 			result.put("name", name);
 			result.put("description", description);
-			result.put("single", singleInstance);
+			result.put("multiple", multiple);
 			result.put("restart", restart);
 			result.put("starting_time", startingTime);
 			result.put("stopping_time", stoppingTime);

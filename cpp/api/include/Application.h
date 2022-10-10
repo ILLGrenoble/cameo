@@ -87,7 +87,7 @@ public:
 	 * \param server The server.
 	 * \param app The app started by the server.
 	 */
-	ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app);
+	ServerAndApp(std::unique_ptr<Server> &server, std::unique_ptr<App> &app);
 
 	/**
 	 * Gets the server.
@@ -127,27 +127,27 @@ typedef int32_t State;
 /**
  * Unknown state.
  */
-const State NIL          = 0;
+const State NIL = 0;
 
 /**
  * Starting state.
  */
-const State STARTING         = 1;
+const State STARTING = 1;
 
 /**
  * Running state.
  */
-const State RUNNING          = 2;
+const State RUNNING = 2;
 
 /**
  * Stopping state.
  */
-const State STOPPING         = 4;
+const State STOPPING = 4;
 
 /**
  * Killing state.
  */
-const State KILLING          = 8;
+const State KILLING = 8;
 
 /**
  * Processing error state.
@@ -157,22 +157,22 @@ const State PROCESSING_ERROR = 16;
 /**
  * Failure state.
  */
-const State FAILURE          = 32;
+const State FAILURE = 32;
 
 /**
  * Success state.
  */
-const State SUCCESS          = 64;
+const State SUCCESS = 64;
 
 /**
  * Stopped state.
  */
-const State STOPPED          = 128;
+const State STOPPED = 128;
 
 /**
  * Killed state.
  */
-const State KILLED           = 256;
+const State KILLED = 256;
 
 ///////////////////////////////////////////////////////////////////////////
 // This
@@ -182,7 +182,7 @@ const State KILLED           = 256;
  *
  * The application can be launched by the Cameo console or another Cameo App.
  */
-class This : private EventListener {
+class This: private EventListener {
 
 	friend class cameo::Waiting;
 	friend class cameo::Server;
@@ -230,20 +230,20 @@ public:
 		 * \param key The key.
 		 * \param value The value.
 		 */
-		void storeKeyValue(const std::string& key, const std::string& value) const;
+		void storeKeyValue(const std::string &key, const std::string &value) const;
 
 		/**
 		 * Gets the key value from the Cameo server.
 		 * \param key The key.
 		 * \return The value associated to key.
 		 */
-		std::string getKeyValue(const std::string& key) const;
+		std::string getKeyValue(const std::string &key) const;
 
 		/**
 		 * Removes the key from the Cameo server.
 		 * \param key The key.
 		 */
-		void removeKey(const std::string& key) const;
+		void removeKey(const std::string &key) const;
 
 		/**
 		 * Requests a new port from the Cameo server.
@@ -267,21 +267,20 @@ public:
 		 * Creates a request socket.
 		 * \return A new request socket.
 		 */
-		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string &endpoint, const std::string &responderIdentity) const;
 
 		/**
 		 * Creates a request socket with a timeout.
 		 * \return A new request socket.
 		 */
-		std::unique_ptr<RequestSocket> createRequestSocket(const std::string& endpoint, const std::string& responderIdentity, int timeout) const;
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string &endpoint, const std::string &responderIdentity, int timeout) const;
 
 	private:
-		Com(Server* server, int applicationId);
+		Com(Server *server, int applicationId);
 
-		Server* m_server;
+		Server *m_server;
 		int m_applicationId;
 	};
-
 
 	/**
 	 * Destructor.
@@ -293,14 +292,14 @@ public:
 	 * \param argc The number of arguments.
 	 * \param argv The arguments.
 	 */
-	static void init(int argc, char* argv[]);
+	static void init(int argc, char *argv[]);
 
 	/**
 	 * Initializes this application with direct parameters.
 	 * \param name The Cameo name.
 	 * \param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
 	 */
-	static void init(const std::string& name, const std::string& endpoint);
+	static void init(const std::string &name, const std::string &endpoint);
 
 	/**
 	 * Terminates the application.
@@ -385,7 +384,7 @@ public:
 	 * Sets the result.
 	 * \param data The string result.
 	 */
-	static void setResult(const std::string& data);
+	static void setResult(const std::string &data);
 
 	/**
 	 * Connects to the starter application, i.e. the application which started this application.
@@ -407,11 +406,11 @@ private:
 
 	void terminateImpl();
 
-	void initApplication(int argc, char* argv[]);
-	void initApplication(const std::string& name, const std::string& endpoint);
+	void initApplication(int argc, char *argv[]);
+	void initApplication(const std::string &name, const std::string &endpoint);
 	void initApplication();
 
-	static State parseState(const std::string& value);
+	static State parseState(const std::string &value);
 	State getState(int id) const;
 
 	int initUnregisteredApplication();
@@ -457,7 +456,7 @@ private:
  *
  * An App instance is created by a Server instance. It represents a real remote application that was started by a real Cameo server.
  */
-class App : private EventListener {
+class App: private EventListener {
 
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const App&);
@@ -497,25 +496,25 @@ public:
 		 * \param key The key.
 		 * \return The value associated to key.
 		 */
-		std::string getKeyValue(const std::string& key) const;
+		std::string getKeyValue(const std::string &key) const;
 
 		/**
 		 * Class defining an exception when getting a key value fails.
 		 */
-		class KeyValueGetterException : public RemoteException {
+		class KeyValueGetterException: public RemoteException {
 
 		public:
 			/**
 			 * Constructor.
 			 * \param message The message.
 			 */
-			KeyValueGetterException(const std::string& message);
+			KeyValueGetterException(const std::string &message);
 		};
 
 		/**
 		 * Class defining a getter for a key value.
 		 */
-		class KeyValueGetter : private EventListener {
+		class KeyValueGetter: private EventListener {
 
 			friend class Com;
 
@@ -537,9 +536,9 @@ public:
 			void cancel();
 
 		private:
-			KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key);
+			KeyValueGetter(Server *server, const std::string &name, int id, const std::string &key);
 
-			Server* m_server;
+			Server *m_server;
 			int m_id;
 			std::string m_key;
 		};
@@ -548,12 +547,12 @@ public:
 		 * Creates a KeyValueGetter for a key.
 		 * \return A new KeyValueGetter instance.
 		 */
-		std::unique_ptr<KeyValueGetter> getKeyValueGetter(const std::string& key) const;
+		std::unique_ptr<KeyValueGetter> getKeyValueGetter(const std::string &key) const;
 
 	private:
-		Com(Server* server);
+		Com(Server *server);
 
-		Server* m_server;
+		Server *m_server;
 		int m_applicationId;
 		std::string m_name;
 	};
@@ -573,13 +572,12 @@ public:
 		 * Constructor.
 		 * \param name The name.
 		 * \param description The description.
-		 * \param singleInstance True if there is only a single instance.
+		 * \param multiple The maximum number of running apps.
 		 * \param restart True if the application can restart.
 		 * \param startingTime Starting time in seconds.
 		 * \param stoppingTime Stopping time in seconds.
 		 */
-		Config(const std::string& name, const std::string& description, bool singleInstance, bool restart,
-			      int startingTime, int stoppingTime);
+		Config(const std::string &name, const std::string &description, int multiple, bool restart, int startingTime, int stoppingTime);
 
 		/**
 		 * Gets the name.
@@ -595,9 +593,9 @@ public:
 
 		/**
 		 * Returns the multiplicity of the application.
-		 * \return True if the application runs only once.
+		 * \return The maximum number of running apps.
 		 */
-		bool hasSingleInstance() const;
+		int getMultiple() const;
 
 		/**
 		 * Returns true if the application can restart.
@@ -626,7 +624,7 @@ public:
 	private:
 		std::string m_name;
 		std::string m_description;
-		bool m_singleInstance;
+		int m_multiple;
 		bool m_restart;
 		int m_startingTime;
 		int m_stoppingTime;
@@ -652,8 +650,7 @@ public:
 		 * \param pastApplicationStates The past application states.
 		 * \param args The arguments of the executable.
 		 */
-		Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates,
-		     const std::string& args);
+		Info(const std::string &name, int id, int pid, State applicationState, State pastApplicationStates, const std::string &args);
 
 		/**
 		 * Gets the id.
@@ -724,7 +721,7 @@ public:
 		 * \param status The status.
 		 * \param owner The owner.
 		 */
-		Port(int port, const std::string& status, const std::string& owner);
+		Port(int port, const std::string &status, const std::string &owner);
 
 		/**
 		 * Gets the port.
@@ -847,7 +844,7 @@ public:
 	 * \param keyValue The key value.
 	 * \return The state when the call returned.
 	 */
-	State waitFor(KeyValue& keyValue);
+	State waitFor(KeyValue &keyValue);
 
 	/**
 	 * Cancels the blocking waitFor() in another thread.
@@ -903,15 +900,15 @@ public:
 	std::string toString() const;
 
 private:
-	App(Server* server);
+	App(Server *server);
 
 	void setId(int id);
-	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket);
+	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket> &socket);
 	void setPastStates(State pastStates);
 	void setInitialState(State state);
-	State waitFor(int states, KeyValue& keyValue, bool blocking);
+	State waitFor(int states, KeyValue &keyValue, bool blocking);
 
-	Server* m_server;
+	Server *m_server;
 	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;
 	int m_id;
 	Com m_com;
@@ -931,7 +928,6 @@ private:
  * Array of App objects.
  */
 typedef std::vector<std::unique_ptr<App>> AppArray;
-
 
 /**
  * Converts a set of states to a string.

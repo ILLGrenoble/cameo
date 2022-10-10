@@ -887,10 +887,10 @@ std::string App::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Configuration
 
-App::Config::Config(const std::string& name, const std::string& description, bool singleInstance, bool restart, int startingTime, int stoppingTime) :
+App::Config::Config(const std::string& name, const std::string& description, int multiple, bool restart, int startingTime, int stoppingTime) :
 	m_name{name},
 	m_description{description},
-	m_singleInstance{singleInstance},
+	m_multiple{multiple},
 	m_restart{restart},
 	m_startingTime{startingTime},
 	m_stoppingTime{stoppingTime} {
@@ -904,8 +904,8 @@ const std::string& App::Config::getDescription() const {
 	return m_description;
 }
 
-bool App::Config::hasSingleInstance() const {
-	return m_singleInstance;
+int App::Config::getMultiple() const {
+	return m_multiple;
 }
 
 bool App::Config::canRestart() const {
@@ -930,8 +930,8 @@ std::string App::Config::toString() const {
 	jsonObject.pushKey("description");
 	jsonObject.pushValue(m_description);
 
-	jsonObject.pushKey("single");
-	jsonObject.pushValue(m_singleInstance);
+	jsonObject.pushKey("multiple");
+	jsonObject.pushValue(m_multiple);
 
 	jsonObject.pushKey("restart");
 	jsonObject.pushValue(m_restart);
