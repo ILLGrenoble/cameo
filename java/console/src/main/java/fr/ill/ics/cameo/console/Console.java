@@ -406,8 +406,6 @@ public class Console {
 			}
 		}
 		
-		System.out.println("maxMaxAppsLength = " + maxMaxAppsLength);
-		
 		// Print headers.
 		System.out.println(cellString(NAME, maxNameLength) + " " + cellString(MAX_APPS, maxMaxAppsLength) + " " + cellString(DESCRIPTION, maxDescriptionLength));
 		printLine(maxNameLength + maxMaxAppsLength + maxDescriptionLength + 2);
