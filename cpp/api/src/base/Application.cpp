@@ -591,7 +591,11 @@ std::string App::Com::KeyValueGetter::get() {
 	try {
 		return m_server->getKeyValue(m_id, m_key);
 	}
-	catch (...) {
+	catch (const UndefinedApplicationException& e) {
+		// The application has already terminated.
+		throw KeyValueGetterException("Application terminated");
+	}
+	catch (const UndefinedKeyException& e) {
 		// Key is not found, waiting for the event.
 	}
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo-api-cpp
-  VERSION 2.0.3
+  VERSION 2.0.4
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )

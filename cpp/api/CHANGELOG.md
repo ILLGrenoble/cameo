@@ -1,3 +1,8 @@
+2.0.4
+-----
+
+* Do not block Requester and Subscriber if the remote application terminated before the registration of the key getter.
+
 2.0.3
 -----
 

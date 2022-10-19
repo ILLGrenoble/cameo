@@ -121,7 +121,7 @@ public class Subscriber implements IObject, ICancelable {
 			}
 		}
 		catch (KeyValueGetterException e) {
-			throw new InitException("Cannot create subscriber");
+			throw new InitException("Cannot create subscriber: " + e.getMessage());
 		}
 	}
 	

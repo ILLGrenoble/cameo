@@ -261,8 +261,8 @@ void Subscriber::init() {
 			synchronize(m_app);
 		}
 	}
-	catch (...) {
-		throw InitException("Cannot initialize subscriber");
+	catch (const std::exception& e) {
+		throw InitException(std::string("Cannot initialize subscriber: ") + e.what());
 	}
 }
 

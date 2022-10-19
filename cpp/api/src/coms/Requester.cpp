@@ -80,8 +80,8 @@ void Requester::init() {
 
 		m_impl->init(endpoint, StringId::from(m_appId, m_key));
 	}
-	catch (...) {
-		throw InitException("Cannot initialize requester");
+	catch (const std::exception& e) {
+		throw InitException(std::string("Cannot initialize requester: ") + e.what());
 	}
 }
 

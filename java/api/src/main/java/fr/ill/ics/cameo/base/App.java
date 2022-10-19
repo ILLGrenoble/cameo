@@ -126,7 +126,11 @@ public class App extends EventListener {
 					try {
 						return server.getKeyValue(id, key);
 					}
-					catch (Exception e) {
+					catch (UndefinedApplicationException e) {
+						// The application has already terminated.
+						throw new KeyValueGetterException("Application terminated");
+					}
+					catch (UndefinedKeyException e) {
 						// Key is not found, waiting for the event.
 					}
 				
