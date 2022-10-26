@@ -67,7 +67,7 @@ public class ResponderRouter implements IObject, ICancelable {
 		dealerEndpoint = "inproc://" + IdGenerator.newStringId();
 		
 		// Init with the responder identity.
-		impl.init(StringId.from(This.getId(), key), dealerEndpoint);
+		impl.init(StringId.from(key, This.getId()), dealerEndpoint);
 
 		// Store the responder data.
 		JSONObject jsonData = new JSONObject();

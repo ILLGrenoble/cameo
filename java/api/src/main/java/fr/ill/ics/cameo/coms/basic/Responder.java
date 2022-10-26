@@ -71,7 +71,7 @@ public class Responder implements IObject, ICancelable {
 		key = KEY + "-" + name;
 		
 		// Init with the responder identity.
-		impl.init(StringId.from(This.getId(), key));
+		impl.init(StringId.from(key, This.getId()));
 
 		// Store the responder data.
 		JSONObject jsonData = new JSONObject();

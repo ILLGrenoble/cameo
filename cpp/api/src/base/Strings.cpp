@@ -269,12 +269,12 @@ std::string AppIdentity::toJSONString() const {
 }
 
 
-std::string StringId::from(int id, const std::string& name) {
-	return std::to_string(id) + ":" + name;
+std::string StringId::from(const std::string& name, int id) {
+	return name + ":" + std::to_string(id);
 }
 
-std::string StringId::from(const std::string& id, const std::string& name) {
-	return id + ":" + name;
+std::string StringId::from(const std::string& name1, const std::string& name2) {
+	return name1 + ":" + name2;
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint) {

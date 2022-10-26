@@ -113,7 +113,7 @@ public class Subscriber implements IObject, ICancelable {
 				endpoint = app.getEndpoint().withPort(publisherPort);
 			}
 			
-			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(appId, key));
+			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(key, appId));
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
 			if (numberOfSubscribers > 0) {

@@ -168,7 +168,7 @@ void Responder::init() {
 	m_key = KEY + "-" + m_name;
 
 	// Init the reponder socket.
-	m_impl->init(StringId::from(This::getId(), m_key));
+	m_impl->init(StringId::from(m_key, This::getId()));
 
 	// Store the responder data.
 	json::StringObject jsonData;

@@ -78,7 +78,7 @@ void Requester::init() {
 			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 
-		m_impl->init(endpoint, StringId::from(m_appId, m_key));
+		m_impl->init(endpoint, StringId::from(m_key, m_appId));
 	}
 	catch (const std::exception& e) {
 		throw InitException(std::string("Cannot initialize requester: ") + e.what());

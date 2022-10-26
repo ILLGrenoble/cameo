@@ -175,7 +175,7 @@ void ResponderRouter::init() {
 	m_dealerEndpoint = std::string{"inproc://"} + IdGenerator::newStringId();
 
 	// Init the responder socket.
-	m_impl->init(StringId::from(This::getId(), m_key), m_dealerEndpoint);
+	m_impl->init(StringId::from(m_key, This::getId()), m_dealerEndpoint);
 
 	// Store the responder data.
 	json::StringObject jsonData;

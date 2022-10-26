@@ -6,12 +6,12 @@ public class StringId {
 
 	public final static String CAMEO_SERVER = "0:0";
 	
-	public static String from(int id, String name) {
-		return id + ":" + name;
+	public static String from(String name, int id) {
+		return name + ":" + id;
 	}
 	
-	public static String from(String id, String name) {
-		return id + ":" + name;
+	public static String from(String name1, String name2) {
+		return name1 + ":" + name2;
 	}
 	
 	public static long toInt(byte[] identity) {

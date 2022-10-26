@@ -1,3 +1,8 @@
+2.1.0 (NR)
+-----
+
+* Modified StringId implementation to have the integer id at the end of the string.
+
 2.0.1
 -----
 

@@ -69,7 +69,7 @@ void Publisher::init() {
 	m_key = KEY + "-" + m_name;
 
 	// Init the publisher and synchronizer sockets.
-	m_impl->init(StringId::from(This::getId(), m_key));
+	m_impl->init(StringId::from(m_key, This::getId()));
 
 	// Store the publisher data.
 	json::StringObject jsonData;
@@ -254,7 +254,7 @@ void Subscriber::init() {
 			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 
-		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_appId, m_key));
+		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_key, m_appId));
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {

@@ -72,7 +72,7 @@ public class Publisher implements ICancelable {
 		key = KEY + "-" + name;
 		
 		// Init the publisher and synchronizer sockets.
-		impl.init(StringId.from(This.getId(), key));
+		impl.init(StringId.from(key, This.getId()));
 		
 		// Store the publisher data.
 		JSONObject jsonData = new JSONObject();

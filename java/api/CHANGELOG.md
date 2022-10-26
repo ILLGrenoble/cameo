@@ -1,3 +1,8 @@
+2.1.0 (NR)
+-----
+
+* Change of version of cameo-common.
+
 2.0.3
 -----
 

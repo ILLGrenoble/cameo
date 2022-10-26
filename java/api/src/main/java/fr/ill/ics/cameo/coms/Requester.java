@@ -101,7 +101,7 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 				endpoint = app.getEndpoint().withPort(responderPort);
 			}
 			
-			impl.init(endpoint, StringId.from(appId, key));
+			impl.init(endpoint, StringId.from(key, appId));
 		}
 		catch (KeyValueGetterException e) {
 			throw new InitException("Cannot initialize requester: " + e.getMessage());

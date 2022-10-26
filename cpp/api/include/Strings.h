@@ -301,19 +301,19 @@ struct StringId {
 
 	/**
 	 * Creates the string id.
-	 * \param id The integer id.
 	 * \param name The name.
+	 * \param id The integer id.
 	 * \return The composed string id.
 	 */
-	static std::string from(int id, const std::string& name);
+	static std::string from(const std::string& name, int id);
 
 	/**
 	 * Creates the string id.
-	 * \param id The string id.
-	 * \param name The name.
+	 * \param id The first name.
+	 * \param name The second name.
 	 * \return The composed string id.
 	 */
-	static std::string from(const std::string& id, const std::string& name);
+	static std::string from(const std::string& name1, const std::string& name2);
 };
 
 }
