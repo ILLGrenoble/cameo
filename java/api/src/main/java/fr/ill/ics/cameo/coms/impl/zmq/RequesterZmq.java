@@ -94,8 +94,10 @@ public class RequesterZmq implements RequesterImpl {
 		// Get the context.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 
+		// Memorize the timeout that can have been set before init().
+		int previousTimeout = timeout;
+		
 		// Loop to ensure that the responder is connected to the proxy and can reply.
-		// Initial timeout.
 		timeout = SYNC_TIMEOUT;
 		
 		while (true) {
@@ -115,7 +117,7 @@ public class RequesterZmq implements RequesterImpl {
 		}
 		
 		// Reset timeout.
-		timeout = 0;
+		timeout = previousTimeout;
 	}
 	
 	private Zmq.Msg createMessage() {

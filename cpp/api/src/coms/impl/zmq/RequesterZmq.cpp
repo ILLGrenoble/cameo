@@ -96,6 +96,10 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 	// Get the context.
 	m_contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 
+	// Memorize the timeout that can have been set before init().
+	int previousTimeout = m_timeout;
+
+	// Loop to ensure that the responder is connected to the proxy and can reply.
 	m_timeout = SYNC_TIMEOUT;
 
 	while (true) {
@@ -116,7 +120,7 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 	}
 
 	// Reset timeout.
-	m_timeout = 0;
+	m_timeout = previousTimeout;
 }
 
 RequesterZmq::~RequesterZmq() {
