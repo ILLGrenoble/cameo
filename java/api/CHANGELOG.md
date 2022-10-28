@@ -2,6 +2,7 @@
 -----
 
 * Change of version of cameo-common.
+* Corrected timeout bug with the Requester: timeout was reset to 0 if setTimeout() was called before init().
 
 2.0.3
 -----

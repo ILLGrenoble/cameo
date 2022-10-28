@@ -2,6 +2,7 @@
 -----
 
 * Modification of the implementation of StringId. Coms classes are not compatible with older versions.
+* Corrected timeout bug with the Requester classes: timeout was reset to 0 if setTimeout() was called before init().
 
 2.0.5
 -----

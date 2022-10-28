@@ -1,7 +1,8 @@
-2.1.0
+2.1.0 (NR)
 -----
 
 * Modified StringId implementation to have the integer id at the end of the string.
+* Corrected timeout bug with the Requester: timeout was reset to 0 if setTimeout() was called before init().
 
 2.0.4
 -----
