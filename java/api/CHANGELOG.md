@@ -1,4 +1,4 @@
-2.1.0 (NR)
+2.1.0
 -----
 
 * Change of version of cameo-common.

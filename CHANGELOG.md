@@ -1,4 +1,4 @@
-2.1.0 (NR)
+2.1.0
 -----
 
 * Modification of the implementation of StringId. Coms classes are not compatible with older versions.
