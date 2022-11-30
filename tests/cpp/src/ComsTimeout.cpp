@@ -37,8 +37,34 @@ int main(int argc, char *argv[]) {
 	unique_ptr<coms::Requester> requester = coms::Requester::create(starter->getApp(), "an unknown responder");
 	requester->setTimeout(500);
 
+	// Set running to synchronize the starter app.
+	This::setRunning();
+
 	try {
 		requester->init();
+	}
+	catch (const std::exception& e) {
+		cout << e.what() << endl;
+	}
+
+	// Create a subscriber.
+	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(starter->getApp(), "an unknown publisher");
+	subscriber->setTimeout(500);
+
+	try {
+		subscriber->init();
+	}
+	catch (const std::exception& e) {
+		cout << e.what() << endl;
+	}
+
+	// Create a subscriber.
+	subscriber = coms::Subscriber::create(starter->getApp(), "pub");
+	subscriber->setTimeout(500);
+
+	try {
+		subscriber->init();
+		cout << "Initialized " << *subscriber << endl;
 	}
 	catch (const std::exception& e) {
 		cout << e.what() << endl;

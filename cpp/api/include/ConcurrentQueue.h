@@ -17,6 +17,7 @@
 #ifndef CAMEO_CONCURRENTQUEUE_H_
 #define CAMEO_CONCURRENTQUEUE_H_
 
+#include "Timeout.h"
 #include <queue>
 #include <thread>
 #include <mutex>
@@ -24,25 +25,6 @@
 #include <memory>
 
 namespace cameo {
-
-/**
- * Class defining an exception thrown when the pop() call has timed out.
- */
-class Timeout : public std::exception {
-
-public:
-	/**
-	 * Constructor.
-	 */
-	Timeout() {}
-
-	/**
-	 * What function.
-	 */
-	virtual const char* what() const noexcept {
-		return "Timeout while popping";
-	}
-};
 
 /**
  * Class implementing a concurrent queue. This is a modified version of the implementation:
@@ -99,7 +81,7 @@ public:
 			else {
 				std::cv_status status = m_condition.wait_for(lock, std::chrono::milliseconds(timeout));
 				if (status == std::cv_status::timeout) {
-					throw Timeout();
+					throw Timeout("Timeout while popping a queue");
 				}
 			}
 		}

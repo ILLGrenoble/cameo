@@ -34,6 +34,11 @@ TimeoutCounter::TimeoutCounter(const TimeoutCounter& obj) :
 
 int TimeoutCounter::remains() const {
 
+	// Return no timeout if it is the case.
+	if (m_value == -1) {
+		return -1;
+	}
+
 	// Get the time elapsed since the creation of the object.
 	std::chrono::duration<double> diff = std::chrono::system_clock::now() - m_start;
 

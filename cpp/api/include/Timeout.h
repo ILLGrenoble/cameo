@@ -14,12 +14,25 @@
  * limitations under the Licence.
  */
 
-#include "ConnectionTimeout.h"
+#ifndef CAMEO_TIMEOUT_H_
+#define CAMEO_TIMEOUT_H_
+
+#include <stdexcept>
 
 namespace cameo {
 
-ConnectionTimeout::ConnectionTimeout() :
-	std::runtime_error{"Connection timeout"} {
-}
+/**
+ * Exception for a general timeout.
+ */
+class Timeout : public std::runtime_error {
+
+public:
+	/**
+	 * Constructor.
+	 */
+	Timeout(const std::string& reason);
+};
 
 }
+
+#endif

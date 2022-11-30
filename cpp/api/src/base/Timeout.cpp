@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-#include "ConnectionTimeout.h"
+#include "Timeout.h"
 
 namespace cameo {
 
-ConnectionTimeout::ConnectionTimeout() :
-	std::runtime_error{"Connection timeout"} {
+Timeout::Timeout(const std::string& reason) :
+	std::runtime_error{reason.c_str()} {
 }
 
 }

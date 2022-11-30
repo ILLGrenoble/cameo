@@ -601,12 +601,8 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeout) {
 
 	while (true) {
 		// Waits for a new incoming status. The call may throw a a timeout.
-
-		int r = timeout.remains();
-
-		std::cout << "popEvent timeout " << r << std::endl;
-
-		std::unique_ptr<Event> event {EventListener::popEvent(true, r)};
+		int remainingTimeout = timeout.remains();
+		std::unique_ptr<Event> event {EventListener::popEvent(true, remainingTimeout)};
 
 		// The event can be null if the getter has been canceled.
 		if (!event) {

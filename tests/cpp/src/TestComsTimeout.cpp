@@ -38,18 +38,38 @@ int main(int argc, char *argv[]) {
 
 	This::setRunning();
 
-	int N = 5;
+	// Start the application.
+	unique_ptr<App> app = server->start("comstimeoutcpp");
 
-	// loop the number of times.
-	for (int i = 0; i < N; ++i) {
+	// Wait for running to synchronize with the beginning of the requester init.
+	app->waitFor(cameo::RUNNING);
 
-		// Start the application.
-		unique_ptr<App> app = server->start("comstimeoutcpp");
-		app->waitFor();
+	// Wait for 250ms which is half the requester timeout.
+	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-		cout << "Application " << *app << " finished" << endl;
+	// Store a key to generate event in the keyvalue getter.
+	This::getCom().storeKeyValue("test", "value");
+	This::getCom().removeKey("test");
 
-	}
+	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub", 2);
+
+	std::thread initThread([&] {
+		publisher->init();
+	});
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	publisher->cancel();
+	initThread.join();
+
+	cout << "Canceled publisher" << endl;
+
+
+	app->waitFor();
+
+	cout << "Application " << *app << " finished" << endl;
+
+
+
 
 	cout << "Finished the application" << endl;
 

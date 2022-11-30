@@ -88,7 +88,7 @@ bool RequesterZmq::sendSync() {
 	return true;
 }
 
-void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderIdentity) {
+void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderIdentity, const TimeoutCounter& timeout) {
 
 	m_endpoint = endpoint;
 	m_responderIdentity = responderIdentity;
@@ -117,6 +117,11 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 
 		// Increase timeout.
 		m_timeout += SYNC_TIMEOUT;
+
+		// Check the global timeout.
+		if (timeout.remains() == 0) {
+			throw Timeout("Timeout while initializing requester");
+		}
 	}
 
 	// Reset timeout.
