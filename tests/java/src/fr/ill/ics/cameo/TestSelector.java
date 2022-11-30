@@ -119,6 +119,7 @@ public class TestSelector {
 		apps.add("testcheckappjava");
 		apps.add("testlinkedjava");
 		apps.add("testmaxappsjava");
+		apps.add("testcomstimeoutjava");
 		
 		return apps;
 	}

@@ -64,7 +64,6 @@ int main(int argc, char *argv[]) {
 
 	try {
 		subscriber->init();
-		cout << "Initialized " << *subscriber << endl;
 	}
 	catch (const std::exception& e) {
 		cout << e.what() << endl;

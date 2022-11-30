@@ -226,6 +226,8 @@ void Subscriber::synchronize(const App & app, const TimeoutCounter& timeout) {
 
 	// Set the timeout that can be -1.
 	requester->setTimeout(timeout.remains());
+
+	// A Timeout exception may be thrown.
 	requester->init();
 
 	// Set the timeout again because init() may have taken time.

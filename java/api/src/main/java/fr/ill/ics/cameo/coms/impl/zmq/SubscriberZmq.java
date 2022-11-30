@@ -219,8 +219,11 @@ public class SubscriberZmq implements SubscriberImpl {
 	}
 	
 	public void terminate() {
-		context.destroySocket(subscriber);
-		context.destroySocket(cancelPublisher);
+		
+		if (context != null) {
+			context.destroySocket(subscriber);
+			context.destroySocket(cancelPublisher);
+		}
 	}
 	
 }

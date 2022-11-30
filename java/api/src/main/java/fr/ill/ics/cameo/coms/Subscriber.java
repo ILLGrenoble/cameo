@@ -22,9 +22,12 @@ import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IObject;
+import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.Timeout;
+import fr.ill.ics.cameo.base.TimeoutCounter;
 import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
@@ -37,10 +40,11 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a subscriber.
  */
-public class Subscriber implements IObject, ICancelable {
+public class Subscriber implements IObject, ITimeoutable, ICancelable {
 	
 	private App app;
 	private String publisherName;
+	private int timeout = -1;
 	private boolean useProxy = false;
 	private String appName;
 	private int appId;
@@ -56,10 +60,18 @@ public class Subscriber implements IObject, ICancelable {
 		waiting.add();
 	}
 	
-	private void synchronize(App app) {
+	private void synchronize(App app, TimeoutCounter timeoutCounter) {
 		
 		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+		
+		// Set the timeout that can be -1.
+		requester.setTimeout(timeoutCounter.remains());
+		
+		// A Timeout exception may be thrown.
 		requester.init();
+		
+		// Set the timeout again because init() may have taken time.
+		requester.setTimeout(timeoutCounter.remains());
 		
 		// Send a subscribe request.
 		JSONObject jsonRequest = new JSONObject();
@@ -69,6 +81,11 @@ public class Subscriber implements IObject, ICancelable {
 		String response = requester.receiveString();
 		
 		requester.terminate();
+		
+		// Check timeout.
+		if (requester.hasTimedout()) {
+			throw new Timeout("Timeout while synchronizing subscriber");
+		}
 	}
 	
 	/**
@@ -96,8 +113,10 @@ public class Subscriber implements IObject, ICancelable {
 		
 		// Get the publisher data.
 		try {
+			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
+			
 			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
-			String jsonString = getter.get();
+			String jsonString = getter.get(timeoutCounter);
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
@@ -117,10 +136,10 @@ public class Subscriber implements IObject, ICancelable {
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
 			if (numberOfSubscribers > 0) {
-				synchronize(app);
+				synchronize(app, timeoutCounter);
 			}
 		}
-		catch (KeyValueGetterException e) {
+		catch (Exception e) {
 			throw new InitException("Cannot create subscriber: " + e.getMessage());
 		}
 	}
@@ -189,6 +208,16 @@ public class Subscriber implements IObject, ICancelable {
 		return impl.receiveTwoParts();
 	}
 
+	@Override
+	public void setTimeout(int value) {
+		timeout = value;
+	}
+
+	@Override
+	public int getTimeout() {
+		return timeout;
+	}
+	
 	/**
 	 * Cancels the subscriber. Unblocks the receive() call in another thread.
 	 */

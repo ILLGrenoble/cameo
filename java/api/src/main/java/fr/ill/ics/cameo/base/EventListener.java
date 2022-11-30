@@ -18,6 +18,7 @@ package fr.ill.ics.cameo.base;
 
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The EventListener class receives event messages.
@@ -61,11 +62,23 @@ public class EventListener {
 	/**
 	 * Pops the event from the queue.
 	 * @param blocking True if the call is blocking.
+	 * @throws Timeout in case of timeout.
 	 */
-	public Event popEvent(boolean blocking) {
+	public Event popEvent(boolean blocking, int timeout) {
 		try {
 			if (blocking) {
-				return eventQueue.take();
+				if (timeout == -1) {
+					return eventQueue.take();
+				}
+				else {
+					Event event = eventQueue.poll(timeout, TimeUnit.MILLISECONDS);
+					
+					if (event != null) {
+						return event;
+					}
+					
+					throw new Timeout("Timeout while popping a queue");
+				}
 			}
 			return eventQueue.poll();
 		}
@@ -77,9 +90,26 @@ public class EventListener {
 	
 	/**
 	 * Pops the event from the queue.
+	 * @param blocking True if the call is blocking.
+	 */
+	public Event popEvent(boolean blocking) {
+		return popEvent(blocking, -1);
+	}
+	
+	/**
+	 * Pops the event from the queue.
+	 * @param timeout Timeout.
+	 * @throws Timeout in case of timeout.
+	 */
+	public Event popEvent(int timeout) {
+		return popEvent(true, timeout);
+	}
+	
+	/**
+	 * Pops the event from the queue.
 	 */
 	public Event popEvent() {
-		return popEvent(true);
+		return popEvent(true, -1);
 	}
 
 	/**

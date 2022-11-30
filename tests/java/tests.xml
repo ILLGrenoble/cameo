@@ -154,6 +154,14 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestMaxApps 11"/>
 		</application>
 	
+		<application name="comstimeoutjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.ComsTimeout"/>
+		</application>
+		
+		<application name="testcomstimeoutjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestComsTimeout"/>
+		</application>
+	
 
 		<!-- C++ apps -->
 		
@@ -301,7 +309,7 @@
 			<start executable="comstimeout"/>
 		</application>
 		
-		<application name="testcomstimeoutcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+		<application name="testcomstimeoutcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testcomstimeout"/>
 		</application>
 		

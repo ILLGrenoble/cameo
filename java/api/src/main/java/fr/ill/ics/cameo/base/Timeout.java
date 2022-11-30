@@ -14,30 +14,20 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+package fr.ill.ics.cameo.base;
 
-import fr.ill.ics.cameo.base.TimeoutCounter;
-import fr.ill.ics.cameo.strings.Endpoint;
+/**
+ * Base class for remote exception.
+ */
+public class Timeout extends RuntimeException {
 
-public interface RequesterImpl {
+	private static final long serialVersionUID = -676054674793041235L;
 
-	void setPollingTime(int value);
-	void setTimeout(int value);
-	
-	void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter);
-	
-	void send(byte[] requestData);
-	void send(String request);
-	void sendTwoParts(byte[] requestData1, byte[] requestData2);
-	
-	byte[] receive();
-	String receiveString();
-	
-	void cancel();
-	boolean isCanceled();
-	
-	boolean hasTimedout();
-	
-	void terminate();
-	
+	/**
+	 * Constructor.
+	 * @param message The message.
+	 */
+	public Timeout(String message) {
+		super(message);
+	}
 }

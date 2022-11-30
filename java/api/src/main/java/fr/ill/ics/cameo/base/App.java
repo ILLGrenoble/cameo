@@ -114,10 +114,11 @@ public class App extends EventListener {
 			
 			/**
 			 * Gets the value.
+			 * @param timeoutCounter The timeout counter.
 			 * @return The value.
 			 * @throws KeyValueGetterException if the call has been canceled.
 			 */
-			public String get() throws KeyValueGetterException {
+			public String get(TimeoutCounter timeoutCounter) throws KeyValueGetterException {
 				
 				// Register the waiting.
 				waiting.add();
@@ -135,9 +136,10 @@ public class App extends EventListener {
 					}
 				
 					while (true) {
-						// Wait for a new incoming status.
-						Event event = popEvent();
-						
+						// Waits for a new incoming status. The call may throw a a timeout.
+						int remainingTimeout = timeoutCounter.remains();
+						Event event = popEvent(remainingTimeout);
+												
 						if (event.getId() == id) {
 						
 							if (event instanceof StatusEvent) {

@@ -26,6 +26,7 @@ import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyValueGetterException;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.TimeoutCounter;
 import fr.ill.ics.cameo.coms.basic.Responder;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
@@ -42,7 +43,7 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 
 	private App app;
 	private String responderName;
-	private int timeout;
+	private int timeout = -1;
 	private boolean useProxy = false;
 	private String appName;
 	private int appId;
@@ -85,8 +86,10 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 		
 		// Get the responder data.
 		try {
+			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
+			
 			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
-			String jsonString = getter.get();
+			String jsonString = getter.get(timeoutCounter);
 			JSONObject jsonData = This.getCom().parse(jsonString);
 					
 			Endpoint endpoint;
@@ -101,9 +104,9 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 				endpoint = app.getEndpoint().withPort(responderPort);
 			}
 			
-			impl.init(endpoint, StringId.from(key, appId));
+			impl.init(endpoint, StringId.from(key, appId), timeoutCounter);
 		}
-		catch (KeyValueGetterException e) {
+		catch (Exception e) {
 			throw new InitException("Cannot initialize requester: " + e.getMessage());
 		}
 	}
