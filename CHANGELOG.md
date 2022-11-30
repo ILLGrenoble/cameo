@@ -1,3 +1,9 @@
+2.1.1 (NR)
+-----
+
+* Requester and subscriber init() can timeout.
+
+
 2.1.0
 -----
 
