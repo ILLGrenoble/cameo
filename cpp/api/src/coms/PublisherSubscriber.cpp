@@ -235,7 +235,9 @@ void Subscriber::init() {
 
 	// Get the publisher data.
 	try {
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
+		TimeoutCounter timeout {-1};
+
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeout)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);

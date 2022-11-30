@@ -296,7 +296,14 @@
 		<application name="testlinkedcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testlinked"/>
 		</application>
+				
+		<application name="comstimeoutcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="comstimeout"/>
+		</application>
 		
+		<application name="testcomstimeoutcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testcomstimeout"/>
+		</application>
 		
 		<!-- Python apps -->
 		

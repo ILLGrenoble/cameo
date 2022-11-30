@@ -26,6 +26,25 @@
 namespace cameo {
 
 /**
+ * Class defining an exception thrown when the pop() call has timed out.
+ */
+class Timeout : public std::exception {
+
+public:
+	/**
+	 * Constructor.
+	 */
+	Timeout() {}
+
+	/**
+	 * What function.
+	 */
+	virtual const char* what() const noexcept {
+		return "Timeout while popping";
+	}
+};
+
+/**
  * Class implementing a concurrent queue. This is a modified version of the implementation:
  * https://juanchopanzacpp.wordpress.com/2013/02/26/concurrent-queue-c11/
  * Supports only pointer types.
@@ -68,12 +87,21 @@ public:
 	 * Gets the front item. Blocking call until there is an item.
 	 * \return An item that cannot be null.
 	 */
-	std::unique_ptr<Type> pop() {
+	std::unique_ptr<Type> pop(int timeout = -1) {
 
 		std::unique_lock<std::mutex> lock(m_mutex);
 
 		while (m_queue.empty()) {
-			m_condition.wait(lock);
+
+			if (timeout == -1) {
+				m_condition.wait(lock);
+			}
+			else {
+				std::cv_status status = m_condition.wait_for(lock, std::chrono::milliseconds(timeout));
+				if (status == std::cv_status::timeout) {
+					throw Timeout();
+				}
+			}
 		}
 		auto item = m_queue.front();
 		m_queue.pop();

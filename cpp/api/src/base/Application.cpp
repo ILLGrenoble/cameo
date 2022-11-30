@@ -491,7 +491,7 @@ void This::checkStates() {
 	// Do not parallelize the calls to the request socket.
 	while (true) {
 		// Wait for a new incoming status.
-		std::unique_ptr<Event> event {EventListener::popEvent()};
+		std::unique_ptr<Event> event {EventListener::popEvent(true)};
 
 		// Test if the socket is canceled.
 		if (event.get() == nullptr || dynamic_cast<CancelEvent *>(event.get()) != nullptr) {
@@ -583,7 +583,7 @@ App::Com::KeyValueGetter::~KeyValueGetter() {
 	m_server->unregisterEventListener(this);
 }
 
-std::string App::Com::KeyValueGetter::get() {
+std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeout) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting {std::bind(&App::Com::KeyValueGetter::cancel, this)};
@@ -600,8 +600,18 @@ std::string App::Com::KeyValueGetter::get() {
 	}
 
 	while (true) {
-		// Waits for a new incoming status.
-		std::unique_ptr<Event> event {EventListener::popEvent()};
+		// Waits for a new incoming status. The call may throw a a timeout.
+
+		int r = timeout.remains();
+
+		std::cout << "popEvent timeout " << r << std::endl;
+
+		std::unique_ptr<Event> event {EventListener::popEvent(true, r)};
+
+		// The event can be null if the getter has been canceled.
+		if (!event) {
+			return "";
+		}
 
 		if (event->getId() == m_id) {
 			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};

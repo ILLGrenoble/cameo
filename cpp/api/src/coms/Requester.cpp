@@ -34,6 +34,7 @@ namespace coms {
 Requester::Requester(const App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
+	m_timeout{-1},
 	m_useProxy{false},
 	m_appId{0} {
 
@@ -61,7 +62,9 @@ void Requester::init() {
 
 	// Get the responder data.
 	try {
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
+		TimeoutCounter timeout {m_timeout};
+
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeout)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);

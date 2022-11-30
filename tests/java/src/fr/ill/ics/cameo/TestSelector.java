@@ -144,6 +144,7 @@ public class TestSelector {
 		apps.add("teststreamcpp");
 		apps.add("testcheckappcpp");
 		apps.add("testlinkedcpp");
+		apps.add("testcomstimeoutcpp");
 		
 		return apps;
 	}

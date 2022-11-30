@@ -13,42 +13,38 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-#include "EventListener.h"
 
-#include "CancelEvent.h"
+#include "TimeoutCounter.h"
+
+#include <iostream>
 
 namespace cameo {
 
-EventListener::EventListener() {
+const TimeoutCounter TimeoutCounter::None = TimeoutCounter(-1);
+
+TimeoutCounter::TimeoutCounter(int value) :
+	m_value(value) {
+
+	m_start = std::chrono::system_clock::now();
 }
 
-EventListener::~EventListener() {
+TimeoutCounter::TimeoutCounter(const TimeoutCounter& obj) :
+	m_value(obj.m_value), m_start(obj.m_start) {
 }
 
-void EventListener::setName(const std::string& name) {
-	m_name = name;
-}
+int TimeoutCounter::remains() const {
 
-const std::string& EventListener::getName() const {
-	return m_name;
-}
+	// Get the time elapsed since the creation of the object.
+	std::chrono::duration<double> diff = std::chrono::system_clock::now() - m_start;
 
-void EventListener::pushEvent(std::unique_ptr<Event>& event) {
-	m_eventQueue.push(event);
-}
+	// Return the time in milliseconds.
+	int diffMs = diff.count() * 1000;
 
-std::unique_ptr<Event> EventListener::popEvent(bool blocking, int timeout) {
-
-	if (blocking) {
-		return m_eventQueue.pop(timeout);
+	if (diffMs > m_value) {
+		return 0;
 	}
-	return m_eventQueue.poll();
-}
 
-void EventListener::cancel(int id) {
-	std::unique_ptr<Event> event {new CancelEvent(id, m_name)};
-	m_eventQueue.push(event);
+	return m_value - diffMs;
 }
 
 }
-
