@@ -47,10 +47,11 @@ int main(int argc, char *argv[]) {
 	// Wait for 250ms which is half the requester timeout.
 	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-	// Store a key to generate event in the keyvalue getter.
+	// Store a key to generate events in the keyvalue getter.
 	This::getCom().storeKeyValue("test", "value");
 	This::getCom().removeKey("test");
 
+	// Create a publisher that will never init.
 	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub", 2);
 
 	std::thread initThread([&] {
@@ -63,13 +64,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Canceled publisher" << endl;
 
-
 	app->waitFor();
-
-	cout << "Application " << *app << " finished" << endl;
-
-
-
 
 	cout << "Finished the application" << endl;
 

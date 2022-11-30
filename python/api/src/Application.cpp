@@ -288,6 +288,8 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"publisherName"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Subscriber::init, py::call_guard<py::gil_scoped_release>())
+		.def("setTimeout", &Subscriber::setTimeout)
+		.def("getTimeout", &Subscriber::getTimeout)
 		.def("terminate", &Subscriber::terminate, py::call_guard<py::gil_scoped_release>())
 	    .def("getPublisherName", &Subscriber::getPublisherName)
 	    .def("getAppName", &Subscriber::getAppName)
@@ -340,6 +342,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
 		.def("terminate", &Requester::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("setTimeout", &Requester::setTimeout)
+		.def("getTimeout", &Requester::getTimeout)
 		.def("setPollingTime", &Requester::setPollingTime)
 		.def("getName", &Requester::getResponderName)
 		.def("getAppName", &Requester::getAppName)
