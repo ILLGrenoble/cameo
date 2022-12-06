@@ -14,30 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+#include "Timeout.h"
 
-import fr.ill.ics.cameo.base.TimeoutCounter;
-import fr.ill.ics.cameo.strings.Endpoint;
+namespace cameo {
 
-public interface RequesterImpl {
+Timeout::Timeout(const std::string& reason) :
+	std::runtime_error{reason.c_str()} {
+}
 
-	void setPollingTime(int value);
-	void setTimeout(int value);
-	
-	void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter);
-	
-	void send(byte[] requestData);
-	void send(String request);
-	void sendTwoParts(byte[] requestData1, byte[] requestData2);
-	
-	byte[] receive();
-	String receiveString();
-	
-	void cancel();
-	boolean isCanceled();
-	
-	boolean hasTimedout();
-	
-	void terminate();
-	
 }

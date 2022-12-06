@@ -136,3 +136,9 @@ target_link_libraries(linked PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testlinked src/TestLinked.cpp)
 target_link_libraries(testlinked PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(comstimeout src/ComsTimeout.cpp)
+target_link_libraries(comstimeout PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testcomstimeout src/TestComsTimeout.cpp)
+target_link_libraries(testcomstimeout PRIVATE Cameo::cameo-api-cpp)

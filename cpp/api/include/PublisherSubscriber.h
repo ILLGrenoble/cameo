@@ -139,7 +139,7 @@ private:
 /**
  * Class defining a subscriber.
  */
-class Subscriber : public Object, public Cancelable {
+class Subscriber : public Object, public Timeoutable, public Cancelable {
 
 	friend class cameo::Server;
 	friend class cameo::App;
@@ -168,6 +168,18 @@ public:
 	 * Terminates the communication.
 	 */
 	void terminate() override;
+
+	/**
+	 * Sets the timeout.
+	 * \param value The value.
+	 */
+	void setTimeout(int value) override;
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	int getTimeout() const override;
 
 	/**
 	 * Cancels the subscriber. Unblocks the receive() call in another thread.
@@ -230,10 +242,11 @@ public:
 
 private:
 	Subscriber(const App & app, const std::string &publisherName);
-	void synchronize(const App & app);
+	void synchronize(const App & app, const TimeoutCounter& timeout);
 
 	const App & m_app;
 	std::string m_publisherName;
+	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;
 	int m_appId;

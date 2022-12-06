@@ -34,24 +34,39 @@ int main(int argc, char *argv[]) {
 	cout << "Connected to starter" << endl;
 
 	// Create a requester.
-	unique_ptr<coms::Requester> requester = coms::Requester::create(starter->getApp(), "responder");
-	requester->init();
+	unique_ptr<coms::Requester> requester = coms::Requester::create(starter->getApp(), "an unknown responder");
+	requester->setTimeout(500);
 
-	cout << "Created requester" << endl;
-
+	// Set running to synchronize the starter app.
 	This::setRunning();
 
-	// Send 10 requests.
-	int R = 10;
-	for (int i = 0; i < R; ++i) {
-		// Send and wait for the result.
-		requester->send("test");
+	try {
+		requester->init();
+	}
+	catch (const std::exception& e) {
+		cout << e.what() << endl;
+	}
 
-		std::optional<std::string> response = requester->receive();
+	// Create a subscriber.
+	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(starter->getApp(), "an unknown publisher");
+	subscriber->setTimeout(500);
 
-		if (response.has_value()) {
-			cout << "Received " << response.value() << endl;
-		}
+	try {
+		subscriber->init();
+	}
+	catch (const std::exception& e) {
+		cout << e.what() << endl;
+	}
+
+	// Create a subscriber.
+	subscriber = coms::Subscriber::create(starter->getApp(), "pub");
+	subscriber->setTimeout(500);
+
+	try {
+		subscriber->init();
+	}
+	catch (const std::exception& e) {
+		cout << e.what() << endl;
 	}
 
 	cout << "Finished the application" << endl;

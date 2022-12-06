@@ -14,12 +14,46 @@
  * limitations under the Licence.
  */
 
-#include "ConnectionTimeout.h"
+#ifndef CAMEO_TIMEOUTCOUNTER_H_
+#define CAMEO_TIMEOUTCOUNTER_H_
+
+#include <chrono>
 
 namespace cameo {
 
-ConnectionTimeout::ConnectionTimeout() :
-	std::runtime_error{"Connection timeout"} {
-}
+/**
+ * A class providing a helper to define timeouts for operations that have different steps.
+ */
+class TimeoutCounter {
+
+public:
+	static const TimeoutCounter None;
+
+	/**
+	 * Constructor.
+	 * \param value The time in milliseconds.
+	 */
+	TimeoutCounter(int value);
+
+	/**
+	 * Copy constructor.
+	 * \param obj The object to copy.
+	 */
+	TimeoutCounter(const TimeoutCounter& obj);
+
+	/**
+	 * Returns the remaining time at this call.
+	 */
+	int remains() const;
+
+private:
+	int m_value;
+	std::chrono::system_clock::time_point m_start;
+};
+
+
 
 }
+
+#endif
+

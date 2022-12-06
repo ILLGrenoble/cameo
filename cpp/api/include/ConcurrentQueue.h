@@ -17,6 +17,7 @@
 #ifndef CAMEO_CONCURRENTQUEUE_H_
 #define CAMEO_CONCURRENTQUEUE_H_
 
+#include "Timeout.h"
 #include <queue>
 #include <thread>
 #include <mutex>
@@ -68,12 +69,21 @@ public:
 	 * Gets the front item. Blocking call until there is an item.
 	 * \return An item that cannot be null.
 	 */
-	std::unique_ptr<Type> pop() {
+	std::unique_ptr<Type> pop(int timeout = -1) {
 
 		std::unique_lock<std::mutex> lock(m_mutex);
 
 		while (m_queue.empty()) {
-			m_condition.wait(lock);
+
+			if (timeout == -1) {
+				m_condition.wait(lock);
+			}
+			else {
+				std::cv_status status = m_condition.wait_for(lock, std::chrono::milliseconds(timeout));
+				if (status == std::cv_status::timeout) {
+					throw Timeout("Timeout while popping a queue");
+				}
+			}
 		}
 		auto item = m_queue.front();
 		m_queue.pop();

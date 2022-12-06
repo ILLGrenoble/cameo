@@ -45,6 +45,7 @@
 #include <set>
 #include <memory>
 #include <optional>
+#include "TimeoutCounter.h"
 
 /**
  * Main namespace of the library.
@@ -528,7 +529,7 @@ public:
 			 * Gets the value.
 			 * \return The value.
 			 */
-			std::string get();
+			std::string get(const TimeoutCounter& timeout);
 
 			/**
 			 * Cancels the get call.

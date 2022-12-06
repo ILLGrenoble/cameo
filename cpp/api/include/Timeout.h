@@ -14,30 +14,25 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.coms.impl;
+#ifndef CAMEO_TIMEOUT_H_
+#define CAMEO_TIMEOUT_H_
 
-import fr.ill.ics.cameo.base.TimeoutCounter;
-import fr.ill.ics.cameo.strings.Endpoint;
+#include <stdexcept>
 
-public interface RequesterImpl {
+namespace cameo {
 
-	void setPollingTime(int value);
-	void setTimeout(int value);
-	
-	void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter);
-	
-	void send(byte[] requestData);
-	void send(String request);
-	void sendTwoParts(byte[] requestData1, byte[] requestData2);
-	
-	byte[] receive();
-	String receiveString();
-	
-	void cancel();
-	boolean isCanceled();
-	
-	boolean hasTimedout();
-	
-	void terminate();
-	
+/**
+ * Exception for a general timeout.
+ */
+class Timeout : public std::runtime_error {
+
+public:
+	/**
+	 * Constructor.
+	 */
+	Timeout(const std::string& reason);
+};
+
 }
+
+#endif

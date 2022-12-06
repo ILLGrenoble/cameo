@@ -195,6 +195,7 @@ std::string Publisher::toString() const {
 Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_app{app},
 	m_publisherName{publisherName},
+	m_timeout{-1},
 	m_useProxy{false} {
 
 	m_impl = ImplFactory::createSubscriber();
@@ -211,10 +212,26 @@ void Subscriber::terminate() {
 	m_impl.reset();
 }
 
-void Subscriber::synchronize(const App & app) {
+void Subscriber::setTimeout(int value) {
+	m_timeout = value;
+}
+
+int Subscriber::getTimeout() const {
+	return m_timeout;
+}
+
+void Subscriber::synchronize(const App & app, const TimeoutCounter& timeout) {
 
 	std::unique_ptr<Requester> requester {Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)};
+
+	// Set the timeout that can be -1.
+	requester->setTimeout(timeout.remains());
+
+	// A Timeout exception may be thrown.
 	requester->init();
+
+	// Set the timeout again because init() may have taken time.
+	requester->setTimeout(timeout.remains());
 
 	// Send a subscribe request.
 	json::StringObject jsonRequest;
@@ -223,6 +240,11 @@ void Subscriber::synchronize(const App & app) {
 
 	requester->send(jsonRequest.dump());
 	std::optional<std::string> response {requester->receive()};
+
+	// Check timeout.
+	if (requester->hasTimedout()) {
+		throw Timeout("Timeout while synchronizing subscriber");
+	}
 }
 
 void Subscriber::init() {
@@ -235,7 +257,9 @@ void Subscriber::init() {
 
 	// Get the publisher data.
 	try {
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get()};
+		TimeoutCounter timeoutCounter {m_timeout};
+
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeoutCounter)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -258,7 +282,7 @@ void Subscriber::init() {
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
-			synchronize(m_app);
+			synchronize(m_app, timeoutCounter);
 		}
 	}
 	catch (const std::exception& e) {

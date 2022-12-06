@@ -37,10 +37,10 @@ void EventListener::pushEvent(std::unique_ptr<Event>& event) {
 	m_eventQueue.push(event);
 }
 
-std::unique_ptr<Event> EventListener::popEvent(bool blocking) {
+std::unique_ptr<Event> EventListener::popEvent(bool blocking, int timeout) {
 
 	if (blocking) {
-		return m_eventQueue.pop();
+		return m_eventQueue.pop(timeout);
 	}
 	return m_eventQueue.poll();
 }

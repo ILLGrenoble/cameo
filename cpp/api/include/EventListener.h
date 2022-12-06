@@ -64,7 +64,7 @@ public:
 	 * Pops the event from the queue.
 	 * \param blocking True if the call is blocking.
 	 */
-	std::unique_ptr<Event> popEvent(bool blocking = true);
+	std::unique_ptr<Event> popEvent(bool blocking = true, int timeout = -1);
 
 	/**
 	 * Pushes a CancelEvent with application id.

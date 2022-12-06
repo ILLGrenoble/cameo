@@ -22,6 +22,8 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.Timeout;
+import fr.ill.ics.cameo.base.TimeoutCounter;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.messages.JSON;
@@ -86,7 +88,7 @@ public class RequesterZmq implements RequesterImpl {
 		return false;
 	}
 		
-	public void init(Endpoint endpoint, String responderIdentity) {
+	public void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter) {
 		
 		this.endpoint = endpoint;
 		this.responderIdentity = responderIdentity;
@@ -114,6 +116,11 @@ public class RequesterZmq implements RequesterImpl {
 			
 			// Increase timeout.
 			timeout += SYNC_TIMEOUT;
+			
+			// Check the global timeout.
+			if (timeoutCounter.remains() == 0) {
+				throw new Timeout("Timeout while initializing requester");
+			}
 		}
 		
 		// Reset timeout.

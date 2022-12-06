@@ -1,3 +1,8 @@
+2.1.1 (NR)
+-----
+
+* Change of version of cameo API.
+
 2.1.0
 -----
 
