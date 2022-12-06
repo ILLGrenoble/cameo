@@ -583,7 +583,7 @@ App::Com::KeyValueGetter::~KeyValueGetter() {
 	m_server->unregisterEventListener(this);
 }
 
-std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeout) {
+std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting {std::bind(&App::Com::KeyValueGetter::cancel, this)};
@@ -601,7 +601,7 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeout) {
 
 	while (true) {
 		// Waits for a new incoming status. The call may throw a a timeout.
-		int remainingTimeout = timeout.remains();
+		int remainingTimeout = timeoutCounter.remains();
 		std::unique_ptr<Event> event {EventListener::popEvent(true, remainingTimeout)};
 
 		// The event can be null if the getter has been canceled.

@@ -62,9 +62,9 @@ void Requester::init() {
 
 	// Get the responder data.
 	try {
-		TimeoutCounter timeout {m_timeout};
+		TimeoutCounter timeoutCounter {m_timeout};
 
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeout)};
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeoutCounter)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -81,7 +81,7 @@ void Requester::init() {
 			endpoint = m_app.getEndpoint().withPort(responderPort);
 		}
 
-		m_impl->init(endpoint, StringId::from(m_key, m_appId), timeout);
+		m_impl->init(endpoint, StringId::from(m_key, m_appId), timeoutCounter);
 	}
 	catch (const std::exception& e) {
 		throw InitException(std::string("Cannot initialize requester: ") + e.what());

@@ -36,7 +36,7 @@ public:
 	virtual void setPollingTime(int value);
 	virtual void setTimeout(int value);
 
-	virtual void init(const Endpoint& endpoint, const std::string& responderIdentity, const TimeoutCounter& timeout);
+	virtual void init(const Endpoint& endpoint, const std::string& responderIdentity, const TimeoutCounter& timeoutCounter);
 	virtual void send(const std::string& requestData);
 	virtual void sendTwoParts(const std::string& requestData1, const std::string& requestData2);
 

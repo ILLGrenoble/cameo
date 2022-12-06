@@ -257,9 +257,9 @@ void Subscriber::init() {
 
 	// Get the publisher data.
 	try {
-		TimeoutCounter timeout {m_timeout};
+		TimeoutCounter timeoutCounter {m_timeout};
 
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeout)};
+		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeoutCounter)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -282,7 +282,7 @@ void Subscriber::init() {
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
-			synchronize(m_app, timeout);
+			synchronize(m_app, timeoutCounter);
 		}
 	}
 	catch (const std::exception& e) {
