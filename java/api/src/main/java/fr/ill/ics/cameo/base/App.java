@@ -196,7 +196,7 @@ public class App extends EventListener {
 		 * Creates a KeyValueGetter for a key.
 		 * \return A new KeyValueGetter instance.
 		 */
-		public KeyValueGetter getKeyValueGetter(String key) {
+		public KeyValueGetter createKeyValueGetter(String key) {
 			return new KeyValueGetter(server, name, applicationId, key);
 		}
 		

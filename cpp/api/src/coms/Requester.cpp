@@ -35,13 +35,14 @@ Requester::Requester(const App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
 	m_timeout{-1},
-	m_useProxy{false},
-	m_appId{0} {
-
-	m_impl = ImplFactory::createRequester();
-
-	// Create the waiting here.
-	m_waiting.reset(new Waiting{std::bind(&Requester::cancel, this)});
+	m_useProxy{m_app.usesProxy()},
+	m_appName{m_app.getName()},
+	m_appId{m_app.getId()},
+	m_appEndpoint{m_app.getEndpoint()},
+	m_impl{ImplFactory::createRequester()},
+	m_waiting{new Waiting{std::bind(&Requester::cancel, this)}},
+	m_key{basic::Responder::KEY + "-" + m_responderName},
+	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
 }
 
 Requester::~Requester() {
@@ -54,17 +55,11 @@ void Requester::terminate() {
 
 void Requester::init() {
 
-	m_appName = m_app.getName();
-	m_appId = m_app.getId();
-	m_appEndpoint = m_app.getEndpoint();
-	m_key = basic::Responder::KEY + "-" + m_responderName;
-	m_useProxy = m_app.usesProxy();
-
 	// Get the responder data.
 	try {
 		TimeoutCounter timeoutCounter {m_timeout};
 
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeoutCounter)};
+		std::string jsonString {m_keyValueGetter->get(timeoutCounter)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);

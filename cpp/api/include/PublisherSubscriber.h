@@ -254,6 +254,7 @@ private:
 	std::unique_ptr<SubscriberImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
+	std::unique_ptr<App::Com::KeyValueGetter> m_keyValueGetter;
 };
 
 /**

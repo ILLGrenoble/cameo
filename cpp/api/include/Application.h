@@ -548,7 +548,7 @@ public:
 		 * Creates a KeyValueGetter for a key.
 		 * \return A new KeyValueGetter instance.
 		 */
-		std::unique_ptr<KeyValueGetter> getKeyValueGetter(const std::string &key) const;
+		std::unique_ptr<KeyValueGetter> createKeyValueGetter(const std::string &key) const;
 
 	private:
 		Com(Server *server);

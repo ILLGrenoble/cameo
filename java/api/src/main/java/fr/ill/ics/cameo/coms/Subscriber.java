@@ -52,12 +52,19 @@ public class Subscriber implements IObject, ITimeoutable, ICancelable {
 	private SubscriberImpl impl;
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	private String key;
+	private KeyValueGetter getter;
 	
 	private Subscriber(App app, String publisherName) {
 		this.app = app;
 		this.publisherName = publisherName;
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		this.key = Publisher.KEY + "-" + publisherName;
+		this.useProxy = app.usesProxy();
 		this.impl = ImplFactory.createSubscriber();
 		waiting.add();
+		this.getter = app.getCom().createKeyValueGetter(key);
 	}
 	
 	private void synchronize(App app, TimeoutCounter timeoutCounter) {
@@ -105,17 +112,10 @@ public class Subscriber implements IObject, ITimeoutable, ICancelable {
 	@Override
 	public void init() throws InitException {
 		
-		this.appName = app.getName();
-		this.appId = app.getId();
-		this.appEndpoint = app.getEndpoint();
-		this.key = Publisher.KEY + "-" + publisherName;
-		this.useProxy = app.usesProxy();
-		
 		// Get the publisher data.
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
 			
-			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
 			String jsonString = getter.get(timeoutCounter);
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);

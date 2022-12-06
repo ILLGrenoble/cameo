@@ -647,7 +647,7 @@ void App::Com::KeyValueGetter::cancel() {
 	EventListener::cancel(m_id);
 }
 
-std::unique_ptr<App::Com::KeyValueGetter> App::Com::getKeyValueGetter(const std::string& key) const {
+std::unique_ptr<App::Com::KeyValueGetter> App::Com::createKeyValueGetter(const std::string& key) const {
 	return std::unique_ptr<App::Com::KeyValueGetter>{new App::Com::KeyValueGetter(m_server, m_name, m_applicationId, key)};
 }
 

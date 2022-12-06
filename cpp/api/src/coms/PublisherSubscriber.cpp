@@ -196,12 +196,14 @@ Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_app{app},
 	m_publisherName{publisherName},
 	m_timeout{-1},
-	m_useProxy{false} {
-
-	m_impl = ImplFactory::createSubscriber();
-
-	// Create the waiting here.
-	m_waiting.reset(new Waiting{std::bind(&Subscriber::cancel, this)});
+	m_useProxy{m_app.usesProxy()},
+	m_appName{m_app.getName()},
+	m_appId{m_app.getId()},
+	m_appEndpoint{m_app.getEndpoint()},
+	m_impl{ImplFactory::createSubscriber()},
+	m_waiting{new Waiting{std::bind(&Subscriber::cancel, this)}},
+	m_key{Publisher::KEY + "-" + m_publisherName},
+	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
 }
 
 Subscriber::~Subscriber() {
@@ -249,17 +251,11 @@ void Subscriber::synchronize(const App & app, const TimeoutCounter& timeout) {
 
 void Subscriber::init() {
 
-	m_appName = m_app.getName();
-	m_appId = m_app.getId();
-	m_appEndpoint = m_app.getEndpoint();
-	m_key = Publisher::KEY + "-" + m_publisherName;
-	m_useProxy = m_app.usesProxy();
-
 	// Get the publisher data.
 	try {
 		TimeoutCounter timeoutCounter {m_timeout};
 
-		std::string jsonString {m_app.getCom().getKeyValueGetter(m_key)->get(timeoutCounter)};
+		std::string jsonString {m_keyValueGetter->get(timeoutCounter)};
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);

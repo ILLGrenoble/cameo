@@ -51,14 +51,20 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 	private RequesterImpl impl;
 	private RequesterWaiting waiting = new RequesterWaiting(this);
 	private String key;
+	private KeyValueGetter getter;
 	
 	private Requester(App app, String responderName) {
 		
 		this.app = app;
 		this.responderName = responderName;
-		
+		this.appName = app.getName();
+		this.appId = app.getId();
+		this.appEndpoint = app.getEndpoint();
+		this.key = Responder.KEY + "-" + responderName;
+		this.useProxy = app.usesProxy();
 		this.impl = ImplFactory.createRequester();
 		waiting.add();
+		this.getter = app.getCom().createKeyValueGetter(key);
 	}
 
 	/**
@@ -78,17 +84,10 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 	@Override
 	public void init() throws InitException {
 		
-		this.appName = app.getName();
-		this.appId = app.getId();
-		this.appEndpoint = app.getEndpoint();
-		this.key = Responder.KEY + "-" + responderName;
-		this.useProxy = app.usesProxy();
-		
 		// Get the responder data.
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
 			
-			KeyValueGetter getter = app.getCom().getKeyValueGetter(key);
 			String jsonString = getter.get(timeoutCounter);
 			JSONObject jsonData = This.getCom().parse(jsonString);
 					
