@@ -176,7 +176,9 @@ PYBIND11_MODULE(cameopy, m) {
 				"useProxy"_a = false,
 		   		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Server::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &Server::isReady)
 		.def("terminate", &Server::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &Server::isTerminated)
 		.def("setTimeout", &Server::setTimeout,
 				"value"_a)
 		.def("getTimeout", &Server::getTimeout)
@@ -267,7 +269,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"numberOfSubscribers"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &Publisher::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &Publisher::isReady)
 		.def("terminate", &Publisher::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &Publisher::isTerminated)
 	    .def("getName", &Publisher::getName)
 	    .def("cancel", &Publisher::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Publisher::isCanceled)
@@ -288,9 +292,11 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"publisherName"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Subscriber::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &Subscriber::isReady)
 		.def("setTimeout", &Subscriber::setTimeout)
 		.def("getTimeout", &Subscriber::getTimeout)
 		.def("terminate", &Subscriber::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &Subscriber::isTerminated)
 	    .def("getPublisherName", &Subscriber::getPublisherName)
 	    .def("getAppName", &Subscriber::getAppName)
 	    .def("getAppId", &Subscriber::getAppId)
@@ -340,7 +346,9 @@ PYBIND11_MODULE(cameopy, m) {
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &Requester::isReady)
 		.def("terminate", &Requester::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &Requester::isTerminated)
 		.def("setTimeout", &Requester::setTimeout)
 		.def("getTimeout", &Requester::getTimeout)
 		.def("setPollingTime", &Requester::setPollingTime)
@@ -415,7 +423,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"name"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("init", &basic::Responder::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &basic::Responder::isReady)
 		.def("terminate", &basic::Responder::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &basic::Responder::isTerminated)
 	    .def("getName", &basic::Responder::getName)
 	    .def("cancel", &basic::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &basic::Responder::isCanceled)
@@ -459,7 +469,9 @@ PYBIND11_MODULE(cameopy, m) {
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &multi::ResponderRouter::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &multi::ResponderRouter::isReady)
 		.def("terminate", &multi::ResponderRouter::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &multi::ResponderRouter::isTerminated)
 		.def("setPollingTime", &multi::ResponderRouter::setPollingTime,
 				"value"_a)
 		.def("getName", &multi::ResponderRouter::getName)
@@ -474,7 +486,9 @@ PYBIND11_MODULE(cameopy, m) {
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &multi::Responder::init, py::call_guard<py::gil_scoped_release>())
+		.def("isReady", &multi::Responder::isReady)
 		.def("terminate", &multi::Responder::terminate, py::call_guard<py::gil_scoped_release>())
+		.def("isTerminated", &multi::Responder::isTerminated)
 		.def("cancel", &multi::Responder::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &multi::Responder::isCanceled)
 		.def("receive", &multi::Responder::receive, py::call_guard<py::gil_scoped_release>())
