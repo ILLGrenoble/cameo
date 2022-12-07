@@ -51,6 +51,7 @@ Requester::~Requester() {
 
 void Requester::terminate() {
 	m_impl.reset();
+	setTerminated();
 }
 
 void Requester::init() {
@@ -81,6 +82,8 @@ void Requester::init() {
 	catch (const std::exception& e) {
 		throw InitException(std::string("Cannot initialize requester: ") + e.what());
 	}
+
+	setReady();
 }
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {

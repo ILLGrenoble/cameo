@@ -160,6 +160,8 @@ void ResponderRouter::terminate() {
 
 		m_impl.reset();
 	}
+
+	setTerminated();
 }
 
 void ResponderRouter::setPollingTime(int value) {
@@ -190,6 +192,8 @@ void ResponderRouter::init() {
 		m_impl.reset();
 		throw InitException("A responder with the name \"" + m_name + "\" already exists");
 	}
+
+	setReady();
 }
 
 const std::string& ResponderRouter::getDealerEndpoint() const {
@@ -257,12 +261,16 @@ Responder::~Responder() {
 
 void Responder::terminate() {
 	m_impl.reset();
+
+	setTerminated();
 }
 
 void Responder::init() {
 
 	// Init the responder socket.
 	m_impl->init(m_dealerEndpoint);
+
+	setReady();
 }
 
 std::unique_ptr<Responder> Responder::create(const ResponderRouter& router) {

@@ -66,7 +66,11 @@ public class TestPublisher {
 				System.out.println("Started application " + publisherApplication);
 				
 				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");
+				
+				System.out.println("Subscriber ready ? " + subscriber.isReady());
 				subscriber.init();
+				System.out.println("Subscriber ready ? " + subscriber.isReady());
+				
 				System.out.println("Created subscriber " + subscriber);
 				
 				// Receiving data.

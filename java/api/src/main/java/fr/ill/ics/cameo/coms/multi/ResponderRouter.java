@@ -19,10 +19,10 @@ package fr.ill.ics.cameo.coms.multi;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
-import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderRouterImpl;
@@ -35,7 +35,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-public class ResponderRouter implements IObject, ICancelable {
+public class ResponderRouter extends StateObject implements ICancelable {
 	
 	private String name;
 	private ResponderRouterImpl impl;
@@ -81,6 +81,8 @@ public class ResponderRouter implements IObject, ICancelable {
 			impl = null;
 			throw new InitException("A responder with the name \"" + name + "\" already exists");
 		}
+		
+		setReady();
 	}
 
 	/**
@@ -153,6 +155,8 @@ public class ResponderRouter implements IObject, ICancelable {
 			waiting.remove();
 			impl.terminate();
 		}
+		
+		setTerminated();
 	}
 
 	@Override

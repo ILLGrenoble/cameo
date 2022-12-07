@@ -85,7 +85,10 @@ public class TestBasicRequester {
 				
 				// Create the responder.
 				fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				
+				System.out.println("Responder ready ? " + responder.isReady());
 				responder.init();
+				System.out.println("Responder ready ? " + responder.isReady());
 				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {

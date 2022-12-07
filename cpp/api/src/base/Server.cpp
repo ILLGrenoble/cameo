@@ -76,6 +76,8 @@ void Server::init() {
 	catch (const SocketException& e) {
 		throw InitException(std::string{"Cannot initialize the server:"} + e.what());
 	}
+
+	setReady();
 }
 
 Server::Server(const Endpoint& endpoint, bool useProxy) :
@@ -131,6 +133,8 @@ void Server::terminate() {
 
 	// Reset the context.
 	m_context.reset();
+
+	setTerminated();
 }
 
 void Server::setTimeout(int timeout) {

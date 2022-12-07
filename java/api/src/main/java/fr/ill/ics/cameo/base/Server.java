@@ -39,7 +39,7 @@ import fr.ill.ics.cameo.strings.StringId;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-public class Server implements IObject, ITimeoutable {
+public class Server extends StateObject implements ITimeoutable {
 
 	private String serverEndpointString;
 	private Endpoint serverEndpoint;
@@ -109,6 +109,7 @@ public class Server implements IObject, ITimeoutable {
 	 * @throws InitException if the server cannot be initialized.
 	 * @throws ConnectionTimeout if the connection with the Cameo server fails.
 	 */
+	@Override
 	public void init() {
 
 		if (serverEndpointString != null) {
@@ -139,6 +140,8 @@ public class Server implements IObject, ITimeoutable {
 		catch (SocketException e) {
 			throw new InitException("Cannot initialize server: " + e.getMessage());
 		}
+		
+		setReady();
 	}
 	
 	/**
@@ -329,10 +332,13 @@ public class Server implements IObject, ITimeoutable {
 	/**
 	 * Terminates the communications.
 	 */
+	@Override
 	public void terminate() {
 
 		terminateStatusThread();
 		requestSocket.terminate();
+		
+		setTerminated();
 	}
 	
 	/**

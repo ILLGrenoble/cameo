@@ -61,6 +61,8 @@ void Publisher::terminate() {
 		m_responder.reset();
 		m_impl.reset();
 	}
+
+	setTerminated();
 }
 
 void Publisher::init() {
@@ -92,6 +94,8 @@ void Publisher::init() {
 	if (m_numberOfSubscribers > 0) {
 		waitForSubscribers();
 	}
+
+	setReady();
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
@@ -212,6 +216,7 @@ Subscriber::~Subscriber() {
 
 void Subscriber::terminate() {
 	m_impl.reset();
+	setTerminated();
 }
 
 void Subscriber::setTimeout(int value) {
@@ -284,6 +289,8 @@ void Subscriber::init() {
 	catch (const std::exception& e) {
 		throw InitException(std::string("Cannot initialize subscriber: ") + e.what());
 	}
+
+	setReady();
 }
 
 std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {

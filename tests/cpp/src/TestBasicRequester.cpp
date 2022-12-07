@@ -80,7 +80,10 @@ int main(int argc, char *argv[]) {
 		unique_ptr<coms::basic::Responder> responder;
 
 		responder = coms::basic::Responder::create("responder");
+
+		cout << "Responder ready ? " << responder->isReady() << endl;
 		responder->init();
+		cout << "Responder ready ? " << responder->isReady() << endl;
 
 		cout << "Created responder " << *responder << endl;
 

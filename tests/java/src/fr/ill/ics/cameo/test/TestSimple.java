@@ -45,7 +45,10 @@ public class TestSimple {
 		}
 		
 		Server server = Server.create(endpoint, useProxy);
+		
+		System.out.println("Server ready ? " + server.isReady());
 		server.init();
+		System.out.println("Server ready ? " + server.isReady());
 		
 		Date d = new Date();
 		

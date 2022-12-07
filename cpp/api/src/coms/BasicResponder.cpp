@@ -160,6 +160,8 @@ void Responder::terminate() {
 
 		m_impl.reset();
 	}
+
+	setTerminated();
 }
 
 void Responder::init() {
@@ -183,6 +185,8 @@ void Responder::init() {
 		m_impl.reset();
 		throw InitException("A responder with the name \"" + m_name + "\" already exists");
 	}
+
+	setReady();
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {

@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
 	}
 	catch (const std::exception& e) {
 		cout << e.what() << endl;
+		cout << "Requester ready ? " << requester->isReady() << endl;
 	}
 
 	// Create a subscriber.
@@ -56,6 +57,7 @@ int main(int argc, char *argv[]) {
 	}
 	catch (const std::exception& e) {
 		cout << e.what() << endl;
+		cout << "Subscriber ready ? " << subscriber->isReady() << endl;
 	}
 
 	// Create a subscriber.
@@ -67,6 +69,7 @@ int main(int argc, char *argv[]) {
 	}
 	catch (const std::exception& e) {
 		cout << e.what() << endl;
+		cout << "Subscriber ready ? " << subscriber->isReady() << endl;
 	}
 
 	cout << "Finished the application" << endl;

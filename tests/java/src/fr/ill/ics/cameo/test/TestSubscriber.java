@@ -87,7 +87,10 @@ public class TestSubscriber {
 				
 				// The publisher is created after the applications that will wait for it.
 				fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher");
+				
+				System.out.println("Publisher ready ? " + publisher.isReady());
 				publisher.init();
+				System.out.println("Publisher ready ? " + publisher.isReady());
 				
 				for (int k = 0; k < 20; ++k) {
 	

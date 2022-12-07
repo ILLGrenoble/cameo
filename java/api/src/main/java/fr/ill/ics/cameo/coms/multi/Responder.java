@@ -19,7 +19,7 @@ package fr.ill.ics.cameo.coms.multi;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
-import fr.ill.ics.cameo.base.IObject;
+import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.multi.impl.ResponderImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
@@ -31,7 +31,7 @@ import fr.ill.ics.cameo.strings.ServerIdentity;
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-public class Responder implements IObject, ICancelable {
+public class Responder extends StateObject implements ICancelable {
 	
 	private String dealerEndpoint;
 	private ResponderImpl impl;
@@ -58,6 +58,8 @@ public class Responder implements IObject, ICancelable {
 
 		// Init with the responder socket.
 		impl.init(dealerEndpoint);
+		
+		setReady();
 	}
 	
 	/**
@@ -106,6 +108,8 @@ public class Responder implements IObject, ICancelable {
 		
 		//waiting.remove();
 		impl.terminate();
+		
+		setTerminated();
 	}
 
 	@Override

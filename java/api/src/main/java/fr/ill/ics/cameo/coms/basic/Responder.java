@@ -19,9 +19,9 @@ package fr.ill.ics.cameo.coms.basic;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
-import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
@@ -34,7 +34,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-public class Responder implements IObject, ICancelable {
+public class Responder extends StateObject implements ICancelable {
 	
 	private String name;
 	private ResponderImpl impl;
@@ -85,6 +85,8 @@ public class Responder implements IObject, ICancelable {
 			impl = null;
 			throw new InitException("A responder with the name \"" + name + "\" already exists");
 		}
+		
+		setReady();
 	}
 		
 	/**
@@ -150,6 +152,8 @@ public class Responder implements IObject, ICancelable {
 			waiting.remove();
 			impl.terminate();
 		}
+		
+		setTerminated();
 	}
 
 	@Override

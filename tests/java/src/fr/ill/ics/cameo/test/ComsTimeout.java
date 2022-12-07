@@ -52,6 +52,7 @@ public class ComsTimeout {
 				}
 				catch (Exception e) {
 					System.out.println(e.getMessage());
+					System.out.println("Requester ready ? " + requester.isReady());
 				}
 				
 				// Terminate the requester.
@@ -68,6 +69,7 @@ public class ComsTimeout {
 				}
 				catch (Exception e) {
 					System.out.println(e.getMessage());
+					System.out.println("Subscriber ready ? " + subscriber.isReady());
 				}
 				
 				subscriber.terminate();			
@@ -83,6 +85,7 @@ public class ComsTimeout {
 				}
 				catch (Exception e) {
 					System.out.println(e.getMessage());
+					System.out.println("Subscriber ready ? " + subscriber.isReady());
 				}
 				
 				subscriber.terminate();			

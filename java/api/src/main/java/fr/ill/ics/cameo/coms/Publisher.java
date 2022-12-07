@@ -21,6 +21,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.coms.basic.Request;
@@ -36,7 +37,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-public class Publisher implements ICancelable {
+public class Publisher extends StateObject implements ICancelable {
 
 	private String name;
 	private int numberOfSubscribers;
@@ -66,6 +67,7 @@ public class Publisher implements ICancelable {
 	 * Initializes the publisher.
 	 * @throws InitException if the publisher cannot be initialized.
 	 */
+	@Override
 	public void init() throws InitException {
 		
 		// Set the key.
@@ -92,6 +94,8 @@ public class Publisher implements ICancelable {
 		if (numberOfSubscribers > 0) {
 			waitForSubscribers();
 		}
+		
+		setReady();
 	}
 
 	/**
@@ -233,6 +237,7 @@ public class Publisher implements ICancelable {
 	/**
 	 * Terminates the communication.
 	 */
+	@Override
 	public void terminate() {
 
 		if (impl != null) {
@@ -246,6 +251,8 @@ public class Publisher implements ICancelable {
 			waiting.remove();
 			impl.terminate();
 		}
+		
+		setTerminated();
 	}
 		
 	@Override

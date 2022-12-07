@@ -21,10 +21,9 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.ICancelable;
-import fr.ill.ics.cameo.base.IObject;
 import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
-import fr.ill.ics.cameo.base.KeyValueGetterException;
+import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.TimeoutCounter;
 import fr.ill.ics.cameo.coms.basic.Responder;
@@ -39,7 +38,7 @@ import fr.ill.ics.cameo.strings.StringId;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-public class Requester implements IObject, ITimeoutable, ICancelable {
+public class Requester extends StateObject implements ITimeoutable, ICancelable {
 
 	private App app;
 	private String responderName;
@@ -108,6 +107,8 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 		catch (Exception e) {
 			throw new InitException("Cannot initialize requester: " + e.getMessage());
 		}
+		
+		setReady();
 	}
 
 	/**
@@ -240,8 +241,11 @@ public class Requester implements IObject, ITimeoutable, ICancelable {
 	 */
 	@Override
 	public void terminate() {
+		
 		waiting.remove();
 		impl.terminate();
+		
+		setTerminated();
 	}
 	
 	@Override
