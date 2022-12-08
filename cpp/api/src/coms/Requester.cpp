@@ -62,6 +62,10 @@ void Requester::init() {
 
 		std::string jsonString {m_keyValueGetter->get(timeoutCounter)};
 
+		if (m_keyValueGetter->isCanceled()) {
+			return;
+		}
+
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
 
@@ -132,6 +136,7 @@ std::optional<std::string> Requester::receive() {
 }
 
 void Requester::cancel() {
+	m_keyValueGetter->cancel();
 	m_impl->cancel();
 }
 

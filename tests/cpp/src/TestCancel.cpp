@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	server->init();
 
 	// Test the cancelAll function.
-	{
+	/*{
 		cout << "Starting stopcpp for cancelAll" << endl;
 
 		unique_ptr<App> stopApplication = server->start("stopcpp");
@@ -139,6 +139,29 @@ int main(int argc, char *argv[]) {
 		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		killThread.join();
+	}*/
+
+	// Test the Subscriber init.
+	{
+		cout << "Creating subscriber for being canceled" << endl;
+
+		// Get this app.
+		unique_ptr<App> thisApp = server->connect(This::getName());
+
+		// Create a requester.
+		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*thisApp, "an unknown publisher");
+
+		// Start thread.
+		thread cancelThread([&] {
+			this_thread::sleep_for(chrono::seconds(1));
+			subscriber->cancel();
+		});
+
+		subscriber->init();
+
+		cout << "Subscriber ready and canceled ? " << subscriber->isReady() << " " << subscriber->isCanceled() << endl;
+
+		cancelThread.join();
 	}
 
 	// Test the canceling of a subscriber.
@@ -204,6 +227,29 @@ int main(int argc, char *argv[]) {
 		if (request) {
 			cerr << "Responder error: receive should return null" << endl;
 		}
+
+		cancelThread.join();
+	}
+
+	// Test the Requester init.
+	{
+		cout << "Creating requester for being canceled" << endl;
+
+		// Get this app.
+		unique_ptr<App> thisApp = server->connect(This::getName());
+
+		// Create a requester.
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*thisApp, "an unknown responder");
+
+		// Start thread.
+		thread cancelThread([&] {
+			this_thread::sleep_for(chrono::seconds(1));
+			requester->cancel();
+		});
+
+		requester->init();
+
+		cout << "Requester ready and canceled ? " << requester->isReady() << " " << requester->isCanceled() << endl;
 
 		cancelThread.join();
 	}

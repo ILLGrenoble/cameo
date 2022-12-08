@@ -50,7 +50,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	private RequesterImpl impl;
 	private RequesterWaiting waiting = new RequesterWaiting(this);
 	private String key;
-	private KeyValueGetter getter;
+	private KeyValueGetter keyValueGetter;
 	
 	private Requester(App app, String responderName) {
 		
@@ -63,7 +63,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		this.useProxy = app.usesProxy();
 		this.impl = ImplFactory.createRequester();
 		waiting.add();
-		this.getter = app.getCom().createKeyValueGetter(key);
+		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
 	}
 
 	/**
@@ -87,7 +87,12 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
 			
-			String jsonString = getter.get(timeoutCounter);
+			String jsonString = keyValueGetter.get(timeoutCounter);
+			
+			if (keyValueGetter.isCanceled()) {
+				return;
+			}
+			
 			JSONObject jsonData = This.getCom().parse(jsonString);
 					
 			Endpoint endpoint;
@@ -216,6 +221,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	 */
 	@Override
 	public void cancel() {
+		keyValueGetter.cancel();
 		impl.cancel();			
 	}
 	

@@ -536,12 +536,19 @@ public:
 			 */
 			void cancel();
 
+			/**
+			 * Returns true if is canceled.
+			 * \return True if is canceled.
+			 */
+			bool isCanceled() const;
+
 		private:
 			KeyValueGetter(Server *server, const std::string &name, int id, const std::string &key);
 
 			Server *m_server;
 			int m_id;
 			std::string m_key;
+			std::atomic_bool m_canceled;
 		};
 
 		/**

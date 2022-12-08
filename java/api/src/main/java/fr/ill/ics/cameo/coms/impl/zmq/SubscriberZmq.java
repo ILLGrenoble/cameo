@@ -105,7 +105,6 @@ public class SubscriberZmq implements SubscriberImpl {
 				}
 			}
 			else if (message.equals(Messages.Event.CANCEL)) {
-				canceled = true;
 				return null;
 			}
 			else if (message.equals(Messages.Event.STATUS)) {
@@ -214,8 +213,12 @@ public class SubscriberZmq implements SubscriberImpl {
 	
 	public void cancel() {	
 	
-		cancelPublisher.sendMore(Messages.Event.CANCEL);
-		cancelPublisher.send(Messages.Event.CANCEL);
+		canceled = true;
+		
+		if (cancelPublisher != null) {
+			cancelPublisher.sendMore(Messages.Event.CANCEL);
+			cancelPublisher.send(Messages.Event.CANCEL);
+		}
 	}
 	
 	public void terminate() {

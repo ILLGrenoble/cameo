@@ -571,7 +571,8 @@ App::Com::KeyValueGetterException::KeyValueGetterException(const std::string& me
 App::Com::KeyValueGetter::KeyValueGetter(Server* server, const std::string& name, int id, const std::string& key) :
 	m_server{server},
 	m_id{id},
-	m_key{key} {
+	m_key{key},
+	m_canceled{false} {
 
 	EventListener::setName(name);
 
@@ -602,9 +603,9 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) 
 	while (true) {
 		// Waits for a new incoming status. The call may throw a a timeout.
 		int remainingTimeout = timeoutCounter.remains();
+
 		std::unique_ptr<Event> event {EventListener::popEvent(true, remainingTimeout)};
 
-		// The event can be null if the getter has been canceled.
 		if (!event) {
 			return "";
 		}
@@ -636,7 +637,7 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) 
 					}
 				}
 				else if (dynamic_cast<CancelEvent *>(event.get())) {
-					throw KeyValueGetterException("Get canceled");
+					return "";
 				}
 			}
 		}
@@ -644,7 +645,12 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) 
 }
 
 void App::Com::KeyValueGetter::cancel() {
+	m_canceled = true;
 	EventListener::cancel(m_id);
+}
+
+bool App::Com::KeyValueGetter::isCanceled() const {
+	return m_canceled;
 }
 
 std::unique_ptr<App::Com::KeyValueGetter> App::Com::createKeyValueGetter(const std::string& key) const {

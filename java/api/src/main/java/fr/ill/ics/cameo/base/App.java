@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.base;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -102,6 +103,7 @@ public class App extends EventListener {
 			private int id;
 			private String key;
 			private KeyValueGetterWaiting waiting = new KeyValueGetterWaiting(this);
+			private AtomicBoolean canceled = new AtomicBoolean(false);
 
 			KeyValueGetter(Server server, String name, int id, String key) {
 				this.server = server;
@@ -172,7 +174,7 @@ public class App extends EventListener {
 								
 							}
 							else if (event instanceof CancelEvent) {
-								throw new KeyValueGetterException("Get canceled");
+								return "";
 							}
 						}	
 					}
@@ -188,7 +190,16 @@ public class App extends EventListener {
 			 * Cancels the get call.
 			 */
 			public void cancel() {
+				canceled.set(true);
 				this.cancel(id);
+			}
+			
+			/**
+			 * Returns true if is canceled.
+			 * @return True if is canceled.
+			 */
+			public boolean isCanceled() {
+				return canceled.get();
 			}
 		}
 		

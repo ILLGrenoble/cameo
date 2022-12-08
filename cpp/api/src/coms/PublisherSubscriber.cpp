@@ -207,7 +207,8 @@ Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_impl{ImplFactory::createSubscriber()},
 	m_waiting{new Waiting{std::bind(&Subscriber::cancel, this)}},
 	m_key{Publisher::KEY + "-" + m_publisherName},
-	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
+	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)},
+	m_requester{Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)} {
 }
 
 Subscriber::~Subscriber() {
@@ -227,29 +228,27 @@ int Subscriber::getTimeout() const {
 	return m_timeout;
 }
 
-void Subscriber::synchronize(const App & app, const TimeoutCounter& timeout) {
-
-	std::unique_ptr<Requester> requester {Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)};
+void Subscriber::synchronize(const TimeoutCounter& timeout) {
 
 	// Set the timeout that can be -1.
-	requester->setTimeout(timeout.remains());
+	m_requester->setTimeout(timeout.remains());
 
 	// A Timeout exception may be thrown.
-	requester->init();
+	m_requester->init();
 
 	// Set the timeout again because init() may have taken time.
-	requester->setTimeout(timeout.remains());
+	m_requester->setTimeout(timeout.remains());
 
 	// Send a subscribe request.
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-	requester->send(jsonRequest.dump());
-	std::optional<std::string> response {requester->receive()};
+	m_requester->send(jsonRequest.dump());
+	std::optional<std::string> response {m_requester->receive()};
 
 	// Check timeout.
-	if (requester->hasTimedout()) {
+	if (m_requester->hasTimedout()) {
 		throw Timeout("Timeout while synchronizing subscriber");
 	}
 }
@@ -261,6 +260,10 @@ void Subscriber::init() {
 		TimeoutCounter timeoutCounter {m_timeout};
 
 		std::string jsonString {m_keyValueGetter->get(timeoutCounter)};
+
+		if (m_keyValueGetter->isCanceled()) {
+			return;
+		}
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -283,7 +286,7 @@ void Subscriber::init() {
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
-			synchronize(m_app, timeoutCounter);
+			synchronize(timeoutCounter);
 		}
 	}
 	catch (const std::exception& e) {
@@ -330,6 +333,8 @@ std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoParts(
 }
 
 void Subscriber::cancel() {
+	m_keyValueGetter->cancel();
+	m_requester->cancel();
 	m_impl->cancel();
 }
 

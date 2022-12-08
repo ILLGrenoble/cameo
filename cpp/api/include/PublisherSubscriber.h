@@ -24,6 +24,7 @@ namespace coms {
 
 class PublisherImpl;
 class SubscriberImpl;
+class Requester;
 
 namespace basic {
 
@@ -242,7 +243,7 @@ public:
 
 private:
 	Subscriber(const App & app, const std::string &publisherName);
-	void synchronize(const App & app, const TimeoutCounter& timeout);
+	void synchronize(const TimeoutCounter& timeout);
 
 	const App & m_app;
 	std::string m_publisherName;
@@ -255,6 +256,7 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<App::Com::KeyValueGetter> m_keyValueGetter;
+	std::unique_ptr<Requester> m_requester;
 };
 
 /**

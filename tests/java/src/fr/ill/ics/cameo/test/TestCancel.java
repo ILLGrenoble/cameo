@@ -187,6 +187,38 @@ public class TestCancel {
 				subscriber.terminate();
 			}
 			
+			// Test the Subscriber init.
+			{
+				System.out.println("Creating subscriber for being canceled");
+				
+				// Get this app.
+				final App thisApp = server.connect(This.getName());
+				
+				// Create the subscriber.
+				final fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(thisApp, "an unknown publisher");
+				
+				// Start thread.
+				Thread cancelThread = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+				    	try {
+				    		Thread.sleep(1000);
+				    		subscriber.cancel();
+				    	}
+				    	catch (InterruptedException e) {
+						}
+				    }
+				});
+				
+				cancelThread.start();
+				
+				subscriber.init();
+				
+				System.out.println("Subscriber ready and canceled ? " + subscriber.isReady() + " " + subscriber.isCanceled());
+				
+				cancelThread.join();
+			}
+			
 			// Test the cancelling of a subscriber.
 			{
 				System.out.println("Starting publisherloopjava for testing cancel of a subscriber");
@@ -248,6 +280,38 @@ public class TestCancel {
 				killThread.join();
 				
 				subscriber.terminate();
+			}
+			
+			// Test the Requester init.
+			{
+				System.out.println("Creating requester for being canceled");
+				
+				// Get this app.
+				final App thisApp = server.connect(This.getName());
+				
+				// Create the requester.
+				final Requester requester = Requester.create(thisApp, "an unknown responder");
+				
+				// Start thread.
+				Thread cancelThread = new Thread(new Runnable() {
+					@Override
+				    public void run() {
+				    	try {
+				    		Thread.sleep(1000);
+				    		requester.cancel();
+				    	}
+				    	catch (InterruptedException e) {
+						}
+				    }
+				});
+				
+				cancelThread.start();
+				
+				requester.init();
+				
+				System.out.println("Requester ready and canceled ? " + requester.isReady() + " " + requester.isCanceled());
+				
+				cancelThread.join();
 			}
 			
 			// Test the basic Responder.

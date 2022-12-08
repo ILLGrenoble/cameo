@@ -3,6 +3,7 @@
 
 * Requester and subscriber init() can timeout.
 * Added isReady() and isTerminated() to parent class of coms classes.
+* Requester and subscriber init() can be canceled.
 
 2.1.0
 -----

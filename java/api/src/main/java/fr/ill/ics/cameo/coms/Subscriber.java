@@ -51,7 +51,8 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	private SubscriberImpl impl;
 	private SubscriberWaiting waiting = new SubscriberWaiting(this);
 	private String key;
-	private KeyValueGetter getter;
+	private KeyValueGetter keyValueGetter;
+	private Requester requester;
 	
 	private Subscriber(App app, String publisherName) {
 		this.app = app;
@@ -62,13 +63,12 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		this.key = Publisher.KEY + "-" + publisherName;
 		this.useProxy = app.usesProxy();
 		this.impl = ImplFactory.createSubscriber();
-		waiting.add();
-		this.getter = app.getCom().createKeyValueGetter(key);
+		this.waiting.add();
+		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
+		this.requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 	}
 	
-	private void synchronize(App app, TimeoutCounter timeoutCounter) {
-		
-		Requester requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+	private void synchronize(TimeoutCounter timeoutCounter) {
 		
 		// Set the timeout that can be -1.
 		requester.setTimeout(timeoutCounter.remains());
@@ -85,8 +85,6 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		
 		requester.sendString(jsonRequest.toJSONString());
 		String response = requester.receiveString();
-		
-		requester.terminate();
 		
 		// Check timeout.
 		if (requester.hasTimedout()) {
@@ -115,7 +113,12 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);
 			
-			String jsonString = getter.get(timeoutCounter);
+			String jsonString = keyValueGetter.get(timeoutCounter);
+			
+			if (keyValueGetter.isCanceled()) {
+				return;
+			}
+			
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
@@ -135,7 +138,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
 			if (numberOfSubscribers > 0) {
-				synchronize(app, timeoutCounter);
+				synchronize(timeoutCounter);
 			}
 		}
 		catch (Exception e) {
@@ -224,6 +227,8 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	 */
 	@Override
 	public void cancel() {
+		keyValueGetter.cancel();
+		requester.cancel();
 		impl.cancel();
 	}
 	
@@ -242,6 +247,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public void terminate() {
 		
+		requester.terminate();
 		waiting.remove();
 		impl.terminate();
 		

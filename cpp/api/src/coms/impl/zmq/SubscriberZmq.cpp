@@ -109,7 +109,6 @@ std::optional<std::string> SubscriberZmq::receive() {
 			}
 		}
 		else if (first == message::Event::CANCEL) {
-			m_canceled = true;
 			return {};
 		}
 		else if (first == message::Event::STATUS) {
@@ -225,13 +224,17 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 
 void SubscriberZmq::cancel() {
 
-	std::string messageType {message::Event::CANCEL};
-	zmq::message_t typePart {messageType.c_str(), messageType.length()};
-	m_cancelPublisher->send(typePart, zmq::send_flags::sndmore);
+	m_canceled = true;
 
-	std::string data {message::Event::CANCEL};
-	zmq::message_t dataPart {data.c_str(), data.length()};
-	m_cancelPublisher->send(dataPart, zmq::send_flags::none);
+	if (m_cancelPublisher) {
+		std::string messageType {message::Event::CANCEL};
+		zmq::message_t typePart {messageType.c_str(), messageType.length()};
+		m_cancelPublisher->send(typePart, zmq::send_flags::sndmore);
+
+		std::string data {message::Event::CANCEL};
+		zmq::message_t dataPart {data.c_str(), data.length()};
+		m_cancelPublisher->send(dataPart, zmq::send_flags::none);
+	}
 }
 
 }
