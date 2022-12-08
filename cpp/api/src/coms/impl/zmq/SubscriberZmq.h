@@ -19,6 +19,7 @@
 
 #include "../SubscriberImpl.h"
 #include <zmq.hpp>
+#include <atomic>
 
 namespace cameo {
 
@@ -48,8 +49,8 @@ private:
 	std::string m_publisherIdentity;
 	std::string m_cancelEndpoint;
 	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
-	bool m_ended;
-	bool m_canceled;
+	std::atomic_bool m_ended;
+	std::atomic_bool m_canceled;
 };
 
 }

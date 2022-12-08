@@ -17,6 +17,8 @@ package fr.ill.ics.cameo.base.impl.zmq;
 
 
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -42,7 +44,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	private Parser parser;
 	private Zmq.Socket subscriberSocket;
 	private Zmq.Socket cancelSocket;
-	private boolean canceled = false;
+	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
 	public EventStreamSocketZmq() {
 		super();
@@ -172,7 +174,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			}
 		}
 		else if (message.equals(Messages.Event.CANCEL)) {
-			canceled = true;
+			canceled.set(true);
 			return null;
 		}
 	
@@ -185,7 +187,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	}
 	
 	public boolean isCanceled() {
-		return canceled;
+		return canceled.get();
 	}
 		
 	public void terminate() {

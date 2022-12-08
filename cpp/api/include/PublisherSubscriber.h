@@ -131,7 +131,7 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<basic::Responder> m_responder;
-	bool m_canceled;
+	std::atomic_bool m_canceled;
 };
 
 ///////////////////////////////////////////////////////////////////////////

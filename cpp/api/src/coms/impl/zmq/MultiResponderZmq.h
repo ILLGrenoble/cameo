@@ -19,6 +19,7 @@
 
 #include "../MultiResponderImpl.h"
 #include <zmq.hpp>
+#include <atomic>
 
 namespace cameo {
 namespace coms {
@@ -49,7 +50,7 @@ private:
 	std::unique_ptr<zmq::message_t> m_responderIdentity;
 	std::string m_cancelEndpoint;
 
-	bool m_canceled;
+	std::atomic_bool m_canceled;
 };
 
 }

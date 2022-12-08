@@ -22,6 +22,7 @@
 #include "Strings.h"
 #include <memory>
 #include <optional>
+#include <atomic>
 
 namespace cameo {
 
@@ -122,8 +123,8 @@ private:
 	void init(Context * context, const Endpoint& endpoint, RequestSocket * requestSocket);
 
 	int m_applicationId;
-	bool m_ended;
-	bool m_canceled;
+	std::atomic_bool m_ended;
+	std::atomic_bool m_canceled;
 
 	std::unique_ptr<StreamSocketImpl> m_impl;
 };

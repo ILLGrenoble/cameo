@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.coms.impl.zmq;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
@@ -36,8 +38,8 @@ public class SubscriberZmq implements SubscriberImpl {
 	private String cancelEndpoint;
 	private Zmq.Socket cancelPublisher;
 	private int appId;
-	private boolean ended = false;
-	private boolean canceled = false;
+	private AtomicBoolean ended = new AtomicBoolean(false);
+	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
 	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity) {
 
@@ -70,11 +72,11 @@ public class SubscriberZmq implements SubscriberImpl {
 	}
 	
 	public boolean hasEnded() {
-		return ended;
+		return ended.get();
 	}
 	
 	public boolean isCanceled() {
-		return canceled;
+		return canceled.get();
 	}
 	
 	/**
@@ -100,7 +102,7 @@ public class SubscriberZmq implements SubscriberImpl {
 					return subscriber.recv();
 				}
 				else if (type == Messages.STREAM_END) {
-					ended = true;
+					ended.set(true);
 					return null;	
 				}
 			}
@@ -161,12 +163,11 @@ public class SubscriberZmq implements SubscriberImpl {
 					return result;
 				}
 				else if (type == Messages.STREAM_END) {
-					ended = true;
+					ended.set(true);
 					return null;	
 				}
 			}
 			else if (message.equals(Messages.Event.CANCEL)) {
-				canceled = true;
 				return null;
 			}
 			else if (message.equals(Messages.Event.STATUS)) {
@@ -213,7 +214,7 @@ public class SubscriberZmq implements SubscriberImpl {
 	
 	public void cancel() {	
 	
-		canceled = true;
+		canceled.set(true);
 		
 		if (cancelPublisher != null) {
 			cancelPublisher.sendMore(Messages.Event.CANCEL);

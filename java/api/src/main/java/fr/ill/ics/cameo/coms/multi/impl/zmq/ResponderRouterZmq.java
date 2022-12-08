@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.coms.multi.impl.zmq;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
@@ -31,7 +33,7 @@ public class ResponderRouterZmq implements ResponderRouterImpl {
 	private Zmq.Socket router;
 	private Zmq.Socket dealer;
 
-	private boolean canceled = false;
+	private AtomicBoolean canceled = new AtomicBoolean(false);
 
 	public void init(String responderIdentity, String dealerEndpoint) {
 
@@ -78,11 +80,11 @@ public class ResponderRouterZmq implements ResponderRouterImpl {
 	}
 
 	public void cancel() {
-		canceled = true;
+		canceled.set(true);
 	}
 
 	public boolean isCanceled() {
-		return canceled;
+		return canceled.get();
 	}
 
 	public void run() {
@@ -125,7 +127,7 @@ public class ResponderRouterZmq implements ResponderRouterImpl {
 				}
 			}
 			
-			if (canceled) {
+			if (canceled.get()) {
 				break;
 			}
 		}

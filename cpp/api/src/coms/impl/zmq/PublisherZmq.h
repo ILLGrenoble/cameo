@@ -20,6 +20,7 @@
 #include "../PublisherImpl.h"
 #include <memory>
 #include <zmq.hpp>
+#include <atomic>
 
 namespace cameo {
 namespace coms {
@@ -48,7 +49,7 @@ private:
 	int m_publisherPort;
 	std::string m_publisherIdentity;
 	std::unique_ptr<zmq::socket_t> m_publisher;
-	bool m_ended;
+	std::atomic_bool m_ended;
 };
 
 }

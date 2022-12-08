@@ -19,6 +19,7 @@
 
 #include "../BasicResponderImpl.h"
 #include <zmq.hpp>
+#include <atomic>
 
 namespace cameo {
 namespace coms {
@@ -53,7 +54,7 @@ private:
 	std::unique_ptr<zmq::message_t> m_proxyIdentity;
 	std::unique_ptr<zmq::message_t> m_requesterIdentity;
 
-	bool m_canceled;
+	std::atomic_bool m_canceled;
 };
 
 }

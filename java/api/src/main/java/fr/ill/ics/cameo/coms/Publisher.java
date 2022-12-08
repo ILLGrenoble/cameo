@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.coms;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.ICancelable;
@@ -45,7 +47,7 @@ public class Publisher extends StateObject implements ICancelable {
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
 	private Responder responder = null;
-	private boolean canceled = false;
+	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
 	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 	public static final String PUBLISHER_PORT = "publisher_port";
@@ -180,7 +182,7 @@ public class Publisher extends StateObject implements ICancelable {
 	@Override
 	public void cancel() {
 		if (responder != null) {
-			canceled = true;
+			canceled.set(true);
 			responder.cancel();
 		}
 	}
@@ -191,7 +193,7 @@ public class Publisher extends StateObject implements ICancelable {
 	 */
 	@Override
 	public boolean isCanceled() {
-		return canceled;
+		return canceled.get();
 	}
 
 	/**

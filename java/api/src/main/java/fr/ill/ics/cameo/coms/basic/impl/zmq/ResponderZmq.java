@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.coms.basic.impl.zmq;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
@@ -36,8 +38,7 @@ public class ResponderZmq implements ResponderImpl {
 	private Zmq.Socket responder;
 	private String responderIdentity;
 	private Zmq.Msg reply = null; // Memorize the reply before sending it.
-	
-	private boolean canceled = false;
+	private AtomicBoolean canceled = new AtomicBoolean(false);	
 	
 	public void init(String responderIdentity) {
 		
@@ -132,7 +133,7 @@ public class ResponderZmq implements ResponderImpl {
 					return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
 				}
 				else if (type == Messages.CANCEL) {
-					canceled = true;
+					canceled.set(true);
 	
 					// Reply immediately.
 					responseToRequest(reply);
@@ -186,7 +187,7 @@ public class ResponderZmq implements ResponderImpl {
 	}
 	
 	public boolean isCanceled() {
-		return canceled;
+		return canceled.get();
 	}
 	
 	public void terminate() {

@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.coms.impl.zmq;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.Zmq;
@@ -31,7 +33,7 @@ public class PublisherZmq implements PublisherImpl {
 	private String publisherIdentity;
 	private Zmq.Context context;
 	private Zmq.Socket publisher = null;
-	private boolean ended = false;
+	private AtomicBoolean ended = new AtomicBoolean(false);
 	
 	public void init(String publisherIdentity) {
 		
@@ -104,19 +106,19 @@ public class PublisherZmq implements PublisherImpl {
 	
 	public void sendEnd() {
 		
-		if (!ended) {
+		if (!ended.get()) {
 			publisher.sendMore(publisherIdentity);
 	
 			JSONObject messageType = new JSONObject();
 			messageType.put(Messages.TYPE, Messages.STREAM_END);
 			publisher.send(Messages.serialize(messageType), 0);
 			
-			ended = true;
+			ended.set(true);
 		}
 	}
 
 	public boolean hasEnded() {
-		return ended;
+		return ended.get();
 	}
 	
 	public void terminate() {

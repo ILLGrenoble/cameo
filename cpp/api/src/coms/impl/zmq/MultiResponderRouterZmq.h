@@ -19,6 +19,7 @@
 
 #include "../MultiResponderRouterImpl.h"
 #include <zmq.hpp>
+#include <atomic>
 
 namespace cameo {
 namespace coms {
@@ -47,7 +48,7 @@ private:
 	std::unique_ptr<zmq::socket_t> m_router;
 	std::unique_ptr<zmq::socket_t> m_dealer;
 
-	bool m_canceled;
+	std::atomic_bool m_canceled;
 };
 
 }
