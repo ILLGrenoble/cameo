@@ -166,6 +166,11 @@ void Responder::terminate() {
 
 void Responder::init() {
 
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
+
 	// Set the key.
 	m_key = KEY + "-" + m_name;
 

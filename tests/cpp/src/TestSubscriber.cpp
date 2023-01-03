@@ -77,6 +77,9 @@ int main(int argc, char *argv[]) {
 		publisher->init();
 		cout << "Publisher ready ? " << publisher->isReady() << endl;
 
+		// Try a second init.
+		publisher->init();
+
 		for (int k = 0; k < 20; ++k) {
 
 			string data = "{";

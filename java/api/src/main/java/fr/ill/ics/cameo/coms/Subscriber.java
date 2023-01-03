@@ -109,6 +109,11 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public void init() throws InitException {
 		
+		if (isReady()) {
+			// The object is already initialized.
+			return;
+		}
+		
 		// Get the publisher data.
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);

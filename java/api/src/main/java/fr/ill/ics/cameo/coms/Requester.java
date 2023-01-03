@@ -83,6 +83,11 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	@Override
 	public void init() throws InitException {
 		
+		if (isReady()) {
+			// The object is already initialized.
+			return;
+		}
+		
 		// Get the responder data.
 		try {
 			TimeoutCounter timeoutCounter = new TimeoutCounter(timeout);

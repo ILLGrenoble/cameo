@@ -50,6 +50,9 @@ public class TestSimple {
 		server.init();
 		System.out.println("Server ready ? " + server.isReady());
 		
+		// Try a second init. 
+		server.init();
+		
 		Date d = new Date();
 		
 		try {

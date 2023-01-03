@@ -69,6 +69,9 @@ int main(int argc, char *argv[]) {
 		subscriber->init();
 		cout << "Subscriber ready ? " << subscriber->isReady() << endl;
 
+		// Try a second init.
+		subscriber->init();
+
 		cout << "Created subscriber " << *subscriber << endl;
 
 		if (subscriber.get() == 0) {

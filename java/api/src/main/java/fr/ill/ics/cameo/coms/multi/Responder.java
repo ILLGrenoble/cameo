@@ -56,6 +56,11 @@ public class Responder extends StateObject implements ICancelable {
 	@Override
 	public void init() {
 
+		if (isReady()) {
+			// The object is already initialized.
+			return;
+		}
+		
 		// Init with the responder socket.
 		impl.init(dealerEndpoint);
 		

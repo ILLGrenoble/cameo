@@ -90,6 +90,9 @@ public class TestBasicRequester {
 				responder.init();
 				System.out.println("Responder ready ? " + responder.isReady());
 				
+				// Try a second init.
+				responder.init();
+				
 				// Process the requests, the requester application sends 10 requests.
 				for (int j = 0; j < N * 10; ++j) {
 					

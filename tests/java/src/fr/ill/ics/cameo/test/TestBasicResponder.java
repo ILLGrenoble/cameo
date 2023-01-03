@@ -76,6 +76,9 @@ public class TestBasicResponder {
 				requester.init();
 				System.out.println("Requester ready ? " + requester.isReady());
 				
+				// Try a second init.
+				requester.init();
+				
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.

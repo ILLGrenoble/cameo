@@ -56,6 +56,11 @@ void Requester::terminate() {
 
 void Requester::init() {
 
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
+
 	// Get the responder data.
 	try {
 		TimeoutCounter timeoutCounter {m_timeout};

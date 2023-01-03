@@ -170,6 +170,11 @@ void ResponderRouter::setPollingTime(int value) {
 
 void ResponderRouter::init() {
 
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
+
 	// Set the key.
 	m_key = KEY + "-" + m_name;
 
@@ -266,6 +271,11 @@ void Responder::terminate() {
 }
 
 void Responder::init() {
+
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
 
 	// Init the responder socket.
 	m_impl->init(m_dealerEndpoint);

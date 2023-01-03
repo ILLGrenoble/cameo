@@ -49,6 +49,11 @@ bool Server::FilteredEventListener::isFiltered() const {
 
 void Server::init() {
 
+	if (isReady()) {
+		// The server is already initialized.
+		return;
+	}
+
 	if (!m_serverEndpointString.empty()) {
 		try {
 			m_serverEndpoint = Endpoint::parse(m_serverEndpointString);

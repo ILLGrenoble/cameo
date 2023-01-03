@@ -72,6 +72,9 @@ int main(int argc, char *argv[]) {
 		requester->init();
 		cout << "Requester ready ? " << requester->isReady() << endl;
 
+		// Try a second call.
+		requester->init();
+
 		cout << "Created requester " << *requester << endl;
 
 		if (requester.get() == 0) {

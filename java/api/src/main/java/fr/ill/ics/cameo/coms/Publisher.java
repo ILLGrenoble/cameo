@@ -72,6 +72,11 @@ public class Publisher extends StateObject implements ICancelable {
 	@Override
 	public void init() throws InitException {
 		
+		if (isReady()) {
+			// The object is already initialized.
+			return;
+		}
+		
 		// Set the key.
 		key = KEY + "-" + name;
 		

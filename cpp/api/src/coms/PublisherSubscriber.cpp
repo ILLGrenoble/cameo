@@ -67,6 +67,11 @@ void Publisher::terminate() {
 
 void Publisher::init() {
 
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
+
 	// Set the key.
 	m_key = KEY + "-" + m_name;
 
@@ -254,6 +259,11 @@ void Subscriber::synchronize(const TimeoutCounter& timeout) {
 }
 
 void Subscriber::init() {
+
+	if (isReady()) {
+		// The object is already initialized.
+		return;
+	}
 
 	// Get the publisher data.
 	try {

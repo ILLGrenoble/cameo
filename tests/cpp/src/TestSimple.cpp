@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
 	server->init();
 	cout << "Server ready ? " << server->isReady() << endl;
 
+	// Try a second init.
+	server->init();
+
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 

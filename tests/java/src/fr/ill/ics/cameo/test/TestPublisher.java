@@ -71,6 +71,9 @@ public class TestPublisher {
 				subscriber.init();
 				System.out.println("Subscriber ready ? " + subscriber.isReady());
 				
+				// Try a second init.
+				subscriber.init();
+				
 				System.out.println("Created subscriber " + subscriber);
 				
 				// Receiving data.

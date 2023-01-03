@@ -92,6 +92,9 @@ public class TestSubscriber {
 				publisher.init();
 				System.out.println("Publisher ready ? " + publisher.isReady());
 				
+				// Try a second init.
+				publisher.init();
+				
 				for (int k = 0; k < 20; ++k) {
 	
 					String ks = k + "";

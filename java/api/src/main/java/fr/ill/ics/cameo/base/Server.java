@@ -112,6 +112,11 @@ public class Server extends StateObject implements ITimeoutable {
 	@Override
 	public void init() {
 
+		if (isReady()) {
+			// The server is already initialized.
+			return;
+		}
+		
 		if (serverEndpointString != null) {
 		
 			try {

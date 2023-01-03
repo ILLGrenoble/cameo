@@ -85,6 +85,9 @@ int main(int argc, char *argv[]) {
 		responder->init();
 		cout << "Responder ready ? " << responder->isReady() << endl;
 
+		// Try a second init.
+		responder->init();
+
 		cout << "Created responder " << *responder << endl;
 
 		// Process the requests, the requester application sends 10 requests.
