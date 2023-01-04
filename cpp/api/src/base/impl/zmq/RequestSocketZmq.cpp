@@ -52,7 +52,7 @@ void RequestSocketZmq::setSocketLinger() {
 	// Does the value 100 can lead to a side-effect? A too small value like 1 has some side-effect.
 	// After some tests, the value seems reasonable.
 	// If a Server instance is not reachable, the context that contains the message in timeout will block during this linger period.
-	if (m_timeout > 0) {
+	if (m_timeout > 0 && m_socket) {
 		int lingerValue {100};
 		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
 	}

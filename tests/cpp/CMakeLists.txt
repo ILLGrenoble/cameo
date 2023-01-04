@@ -23,6 +23,9 @@ endif()
 
 # Tests
 
+add_executable(testservererror src/TestServerError.cpp)
+target_link_libraries(testservererror PRIVATE Cameo::cameo-api-cpp)
+
 add_executable(testserver src/TestServer.cpp)
 target_link_libraries(testserver PRIVATE Cameo::cameo-api-cpp)
 
