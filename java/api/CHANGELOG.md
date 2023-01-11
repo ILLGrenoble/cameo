@@ -1,4 +1,4 @@
-2.1.1 (NR)
+2.1.1
 -----
 
 * Requester and subscriber init() can timeout.
