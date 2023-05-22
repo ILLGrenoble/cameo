@@ -20,11 +20,14 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
+import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.StateObject;
+import fr.ill.ics.cameo.base.SynchronizationTimeout;
 import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.base.Timeout;
 import fr.ill.ics.cameo.base.TimeoutCounter;
 import fr.ill.ics.cameo.coms.basic.Responder;
 import fr.ill.ics.cameo.coms.impl.RequesterImpl;
@@ -114,8 +117,14 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 			
 			impl.init(endpoint, StringId.from(key, appId), timeoutCounter);
 		}
+		catch (ConnectionTimeout e) {
+			throw e;
+		}
+		catch (Timeout e) {
+			throw new SynchronizationTimeout("Requester cannot synchronize responder '" + responderName + "'");
+		}
 		catch (Exception e) {
-			throw new InitException("Cannot initialize requester: " + e.getMessage());
+			throw new InitException("Cannot initialize requester to responder '" + responderName + "': " + e.getMessage());
 		}
 		
 		setReady();

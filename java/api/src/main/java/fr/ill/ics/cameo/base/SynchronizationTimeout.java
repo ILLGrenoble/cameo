@@ -14,25 +14,20 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_CONNECTIONTIMEOUT_H_
-#define CAMEO_CONNECTIONTIMEOUT_H_
 
-#include <stdexcept>
-
-namespace cameo {
+package fr.ill.ics.cameo.base;
 
 /**
- * Exception for a connection timeout.
+ * Exception for connection timeout.
  */
-class ConnectionTimeout : public std::runtime_error {
+public class SynchronizationTimeout extends RuntimeException {
 
-public:
+	private static final long serialVersionUID = 1267072480020853574L;
+
 	/**
 	 * Constructor.
 	 */
-	ConnectionTimeout(const std::string& endpoint);
-};
-
+	public SynchronizationTimeout(String message) {
+		super(message);
+	}
 }
-
-#endif

@@ -88,8 +88,14 @@ void Requester::init() {
 
 		m_impl->init(endpoint, StringId::from(m_key, m_appId), timeoutCounter);
 	}
+	catch (const ConnectionTimeout&) {
+		throw;
+	}
+	catch (const Timeout&) {
+		throw SynchronizationTimeout(std::string{"Requester cannot synchronize responder '"} + m_responderName + "'");
+	}
 	catch (const std::exception& e) {
-		throw InitException(std::string("Cannot initialize requester: ") + e.what());
+		throw InitException(std::string{"Cannot initialize requester to responder '"} + m_responderName + "': " + e.what());
 	}
 
 	setReady();

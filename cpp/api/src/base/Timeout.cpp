@@ -18,8 +18,8 @@
 
 namespace cameo {
 
-Timeout::Timeout(const std::string& reason) :
-	std::runtime_error{reason.c_str()} {
+Timeout::Timeout() :
+	std::runtime_error{"Timeout"} {
 }
 
 }

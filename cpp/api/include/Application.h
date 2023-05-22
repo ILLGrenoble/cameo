@@ -24,6 +24,7 @@
 #include "UnregisteredApplicationException.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
+#include "SynchronizationTimeout.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"

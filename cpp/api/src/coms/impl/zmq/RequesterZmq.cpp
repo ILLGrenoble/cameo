@@ -120,7 +120,7 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 
 		// Check the global timeout.
 		if (timeoutCounter.remains() == 0) {
-			throw Timeout("Timeout while initializing requester");
+			throw Timeout();
 		}
 	}
 

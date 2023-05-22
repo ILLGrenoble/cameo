@@ -119,7 +119,7 @@ public class RequesterZmq implements RequesterImpl {
 			
 			// Check the global timeout.
 			if (timeoutCounter.remains() == 0) {
-				throw new Timeout("Timeout while initializing requester");
+				throw new Timeout();
 			}
 		}
 		

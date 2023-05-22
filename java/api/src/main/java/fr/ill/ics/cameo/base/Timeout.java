@@ -25,9 +25,8 @@ public class Timeout extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param message The message.
 	 */
-	public Timeout(String message) {
-		super(message);
+	public Timeout() {
+		super("Timeout");
 	}
 }

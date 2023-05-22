@@ -254,7 +254,7 @@ void Subscriber::synchronize(const TimeoutCounter& timeout) {
 
 	// Check timeout.
 	if (m_requester->hasTimedout()) {
-		throw Timeout("Timeout while synchronizing subscriber");
+		throw Timeout();
 	}
 }
 
@@ -299,8 +299,20 @@ void Subscriber::init() {
 			synchronize(timeoutCounter);
 		}
 	}
+	catch (const ConnectionTimeout&) {
+		throw;
+	}
+	catch (const Timeout&) {
+		throw SynchronizationTimeout(std::string{"Subscriber cannot synchronize publisher '"} + m_publisherName + "'");
+	}
+	catch (const SynchronizationTimeout&) {
+		throw SynchronizationTimeout(std::string{"Subscriber cannot synchronize publisher '"} + m_publisherName + "'");
+	}
+	catch (const InitException& e) {
+		throw InitException(std::string{"Cannot initialize subscriber to publisher '"} + m_publisherName + "': Cannot initialize internal requester");
+	}
 	catch (const std::exception& e) {
-		throw InitException(std::string("Cannot initialize subscriber: ") + e.what());
+		throw InitException(std::string{"Cannot initialize subscriber to publisher '"} + m_publisherName + "':" + e.what());
 	}
 
 	setReady();

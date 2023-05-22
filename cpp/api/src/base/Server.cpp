@@ -59,7 +59,7 @@ void Server::init() {
 			m_serverEndpoint = Endpoint::parse(m_serverEndpointString);
 		}
 		catch (...) {
-			throw InvalidArgumentException(m_serverEndpointString + " is not a valid endpoint");
+			throw InvalidArgumentException(std::string{"Cannot initialize the server "} + m_serverEndpointString + ": invalid endpoint");
 		}
 	}
 
@@ -78,8 +78,11 @@ void Server::init() {
 		m_eventThread.reset(new EventThread{this, socket});
 		m_eventThread->start();
 	}
-	catch (const SocketException& e) {
-		throw InitException(std::string{"Cannot initialize the server:"} + e.what());
+	catch (const ConnectionTimeout&) {
+		throw;
+	}
+	catch (const std::exception& e) {
+		throw InitException(std::string{"Cannot initialize the server " + m_serverEndpointString + ": "} + e.what());
 	}
 
 	setReady();

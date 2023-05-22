@@ -110,7 +110,7 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 			reset();
 
 			// Timeout occurred.
-			throw ConnectionTimeout();
+			throw ConnectionTimeout(m_endpoint);
 		}
 	}
 

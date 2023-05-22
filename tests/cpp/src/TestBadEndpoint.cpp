@@ -25,16 +25,24 @@ using namespace cameo;
 
 int main(int, char *[]) {
 
-	try {
-		unique_ptr<Server> server = Server::create("tcp://ferrazpc.ill.fr:7000");
-		server->setTimeout(1000);
-		server->init();
-	}
-	catch (InitException const & e) {
-		cout << "Init exception: " << e.what() << endl;
-	}
-	catch (exception const & e) {
-		cout << "The server has bad endpoint: " << e.what() << endl;
+	std::vector<std::string> endpoints = {"tc://badprotocol:7000", "tcp:/ferrazpc.ill.fr:7000", "tcp://ferrazpc.ill.fr", "tcp://ferrazpc.ill.fr:7000"};
+
+	for (const auto& e : endpoints) {
+
+		try {
+			unique_ptr<Server> server = Server::create(e);
+			server->setTimeout(1000);
+			server->init();
+		}
+		catch (InitException const & e) {
+			cout << "Init exception: " << e.what() << endl;
+		}
+		catch (ConnectionTimeout const & e) {
+			cout << "Unreachable server: " << e.what() << endl;
+		}
+		catch (RemoteException const & e) {
+			cout << "Error: " << e.what() << endl;
+		}
 	}
 
 	try {
@@ -42,19 +50,22 @@ int main(int, char *[]) {
 		server->setTimeout(1000);
 		server->init();
 
-		cout << "server created" << endl;
+		cout << "Server created" << endl;
 		if (server->isAvailable(1000)) {
-			cout << "server available" << endl;
+			cout << "Server available" << endl;
 		}
 		else {
-			cout << "server not available" << endl;
+			cout << "Server not available" << endl;
 		}
 	}
 	catch (InitException const & e) {
 		cout << "Init exception: " << e.what() << endl;
 	}
-	catch (exception const & e) {
-		cout << "The server has bad endpoint: " << e.what() << endl;
+	catch (ConnectionTimeout const & e) {
+		cout << "Unreachable server: " << e.what() << endl;
+	}
+	catch (RemoteException const & e) {
+		cout << "Error: " << e.what() << endl;
 	}
 
 	return 0;

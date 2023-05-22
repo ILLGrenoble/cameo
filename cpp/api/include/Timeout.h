@@ -30,7 +30,7 @@ public:
 	/**
 	 * Constructor.
 	 */
-	Timeout(const std::string& reason);
+	Timeout();
 };
 
 }

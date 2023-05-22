@@ -43,7 +43,7 @@
 				<dependency>
 					<groupId>fr.ill.ics</groupId>
 					<artifactId>cameo-api</artifactId>
-					<version>2.1.1</version>
+					<version>2.1.2</version>
 				</dependency>
 			</dependencies>
 		</profile>

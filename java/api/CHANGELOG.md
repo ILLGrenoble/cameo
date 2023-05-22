@@ -1,3 +1,8 @@
+2.1.2 (NP)
+-----
+
+* Minor review of exceptions.
+
 2.1.1
 -----
 

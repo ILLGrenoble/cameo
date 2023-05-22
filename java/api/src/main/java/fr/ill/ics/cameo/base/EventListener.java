@@ -77,7 +77,7 @@ public class EventListener {
 						return event;
 					}
 					
-					throw new Timeout("Timeout while popping a queue");
+					throw new Timeout();
 				}
 			}
 			return eventQueue.poll();

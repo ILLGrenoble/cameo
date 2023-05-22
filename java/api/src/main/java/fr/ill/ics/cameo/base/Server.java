@@ -123,7 +123,7 @@ public class Server extends StateObject implements ITimeoutable {
 				serverEndpoint = Endpoint.parse(serverEndpointString);
 			}
 			catch (Exception e) {
-				throw new InvalidArgumentException(serverEndpointString + " is not a valid endpoint");
+				throw new InvalidArgumentException("Cannot initialize the server " + serverEndpointString + ": invalid endpoint");
 			}
 		}
 
@@ -142,8 +142,11 @@ public class Server extends StateObject implements ITimeoutable {
 				eventThread.start();
 			}
 		}
-		catch (SocketException e) {
-			throw new InitException("Cannot initialize server: " + e.getMessage());
+		catch (ConnectionTimeout e) {
+			throw e;
+		}
+		catch (Exception e) {
+			throw new InitException("Cannot initialize the server " + serverEndpointString + ": " + e.getMessage());
 		}
 		
 		setReady();

@@ -27,7 +27,7 @@ public class ConnectionTimeout extends RuntimeException {
 	/**
 	 * Constructor.
 	 */
-	public ConnectionTimeout() {
-		super("Connection timeout");
+	public ConnectionTimeout(String endpoint) {
+		super("Timeout while connecting " + endpoint);
 	}
 }

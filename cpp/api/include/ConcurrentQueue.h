@@ -81,7 +81,7 @@ public:
 			else {
 				std::cv_status status = m_condition.wait_for(lock, std::chrono::milliseconds(timeout));
 				if (status == std::cv_status::timeout) {
-					throw Timeout("Timeout while popping a queue");
+					throw Timeout();
 				}
 			}
 		}

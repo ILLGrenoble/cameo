@@ -18,8 +18,8 @@
 
 namespace cameo {
 
-ConnectionTimeout::ConnectionTimeout() :
-	std::runtime_error{"Connection timeout"} {
+ConnectionTimeout::ConnectionTimeout(const std::string& endpoint) :
+	std::runtime_error{"Timeout while connecting " + endpoint} {
 }
 
 }

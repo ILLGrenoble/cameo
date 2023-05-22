@@ -127,7 +127,7 @@ public class RequestSocketZmq implements RequestSocketImpl {
 				// Reset the socket.
 				terminate();
 				
-				throw new ConnectionTimeout();
+				throw new ConnectionTimeout(endpoint);
 			}
 
 			return reply;
