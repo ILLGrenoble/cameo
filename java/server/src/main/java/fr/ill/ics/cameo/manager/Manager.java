@@ -605,7 +605,7 @@ public class Manager extends ConfigLoader {
 	
 	public synchronized void setApplicationState(Application application, int applicationState, int exitValue) {
 		
-		// States are : NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, FAILURE, SUCCESS, STOPPED, KILLED.
+		// States are : NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_FAILURE, FAILURE, SUCCESS, STOPPED, KILLED.
 		// Set the status of the application
 		application.setState(applicationState);
 		
@@ -648,7 +648,7 @@ public class Manager extends ConfigLoader {
 		Application application = applicationMap.get(id);
 		int currentState = application.getApplicationState();
 		
-		// States are: NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_ERROR, FAILURE, SUCCESS, STOPPED, KILLED.
+		// States are: NIL, STARTING, RUNNING, STOPPING, KILLING, PROCESSING_FAILURE, FAILURE, SUCCESS, STOPPED, KILLED.
 		// State that can be set by the client : RUNNING
 		if (state == ApplicationState.RUNNING) {
 			// current state can only be STARTING

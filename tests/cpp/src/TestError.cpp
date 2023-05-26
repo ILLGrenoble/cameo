@@ -46,12 +46,47 @@ int main(int argc, char *argv[]) {
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
-		// Start the application.
-		unique_ptr<App> app = server->start("errorcpp");
+		// Test with waitFor.
+		{
+			// Start the application.
+			unique_ptr<App> app = server->start("errorcpp");
 
-		State state = app->waitFor();
+			State state = app->waitFor();
 
-		cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
+			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
+		}
+
+		// Test with getLastState.
+		{
+			// Start the application.
+			unique_ptr<App> app = server->start("errorcpp");
+
+			// Check the state. When exiting the application will have terminated.
+			while (app->getLastState() != FAILURE) {
+				this_thread::sleep_for(chrono::milliseconds(100));
+				cout << "...checking application state" << endl;
+			}
+
+			State state = app->waitFor();
+
+			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
+		}
+
+		// Test with getActualState.
+		{
+			// Start the application.
+			unique_ptr<App> app = server->start("errorcpp");
+
+			// Check the state. When exiting the application will have terminated.
+			while (app->getActualState() != NIL) {
+				this_thread::sleep_for(chrono::milliseconds(100));
+				cout << "...checking application state" << endl;
+			}
+
+			State state = app->waitFor();
+
+			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
+		}
 	}
 
 	return 0;

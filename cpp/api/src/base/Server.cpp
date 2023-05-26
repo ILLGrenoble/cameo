@@ -564,8 +564,8 @@ std::set<State> Server::getPastStates(int id) const {
 		result.insert(KILLING);
 	}
 
-	if ((applicationStates & PROCESSING_ERROR) != 0) {
-		result.insert(PROCESSING_ERROR);
+	if ((applicationStates & PROCESSING_FAILURE) != 0) {
+		result.insert(PROCESSING_FAILURE);
 	}
 
 	if ((applicationStates & FAILURE) != 0) {

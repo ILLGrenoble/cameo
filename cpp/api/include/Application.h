@@ -154,6 +154,9 @@ const State KILLING = 8;
 /**
  * Processing error state.
  */
+const State PROCESSING_FAILURE = 16;
+
+[[deprecated("Use PROCESSING_FAILURE instead.")]]
 const State PROCESSING_ERROR = 16;
 
 /**

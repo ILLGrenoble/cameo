@@ -817,8 +817,8 @@ public class Server extends StateObject implements ITimeoutable {
 			result.add(State.KILLING);
 		}
 		
-		if ((applicationStates & State.PROCESSING_ERROR) != 0) {
-			result.add(State.PROCESSING_ERROR);
+		if ((applicationStates & State.PROCESSING_FAILURE) != 0) {
+			result.add(State.PROCESSING_FAILURE);
 		}
 		
 		if ((applicationStates & State.FAILURE) != 0) {

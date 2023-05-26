@@ -569,11 +569,11 @@ public class Console {
 				| State.STOPPED 
 				| State.KILLED 
 				| State.FAILURE 
-				| State.PROCESSING_ERROR);
+				| State.PROCESSING_FAILURE);
 
-		if (state == State.PROCESSING_ERROR) {
+		if (state == State.PROCESSING_FAILURE) {
 			
-			System.out.print("The application terminated with error that is now processed...");
+			System.out.print("The application terminated with a failure that is now processed...");
 			// waiting for the end of process
 			state = app.waitFor();
 			

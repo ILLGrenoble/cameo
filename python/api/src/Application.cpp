@@ -40,7 +40,7 @@ PYBIND11_MODULE(cameopy, m) {
 	m.attr("RUNNING")            = RUNNING;
 	m.attr("STOPPING")           = STOPPING;
 	m.attr("KILLING")            = KILLING;
-	m.attr("PROCESSING_ERROR")   = PROCESSING_ERROR;
+	m.attr("PROCESSING_FAILURE") = PROCESSING_FAILURE;
 	m.attr("FAILURE")            = FAILURE;
 	m.attr("SUCCESS")            = SUCCESS;
 	m.attr("STOPPED")            = STOPPED;

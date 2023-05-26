@@ -52,7 +52,7 @@ public class State {
 	/**
 	 * Processing error state.
 	 */
-	public final static int PROCESSING_ERROR = 16;
+	public final static int PROCESSING_FAILURE = 16;
 	
 	/**
 	 * Failure state.
@@ -96,8 +96,8 @@ public class State {
 		else if (value.equals("KILLING")) {
 			return State.KILLING;
 		}
-		else if (value.equals("PROCESSING_ERROR")) {
-			return State.PROCESSING_ERROR;
+		else if (value.equals("PROCESSING_FAILURE")) {
+			return State.PROCESSING_FAILURE;
 		}
 		else if (value.equals("FAILURE")) {
 			return State.FAILURE;
@@ -140,8 +140,8 @@ public class State {
 			states.add("KILLING");
 		}
 		
-		if ((applicationStates & State.PROCESSING_ERROR) != 0) {
-			states.add("PROCESSING_ERROR");
+		if ((applicationStates & State.PROCESSING_FAILURE) != 0) {
+			states.add("PROCESSING_FAILURE");
 		}
 		
 		if ((applicationStates & State.FAILURE) != 0) {

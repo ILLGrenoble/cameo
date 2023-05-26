@@ -42,8 +42,8 @@ public class Converter {
 		else if (state == ApplicationState.KILLING) {
 			return "KILLING";
 		}
-		else if (state == ApplicationState.PROCESSING_ERROR) {
-			return "PROCESSING_ERROR";
+		else if (state == ApplicationState.PROCESSING_FAILURE) {
+			return "PROCESSING_FAILURE";
 		}
 		else if (state == ApplicationState.FAILURE) {
 			return "FAILURE";

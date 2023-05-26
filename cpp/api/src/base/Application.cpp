@@ -146,10 +146,10 @@ State This::parseState(const std::string& value) {
 	else if (value == "KILLING") {
 		return KILLING;
 	}
-	else if (value == "PROCESSING_ERROR") {
-		return PROCESSING_ERROR;
+	else if (value == "PROCESSING_FAILURE") {
+		return PROCESSING_FAILURE;
 	}
-	else if (value == "ERROR") {
+	else if (value == "FAILURE") {
 		return FAILURE;
 	}
 	else if (value == "SUCCESS") {
@@ -1076,12 +1076,12 @@ std::string toString(cameo::State applicationStates) {
 		states.push_back("KILLING");
 	}
 
-	if ((applicationStates & PROCESSING_ERROR) != 0) {
-		states.push_back("PROCESSING_ERROR");
+	if ((applicationStates & PROCESSING_FAILURE) != 0) {
+		states.push_back("PROCESSING_FAILURE");
 	}
 
 	if ((applicationStates & FAILURE) != 0) {
-		states.push_back("ERROR");
+		states.push_back("FAILURE");
 	}
 
 	if ((applicationStates & SUCCESS) != 0) {

@@ -54,13 +54,58 @@ public class TestError {
 			// loop the number of times.
 			for (int i = 0; i < numberOfTimes; ++i) {
 			
-				// start the application.
-				App application = server.start("errorjava");
-	
-				// the getString is blocking until the application finishes
-				int state = application.waitFor();
-								
-				System.out.println("Finished application " + application + " with state " + State.toString(state) + " with exit code " + application.getExitCode());
+				// Test waitFor.
+				{
+					// start the application.
+					App application = server.start("errorjava");
+		
+					// the getString is blocking until the application finishes
+					int state = application.waitFor();
+									
+					System.out.println("Finished application " + application + " with state " + State.toString(state) + " with exit code " + application.getExitCode());
+				}
+				
+				// Test getLastState.
+				{
+					// start the application.
+					App application = server.start("errorjava");
+		
+					while (application.getLastState() != State.FAILURE) {
+						try {
+							Thread.sleep(100);
+						}
+						catch (InterruptedException e) {
+						}
+						
+						System.out.println("...checking application state");
+					}
+					
+					// the getString is blocking until the application finishes
+					int state = application.waitFor();
+									
+					System.out.println("Finished application " + application + " with state " + State.toString(state) + " with exit code " + application.getExitCode());
+				}
+				
+				// Test getActualState.
+				{
+					// start the application.
+					App application = server.start("errorjava");
+		
+					while (application.getActualState() != State.NIL) {
+						try {
+							Thread.sleep(100);
+						}
+						catch (InterruptedException e) {
+						}
+						
+						System.out.println("...checking application state");
+					}
+					
+					// the getString is blocking until the application finishes
+					int state = application.waitFor();
+									
+					System.out.println("Finished application " + application + " with state " + State.toString(state) + " with exit code " + application.getExitCode());
+				}
 			}
 		}
 		finally {

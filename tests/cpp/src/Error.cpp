@@ -23,7 +23,7 @@ using namespace cameo;
 
 int main(int, char *[]) {
 
-	this_thread::sleep_for(chrono::milliseconds(50));
+	this_thread::sleep_for(chrono::milliseconds(10));
 
 	cout << "Error" << endl;
 

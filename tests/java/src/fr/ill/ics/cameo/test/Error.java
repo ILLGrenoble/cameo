@@ -21,7 +21,7 @@ public class Error {
 	public static void main(String[] args) {
 		
 		try {
-			Thread.sleep(50);
+			Thread.sleep(10);
 		}
 		catch (InterruptedException e) {
 		}

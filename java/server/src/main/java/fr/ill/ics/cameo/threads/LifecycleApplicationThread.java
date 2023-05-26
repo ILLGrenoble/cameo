@@ -98,7 +98,7 @@ public class LifecycleApplicationThread extends ApplicationThread {
 				// Execute the error callback.
 				if (application.getErrorExecutable() != null) {
 					int currentState = application.getApplicationState();
-					manager.setApplicationState(application, ApplicationState.PROCESSING_ERROR, exitValue);
+					manager.setApplicationState(application, ApplicationState.PROCESSING_FAILURE, exitValue);
 					application.executeError(exitValue, currentState);
 				}
 				return false;

@@ -2,6 +2,7 @@
 -----
 
 * Minor review of exceptions.
+* Renamed PROCESSING_ERROR into PROCESSING_FAILURE.
 
 2.1.1
 -----
