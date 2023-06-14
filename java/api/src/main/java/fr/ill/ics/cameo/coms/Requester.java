@@ -24,6 +24,7 @@ import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.ITimeoutable;
 import fr.ill.ics.cameo.base.InitException;
+import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.SynchronizationTimeout;
 import fr.ill.ics.cameo.base.This;
@@ -43,6 +44,48 @@ import fr.ill.ics.cameo.strings.StringId;
  */
 public class Requester extends StateObject implements ITimeoutable, ICancelable {
 
+	static class Checker {
+		
+		private Requester requester;
+		private Thread thread = null;
+		
+		Checker(Requester requester) {
+			this.requester = requester;
+		}
+
+		void start() {
+			// Start the thread.
+			thread = new Thread(new Runnable() {
+				public void run() {
+				
+					// Wait for the app that can be canceled.
+					int state = requester.app.waitFor();
+					if (state == State.FAILURE) {
+						// Cancel the requester if the app fails.
+						requester.cancel();
+					}
+				}
+			});
+			
+			thread.start();
+		}
+
+		void terminate() {
+			// Cancel the wait for call.
+			requester.app.cancel();
+
+			// Clean the thread.
+			if (thread != null) {
+				try {
+					thread.join();
+				}
+				catch (InterruptedException e) {
+				}
+			}
+		}
+	}
+	
+	
 	private App app;
 	private String responderName;
 	private int timeout = -1;
@@ -54,8 +97,9 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	private RequesterWaiting waiting = new RequesterWaiting(this);
 	private String key;
 	private KeyValueGetter keyValueGetter;
+	private Checker checker;
 	
-	private Requester(App app, String responderName) {
+	private Requester(App app, String responderName, boolean checkApp) {
 		
 		this.app = app;
 		this.responderName = responderName;
@@ -67,8 +111,23 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		this.impl = ImplFactory.createRequester();
 		waiting.add();
 		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
+		
+		if (checkApp) {
+			checker = new Checker(this);
+		}
 	}
 
+	/**
+	 * Returns a new requester.
+	 * @param app The application where the responder is defined.
+	 * @param responderName The responder name.
+	 * @param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
+	 * @return A new Requester object.
+	 */
+	static public Requester create(App app, String responderName, boolean checkApp) {
+		return new Requester(app, responderName, checkApp);
+	}
+	
 	/**
 	 * Returns a new requester.
 	 * @param app The application where the responder is defined.
@@ -76,7 +135,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	 * @return A new Requester object.
 	 */
 	static public Requester create(App app, String responderName) {
-		return new Requester(app, responderName);
+		return new Requester(app, responderName, false);
 	}
 
 	/**
@@ -125,6 +184,10 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		}
 		catch (Exception e) {
 			throw new InitException("Cannot initialize requester to responder '" + responderName + "': " + e.getMessage());
+		}
+		
+		if (checker != null) {
+			checker.start();
 		}
 		
 		setReady();
@@ -263,8 +326,12 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	public void terminate() {
 		
 		waiting.remove();
-		impl.terminate();
 		
+		if (checker != null) {
+			checker.terminate();
+		}
+
+		impl.terminate();
 		setTerminated();
 	}
 	

@@ -41,7 +41,7 @@ public class SubscriberZmq implements SubscriberImpl {
 	private AtomicBoolean ended = new AtomicBoolean(false);
 	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
-	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity) {
+	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity, boolean checkApp) {
 
 		this.appId = appId;
 		this.publisherIdentity = publisherIdentity;
@@ -66,9 +66,11 @@ public class SubscriberZmq implements SubscriberImpl {
 		subscriber.connect(cancelEndpoint);
 		subscriber.subscribe(Messages.Event.CANCEL);
 		
-		// Subscribe to STATUS
-		subscriber.connect(appStatusEndpoint.toString());
-		subscriber.subscribe(Messages.Event.STATUS);
+		// Subscribe to STATUS if the app is checked.
+		if (checkApp) {
+			subscriber.connect(appStatusEndpoint.toString());
+			subscriber.subscribe(Messages.Event.STATUS);
+		}
 	}
 	
 	public boolean hasEnded() {

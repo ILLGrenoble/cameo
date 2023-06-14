@@ -155,9 +155,10 @@ public:
 	 * Returns a new subscriber.
 	 * \param app The application where the publisher is defined.
 	 * \param publisherName The name of the publisher.
+	 * \param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
 	 * \return A new Subscriber object.
 	 */
-	static std::unique_ptr<Subscriber> create(const App & app, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName, bool checkApp = false);
 
 	/**
 	 * Initializes the subscriber.
@@ -242,11 +243,12 @@ public:
 	std::string toString() const override;
 
 private:
-	Subscriber(const App & app, const std::string &publisherName);
+	Subscriber(App & app, const std::string &publisherName, bool checkApp);
 	void synchronize(const TimeoutCounter& timeout);
 
-	const App & m_app;
+	App & m_app;
 	std::string m_publisherName;
+	bool m_checkApp;
 	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;

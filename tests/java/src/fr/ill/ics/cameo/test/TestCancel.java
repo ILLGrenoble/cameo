@@ -162,7 +162,7 @@ public class TestCancel {
 				
 				cancelThread.start();
 				
-				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher");
+				fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(pubLoopApplication, "publisher", true);
 				subscriber.init();
 				
 				while (true) {

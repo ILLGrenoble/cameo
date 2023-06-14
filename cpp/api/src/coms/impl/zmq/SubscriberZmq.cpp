@@ -36,7 +36,7 @@ SubscriberZmq::SubscriberZmq() :
 SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity) {
+void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp) {
 
 	m_publisherIdentity = publisherIdentity;
 	m_appId = appId;
@@ -59,8 +59,11 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber->connect(m_cancelEndpoint);
 	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 
-	m_subscriber->connect(appStatusEndpoint.toString().c_str());
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
+	// Connect the status publisher if the app is checked.
+	if (checkApp) {
+		m_subscriber->connect(appStatusEndpoint.toString().c_str());
+		m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
+	}
 }
 
 bool SubscriberZmq::hasEnded() const {

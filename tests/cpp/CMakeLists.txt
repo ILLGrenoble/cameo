@@ -145,3 +145,15 @@ target_link_libraries(comstimeout PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testcomstimeout src/TestComsTimeout.cpp)
 target_link_libraries(testcomstimeout PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(respondererror src/ResponderError.cpp)
+target_link_libraries(respondererror PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testrespondererror src/TestResponderError.cpp)
+target_link_libraries(testrespondererror PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(publishererror src/PublisherError.cpp)
+target_link_libraries(publishererror PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testpublishererror src/TestPublisherError.cpp)
+target_link_libraries(testpublishererror PRIVATE Cameo::cameo-api-cpp)

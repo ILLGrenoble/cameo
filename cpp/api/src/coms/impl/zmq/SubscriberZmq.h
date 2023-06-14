@@ -33,7 +33,7 @@ public:
 	SubscriberZmq();
 	virtual ~SubscriberZmq();
 
-	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity);
+	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp);
 
 	virtual bool hasEnded() const;
 	virtual bool isCanceled() const;

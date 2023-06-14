@@ -120,6 +120,8 @@ public class TestSelector {
 		apps.add("testlinkedjava");
 		apps.add("testmaxappsjava");
 		apps.add("testcomstimeoutjava");
+		apps.add("testrespondererrorjava");
+		apps.add("testpublishererrorjava");
 		
 		return apps;
 	}
@@ -146,6 +148,8 @@ public class TestSelector {
 		apps.add("testcheckappcpp");
 		apps.add("testlinkedcpp");
 		apps.add("testcomstimeoutcpp");
+		apps.add("testrespondererrorcpp");
+		apps.add("testpublishererrorcpp");
 		
 		return apps;
 	}

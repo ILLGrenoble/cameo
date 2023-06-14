@@ -290,6 +290,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("create", &Subscriber::create,
 	    		"instance"_a,
 	    		"publisherName"_a,
+				"checkApp"_a = false,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Subscriber::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Subscriber::isReady)
@@ -344,6 +345,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def_static("create", &Requester::create,
 				"instance"_a,
 				"name"_a,
+				"checkApp"_a = false,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &Requester::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Requester::isReady)

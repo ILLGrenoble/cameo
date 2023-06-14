@@ -45,6 +45,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	
 	private App app;
 	private String publisherName;
+	private boolean checkApp;
 	private int timeout = -1;
 	private boolean useProxy = false;
 	private String appName;
@@ -56,9 +57,10 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	private KeyValueGetter keyValueGetter;
 	private Requester requester;
 	
-	private Subscriber(App app, String publisherName) {
+	private Subscriber(App app, String publisherName, boolean checkApp) {
 		this.app = app;
 		this.publisherName = publisherName;
+		this.checkApp = checkApp;
 		this.appName = app.getName();
 		this.appId = app.getId();
 		this.appEndpoint = app.getEndpoint();
@@ -67,10 +69,12 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		this.impl = ImplFactory.createSubscriber();
 		this.waiting.add();
 		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
-		this.requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
 	}
 	
 	private void synchronize(TimeoutCounter timeoutCounter) {
+
+		// Create the requester.
+		requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName, checkApp);
 		
 		// Set the timeout that can be -1.
 		requester.setTimeout(timeoutCounter.remains());
@@ -98,10 +102,21 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	 * Returns a new subscriber.
 	 * @param app The application where the publisher is defined.
 	 * @param publisherName The name of the publisher.
+	 * @param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
+	 * @return A new Subscriber object.
+	 */
+	public static Subscriber create(App app, String publisherName, boolean checkApp) {
+		return new Subscriber(app, publisherName, checkApp);
+	}
+	
+	/**
+	 * Returns a new subscriber.
+	 * @param app The application where the publisher is defined.
+	 * @param publisherName The name of the publisher.
 	 * @return A new Subscriber object.
 	 */
 	public static Subscriber create(App app, String publisherName) {
-		return new Subscriber(app, publisherName);
+		return new Subscriber(app, publisherName, false);
 	}
 	
 	/**
@@ -141,7 +156,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 				endpoint = app.getEndpoint().withPort(publisherPort);
 			}
 			
-			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(key, appId));
+			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(key, appId), checkApp);
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
 			if (numberOfSubscribers > 0) {
@@ -247,7 +262,10 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public void cancel() {
 		keyValueGetter.cancel();
-		requester.cancel();
+		
+		if (requester != null) {
+			requester.cancel();
+		}
 		impl.cancel();
 	}
 	
@@ -266,7 +284,9 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public void terminate() {
 		
-		requester.terminate();
+		if (requester != null) {
+			requester.terminate();
+		}
 		waiting.remove();
 		impl.terminate();
 		

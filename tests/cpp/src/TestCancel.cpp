@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	server->init();
 
 	// Test the cancelAll function.
-	/*{
+	{
 		cout << "Starting stopcpp for cancelAll" << endl;
 
 		unique_ptr<App> stopApplication = server->start("stopcpp");
@@ -119,8 +119,8 @@ int main(int argc, char *argv[]) {
 			pubLoopApplication->kill();
 		});
 
-		// Create a subscriber.
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		// Create a subscriber checking the app.
+		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher", true);
 		subscriber->init();
 
 		// Receiving data.
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
 		killThread.join();
-	}*/
+	}
 
 	// Test the Subscriber init.
 	{

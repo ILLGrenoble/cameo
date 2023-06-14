@@ -44,9 +44,10 @@ public:
 	 * Returns a new requester.
 	 * \param app The application where the responder is defined.
 	 * \param responderName The responder name.
+	 * \param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
 	 * \return A new Requester object.
 	 */
-	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
+	static std::unique_ptr<Requester> create(App &app, const std::string &responderName, bool checkApp = false);
 
 	/**
 	 * Initializes the requester.
@@ -144,9 +145,22 @@ public:
 	std::string toString() const override;
 
 private:
-	Requester(const App & app, const std::string & responderName);
+	Requester(App & app, const std::string & responderName, bool checkApp);
 
-	const App & m_app;
+	class Checker {
+
+	public:
+		Checker(Requester &requester);
+
+		void start();
+		void terminate();
+
+	private:
+		Requester& m_requester;
+		std::unique_ptr<std::thread> m_thread;
+	};
+
+	App & m_app;
 	std::string m_responderName;
 	int m_timeout;
 	bool m_useProxy;
@@ -157,6 +171,7 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<App::Com::KeyValueGetter> m_keyValueGetter;
+	std::unique_ptr<Checker> m_checker;
 };
 
 /**

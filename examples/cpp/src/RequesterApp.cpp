@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Created requester " << *requester << std::endl;
 
-	if (requester.get() == 0) {
+	if (!requester) {
 		std::cout << "requester error" << std::endl;
 		return -1;
 	}

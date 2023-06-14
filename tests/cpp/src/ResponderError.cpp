@@ -14,6 +14,7 @@
  * limitations under the Licence.
  */
 
+
 #include <cameo/api/cameo.h>
 #include <iostream>
 
@@ -24,45 +25,35 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
-	string applicationName;
-
+	bool useProxy = false;
 	if (argc > 2) {
-		applicationName = argv[1];
+		useProxy = (string(argv[1]) == "true");
+	}
 
-		cout << "Publisher application is " + applicationName << endl;
+	unique_ptr<coms::basic::Responder> responder;
 
-	} else {
-		cerr << "Arguments: [application name]" << endl;
+	try {
+		cout << "Creating responder" << endl;
+
+		responder = coms::basic::Responder::create("responder");
+		responder->init();
+	}
+	catch (const InitException& e) {
+		cout << "Responder error" << endl;
 		return -1;
 	}
 
-	Server& server = This::getServer();
-
-	unique_ptr<App> publisherApplication = server.connect(applicationName);
-
-	// Create a subscriber to the application applicationName.
-	unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
-	subscriber->init();
-
-	if (!subscriber) {
-		cout << "Subscriber error" << endl;
-		return -1;
-	}
-
-	cout << "Synchronized with 1 publisher" << endl;
+	cout << "Created responder " << *responder << endl;
 
 	This::setRunning();
 
-	// Receive data.
-	while (true) {
-		optional<tuple<string, string>> data = subscriber->receiveTwoParts();
-		if (!data.has_value()) {
-			break;
-		}
-		cout << "Received " << get<0>(data.value()) << ", " << get<1>(data.value()) << endl;
-	}
+	// Receive a request.
+	unique_ptr<coms::basic::Request> request = responder->receive();
+	cout << "Received request " << *request << endl;
+
+	request->reply("response");
 
 	cout << "Finished the application" << endl;
 
-	return 0;
+	return 123;
 }

@@ -201,9 +201,10 @@ std::string Publisher::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(const App & app, const std::string &publisherName) :
+Subscriber::Subscriber(App & app, const std::string &publisherName, bool checkApp) :
 	m_app{app},
 	m_publisherName{publisherName},
+	m_checkApp{checkApp},
 	m_timeout{-1},
 	m_useProxy{m_app.usesProxy()},
 	m_appName{m_app.getName()},
@@ -212,8 +213,7 @@ Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_impl{ImplFactory::createSubscriber()},
 	m_waiting{new Waiting{std::bind(&Subscriber::cancel, this)}},
 	m_key{Publisher::KEY + "-" + m_publisherName},
-	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)},
-	m_requester{Requester::create(app, Publisher::RESPONDER_PREFIX + m_publisherName)} {
+	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
 }
 
 Subscriber::~Subscriber() {
@@ -234,6 +234,9 @@ int Subscriber::getTimeout() const {
 }
 
 void Subscriber::synchronize(const TimeoutCounter& timeout) {
+
+	// Create the requester.
+	m_requester = Requester::create(m_app, Publisher::RESPONDER_PREFIX + m_publisherName, m_checkApp);
 
 	// Set the timeout that can be -1.
 	m_requester->setTimeout(timeout.remains());
@@ -292,7 +295,7 @@ void Subscriber::init() {
 			endpoint = m_app.getEndpoint().withPort(publisherPort);
 		}
 
-		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_key, m_appId));
+		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_key, m_appId), m_checkApp);
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0) {
@@ -318,8 +321,8 @@ void Subscriber::init() {
 	setReady();
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {
-	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName)};
+std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName, bool checkApp) {
+	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName, checkApp)};
 }
 
 const std::string& Subscriber::getPublisherName() const {
@@ -356,7 +359,10 @@ std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoParts(
 
 void Subscriber::cancel() {
 	m_keyValueGetter->cancel();
-	m_requester->cancel();
+
+	if (m_requester) {
+		m_requester->cancel();
+	}
 	m_impl->cancel();
 }
 

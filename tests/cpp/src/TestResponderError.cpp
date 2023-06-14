@@ -57,13 +57,16 @@ int main(int argc, char *argv[]) {
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
+		// Args.
+		vector<string> args{(useProxy ? "true" : "false")};
+
 		// Start the application.
-		unique_ptr<App> responderApplication = server->start(applicationName);
+		unique_ptr<App> responderApplication = server->start(applicationName, args);
 
 		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getActualState()) << endl;
 
 		// Create a subscriber to the application applicationName
-		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder", true);
 		requester->init();
 
 		cout << "Created requester " << *requester << endl;
@@ -78,20 +81,26 @@ int main(int argc, char *argv[]) {
 		// Send a simple message.
 		requester->send("request");
 
+		// The app is terminating at this point so that the requester won't receive anything.
 		optional<string> response = requester->receive();
 		cout << "Response is " << response.value() << endl;
 
-		// Send a two-parts message.
-		requester->sendTwoParts("first", "second");
-
 		response = requester->receive();
-		cout << "Response is " << response.value() << endl;
 
+		// The requester is canceled because the app is terminated.
+		if (!response.has_value()) {
+			cout << "No response" << endl;
+		}
 
-		// Wait for the end of the application.
+		if (requester->isCanceled()) {
+			// The last state is FAILURE.
+			cout << "Requester canceled, last responder application state " << toString(responderApplication->getLastState()) << endl;
+		}
+
 		State state = responderApplication->waitFor();
 
 		cout << "Responder application terminated with state " << toString(state) << endl;
+
 		cout << "Finished the application" << endl;
 	}
 

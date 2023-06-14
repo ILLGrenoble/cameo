@@ -31,7 +31,36 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Requester(const App & app, const std::string &responderName) :
+Requester::Checker::Checker(Requester &requester) :
+	m_requester{requester} {
+}
+
+void Requester::Checker::start() {
+
+	// Start the thread.
+	m_thread = std::make_unique<std::thread>([&] {
+
+		// Wait for the app that can be canceled.
+		State state = m_requester.m_app.waitFor();
+		if (state == FAILURE) {
+			// Cancel the requester if the app fails.
+			m_requester.cancel();
+		}
+	});
+}
+
+void Requester::Checker::terminate() {
+
+	// Cancel the wait for call.
+	m_requester.m_app.cancel();
+
+	// Clean the thread.
+	if (m_thread) {
+		m_thread->join();
+	}
+}
+
+Requester::Requester(App & app, const std::string &responderName, bool checkApp) :
 	m_app{app},
 	m_responderName{responderName},
 	m_timeout{-1},
@@ -43,6 +72,10 @@ Requester::Requester(const App & app, const std::string &responderName) :
 	m_waiting{new Waiting{std::bind(&Requester::cancel, this)}},
 	m_key{basic::Responder::KEY + "-" + m_responderName},
 	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
+
+	if (checkApp) {
+		m_checker = std::make_unique<Checker>(*this);
+	}
 }
 
 Requester::~Requester() {
@@ -50,6 +83,11 @@ Requester::~Requester() {
 }
 
 void Requester::terminate() {
+
+	if (m_checker) {
+		m_checker->terminate();
+	}
+
 	m_impl.reset();
 	setTerminated();
 }
@@ -98,11 +136,16 @@ void Requester::init() {
 		throw InitException(std::string{"Cannot initialize requester to responder '"} + m_responderName + "': " + e.what());
 	}
 
+	// Start the checker if it was created.
+	if (m_checker) {
+		m_checker->start();
+	}
+
 	setReady();
 }
 
-std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
-	return std::unique_ptr<Requester>{new Requester(app, responderName)};
+std::unique_ptr<Requester> Requester::create(App & app, const std::string& responderName, bool checkApp) {
+	return std::unique_ptr<Requester>{new Requester(app, responderName, checkApp)};
 }
 
 void Requester::setTimeout(int value) {

@@ -162,6 +162,22 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestComsTimeout"/>
 		</application>
 	
+		<application name="respondererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.ResponderError"/>
+		</application>
+
+		<application name="testrespondererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestResponderError respondererrorjava"/>
+		</application>
+	
+		<application name="publishererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.PublisherError"/>
+		</application>
+
+		<application name="testpublishererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisherError publishererrorjava"/>
+		</application>
+	
 
 		<!-- C++ apps -->
 		
@@ -312,6 +328,23 @@
 		<application name="testcomstimeoutcpp" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testcomstimeout"/>
 		</application>
+		
+		<application name="respondererrorcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="respondererror"/>
+		</application>
+
+		<application name="testrespondererrorcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testrespondererror" args="respondererrorcpp"/>
+		</application>
+		
+		<application name="publishererrorcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="publishererror"/>
+		</application>
+
+		<application name="testpublishererrorcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testpublishererror" args="publishererrorcpp"/>
+		</application>
+		
 		
 		<!-- Python apps -->
 		
