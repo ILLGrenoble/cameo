@@ -467,6 +467,22 @@
 		<application name="testcomstimeoutpy" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/testcomstimeout.py"/>	
 		</application>
+		
+		<application name="respondererrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/respondererror.py"/>
+		</application>
+
+		<application name="testrespondererrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testrespondererror.py respondererrorpy"/>
+		</application>
+
+		<application name="publishererrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/publishererror.py"/>
+		</application>
+
+		<application name="testpublishererrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testpublishererror.py publishererrorpy"/>
+		</application>
 				
 	</applications>
 	

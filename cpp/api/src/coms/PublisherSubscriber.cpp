@@ -221,6 +221,12 @@ Subscriber::~Subscriber() {
 }
 
 void Subscriber::terminate() {
+
+	if (m_requester) {
+		m_requester->terminate();
+		m_requester.reset();
+	}
+
 	m_impl.reset();
 	setTerminated();
 }
@@ -256,7 +262,12 @@ void Subscriber::synchronize(const TimeoutCounter& timeout) {
 	std::optional<std::string> response {m_requester->receive()};
 
 	// Check timeout.
-	if (m_requester->hasTimedout()) {
+	bool timedOut = m_requester->hasTimedout();
+
+	// Reset the requester as it is not used any more.
+	m_requester.reset();
+
+	if (timedOut) {
 		throw Timeout();
 	}
 }

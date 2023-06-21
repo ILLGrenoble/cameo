@@ -67,6 +67,8 @@ def testCancelAll():
     t.join()
     
     print("End of stopcpp with state", cameopy.toString(state))
+    
+    app.terminate()
 
 
 def testCancelWaitFor():
@@ -89,6 +91,8 @@ def testCancelWaitFor():
     t.join()
     
     print("End of stopcpp with state", cameopy.toString(state))
+    
+    app.terminate()
 
     
 def testCancelWaitForSubscribers():
@@ -106,6 +110,8 @@ def testCancelWaitForSubscribers():
     t.join()
 
     print("Synchronization with the subscriber", not publisher.isCanceled())
+    
+    publisher.terminate()
 
 
 def testKillApplication():
@@ -118,7 +124,7 @@ def testKillApplication():
     t = threading.Thread(target=killApplication, args=(app,))
     t.start()
 
-    subscriber = cameopy.coms.Subscriber.create(app, "publisher")
+    subscriber = cameopy.coms.Subscriber.create(app, "publisher", True)
     subscriber.init()
 
     # Receiving data.
@@ -136,7 +142,10 @@ def testKillApplication():
     print("End of publisherlooppy with state", cameopy.toString(state))
 
     t.join()
-
+    
+    subscriber.terminate()
+    app.terminate()
+    
 
 def testCancelSubscriber():
     
@@ -172,6 +181,9 @@ def testCancelSubscriber():
 
     t.join()
     k.join()
+    
+    subscriber.terminate()
+    app.terminate()
 
 
 def testResponder():
@@ -193,6 +205,8 @@ def testResponder():
         print("Responder error: receive should return None")
 
     t.join()
+    
+    responder.terminate()
     
 
 def testRequester():
@@ -231,6 +245,9 @@ def testRequester():
     tc.join()
     tr.join()
 
+    requester.terminate()    
+    responder.terminate()
+
     
 testCancelAll()
 testCancelWaitFor()
@@ -239,5 +256,7 @@ testKillApplication()
 testCancelSubscriber()
 testResponder()
 testRequester()
+
+server.terminate()
 
 print("Finished the application")

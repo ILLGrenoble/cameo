@@ -93,7 +93,10 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		String response = requester.receiveString();
 		
 		// Check timeout.
-		if (requester.hasTimedout()) {
+		boolean timedOut = requester.hasTimedout();
+		requester = null;
+		
+		if (timedOut) {
 			throw new Timeout();
 		}
 	}
@@ -286,6 +289,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		
 		if (requester != null) {
 			requester.terminate();
+			requester = null;
 		}
 		waiting.remove();
 		impl.terminate();

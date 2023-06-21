@@ -172,6 +172,8 @@ public class TestSelector {
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
 		apps.add("testterminatepy");
+		apps.add("testrespondererrorpy");
+		apps.add("testpublishererrorpy");
 		
 		return apps;
 	}

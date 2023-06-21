@@ -3,7 +3,7 @@
 
 * Minor review of exceptions.
 * Renamed PROCESSING_ERROR into PROCESSING_FAILURE.
-* Added the checkApp feature to Requester and Subscriber classes.
+* Added the checkApp feature to Requester and Subscriber classes which implied some changes in their current implementation.
 
 2.1.1
 -----

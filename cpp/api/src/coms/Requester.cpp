@@ -86,6 +86,7 @@ void Requester::terminate() {
 
 	if (m_checker) {
 		m_checker->terminate();
+		m_checker.reset();
 	}
 
 	m_impl.reset();

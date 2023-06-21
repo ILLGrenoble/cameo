@@ -329,6 +329,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		
 		if (checker != null) {
 			checker.terminate();
+			checker = null;
 		}
 
 		impl.terminate();
