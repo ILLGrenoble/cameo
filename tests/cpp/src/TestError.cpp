@@ -72,13 +72,13 @@ int main(int argc, char *argv[]) {
 			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 		}
 
-		// Test with getActualState.
+		// Test with getState.
 		{
 			// Start the application.
 			unique_ptr<App> app = server->start("errorcpp");
 
 			// Check the state. When exiting the application will have terminated.
-			while (app->getActualState() != NIL) {
+			while (app->getState() != NIL) {
 				this_thread::sleep_for(chrono::milliseconds(100));
 				cout << "...checking application state" << endl;
 			}

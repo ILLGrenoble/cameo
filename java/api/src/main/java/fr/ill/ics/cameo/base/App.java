@@ -779,11 +779,11 @@ public class App extends EventListener {
 	}
 
 	/**
-	 * Returns the actual state or NIL if the instance does not exist anymore.
-	 * @return The actual state.
+	 * Returns the current state or NIL if the instance does not exist anymore.
+	 * @return The current state.
 	 */
-	public int getActualState() {
-		return server.getActualState(id);
+	public int getState() {
+		return server.getState(id);
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class TestResponderError {
 				
 				// Start the application.
 				App responderApplication = server.start(applicationName, appArgs);
-				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
+				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
 				Requester requester = Requester.create(responderApplication, "responder", true);
 				requester.init();
@@ -76,7 +76,7 @@ public class TestResponderError {
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.
-				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getActualState()));
+				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 				
 				// Send a simple message.
 				requester.sendString("request");

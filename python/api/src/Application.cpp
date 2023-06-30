@@ -144,7 +144,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("cancel", &App::cancel, py::call_guard<py::gil_scoped_release>())
 	    .def("getLastState", &App::getLastState, py::call_guard<py::gil_scoped_release>())
-	    .def("getActualState", &App::getActualState, py::call_guard<py::gil_scoped_release>())
+	    .def("getState", &App::getState, py::call_guard<py::gil_scoped_release>())
 	    .def("getPastStates", &App::getPastStates, py::call_guard<py::gil_scoped_release>())
 	    .def("getExitCode", &App::getExitCode)
 	    .def("getResult", [](App* instance) {
@@ -212,7 +212,7 @@ PYBIND11_MODULE(cameopy, m) {
 				"name"_a,
 				py::call_guard<py::gil_scoped_release>())
 		.def("getPorts", &Server::getPorts, py::call_guard<py::gil_scoped_release>())
-		.def("getActualState", &Server::getActualState,
+		.def("getState", &Server::getState,
 				"id"_a,
 				py::call_guard<py::gil_scoped_release>())
 		.def("getPastStates", &Server::getPastStates,

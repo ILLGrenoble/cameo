@@ -474,7 +474,7 @@ void This::initStarterCheck() {
 	m_starterServer->registerEventListener(this, false);
 
 	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
-	State state {m_starterServer->getActualState(m_starterId)};
+	State state {m_starterServer->getState(m_starterId)};
 
 	// Stop this app if the starter is already terminated i.e. the state is NIL.
 	if (state == NIL) {
@@ -866,7 +866,11 @@ State App::getLastState() {
 }
 
 State App::getActualState() const {
-	return m_server->getActualState(m_id);
+	return getState();
+}
+
+State App::getState() const {
+	return m_server->getState(m_id);
 }
 
 std::set<State> App::getPastStates() const {

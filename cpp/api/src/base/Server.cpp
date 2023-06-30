@@ -534,6 +534,11 @@ std::vector<App::Port> Server::getPorts() const {
 }
 
 State Server::getActualState(int id) const {
+	return getState(id);
+}
+
+
+State Server::getState(int id) const {
 
 	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
 

@@ -65,14 +65,14 @@ public class TestMultiResponder {
 			
 				// Start the application.
 				App responderApplication = server.start(applicationName);
-				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
+				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
 				Requester requester = Requester.create(responderApplication, "responder");
 				requester.init();
 				System.out.println("Created requester " + requester);
 			
 				// Check the state of the responder app.
-				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getActualState()));
+				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 				
 				
 				// Send a simple message.

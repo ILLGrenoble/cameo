@@ -69,7 +69,7 @@ public class SubscriberApp {
 		try {
 			// Connect to the publisher application.
 			App publisherApp = server.connect("publisher");
-			System.out.println("Application " + publisherApp + " has state " + State.toString(publisherApp.getActualState()));
+			System.out.println("Application " + publisherApp + " has state " + State.toString(publisherApp.getState()));
 			
 			// Create a subscriber to the publisher named "publisher".
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");

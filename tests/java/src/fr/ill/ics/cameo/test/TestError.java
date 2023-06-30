@@ -91,7 +91,7 @@ public class TestError {
 					// start the application.
 					App application = server.start("errorjava");
 		
-					while (application.getActualState() != State.NIL) {
+					while (application.getState() != State.NIL) {
 						try {
 							Thread.sleep(100);
 						}

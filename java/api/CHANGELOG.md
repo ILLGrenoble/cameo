@@ -4,6 +4,7 @@
 * Minor review of exceptions.
 * Renamed PROCESSING_ERROR into PROCESSING_FAILURE.
 * Added the checkApp feature to Requester and Subscriber classes which implied some changes in their current implementation.
+* Renamed getActualState() methods into getState().
 
 2.1.1
 -----

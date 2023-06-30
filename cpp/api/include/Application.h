@@ -869,11 +869,14 @@ public:
 	 */
 	State getLastState();
 
-	/**
-	 * Returns the actual state and NIL if the instance does not exist anymore.
-	 * \return The actual state.
-	 */
+	[[deprecated("Use getState() instead.")]]
 	State getActualState() const;
+
+	/**
+	 * Returns the current state and NIL if the instance does not exist anymore.
+	 * \return The current state.
+	 */
+	State getState() const;
 
 	/**
 	 * Returns the past states.

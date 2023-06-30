@@ -63,7 +63,7 @@ public class RequesterApp {
 		try {
 			// Connect to the server.
 			App responderServer = server.connect("responder");
-			System.out.println("Application " + responderServer + " has state " + State.toString(responderServer.getActualState()));
+			System.out.println("Application " + responderServer + " has state " + State.toString(responderServer.getState()));
 			
 			// Create a requester.
 			Requester requester = Requester.create(responderServer, "the-responder");

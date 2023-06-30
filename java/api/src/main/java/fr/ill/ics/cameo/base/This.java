@@ -770,7 +770,7 @@ public class This {
 		starterServer.registerEventListener(eventListener, false);
 		
 		// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
-		int state = starterServer.getActualState(starterId);
+		int state = starterServer.getState(starterId);
 
 		// Stop this app if the starter is already terminated i.e. the state is NIL.
 		if (state == State.NIL) {

@@ -61,7 +61,7 @@ public class TestMultiResponders {
 		
 		// Start the application.
 		App responderApplication = server.start(applicationName, appArgs);
-		System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getActualState()));
+		System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
 		int N = 5;
 		

@@ -206,12 +206,15 @@ public:
 	 */
 	std::vector<App::Port> getPorts() const;
 
+	[[deprecated("Use getState(int) instead.")]]
+	State getActualState(int id) const;
+
 	/**
 	 * Gets the actual state of an application.
 	 * \param id The id of the application.
 	 * \return The actual state.
 	 */
-	State getActualState(int id) const;
+	State getState(int id) const;
 
 	/**
 	 * Gets the past states of an application.

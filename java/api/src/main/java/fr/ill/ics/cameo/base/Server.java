@@ -777,11 +777,11 @@ public class Server extends StateObject implements ITimeoutable {
 	}
 	
 	/**
-	 * Gets the actual state of an application.
+	 * Gets the current state of an application.
 	 * @param id The id of the application.
 	 * @return The actual state.
 	 */
-	public int getActualState(int id) {
+	public int getState(int id) {
 		
 		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
 		
