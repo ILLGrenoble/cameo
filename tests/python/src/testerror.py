@@ -17,4 +17,10 @@ server.init()
 for i in range(numberOfTimes):    
     app = server.start("errorpy")
     state = app.waitFor()
+    
+    if state == cameopy.FAILURE:
+        print("Error")
+    else:
+        print("No error")
+    
     print("Finished the application", app, "with state", cameopy.toString(state), "and code", app.getExitCode())
