@@ -1,8 +1,9 @@
 package fr.ill.ics.cameo.strings;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.messages.Messages;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 public class ApplicationWithStarterIdentity {
 
@@ -30,21 +31,21 @@ public class ApplicationWithStarterIdentity {
 		return starter;
 	}
 	
-	public JSONObject toJSON() {
+	public JsonObject toJSON() {
 		
-		JSONObject result = application.toJSON();
+		JsonObjectBuilder builder = application.toJSONBuilder();
 		
 		if (starter != null) {
-			result.put(Messages.ApplicationIdentity.STARTER, starter.toJSON());
-			result.put(Messages.ApplicationIdentity.STARTER_PROXY_PORT, starterProxyPort);
-			result.put(Messages.ApplicationIdentity.STARTER_LINKED, starterLinked);
+			builder.add(Messages.ApplicationIdentity.STARTER, starter.toJSON());
+			builder.add(Messages.ApplicationIdentity.STARTER_PROXY_PORT, starterProxyPort);
+			builder.add(Messages.ApplicationIdentity.STARTER_LINKED, starterLinked);
 		}
 		
-		return result;
+		return builder.build();
 	}
 	
 	public String toJSONString() {
-		return toJSON().toJSONString();
+		return toJSON().toString();
 	}
 
 }

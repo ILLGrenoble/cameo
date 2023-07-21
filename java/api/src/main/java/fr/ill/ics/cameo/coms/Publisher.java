@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.coms;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
@@ -35,6 +33,8 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
@@ -84,12 +84,13 @@ public class Publisher extends StateObject implements ICancelable {
 		impl.init(StringId.from(key, This.getId()));
 		
 		// Store the publisher data.
-		JSONObject jsonData = new JSONObject();
-		jsonData.put(PUBLISHER_PORT, impl.getPublisherPort());
-		jsonData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+		JsonObject data = Json.createObjectBuilder()
+								.add(PUBLISHER_PORT, impl.getPublisherPort())
+								.add(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers)
+								.build();
 		
 		try {
-			This.getCom().storeKeyValue(key, jsonData.toJSONString());
+			This.getCom().storeKeyValue(key, data.toString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			impl.terminate();
@@ -155,7 +156,7 @@ public class Publisher extends StateObject implements ICancelable {
 				}
 				
 				// Get the JSON request object.
-				JSONObject jsonRequest = This.getCom().parse(request.get());
+				JsonObject jsonRequest = This.getCom().parse(request.get());
 				
 				// Get the type.
 				long type = JSON.getLong(jsonRequest, Messages.TYPE);
@@ -264,12 +265,11 @@ public class Publisher extends StateObject implements ICancelable {
 		
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "publisher");
-		result.put("name", name);
-		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "publisher")
+					.add("name", name)
+					.add("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON())
+					.build()
+					.toString();
 	}
 }

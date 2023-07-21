@@ -16,7 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a result event.
@@ -69,13 +70,12 @@ public class ResultEvent extends Event {
 	
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "result");
-		result.put("id", id);
-		result.put("name", name);
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+				.add("type", "result")
+				.add("id", id)
+				.add("name", name)
+				.build()
+				.toString();
 	}
 	
 }

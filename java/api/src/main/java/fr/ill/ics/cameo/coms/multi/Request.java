@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.coms.multi;
 
 import java.util.List;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
 import fr.ill.ics.cameo.base.Server;
@@ -28,6 +26,8 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.ServerIdentity;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a request received by the multi responder.
@@ -102,10 +102,11 @@ public class Request {
 	 */
 	public void reply(byte[] response) {
 		
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
+		JsonObject request = Json.createObjectBuilder()
+								.add(Messages.TYPE, Messages.RESPONSE)
+								.build();
 
-		responder.reply(jsonRequest, response);
+		responder.reply(request, response);
 	}
 	
 	/**
@@ -193,12 +194,11 @@ public class Request {
 
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "multi-request");
-		result.put("app", new AppIdentity(requesterApplicationName, requesterApplicationId, new ServerIdentity(requesterServerEndpoint.toString(), false)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "multi-request")
+					.add("app", new AppIdentity(requesterApplicationName, requesterApplicationId, new ServerIdentity(requesterServerEndpoint.toString(), false)).toJSON())
+					.build()
+					.toString();
 	}
 
 	

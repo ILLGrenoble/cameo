@@ -17,12 +17,12 @@
 package fr.ill.ics.cameo.base;
 
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining an output stream thread.
@@ -77,13 +77,12 @@ public class OutputStreamSocket implements ICancelable {
 	
 		@Override
 		public String toString() {
-			JSONObject result = new JSONObject();
-			
-			result.put("id", id);
-			result.put("message", message);
-			result.put("eol", endOfLine);
-			
-			return result.toJSONString();
+			return Json.createObjectBuilder()
+					.add("id", id)
+					.add("message", message)
+					.add("eol", endOfLine)
+					.build()
+					.toString();
 		}
 	
 	}

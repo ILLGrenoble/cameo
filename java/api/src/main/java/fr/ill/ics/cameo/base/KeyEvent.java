@@ -16,7 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a key event.
@@ -114,16 +115,15 @@ public class KeyEvent extends Event {
 	
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "key");
-		result.put("id", id);
-		result.put("name", name);
-		result.put("key", key);
-		result.put("status", status);
-		result.put("value", value);
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+				.add("type", "key")
+				.add("id", id)
+				.add("name", name)
+				.add("key", key)
+				.add("status", status.toString())
+				.add("value", value)
+				.build()
+				.toString();
 	}
 
 	

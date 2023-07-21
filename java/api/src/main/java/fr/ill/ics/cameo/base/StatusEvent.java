@@ -16,7 +16,8 @@
 
 package fr.ill.ics.cameo.base;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a status event.
@@ -124,15 +125,14 @@ public class StatusEvent extends Event {
 	
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "status");
-		result.put("id", id);
-		result.put("name", name);
-		result.put("state", State.toString(applicationState));
-		result.put("exit_code", exitCode);
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+				.add("type", "status")
+				.add("id", id)
+				.add("name", name)
+				.add("state", State.toString(applicationState))
+				.add("exit_code", exitCode)
+				.build()
+				.toString();
 	}
 	
 }

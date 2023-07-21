@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.base;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -24,16 +25,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a Cameo remote server.
@@ -244,11 +243,11 @@ public class Server extends StateObject implements ITimeoutable {
 		return subscriberProxyPort;
 	}
 			
-	JSONObject parse(byte[] data) throws ParseException {
+	JsonObject parse(byte[] data) throws ParseException {
 		return parser.parse(Messages.parseString(data));
 	}
 	
-	JSONObject parse(String data) throws ParseException {
+	JsonObject parse(String data) throws ParseException {
 		return parser.parse(data);
 	}
 	
@@ -270,7 +269,7 @@ public class Server extends StateObject implements ITimeoutable {
 
 	private void retrieveServerVersion() {
 		
-		JSONObject response = requestSocket.requestJSON(Messages.createVersionRequest());
+		JsonObject response = requestSocket.requestJSON(Messages.createVersionRequest());
 		
 		serverVersion[0] = JSON.getInt(response, Messages.VersionResponse.MAJOR);
 		serverVersion[1] = JSON.getInt(response, Messages.VersionResponse.MINOR);
@@ -383,50 +382,50 @@ public class Server extends StateObject implements ITimeoutable {
 		return eventListeners;
 	}
 
-	JSONObject requestJSON(JSONObject request) {
+	JsonObject requestJSON(JsonObject request) {
 		return requestSocket.requestJSON(request);
 	}
 	
-	JSONObject requestJSON(JSONObject request, byte[] data) {
+	JsonObject requestJSON(JsonObject request, byte[] data) {
 		return requestSocket.requestJSON(request, data);
 	}
 
 	private int retrieveStreamPort(String name) throws ConnectionTimeout {
 		
-		JSONObject request = Messages.createOutputPortRequest(name);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createOutputPortRequest(name);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 
 	private int retrieveStatusPort() throws ConnectionTimeout {
 		
-		JSONObject request = Messages.createStreamStatusRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createStreamStatusRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	private int retrieveResponderProxyPort() throws ConnectionTimeout {
 		
-		JSONObject request = Messages.createResponderProxyPortRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createResponderProxyPortRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	private int retrievePublisherProxyPort() throws ConnectionTimeout {
 		
-		JSONObject request = Messages.createPublisherProxyPortRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createPublisherProxyPortRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
 	
 	private int retrieveSubscriberProxyPort() throws ConnectionTimeout {
 		
-		JSONObject request = Messages.createSubscriberProxyPortRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createSubscriberProxyPortRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
@@ -449,7 +448,7 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	private Response startApplication(String name, String[] args, boolean linked) throws ConnectionTimeout {
 		
-		JSONObject request;
+		JsonObject request;
 		
 		if (This.getEndpoint() != null) {
 			request = Messages.createStartRequest(name, args, This.getName(), This.getId(), This.getEndpoint().toString(), This.getServer().responderProxyPort, linked);
@@ -458,7 +457,7 @@ public class Server extends StateObject implements ITimeoutable {
 			request = Messages.createStartRequest(name, args, null, 0, null, 0, false);
 		}
 		
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return new Response(JSON.getInt(response, Messages.RequestResponse.VALUE), JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
@@ -537,7 +536,7 @@ public class Server extends StateObject implements ITimeoutable {
 		
 	Response stop(int id, boolean immediately) throws ConnectionTimeout {
 
-		JSONObject request;
+		JsonObject request;
 		
 		if (immediately) {
 			request = Messages.createKillRequest(id);
@@ -546,7 +545,7 @@ public class Server extends StateObject implements ITimeoutable {
 			request = Messages.createStopRequest(id, false);
 		}
 		
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return new Response(id, JSON.getString(response, Messages.RequestResponse.MESSAGE));
 	}
@@ -565,16 +564,16 @@ public class Server extends StateObject implements ITimeoutable {
 		}
 	}
 	
-	private List<App> getInstancesFromApplicationInfos(JSONObject response, boolean outputStream) {
+	private List<App> getInstancesFromApplicationInfos(JsonObject response, boolean outputStream) {
 		
 		List<App> instances = new ArrayList<App>();
 		
 		try {
 			// Get the list of application info.
-			JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
+			JsonArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
 						
 			for (int i = 0; i < list.size(); ++i) {
-				JSONObject applicationInfo = (JSONObject)list.get(i);
+				JsonObject applicationInfo = list.getJsonObject(i);
 
 				// Create a new instance.
 				App instance = new App(this);
@@ -624,8 +623,8 @@ public class Server extends StateObject implements ITimeoutable {
 
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		JSONObject request = Messages.createConnectRequest(name);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createConnectRequest(name);
+		JsonObject response = requestSocket.requestJSON(request);
 
 		return getInstancesFromApplicationInfos(response, outputStream);
 	}
@@ -674,8 +673,8 @@ public class Server extends StateObject implements ITimeoutable {
 		
 		boolean outputStream = ((options & Option.OUTPUTSTREAM) != 0);
 		
-		JSONObject request = Messages.createConnectWithIdRequest(id);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createConnectWithIdRequest(id);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		List<App> instances = getInstancesFromApplicationInfos(response, outputStream);
 
@@ -692,16 +691,16 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public List<App.Config> getApplicationConfigs() {
 
-		JSONObject request = Messages.createListRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createListRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<App.Config> applications = new LinkedList<App.Config>();
 
 		// Get the list of application info.
-		JSONArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
+		JsonArray list = JSON.getArray(response, Messages.ApplicationConfigListResponse.APPLICATION_CONFIG);
 		
 		for (int i = 0; i < list.size(); ++i) {
-			JSONObject config = (JSONObject)list.get(i);
+			JsonObject config = list.getJsonObject(i);
 			
 			String name = JSON.getString(config, Messages.ApplicationConfig.NAME);
 			String description = JSON.getString(config, Messages.ApplicationConfig.DESCRIPTION);
@@ -733,16 +732,16 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public List<App.Info> getApplicationInfos() {
 
-		JSONObject request = Messages.createAppsRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createAppsRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<App.Info> applications = new LinkedList<App.Info>();
 		
 		// Get the list of application info.
-		JSONArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
+		JsonArray list = JSON.getArray(response, Messages.ApplicationInfoListResponse.APPLICATION_INFO);
 		
 		for (int i = 0; i < list.size(); ++i) {
-			JSONObject info = (JSONObject)list.get(i);
+			JsonObject info = list.getJsonObject(i);
 			
 			String name = JSON.getString(info, Messages.ApplicationInfo.NAME);
 			int id = JSON.getInt(info, Messages.ApplicationInfo.ID);
@@ -783,7 +782,7 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public int getState(int id) {
 		
-		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
+		JsonObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
 		
 		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
@@ -795,7 +794,7 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public Set<Integer> getPastStates(int id) {
 		
-		JSONObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
+		JsonObject response = requestSocket.requestJSON(Messages.createGetStatusRequest(id));
 		
 		int applicationStates = JSON.getInt(response, Messages.StatusEvent.PAST_APPLICATION_STATES);
 		
@@ -862,8 +861,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	private boolean isAlive(int id) {
 
-		JSONObject request = Messages.createIsAliveRequest(id);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createIsAliveRequest(id);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		return JSON.getBoolean(response, Messages.IsAliveResponse.IS_ALIVE);
 	}
@@ -877,8 +876,8 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public void writeToInputStream(int id, String[] inputs) throws WriteException {
 
-		JSONObject request = Messages.createWriteInputRequest(id, inputs);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createWriteInputRequest(id, inputs);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		
@@ -904,8 +903,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	void storeKeyValue(int applicationId, String key, String value) throws UndefinedApplicationException, KeyAlreadyExistsException {
 		
-		JSONObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createStoreKeyValueRequest(applicationId, key, value);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		int responseValue = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responseValue == -1) {
@@ -918,8 +917,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	String getKeyValue(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		JSONObject request = Messages.createGetKeyValueRequest(applicationId, key);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createGetKeyValueRequest(applicationId, key);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		int responseValue = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (responseValue == 0) {
@@ -937,8 +936,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	void removeKey(int applicationId, String key) throws UndefinedApplicationException, UndefinedKeyException {
 		
-		JSONObject request = Messages.createRemoveKeyRequest(applicationId, key);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createRemoveKeyRequest(applicationId, key);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -951,8 +950,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	int requestPort(int applicationId) throws UndefinedApplicationException {
 		
-		JSONObject request = Messages.createRequestPortRequest(applicationId);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createRequestPortRequest(applicationId);
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -963,8 +962,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	void setPortUnavailable(int applicationId, int port) throws UndefinedApplicationException {
 		
-		JSONObject request = Messages.createPortUnavailableRequest(applicationId, port);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createPortUnavailableRequest(applicationId, port);
+		JsonObject response = requestSocket.requestJSON(request);
 			
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -974,8 +973,8 @@ public class Server extends StateObject implements ITimeoutable {
 	
 	void releasePort(int applicationId, int port) throws UndefinedApplicationException {
 		
-		JSONObject request = Messages.createReleasePortRequest(applicationId, port);
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createReleasePortRequest(applicationId, port);
+		JsonObject response = requestSocket.requestJSON(request);
 			
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -989,16 +988,16 @@ public class Server extends StateObject implements ITimeoutable {
 	 */
 	public List<App.Port> getPorts() {
 		
-		JSONObject request = Messages.createPortsRequest();
-		JSONObject response = requestSocket.requestJSON(request);
+		JsonObject request = Messages.createPortsRequest();
+		JsonObject response = requestSocket.requestJSON(request);
 		
 		LinkedList<App.Port> ports = new LinkedList<App.Port>();
 		
 		// Get the list of application info.
-		JSONArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
+		JsonArray list = JSON.getArray(response, Messages.PortInfoListResponse.PORT_INFO);
 		
 		for (int i = 0; i < list.size(); ++i) {
-			JSONObject info = (JSONObject)list.get(i);
+			JsonObject info = list.getJsonObject(i);
 							
 			int port = JSON.getInt(info, Messages.PortInfo.PORT);
 			String status = JSON.getString(info, Messages.PortInfo.STATUS);

@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.coms.basic.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.RequestSocket;
 import fr.ill.ics.cameo.base.This;
@@ -29,6 +27,8 @@ import fr.ill.ics.cameo.coms.basic.impl.ResponderImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class ResponderZmq implements ResponderImpl {
 
@@ -111,7 +111,7 @@ public class ResponderZmq implements ResponderImpl {
 				reply.add(new byte[0]);
 				
 				// Get the JSON request object.
-				JSONObject request = This.getCom().parse(data[4]);
+				JsonObject request = This.getCom().parse(data[4]);
 				
 				// Get the type.
 				long type = JSON.getLong(request, Messages.TYPE);
@@ -171,12 +171,13 @@ public class ResponderZmq implements ResponderImpl {
 	}
 	
 	public void cancel() {
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
+		JsonObject request = Json.createObjectBuilder()
+								.add(Messages.TYPE, Messages.CANCEL)
+								.build();
 		
 		// Create the request socket connected directly to the responder. We can create it here because it should be called only once.
 		RequestSocket requestSocket = This.getCom().createRequestSocket(This.getEndpoint().withPort(responderPort).toString(), responderIdentity);
-		requestSocket.requestJSON(jsonRequest);
+		requestSocket.requestJSON(request);
 		
 		// Terminate the socket.
 		requestSocket.terminate();

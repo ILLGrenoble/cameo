@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.coms.multi;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.StateObject;
 import fr.ill.ics.cameo.base.This;
@@ -26,6 +24,8 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.ServerIdentity;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a responder for the responder router.
@@ -84,7 +84,7 @@ public class Responder extends StateObject implements ICancelable {
 		return request;
 	}
 	
-	void reply(JSONObject request, byte[] response) {
+	void reply(JsonObject request, byte[] response) {
 		impl.reply(Messages.serialize(request), response);
 	}
 
@@ -119,13 +119,12 @@ public class Responder extends StateObject implements ICancelable {
 
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "multi-responder");
-		result.put("dealer", dealerEndpoint);
-		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "multi-responder")
+					.add("dealer", dealerEndpoint)
+					.add("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON())
+					.build()
+					.toString();
 	}
 	
 }

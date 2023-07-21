@@ -16,13 +16,13 @@
 
 package fr.ill.ics.cameo.base;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import java.text.ParseException;
 
 import fr.ill.ics.cameo.base.impl.RequestSocketImpl;
 import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a request socket.
@@ -90,7 +90,7 @@ public class RequestSocket {
 	 * @param timeout Timeout that overrides the timeout defined previously.
 	 * @return The JSON object response.
 	 */
-	public JSONObject requestJSON(JSONObject request, int timeout) throws ConnectionTimeout {
+	public JsonObject requestJSON(JsonObject request, int timeout) throws ConnectionTimeout {
 		
 		byte[][] reply = impl.request(Messages.serialize(request), timeout);
 		
@@ -108,7 +108,7 @@ public class RequestSocket {
 	 * @param timeout Timeout that overrides the timeout defined previously.
 	 * @return The JSON object response.
 	 */
-	public JSONObject requestJSON(JSONObject request) throws ConnectionTimeout {
+	public JsonObject requestJSON(JsonObject request) throws ConnectionTimeout {
 		return requestJSON(request, -1);
 	}
 	
@@ -119,7 +119,7 @@ public class RequestSocket {
 	 * @param timeout Timeout that overrides the timeout defined previously.
 	 * @return The JSON object response.
 	 */
-	public JSONObject requestJSON(JSONObject request, byte[] data, int timeout) throws ConnectionTimeout {
+	public JsonObject requestJSON(JsonObject request, byte[] data, int timeout) throws ConnectionTimeout {
 		
 		byte[][] reply = impl.request(Messages.serialize(request), data, timeout);
 		
@@ -137,7 +137,7 @@ public class RequestSocket {
 	 * @param data The binary data.
 	 * @return The JSON object response.
 	 */
-	public JSONObject requestJSON(JSONObject request, byte[] data) throws ConnectionTimeout {
+	public JsonObject requestJSON(JsonObject request, byte[] data) throws ConnectionTimeout {
 		return requestJSON(request, data, -1);
 	}
 	

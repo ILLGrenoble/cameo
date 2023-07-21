@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.coms.basic;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.InitException;
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
@@ -30,6 +28,8 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a basic responder. Requests are processed sequentially.
@@ -79,11 +79,12 @@ public class Responder extends StateObject implements ICancelable {
 		impl.init(StringId.from(key, This.getId()));
 
 		// Store the responder data.
-		JSONObject jsonData = new JSONObject();
-		jsonData.put(PORT, impl.getResponderPort());
+		JsonObject data = Json.createObjectBuilder()
+							.add(PORT, impl.getResponderPort())
+							.build();
 		
 		try {
-			This.getCom().storeKeyValue(key, jsonData.toJSONString());
+			This.getCom().storeKeyValue(key, data.toString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			impl.terminate();
@@ -119,7 +120,7 @@ public class Responder extends StateObject implements ICancelable {
 		return request;
 	}
 	
-	void reply(JSONObject request, byte[] response) {
+	void reply(JsonObject request, byte[] response) {
 		impl.reply(Messages.serialize(request), response);
 	}
 
@@ -163,13 +164,12 @@ public class Responder extends StateObject implements ICancelable {
 
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "basic-responder");
-		result.put("name", name);
-		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "basic-responder")
+					.add("name", name)
+					.add("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON())
+					.build()
+					.toString();
 	}
 	
 }

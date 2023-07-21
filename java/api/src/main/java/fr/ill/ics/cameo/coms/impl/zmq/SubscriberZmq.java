@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.coms.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.State;
@@ -29,6 +27,7 @@ import fr.ill.ics.cameo.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.JsonObject;
 
 public class SubscriberZmq implements SubscriberImpl {
 	
@@ -95,7 +94,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				String messageTypePart = subscriber.recvStr();
 				
 				// Get the JSON object.
-				JSONObject messageType = This.getCom().parse(messageTypePart);
+				JsonObject messageType = This.getCom().parse(messageTypePart);
 				
 				// Get the type.
 				long type = JSON.getLong(messageType, Messages.TYPE);
@@ -115,7 +114,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				byte[] statusMessage = subscriber.recv();
 				
 				// Get the JSON object.
-				JSONObject status = This.getCom().parse(statusMessage);
+				JsonObject status = This.getCom().parse(statusMessage);
 				
 				// Get the id.
 				int id = JSON.getInt(status, Messages.StatusEvent.ID);
@@ -152,7 +151,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				String messageTypePart = subscriber.recvStr();
 				
 				// Get the JSON object.
-				JSONObject messageType = This.getCom().parse(messageTypePart);
+				JsonObject messageType = This.getCom().parse(messageTypePart);
 				
 				// Get the type.
 				long type = JSON.getLong(messageType, Messages.TYPE);
@@ -176,7 +175,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				byte[] statusMessage = subscriber.recv();
 				
 				// Get the JSON request object.
-				JSONObject request =  This.getCom().parse(statusMessage);
+				JsonObject request =  This.getCom().parse(statusMessage);
 				
 				// Get the id.
 				int id = JSON.getInt(request, Messages.StatusEvent.ID);

@@ -16,16 +16,14 @@
 
 package fr.ill.ics.cameo.base;
 
+import java.text.ParseException;
 import java.util.List;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.ProcessHandlerImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.JsonObject;
 
 /**
  * Class managing the current Cameo application.
@@ -211,9 +209,9 @@ public class This {
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
 		 * @param message The message to parse.
-		 * @return A JSONObject object.
+		 * @return A JsonObject object.
 		 */
-		public JSONObject parse(byte[] message) {
+		public JsonObject parse(byte[] message) {
 			
 			try {
 				return server.parse(message);
@@ -226,9 +224,9 @@ public class This {
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
 		 * @param message The message to parse.
-		 * @return A JSONObject object.
+		 * @return A JsonObject object.
 		 */
-		public JSONObject parse(String message) {
+		public JsonObject parse(String message) {
 		
 			try {
 				return server.parse(message);
@@ -380,7 +378,7 @@ public class This {
 	 * @param data The string result.
 	 */
 	static public void setResult(byte[] data) {
-		JSONObject response = instance.server.requestJSON(Messages.createSetResultRequest(getId()), data);
+		JsonObject response = instance.server.requestJSON(Messages.createSetResultRequest(getId()), data);
 		
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -401,8 +399,8 @@ public class This {
 	 * @return True or false.
 	 */
 	static public boolean setRunning() {
-		JSONObject request = Messages.createSetStatusRequest(getId(), State.RUNNING);
-		JSONObject response = instance.server.requestJSON(request);
+		JsonObject request = Messages.createSetStatusRequest(getId(), State.RUNNING);
+		JsonObject response = instance.server.requestJSON(request);
 	
 		int value = JSON.getInt(response, Messages.RequestResponse.VALUE);
 		if (value == -1) {
@@ -525,11 +523,10 @@ public class This {
 		String info = args[args.length - 1];
 		
 		// Parse the info.
-		JSONObject infoObject;
-		JSONParser parser = new JSONParser();
+		JsonObject infoObject;
 		
 		try {
-			infoObject = (JSONObject)parser.parse(info);
+			infoObject = JSON.parse(info);
 		}
 		catch (ParseException e) {
 			throw new InvalidArgumentException("Bad format for info argument");
@@ -552,7 +549,7 @@ public class This {
 		
 		// Get the starter info if it is present.
 		if (infoObject.containsKey(Messages.ApplicationIdentity.STARTER)) {
-			JSONObject starterObject = JSON.getObject(infoObject, Messages.ApplicationIdentity.STARTER);
+			JsonObject starterObject = JSON.getObject(infoObject, Messages.ApplicationIdentity.STARTER);
 			starterEndpoint = Endpoint.parse(JSON.getString(starterObject, Messages.ApplicationIdentity.SERVER));
 			starterName = JSON.getString(starterObject, Messages.ApplicationIdentity.NAME);
 			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
@@ -658,7 +655,7 @@ public class This {
 		// Get the pid.
 		long pid = ProcessHandlerImpl.pid();
 		
-		JSONObject response = server.requestJSON(Messages.createAttachUnregisteredRequest(name, pid));
+		JsonObject response = server.requestJSON(Messages.createAttachUnregisteredRequest(name, pid));
 	
 		return JSON.getInt(response, Messages.RequestResponse.VALUE);
 	}
@@ -678,7 +675,7 @@ public class This {
 	 */
 	private int getState(int id) {
 		
-		JSONObject response = server.requestJSON(Messages.createGetStatusRequest(id));
+		JsonObject response = server.requestJSON(Messages.createGetStatusRequest(id));
 			
 		return JSON.getInt(response, Messages.StatusEvent.APPLICATION_STATE);
 	}
@@ -786,7 +783,7 @@ public class This {
 		// Use a request socket to avoid any race condition.
 		RequestSocket requestSocket = server.createServerRequestSocket();
 		
-		JSONObject request = Messages.createStopRequest(id, true);
+		JsonObject request = Messages.createStopRequest(id, true);
 		requestSocket.requestJSON(request);
 	}
 

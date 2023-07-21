@@ -18,8 +18,6 @@ package fr.ill.ics.cameo.coms.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.Timeout;
@@ -29,6 +27,8 @@ import fr.ill.ics.cameo.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class RequesterZmq implements RequesterImpl {
 
@@ -76,10 +76,11 @@ public class RequesterZmq implements RequesterImpl {
 	private boolean sendSync() {
 		
 		// Create the request.
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.SYNC);
+		JsonObject request = Json.createObjectBuilder()
+								.add(Messages.TYPE, Messages.SYNC)
+								.build();
 	
-		sendRequest(Messages.serialize(jsonRequest));
+		sendRequest(Messages.serialize(request));
 		if (receiveMessage() != null) {
 			// Had a response we can exit the loop.
 			return true;
@@ -188,14 +189,15 @@ public class RequesterZmq implements RequesterImpl {
 	
 	public void send(byte[] requestData) {
 		
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
-		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
-		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
-		jsonRequest.put(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString());
-		jsonRequest.put(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort());
+		JsonObject request = Json.createObjectBuilder()
+								.add(Messages.TYPE, Messages.REQUEST)
+								.add(Messages.Request.APPLICATION_NAME, This.getName())
+								.add(Messages.Request.APPLICATION_ID, This.getId())
+								.add(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString())
+								.add(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort())
+								.build();
 		
-		sendRequest(Messages.serialize(jsonRequest), requestData);
+		sendRequest(Messages.serialize(request), requestData);
 	}
 	
 	public void send(String request) {
@@ -204,14 +206,15 @@ public class RequesterZmq implements RequesterImpl {
 	
 	public void sendTwoParts(byte[] requestData1, byte[] requestData2) {
 		
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.REQUEST);
-		jsonRequest.put(Messages.Request.APPLICATION_NAME, This.getName());
-		jsonRequest.put(Messages.Request.APPLICATION_ID, This.getId());
-		jsonRequest.put(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString());
-		jsonRequest.put(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort());
+		JsonObject request = Json.createObjectBuilder()
+								.add(Messages.TYPE, Messages.REQUEST)
+								.add(Messages.Request.APPLICATION_NAME, This.getName())
+								.add(Messages.Request.APPLICATION_ID, This.getId())
+								.add(Messages.Request.SERVER_ENDPOINT, This.getEndpoint().toString())
+								.add(Messages.Request.SERVER_PROXY_PORT, This.getCom().getResponderProxyPort())
+								.build();
 		
-		sendRequest(Messages.serialize(jsonRequest), requestData1, requestData2);
+		sendRequest(Messages.serialize(request), requestData1, requestData2);
 	}
 
 	private Zmq.Msg receiveMessage() {
@@ -268,7 +271,7 @@ public class RequesterZmq implements RequesterImpl {
 			byte[][] data = message.getAllData();
 			
 			// Get the JSON request object.
-			JSONObject request = This.getCom().parse(data[2]);
+			JsonObject request = This.getCom().parse(data[2]);
 			
 			// Get the type.
 			long type = JSON.getLong(request, Messages.TYPE);

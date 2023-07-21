@@ -22,7 +22,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
 
 public class ApplicationConfig {
 
@@ -422,32 +423,51 @@ public class ApplicationConfig {
 			stopArgsString = String.join(" ", stopArgs);
 		}	
 		
-		JSONObject object = new JSONObject();
+		JsonObjectBuilder builder = Json.createObjectBuilder();
 		
-		object.put("name", name);
-		object.put("description", description);
-		object.put("directory", directory);
-
-		object.put("multiple", !runSingle);
-		object.put("restart", restart);
-		object.put("infoArg", infoArg);
-
-		object.put("logDirectory", logPath);
-		object.put("outputStream", outputStream);
-		object.put("outputStreamPort", outputStreamPort);
+		builder.add("name", name);
+		builder.add("description", description);
 		
-		object.put("startExecutable", startExecutable);
-		object.put("startArgs", startArgsString);
-		object.put("startingTime", startingTime);
+		if (directory != null) {
+			builder.add("directory", directory);	
+		}
+		else {
+			builder.addNull("directory");
+		}
 
-		object.put("stoppingTime", stoppingTime);
-		object.put("stopExecutable", stopExecutable);
-		object.put("stopArgs", stopArgsString);
+		builder.add("multiple", !runSingle);
+		builder.add("restart", restart);
+		builder.add("infoArg", infoArg);
 
-		object.put("errorExecutable", errorExecutable);
-		object.put("errorArgs", errorArgsString);
+		builder.add("logDirectory", logPath);
+		builder.add("outputStream", outputStream);
+		builder.add("outputStreamPort", outputStreamPort);
 		
-		return object.toJSONString();
+		builder.add("startExecutable", startExecutable);
+		builder.add("startArgs", startArgsString);
+		builder.add("startingTime", startingTime);
+
+		builder.add("stoppingTime", stoppingTime);
+		
+		if (stopExecutable != null) {
+			builder.add("stopExecutable", stopExecutable);
+		}
+		else {
+			builder.addNull("stopExecutable");
+		}
+		
+		builder.add("stopArgs", stopArgsString);
+
+		if (errorExecutable != null) {
+			builder.add("errorExecutable", errorExecutable);
+		}
+		else {
+			builder.addNull("errorExecutable");
+		}
+		
+		builder.add("errorArgs", errorArgsString);
+		
+		return builder.build().toString();
 	}
 	
 	@Override

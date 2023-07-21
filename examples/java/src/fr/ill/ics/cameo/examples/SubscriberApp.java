@@ -16,24 +16,23 @@
 
 package fr.ill.ics.cameo.examples;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.text.ParseException;
 
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.Server;
 import fr.ill.ics.cameo.base.State;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Subscriber;
+import fr.ill.ics.cameo.messages.JSON;
+import jakarta.json.JsonObject;
 
 public class SubscriberApp {
 
-	public static JSONObject deserializeToJSON(String jsonMessage) {
+	public static JsonObject deserializeToJSON(String jsonMessage) {
 
-		JSONParser parser = new JSONParser();
-		JSONObject object = null;
+		JsonObject object = null;
 		try {
-			object = (JSONObject)parser.parse(jsonMessage);
+			object = JSON.parse(jsonMessage);
 		}
 		catch (ParseException e) {
 			System.err.println("Parse error");
@@ -82,10 +81,10 @@ public class SubscriberApp {
 				if (message != null) {
 					System.out.println("Received: " + message);
 					
-					JSONObject object = deserializeToJSON(message);
+					JsonObject object = deserializeToJSON(message);
 					
-					System.out.println("\tmessage: " + (String)object.get("message"));
-					System.out.println("\tvalue: " + (Long)object.get("value"));
+					System.out.println("\tmessage: " + object.getString("message"));
+					System.out.println("\tvalue: " + object.getInt("value"));
 					
 				}
 				else {

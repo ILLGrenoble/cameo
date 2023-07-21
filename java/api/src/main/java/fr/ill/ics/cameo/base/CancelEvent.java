@@ -17,7 +17,8 @@
 
 package fr.ill.ics.cameo.base;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a cancel event.
@@ -62,13 +63,12 @@ public class CancelEvent extends Event {
 	
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "cancel");
-		result.put("id", id);
-		result.put("name", name);
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+				.add("type", "cancel")
+				.add("id", id)
+				.add("name", name)
+				.build()
+				.toString();
 	}
 	
 }

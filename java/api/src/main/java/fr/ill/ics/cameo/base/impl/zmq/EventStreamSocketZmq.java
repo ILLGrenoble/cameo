@@ -17,10 +17,8 @@ package fr.ill.ics.cameo.base.impl.zmq;
 
 
 
+import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
@@ -37,6 +35,7 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.JsonObject;
 
 public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
@@ -109,7 +108,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(statusMessage));
+				JsonObject jsonObject = parser.parse(Messages.parseString(statusMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
@@ -134,7 +133,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(resultMessage));
+				JsonObject jsonObject = parser.parse(Messages.parseString(resultMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
@@ -154,7 +153,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			
 			try {
 				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(keyValueMessage));
+				JsonObject jsonObject = parser.parse(Messages.parseString(keyValueMessage));
 				
 				int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
 				String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);

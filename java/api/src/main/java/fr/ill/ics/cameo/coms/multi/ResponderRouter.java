@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.coms.multi;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.ICancelable;
 import fr.ill.ics.cameo.base.IdGenerator;
 import fr.ill.ics.cameo.base.InitException;
@@ -30,6 +28,8 @@ import fr.ill.ics.cameo.factory.ImplFactory;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a responder router.
@@ -75,11 +75,12 @@ public class ResponderRouter extends StateObject implements ICancelable {
 		impl.init(StringId.from(key, This.getId()), dealerEndpoint);
 
 		// Store the responder data.
-		JSONObject jsonData = new JSONObject();
-		jsonData.put(PORT, impl.getResponderPort());
+		JsonObject data = Json.createObjectBuilder()
+							.add(PORT, impl.getResponderPort())
+							.build();
 		
 		try {
-			This.getCom().storeKeyValue(key, jsonData.toJSONString());
+			This.getCom().storeKeyValue(key, data.toString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			impl.terminate();
@@ -166,14 +167,13 @@ public class ResponderRouter extends StateObject implements ICancelable {
 
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "multi-responder-router");
-		result.put("name", name);
-		result.put("dealer", dealerEndpoint);
-		result.put("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "multi-responder-router")
+					.add("name", name)
+					.add("dealer", dealerEndpoint)
+					.add("app", new AppIdentity(This.getName(), This.getId(), new ServerIdentity(This.getEndpoint().toString(), false)).toJSON())
+					.build()
+					.toString();
 	}
 	
 }

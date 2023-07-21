@@ -16,13 +16,14 @@
 
 package fr.ill.ics.cameo.test;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import java.text.ParseException;
 
 import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.UndefinedKeyException;
 import fr.ill.ics.cameo.messages.JSON;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 
 public class TestStorage {
@@ -33,8 +34,9 @@ public class TestStorage {
 
 		String key = "fr.ill.ics.cameo.test.testkey";
 		
-		JSONObject valueObject = new JSONObject();
-		valueObject.put("x", 12);
+		JsonObject valueObject = Json.createObjectBuilder()
+										.add("x", 12)
+										.build();
 		
 		try {
 			This.getCom().getKeyValue(key);
@@ -44,13 +46,13 @@ public class TestStorage {
 		}
 		
 		try {
-			This.getCom().storeKeyValue(key, valueObject.toJSONString());
+			This.getCom().storeKeyValue(key, valueObject.toString());
 		}
 		catch (KeyAlreadyExistsException e) {
 		}
 		
 		try {
-			This.getCom().storeKeyValue(key, valueObject.toJSONString());
+			This.getCom().storeKeyValue(key, valueObject.toString());
 		}
 		catch (KeyAlreadyExistsException e) {
 			System.out.println("Key already exists: " + e.getMessage());

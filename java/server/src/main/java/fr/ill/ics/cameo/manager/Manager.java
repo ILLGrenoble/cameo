@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Context;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
@@ -43,6 +41,8 @@ import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
 
 public class Manager extends ConfigLoader {
 
@@ -162,56 +162,56 @@ public class Manager extends ConfigLoader {
 
 	public synchronized void sendStatus(int id, String name, int state, int pastStates, int exitCode) {
 		
-		JSONObject event = new JSONObject();
-		event.put(Messages.StatusEvent.ID, id);
-		event.put(Messages.StatusEvent.NAME, name);
-		event.put(Messages.StatusEvent.APPLICATION_STATE, state);
-		event.put(Messages.StatusEvent.PAST_APPLICATION_STATES, pastStates);
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add(Messages.StatusEvent.ID, id);
+		builder.add(Messages.StatusEvent.NAME, name);
+		builder.add(Messages.StatusEvent.APPLICATION_STATE, state);
+		builder.add(Messages.StatusEvent.PAST_APPLICATION_STATES, pastStates);
 		
 		if (exitCode != -1) {
-			event.put(Messages.StatusEvent.EXIT_CODE, exitCode);
+			builder.add(Messages.StatusEvent.EXIT_CODE, exitCode);
 		}
 		
 		eventPublisher.sendMore(Messages.Event.STATUS);
-		eventPublisher.send(Messages.serialize(event), 0);
+		eventPublisher.send(Messages.serialize(builder.build()), 0);
 	}
 
 	public synchronized void sendResult(int id, String name, byte[] data) {
 		
-		JSONObject event = new JSONObject();
-		event.put(Messages.ResultEvent.ID, id);
-		event.put(Messages.ResultEvent.NAME, name);
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add(Messages.ResultEvent.ID, id);
+		builder.add(Messages.ResultEvent.NAME, name);
 
 		// The result has 3 parts.
 		eventPublisher.sendMore(Messages.Event.RESULT);
-		eventPublisher.sendMore(Messages.serialize(event));
+		eventPublisher.sendMore(Messages.serialize(builder.build()));
 		eventPublisher.send(data, 0);
 	}
 	
 	public synchronized void sendStoreKeyValue(int id, String name, String key, String value) {
 		
-		JSONObject event = new JSONObject();
-		event.put(Messages.KeyEvent.ID, id);
-		event.put(Messages.KeyEvent.NAME, name);
-		event.put(Messages.KeyEvent.STATUS, Messages.STORE_KEY_VALUE);
-		event.put(Messages.KeyEvent.KEY, key);
-		event.put(Messages.KeyEvent.VALUE, value);
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add(Messages.KeyEvent.ID, id);
+		builder.add(Messages.KeyEvent.NAME, name);
+		builder.add(Messages.KeyEvent.STATUS, Messages.STORE_KEY_VALUE);
+		builder.add(Messages.KeyEvent.KEY, key);
+		builder.add(Messages.KeyEvent.VALUE, value);
 		
 		eventPublisher.sendMore(Messages.Event.KEYVALUE);
-		eventPublisher.send(Messages.serialize(event), 0);
+		eventPublisher.send(Messages.serialize(builder.build()), 0);
 	}
 	
 	public synchronized void sendRemoveKeyValue(int id, String name, String key, String value) {
 		
-		JSONObject event = new JSONObject();
-		event.put(Messages.KeyEvent.ID, id);
-		event.put(Messages.KeyEvent.NAME, name);
-		event.put(Messages.KeyEvent.STATUS, Messages.REMOVE_KEY);
-		event.put(Messages.KeyEvent.KEY, key);
-		event.put(Messages.KeyEvent.VALUE, value);
+		JsonObjectBuilder builder = Json.createObjectBuilder();
+		builder.add(Messages.KeyEvent.ID, id);
+		builder.add(Messages.KeyEvent.NAME, name);
+		builder.add(Messages.KeyEvent.STATUS, Messages.REMOVE_KEY);
+		builder.add(Messages.KeyEvent.KEY, key);
+		builder.add(Messages.KeyEvent.VALUE, value);
 		
 		eventPublisher.sendMore(Messages.Event.KEYVALUE);
-		eventPublisher.send(Messages.serialize(event), 0);
+		eventPublisher.send(Messages.serialize(builder.build()), 0);
 	}
 	
 	private int findFreeId(int begin, int end) {

@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.coms;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
@@ -37,6 +35,8 @@ import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a subscriber.
@@ -86,10 +86,11 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		requester.setTimeout(timeoutCounter.remains());
 		
 		// Send a subscribe request.
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+		JsonObject request = Json.createObjectBuilder()
+									.add(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER)
+									.build();
 		
-		requester.sendString(jsonRequest.toJSONString());
+		requester.sendString(request.toString());
 		String response = requester.receiveString();
 		
 		// Check timeout.
@@ -144,7 +145,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 				return;
 			}
 			
-			JSONObject jsonData = This.getCom().parse(jsonString);
+			JsonObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
 			
 			Endpoint endpoint;
@@ -299,12 +300,11 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "subscriber");
-		result.put("name", publisherName);
-		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "subscriber")
+					.add("name", publisherName)
+					.add("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON())
+					.build()
+					.toString();
 	}
 }

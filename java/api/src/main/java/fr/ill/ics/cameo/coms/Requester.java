@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.coms;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.App;
 import fr.ill.ics.cameo.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
@@ -38,6 +36,8 @@ import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.ServerIdentity;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
@@ -160,7 +160,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 				return;
 			}
 			
-			JSONObject jsonData = This.getCom().parse(jsonString);
+			JsonObject jsonData = This.getCom().parse(jsonString);
 					
 			Endpoint endpoint;
 			
@@ -338,12 +338,11 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	
 	@Override
 	public String toString() {
-		JSONObject result = new JSONObject();
-		
-		result.put("type", "requester");
-		result.put("name", responderName);
-		result.put("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON());
-		
-		return result.toJSONString();
+		return Json.createObjectBuilder()
+					.add("type", "requester")
+					.add("name", responderName)
+					.add("app", new AppIdentity(appName, appId, new ServerIdentity(appEndpoint.toString(), useProxy)).toJSON())
+					.build()
+					.toString();
 	}
 }

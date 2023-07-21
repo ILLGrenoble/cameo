@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import java.text.ParseException;
+
 import org.junit.Test;
 
 import fr.ill.ics.cameo.messages.JSON;
@@ -13,6 +13,7 @@ import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.JsonObject;
 
 public class TestStrings {
 
@@ -56,10 +57,10 @@ public class TestStrings {
 		
 		ApplicationIdentity identity = new ApplicationIdentity("my-app", 31, new Endpoint("gamma75", 9000));
 		
-		String jsonString = identity.toJSON().toJSONString();
+		String jsonString = identity.toJSON().toString();
 		
 		try {
-			JSONObject jsonIdentity = JSON.parse(jsonString);
+			JsonObject jsonIdentity = JSON.parse(jsonString);
 			
 			assertEquals("my-app", JSON.getString(jsonIdentity, Messages.ApplicationIdentity.NAME));
 			assertEquals(31, JSON.getInt(jsonIdentity, Messages.ApplicationIdentity.ID));
@@ -78,16 +79,16 @@ public class TestStrings {
 		
 		ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(application, starter, 10000, true);
 		
-		String jsonString = identity.toJSON().toJSONString();
+		String jsonString = identity.toJSON().toString();
 		
 		try {
-			JSONObject jsonApplication = JSON.parse(jsonString);
+			JsonObject jsonApplication = JSON.parse(jsonString);
 			
 			assertEquals("my-app", JSON.getString(jsonApplication, Messages.ApplicationIdentity.NAME));
 			assertEquals(31, JSON.getInt(jsonApplication, Messages.ApplicationIdentity.ID));
 			assertEquals("tcp://gamma75:9000", JSON.getString(jsonApplication, Messages.ApplicationIdentity.SERVER));
 			
-			JSONObject jsonStarter = JSON.getObject(jsonApplication, Messages.ApplicationIdentity.STARTER);
+			JsonObject jsonStarter = JSON.getObject(jsonApplication, Messages.ApplicationIdentity.STARTER);
 			
 			assertEquals("your-app", JSON.getString(jsonStarter, Messages.ApplicationIdentity.NAME));
 			assertEquals(76, JSON.getInt(jsonStarter, Messages.ApplicationIdentity.ID));
@@ -99,10 +100,10 @@ public class TestStrings {
 		
 		ApplicationWithStarterIdentity identity2 = new ApplicationWithStarterIdentity(application);
 		
-		jsonString = identity2.toJSON().toJSONString();
+		jsonString = identity2.toJSON().toString();
 		
 		try {
-			JSONObject jsonApplication = JSON.parse(jsonString);
+			JsonObject jsonApplication = JSON.parse(jsonString);
 
 			assertFalse(jsonApplication.containsKey(Messages.ApplicationIdentity.STARTER));
 		}

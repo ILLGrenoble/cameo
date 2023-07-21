@@ -1,8 +1,9 @@
 package fr.ill.ics.cameo.strings;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.messages.Messages;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 public class ApplicationIdentity {
 
@@ -35,17 +36,20 @@ public class ApplicationIdentity {
 		return endpoint;
 	}
 
-	public JSONObject toJSON() {
+	public JsonObjectBuilder toJSONBuilder() {
+		JsonObjectBuilder builder = Json.createObjectBuilder();
 		
-		JSONObject result = new JSONObject();
-		
-		result.put(Messages.ApplicationIdentity.NAME, name);
+		builder.add(Messages.ApplicationIdentity.NAME, name);
 		if (id != null) {
-			result.put(Messages.ApplicationIdentity.ID, id);
+			builder.add(Messages.ApplicationIdentity.ID, id);
 		}
-		result.put(Messages.ApplicationIdentity.SERVER, endpoint.toString());
+		builder.add(Messages.ApplicationIdentity.SERVER, endpoint.toString());
 		
-		return result;
+		return builder;
+	}
+	
+	public JsonObject toJSON() {
+		return toJSONBuilder().build();
 	}
 	
 }

@@ -22,14 +22,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * Class getting the stream from the process input stream.
@@ -90,14 +90,14 @@ public class StreamApplicationThread extends ApplicationThread {
 
 		if (application.hasOutputStream()) {
 			// Send the stream.
-			JSONObject event = new JSONObject();
-			event.put(Messages.TYPE, Messages.STREAM);
-			event.put(Messages.ApplicationStream.ID, application.getId());
-			event.put(Messages.ApplicationStream.MESSAGE, line);
-			event.put(Messages.ApplicationStream.EOL, endOfLine);
+			JsonObjectBuilder eventBuilder = Json.createObjectBuilder();
+			eventBuilder.add(Messages.TYPE, Messages.STREAM);
+			eventBuilder.add(Messages.ApplicationStream.ID, application.getId());
+			eventBuilder.add(Messages.ApplicationStream.MESSAGE, line);
+			eventBuilder.add(Messages.ApplicationStream.EOL, endOfLine);
 			
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(eventBuilder.build()));
 		}
 	}
 	
@@ -228,12 +228,12 @@ public class StreamApplicationThread extends ApplicationThread {
 		// The message was originally done in manager when the application was terminated but not the stream thread because they are not synchronized.
 		if (application.hasOutputStream()) {
 			// Send the stream.
-			JSONObject event = new JSONObject();
-			event.put(Messages.TYPE, Messages.STREAM_END);
-			event.put(Messages.ApplicationStream.ID, application.getId());
+			JsonObjectBuilder eventBuilder = Json.createObjectBuilder();
+			eventBuilder.add(Messages.TYPE, Messages.STREAM_END);
+			eventBuilder.add(Messages.ApplicationStream.ID, application.getId());
 
 			// Synchronize the publisher as it can be accessed from another thread.
-			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(eventBuilder.build()));
 		}
 	}
 	

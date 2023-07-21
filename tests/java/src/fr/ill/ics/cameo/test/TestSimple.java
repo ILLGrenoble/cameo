@@ -74,7 +74,7 @@ public class TestSimple {
 			This.terminate();
 		}
 		
-		System.out.println("Finished the application after " + ((new Date()).getTime() - d.getTime()) + "ms");
+		System.out.println("Finished the application after " + ((new Date()).getTime() - d.getTime()) + " ms");
 	}
 
 }

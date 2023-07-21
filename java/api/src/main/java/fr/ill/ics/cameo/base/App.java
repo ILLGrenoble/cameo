@@ -16,16 +16,16 @@
 
 package fr.ill.ics.cameo.base;
 
+import java.text.ParseException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.AppIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.ServerIdentity;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 /**
  * Class defining a remote Cameo application.
@@ -214,9 +214,9 @@ public class App extends EventListener {
 		/**
 		 * Method provided by convenience to simplify the parsing of JSON messages.
 		 * @param message The message to parse.
-		 * @return A JSONObject object.
+		 * @return A JsonObject object.
 		 */
-		public JSONObject parse(byte[] message) {
+		public JsonObject parse(byte[] message) {
 			try {
 				return server.parse(message);
 			}
@@ -308,16 +308,15 @@ public class App extends EventListener {
 		
 		@Override
 		public String toString() {
-			JSONObject result = new JSONObject();
-			
-			result.put("name", name);
-			result.put("description", description);
-			result.put("multiple", multiple);
-			result.put("restart", restart);
-			result.put("starting_time", startingTime);
-			result.put("stopping_time", stoppingTime);
-			
-			return result.toJSONString();
+			return Json.createObjectBuilder()
+					.add("name", name)
+					.add("description", description)
+					.add("multiple", multiple)
+					.add("restart", restart)
+					.add("starting_time", startingTime)
+					.add("stopping_time", stoppingTime)
+					.build()
+					.toString();
 		}
 	
 	}
@@ -403,15 +402,14 @@ public class App extends EventListener {
 	
 		@Override
 		public String toString() {
-			JSONObject result = new JSONObject();
-			
-			result.put("name", name);
-			result.put("id", id);
-			result.put("state", applicationState);
-			result.put("past_states", pastApplicationStates);
-			result.put("args", args);
-			
-			return result.toJSONString();
+			return Json.createObjectBuilder()
+					.add("name", name)
+					.add("id", id)
+					.add("state", applicationState)
+					.add("past_states", pastApplicationStates)
+					.add("args", args)
+					.build()
+					.toString();
 		}
 	
 	}
@@ -464,13 +462,12 @@ public class App extends EventListener {
 		
 		@Override
 		public String toString() {
-			JSONObject result = new JSONObject();
-			
-			result.put("port", port);
-			result.put("status", status);
-			result.put("owner", owner);
-			
-			return result.toJSONString();
+			return Json.createObjectBuilder()
+					.add("port", port)
+					.add("status", status)
+					.add("owner", owner)
+					.build()
+					.toString();
 		}		
 	}
 

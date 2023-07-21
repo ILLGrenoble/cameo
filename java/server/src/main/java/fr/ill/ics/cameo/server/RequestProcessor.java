@@ -20,9 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
@@ -47,6 +44,11 @@ import fr.ill.ics.cameo.server.Server.Version;
 import fr.ill.ics.cameo.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * 
@@ -67,14 +69,14 @@ public class RequestProcessor {
 		manager.sendStatus(-1, "", ApplicationState.NIL, ApplicationState.NIL, -1);
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, 0);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
-	public void processSyncStream(JSONObject request, Msg reply, Manager manager) {
+	public void processSyncStream(JsonObject request, Msg reply, Manager manager) {
 
 		Log.logger().finest("Received SyncStream request " + request);
 		
@@ -84,22 +86,22 @@ public class RequestProcessor {
 		
 		// Publish a SYNCSTREAM event.
 		if (publisher != null) {
-			JSONObject event = new JSONObject();
-			event.put(Messages.TYPE, Messages.SYNC_STREAM);
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			builder.add(Messages.TYPE, Messages.SYNC_STREAM);
 
 			// Get the topic id.
 			String topicId = StringId.from(Messages.Event.STREAM, applicationName);
 			
 			// Synchronize the publisher as it is accessed by the stream threads.
-			Manager.publishSynchronized(publisher, topicId, Messages.serialize(event));
+			Manager.publishSynchronized(publisher, topicId, Messages.serialize(builder.build()));
 		}
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, 0);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
 	/**
@@ -109,22 +111,22 @@ public class RequestProcessor {
 	 * @param message
 	 * @return
 	 */
-	public void processStartRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processStartRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received Start request " + request);
 		
 		try {
 			// Convert the args.
 			String[] args = null;
-			JSONArray list = JSON.getArray(request, Messages.StartRequest.ARGS);
+			JsonArray list = JSON.getArray(request, Messages.StartRequest.ARGS);
 			if (list != null) {
 				args = new String[list.size()];
 				for (int i = 0; i < list.size(); i++) {
-					args[i] = (String)list.get(i);
+					args[i] = list.getString(i);
 				}
 			}
 			
-			JSONObject starterObject = JSON.getObject(request, Messages.ApplicationIdentity.STARTER);
+			JsonObject starterObject = JSON.getObject(request, Messages.ApplicationIdentity.STARTER);
 			
 			int starterProxyPort = 0;
 			boolean starterLinked = false;
@@ -153,19 +155,19 @@ public class RequestProcessor {
 																starterLinked);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, application.getId());
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, application.getId());
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (UnknownApplicationException | MaxNumberOfApplicationsReached | MaxGlobalNumberOfApplicationsReached e) {
 			
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, Long.valueOf(-1));
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, Long.valueOf(-1));
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
@@ -176,35 +178,35 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processAppsRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processAppsRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received Apps request " + request);
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
-		JSONObject response = new JSONObject();
-		JSONArray array = new JSONArray();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
 		Iterator<ApplicationInfo> it = list.iterator();
 		while (it.hasNext()) {
 			ApplicationInfo application = it.next();
 			
-			JSONObject applicationInfo = new JSONObject();
-			applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
-			applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
-			applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
-			applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-			applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-			applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
+			JsonObjectBuilder appInfoBuilder = Json.createObjectBuilder();
+			appInfoBuilder.add(Messages.ApplicationInfo.ID, application.getId());
+			appInfoBuilder.add(Messages.ApplicationInfo.ARGS, application.getArgs());
+			appInfoBuilder.add(Messages.ApplicationInfo.NAME, application.getName());
+			appInfoBuilder.add(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+			appInfoBuilder.add(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+			appInfoBuilder.add(Messages.ApplicationInfo.PID, application.getPid());
 			
-			array.add(applicationInfo);
+			arrayBuilder.add(appInfoBuilder.build());
 		}
-		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		responseBuilder.add(Messages.ApplicationInfoListResponse.APPLICATION_INFO, arrayBuilder.build());
 	
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
-	public void processSetStopHandlerRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processSetStopHandlerRequest(JsonObject request, Msg reply, Manager manager) {
 	
 		Log.logger().finest("Received SetStopHandler request" + request);
 		
@@ -212,19 +214,19 @@ public class RequestProcessor {
 			manager.setApplicationStopHandler(JSON.getInt(request, Messages.SetStopHandlerRequest.ID), JSON.getInt(request, Messages.SetStopHandlerRequest.STOPPING_TIME));
 
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
@@ -237,7 +239,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processStopRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processStopRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().fine("Received Stop request " + request);
 		
@@ -245,19 +247,19 @@ public class RequestProcessor {
 			String applicationName = manager.stopApplication(JSON.getInt(request, Messages.StopRequest.ID), JSON.getBoolean(request, Messages.StopRequest.LINK));
 
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, applicationName);
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
@@ -268,7 +270,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processKillRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processKillRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received Kill request " + request);
 		
@@ -276,19 +278,19 @@ public class RequestProcessor {
 			String applicationName = manager.killApplication(JSON.getInt(request, Messages.StopRequest.ID));
 
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, applicationName);
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
@@ -299,7 +301,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processConnectRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processConnectRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received Connect request " + request);
 		
@@ -307,33 +309,33 @@ public class RequestProcessor {
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
-		JSONObject response = new JSONObject();
-		JSONArray array = new JSONArray();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
 		Iterator<ApplicationInfo> it = list.iterator();
 		while (it.hasNext()) {
 			ApplicationInfo application = it.next();
 			
-			JSONObject applicationInfo = new JSONObject();
+			JsonObjectBuilder appInfoBuilder = Json.createObjectBuilder();
 			
 			// Filtering on the application name.
 			if (applicationName.equals(application.getName())) {
-				applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
-				applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
-				applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
-				applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-				applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-				applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
+				appInfoBuilder.add(Messages.ApplicationInfo.ID, application.getId());
+				appInfoBuilder.add(Messages.ApplicationInfo.ARGS, application.getArgs());
+				appInfoBuilder.add(Messages.ApplicationInfo.NAME, application.getName());
+				appInfoBuilder.add(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+				appInfoBuilder.add(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+				appInfoBuilder.add(Messages.ApplicationInfo.PID, application.getPid());
 				
-				array.add(applicationInfo);
+				arrayBuilder.add(appInfoBuilder);
 			}
 		}
-		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		responseBuilder.add(Messages.ApplicationInfoListResponse.APPLICATION_INFO, arrayBuilder.build());
 	
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
-	public void processConnectWithIdRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processConnectWithIdRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received ConnectWithId request " + request);
 		
@@ -341,30 +343,30 @@ public class RequestProcessor {
 		
 		LinkedList<ApplicationInfo> list = manager.getApplicationInfos();
 		
-		JSONObject response = new JSONObject();
-		JSONArray array = new JSONArray();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
 		Iterator<ApplicationInfo> it = list.iterator();
 		while (it.hasNext()) {
 			ApplicationInfo application = it.next();
 			
-			JSONObject applicationInfo = new JSONObject();
+			JsonObjectBuilder appInfoBuilder = Json.createObjectBuilder();
 			
 			// Filtering on the application name.
 			if (applicationId == application.getId()) {
-				applicationInfo.put(Messages.ApplicationInfo.ID, application.getId());
-				applicationInfo.put(Messages.ApplicationInfo.ARGS, application.getArgs());
-				applicationInfo.put(Messages.ApplicationInfo.NAME, application.getName());
-				applicationInfo.put(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
-				applicationInfo.put(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
-				applicationInfo.put(Messages.ApplicationInfo.PID, application.getPid());
+				appInfoBuilder.add(Messages.ApplicationInfo.ID, application.getId());
+				appInfoBuilder.add(Messages.ApplicationInfo.ARGS, application.getArgs());
+				appInfoBuilder.add(Messages.ApplicationInfo.NAME, application.getName());
+				appInfoBuilder.add(Messages.ApplicationInfo.APPLICATION_STATE, application.getApplicationState());
+				appInfoBuilder.add(Messages.ApplicationInfo.PAST_APPLICATION_STATES, application.getPastApplicationStates());
+				appInfoBuilder.add(Messages.ApplicationInfo.PID, application.getPid());
 				
-				array.add(applicationInfo);
+				arrayBuilder.add(appInfoBuilder.build());
 			}
 		}
-		response.put(Messages.ApplicationInfoListResponse.APPLICATION_INFO, array);
+		responseBuilder.add(Messages.ApplicationInfoListResponse.APPLICATION_INFO, arrayBuilder.build());
 	
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
 	/**
@@ -373,7 +375,7 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processOutputPortWithIdRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processOutputPortWithIdRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received OutputPortWithId request " + request);
 				
@@ -381,19 +383,19 @@ public class RequestProcessor {
 			int port = manager.getStreamPort(JSON.getInt(request, Messages.OutputPortWithIdRequest.ID));
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, port);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, port);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (java.lang.ArrayIndexOutOfBoundsException | IdNotFoundException | UnknownApplicationException | StreamNotPublishedException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 	
@@ -404,17 +406,17 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processIsAliveRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processIsAliveRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received IsAlive request " + request);
 		
 		boolean isAlive = manager.isAlive(JSON.getInt(request, Messages.IsAliveRequest.ID));
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.IsAliveResponse.IS_ALIVE, isAlive);
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.IsAliveResponse.IS_ALIVE, isAlive);
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
 	/**
@@ -424,36 +426,36 @@ public class RequestProcessor {
 	 * @param manager
 	 * @return
 	 */
-	public void processWriteInputRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processWriteInputRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received WriteInput request " + request);
 		
 		// Convert the parameters.
-		JSONArray list = JSON.getArray(request, Messages.WriteInputRequest.PARAMETERS);
+		JsonArray list = JSON.getArray(request, Messages.WriteInputRequest.PARAMETERS);
 		
 		String[] inputArray = new String[list.size()];
 		
 		for (int i = 0; i < list.size(); i++) {
-			inputArray[i] = (String)list.get(i);
+			inputArray[i] = list.getString(i);
 		}
 		
 		try {
 			manager.writeToInputStream((JSON.getInt(request, Messages.WriteInputRequest.ID)), inputArray);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException | UnregisteredApplicationException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
@@ -469,41 +471,41 @@ public class RequestProcessor {
 		int port = ConfigManager.getInstance().getStreamPort();
 				
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, port);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, port);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
-	public void processListRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processListRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received List request " + request);
 		
 		List<ApplicationConfig> list = manager.getAvailableApplications();
 		
-		JSONObject response = new JSONObject();
-		JSONArray array = new JSONArray();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
 		Iterator<ApplicationConfig> it = list.iterator();
 		while (it.hasNext()) {
 			ApplicationConfig application = (ApplicationConfig) it.next();
 
-			JSONObject config = new JSONObject();
-			config.put(Messages.ApplicationConfig.NAME, application.getName());
-			config.put(Messages.ApplicationConfig.DESCRIPTION, application.getDescription());
-			config.put(Messages.ApplicationConfig.RUNS_SINGLE, application.runSingle());
-			config.put(Messages.ApplicationConfig.MULTIPLE, application.runMaxApplications());
-			config.put(Messages.ApplicationConfig.RESTART, application.isRestart());
-			config.put(Messages.ApplicationConfig.STARTING_TIME, application.getStartingTime());
-			config.put(Messages.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
+			JsonObjectBuilder configBuilder = Json.createObjectBuilder();
+			configBuilder.add(Messages.ApplicationConfig.NAME, application.getName());
+			configBuilder.add(Messages.ApplicationConfig.DESCRIPTION, application.getDescription());
+			configBuilder.add(Messages.ApplicationConfig.RUNS_SINGLE, application.runSingle());
+			configBuilder.add(Messages.ApplicationConfig.MULTIPLE, application.runMaxApplications());
+			configBuilder.add(Messages.ApplicationConfig.RESTART, application.isRestart());
+			configBuilder.add(Messages.ApplicationConfig.STARTING_TIME, application.getStartingTime());
+			configBuilder.add(Messages.ApplicationConfig.STOPPING_TIME, application.getStoppingTime());
 			
-			array.add(config);
+			arrayBuilder.add(configBuilder.build());
 		}
 		
-		response.put(Messages.ApplicationConfigListResponse.APPLICATION_CONFIG, array);
+		responseBuilder.add(Messages.ApplicationConfigListResponse.APPLICATION_CONFIG, arrayBuilder.build());
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
 	/**
@@ -511,63 +513,63 @@ public class RequestProcessor {
 	 * 
 	 * @return
 	 */
-	public void processOutputPortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processOutputPortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received OuputPort request " + request);
 		
 		int port = manager.getApplicationStreamPort(JSON.getString(request, Messages.OutputRequest.NAME));
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, port);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, port);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
-	public void processResponderProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processResponderProxyPortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received ResponderProxyPort request " + request);
 		
 		int port = ConfigManager.getInstance().getResponderProxyPort();
 				
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, port);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, port);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
-	public void processPublisherProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processPublisherProxyPortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received PublisherProxyPort request " + request);
 		
 		int port = ConfigManager.getInstance().getPublisherProxyPort();
 				
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, port);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, port);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
-	public void processSubscriberProxyPortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processSubscriberProxyPortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received SubscriberProxyPort request " + request);
 		
 		int port = ConfigManager.getInstance().getSubscriberProxyPort();
 				
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.RequestResponse.VALUE, port);
-		response.put(Messages.RequestResponse.MESSAGE, "OK");
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.RequestResponse.VALUE, port);
+		responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
-	public void processSetStatusRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processSetStatusRequest(JsonObject request, Msg reply, Manager manager) {
 
 		Log.logger().finest("Received SetStatus request " + request);
 		
@@ -575,29 +577,29 @@ public class RequestProcessor {
 		int state = JSON.getInt(request, Messages.SetStatusRequest.APPLICATION_STATE);
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 		
 		try {
 			boolean done = manager.setApplicationStateFromClient(applicationId, state);
 					
 			if (done) {
-				response.put(Messages.RequestResponse.VALUE, 0);
-				response.put(Messages.RequestResponse.MESSAGE, "OK");
+				responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			}
 			else {
-				response.put(Messages.RequestResponse.VALUE, -1);
-				response.put(Messages.RequestResponse.MESSAGE, "Cannot set the state");
+				responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, "Cannot set the state");
 			}
 		}
 		catch (IdNotFoundException e) {
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 		}
 				
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
-	public void processGetStatusRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processGetStatusRequest(JsonObject request, Msg reply, Manager manager) {
 
 		Log.logger().finest("Received GetStatus request " + request);
 		
@@ -606,17 +608,17 @@ public class RequestProcessor {
 		StatusInfo status = manager.getApplicationState(applicationId);
 	
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.StatusEvent.ID, status.getId());
-		response.put(Messages.StatusEvent.NAME, status.getName());
-		response.put(Messages.StatusEvent.APPLICATION_STATE, status.getApplicationState());
-		response.put(Messages.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.StatusEvent.ID, status.getId());
+		responseBuilder.add(Messages.StatusEvent.NAME, status.getName());
+		responseBuilder.add(Messages.StatusEvent.APPLICATION_STATE, status.getApplicationState());
+		responseBuilder.add(Messages.StatusEvent.PAST_APPLICATION_STATES, status.getPastApplicationStates());
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
 
-	public void processSetResultRequest(JSONObject request, byte[] data, Msg reply, Manager manager) {
+	public void processSetResultRequest(JsonObject request, byte[] data, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received SetResult request " + request);
 		
@@ -626,23 +628,23 @@ public class RequestProcessor {
 			manager.setApplicationResult(applicationId, data);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processAttachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processAttachUnregisteredRequest(JsonObject request, Msg reply, Manager manager) {
 
 		Log.logger().finest("Received AttachUnregistered request " + request);
 		
@@ -660,23 +662,23 @@ public class RequestProcessor {
 			}
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, applicationId);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, applicationId);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (MaxNumberOfApplicationsReached | MaxGlobalNumberOfApplicationsReached e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));			
+			reply.add(Messages.serialize(responseBuilder.build()));			
 		} 
 	}
 
-	public void processDetachUnregisteredRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processDetachUnregisteredRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received DetachUnregistered request " + request);
 		
@@ -686,19 +688,19 @@ public class RequestProcessor {
 			String applicationName = manager.setUnregisteredApplicationTerminated(applicationId);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, applicationName);
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, applicationName);
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}		
 	}
 
@@ -707,15 +709,15 @@ public class RequestProcessor {
 		Log.logger().finest("Received Version request");
 		
 		// Return the reply.
-		JSONObject response = new JSONObject();
-		response.put(Messages.VersionResponse.MAJOR, version.major);
-		response.put(Messages.VersionResponse.MINOR, version.minor);
-		response.put(Messages.VersionResponse.REVISION, version.revision);
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		responseBuilder.add(Messages.VersionResponse.MAJOR, version.major);
+		responseBuilder.add(Messages.VersionResponse.MINOR, version.minor);
+		responseBuilder.add(Messages.VersionResponse.REVISION, version.revision);
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 
-	public void processStoreKeyValue(JSONObject request, Msg reply, Manager manager) {
+	public void processStoreKeyValue(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received StoreKeyValue request " + request);
 		
@@ -727,31 +729,31 @@ public class RequestProcessor {
 			manager.storeKeyValue(applicationId, key, value);
 						
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (KeyAlreadyExistsException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -2);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -2);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 						
-			reply.add(Messages.serialize(response));	
+			reply.add(Messages.serialize(responseBuilder.build()));	
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}		
 	}
 
-	public void processGetKeyValue(JSONObject request, Msg reply, Manager manager) {
+	public void processGetKeyValue(JsonObject request, Msg reply, Manager manager) {
 
 		Log.logger().finest("Received GetKeyValue request " + request);
 		
@@ -763,32 +765,32 @@ public class RequestProcessor {
 			
 			if (value != null) {
 				// Return the reply.
-				JSONObject response = new JSONObject();
-				response.put(Messages.RequestResponse.VALUE, 0);
-				response.put(Messages.RequestResponse.MESSAGE, value);
+				JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+				responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, value);
 				
-				reply.add(Messages.serialize(response));
+				reply.add(Messages.serialize(responseBuilder.build()));
 			}
 			else {
 				// Return the reply.
-				JSONObject response = new JSONObject();
-				response.put(Messages.RequestResponse.VALUE, -2);
-				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
+				JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+				responseBuilder.add(Messages.RequestResponse.VALUE, -2);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
-				reply.add(Messages.serialize(response));
+				reply.add(Messages.serialize(responseBuilder.build()));
 			}
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processRemoveKeyValue(JSONObject request, Msg reply, Manager manager) {
+	public void processRemoveKeyValue(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received RemoveKey request " + request);
 		
@@ -800,32 +802,32 @@ public class RequestProcessor {
 			
 			if (exists) {
 				// Return the reply.
-				JSONObject response = new JSONObject();
-				response.put(Messages.RequestResponse.VALUE, 0);
-				response.put(Messages.RequestResponse.MESSAGE, "OK");
+				JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+				responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 				
-				reply.add(Messages.serialize(response));
+				reply.add(Messages.serialize(responseBuilder.build()));
 			}
 			else {
 				// Return the reply.
-				JSONObject response = new JSONObject();
-				response.put(Messages.RequestResponse.VALUE, -2);
-				response.put(Messages.RequestResponse.MESSAGE, "Key is undefined");
+				JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+				responseBuilder.add(Messages.RequestResponse.VALUE, -2);
+				responseBuilder.add(Messages.RequestResponse.MESSAGE, "Key is undefined");
 				
-				reply.add(Messages.serialize(response));
+				reply.add(Messages.serialize(responseBuilder.build()));
 			}
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processRequestPortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processRequestPortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received RequestPort request " + request);
 		
@@ -836,23 +838,23 @@ public class RequestProcessor {
 			int port = manager.requestPort(applicationId);
 
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, port);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, port);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processPortUnavailableRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processPortUnavailableRequest(JsonObject request, Msg reply, Manager manager) {
 				
 		Log.logger().finest("Received PortUnavailable request " + request);
 		
@@ -864,23 +866,23 @@ public class RequestProcessor {
 			manager.setPortUnavailable(applicationId, port);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processReleasePortRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processReleasePortRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received ReleasePort request " + request);
 		
@@ -892,46 +894,46 @@ public class RequestProcessor {
 			manager.releasePort(applicationId, port);
 			
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, 0);
-			response.put(Messages.RequestResponse.MESSAGE, "OK");
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, 0);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, "OK");
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 		catch (IdNotFoundException e) {
 			// Return the reply.
-			JSONObject response = new JSONObject();
-			response.put(Messages.RequestResponse.VALUE, -1);
-			response.put(Messages.RequestResponse.MESSAGE, e.getMessage());
+			JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+			responseBuilder.add(Messages.RequestResponse.VALUE, -1);
+			responseBuilder.add(Messages.RequestResponse.MESSAGE, e.getMessage());
 			
-			reply.add(Messages.serialize(response));
+			reply.add(Messages.serialize(responseBuilder.build()));
 		}
 	}
 
-	public void processPortsRequest(JSONObject request, Msg reply, Manager manager) {
+	public void processPortsRequest(JsonObject request, Msg reply, Manager manager) {
 		
 		Log.logger().finest("Received Ports request " + request);
 		
 		List<PortInfo> list = manager.getPortList();
 		
-		JSONObject response = new JSONObject();
-		JSONArray array = new JSONArray();
+		JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
 		
 		Iterator<PortInfo> it = list.iterator();
 		while (it.hasNext()) {
 			PortInfo port = it.next();
 			
-			JSONObject portInfo = new JSONObject();
-			portInfo.put(Messages.PortInfo.PORT, port.getPort());
-			portInfo.put(Messages.PortInfo.STATUS, port.getStatus());
-			portInfo.put(Messages.PortInfo.OWNER, port.getApplicationNameId());
+			JsonObjectBuilder portInfoBuilder = Json.createObjectBuilder();
+			portInfoBuilder.add(Messages.PortInfo.PORT, port.getPort());
+			portInfoBuilder.add(Messages.PortInfo.STATUS, port.getStatus());
+			portInfoBuilder.add(Messages.PortInfo.OWNER, port.getApplicationNameId());
 			
-			array.add(portInfo);
+			arrayBuilder.add(portInfoBuilder.build());
 		}
 		
-		response.put(Messages.PortInfoListResponse.PORT_INFO, array);
+		responseBuilder.add(Messages.PortInfoListResponse.PORT_INFO, arrayBuilder.build());
 		
-		reply.add(Messages.serialize(response));
+		reply.add(Messages.serialize(responseBuilder.build()));
 	}
 	
 }

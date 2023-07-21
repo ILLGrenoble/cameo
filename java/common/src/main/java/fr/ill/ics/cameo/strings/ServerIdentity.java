@@ -1,6 +1,7 @@
 package fr.ill.ics.cameo.strings;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class ServerIdentity {
 
@@ -13,18 +14,18 @@ public class ServerIdentity {
 		this.proxy = proxy;
 	}
 
-	public JSONObject toJSON() {
+	public JsonObject toJSON() {
 		
-		JSONObject result = new JSONObject();
+		JsonObject object = Json.createObjectBuilder()
+			.add("endpoint", endpoint)
+			.add("proxy", proxy)
+			.build();
 		
-		result.put("endpoint", endpoint);
-		result.put("proxy", proxy);
-		
-		return result;
+		return object;
 	}
 	
 	public String toString() {
-		return toJSON().toJSONString();
+		return toJSON().toString();
 	}
 	
 }

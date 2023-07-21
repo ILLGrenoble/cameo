@@ -1,42 +1,47 @@
 package fr.ill.ics.cameo.messages;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import java.io.StringReader;
+import java.text.ParseException;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParsingException;
+import jakarta.json.stream.JsonParser.Event;
 
 /**
  * Helper class to convert more easily JSONObject values.
  */
 public class JSON {
 	
-	public static boolean hasKey(JSONObject object, String key) {
+	public static boolean hasKey(JsonObject object, String key) {
 		Object value = object.get(key);
 		return (value != null);
 	}
 	
-	public static String getString(JSONObject object, String key) {
-		return (String)object.get(key);
+	public static String getString(JsonObject object, String key) {
+		return object.getString(key);
 	}
 	
-	public static int getInt(JSONObject object, String key) {
-		return ((Long)object.get(key)).intValue();
+	public static int getInt(JsonObject object, String key) {
+		return object.getInt(key);
 	}
 	
-	public static long getLong(JSONObject object, String key) {
-		return (Long)object.get(key);
+	public static long getLong(JsonObject object, String key) {
+		return object.getJsonNumber(key).longValue();
 	}
 	
-	public static boolean getBoolean(JSONObject object, String key) {
-		return (Boolean)object.get(key);
+	public static boolean getBoolean(JsonObject object, String key) {
+		return object.getBoolean(key);
 	}
 
-	public static JSONObject getObject(JSONObject object, String key) {
-		return (JSONObject)object.get(key);
+	public static JsonObject getObject(JsonObject object, String key) {
+		return object.getJsonObject(key);
 	}
 	
-	public static JSONArray getArray(JSONObject object, String key) {
-		return (JSONArray)object.get(key);
+	public static JsonArray getArray(JsonObject object, String key) {
+		return object.getJsonArray(key);
 	}
 	
 	/**
@@ -46,22 +51,37 @@ public class JSON {
 	 */
 	public static class Parser {
 		
-		private JSONParser parser = new JSONParser();
-		
-		public synchronized JSONObject parse(String string) throws ParseException {
-			return (JSONObject)parser.parse(string);
+		public synchronized JsonObject parse(String string) throws ParseException {
+			
+			JsonParser parser = Json.createParser(new StringReader(string));
+			
+			try {
+				Event event = parser.next();
+			
+				if (event.equals(Event.START_OBJECT)) {
+					return parser.getObject();
+				}
+			}
+			catch (JsonParsingException e) {
+				throw new ParseException(e.getMessage(), (int)e.getLocation().getStreamOffset());
+			}
+			finally {
+				parser.close();
+			}
+			
+			return null;
 		}
 	}
 	
 	/**
 	 * Parses a string into a JSONObject.
-	 * Method provided by convenience, a parser is created for each call. Use a ConcurrentParser to obtain better performance.
+	 * Method provided by convenience, a parser is created for each call.
 	 * @param string
 	 * @return
-	 * @throws ParseException
+	 * @throws ParseException 
 	 */
-	public static JSONObject parse(String string) throws ParseException {
-		return (JSONObject)new JSONParser().parse(string);
+	public static JsonObject parse(String string) throws ParseException {
+		return new Parser().parse(string);
 	}
 
 }

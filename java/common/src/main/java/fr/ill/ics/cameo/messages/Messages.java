@@ -2,8 +2,10 @@ package fr.ill.ics.cameo.messages;
 
 import java.nio.charset.Charset;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * Definitions for the JSON objects.
@@ -272,101 +274,112 @@ public class Messages {
 		return string.getBytes(CHARSET);
 	}
 
-	public static byte[] serialize(JSONObject object) {
-		return serialize(object.toJSONString());
+	public static byte[] serialize(JsonObject object) {
+		return serialize(object.toString());
 	}
 
-	public static JSONObject createSyncRequest() {
+	public static JsonObject createSyncRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SYNC);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.SYNC)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createSyncStreamRequest(String name) {
+	public static JsonObject createSyncStreamRequest(String name) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SYNC_STREAM);
-		request.put(Messages.SyncStreamRequest.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createVersionRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.IMPL_VERSION);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.SYNC_STREAM)
+				.add(Messages.SyncStreamRequest.NAME, name)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createStreamStatusRequest() {
+	public static JsonObject createVersionRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.STATUS);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.IMPL_VERSION)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createResponderProxyPortRequest() {
+	public static JsonObject createStreamStatusRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.RESPONDER_PROXY_PORT);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.STATUS)
+				.build();
+
+		return request;
+	}
+
+	public static JsonObject createResponderProxyPortRequest() {
+
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.RESPONDER_PROXY_PORT)
+				.build();
 
 		return request;
 	}
 	
-	public static JSONObject createPublisherProxyPortRequest() {
+	public static JsonObject createPublisherProxyPortRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.PUBLISHER_PROXY_PORT);
-
-		return request;
-	}
-
-	public static JSONObject createSubscriberProxyPortRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SUBSCRIBER_PROXY_PORT);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.PUBLISHER_PROXY_PORT)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createGetStatusRequest(int id) {
+	public static JsonObject createSubscriberProxyPortRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.GET_STATUS);
-		request.put(Messages.GetStatusRequest.ID, id);
-
-		return request;
-	}
-
-	public static JSONObject createAttachUnregisteredRequest(String name, long pid) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.ATTACH_UNREGISTERED);
-		request.put(Messages.AttachUnregisteredRequest.NAME, name);
-		request.put(Messages.AttachUnregisteredRequest.PID, pid);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.SUBSCRIBER_PROXY_PORT)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createDetachUnregisteredRequest(int id) {
+	public static JsonObject createGetStatusRequest(int id) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.DETACH_UNREGISTERED);
-		request.put(Messages.DetachUnregisteredRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.GET_STATUS)
+				.add(Messages.GetStatusRequest.ID, id)
+				.build();
 
 		return request;
 	}
 
-	public static JSONObject createSetStopHandlerRequest(int id, int stoppingTime) {
+	public static JsonObject createAttachUnregisteredRequest(String name, long pid) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SET_STOP_HANDLER);
-		request.put(Messages.SetStopHandlerRequest.ID, id);
-		request.put(Messages.SetStopHandlerRequest.STOPPING_TIME, stoppingTime);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.ATTACH_UNREGISTERED)
+				.add(Messages.AttachUnregisteredRequest.NAME, name)
+				.add(Messages.AttachUnregisteredRequest.PID, pid)
+				.build();
+
+		return request;
+	}
+
+	public static JsonObject createDetachUnregisteredRequest(int id) {
+
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.DETACH_UNREGISTERED)
+				.add(Messages.DetachUnregisteredRequest.ID, id)
+				.build();
+
+		return request;
+	}
+
+	public static JsonObject createSetStopHandlerRequest(int id, int stoppingTime) {
+
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.SET_STOP_HANDLER)
+				.add(Messages.SetStopHandlerRequest.ID, id)
+				.add(Messages.SetStopHandlerRequest.STOPPING_TIME, stoppingTime)
+				.build();
 
 		return request;
 	}
@@ -377,11 +390,12 @@ public class Messages {
 	 * @param text
 	 * @return
 	 */
-	public static JSONObject createIsAliveRequest(int id) {
+	public static JsonObject createIsAliveRequest(int id) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.IS_ALIVE);
-		request.put(Messages.IsAliveRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.IS_ALIVE)
+				.add(Messages.IsAliveRequest.ID, id)
+				.build();
 
 		return request;
 	}
@@ -395,34 +409,35 @@ public class Messages {
 	 * @param returnResult
 	 * @return request
 	 */
-	public static JSONObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint, int thisProxyPort, boolean linked) {
+	public static JsonObject createStartRequest(String name, String[] args, String thisName, int thisId, String thisEndpoint, int thisProxyPort, boolean linked) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.START);
-		request.put(Messages.StartRequest.NAME, name);
+		JsonObjectBuilder builder = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.START)
+				.add(Messages.StartRequest.NAME, name);
 
 		// Add the starter object if This exists.
 		if (thisName != null) {
 
-			JSONObject starter = new JSONObject();
-			starter.put(Messages.ApplicationIdentity.NAME, thisName);
-			starter.put(Messages.ApplicationIdentity.ID, thisId);
-			starter.put(Messages.ApplicationIdentity.SERVER, thisEndpoint);
+			JsonObject starter = Json.createObjectBuilder()
+				.add(Messages.ApplicationIdentity.NAME, thisName)
+				.add(Messages.ApplicationIdentity.ID, thisId)
+				.add(Messages.ApplicationIdentity.SERVER, thisEndpoint)
+				.build();
 
-			request.put(Messages.StartRequest.STARTER, starter);
-			request.put(Messages.StartRequest.STARTER_PROXY_PORT, thisProxyPort);
-			request.put(Messages.StartRequest.STARTER_LINKED, linked);
+			builder.add(Messages.StartRequest.STARTER, starter);
+			builder.add(Messages.StartRequest.STARTER_PROXY_PORT, thisProxyPort);
+			builder.add(Messages.StartRequest.STARTER_LINKED, linked);
 		}
 
 		if (args != null) {
-			JSONArray list = new JSONArray();
+			JsonArrayBuilder listBuilder = Json.createArrayBuilder();
 			for (int i = 0; i < args.length; i++) {
-				list.add(args[i]);
+				listBuilder.add(args[i]);
 			}
-			request.put(Messages.StartRequest.ARGS, list);
+			builder.add(Messages.StartRequest.ARGS, listBuilder.build());
 		}
 
-		return request;
+		return builder.build();
 	}
 
 	/**
@@ -432,12 +447,12 @@ public class Messages {
 	 * @param link
 	 * @return request
 	 */
-	public static JSONObject createStopRequest(int id, boolean link) {
+	public static JsonObject createStopRequest(int id, boolean link) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.STOP);
-		request.put(Messages.StopRequest.ID, id);
-		request.put(Messages.StopRequest.LINK, link);
+		JsonObject request = Json.createObjectBuilder()
+				.add(Messages.TYPE, Messages.STOP)
+				.add(Messages.StopRequest.ID, id)
+				.add(Messages.StopRequest.LINK, link).build();
 
 		return request;
 	}
@@ -448,11 +463,11 @@ public class Messages {
 	 * @param id
 	 * @return request
 	 */
-	public static JSONObject createKillRequest(int id) {
+	public static JsonObject createKillRequest(int id) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.KILL);
-		request.put(Messages.KillRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.KILL)
+			.add(Messages.KillRequest.ID, id).build();
 
 		return request;
 	}
@@ -462,11 +477,11 @@ public class Messages {
 	 * 
 	 * @return request
 	 */
-	public static JSONObject createConnectRequest(String name) {
+	public static JsonObject createConnectRequest(String name) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CONNECT);
-		request.put(Messages.ConnectRequest.NAME, name);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.CONNECT)
+			.add(Messages.ConnectRequest.NAME, name).build();
 
 		return request;
 	}
@@ -476,11 +491,11 @@ public class Messages {
 	 * 
 	 * @return request
 	 */
-	public static JSONObject createConnectWithIdRequest(int id) {
+	public static JsonObject createConnectWithIdRequest(int id) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.CONNECT_WITH_ID);
-		request.put(Messages.ConnectWithIdRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.CONNECT_WITH_ID)
+			.add(Messages.ConnectWithIdRequest.ID, id).build();
 
 		return request;
 	}
@@ -490,23 +505,10 @@ public class Messages {
 	 * 
 	 * @return request
 	 */
-	public static JSONObject createListRequest() {
+	public static JsonObject createListRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.LIST);
-
-		return request;
-	}
-
-	/**
-	 * create showall request
-	 * 
-	 * @return request
-	 */
-	public static JSONObject createAppsRequest() {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.APPS);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.LIST).build();
 
 		return request;
 	}
@@ -516,11 +518,24 @@ public class Messages {
 	 * 
 	 * @return request
 	 */
-	public static JSONObject createOutputPortWithIdRequest(int id) {
+	public static JsonObject createAppsRequest() {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.OUTPUT_PORT_WITH_ID);
-		request.put(Messages.OutputPortWithIdRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.APPS).build();
+
+		return request;
+	}
+
+	/**
+	 * create showall request
+	 * 
+	 * @return request
+	 */
+	public static JsonObject createOutputPortWithIdRequest(int id) {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.OUTPUT_PORT_WITH_ID)
+			.add(Messages.OutputPortWithIdRequest.ID, id).build();
 
 		return request;
 	}
@@ -532,19 +547,20 @@ public class Messages {
 	 * @param inputs
 	 * @return
 	 */
-	public static JSONObject createWriteInputRequest(int id, String[] inputs) {
+	public static JsonObject createWriteInputRequest(int id, String[] inputs) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.WRITE_INPUT);
-		request.put(Messages.WriteInputRequest.ID, id);
+		JsonObjectBuilder builder = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.WRITE_INPUT)
+			.add(Messages.WriteInputRequest.ID, id);
 
-		JSONArray list = new JSONArray();
+		JsonArrayBuilder listBuilder = Json.createArrayBuilder();
 		for (int i = 0; i < inputs.length; i++) {
-			list.add(inputs[i]);
+			listBuilder.add(inputs[i]);
 		}
-		request.put(Messages.WriteInputRequest.PARAMETERS, list);
+		
+		builder.add(Messages.WriteInputRequest.PARAMETERS, listBuilder);
 
-		return request;
+		return builder.build();
 	}
 
 	/**
@@ -552,109 +568,118 @@ public class Messages {
 	 * 
 	 * @param name
 	 */
-	public static JSONObject createOutputPortRequest(String name) {
+	public static JsonObject createOutputPortRequest(String name) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.OUTPUT_PORT);
-		request.put(Messages.OutputRequest.NAME, name);
-
-		return request;
-	}
-
-	public static JSONObject createRequestResponse(int value, String message) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.RESPONSE);
-
-		request.put(Messages.RequestResponse.VALUE, value);
-		request.put(Messages.RequestResponse.MESSAGE, message);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.OUTPUT_PORT)
+			.add(Messages.OutputRequest.NAME, name)
+			.build();
 
 		return request;
 	}
 
-	public static JSONObject createStoreKeyValueRequest(int applicationId, String key, String value) {
+	public static JsonObject createRequestResponse(int value, String message) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.STORE_KEY_VALUE);
-		request.put(Messages.StoreKeyValueRequest.ID, applicationId);
-		request.put(Messages.StoreKeyValueRequest.KEY, key);
-		request.put(Messages.StoreKeyValueRequest.VALUE, value);
-
-		return request;
-	}
-
-	public static JSONObject createGetKeyValueRequest(int applicationId, String key) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.GET_KEY_VALUE);
-		request.put(Messages.GetKeyValueRequest.ID, applicationId);
-		request.put(Messages.GetKeyValueRequest.KEY, key);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.RESPONSE)
+			.add(Messages.RequestResponse.VALUE, value)
+			.add(Messages.RequestResponse.MESSAGE, message)
+			.build();
 
 		return request;
 	}
 
-	public static JSONObject createRemoveKeyRequest(int applicationId, String key) {
+	public static JsonObject createStoreKeyValueRequest(int applicationId, String key, String value) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REMOVE_KEY);
-		request.put(Messages.RemoveKeyRequest.ID, applicationId);
-		request.put(Messages.RemoveKeyRequest.KEY, key);
-
-		return request;
-	}
-
-	public static JSONObject createRequestPortRequest(int applicationId) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.REQUEST_PORT);
-		request.put(Messages.RequestPortRequest.ID, applicationId);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.STORE_KEY_VALUE)
+			.add(Messages.StoreKeyValueRequest.ID, applicationId)
+			.add(Messages.StoreKeyValueRequest.KEY, key)
+			.add(Messages.StoreKeyValueRequest.VALUE, value)
+			.build();
 
 		return request;
 	}
 
-	public static JSONObject createPortUnavailableRequest(int applicationId, int port) {
+	public static JsonObject createGetKeyValueRequest(int applicationId, String key) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.PORT_UNAVAILABLE);
-		request.put(Messages.PortUnavailableRequest.ID, applicationId);
-		request.put(Messages.PortUnavailableRequest.PORT, port);
-
-		return request;
-	}
-
-	public static JSONObject createReleasePortRequest(int applicationId, int port) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.RELEASE_PORT);
-		request.put(Messages.ReleasePortRequest.ID, applicationId);
-		request.put(Messages.ReleasePortRequest.PORT, port);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.GET_KEY_VALUE)
+			.add(Messages.GetKeyValueRequest.ID, applicationId)
+			.add(Messages.GetKeyValueRequest.KEY, key)
+			.build();
 
 		return request;
 	}
 
-	public static JSONObject createPortsRequest() {
+	public static JsonObject createRemoveKeyRequest(int applicationId, String key) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.PORTS);
-
-		return request;
-	}
-
-	public static JSONObject createSetStatusRequest(int id, int state) {
-
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SET_STATUS);
-		request.put(Messages.SetStatusRequest.ID, id);
-		request.put(Messages.SetStatusRequest.APPLICATION_STATE, state);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.REMOVE_KEY)
+			.add(Messages.RemoveKeyRequest.ID, applicationId)
+			.add(Messages.RemoveKeyRequest.KEY, key)
+			.build();
 
 		return request;
 	}
 
-	public static JSONObject createSetResultRequest(int id) {
+	public static JsonObject createRequestPortRequest(int applicationId) {
 
-		JSONObject request = new JSONObject();
-		request.put(Messages.TYPE, Messages.SET_RESULT);
-		request.put(Messages.SetResultRequest.ID, id);
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.REQUEST_PORT)
+			.add(Messages.RequestPortRequest.ID, applicationId).build();
+
+		return request;
+	}
+
+	public static JsonObject createPortUnavailableRequest(int applicationId, int port) {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.PORT_UNAVAILABLE)
+			.add(Messages.PortUnavailableRequest.ID, applicationId)
+			.add(Messages.PortUnavailableRequest.PORT, port)
+			.build();
+
+		return request;
+	}
+
+	public static JsonObject createReleasePortRequest(int applicationId, int port) {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.RELEASE_PORT)
+			.add(Messages.ReleasePortRequest.ID, applicationId)
+			.add(Messages.ReleasePortRequest.PORT, port)
+			.build();
+
+		return request;
+	}
+
+	public static JsonObject createPortsRequest() {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.PORTS)
+			.build();
+
+		return request;
+	}
+
+	public static JsonObject createSetStatusRequest(int id, int state) {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.SET_STATUS)
+			.add(Messages.SetStatusRequest.ID, id)
+			.add(Messages.SetStatusRequest.APPLICATION_STATE, state)
+			.build();
+
+		return request;
+	}
+
+	public static JsonObject createSetResultRequest(int id) {
+
+		JsonObject request = Json.createObjectBuilder()
+			.add(Messages.TYPE, Messages.SET_RESULT)
+			.add(Messages.SetResultRequest.ID, id)
+			.build();
 
 		return request;
 	}

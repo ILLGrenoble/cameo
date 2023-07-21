@@ -16,12 +16,11 @@
 
 package fr.ill.ics.cameo.server;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.Zmq.Msg;
 import fr.ill.ics.cameo.manager.ApplicationState;
 import fr.ill.ics.cameo.messages.Messages;
+import jakarta.json.JsonObject;
 
 public class Converter {
 
@@ -61,7 +60,7 @@ public class Converter {
 		return "NIL";		
 	}
 	
-	public static Msg reply(JSONObject response) {
+	public static Msg reply(JsonObject response) {
 		
 		Zmq.Msg reply = new Zmq.Msg();
 		reply.add(Messages.serialize(response));

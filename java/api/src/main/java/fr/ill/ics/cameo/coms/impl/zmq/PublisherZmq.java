@@ -18,14 +18,14 @@ package fr.ill.ics.cameo.coms.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.base.impl.zmq.ContextZmq;
 import fr.ill.ics.cameo.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class PublisherZmq implements PublisherImpl {
 
@@ -73,8 +73,10 @@ public class PublisherZmq implements PublisherImpl {
 		
 		publisher.sendMore(publisherIdentity);
 		
-		JSONObject messageType = new JSONObject();
-		messageType.put(Messages.TYPE, Messages.STREAM);
+		JsonObject messageType = Json.createObjectBuilder()
+									.add(Messages.TYPE, Messages.STREAM)
+									.build();
+		
 		publisher.sendMore(Messages.serialize(messageType));
 		
 		publisher.send(data, 0);
@@ -84,8 +86,10 @@ public class PublisherZmq implements PublisherImpl {
 		
 		publisher.sendMore(publisherIdentity);
 		
-		JSONObject messageType = new JSONObject();
-		messageType.put(Messages.TYPE, Messages.STREAM);
+		JsonObject messageType = Json.createObjectBuilder()
+									.add(Messages.TYPE, Messages.STREAM)
+									.build();
+		
 		publisher.sendMore(Messages.serialize(messageType));
 				
 		byte[] result = Messages.serialize(data);
@@ -96,8 +100,10 @@ public class PublisherZmq implements PublisherImpl {
 	
 		publisher.sendMore(publisherIdentity);
 	
-		JSONObject messageType = new JSONObject();
-		messageType.put(Messages.TYPE, Messages.STREAM);
+		JsonObject messageType = Json.createObjectBuilder()
+									.add(Messages.TYPE, Messages.STREAM)
+									.build();
+		
 		publisher.sendMore(Messages.serialize(messageType));
 		
 		publisher.sendMore(data1);
@@ -109,8 +115,10 @@ public class PublisherZmq implements PublisherImpl {
 		if (!ended.get()) {
 			publisher.sendMore(publisherIdentity);
 	
-			JSONObject messageType = new JSONObject();
-			messageType.put(Messages.TYPE, Messages.STREAM_END);
+			JsonObject messageType = Json.createObjectBuilder()
+										.add(Messages.TYPE, Messages.STREAM_END)
+										.build();
+
 			publisher.send(Messages.serialize(messageType), 0);
 			
 			ended.set(true);

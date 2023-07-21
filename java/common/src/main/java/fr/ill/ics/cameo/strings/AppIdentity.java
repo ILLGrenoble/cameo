@@ -1,6 +1,7 @@
 package fr.ill.ics.cameo.strings;
 
-import org.json.simple.JSONObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class AppIdentity {
 
@@ -15,19 +16,19 @@ public class AppIdentity {
 		this.server = server;
 	}
 
-	public JSONObject toJSON() {
+	public JsonObject toJSON() {
 						
-		JSONObject result = new JSONObject();
+		JsonObject object = Json.createObjectBuilder()
+			.add("name", name)
+			.add("id", id)
+			.add("server", server.toJSON())
+			.build();
 		
-		result.put("name", name);
-		result.put("id", id);
-		result.put("server", server.toJSON());
-		
-		return result;
+		return object;
 	}
 	
 	public String toString() {
-		return toJSON().toJSONString();
+		return toJSON().toString();
 	}
 	
 }

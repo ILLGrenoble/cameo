@@ -16,21 +16,21 @@
 
 package fr.ill.ics.cameo.examples;
 
-import org.json.simple.JSONObject;
-
 import fr.ill.ics.cameo.base.This;
 import fr.ill.ics.cameo.coms.Publisher;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 public class PublisherApp {
 
 	public static String serializeToJSON(String message, int i) {
 		
-		JSONObject object = new JSONObject();
+		JsonObject valueObject = Json.createObjectBuilder()
+										.add("message", message)
+										.add("value", i)
+										.build();
 		
-		object.put("message", message);
-		object.put("value", i);
-		
-		return object.toJSONString();
+		return valueObject.toString();
 	}
 	
 	public static void main(String[] args) {

@@ -25,9 +25,6 @@ import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.Log;
@@ -36,6 +33,7 @@ import fr.ill.ics.cameo.messages.JSON;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.JsonObject;
 
 public class Server {
 
@@ -212,9 +210,6 @@ public class Server {
 			}
 		}));
 
-		// Create the JSON parser.
-		JSONParser parser = new JSONParser();
-		
 		// Create the request processor.
 		RequestProcessor process = new RequestProcessor();
 		
@@ -247,7 +242,7 @@ public class Server {
 				reply.add(new byte[0]);
 				
 				// Get the JSON request object.
-				JSONObject request = (JSONObject)parser.parse(Messages.parseString(data[4]));
+				JsonObject request = JSON.parse(Messages.parseString(data[4]));
 				
 				// Process the request, first get the type.
 				long type = JSON.getLong(request, Messages.TYPE);

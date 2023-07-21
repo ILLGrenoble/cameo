@@ -17,10 +17,8 @@ package fr.ill.ics.cameo.base.impl.zmq;
 
 
 
+import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.Zmq;
 import fr.ill.ics.cameo.base.ConnectionTimeout;
@@ -35,6 +33,7 @@ import fr.ill.ics.cameo.messages.JSON.Parser;
 import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.strings.StringId;
+import jakarta.json.JsonObject;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	
@@ -122,7 +121,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 
 			try {
 				// Get the JSON object.
-				JSONObject jsonMessage = parser.parse(Messages.parseString(messageValue));
+				JsonObject jsonMessage = parser.parse(Messages.parseString(messageValue));
 				
 				int type = JSON.getInt(jsonMessage, Messages.TYPE);
 				
