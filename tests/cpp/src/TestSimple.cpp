@@ -52,6 +52,8 @@ int main(int argc, char *argv[]) {
 	// Try a second init.
 	server->init();
 
+	auto start = chrono::steady_clock::now();
+
 	// Loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {
 
@@ -62,6 +64,10 @@ int main(int argc, char *argv[]) {
 
 		cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 	}
+
+	auto end = chrono::steady_clock::now();
+
+	cout << "Finished the application after " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms" << endl;
 
 	return 0;
 }
