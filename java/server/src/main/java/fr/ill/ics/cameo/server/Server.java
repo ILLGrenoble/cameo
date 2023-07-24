@@ -33,9 +33,9 @@ import fr.ill.ics.cameo.common.messages.JSON;
 import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.strings.Endpoint;
 import fr.ill.ics.cameo.common.strings.StringId;
-import fr.ill.ics.cameo.manager.ConfigManager;
-import fr.ill.ics.cameo.manager.Log;
-import fr.ill.ics.cameo.manager.Manager;
+import fr.ill.ics.cameo.server.manager.ConfigManager;
+import fr.ill.ics.cameo.server.manager.Log;
+import fr.ill.ics.cameo.server.manager.Manager;
 
 public class Server {
 

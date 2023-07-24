@@ -14,18 +14,14 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.manager;
 
-public class UnknownApplicationException extends Exception {
 
-	private static final long serialVersionUID = -5719153178597114747L;
-	private String name;
-
-	public UnknownApplicationException(String name) {
-		this.name = name;
-	}
-
-	public String getMessage() {
-		return "Unknown application '" + name + "'";
-	}
+/**
+ * describe states of process
+ * @author heurtin
+ *
+ */
+public enum ProcessState {
+	RUNNING, UNKNOWN, ZOMBIE, DEAD
 }

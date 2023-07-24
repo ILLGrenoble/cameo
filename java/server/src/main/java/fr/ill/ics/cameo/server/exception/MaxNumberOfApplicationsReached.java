@@ -14,14 +14,18 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.manager;
+package fr.ill.ics.cameo.server.exception;
 
+public class MaxNumberOfApplicationsReached extends Exception {
 
-/**
- * describe states of process
- * @author heurtin
- *
- */
-public enum ProcessState {
-	RUNNING, UNKNOWN, ZOMBIE, DEAD
+	private static final long serialVersionUID = -679186322182419615L;
+	private String name;
+	
+	public MaxNumberOfApplicationsReached(String name) {
+		this.name = name;
+	}
+
+	public String getMessage() {
+		return "Cannot start '" + name + "' because its maximum number of running applications is reached";
+	}
 }

@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import fr.ill.ics.cameo.manager.Environment;
+import fr.ill.ics.cameo.server.manager.Environment;
 
 public class TestEnvironment {
 

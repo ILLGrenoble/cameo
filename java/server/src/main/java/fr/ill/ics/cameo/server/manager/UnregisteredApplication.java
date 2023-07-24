@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.manager;
+package fr.ill.ics.cameo.server.manager;
 
 import fr.ill.ics.cameo.common.strings.Endpoint;
 import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;

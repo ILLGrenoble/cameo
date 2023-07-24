@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.threads;
+package fr.ill.ics.cameo.server.threads;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,9 +27,9 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.com.Zmq;
 import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.strings.StringId;
-import fr.ill.ics.cameo.manager.Application;
-import fr.ill.ics.cameo.manager.Log;
-import fr.ill.ics.cameo.manager.Manager;
+import fr.ill.ics.cameo.server.manager.Application;
+import fr.ill.ics.cameo.server.manager.Log;
+import fr.ill.ics.cameo.server.manager.Manager;
 
 /**
  * Class getting the stream from the process input stream.

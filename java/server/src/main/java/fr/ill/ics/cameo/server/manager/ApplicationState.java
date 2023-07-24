@@ -14,22 +14,23 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.manager;
 
-public class GetPidErrorException extends Exception {
+
+/**
+ * List of possible application states.
+ *
+ */
+public class ApplicationState {
 	
-	private static final long serialVersionUID = -5139958494856857849L;
-	private Exception exception;
-	
-	public GetPidErrorException(Exception exception) {
-		this.exception = exception;
-	}
-	
-	public Exception getException() {
-		return exception;
-	}
-	
-	public GetPidErrorException() {
-		super();
-	}
+	public final static int NIL = 0;
+	public final static int STARTING = 1;
+	public final static int RUNNING = 2;
+	public final static int STOPPING = 4;
+	public final static int KILLING = 8;
+	public final static int PROCESSING_FAILURE = 16;
+	public final static int FAILURE = 32;
+	public final static int SUCCESS = 64;
+	public final static int STOPPED = 128;
+	public final static int KILLED = 256;
 }

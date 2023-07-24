@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.manager;
+package fr.ill.ics.cameo.server.manager;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,15 +34,15 @@ import fr.ill.ics.cameo.com.Zmq.Context;
 import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
 import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.exception.IdNotFoundException;
-import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.exception.MaxGlobalNumberOfApplicationsReached;
-import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
-import fr.ill.ics.cameo.exception.StreamNotPublishedException;
-import fr.ill.ics.cameo.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.exception.UnregisteredApplicationException;
-import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
-import fr.ill.ics.cameo.threads.StreamApplicationThread;
+import fr.ill.ics.cameo.server.exception.IdNotFoundException;
+import fr.ill.ics.cameo.server.exception.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
+import fr.ill.ics.cameo.server.exception.MaxNumberOfApplicationsReached;
+import fr.ill.ics.cameo.server.exception.StreamNotPublishedException;
+import fr.ill.ics.cameo.server.exception.UnknownApplicationException;
+import fr.ill.ics.cameo.server.exception.UnregisteredApplicationException;
+import fr.ill.ics.cameo.server.threads.LifecycleApplicationThread;
+import fr.ill.ics.cameo.server.threads.StreamApplicationThread;
 
 public class Manager extends ConfigLoader {
 

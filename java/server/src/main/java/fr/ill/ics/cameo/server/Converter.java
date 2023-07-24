@@ -21,7 +21,7 @@ import org.json.simple.JSONObject;
 import fr.ill.ics.cameo.com.Zmq;
 import fr.ill.ics.cameo.com.Zmq.Msg;
 import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.manager.ApplicationState;
+import fr.ill.ics.cameo.server.manager.ApplicationState;
 
 public class Converter {
 

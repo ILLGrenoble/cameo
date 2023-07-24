@@ -14,18 +14,18 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.exception;
 
-public class MaxNumberOfApplicationsReached extends Exception {
+public class UnknownApplicationException extends Exception {
 
-	private static final long serialVersionUID = -679186322182419615L;
+	private static final long serialVersionUID = -5719153178597114747L;
 	private String name;
-	
-	public MaxNumberOfApplicationsReached(String name) {
+
+	public UnknownApplicationException(String name) {
 		this.name = name;
 	}
 
 	public String getMessage() {
-		return "Cannot start '" + name + "' because its maximum number of running applications is reached";
+		return "Unknown application '" + name + "'";
 	}
 }

@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.manager;
+package fr.ill.ics.cameo.server.manager;
 
 public class PortInfo {
 

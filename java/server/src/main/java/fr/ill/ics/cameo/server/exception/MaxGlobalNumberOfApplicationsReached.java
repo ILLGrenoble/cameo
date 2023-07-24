@@ -14,13 +14,18 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.exception;
 
-public class UnregisteredApplicationException extends Exception {
+public class MaxGlobalNumberOfApplicationsReached extends Exception {
 
-	private static final long serialVersionUID = 2994457373229964613L;
+	private static final long serialVersionUID = -564543760445565040L;
+	private String name;
+	
+	public MaxGlobalNumberOfApplicationsReached(String name) {
+		this.name = name;
+	}
 
 	public String getMessage() {
-		return "The application is not registered" ;
+		return "Cannot start '" + name + "' because the maximum global number of running applications is reached";
 	}
 }

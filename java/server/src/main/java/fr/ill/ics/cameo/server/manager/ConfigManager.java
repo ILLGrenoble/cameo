@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.manager;
+package fr.ill.ics.cameo.server.manager;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

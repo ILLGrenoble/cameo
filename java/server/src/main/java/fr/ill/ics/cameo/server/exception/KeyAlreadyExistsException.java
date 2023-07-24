@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.exception;
 
 public class KeyAlreadyExistsException extends Exception {
 

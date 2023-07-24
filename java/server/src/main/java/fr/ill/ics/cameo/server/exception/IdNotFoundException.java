@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.exception;
 
-public class StreamNotPublishedException extends Exception {
+public class IdNotFoundException extends Exception {
 
-	private static final long serialVersionUID = -153342115687589400L;
+	private static final long serialVersionUID = -5038844210257342962L;
 
 	public String getMessage() {
-		return "Stream is not published";
+		return "The id does not exist";
 	}
 }

@@ -14,13 +14,22 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.exception;
+package fr.ill.ics.cameo.server.exception;
 
-public class IdNotFoundException extends Exception {
-
-	private static final long serialVersionUID = -5038844210257342962L;
-
-	public String getMessage() {
-		return "The id does not exist";
+public class GetPidErrorException extends Exception {
+	
+	private static final long serialVersionUID = -5139958494856857849L;
+	private Exception exception;
+	
+	public GetPidErrorException(Exception exception) {
+		this.exception = exception;
+	}
+	
+	public Exception getException() {
+		return exception;
+	}
+	
+	public GetPidErrorException() {
+		super();
 	}
 }
