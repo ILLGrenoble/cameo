@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo;
+package fr.ill.ics.cameo.test;
 
 import java.io.File;
 import java.io.IOException;

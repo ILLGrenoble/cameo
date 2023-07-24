@@ -22,8 +22,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>9</maven.compiler.source>
-		<maven.compiler.target>9</maven.compiler.target>
 		<src.dir>src</src.dir>
 	</properties>
 		
@@ -44,6 +42,14 @@
 	<build>
         <sourceDirectory>${src.dir}</sourceDirectory>
 		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
 
 			<!-- Assemble a single jar -->
 			<plugin>

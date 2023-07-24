@@ -20,9 +20,19 @@
 		</dependency>
 	</dependencies>
 	
-	
 	<build>
 		<sourceDirectory>../src</sourceDirectory>
+		
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+		</plugins>
+		
 	</build>
 	
 </project>
