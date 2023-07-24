@@ -28,14 +28,14 @@ import java.util.jar.Manifest;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.com.Zmq;
+import fr.ill.ics.cameo.common.messages.JSON;
+import fr.ill.ics.cameo.common.messages.Messages;
+import fr.ill.ics.cameo.common.strings.Endpoint;
+import fr.ill.ics.cameo.common.strings.StringId;
 import fr.ill.ics.cameo.manager.ConfigManager;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.StringId;
 
 public class Server {
 

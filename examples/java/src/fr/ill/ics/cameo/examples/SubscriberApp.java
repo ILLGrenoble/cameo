@@ -20,11 +20,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.State;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Subscriber;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.State;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.coms.Subscriber;
 
 public class SubscriberApp {
 

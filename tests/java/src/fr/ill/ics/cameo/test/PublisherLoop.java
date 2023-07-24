@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class PublisherLoop {
@@ -29,7 +29,7 @@ public class PublisherLoop {
 			System.out.println("Creating publisher and waiting for 1 subscriber...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher", 1);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", 1);
 			
 			// Synchronize with subscribers.
 			publisher.init();

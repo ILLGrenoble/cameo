@@ -18,10 +18,10 @@ package fr.ill.ics.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.StartException;
-import fr.ill.ics.cameo.base.State;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.StartException;
+import fr.ill.ics.cameo.api.base.State;
 
 public class TestServer {
 

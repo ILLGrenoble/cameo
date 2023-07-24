@@ -16,8 +16,8 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class Linked {

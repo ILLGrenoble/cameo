@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.InitException;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.api.base.InitException;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.common.messages.Messages;
 
 
 public class MultiResponder {
@@ -31,7 +31,7 @@ public class MultiResponder {
 			System.out.println("Creating router");
 			
 			// Create the router.
-			fr.ill.ics.cameo.coms.multi.ResponderRouter router = fr.ill.ics.cameo.coms.multi.ResponderRouter.create("responder");
+			fr.ill.ics.cameo.api.coms.multi.ResponderRouter router = fr.ill.ics.cameo.api.coms.multi.ResponderRouter.create("responder");
 			router.init();
 
 			System.out.println("Created router");
@@ -43,12 +43,12 @@ public class MultiResponder {
 				public void run() {
 
 					// Create the responder.
-					fr.ill.ics.cameo.coms.multi.Responder responder = null;
+					fr.ill.ics.cameo.api.coms.multi.Responder responder = null;
 					
 					try {
 						System.out.println("Creating responder");
 						
-						responder = fr.ill.ics.cameo.coms.multi.Responder.create(router);
+						responder = fr.ill.ics.cameo.api.coms.multi.Responder.create(router);
 						responder.init();
 						
 						System.out.println("Created responder");
@@ -56,7 +56,7 @@ public class MultiResponder {
 					catch (InitException e) {
 					}
 					
-					fr.ill.ics.cameo.coms.multi.Request request = responder.receive();
+					fr.ill.ics.cameo.api.coms.multi.Request request = responder.receive();
 					System.out.println("Received request " + request.get());
 
 					// Reply.

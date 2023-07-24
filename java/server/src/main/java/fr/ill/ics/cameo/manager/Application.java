@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.common.strings.Endpoint;
+import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;
 import fr.ill.ics.cameo.server.Converter;
-import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 
 /**

@@ -8,11 +8,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
-import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
-import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.common.messages.JSON;
+import fr.ill.ics.cameo.common.messages.Messages;
+import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.common.strings.ApplicationWithStarterIdentity;
+import fr.ill.ics.cameo.common.strings.Endpoint;
 
 public class TestStrings {
 

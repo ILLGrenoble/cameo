@@ -29,8 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Context;
+import fr.ill.ics.cameo.com.Zmq;
+import fr.ill.ics.cameo.com.Zmq.Context;
+import fr.ill.ics.cameo.common.messages.Messages;
+import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.common.strings.Endpoint;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxGlobalNumberOfApplicationsReached;
@@ -38,9 +41,6 @@ import fr.ill.ics.cameo.exception.MaxNumberOfApplicationsReached;
 import fr.ill.ics.cameo.exception.StreamNotPublishedException;
 import fr.ill.ics.cameo.exception.UnknownApplicationException;
 import fr.ill.ics.cameo.exception.UnregisteredApplicationException;
-import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.strings.Endpoint;
 import fr.ill.ics.cameo.threads.LifecycleApplicationThread;
 import fr.ill.ics.cameo.threads.StreamApplicationThread;
 

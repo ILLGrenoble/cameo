@@ -18,10 +18,10 @@ package fr.ill.ics.cameo.server;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Msg;
+import fr.ill.ics.cameo.com.Zmq;
+import fr.ill.ics.cameo.com.Zmq.Msg;
+import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.manager.ApplicationState;
-import fr.ill.ics.cameo.messages.Messages;
 
 public class Converter {
 

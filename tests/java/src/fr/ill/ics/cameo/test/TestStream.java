@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Option;
-import fr.ill.ics.cameo.base.OutputStreamSocket;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Option;
+import fr.ill.ics.cameo.api.base.OutputStreamSocket;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class TestStream {

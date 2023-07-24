@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class TestBasicRequester {
@@ -84,7 +84,7 @@ public class TestBasicRequester {
 				}
 				
 				// Create the responder.
-				fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+				fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
 				
 				System.out.println("Responder ready ? " + responder.isReady());
 				responder.init();
@@ -97,7 +97,7 @@ public class TestBasicRequester {
 				for (int j = 0; j < N * 10; ++j) {
 					
 					// Receive the simple request.
-					fr.ill.ics.cameo.coms.basic.Request request = responder.receive();
+					fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
 		    		request.replyString("done");
 		    		
 		    		System.out.println("Processed " + request);

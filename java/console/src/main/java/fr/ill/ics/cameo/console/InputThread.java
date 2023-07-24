@@ -19,8 +19,8 @@ package fr.ill.ics.cameo.console;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
-import fr.ill.ics.cameo.base.RemoteException;
-import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.api.base.RemoteException;
+import fr.ill.ics.cameo.api.base.Server;
 
 public class InputThread extends Thread {
 

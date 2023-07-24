@@ -18,9 +18,9 @@ package fr.ill.ics.cameo.test;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.base.UndefinedKeyException;
+import fr.ill.ics.cameo.api.base.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.base.UndefinedKeyException;
 
 
 public class WaitStorage {

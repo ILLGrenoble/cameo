@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class PublisherError {
@@ -36,7 +36,7 @@ public class PublisherError {
 			System.out.println("Creating publisher and waiting for " + numberOfSubscribers + " subscriber(s)...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.coms.Publisher publisher = fr.ill.ics.cameo.coms.Publisher.create("publisher", numberOfSubscribers);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", numberOfSubscribers);
 			
 			// Synchronize with subscribers.
 			publisher.init();

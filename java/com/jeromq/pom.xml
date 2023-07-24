@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-com-jeromq</artifactId>
-	<version>0.0.6</version>
+	<version>0.1.0</version>
 	
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.zeromq</groupId>
 			<artifactId>jeromq</artifactId>
-			<version>0.5.2</version>
+			<version>0.5.3</version>
 		</dependency>
 	</dependencies>
 </project>

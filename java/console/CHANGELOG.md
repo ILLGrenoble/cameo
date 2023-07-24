@@ -1,7 +1,8 @@
-2.1.2 (NP)
+2.2.0 (NP)
 -----
 
 * Error message.
+* Modularization.
 
 2.1.1
 -----

@@ -16,12 +16,12 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.State;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Requester;
-import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.State;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.coms.Requester;
+import fr.ill.ics.cameo.common.messages.Messages;
 
 
 public class TestMultiResponder {

@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.ServerAndApp;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.api.base.ServerAndApp;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.common.messages.Messages;
 
 
 public class BasicResponder {
@@ -36,7 +36,7 @@ public class BasicResponder {
 			System.out.println("Creating responder");
 			
 			// Create the responder.
-			fr.ill.ics.cameo.coms.basic.Responder responder = fr.ill.ics.cameo.coms.basic.Responder.create("responder");
+			fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
 			responder.init();
 			
 			// Set the state.
@@ -44,7 +44,7 @@ public class BasicResponder {
 			
 			
 			// Receive the first request.
-			fr.ill.ics.cameo.coms.basic.Request request = responder.receive();
+			fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
 			System.out.println("Received request " + request.get());
 
 			// Reply.

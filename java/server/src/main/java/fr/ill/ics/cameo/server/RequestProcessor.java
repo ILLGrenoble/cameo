@@ -23,8 +23,13 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
-import fr.ill.ics.cameo.Zmq.Msg;
+import fr.ill.ics.cameo.com.Zmq;
+import fr.ill.ics.cameo.com.Zmq.Msg;
+import fr.ill.ics.cameo.common.messages.JSON;
+import fr.ill.ics.cameo.common.messages.Messages;
+import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.common.strings.Endpoint;
+import fr.ill.ics.cameo.common.strings.StringId;
 import fr.ill.ics.cameo.exception.IdNotFoundException;
 import fr.ill.ics.cameo.exception.KeyAlreadyExistsException;
 import fr.ill.ics.cameo.exception.MaxGlobalNumberOfApplicationsReached;
@@ -41,12 +46,7 @@ import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
 import fr.ill.ics.cameo.manager.PortInfo;
 import fr.ill.ics.cameo.manager.StatusInfo;
-import fr.ill.ics.cameo.messages.JSON;
-import fr.ill.ics.cameo.messages.Messages;
 import fr.ill.ics.cameo.server.Server.Version;
-import fr.ill.ics.cameo.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.strings.Endpoint;
-import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * 

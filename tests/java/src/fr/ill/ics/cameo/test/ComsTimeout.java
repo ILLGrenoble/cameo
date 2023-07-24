@@ -16,10 +16,10 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.ServerAndApp;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Requester;
-import fr.ill.ics.cameo.coms.Subscriber;
+import fr.ill.ics.cameo.api.base.ServerAndApp;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.coms.Requester;
+import fr.ill.ics.cameo.api.coms.Subscriber;
 
 
 public class ComsTimeout {

@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test.attic;
 
-import fr.ill.ics.cameo.base.Server;
+import fr.ill.ics.cameo.api.base.Server;
 
 public class TestBadEndpoint {
 			

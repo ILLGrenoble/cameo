@@ -19,7 +19,7 @@ package fr.ill.ics.cameo.manager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.common.strings.Endpoint;
 
 public final class ConfigManager {
 

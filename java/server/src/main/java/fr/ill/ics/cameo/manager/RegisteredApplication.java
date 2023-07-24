@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.ProcessHandlerImpl;
+import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
+import fr.ill.ics.cameo.common.strings.ApplicationWithStarterIdentity;
+import fr.ill.ics.cameo.common.strings.Endpoint;
 import fr.ill.ics.cameo.manager.OperatingSystem.OS;
-import fr.ill.ics.cameo.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.strings.ApplicationWithStarterIdentity;
-import fr.ill.ics.cameo.strings.Endpoint;
+import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;
 
 public class RegisteredApplication extends Application {
 

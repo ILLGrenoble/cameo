@@ -18,8 +18,8 @@ package fr.ill.ics.cameo.examples;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Publisher;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.coms.Publisher;
 
 public class PublisherApp {
 

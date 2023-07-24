@@ -16,11 +16,11 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.InitException;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.messages.Messages;
+import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.InitException;
+import fr.ill.ics.cameo.api.base.Server;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.common.messages.Messages;
 
 
 public class Subscriber {
@@ -45,7 +45,7 @@ public class Subscriber {
 			App publisherApplication = server.connect(applicationName);
 			
 			System.out.println("Subscribing publisher...");
-			fr.ill.ics.cameo.coms.Subscriber subscriber = fr.ill.ics.cameo.coms.Subscriber.create(publisherApplication, "publisher");
+			fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
 			subscriber.init();
 			System.out.println("Synchronized with 1 publisher");
 			

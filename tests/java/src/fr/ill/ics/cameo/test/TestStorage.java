@@ -19,10 +19,10 @@ package fr.ill.ics.cameo.test;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.base.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.base.UndefinedKeyException;
-import fr.ill.ics.cameo.messages.JSON;
+import fr.ill.ics.cameo.api.base.KeyAlreadyExistsException;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.base.UndefinedKeyException;
+import fr.ill.ics.cameo.common.messages.JSON;
 
 
 public class TestStorage {

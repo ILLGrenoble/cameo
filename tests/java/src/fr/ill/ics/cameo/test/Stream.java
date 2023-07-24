@@ -16,7 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
-import fr.ill.ics.cameo.base.This;
+import fr.ill.ics.cameo.api.base.This;
 
 
 public class Stream {

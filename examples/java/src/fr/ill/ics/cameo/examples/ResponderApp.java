@@ -16,9 +16,9 @@
 
 package fr.ill.ics.cameo.examples;
 
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.basic.Request;
-import fr.ill.ics.cameo.coms.basic.Responder;
+import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.coms.basic.Request;
+import fr.ill.ics.cameo.api.coms.basic.Responder;
 
 
 public class ResponderApp {

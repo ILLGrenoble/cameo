@@ -24,12 +24,12 @@ import java.io.InputStreamReader;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.Zmq;
+import fr.ill.ics.cameo.com.Zmq;
+import fr.ill.ics.cameo.common.messages.Messages;
+import fr.ill.ics.cameo.common.strings.StringId;
 import fr.ill.ics.cameo.manager.Application;
 import fr.ill.ics.cameo.manager.Log;
 import fr.ill.ics.cameo.manager.Manager;
-import fr.ill.ics.cameo.messages.Messages;
-import fr.ill.ics.cameo.strings.StringId;
 
 /**
  * Class getting the stream from the process input stream.
