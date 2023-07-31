@@ -189,7 +189,7 @@ public:
 	static const std::string KEY;
 
 	/**
-	 * Constant uuid for the unique responder port.
+	 * Port key for the JSON object stored for the responder key.
 	 */
 	static const std::string PORT;
 

@@ -114,10 +114,29 @@ public:
 	 */
 	std::string toString() const override;
 
+	/**
+	 * Constant uuid for the unique publisher key.
+	 */
 	static const std::string KEY;
+
+	/**
+	 * Port key for the JSON object stored for the responder key.
+	 */
 	static const std::string PUBLISHER_PORT;
+
+	/**
+	 * Number of subscribers key for the JSON object stored for the responder key.
+	 */
 	static const std::string NUMBER_OF_SUBSCRIBERS;
+
+	/**
+	 * Prefix for the temporary responder used for the synchronization.
+	 */
 	static const std::string RESPONDER_PREFIX;
+
+	/**
+	 * Message type for the temporary responder used for the synchronization.
+	 */
 	static const int SUBSCRIBE_PUBLISHER = 100;
 
 private:
