@@ -135,13 +135,16 @@ public:
 	static const std::string RESPONDER_PREFIX;
 
 	/**
-	 * Message type for the temporary responder used for the synchronization.
+	 * Message type for the responder used for the synchronization.
 	 */
 	static const int SUBSCRIBE_PUBLISHER = 100;
 
 private:
+	static const int CANCEL_RESPONDER = 0;
+
 	Publisher(const std::string &name, int numberOfSubscribers);
 
+	void responderLoop();
 	bool waitForSubscribers();
 
 	std::string m_name;
@@ -150,6 +153,8 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<basic::Responder> m_responder;
+	std::unique_ptr<std::thread> m_responderThread;
+	ConcurrentQueue<int> m_responderQueue;
 	std::atomic_bool m_canceled;
 };
 

@@ -58,7 +58,12 @@ void Publisher::terminate() {
 	if (m_impl) {
 		This::getCom().removeKey(m_key);
 
-		m_responder.reset();
+		if (m_responderThread) {
+			m_responder->cancel();
+			m_responderThread->join();
+			m_responder.reset();
+		}
+
 		m_impl.reset();
 	}
 
@@ -97,7 +102,25 @@ void Publisher::init() {
 
 	// Wait for the subscribers.
 	if (m_numberOfSubscribers > 0) {
-		waitForSubscribers();
+
+		std::cout << "Sync subscribers" << std::endl;
+
+		try {
+			m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
+			m_responder->init();
+
+			m_responderThread = std::make_unique<std::thread>(std::bind(&Publisher::responderLoop, this));;
+		}
+		catch (const InitException& e) {
+			return;
+		}
+
+		if (!waitForSubscribers()) {
+			return;
+		}
+	}
+	else {
+		std::cout << "No sync" << std::endl;
 	}
 
 	setReady();
@@ -111,44 +134,52 @@ const std::string& Publisher::getName() const {
 	return m_name;
 }
 
-bool Publisher::waitForSubscribers() {
+void Publisher::responderLoop() {
 
-	try {
-		m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
-		m_responder->init();
+	while (true) {
 
-		// Loop until the number of subscribers is reached.
-		int counter = 0;
+		std::unique_ptr<basic::Request> request {m_responder->receive()};
 
-		while (counter < m_numberOfSubscribers) {
-
-			std::unique_ptr<basic::Request> request {m_responder->receive()};
-
-			if (!request) {
-				return false;
-			}
-
-			// Get the JSON request.
-			json::Object jsonRequest;
-			json::parse(jsonRequest, request->get());
-
-			int type {jsonRequest[message::TYPE].GetInt()};
-
-			if (type == SUBSCRIBE_PUBLISHER) {
-				counter++;
-			}
-
-			request->reply("OK");
+		if (!request) {
+			return;
 		}
 
-		bool canceled = m_responder->isCanceled();
-		m_responder.reset();
+		// Get the JSON request.
+		json::Object jsonRequest;
+		json::parse(jsonRequest, request->get());
 
-		return !canceled;
+		int type {jsonRequest[message::TYPE].GetInt()};
+
+		if (type == SUBSCRIBE_PUBLISHER) {
+			std::unique_ptr<int> item { new int{SUBSCRIBE_PUBLISHER} };
+			m_responderQueue.push(item);
+		}
+
+		request->reply("OK");
 	}
-	catch (const InitException& e) {
-		return false;
+}
+
+bool Publisher::waitForSubscribers() {
+
+	// Loop until the number of subscribers is reached.
+	int counter = 0;
+
+	while (counter < m_numberOfSubscribers) {
+
+		std::unique_ptr<int> item = m_responderQueue.pop();
+
+		if (*item.get() == SUBSCRIBE_PUBLISHER) {
+			counter++;
+			std::cout << "Received subscription" << std::endl;
+		}
+		else if (*item.get() == CANCEL_RESPONDER) {
+			return false;
+		}
 	}
+
+	std::cout << "waitForSubscribers ok" << std::endl;
+
+	return true;
 }
 
 void Publisher::cancel() {
@@ -156,6 +187,9 @@ void Publisher::cancel() {
 	if (m_responder) {
 		m_canceled = true;
 		m_responder->cancel();
+
+		std::unique_ptr<int> item { new int{CANCEL_RESPONDER} };
+		m_responderQueue.push(item);
 	}
 }
 
