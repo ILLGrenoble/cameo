@@ -142,6 +142,7 @@ public class TestSelector {
 		apps.add("testmultirespondercpp");
 		apps.add("testmultiresponderscpp");		
 		apps.add("testpublishercpp");
+		apps.add("testpublishersynccpp");
 		apps.add("testsubscribercpp");
 		apps.add("testcancelcpp");
 		apps.add("teststreamcpp");

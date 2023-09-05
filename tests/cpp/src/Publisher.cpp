@@ -26,21 +26,27 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
+	bool syncSubscribers = false;
 	int numberOfSubscribers = 1;
 
 	if (argc > 2) {
-		istringstream is(argv[1]);
+		syncSubscribers = (string(argv[1]) == "true");
+	}
+
+	if (argc > 3) {
+		istringstream is(argv[2]);
 		is >> numberOfSubscribers;
 	}
 
 	cout << "Number of subscribers is " << numberOfSubscribers << endl;
+	cout << "Sync subscribers is " << syncSubscribers << endl;
 
 	unique_ptr<coms::Publisher> publisher;
 
 	try {
 		cout << "Creating publisher and waiting for " << numberOfSubscribers << " subscriber(s)..." << endl;
 
-		publisher = coms::Publisher::create("publisher", numberOfSubscribers);
+		publisher = coms::Publisher::create("publisher", numberOfSubscribers, syncSubscribers);
 		publisher->init();
 	}
 	catch (const InitException& e) {

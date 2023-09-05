@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
 
 		cancelThread.join();
 
-		cout << "Subscriber canceled " << publisher->isCanceled() << endl;
+		cout << "Publisher canceled " << publisher->isCanceled() << endl;
 	}
 
 	// Test the killing of the application.

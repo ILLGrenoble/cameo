@@ -14,34 +14,47 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_SUBSCRIBERIMPL_H_
-#define CAMEO_SUBSCRIBERIMPL_H_
-
-#include "Strings.h"
-#include <optional>
-#include <tuple>
+#include "SyncPublisherZmq.h"
 
 namespace cameo {
 namespace coms {
 
-class SubscriberImpl {
+SyncPublisherZmq::SyncPublisherZmq() {
+}
 
-public:
-	virtual ~SubscriberImpl() {}
+SyncPublisherZmq::~SyncPublisherZmq() {
+}
 
-	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp) = 0;
-	virtual bool sync(int timeout) = 0;
+void SyncPublisherZmq::sendSync() {
 
-	virtual bool hasEnded() const = 0;
-	virtual bool isCanceled() const = 0;
+	std::unique_lock<std::mutex> lock(m_mutex);
 
-	virtual std::optional<std::string> receive() = 0;
-	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoParts() = 0;
+	PublisherZmq::sendSync();
+}
 
-	virtual void cancel() = 0;
-};
+void SyncPublisherZmq::send(const std::string& data) {
+
+	std::unique_lock<std::mutex> lock(m_mutex);
+
+	PublisherZmq::send(data);
+}
+
+void SyncPublisherZmq::sendTwoParts(const std::string& data1, const std::string& data2) {
+
+	std::unique_lock<std::mutex> lock(m_mutex);
+
+	PublisherZmq::sendTwoParts(data1, data2);
+}
+
+void SyncPublisherZmq::setEnd() {
+
+	std::unique_lock<std::mutex> lock(m_mutex);
+
+	PublisherZmq::setEnd();
+
+
+}
 
 }
 }
 
-#endif

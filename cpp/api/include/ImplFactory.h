@@ -91,9 +91,10 @@ public:
 
 	/**
 	 * Creates a publisher implementation.
+	 * \param sync True if is a synchronized publisher.
 	 * \return A new coms::PublisherImpl object.
 	 */
-	static std::unique_ptr<coms::PublisherImpl> createPublisher();
+	static std::unique_ptr<coms::PublisherImpl> createPublisher(bool sync);
 
 	/**
 	 * Creates a subscriber implementation.

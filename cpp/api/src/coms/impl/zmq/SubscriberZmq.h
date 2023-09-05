@@ -34,6 +34,7 @@ public:
 	virtual ~SubscriberZmq();
 
 	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp);
+	virtual bool sync(int timeout);
 
 	virtual bool hasEnded() const;
 	virtual bool isCanceled() const;
@@ -51,6 +52,7 @@ private:
 	std::unique_ptr<zmq::socket_t> m_cancelPublisher;
 	std::atomic_bool m_ended;
 	std::atomic_bool m_canceled;
+	zmq_pollitem_t m_items[1];
 };
 
 }

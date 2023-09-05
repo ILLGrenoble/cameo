@@ -21,6 +21,7 @@
 #include "../base/impl/zmq/EventStreamSocketZmq.h"
 #include "../base/impl/zmq/OutputStreamSocketZmq.h"
 #include "../coms/impl/zmq/PublisherZmq.h"
+#include "../coms/impl/zmq/SyncPublisherZmq.h"
 #include "../coms/impl/zmq/SubscriberZmq.h"
 #include "../coms/impl/zmq/BasicResponderZmq.h"
 #include "../coms/impl/zmq/RequesterZmq.h"
@@ -66,8 +67,13 @@ std::unique_ptr<StreamSocketImpl> ImplFactory::createOutputStreamSocket(const st
 	return std::make_unique<OutputStreamSocketZmq>(name);
 }
 
-std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher() {
-	return std::make_unique<coms::PublisherZmq>();
+std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher(bool sync) {
+	if (sync) {
+		return std::make_unique<coms::SyncPublisherZmq>();
+	}
+	else {
+		return std::make_unique<coms::PublisherZmq>();
+	}
 }
 
 std::unique_ptr<coms::SubscriberImpl> ImplFactory::createSubscriber() {

@@ -30,6 +30,8 @@
 namespace cameo {
 namespace coms {
 
+constexpr int SYNC_TIMEOUT = 100;
+
 ///////////////////////////////////////////////////////////////////////////////
 // Publisher
 
@@ -37,13 +39,15 @@ const std::string Publisher::KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b
 const std::string Publisher::PUBLISHER_PORT = "publisher_port";
 const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
+const std::string Publisher::SYNC_SUBSCRIBERS = "sync_subscribers";
 
-Publisher::Publisher(const std::string& name, int numberOfSubscribers) :
+Publisher::Publisher(const std::string& name, int numberOfSubscribers, bool syncSubscribers) :
 	m_name{name},
 	m_numberOfSubscribers{numberOfSubscribers},
+	m_syncSubscribers{syncSubscribers},
 	m_canceled{false} {
 
-	m_impl = ImplFactory::createPublisher();
+	m_impl = ImplFactory::createPublisher(syncSubscribers);
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting{std::bind(&Publisher::cancel, this)});
@@ -92,6 +96,9 @@ void Publisher::init() {
 	jsonData.pushKey(NUMBER_OF_SUBSCRIBERS);
 	jsonData.pushValue(m_numberOfSubscribers);
 
+	jsonData.pushKey(SYNC_SUBSCRIBERS);
+	jsonData.pushValue(m_syncSubscribers);
+
 	try {
 		This::getCom().storeKeyValue(m_key, jsonData.dump());
 	}
@@ -100,10 +107,8 @@ void Publisher::init() {
 		throw InitException("A publisher with the name \"" + m_name + "\" already exists");
 	}
 
-	// Wait for the subscribers.
-	if (m_numberOfSubscribers > 0) {
-
-		std::cout << "Sync subscribers" << std::endl;
+	// Create the responder thread if subscribers are synchronized or waiting for subscribers is enabled.
+	if (m_numberOfSubscribers > 0 || m_syncSubscribers) {
 
 		try {
 			m_responder = coms::basic::Responder::create(RESPONDER_PREFIX + m_name);
@@ -115,19 +120,19 @@ void Publisher::init() {
 			return;
 		}
 
-		if (!waitForSubscribers()) {
-			return;
+		// Wait for the subscribers.
+		if (m_numberOfSubscribers > 0) {
+			if (!waitForSubscribers()) {
+				return;
+			}
 		}
-	}
-	else {
-		std::cout << "No sync" << std::endl;
 	}
 
 	setReady();
 }
 
-std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers) {
-	return std::unique_ptr<Publisher>{new Publisher(name, numberOfSubscribers)};
+std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers, bool syncSubscribers) {
+	return std::unique_ptr<Publisher>{new Publisher(name, numberOfSubscribers, syncSubscribers)};
 }
 
 const std::string& Publisher::getName() const {
@@ -154,6 +159,9 @@ void Publisher::responderLoop() {
 			std::unique_ptr<int> item { new int{SUBSCRIBE_PUBLISHER} };
 			m_responderQueue.push(item);
 		}
+		else if (type == message::SYNC_STREAM) {
+			m_impl->sendSync();
+		}
 
 		request->reply("OK");
 	}
@@ -170,14 +178,11 @@ bool Publisher::waitForSubscribers() {
 
 		if (*item.get() == SUBSCRIBE_PUBLISHER) {
 			counter++;
-			std::cout << "Received subscription" << std::endl;
 		}
 		else if (*item.get() == CANCEL_RESPONDER) {
 			return false;
 		}
 	}
-
-	std::cout << "waitForSubscribers ok" << std::endl;
 
 	return true;
 }
@@ -273,7 +278,7 @@ int Subscriber::getTimeout() const {
 	return m_timeout;
 }
 
-void Subscriber::synchronize(const TimeoutCounter& timeout) {
+void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers) {
 
 	// Create the requester.
 	m_requester = Requester::create(m_app, Publisher::RESPONDER_PREFIX + m_publisherName, m_checkApp);
@@ -287,16 +292,45 @@ void Subscriber::synchronize(const TimeoutCounter& timeout) {
 	// Set the timeout again because init() may have taken time.
 	m_requester->setTimeout(timeout.remains());
 
-	// Send a subscribe request.
-	json::StringObject jsonRequest;
-	jsonRequest.pushKey(message::TYPE);
-	jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+	// Check number of subscribers.
+	if (numberOfSubscribers > 0) {
+		// Send a subscribe request.
+		json::StringObject jsonRequest;
+		jsonRequest.pushKey(message::TYPE);
+		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-	m_requester->send(jsonRequest.dump());
-	std::optional<std::string> response {m_requester->receive()};
+		m_requester->send(jsonRequest.dump());
+		std::optional<std::string> response {m_requester->receive()};
+	}
 
 	// Check timeout.
 	bool timedOut = m_requester->hasTimedout();
+	if (!timedOut) {
+		// Check sync subscribers.
+		if (syncSubscribers) {
+
+			int syncTimeout = 0;
+
+			while (!timedOut) {
+				// Send a sync request.
+				json::StringObject jsonRequest;
+				jsonRequest.pushKey(message::TYPE);
+				jsonRequest.pushValue(message::SYNC_STREAM);
+
+				m_requester->send(jsonRequest.dump());
+				std::optional<std::string> response {m_requester->receive()};
+
+				syncTimeout += SYNC_TIMEOUT;
+
+				// Check subscriber.
+				if (m_impl->sync(syncTimeout)) {
+					break;
+				}
+
+				timedOut = m_requester->hasTimedout();
+			}
+		}
+	}
 
 	// Reset the requester as it is not used any more.
 	m_requester.reset();
@@ -327,6 +361,7 @@ void Subscriber::init() {
 		json::parse(jsonData, jsonString);
 
 		int numberOfSubscribers {jsonData[Publisher::NUMBER_OF_SUBSCRIBERS.c_str()].GetInt()};
+		bool syncSubscribers {jsonData[Publisher::SYNC_SUBSCRIBERS.c_str()].GetBool()};
 
 		Endpoint endpoint;
 
@@ -343,8 +378,8 @@ void Subscriber::init() {
 		m_impl->init(m_appId, endpoint, m_app.getStatusEndpoint(), StringId::from(m_key, m_appId), m_checkApp);
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
-		if (numberOfSubscribers > 0) {
-			synchronize(timeoutCounter);
+		if (numberOfSubscribers > 0 || syncSubscribers) {
+			synchronize(timeoutCounter, numberOfSubscribers, syncSubscribers);
 		}
 	}
 	catch (const ConnectionTimeout&) {

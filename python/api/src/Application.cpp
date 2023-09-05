@@ -267,6 +267,7 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("create", &Publisher::create,
 	    		"name"_a,
 	    		"numberOfSubscribers"_a = 0,
+				"syncSubscribers"_a = false,
 				py::call_guard<py::gil_scoped_release>())
 		.def("init", &Publisher::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Publisher::isReady)

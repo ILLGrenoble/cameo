@@ -75,6 +75,10 @@ int ResponderZmq::getResponderPort() {
 
 void ResponderZmq::cancel() {
 
+	if (m_canceled) {
+		return;
+	}
+
 	json::StringObject jsonRequest;
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::CANCEL);

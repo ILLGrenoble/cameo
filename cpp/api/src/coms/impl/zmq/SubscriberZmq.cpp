@@ -64,6 +64,21 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 		m_subscriber->connect(appStatusEndpoint.toString().c_str());
 		m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 	}
+
+	// Set the poll item.
+	m_items[0].socket = static_cast<void *>(*(m_subscriber.get()));
+	m_items[0].fd = 0;
+	m_items[0].events = ZMQ_POLLIN;
+	m_items[0].revents = 0;
+}
+
+bool SubscriberZmq::sync(int timeout) {
+
+	// Wait for 100ms.
+	int rc = zmq::poll(m_items, 1, timeout);
+
+	// Return true if the subscriber received a message.
+	return (rc != 0);
 }
 
 bool SubscriberZmq::hasEnded() const {
@@ -105,6 +120,9 @@ std::optional<std::string> SubscriberZmq::receive() {
 					return {};
 				}
 				return std::string {static_cast<char*>(dataPart.data()), dataPart.size()};
+			}
+			else if (type == message::SYNC_STREAM) {
+				// Do nothing.
 			}
 			else if (type == message::STREAM_END) {
 				m_ended = true;

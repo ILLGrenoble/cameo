@@ -52,9 +52,10 @@ public:
 	 * Returns the publisher with name.
 	 * \param name The name.
 	 * \param numberOfSubscribers The number of subscribers.
+	 * \param syncSubscribers True if is a synchronized publisher.
 	 * \return A new Publisher object.
 	 */
-	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0);
+	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0, bool syncSubscribers = false);
 
 	/**
 	 * Initializes the publisher.
@@ -130,6 +131,11 @@ public:
 	static const std::string NUMBER_OF_SUBSCRIBERS;
 
 	/**
+	 * Sync subscribers key for the JSON object stored for the responder key.
+	 */
+	static const std::string SYNC_SUBSCRIBERS;
+
+	/**
 	 * Prefix for the temporary responder used for the synchronization.
 	 */
 	static const std::string RESPONDER_PREFIX;
@@ -142,13 +148,14 @@ public:
 private:
 	static const int CANCEL_RESPONDER = 0;
 
-	Publisher(const std::string &name, int numberOfSubscribers);
+	Publisher(const std::string &name, int numberOfSubscribers, bool syncSubscribers);
 
 	void responderLoop();
 	bool waitForSubscribers();
 
 	std::string m_name;
 	int m_numberOfSubscribers;
+	bool m_syncSubscribers;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
@@ -268,7 +275,7 @@ public:
 
 private:
 	Subscriber(App & app, const std::string &publisherName, bool checkApp);
-	void synchronize(const TimeoutCounter& timeout);
+	void synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers);
 
 	App & m_app;
 	std::string m_publisherName;
