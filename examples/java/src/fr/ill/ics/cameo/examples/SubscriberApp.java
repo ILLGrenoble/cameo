@@ -16,6 +16,8 @@
 
 package fr.ill.ics.cameo.examples;
 
+import java.util.Date;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -73,8 +75,12 @@ public class SubscriberApp {
 			
 			// Create a subscriber to the publisher named "publisher".
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");
+			
+			Date start = new Date();
 			subscriber.init();
-			System.out.println("Created subscriber " + subscriber);
+			Date end = new Date();
+			
+			System.out.println("Created subscriber " + subscriber + " after " + (end.getTime() - start.getTime()) + " ms");
 			
 			// Receive data.
 			while (true) {
@@ -86,7 +92,6 @@ public class SubscriberApp {
 					
 					System.out.println("\tmessage: " + (String)object.get("message"));
 					System.out.println("\tvalue: " + (Long)object.get("value"));
-					
 				}
 				else {
 					break;

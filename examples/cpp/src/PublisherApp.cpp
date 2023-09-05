@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	std::unique_ptr<coms::Publisher> publisher;
 
 	try {
-		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers);
+		publisher = coms::Publisher::create("the-publisher", numberOfSubscribers, true);
 		publisher->init();
 		std::cout << "Created publisher " << *publisher << std::endl;
 	}

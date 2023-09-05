@@ -50,9 +50,12 @@ int main(int argc, char *argv[]) {
 
 	// Create a requester.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
-	subscriber->init();
 
-	std::cout << "Created subscriber " << *subscriber << std::endl;
+	auto start = std::chrono::steady_clock::now();
+	subscriber->init();
+	auto end = std::chrono::steady_clock::now();
+
+	std::cout << "Created subscriber " << *subscriber << " after " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
 
 	// Receive data.
 	while (true) {
