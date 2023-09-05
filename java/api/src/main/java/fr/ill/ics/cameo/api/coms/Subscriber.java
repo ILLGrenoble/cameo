@@ -87,46 +87,53 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		// Set the timeout again because init() may have taken time.
 		requester.setTimeout(timeoutCounter.remains());
 		
-		// Check number of subscribers.
-		if (numberOfSubscribers > 0) {
-			// Send a subscribe request.
-			JSONObject jsonRequest = new JSONObject();
-			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
-			
-			requester.sendString(jsonRequest.toJSONString());
-			String response = requester.receiveString();
-		}
-		
 		// Check timeout.
-		boolean timedOut = requester.hasTimedout();
-		
-		if (!timedOut) {
-			// Check sync subscribers.
-			if (syncSubscribers) {
+		boolean timedOut = false;
+	
+		// Check sync subscribers.
+		if (syncSubscribers) {
+			
+			int syncTimeout = 0;
+
+			while (!timedOut) {
 				
-				int syncTimeout = 0;
-
-				while (!timedOut) {
-					
-					// Send a sync request.
-					JSONObject jsonRequest = new JSONObject();
-					jsonRequest.put(Messages.TYPE, Messages.SYNC_STREAM);
-					
-					requester.sendString(jsonRequest.toJSONString());
-					String response = requester.receiveString();
-					
-					syncTimeout += SYNC_TIMEOUT;
-					
-					// Check subscriber.
-					if (impl.sync(syncTimeout)) {
-						break;
-					}
-
-					timedOut = requester.hasTimedout();
+				// Send a sync request.
+				JSONObject jsonRequest = new JSONObject();
+				jsonRequest.put(Messages.TYPE, Messages.SYNC_STREAM);
+				
+				requester.sendString(jsonRequest.toJSONString());
+				String response = requester.receiveString();
+				
+				syncTimeout += SYNC_TIMEOUT;
+				
+				// Check subscriber.
+				if (impl.sync(syncTimeout)) {
+					break;
 				}
+
+				// Check timeout.
+				timedOut = requester.hasTimedout();
 			}
 		}
 		
+		// Send subscription.
+		if (!timedOut) {		
+			
+			// Check number of subscribers.
+			if (numberOfSubscribers > 0) {
+				// Send a subscribe request.
+				JSONObject jsonRequest = new JSONObject();
+				jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+				
+				requester.sendString(jsonRequest.toJSONString());
+				String response = requester.receiveString();
+			}
+		}
+		
+		// Check timeout.
+		timedOut = requester.hasTimedout();
+		
+		// Terminate the requester as it is not used any more.
 		requester.terminate();
 		
 		if (timedOut) {

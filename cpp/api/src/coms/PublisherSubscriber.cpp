@@ -292,45 +292,52 @@ void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscrib
 	// Set the timeout again because init() may have taken time.
 	m_requester->setTimeout(timeout.remains());
 
-	// Check number of subscribers.
-	if (numberOfSubscribers > 0) {
-		// Send a subscribe request.
-		json::StringObject jsonRequest;
-		jsonRequest.pushKey(message::TYPE);
-		jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+	// Check timeout.
+	bool timedOut {false};
 
-		m_requester->send(jsonRequest.dump());
-		std::optional<std::string> response {m_requester->receive()};
+	// Check sync subscribers.
+	if (syncSubscribers) {
+
+		int syncTimeout = 0;
+
+		while (!timedOut) {
+			// Send a sync request.
+			json::StringObject jsonRequest;
+			jsonRequest.pushKey(message::TYPE);
+			jsonRequest.pushValue(message::SYNC_STREAM);
+
+			m_requester->send(jsonRequest.dump());
+			std::optional<std::string> response {m_requester->receive()};
+
+			syncTimeout += SYNC_TIMEOUT;
+
+			// Check subscriber.
+			if (m_impl->sync(syncTimeout)) {
+				break;
+			}
+
+			// Check timeout.
+			timedOut = m_requester->hasTimedout();
+		}
+	}
+
+	// Send subscription.
+	if (!timedOut) {
+
+		// Check number of subscribers.
+		if (numberOfSubscribers > 0) {
+			// Send a subscribe request.
+			json::StringObject jsonRequest;
+			jsonRequest.pushKey(message::TYPE);
+			jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
+
+			m_requester->send(jsonRequest.dump());
+			std::optional<std::string> response {m_requester->receive()};
+		}
 	}
 
 	// Check timeout.
-	bool timedOut = m_requester->hasTimedout();
-	if (!timedOut) {
-		// Check sync subscribers.
-		if (syncSubscribers) {
-
-			int syncTimeout = 0;
-
-			while (!timedOut) {
-				// Send a sync request.
-				json::StringObject jsonRequest;
-				jsonRequest.pushKey(message::TYPE);
-				jsonRequest.pushValue(message::SYNC_STREAM);
-
-				m_requester->send(jsonRequest.dump());
-				std::optional<std::string> response {m_requester->receive()};
-
-				syncTimeout += SYNC_TIMEOUT;
-
-				// Check subscriber.
-				if (m_impl->sync(syncTimeout)) {
-					break;
-				}
-
-				timedOut = m_requester->hasTimedout();
-			}
-		}
-	}
+	timedOut = m_requester->hasTimedout();
 
 	// Reset the requester as it is not used any more.
 	m_requester.reset();
