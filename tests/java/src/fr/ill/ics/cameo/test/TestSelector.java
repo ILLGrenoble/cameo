@@ -113,6 +113,7 @@ public class TestSelector {
 		apps.add("testmultiresponderjava");
 		apps.add("testmultirespondersjava");
 		apps.add("testpublisherjava");
+		apps.add("testpublishersyncjava");
 		apps.add("testsubscriberjava");
 		apps.add("testcanceljava");
 		apps.add("teststreamjava");

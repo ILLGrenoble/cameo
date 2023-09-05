@@ -14,19 +14,28 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.impl;
+package fr.ill.ics.cameo.api.coms.impl.zmq;
 
-public interface PublisherImpl {
+public class SyncPublisherZmq extends PublisherZmq {
+
+	public synchronized void sendSync() {
+		super.sendSync();
+	}
 	
-	void init(String publisherIdentity);
+	public synchronized void send(byte[] data) {
+		super.send(data);
+	}
 	
-	int getPublisherPort();
+	public synchronized void send(String data) {
+		super.send(data);
+	}
 	
-	void sendSync();
-	void send(byte[] data);
-	void send(String data);
-	void sendTwoParts(byte[] data1, byte[] data2);
-	void sendEnd();
-	boolean hasEnded();
-	void terminate();
+	public synchronized void sendTwoParts(byte[] data1, byte[] data2) {
+		super.sendTwoParts(data1, data2);
+	}
+	
+	public synchronized void sendEnd() {
+		super.sendEnd();
+	}
+		
 }

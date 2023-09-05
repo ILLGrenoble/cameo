@@ -40,6 +40,7 @@ public class SubscriberZmq implements SubscriberImpl {
 	private int appId;
 	private AtomicBoolean ended = new AtomicBoolean(false);
 	private AtomicBoolean canceled = new AtomicBoolean(false);
+	private Zmq.Poller poller;
 	
 	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity, boolean checkApp) {
 
@@ -71,6 +72,16 @@ public class SubscriberZmq implements SubscriberImpl {
 			subscriber.connect(appStatusEndpoint.toString());
 			subscriber.subscribe(Messages.Event.STATUS);
 		}
+		
+		// Create the poller.
+		poller = this.context.createPoller(1);
+		poller.register(subscriber);
+	}
+	
+	public boolean sync(int timeout) {
+		
+		poller.poll(timeout);
+		return poller.pollin(0);
 	}
 	
 	public boolean hasEnded() {
@@ -102,6 +113,9 @@ public class SubscriberZmq implements SubscriberImpl {
 				
 				if (type == Messages.STREAM) {
 					return subscriber.recv();
+				}
+				else if (type == Messages.SYNC_STREAM) {
+					// Do nothing.
 				}
 				else if (type == Messages.STREAM_END) {
 					ended.set(true);

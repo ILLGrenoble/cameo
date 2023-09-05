@@ -57,6 +57,8 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	private KeyValueGetter keyValueGetter;
 	private Requester requester;
 	
+	private static int SYNC_TIMEOUT = 100;
+	
 	private Subscriber(App app, String publisherName, boolean checkApp) {
 		this.app = app;
 		this.publisherName = publisherName;
@@ -71,7 +73,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
 	}
 	
-	private void synchronize(TimeoutCounter timeoutCounter) {
+	private void synchronize(TimeoutCounter timeoutCounter, int numberOfSubscribers, boolean syncSubscribers) {
 
 		// Create the requester.
 		requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName, checkApp);
@@ -85,16 +87,47 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 		// Set the timeout again because init() may have taken time.
 		requester.setTimeout(timeoutCounter.remains());
 		
-		// Send a subscribe request.
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
-		
-		requester.sendString(jsonRequest.toJSONString());
-		String response = requester.receiveString();
+		// Check number of subscribers.
+		if (numberOfSubscribers > 0) {
+			// Send a subscribe request.
+			JSONObject jsonRequest = new JSONObject();
+			jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
+			
+			requester.sendString(jsonRequest.toJSONString());
+			String response = requester.receiveString();
+		}
 		
 		// Check timeout.
 		boolean timedOut = requester.hasTimedout();
-		requester = null;
+		
+		if (!timedOut) {
+			// Check sync subscribers.
+			if (syncSubscribers) {
+				
+				int syncTimeout = 0;
+
+				while (!timedOut) {
+					
+					// Send a sync request.
+					JSONObject jsonRequest = new JSONObject();
+					jsonRequest.put(Messages.TYPE, Messages.SYNC_STREAM);
+					
+					requester.sendString(jsonRequest.toJSONString());
+					String response = requester.receiveString();
+					
+					syncTimeout += SYNC_TIMEOUT;
+					
+					// Check subscriber.
+					if (impl.sync(syncTimeout)) {
+						break;
+					}
+
+					timedOut = requester.hasTimedout();
+				}
+			}
+		}
+		
+		requester.terminate();
 		
 		if (timedOut) {
 			throw new Timeout();
@@ -146,6 +179,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 			
 			JSONObject jsonData = This.getCom().parse(jsonString);
 			int numberOfSubscribers = JSON.getInt(jsonData, Publisher.NUMBER_OF_SUBSCRIBERS);
+			boolean syncSubscribers = JSON.getBoolean(jsonData, Publisher.SYNC_SUBSCRIBERS);
 			
 			Endpoint endpoint;
 			
@@ -162,8 +196,8 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 			impl.init(appId, endpoint, app.getStatusEndpoint(), StringId.from(key, appId), checkApp);
 	
 			// Synchronize the subscriber only if the number of subscribers > 0.
-			if (numberOfSubscribers > 0) {
-				synchronize(timeoutCounter);
+			if (numberOfSubscribers > 0 || syncSubscribers) {
+				synchronize(timeoutCounter, numberOfSubscribers, syncSubscribers);
 			}
 		}
 		catch (ConnectionTimeout e) {

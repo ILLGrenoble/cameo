@@ -86,6 +86,14 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisher publisherjava"/>
 		</application>
 		
+		<application name="publishersyncjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.Publisher true 1"/>
+		</application>
+		
+		<application name="testpublishersyncjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisher publishersyncjava"/>
+		</application>
+		
 		<application name="subscriberjava" starting_time="0" stopping_time="1" multiple="yes" restart="no" log_directory="logs">
 			<start executable="java" args="fr.ill.ics.cameo.test.Subscriber"/>
 		</application>

@@ -28,6 +28,7 @@ import fr.ill.ics.cameo.api.coms.impl.PublisherImpl;
 import fr.ill.ics.cameo.api.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.api.coms.impl.zmq.PublisherZmq;
 import fr.ill.ics.cameo.api.coms.impl.zmq.SubscriberZmq;
+import fr.ill.ics.cameo.api.coms.impl.zmq.SyncPublisherZmq;
 
 /**
  * Class defining an implementation factory.
@@ -89,10 +90,16 @@ public class ImplFactory {
 	
 	/**
 	 * Creates a publisher.
+	 * @param sync True if is a synchronized publisher.
 	 * @return An PublisherImpl object.
 	 */
-	public static PublisherImpl createPublisher() {
-		return new PublisherZmq();
+	public static PublisherImpl createPublisher(boolean sync) {
+		if (sync) {
+			return new SyncPublisherZmq();
+		}
+		else {
+			return new PublisherZmq();
+		}
 	}
 	
 	/**

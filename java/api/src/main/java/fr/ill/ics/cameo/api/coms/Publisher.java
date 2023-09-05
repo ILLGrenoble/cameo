@@ -44,6 +44,7 @@ public class Publisher extends StateObject implements ICancelable {
 
 	private String name;
 	private int numberOfSubscribers;
+	private boolean syncSubscribers;
 	private PublisherImpl impl;
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
@@ -55,16 +56,18 @@ public class Publisher extends StateObject implements ICancelable {
 	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
 	public static final String PUBLISHER_PORT = "publisher_port";
 	public static final String NUMBER_OF_SUBSCRIBERS = "n_subscribers";
+	public static final String SYNC_SUBSCRIBERS = "sync_subscribers";
 	public static final String RESPONDER_PREFIX = "publisher:";
 	public static final long SUBSCRIBE_PUBLISHER = 100;
 	private static final long CANCEL_RESPONDER = 0;
 	
-	private Publisher(String name, int numberOfSubscribers) {
+	private Publisher(String name, int numberOfSubscribers, boolean syncSubscribers) {
 		
 		this.name = name;
 		this.numberOfSubscribers = numberOfSubscribers;
+		this.syncSubscribers = syncSubscribers;
 		
-		this.impl = ImplFactory.createPublisher();
+		this.impl = ImplFactory.createPublisher(syncSubscribers);
 		
 		waiting.add();
 	}
@@ -91,6 +94,7 @@ public class Publisher extends StateObject implements ICancelable {
 		JSONObject jsonData = new JSONObject();
 		jsonData.put(PUBLISHER_PORT, impl.getPublisherPort());
 		jsonData.put(NUMBER_OF_SUBSCRIBERS, numberOfSubscribers);
+		jsonData.put(SYNC_SUBSCRIBERS, syncSubscribers);
 		
 		try {
 			This.getCom().storeKeyValue(key, jsonData.toJSONString());
@@ -101,10 +105,8 @@ public class Publisher extends StateObject implements ICancelable {
 			throw new InitException("A publisher with the name \"" + name + "\" already exists");
 		}
 		
-		// Wait for the subscribers.
-		if (numberOfSubscribers > 0) {
-			
-			System.out.println("Sync subscribers");
+		// Create the responder thread if subscribers are synchronized or waiting for subscribers is enabled.
+		if (numberOfSubscribers > 0 || syncSubscribers) {
 			
 			try {
 				// Create the responder.
@@ -118,8 +120,6 @@ public class Publisher extends StateObject implements ICancelable {
 							
 							Request request = responder.receive();
 							
-							System.out.println("Received request " + request);
-							
 							if (request == null) {
 								return;
 							}
@@ -130,14 +130,15 @@ public class Publisher extends StateObject implements ICancelable {
 							// Get the type.
 							long type = JSON.getLong(jsonRequest, Messages.TYPE);
 							
-							System.out.println("Received request " + type);
-							
 							if (type == SUBSCRIBE_PUBLISHER) {
 								try {
 									responderQueue.put(Long.valueOf(SUBSCRIBE_PUBLISHER));
 								}
 								catch (InterruptedException e) {
 								}
+							}
+							else if (type == Messages.SYNC_STREAM) {
+								impl.sendSync();
 							}
 							
 							request.replyString("OK");
@@ -151,8 +152,11 @@ public class Publisher extends StateObject implements ICancelable {
 				return;
 			}
 			
-			if (!waitForSubscribers()) {
-				return;
+			// Wait for the subscribers.
+			if (numberOfSubscribers > 0) {
+				if (!waitForSubscribers()) {
+					return;
+				}
 			}
 		}
 		
@@ -163,19 +167,30 @@ public class Publisher extends StateObject implements ICancelable {
 	 * Returns the publisher with name.
 	 * @param name The name.
 	 * @param numberOfSubscribers The number of subscribers.
+	 * @param syncSubscribers True if publisher is synchronized.
+	 * @return A new Publisher object.
+	 */
+	static public Publisher create(String name, int numberOfSubscribers, boolean syncSubscribers) {
+		return new Publisher(name, numberOfSubscribers, syncSubscribers);
+	}
+
+	/**
+	 * Returns the publisher with name.
+	 * @param name The name.
+	 * @param numberOfSubscribers The number of subscribers.
 	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name, int numberOfSubscribers) {
-		return new Publisher(name, numberOfSubscribers);
+		return new Publisher(name, numberOfSubscribers, false);
 	}
-
+	
 	/**
 	 * Returns the publisher with name.
 	 * @param name The name.
 	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name) {
-		return create(name, 0);
+		return create(name, 0, false);
 	}
 
 	/**
@@ -201,7 +216,6 @@ public class Publisher extends StateObject implements ICancelable {
 							
 				if (item.longValue() == SUBSCRIBE_PUBLISHER) {
 					counter++;
-					System.out.println("Received subscription");
 				}
 				else if (item.longValue() == CANCEL_RESPONDER) {
 					return false;
@@ -211,8 +225,6 @@ public class Publisher extends StateObject implements ICancelable {
 				return false;
 			}
 		}
-
-		System.out.println("waitForSubscribers ok");
 		
 		return true;
 	}
@@ -288,8 +300,6 @@ public class Publisher extends StateObject implements ICancelable {
 	 */
 	@Override
 	public void terminate() {
-
-		System.out.println("Publisher terminate");
 		
 		if (impl != null) {
 			try {
@@ -300,24 +310,14 @@ public class Publisher extends StateObject implements ICancelable {
 			}
 			
 			if (responderThread != null) {
-				
-				System.out.println("responder canceling");
-				
 				responder.cancel();
-				
-				System.out.println("responder canceled");
 				
 				try {
 					responderThread.join();
-					
-					System.out.println("responder thread joint");
-					
 				}
 				catch (InterruptedException e) {
 				}
 				responder.terminate();
-				
-				System.out.println("responder terminated");
 			}
 			
 			waiting.remove();

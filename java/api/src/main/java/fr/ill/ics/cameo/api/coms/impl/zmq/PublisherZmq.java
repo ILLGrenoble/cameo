@@ -69,6 +69,15 @@ public class PublisherZmq implements PublisherImpl {
 		return publisherPort;
 	}
 	
+	public void sendSync() {
+		
+		publisher.sendMore(publisherIdentity);
+		
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.SYNC_STREAM);
+		publisher.send(Messages.serialize(messageType), 0);
+	}
+	
 	public void send(byte[] data) {
 		
 		publisher.sendMore(publisherIdentity);

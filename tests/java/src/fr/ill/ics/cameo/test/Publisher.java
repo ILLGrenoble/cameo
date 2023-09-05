@@ -25,18 +25,25 @@ public class Publisher {
 
 		This.init(args);
 		
+		boolean syncSubscribers = false;
 		int numberOfSubscribers = 1;
+		
 		if (args.length > 1) {
-			numberOfSubscribers = Integer.parseInt(args[0]);
+			syncSubscribers = (args[0].equals("true"));
+		}
+		
+		if (args.length > 2) {
+			numberOfSubscribers = Integer.parseInt(args[1]);
 		}
 		
 		System.out.println("Number of subscribers is " + numberOfSubscribers);
+		System.out.println("Sync subscribers is " + syncSubscribers);
 		
 		try {
 			System.out.println("Creating publisher and waiting for " + numberOfSubscribers + " subscriber(s)...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", numberOfSubscribers);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", numberOfSubscribers, syncSubscribers);
 			
 			// Synchronize with subscribers.
 			publisher.init();

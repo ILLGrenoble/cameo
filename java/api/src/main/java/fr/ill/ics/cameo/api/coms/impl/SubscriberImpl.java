@@ -22,6 +22,7 @@ import fr.ill.ics.cameo.common.strings.Endpoint;
 public interface SubscriberImpl {
 	
 	void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity, boolean checkApp) throws ConnectionTimeout;
+	boolean sync(int timeout);
 	boolean hasEnded();
 	boolean isCanceled();
 	byte[] receive();
