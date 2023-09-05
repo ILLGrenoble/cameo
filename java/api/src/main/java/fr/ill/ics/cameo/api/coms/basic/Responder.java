@@ -128,7 +128,7 @@ public class Responder extends StateObject implements ICancelable {
 	 */
 	@Override
 	public void cancel() {
-		impl.cancel();			
+		impl.cancel();		
 	}
 	
 	/**

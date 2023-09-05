@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.api.coms;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.simple.JSONObject;
@@ -47,6 +48,8 @@ public class Publisher extends StateObject implements ICancelable {
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
 	private Responder responder = null;
+	private Thread responderThread = null;
+	private LinkedBlockingQueue<Long> responderQueue = new LinkedBlockingQueue<>();
 	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
 	public static final String KEY = "publisher-55845880-56e9-4ad6-bea1-e84395c90b32";
@@ -54,6 +57,7 @@ public class Publisher extends StateObject implements ICancelable {
 	public static final String NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 	public static final String RESPONDER_PREFIX = "publisher:";
 	public static final long SUBSCRIBE_PUBLISHER = 100;
+	private static final long CANCEL_RESPONDER = 0;
 	
 	private Publisher(String name, int numberOfSubscribers) {
 		
@@ -99,7 +103,57 @@ public class Publisher extends StateObject implements ICancelable {
 		
 		// Wait for the subscribers.
 		if (numberOfSubscribers > 0) {
-			waitForSubscribers();
+			
+			System.out.println("Sync subscribers");
+			
+			try {
+				// Create the responder.
+				responder = Responder.create(RESPONDER_PREFIX + name);
+				responder.init();
+			
+				responderThread = new Thread(new Runnable() {
+					public void run() {
+						
+						while (true) {
+							
+							Request request = responder.receive();
+							
+							System.out.println("Received request " + request);
+							
+							if (request == null) {
+								return;
+							}
+							
+							// Get the JSON request object.
+							JSONObject jsonRequest = This.getCom().parse(request.get());
+							
+							// Get the type.
+							long type = JSON.getLong(jsonRequest, Messages.TYPE);
+							
+							System.out.println("Received request " + type);
+							
+							if (type == SUBSCRIBE_PUBLISHER) {
+								try {
+									responderQueue.put(Long.valueOf(SUBSCRIBE_PUBLISHER));
+								}
+								catch (InterruptedException e) {
+								}
+							}
+							
+							request.replyString("OK");
+						}
+					}
+				});
+				
+				responderThread.start();
+			}
+			catch (InitException e) {
+				return;
+			}
+			
+			if (!waitForSubscribers()) {
+				return;
+			}
 		}
 		
 		setReady();
@@ -138,47 +192,29 @@ public class Publisher extends StateObject implements ICancelable {
 	 */
 	private boolean waitForSubscribers() {
 		
-		try {
-			// Create the responder.
-			responder = Responder.create(RESPONDER_PREFIX + name);
-			responder.init();
+		// Loop until the number of subscribers is reached.
+		int counter = 0;
 		
-			// Loop until the number of subscribers is reached.
-			int counter = 0;
-			
-			while (counter < numberOfSubscribers) {
-				
-				Request request = responder.receive();
-				
-				if (request == null) {
+		while (counter < numberOfSubscribers) {
+			try {
+				Long item = responderQueue.take();
+							
+				if (item.longValue() == SUBSCRIBE_PUBLISHER) {
+					counter++;
+					System.out.println("Received subscription");
+				}
+				else if (item.longValue() == CANCEL_RESPONDER) {
 					return false;
 				}
-				
-				// Get the JSON request object.
-				JSONObject jsonRequest = This.getCom().parse(request.get());
-				
-				// Get the type.
-				long type = JSON.getLong(jsonRequest, Messages.TYPE);
-				
-				if (type == SUBSCRIBE_PUBLISHER) {
-					counter++;
-				}
-				
-				request.replyString("OK");
 			}
-			
-			return !responder.isCanceled();
-		}
-		catch (InitException e) {
-			return false;
-		}
-		finally {
-			// Destroy responder.
-			if (responder != null) {
-				responder.terminate();
-				responder = null;
+			catch (InterruptedException e) {
+				return false;
 			}
 		}
+
+		System.out.println("waitForSubscribers ok");
+		
+		return true;
 	}
 	
 	/**
@@ -189,6 +225,12 @@ public class Publisher extends StateObject implements ICancelable {
 		if (responder != null) {
 			canceled.set(true);
 			responder.cancel();
+			
+			try {
+				responderQueue.put(Long.valueOf(CANCEL_RESPONDER));
+			}
+			catch (InterruptedException e) {
+			}
 		}
 	}
 	
@@ -247,12 +289,35 @@ public class Publisher extends StateObject implements ICancelable {
 	@Override
 	public void terminate() {
 
+		System.out.println("Publisher terminate");
+		
 		if (impl != null) {
 			try {
 				This.getCom().removeKey(key);
 			}
 			catch (UndefinedKeyException e) {
 				// No need to treat.
+			}
+			
+			if (responderThread != null) {
+				
+				System.out.println("responder canceling");
+				
+				responder.cancel();
+				
+				System.out.println("responder canceled");
+				
+				try {
+					responderThread.join();
+					
+					System.out.println("responder thread joint");
+					
+				}
+				catch (InterruptedException e) {
+				}
+				responder.terminate();
+				
+				System.out.println("responder terminated");
 			}
 			
 			waiting.remove();

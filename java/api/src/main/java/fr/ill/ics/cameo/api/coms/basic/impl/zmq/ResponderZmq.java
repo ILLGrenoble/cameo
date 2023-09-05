@@ -171,6 +171,11 @@ public class ResponderZmq implements ResponderImpl {
 	}
 	
 	public void cancel() {
+		
+		if (canceled.get()) {
+			return;
+		}
+		
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
 		
