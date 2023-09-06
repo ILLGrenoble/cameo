@@ -1,4 +1,4 @@
-2.1.2 (NP)
+2.2.0 (NP)
 -----
 
 * Minor review of exceptions.
@@ -6,6 +6,7 @@
 * Added the checkApp feature to Requester and Subscriber classes which implied some changes in their current implementation.
   WARNING: Create Subscriber with checkApp = true to cancel receive() automatically as in the previous version.
 * Renamed getActualState() functions into getState().
+* Publisher with synchronized subscribers.
 
 2.1.1
 -----
