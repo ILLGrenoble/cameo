@@ -47,7 +47,24 @@ public:
 	 * \param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
 	 * \return A new Requester object.
 	 */
-	static std::unique_ptr<Requester> create(App &app, const std::string &responderName, bool checkApp = false);
+	static std::unique_ptr<Requester> create(App &app, const std::string &responderName);
+
+	/**
+	 * Sets the check app feature.
+	 */
+	void setCheckApp();
+
+	/**
+	 * Sets the timeout.
+	 * \param value The value.
+	 */
+	void setTimeout(int value) override;
+
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
+	void setPollingTime(int value);
 
 	/**
 	 * Initializes the requester.
@@ -59,12 +76,6 @@ public:
 	 * Terminates the communication.
 	 */
 	void terminate() override;
-
-	/**
-	 * Sets the timeout.
-	 * \param value The value.
-	 */
-	void setTimeout(int value) override;
 
 	/**
 	 * Gets the timeout.
@@ -82,12 +93,6 @@ public:
 	 * \return True if the requester has been canceled.
 	 */
 	bool isCanceled() const override;
-
-	/**
-	 * Sets the polling time.
-	 * \param value The value.
-	 */
-	void setPollingTime(int value);
 
 	/**
 	 * Gets the responder name.
@@ -145,7 +150,7 @@ public:
 	std::string toString() const override;
 
 private:
-	Requester(App & app, const std::string & responderName, bool checkApp);
+	Requester(App & app, const std::string & responderName);
 
 	class Checker {
 

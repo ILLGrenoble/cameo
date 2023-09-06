@@ -281,7 +281,10 @@ int Subscriber::getTimeout() const {
 void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers) {
 
 	// Create the requester.
-	m_requester = Requester::create(m_app, Publisher::RESPONDER_PREFIX + m_publisherName, m_checkApp);
+	m_requester = Requester::create(m_app, Publisher::RESPONDER_PREFIX + m_publisherName);
+	if (m_checkApp) {
+		m_requester->setCheckApp();
+	}
 
 	// Set the timeout that can be -1.
 	m_requester->setTimeout(timeout.remains());

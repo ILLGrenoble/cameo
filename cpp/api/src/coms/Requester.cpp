@@ -60,7 +60,7 @@ void Requester::Checker::terminate() {
 	}
 }
 
-Requester::Requester(App & app, const std::string &responderName, bool checkApp) :
+Requester::Requester(App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
 	m_timeout{-1},
@@ -72,10 +72,6 @@ Requester::Requester(App & app, const std::string &responderName, bool checkApp)
 	m_waiting{new Waiting{std::bind(&Requester::cancel, this)}},
 	m_key{basic::Responder::KEY + "-" + m_responderName},
 	m_keyValueGetter{m_app.getCom().createKeyValueGetter(m_key)} {
-
-	if (checkApp) {
-		m_checker = std::make_unique<Checker>(*this);
-	}
 }
 
 Requester::~Requester() {
@@ -145,8 +141,12 @@ void Requester::init() {
 	setReady();
 }
 
-std::unique_ptr<Requester> Requester::create(App & app, const std::string& responderName, bool checkApp) {
-	return std::unique_ptr<Requester>{new Requester(app, responderName, checkApp)};
+std::unique_ptr<Requester> Requester::create(App & app, const std::string& responderName) {
+	return std::unique_ptr<Requester>{new Requester(app, responderName)};
+}
+
+void Requester::setCheckApp() {
+	m_checker = std::make_unique<Checker>(*this);
 }
 
 void Requester::setTimeout(int value) {

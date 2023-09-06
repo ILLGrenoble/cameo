@@ -69,7 +69,8 @@ public class TestResponderError {
 				App responderApplication = server.start(applicationName, appArgs);
 				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
-				Requester requester = Requester.create(responderApplication, "responder", true);
+				Requester requester = Requester.create(responderApplication, "responder");
+				requester.setCheckApp();
 				requester.init();
 				
 				System.out.println("Created requester " + requester);

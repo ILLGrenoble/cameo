@@ -99,7 +99,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	private KeyValueGetter keyValueGetter;
 	private Checker checker;
 	
-	private Requester(App app, String responderName, boolean checkApp) {
+	private Requester(App app, String responderName) {
 		
 		this.app = app;
 		this.responderName = responderName;
@@ -111,23 +111,8 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		this.impl = ImplFactory.createRequester();
 		waiting.add();
 		this.keyValueGetter = app.getCom().createKeyValueGetter(key);
-		
-		if (checkApp) {
-			checker = new Checker(this);
-		}
 	}
 
-	/**
-	 * Returns a new requester.
-	 * @param app The application where the responder is defined.
-	 * @param responderName The responder name.
-	 * @param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
-	 * @return A new Requester object.
-	 */
-	static public Requester create(App app, String responderName, boolean checkApp) {
-		return new Requester(app, responderName, checkApp);
-	}
-	
 	/**
 	 * Returns a new requester.
 	 * @param app The application where the responder is defined.
@@ -135,9 +120,34 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	 * @return A new Requester object.
 	 */
 	static public Requester create(App app, String responderName) {
-		return new Requester(app, responderName, false);
+		return new Requester(app, responderName);
+	}
+	
+	/**
+	 * A thread is checking the state of the app and cancels the requester if it fails.
+	 */
+	public void setCheckApp() {
+		checker = new Checker(this);
+	}
+	
+	/**
+	 * Sets the timeout.
+	 * @param value The value.
+	 */
+	@Override
+	public void setTimeout(int value) {
+		timeout = value;
+		impl.setTimeout(value);
 	}
 
+	/**
+	 * Sets the polling time.
+	 * @param value The value.
+	 */
+	public void setPollingTime(int value) {
+		impl.setPollingTime(value);
+	}
+	
 	/**
 	 * Initializes the requester.
 	 * @throws InitException if the requester cannot be created.
@@ -194,30 +204,12 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	}
 
 	/**
-	 * Sets the timeout.
-	 * @param value The value.
-	 */
-	@Override
-	public void setTimeout(int value) {
-		timeout = value;
-		impl.setTimeout(value);
-	}
-	
-	/**
 	 * Gets the timeout.
 	 * @return The timeout.
 	 */
 	@Override
 	public int getTimeout() {
 		return timeout;
-	}
-
-	/**
-	 * Sets the polling time.
-	 * @param value The value.
-	 */
-	public void setPollingTime(int value) {
-		impl.setPollingTime(value);
 	}
 	
 	/**

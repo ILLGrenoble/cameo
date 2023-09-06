@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
 		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getState()) << endl;
 
 		// Create a subscriber to the application applicationName
-		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder", true);
+		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+		requester->setCheckApp();
 
 		cout << "Requester ready ? " << requester->isReady() << endl;
 		requester->init();

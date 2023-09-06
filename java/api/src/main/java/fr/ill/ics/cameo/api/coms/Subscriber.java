@@ -76,7 +76,10 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	private void synchronize(TimeoutCounter timeoutCounter, int numberOfSubscribers, boolean syncSubscribers) {
 
 		// Create the requester.
-		requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName, checkApp);
+		requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
+		if (checkApp) {
+			requester.setCheckApp();
+		}
 		
 		// Set the timeout that can be -1.
 		requester.setTimeout(timeoutCounter.remains());
