@@ -29,7 +29,8 @@ public class PublisherLoop {
 			System.out.println("Creating publisher and waiting for 1 subscriber...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", 1);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			publisher.setWaitForSubscribers(1);
 			
 			// Synchronize with subscribers.
 			publisher.init();

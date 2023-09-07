@@ -43,7 +43,9 @@ public class Publisher {
 			System.out.println("Creating publisher and waiting for " + numberOfSubscribers + " subscriber(s)...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", numberOfSubscribers, syncSubscribers);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			publisher.setSyncSubscribers(syncSubscribers);
+			publisher.setWaitForSubscribers(numberOfSubscribers);
 			
 			// Synchronize with subscribers.
 			publisher.init();

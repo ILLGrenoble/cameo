@@ -99,7 +99,8 @@ def testCancelWaitForSubscribers():
 
     print("Creating publisher and waiting for 1 subscriber...")
 
-    publisher = cameopy.coms.Publisher.create("publisher", 1)
+    publisher = cameopy.coms.Publisher.create("publisher")
+    publisher.setWaitForSubscribers(1)
 
     # Start thread.
     t = threading.Thread(target=cancelWaitForSubscribers, args=(publisher,))
@@ -124,7 +125,8 @@ def testKillApplication():
     t = threading.Thread(target=killApplication, args=(app,))
     t.start()
 
-    subscriber = cameopy.coms.Subscriber.create(app, "publisher", True)
+    subscriber = cameopy.coms.Subscriber.create(app, "publisher")
+    subscriber.setCheckApp(True)
     subscriber.init()
 
     # Receiving data.
@@ -155,6 +157,7 @@ def testCancelSubscriber():
 
     # Create a subscriber.
     subscriber = cameopy.coms.Subscriber.create(app, "publisher")
+    subscriber.setCheckApp(True)
     subscriber.init()
     
     # Start cancel thread.

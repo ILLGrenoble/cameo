@@ -9,7 +9,8 @@ print("Number of subscribers", numberOfSubscribers)
 
 print("Creating publisher and waiting for ", numberOfSubscribers, "subscriber(s)...")
 
-publisher = cameopy.coms.Publisher.create("publisher", numberOfSubscribers)
+publisher = cameopy.coms.Publisher.create("publisher")
+publisher.setWaitForSubscribers(numberOfSubscribers)
 publisher.init()
 
 this.setRunning()

@@ -125,9 +125,12 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	
 	/**
 	 * A thread is checking the state of the app and cancels the requester if it fails.
+	 * @param value True if the app is checked.
 	 */
-	public void setCheckApp() {
-		checker = new Checker(this);
+	public void setCheckApp(boolean value) {
+		if (value) {
+			checker = new Checker(this);
+		}
 	}
 	
 	/**

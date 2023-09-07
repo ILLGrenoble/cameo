@@ -63,7 +63,8 @@ int main(int argc, char *argv[]) {
 		cout << "Started application " << *publisherApplication << endl;
 
 		// Create a subscriber to the application.
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher", true);
+		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApplication, "publisher");
+		subscriber->setCheckApp(true);
 		subscriber->init();
 
 		cout << "Created subscriber " << *subscriber << endl;

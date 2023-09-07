@@ -7,6 +7,7 @@
   WARNING: Create Subscriber with checkApp = true to cancel receive() automatically as in the previous version.
 * Renamed getActualState() functions into getState().
 * Publisher with synchronized subscribers.
+* Coms classes options outside create().
 
 2.1.1
 -----

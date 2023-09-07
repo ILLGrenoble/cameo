@@ -29,6 +29,7 @@ import fr.ill.ics.cameo.api.base.This;
 import fr.ill.ics.cameo.api.base.Timeout;
 import fr.ill.ics.cameo.api.base.TimeoutCounter;
 import fr.ill.ics.cameo.api.base.App.Com.KeyValueGetter;
+import fr.ill.ics.cameo.api.coms.Requester.Checker;
 import fr.ill.ics.cameo.api.coms.impl.SubscriberImpl;
 import fr.ill.ics.cameo.api.factory.ImplFactory;
 import fr.ill.ics.cameo.common.messages.JSON;
@@ -45,7 +46,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	
 	private App app;
 	private String publisherName;
-	private boolean checkApp;
+	private boolean checkApp = false;
 	private int timeout = -1;
 	private boolean useProxy = false;
 	private String appName;
@@ -59,10 +60,9 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	
 	private static int SYNC_TIMEOUT = 100;
 	
-	private Subscriber(App app, String publisherName, boolean checkApp) {
+	private Subscriber(App app, String publisherName) {
 		this.app = app;
 		this.publisherName = publisherName;
-		this.checkApp = checkApp;
 		this.appName = app.getName();
 		this.appId = app.getId();
 		this.appEndpoint = app.getEndpoint();
@@ -77,9 +77,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 
 		// Create the requester.
 		requester = Requester.create(app, Publisher.RESPONDER_PREFIX + publisherName);
-		if (checkApp) {
-			requester.setCheckApp();
-		}
+		requester.setCheckApp(checkApp);
 		
 		// Set the timeout that can be -1.
 		requester.setTimeout(timeoutCounter.remains());
@@ -148,21 +146,18 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	 * Returns a new subscriber.
 	 * @param app The application where the publisher is defined.
 	 * @param publisherName The name of the publisher.
-	 * @param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
-	 * @return A new Subscriber object.
-	 */
-	public static Subscriber create(App app, String publisherName, boolean checkApp) {
-		return new Subscriber(app, publisherName, checkApp);
-	}
-	
-	/**
-	 * Returns a new subscriber.
-	 * @param app The application where the publisher is defined.
-	 * @param publisherName The name of the publisher.
 	 * @return A new Subscriber object.
 	 */
 	public static Subscriber create(App app, String publisherName) {
-		return new Subscriber(app, publisherName, false);
+		return new Subscriber(app, publisherName);
+	}
+	
+	/**
+	 * A thread is checking the state of the app and cancels the requester if it fails.
+	 * @param value True if the app is checked.
+	 */
+	public void setCheckApp(boolean value) {
+		this.checkApp = value;
 	}
 	
 	/**

@@ -70,7 +70,7 @@ public class TestResponderError {
 				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
 				Requester requester = Requester.create(responderApplication, "responder");
-				requester.setCheckApp();
+				requester.setCheckApp(true);
 				requester.init();
 				
 				System.out.println("Created requester " + requester);

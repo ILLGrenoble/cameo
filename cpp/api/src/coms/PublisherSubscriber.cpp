@@ -41,13 +41,9 @@ const std::string Publisher::RESPONDER_PREFIX = "publisher:";
 const std::string Publisher::NUMBER_OF_SUBSCRIBERS = "n_subscribers";
 const std::string Publisher::SYNC_SUBSCRIBERS = "sync_subscribers";
 
-Publisher::Publisher(const std::string& name, int numberOfSubscribers, bool syncSubscribers) :
+Publisher::Publisher(const std::string& name) :
 	m_name{name},
-	m_numberOfSubscribers{numberOfSubscribers},
-	m_syncSubscribers{syncSubscribers},
 	m_canceled{false} {
-
-	m_impl = ImplFactory::createPublisher(syncSubscribers);
 
 	// Create the waiting here.
 	m_waiting.reset(new Waiting{std::bind(&Publisher::cancel, this)});
@@ -74,12 +70,24 @@ void Publisher::terminate() {
 	setTerminated();
 }
 
+void Publisher::setSyncSubscribers(bool value) {
+	m_syncSubscribers = value;
+}
+
+void Publisher::setWaitForSubscribers(int numberOfSubscribers) {
+	m_syncSubscribers = true;
+	m_numberOfSubscribers = numberOfSubscribers;
+}
+
 void Publisher::init() {
 
 	if (isReady()) {
 		// The object is already initialized.
 		return;
 	}
+
+	// Create the implementation.
+	m_impl = ImplFactory::createPublisher(m_syncSubscribers);
 
 	// Set the key.
 	m_key = KEY + "-" + m_name;
@@ -131,8 +139,8 @@ void Publisher::init() {
 	setReady();
 }
 
-std::unique_ptr<Publisher> Publisher::create(const std::string& name, int numberOfSubscribers, bool syncSubscribers) {
-	return std::unique_ptr<Publisher>{new Publisher(name, numberOfSubscribers, syncSubscribers)};
+std::unique_ptr<Publisher> Publisher::create(const std::string& name) {
+	return std::unique_ptr<Publisher>{new Publisher(name)};
 }
 
 const std::string& Publisher::getName() const {
@@ -240,10 +248,9 @@ std::string Publisher::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(App & app, const std::string &publisherName, bool checkApp) :
+Subscriber::Subscriber(App & app, const std::string &publisherName) :
 	m_app{app},
 	m_publisherName{publisherName},
-	m_checkApp{checkApp},
 	m_timeout{-1},
 	m_useProxy{m_app.usesProxy()},
 	m_appName{m_app.getName()},
@@ -270,6 +277,10 @@ void Subscriber::terminate() {
 	setTerminated();
 }
 
+void Subscriber::setCheckApp(bool value) {
+	m_checkApp = value;
+}
+
 void Subscriber::setTimeout(int value) {
 	m_timeout = value;
 }
@@ -282,9 +293,7 @@ void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscrib
 
 	// Create the requester.
 	m_requester = Requester::create(m_app, Publisher::RESPONDER_PREFIX + m_publisherName);
-	if (m_checkApp) {
-		m_requester->setCheckApp();
-	}
+	m_requester->setCheckApp(m_checkApp);
 
 	// Set the timeout that can be -1.
 	m_requester->setTimeout(timeout.remains());
@@ -411,8 +420,8 @@ void Subscriber::init() {
 	setReady();
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName, bool checkApp) {
-	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName, checkApp)};
+std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName) {
+	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName)};
 }
 
 const std::string& Subscriber::getPublisherName() const {

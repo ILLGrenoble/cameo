@@ -8,6 +8,7 @@
 * Renamed getActualState() methods into getState().
 * Modularization.
 * Publisher with synchronized subscribers.
+* Coms classes options outside create().
 
 2.1.1
 -----

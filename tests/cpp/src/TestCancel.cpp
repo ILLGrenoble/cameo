@@ -91,7 +91,8 @@ int main(int argc, char *argv[]) {
 		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
 		// Use a shared_ptr to use it in the thread and the main thread.
-		shared_ptr<coms::Publisher> publisher(coms::Publisher::create("publisher", 1));
+		shared_ptr<coms::Publisher> publisher(coms::Publisher::create("publisher"));
+		publisher->setWaitForSubscribers(1);
 
 		// Start thread.
 		thread cancelThread([&] {
@@ -120,7 +121,8 @@ int main(int argc, char *argv[]) {
 		});
 
 		// Create a subscriber checking the app.
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher", true);
+		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*pubLoopApplication, "publisher");
+		subscriber->setCheckApp(true);
 		subscriber->init();
 
 		// Receiving data.

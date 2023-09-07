@@ -29,7 +29,8 @@ int main(int argc, char *argv[]) {
 	try {
 		cout << "Creating publisher and waiting for 1 subscriber..." << endl;
 
-		publisher = coms::Publisher::create("publisher", 1);
+		publisher = coms::Publisher::create("publisher");
+		publisher->setWaitForSubscribers(1);
 		publisher->init();
 	}
 	catch (const InitException& e) {

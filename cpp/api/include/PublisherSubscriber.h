@@ -51,11 +51,21 @@ public:
 	/**
 	 * Returns the publisher with name.
 	 * \param name The name.
-	 * \param numberOfSubscribers The number of subscribers.
-	 * \param syncSubscribers True if is a synchronized publisher.
 	 * \return A new Publisher object.
 	 */
-	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0, bool syncSubscribers = false);
+	static std::unique_ptr<Publisher> create(const std::string &name);
+
+	/**
+	 * Sets the subscribers synchronized. By default, the subscribers are not synchronized.
+	 * \param value True if synchronized.
+	 */
+	void setSyncSubscribers(bool value);
+
+	/**
+	 * Sets the wait for subscribers. If set then the subscribers are set synchronized.
+	 * \param numberOfSubscribers The number of subscribers.
+	 */
+	void setWaitForSubscribers(int numberOfSubscribers);
 
 	/**
 	 * Initializes the publisher.
@@ -148,14 +158,14 @@ public:
 private:
 	static const int CANCEL_RESPONDER = 0;
 
-	Publisher(const std::string &name, int numberOfSubscribers, bool syncSubscribers);
+	Publisher(const std::string &name);
 
 	void responderLoop();
 	bool waitForSubscribers();
 
 	std::string m_name;
-	int m_numberOfSubscribers;
-	bool m_syncSubscribers;
+	bool m_syncSubscribers = false;
+	int m_numberOfSubscribers = 0;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
@@ -189,7 +199,13 @@ public:
 	 * \param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
 	 * \return A new Subscriber object.
 	 */
-	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName, bool checkApp = false);
+	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName);
+
+	/**
+	 * Sets the check app feature. Default value is false.
+	 * \param value True if app is checked.
+	 */
+	void setCheckApp(bool value);
 
 	/**
 	 * Initializes the subscriber.
@@ -274,12 +290,12 @@ public:
 	std::string toString() const override;
 
 private:
-	Subscriber(App & app, const std::string &publisherName, bool checkApp);
+	Subscriber(App & app, const std::string &publisherName);
 	void synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers);
 
 	App & m_app;
 	std::string m_publisherName;
-	bool m_checkApp;
+	bool m_checkApp = false;
 	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;

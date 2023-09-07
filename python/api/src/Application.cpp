@@ -266,9 +266,10 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<Publisher>(cm, "Publisher")
 	    .def_static("create", &Publisher::create,
 	    		"name"_a,
-	    		"numberOfSubscribers"_a = 0,
-				"syncSubscribers"_a = false,
 				py::call_guard<py::gil_scoped_release>())
+
+		.def("setSyncSubscribers", &Publisher::setSyncSubscribers, py::call_guard<py::gil_scoped_release>())
+		.def("setWaitForSubscribers", &Publisher::setWaitForSubscribers, py::call_guard<py::gil_scoped_release>())
 		.def("init", &Publisher::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Publisher::isReady)
 		.def("terminate", &Publisher::terminate, py::call_guard<py::gil_scoped_release>())
@@ -291,8 +292,8 @@ PYBIND11_MODULE(cameopy, m) {
 	    .def_static("create", &Subscriber::create,
 	    		"instance"_a,
 	    		"publisherName"_a,
-				"checkApp"_a = false,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def("setCheckApp", &Subscriber::setCheckApp, py::call_guard<py::gil_scoped_release>())
 		.def("init", &Subscriber::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Subscriber::isReady)
 		.def("setTimeout", &Subscriber::setTimeout)

@@ -32,6 +32,7 @@ for i in range(numberOfTimes):
     print("Started application", applicationName)
 
     requester = cameopy.coms.Requester.create(app, "responder")
+    requester.setCheckApp(True)
     requester.init()
     
     print("Created requester", requester)
@@ -65,6 +66,8 @@ for i in range(numberOfTimes):
     
     # Wait for the application.
     app.waitFor()
+    
+    requester.terminate()
     
     print("Finished the application")
 

@@ -50,9 +50,10 @@ public:
 	static std::unique_ptr<Requester> create(App &app, const std::string &responderName);
 
 	/**
-	 * Sets the check app feature.
+	 * Sets the check app feature. Default value is false.
+	 * \param value True if app is checked.
 	 */
-	void setCheckApp();
+	void setCheckApp(bool value);
 
 	/**
 	 * Sets the timeout.

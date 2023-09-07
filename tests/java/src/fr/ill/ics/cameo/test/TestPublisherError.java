@@ -65,7 +65,8 @@ public class TestPublisherError {
 				App publisherApplication = server.start(applicationName);
 				System.out.println("Started application " + publisherApplication);
 				
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(publisherApplication, "publisher", true);
+				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
+				subscriber.setCheckApp(true);
 				subscriber.init();
 				
 				System.out.println("Created subscriber " + subscriber);

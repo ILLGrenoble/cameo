@@ -52,7 +52,8 @@ int main(int argc, char *argv[]) {
 	This::getCom().removeKey("test");
 
 	// Create a publisher that will never init.
-	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub", 2);
+	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub");
+	publisher->setWaitForSubscribers(2);
 
 	std::thread initThread([&] {
 		publisher->init();

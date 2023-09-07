@@ -49,7 +49,8 @@ public class TestComsTimeout {
 			
 			app.waitFor(State.RUNNING);
 
-			Publisher publisher = Publisher.create("pub", 2);
+			Publisher publisher = Publisher.create("pub");
+			publisher.setWaitForSubscribers(2);
 			
 			Thread initThread = new Thread(() -> {
 				publisher.init();

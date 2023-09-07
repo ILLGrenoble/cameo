@@ -145,8 +145,10 @@ std::unique_ptr<Requester> Requester::create(App & app, const std::string& respo
 	return std::unique_ptr<Requester>{new Requester(app, responderName)};
 }
 
-void Requester::setCheckApp() {
-	m_checker = std::make_unique<Checker>(*this);
+void Requester::setCheckApp(bool value) {
+	if (value) {
+		m_checker = std::make_unique<Checker>(*this);
+	}
 }
 
 void Requester::setTimeout(int value) {

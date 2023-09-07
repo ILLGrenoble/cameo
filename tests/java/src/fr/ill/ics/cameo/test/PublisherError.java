@@ -36,7 +36,8 @@ public class PublisherError {
 			System.out.println("Creating publisher and waiting for " + numberOfSubscribers + " subscriber(s)...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", numberOfSubscribers);
+			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			publisher.setWaitForSubscribers(numberOfSubscribers);
 			
 			// Synchronize with subscribers.
 			publisher.init();

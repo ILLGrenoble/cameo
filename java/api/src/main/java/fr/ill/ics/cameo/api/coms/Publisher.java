@@ -43,8 +43,8 @@ import fr.ill.ics.cameo.common.strings.StringId;
 public class Publisher extends StateObject implements ICancelable {
 
 	private String name;
-	private int numberOfSubscribers;
-	private boolean syncSubscribers;
+	private int numberOfSubscribers = 0;
+	private boolean syncSubscribers = false;
 	private PublisherImpl impl;
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
@@ -61,15 +61,27 @@ public class Publisher extends StateObject implements ICancelable {
 	public static final long SUBSCRIBE_PUBLISHER = 100;
 	private static final long CANCEL_RESPONDER = 0;
 	
-	private Publisher(String name, int numberOfSubscribers, boolean syncSubscribers) {
+	private Publisher(String name) {
 		
 		this.name = name;
-		this.numberOfSubscribers = numberOfSubscribers;
-		this.syncSubscribers = syncSubscribers;
-		
-		this.impl = ImplFactory.createPublisher(syncSubscribers);
-		
 		waiting.add();
+	}
+
+	/**
+	 * Sets the subscribers synchronized. By default, the subscribers are not synchronized.
+	 * @param value True if synchronized.
+	 */
+	public void setSyncSubscribers(boolean value) {
+		this.syncSubscribers = value;
+	}
+	
+	/**
+	 * Sets the wait for subscribers. If set then the subscribers are set synchronized.
+	 * @param numberOfSubscribers The number of subscribers.
+	 */
+	public void setWaitForSubscribers(int numberOfSubscribers) {
+		this.syncSubscribers = true;
+		this.numberOfSubscribers = numberOfSubscribers;
 	}
 	
 	/**
@@ -83,6 +95,9 @@ public class Publisher extends StateObject implements ICancelable {
 			// The object is already initialized.
 			return;
 		}
+		
+		// Create the implementation.
+		this.impl = ImplFactory.createPublisher(syncSubscribers);
 		
 		// Set the key.
 		key = KEY + "-" + name;
@@ -166,33 +181,12 @@ public class Publisher extends StateObject implements ICancelable {
 	/**
 	 * Returns the publisher with name.
 	 * @param name The name.
-	 * @param numberOfSubscribers The number of subscribers.
-	 * @param syncSubscribers True if publisher is synchronized.
-	 * @return A new Publisher object.
-	 */
-	static public Publisher create(String name, int numberOfSubscribers, boolean syncSubscribers) {
-		return new Publisher(name, numberOfSubscribers, syncSubscribers);
-	}
-
-	/**
-	 * Returns the publisher with name.
-	 * @param name The name.
-	 * @param numberOfSubscribers The number of subscribers.
-	 * @return A new Publisher object.
-	 */
-	static public Publisher create(String name, int numberOfSubscribers) {
-		return new Publisher(name, numberOfSubscribers, false);
-	}
-	
-	/**
-	 * Returns the publisher with name.
-	 * @param name The name.
 	 * @return A new Publisher object.
 	 */
 	static public Publisher create(String name) {
-		return create(name, 0, false);
+		return new Publisher(name);
 	}
-
+	
 	/**
 	 * Gets the name.
 	 * @return The name.
@@ -200,7 +194,7 @@ public class Publisher extends StateObject implements ICancelable {
 	public String getName() {
 		return name;
 	}
-	
+		
 	/**
 	 * Returns true if the wait succeeds or false if it was canceled.
 	 * @return True if the wait succeeds or false if it was canceled.

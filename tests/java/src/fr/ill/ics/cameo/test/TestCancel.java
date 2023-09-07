@@ -114,7 +114,8 @@ public class TestCancel {
 				System.out.println("Creating publisher and waiting for 1 subscriber...");
 				
 				// create the publisher
-				final fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher", 1);
+				final fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+				publisher.setWaitForSubscribers(1);
 				
 				Thread cancelThread = new Thread(new Runnable() {
 					@Override
@@ -162,7 +163,8 @@ public class TestCancel {
 				
 				cancelThread.start();
 				
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher", true);
+				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher");
+				subscriber.setCheckApp(true);
 				subscriber.init();
 				
 				while (true) {
