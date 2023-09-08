@@ -76,7 +76,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 		}
 
 		// Wait for 100ms.
-		int rc = zmq::poll(items, 1, 100);
+		int rc = zmq::poll(items, 1, std::chrono::milliseconds{100});
 
 		// Return when the subscriber received a message.
 		if (rc != 0) {

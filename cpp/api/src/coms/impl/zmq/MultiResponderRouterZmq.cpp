@@ -92,7 +92,7 @@ void ResponderRouterZmq::run() {
 	// Switch messages between sockets.
 	while (true) {
 
-		zmq::poll(&items[0], 2, m_pollingTime);
+		zmq::poll(&items[0], 2, std::chrono::milliseconds{m_pollingTime});
 
 		if (items[0].revents & ZMQ_POLLIN) {
 

@@ -104,7 +104,7 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
 
-		int rc = zmq::poll(items, 1, timeout);
+		int rc = zmq::poll(items, 1, std::chrono::milliseconds{timeout});
 		if (rc == 0) {
 			// Reset the socket. It is necessary if a new request is done.
 			reset();

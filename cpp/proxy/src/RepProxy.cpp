@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 	zmq::const_buffer emptyBuffer;
 
 	while (true) {
-		zmq::poll(&items[0], 1, -1);
+		zmq::poll(&items[0], 1, std::chrono::milliseconds{-1});
 
 		if (items[0].revents & ZMQ_POLLIN) {
 

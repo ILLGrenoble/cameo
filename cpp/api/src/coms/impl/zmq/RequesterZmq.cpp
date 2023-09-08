@@ -267,7 +267,7 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 		}
 
 		// Poll the requester.
-		zmq::poll(&items[0], 1, m_pollingTime);
+		zmq::poll(&items[0], 1, std::chrono::milliseconds{m_pollingTime});
 
 		// Get a reply.
 		if (items[0].revents & ZMQ_POLLIN) {

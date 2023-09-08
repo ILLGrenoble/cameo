@@ -74,8 +74,8 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 
 bool SubscriberZmq::sync(int timeout) {
 
-	// Wait for 100ms.
-	int rc = zmq::poll(m_items, 1, timeout);
+	// Wait for timeout ms.
+	int rc = zmq::poll(m_items, 1, std::chrono::milliseconds{timeout});
 
 	// Return true if the subscriber received a message.
 	return (rc != 0);
