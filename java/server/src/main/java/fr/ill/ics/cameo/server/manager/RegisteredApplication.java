@@ -192,7 +192,10 @@ public class RegisteredApplication extends Application {
 		// Set the working directory
 		if (getDirectory() != null) {
 			builder.directory(new File(getDirectory()));
-		}	
+		}
+		
+		// Add the environment variables from the application file.
+		builder.environment().putAll(getEnvironmentVariables());
 		
 		try {
 			builder.start();

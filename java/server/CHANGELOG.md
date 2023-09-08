@@ -2,6 +2,7 @@
 -----
 
 * Modularization.
+* Added environment variables to stop and error executables.
 
 2.1.0
 -----
