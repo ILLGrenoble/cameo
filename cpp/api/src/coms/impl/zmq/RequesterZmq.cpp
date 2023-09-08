@@ -59,7 +59,7 @@ void RequesterZmq::initSocket() {
 
 		// Configure the socket to not wait at close time.
 		int linger {0};
-		m_requester->setsockopt(ZMQ_LINGER, &linger, sizeof(linger));
+		m_requester->set(zmq::sockopt::linger, linger);
 	}
 }
 

@@ -44,7 +44,7 @@ void ResponderZmq::init(const std::string& responderIdentity) {
 	m_responder.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::router});
 
 	// Set the identity.
-	m_responder->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
+	m_responder->set(zmq::sockopt::routing_id, responderIdentity);
 
 	// Connect to the proxy.
 	Endpoint proxyEndpoint {This::getEndpoint().withPort(This::getCom().getResponderProxyPort())};

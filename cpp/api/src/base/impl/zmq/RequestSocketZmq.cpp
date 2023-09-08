@@ -54,7 +54,7 @@ void RequestSocketZmq::setSocketLinger() {
 	// If a Server instance is not reachable, the context that contains the message in timeout will block during this linger period.
 	if (m_timeout > 0 && m_socket) {
 		int lingerValue {100};
-		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
+		m_socket->set(zmq::sockopt::linger, lingerValue);
 	}
 }
 
@@ -66,7 +66,7 @@ void RequestSocketZmq::init() {
 
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
 		int value {0};
-		m_socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
+		m_socket->set(zmq::sockopt::linger, value);
 
 		try {
 			// Connect to the endpoint.

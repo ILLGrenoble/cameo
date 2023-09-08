@@ -48,7 +48,7 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::sub});
 	m_subscriber->connect(endpoint.toString());
 
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
+	m_subscriber->set(zmq::sockopt::subscribe, publisherIdentity);
 
 	// First define the cancel endpoint.
 	m_cancelEndpoint = std::string{"inproc://" + IdGenerator::newStringId()};
@@ -57,12 +57,12 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_cancelPublisher->bind(m_cancelEndpoint);
 
 	m_subscriber->connect(m_cancelEndpoint);
-	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
+	m_subscriber->set(zmq::sockopt::subscribe, message::Event::CANCEL);
 
 	// Connect the status publisher if the app is checked.
 	if (checkApp) {
 		m_subscriber->connect(appStatusEndpoint.toString().c_str());
-		m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
+		m_subscriber->set(zmq::sockopt::subscribe, message::Event::STATUS);
 	}
 
 	// Set the poll item.

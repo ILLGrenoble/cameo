@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
 
 	// Prepare our context and socket.
 	zmq::context_t context(1);
-	zmq::socket_t router(context, ZMQ_ROUTER);
-	router.setsockopt(ZMQ_IDENTITY, "R");
+	zmq::socket_t router(context, zmq::socket_type::router);
+	router.set(zmq::sockopt::routing_id, "R");
 
 	try {
 		router.bind(address);
