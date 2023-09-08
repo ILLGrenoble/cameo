@@ -43,6 +43,7 @@ const std::string Publisher::SYNC_SUBSCRIBERS = "sync_subscribers";
 
 Publisher::Publisher(const std::string& name) :
 	m_name{name},
+	m_impl{ImplFactory::createPublisher(false)},
 	m_canceled{false} {
 
 	// Create the waiting here.
@@ -86,8 +87,10 @@ void Publisher::init() {
 		return;
 	}
 
-	// Create the implementation.
-	m_impl = ImplFactory::createPublisher(m_syncSubscribers);
+	// Replace the implementation if sync.
+	if (m_syncSubscribers) {
+		m_impl = ImplFactory::createPublisher(m_syncSubscribers);
+	}
 
 	// Set the key.
 	m_key = KEY + "-" + m_name;

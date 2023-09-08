@@ -45,7 +45,7 @@ public class Publisher extends StateObject implements ICancelable {
 	private String name;
 	private int numberOfSubscribers = 0;
 	private boolean syncSubscribers = false;
-	private PublisherImpl impl;
+	private PublisherImpl impl = ImplFactory.createPublisher(false);
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
 	private Responder responder = null;
@@ -96,7 +96,7 @@ public class Publisher extends StateObject implements ICancelable {
 			return;
 		}
 		
-		// Create the implementation.
+		// Replace the implementation if sync.
 		this.impl = ImplFactory.createPublisher(syncSubscribers);
 		
 		// Set the key.
