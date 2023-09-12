@@ -3,38 +3,39 @@
 ## Dependencies
 
 Cameo depends on:
- - CMake
- - Java (>=9)
- - Maven 
+ - CMake (>=3.20)
+ - Java JDK (>=11)
+ - Maven
+ - ZeroMQ
+  
+For the C++ API:
+ - Rapidjson
+ 
+For the Python API:
+ - Pybind11
+
+OpenJDK or Oracle JDK can be both installed.
+
+### Debian-Based Linux distribution
+ 
+Install all the dependencies (except Java):
+
+```
+sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
+```
  
 ### Centos 8
 
-Install the components:
+To be filled.
 
-```
-$ yum install -y maven java-latest-openjdk-devel
-```
 
-Update to the most recent version of Java:
-
-```
-$ sudo /sbin/alternatives --config java_sdk_openjdk
-```
-
-### Ubuntu
-
-Install Maven:
-
-```
-$ sudo apt install maven
-```
 
 ## Instructions
 
-Download the latest version:
+Download the latest release:
 
 ```
-$ git clone --depth 1 https://code.ill.fr/cameo/cameo.git
+$ git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
 ```
 
 ### Option 1: Generate the binaries
@@ -48,7 +49,7 @@ $ cmake --build build/
 ```
 
 Possible options are:
- - CMAKE_INSTALL_PREFIX=<your_chosen_install_basepath>: to install in a non-standard directory
+ - CMAKE_INSTALL_PREFIX=<your chosen install basepath>: to install in a non-standard directory
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
  - CAMEO_TESTS=ON: to build the Java and C++ tests
@@ -62,13 +63,13 @@ $ sudo cmake --build . --target install
 
 ### Option 2: Generate the Debian packages
 
-It is also possible to build and create Debian packages. In this case, please use the build_and_package.sh script.
+It is also possible to build and create Debian packages. In this case, please use the *build_and_package.sh* script.
 
 ```
-$ ./build_and_package.sh <build_directory>
+$ ./build_and_package.sh <build directory>
 ```
 
-The script provides the following .deb packages located in <build_directory>/packages/
+The script provides the following *.deb* packages located in <build directory>/packages/.
 They can be installed using package manager.
 
 ### Generate the documentation
