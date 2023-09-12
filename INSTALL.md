@@ -49,7 +49,7 @@ $ cmake --build build/
 ```
 
 Possible options are:
- - CMAKE_INSTALL_PREFIX=<your chosen install basepath>: to install in a non-standard directory
+ - CMAKE_INSTALL_PREFIX=*directory*: to install in a non-standard directory
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
  - CAMEO_TESTS=ON: to build the Java and C++ tests
