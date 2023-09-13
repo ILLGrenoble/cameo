@@ -32,11 +32,7 @@ To be filled.
 
 ## Instructions
 
-Download the latest release:
-
-```
-$ git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
-```
+You can either generate the binaries or the Debian packages.
 
 ### Option 1: Generate the binaries
 
