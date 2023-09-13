@@ -21,61 +21,53 @@
 using namespace cameo;
 
 int main(int argc, char *argv[]) {
-		
+
+	// Initialize cameo.
 	This::init(argc, argv);
 
-	// The request message is the second argument.
-	std::string requestMessage;
-	if (argc > 2) {
-		requestMessage = argv[1];
+	// Parameters: responder endpoint, language, message, number of times.
+	if (argc < 6) {
+		std::cout << "Parameters: <responder endpoint> <language> <message> <number of times>" << std::endl;
+		return EXIT_FAILURE;
 	}
 
-	int N = 1;
-	if (argc > 3) {
-		std::istringstream is(argv[2]);
-		is >> N;
-	}
+	std::string responderEndpoint {argv[1]};
+	std::string language {argv[2]};
+	std::string message {argv[3]};
+	int N {std::stoi(argv[4])};
 
-	std::string serverEndpoint;
-	if (argc > 4) {
-		serverEndpoint = argv[3];
-	}
-
-	std::unique_ptr<Server> server;
-
-	if (serverEndpoint == "") {
-		server = Server::create(This::getServer().getEndpoint());
-	}
-	else {
-		server = Server::create(serverEndpoint);
-	}
-
+	// Initialize the cameo server.
+	std::unique_ptr<Server> server = Server::create(responderEndpoint);
 	server->init();
 
-	if (This::isAvailable() && server->isAvailable()) {
-		std::cout << "Connected server " << *server << std::endl;
+	std::cout << "Connected server " << *server << std::endl;
+
+	// Connect to the responder app.
+	std::string appName = std::string{"responder-"} + language;
+	std::unique_ptr<App> responderApp = server->connect(appName);
+
+	// Start the responder app if it is not running.
+	if (!responderApp) {
+		responderApp = server->start(appName);
 	}
 
-	// Connect to the server.
-	std::unique_ptr<App> responderServer = server->connect("responder");
-
-	std::cout << "Application " << *responderServer << " has state " << toString(responderServer->getState()) << std::endl;
+	std::cout << "App " << *responderApp << " has state " << toString(responderApp->getState()) << std::endl;
 
 	// Create a requester.
-	std::unique_ptr<coms::Requester> requester = coms::Requester::create(*responderServer, "the-responder");
+	std::unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApp, "the-responder");
 	requester->init();
 
 	std::cout << "Created requester " << *requester << std::endl;
 
 	if (!requester) {
 		std::cout << "requester error" << std::endl;
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	for (int i = 0; i < N; ++i) {
 
 		// Send a simple message as string.
-		requester->send(requestMessage + "-" + std::to_string(i));
+		requester->send(message + "-" + std::to_string(i));
 
 		// Receive the response.
 		std::optional<std::string> response = requester->receive();
@@ -83,7 +75,11 @@ int main(int argc, char *argv[]) {
 		std::cout << "Response is " << response.value() << std::endl;
 	}
 
-	std::cout << "Finished the application" << std::endl;
+	// Stop the responder app and wait for its termination.
+	responderApp->stop();
+	State state = responderApp->waitFor();
 
-	return 0;
+	std::cout << "App responder finished with state " << toString(state) << std::endl;
+
+	return EXIT_SUCCESS;
 }

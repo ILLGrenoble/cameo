@@ -27,55 +27,55 @@ public class RequesterApp {
 
 	public static void main(String[] args) {
 		
+		// Initialize cameo.
 		This.init(args);
 		
-		String requestMessage = "";
-		int N = 1;
-		Server server = null;
-		
-		// The request message is the first argument.
-		if (args.length > 1) {
-			requestMessage = args[0];
-		}
-		
-		// The number of requests is the second argument.
-		if (args.length > 2) {
-			N = Integer.parseInt(args[1]);
-		}
-		
-		// The server endpoint is the third argument.
-		if (args.length > 3) {
-			server = Server.create(args[2]);
-		}
-		else {	
-			server = Server.create(This.getEndpoint());
-		}
-		
-		server.init();
-		
-		if (This.isAvailable() && server.isAvailable()) {
-			System.out.println("Connected server " + server);
-		}
-		else {
+		// Parameters: responder endpoint, language, message, number of times.
+		if (args.length < 5) {
+			System.out.println("Parameters: <responder endpoint> <language> <message> <number of times>");
 			System.exit(-1);
 		}
 		
+		String responderEndpoint = args[0];
+		String language = args[1];
+		String message = args[2];
+		int N = Integer.parseInt(args[3]);
+		
+		// Initialize the cameo server.
+		Server server = Server.create(responderEndpoint);
+		server.init();
+		
+		System.out.println("Connected server " + server);
+		
 		try {
-			// Connect to the server.
-			App responderServer = server.connect("responder");
-			System.out.println("Application " + responderServer + " has state " + State.toString(responderServer.getState()));
+			// Connect to the responder app.
+			String appName = "responder-" + language;
+			App responderApp = server.connect(appName);
+			
+			// Start the responder app if it is not running.
+			if (responderApp == null) {
+				responderApp = server.start(appName);
+			}
+						
+			System.out.println("App " + responderApp + " has state " + State.toString(responderApp.getState()));
 			
 			// Create a requester.
-			Requester requester = Requester.create(responderServer, "the-responder");
+			Requester requester = Requester.create(responderApp, "the-responder");
 			requester.init();
 			System.out.println("Created requester " + requester);
 			
 			for (int i = 0; i < N; ++i) {
 				// Send a simple message as string.
-				requester.sendString(requestMessage + "-" + i);
+				requester.sendString(message + "-" + i);
 				System.out.println("Response is " + requester.receiveString());
 			}
-				
+			
+			// Stop the responder app and wait for its termination.
+			responderApp.stop();
+			int state = responderApp.waitFor();
+			
+			System.out.println("App responder finished with state " + State.toString(state));
+			
 			// Terminate the requester and server.
 			requester.terminate();
 			server.terminate();

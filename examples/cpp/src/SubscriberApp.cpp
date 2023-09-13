@@ -20,35 +20,36 @@
 using namespace cameo;
 
 int main(int argc, char *argv[]) {
-		
+
+	// Initialize cameo.
 	This::init(argc, argv);
 
-	std::string serverEndpoint;
-	if (argc > 2) {
-		serverEndpoint = argv[1];
+	// Parameters: publisher endpoint, language.
+	if (argc < 4) {
+		std::cout << "Parameters: <publisher endpoint> <language>" << std::endl;
+		return EXIT_FAILURE;
 	}
 
-	std::unique_ptr<Server> server;
+	std::string serverEndpoint {argv[1]};
+	std::string language {argv[2]};
 
-	if (serverEndpoint == "") {
-		server = Server::create(This::getServer().getEndpoint());
-	}
-	else {
-		server = Server::create(serverEndpoint);
-	}
-
+	std::unique_ptr<Server> server = Server::create(serverEndpoint);
 	server->init();
 
-	if (This::isAvailable() && server->isAvailable()) {
-		std::cout << "Connected server " << *server << std::endl;
-	}
+	std::cout << "Connected server " << *server << std::endl;
 
-	// Connect to the server.
-	std::unique_ptr<App> publisherApp = server->connect("publisher");
+	// Connect to the responder app.
+	std::string appName = std::string{"publisher-"} + language;
+	std::unique_ptr<App> publisherApp = server->connect(appName);
+
+	// Start the publisher app if it is not running.
+	if (!publisherApp) {
+		publisherApp = server->start(appName);
+	}
 
 	std::cout << "Application " << *publisherApp << " has state " << toString(publisherApp->getState()) << std::endl;
 
-	// Create a requester.
+	// Create a subscriber.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
 
 	auto start = std::chrono::steady_clock::now();
@@ -57,7 +58,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Created subscriber " << *subscriber << " after " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
 
-	// Receive data.
+	// Receive messages.
 	while (true) {
 		std::optional<std::string> message = subscriber->receive();
 		if (!message.has_value()) {

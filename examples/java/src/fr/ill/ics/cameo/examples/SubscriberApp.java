@@ -46,34 +46,35 @@ public class SubscriberApp {
 	
 	public static void main(String[] args) {
 		
+		// Initialize cameo.
 		This.init(args);
-					
-		// Get the local Cameo server.
-		Server server = null;
 		
-		// The server endpoint is the first argument.
-		if (args.length > 1) {
-			server = Server.create(args[0]);
-		}
-		else {	
-			server = Server.create(This.getEndpoint());
-		}
-		
-		server.init();
-		
-		if (This.isAvailable() && server.isAvailable()) {
-			System.out.println("Connected server " + server);
-		}
-		else {
+		// Parameters: publisher endpoint, language.
+		if (args.length < 3) {
+			System.out.println("Parameters: <publisher endpoint> <language>");
 			System.exit(-1);
 		}
 		
+		String publisherEndpoint = args[0];
+		String language = args[1];
+		
+		// Initialize the cameo server.
+		Server server = Server.create(publisherEndpoint);
+		server.init();
+		
 		try {
-			// Connect to the publisher application.
-			App publisherApp = server.connect("publisher");
-			System.out.println("Application " + publisherApp + " has state " + State.toString(publisherApp.getState()));
+			// Connect to the publisher app.
+			String appName = "publisher-" + language;
+			App publisherApp = server.connect(appName);
 			
-			// Create a subscriber to the publisher named "publisher".
+			// Start the publisher app if it is not running.
+			if (publisherApp == null) {
+				publisherApp = server.start(appName);
+			}
+						
+			System.out.println("App " + publisherApp + " has state " + State.toString(publisherApp.getState()));
+			
+			// Create a subscriber.
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");
 			
 			Date start = new Date();
@@ -82,7 +83,7 @@ public class SubscriberApp {
 			
 			System.out.println("Created subscriber " + subscriber + " after " + (end.getTime() - start.getTime()) + " ms");
 			
-			// Receive data.
+			// Receive messages.
 			while (true) {
 				String message = subscriber.receiveString();
 				if (message != null) {

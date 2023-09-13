@@ -21,31 +21,30 @@ using namespace cameo;
 
 int main(int argc, char *argv[]) {
 
+	// Initialize cameo.
 	This::init(argc, argv);
 
-	if (This::isAvailable()) {
-		std::cout << "Connected" << std::endl;
-	}
-
+	// Define the stop handler to properly stop.
 	This::handleStop([] {
 		This::cancelAll();
 	});
 
+	// Create the responder.
 	std::unique_ptr<coms::basic::Responder> responder;
 
 	try {
 		responder = coms::basic::Responder::create("the-responder");
 		responder->init();
-		std::cout << "Created responder " << *responder << std::endl;
+		std::cout << "Created and initialized responder " << *responder << std::endl;
 	}
 	catch (const InitException& e) {
 		std::cout << "Responder error" << std::endl;
-		return -1;
+		return EXIT_FAILURE;
 	}
 
+	// Set the state.
 	This::setRunning();
 
-	// Loop on the requests.
 	while (true) {
 		
 		// Receive the simple request.
@@ -63,5 +62,5 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished the application" << std::endl;
 
-	return 0;
+	return EXIT_SUCCESS;
 }

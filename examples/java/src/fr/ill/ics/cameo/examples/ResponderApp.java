@@ -25,12 +25,10 @@ public class ResponderApp {
 
 	public static void main(String[] args) {
 
+		// Initialize cameo.
 		This.init(args);
 		
-		if (This.isAvailable()) {
-			System.out.println("Connected");
-		}
-				
+		// Define the stop handler to properly stop.
 		This.handleStop(() -> {
 			This.cancelAll();				
 		});
@@ -42,22 +40,21 @@ public class ResponderApp {
 			responder = Responder.create("the-responder");
 			responder.init();
 
-			System.out.println("Created responder " + responder);
+			System.out.println("Created and initialized responder " + responder);
 			
 			// Set the state.
 			This.setRunning();
 
-			// Loop on the requests.
 			while (true) {
 			
 				// Receive the simple request.
 				Request request = responder.receive();
 				if (request == null) {
-					System.out.println("Responder canceled");
+					System.out.println("Responder is canceled");
 					break;
 				}
 				
-				System.out.println("Received request " + request.get());
+				System.out.println("Received request " + request.getString());
 	
 				// Reply.
 				request.replyString("done");

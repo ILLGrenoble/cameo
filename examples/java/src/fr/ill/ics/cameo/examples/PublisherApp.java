@@ -16,13 +16,15 @@
 
 package fr.ill.ics.cameo.examples;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.api.base.This;
 import fr.ill.ics.cameo.api.coms.Publisher;
 
 public class PublisherApp {
-
+	
 	public static String serializeToJSON(String message, int i) {
 		
 		JSONObject object = new JSONObject();
@@ -32,37 +34,36 @@ public class PublisherApp {
 		
 		return object.toJSONString();
 	}
-	
+		
 	public static void main(String[] args) {
 
+		// Initialize cameo.
 		This.init(args);
-				
-		int numberOfSubscribers = 0;
-		if (args.length > 1) {
-			numberOfSubscribers = Integer.parseInt(args[0]);
-		}
-
-		if (This.isAvailable()) {
-			System.out.println("Connected");
-		}
+	
+		// Define the stop handler to properly stop.
+		This.handleStop(() -> {});
+		
+		int numberOfSubscribers = 1;
 		
 		Publisher publisher = null;
 		
 		try {
-			// Create the publisher not synchronized.
+			// Create the publisher.
 			publisher = Publisher.create("the-publisher");
 			publisher.setSyncSubscribers(true);
 			publisher.setWaitForSubscribers(numberOfSubscribers);
-			publisher.init();
+
 			System.out.println("Created publisher " + publisher);
+			
+			publisher.init();
+
 			System.out.println("Synchronized with " + numberOfSubscribers + " subscriber(s)");
 			
 			// Set the state.
 			This.setRunning();
 
-			// Loop on the events.
 			int i = 0;
-			while (true) {
+			while (!This.isStopping()) {
 			
 				// Send a message.
 				publisher.sendString(serializeToJSON("a message", i));

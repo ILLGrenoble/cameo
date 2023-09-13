@@ -34,37 +34,37 @@ std::string serializeToJSON(const std::string& message, int i) {
 
 int main(int argc, char *argv[]) {
 
+	// Initialize cameo.
 	This::init(argc, argv);
 
-	int numberOfSubscribers = 0;
-	if (argc > 2) {
-		numberOfSubscribers = std::stoi(argv[1]);
-	}
+	// Define the stop handler to properly stop.
+	This::handleStop([] {});
 
-	if (This::isAvailable()) {
-		std::cout << "Connected" << std::endl;
-	}
+	int numberOfSubscribers = 1;
 
 	std::unique_ptr<coms::Publisher> publisher;
 
 	try {
+		// Create the publisher.
 		publisher = coms::Publisher::create("the-publisher");
 		publisher->setWaitForSubscribers(numberOfSubscribers);
-		publisher->init();
+
 		std::cout << "Created publisher " << *publisher << std::endl;
+
+		publisher->init();
 	}
 	catch (const InitException& e) {
 		std::cout << "Publisher error" << std::endl;
-		return -1;
+		return EXIT_FAILURE;
 	}
 
+	// Set the state.
 	This::setRunning();
 
 	std::cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << std::endl;
 
-	// Loop on the events.
 	int i = 0;
-	while (true) {
+	while (!This::isStopping()) {
 
 		// Send a message.
 		publisher->send(serializeToJSON("a message", i));
@@ -76,5 +76,5 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished the application" << std::endl;
 
-	return 0;
+	return EXIT_SUCCESS;
 }
