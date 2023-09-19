@@ -51,8 +51,9 @@ void RequesterZmq::resetSocket() {
 void RequesterZmq::initSocket() {
 
 	if (!m_requester) {
-		// Create a socket REQ.
-		m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::req});
+		// Create a socket dealer.
+		// The dealer socket can receive multiple response.
+		m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::dealer});
 
 		// Connect to the endpoint.
 		m_requester->connect(m_endpoint.toString());
@@ -140,11 +141,13 @@ void RequesterZmq::sendRequest(const std::string& request) {
 	// Init the socket if necessary.
 	initSocket();
 
-	// Add the responder identity as first part.
+	// Start with an empty message for the dealer socket. The identity of the connected router is added by the dealer socket.
+	zmq::message_t empty;
+	m_requester->send(empty, zmq::send_flags::sndmore);
+
 	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	zmq::message_t requestPart {request.c_str(), request.size()};
@@ -159,11 +162,13 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	// Init the socket if necessary.
 	initSocket();
 
-	// Add the responder identity as first part.
+	// Start with an empty message for the dealer socket.
+	zmq::message_t empty;
+	m_requester->send(empty, zmq::send_flags::sndmore);
+
 	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in two parts.
@@ -182,11 +187,13 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 	// Init the socket if necessary.
 	initSocket();
 
-	// Add the responder identity as first part.
+	// Start with an empty message for the dealer socket.
+	zmq::message_t empty;
+	m_requester->send(empty, zmq::send_flags::sndmore);
+
 	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
 	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	zmq::message_t empty;
 	m_requester->send(empty, zmq::send_flags::sndmore);
 
 	// Send the request in three parts.
@@ -295,6 +302,13 @@ std::optional<std::string> RequesterZmq::receive() {
 		return {};
 	}
 
+
+	// Receive the empty message.
+	zmq::message_t empty;
+	if (!receiveMessage(empty)) {
+		return {};
+	}
+
 	// Receive the requester identity.
 	zmq::message_t requesterIdentityPart;
 	if (!receiveMessage(requesterIdentityPart)) {
@@ -302,7 +316,6 @@ std::optional<std::string> RequesterZmq::receive() {
 	}
 
 	// Receive the empty message.
-	zmq::message_t empty;
 	if (!receiveMessage(empty)) {
 		return {};
 	}

@@ -65,8 +65,8 @@ public class RequesterZmq implements RequesterImpl {
 	private void initSocket() {
 		
 		if (requester == null) {
-			// Create the REQ socket.
-			requester = context.createSocket(Zmq.REQ);
+			// Create the socket dealer.
+			requester = context.createSocket(Zmq.DEALER);
 			requester.connect(endpoint.toString());
 			
 			//TODO Shall we set linger to 0?
@@ -131,7 +131,8 @@ public class RequesterZmq implements RequesterImpl {
 		
 		Zmq.Msg message = new Zmq.Msg();
 		
-		// Add the responder identity as first part.
+		// Start with an empty message for the dealer socket. The identity of the connected router is added by the dealer socket.
+		message.add(new byte[0]);
 		message.add(responderIdentity);
 		message.add(new byte[0]);
 	
@@ -268,13 +269,13 @@ public class RequesterZmq implements RequesterImpl {
 			byte[][] data = message.getAllData();
 			
 			// Get the JSON request object.
-			JSONObject request = This.getCom().parse(data[2]);
+			JSONObject request = This.getCom().parse(data[3]);
 			
 			// Get the type.
 			long type = JSON.getLong(request, Messages.TYPE);
 						
 			if (type == Messages.RESPONSE) {
-				return data[3];
+				return data[4];
 			}
 			else {
 				return null;

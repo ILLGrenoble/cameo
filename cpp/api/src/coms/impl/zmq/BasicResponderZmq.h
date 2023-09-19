@@ -39,7 +39,7 @@ public:
 	virtual bool isCanceled();
 
 	virtual std::unique_ptr<Request> receive();
-	virtual void reply(const std::string& type, const std::string& response);
+	virtual void reply(const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& type, const std::string& response);
 
 private:
 	zmq::message_t * responseToRequest();
@@ -50,9 +50,6 @@ private:
 	int m_responderPort;
 	std::unique_ptr<zmq::socket_t> m_responder;
 	std::string m_responderIdentity;
-
-	std::unique_ptr<zmq::message_t> m_proxyIdentity;
-	std::unique_ptr<zmq::message_t> m_requesterIdentity;
 
 	std::atomic_bool m_canceled;
 };

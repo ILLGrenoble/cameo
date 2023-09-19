@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
 		// Create a subscriber to the application applicationName
 		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
-		requester->setCheckApp(true);
+		//requester->setCheckApp(true);
 
 		cout << "Requester ready ? " << requester->isReady() << endl;
 		requester->init();
@@ -90,6 +90,9 @@ int main(int argc, char *argv[]) {
 
 		optional<string> response = requester->receive();
 		cout << "Response is " << response.value() << endl;
+
+		response = requester->receive();
+		cout << "Response 2 is " << response.value() << endl;
 
 		// Send a two-parts message.
 		requester->sendTwoParts("first", "second");

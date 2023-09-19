@@ -23,7 +23,7 @@ public interface ResponderImpl {
 	void init(String responderIdentity);
 	int getResponderPort();
 	Request receive();
-	void reply(byte[] part1, byte[] part2);
+	void reply(byte[] proxyIdentity, byte[] requesterIdentity, byte[] part1, byte[] part2);
 	void cancel();
 	boolean isCanceled();
 	void terminate();

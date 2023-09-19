@@ -37,7 +37,7 @@ public:
 	virtual bool isCanceled() = 0;
 
 	virtual std::unique_ptr<Request> receive() = 0;
-	virtual void reply(const std::string& type, const std::string& response) = 0;
+	virtual void reply(const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& type, const std::string& response) = 0;
 };
 
 }

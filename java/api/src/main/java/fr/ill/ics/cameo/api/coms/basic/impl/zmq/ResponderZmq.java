@@ -37,14 +37,13 @@ public class ResponderZmq implements ResponderImpl {
 	private Zmq.Context context;
 	private Zmq.Socket responder;
 	private String responderIdentity;
-	private Zmq.Msg reply = null; // Memorize the reply before sending it.
 	private AtomicBoolean canceled = new AtomicBoolean(false);	
 	
 	public void init(String responderIdentity) {
 		
 		this.responderIdentity = responderIdentity;
 		
-		// Create a socket ROUTER.
+		// Create a socket router.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		responder = context.createSocket(Zmq.ROUTER);
 		
@@ -101,15 +100,6 @@ public class ResponderZmq implements ResponderImpl {
 				// Get the identity of the requester.
 				byte[] requesterIdentity = data[2];
 	
-				// Prepare the reply.
-				reply = new Zmq.Msg();
-				
-				// Add the necessary parts.
-				reply.add(proxyIdentity);
-				reply.add(new byte[0]);
-				reply.add(requesterIdentity);
-				reply.add(new byte[0]);
-				
 				// Get the JSON request object.
 				JSONObject request = This.getCom().parse(data[4]);
 				
@@ -130,13 +120,13 @@ public class ResponderZmq implements ResponderImpl {
 					}
 					
 					// Return the request but do not reply to the client now. This will be done by the Request.			
-					return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
+					return new Request(name, id, serverEndpoint, serverProxyPort, proxyIdentity, requesterIdentity, messagePart1, messagePart2);
 				}
 				else if (type == Messages.CANCEL) {
 					canceled.set(true);
 	
 					// Reply immediately.
-					responseToRequest(reply);
+					Zmq.Msg reply = responseToRequest(proxyIdentity, requesterIdentity);
 					reply.send(responder);
 					reply = null;
 					
@@ -145,7 +135,7 @@ public class ResponderZmq implements ResponderImpl {
 				else if (type == Messages.SYNC) {
 					
 					// Reply immediately.
-					responseToRequest(reply);
+					Zmq.Msg reply = responseToRequest(proxyIdentity, requesterIdentity);
 					reply.send(responder);
 					reply = null;
 					
@@ -160,14 +150,21 @@ public class ResponderZmq implements ResponderImpl {
 		}
 	}
 	
-	public void reply(byte[] part1, byte[] part2) {
+	public void reply(byte[] proxyIdentity, byte[] requesterIdentity, byte[] part1, byte[] part2) {
+
+		// Prepare the reply.
+		Zmq.Msg reply = new Zmq.Msg();
 		
-		// The reply has already been created at the reception of the request.
+		// Add the necessary parts.
+		reply.add(proxyIdentity);
+		reply.add(new byte[0]);
+		reply.add(requesterIdentity);
+		reply.add(new byte[0]);
+		
 		reply.add(part1);
 		reply.add(part2);
 		
 		reply.send(responder);
-		reply = null;
 	}
 	
 	public void cancel() {
@@ -187,8 +184,20 @@ public class ResponderZmq implements ResponderImpl {
 		requestSocket.terminate();
 	}
 
-	private void responseToRequest(Zmq.Msg reply) {
+	private Zmq.Msg responseToRequest(byte[] proxyIdentity, byte[] requesterIdentity) {
+		
+		// Prepare the reply.
+		Zmq.Msg reply = new Zmq.Msg();
+		
+		// Add the necessary parts.
+		reply.add(proxyIdentity);
+		reply.add(new byte[0]);
+		reply.add(requesterIdentity);
+		reply.add(new byte[0]);
+		
 		reply.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
+		
+		return reply;
 	}
 	
 	public boolean isCanceled() {

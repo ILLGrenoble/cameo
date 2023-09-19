@@ -42,6 +42,8 @@ public class Request {
 	private int requesterApplicationId;
 	private Endpoint requesterServerEndpoint;
 	private int requesterServerProxyPort;
+	private byte[] proxyIdentity;
+	private byte[] requesterIdentity;
 	
 	/**
 	 * Constructor.
@@ -51,8 +53,13 @@ public class Request {
 	 * @param serverProxyPort The server proxy port.
 	 * @param messagePart1 The message part 1.
 	 * @param messagePart2 The message part 2.
+	 * @param messagePart22 
+	 * @param messagePart12 
 	 */
-	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] messagePart1, byte[] messagePart2) {
+	public Request(String requesterApplicationName, int requesterApplicationId, String serverEndpoint, int serverProxyPort, byte[] proxyIdentity, byte[] requesterIdentity, byte[] messagePart1, byte[] messagePart2) {
+		
+		this.proxyIdentity = proxyIdentity;
+		this.requesterIdentity = requesterIdentity;
 		
 		this.messagePart1 = messagePart1;
 		this.messagePart2 = messagePart2;
@@ -106,7 +113,7 @@ public class Request {
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.RESPONSE);
 
-		responder.reply(jsonRequest, response);
+		responder.reply(proxyIdentity, requesterIdentity, jsonRequest, response);
 	}
 	
 	/**

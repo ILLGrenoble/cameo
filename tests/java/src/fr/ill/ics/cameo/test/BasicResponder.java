@@ -49,6 +49,7 @@ public class BasicResponder {
 
 			// Reply.
 			request.replyString("1st response");
+			request.replyString("1st response (bis)");
 			
 			// Receive the second request.
 			request = responder.receive();

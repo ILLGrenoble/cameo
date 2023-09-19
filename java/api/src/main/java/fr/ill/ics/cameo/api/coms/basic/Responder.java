@@ -119,8 +119,8 @@ public class Responder extends StateObject implements ICancelable {
 		return request;
 	}
 	
-	void reply(JSONObject request, byte[] response) {
-		impl.reply(Messages.serialize(request), response);
+	void reply(byte[] proxyIdentity, byte[] requesterIdentity, JSONObject request, byte[] response) {
+		impl.reply(proxyIdentity, requesterIdentity, Messages.serialize(request), response);
 	}
 
 	/**

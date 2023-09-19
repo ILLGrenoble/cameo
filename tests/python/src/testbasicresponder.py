@@ -42,6 +42,8 @@ for i in range(numberOfTimes):
     
     response = requester.receiveString()
     print("Response is", response)
+    response = requester.receiveString()
+    print("Response 2 is", response)
     
     # Send a two-parts message.
     requester.sendTwoParts("first", "second")

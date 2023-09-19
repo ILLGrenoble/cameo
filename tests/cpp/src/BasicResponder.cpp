@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
 	cout << "Received request " << *request << endl;
 
 	request->reply("1st response");
+	request->reply("1st response (bis)");
 
 	// Receive second request.
 	request = responder->receive();
@@ -85,6 +86,7 @@ int main(int argc, char *argv[]) {
 
 	std::unique_ptr<ServerAndApp> requester = request->connectToRequester(0, useProxy);
 	cout << "Requester " << requester->getApp() << endl;
+
 
 	cout << "Finished the application" << endl;
 
