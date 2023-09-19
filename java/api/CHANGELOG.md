@@ -9,6 +9,7 @@
 * Modularization.
 * Publisher with synchronized subscribers.
 * Coms classes options outside create().
+* Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
 
 2.1.1
 -----
