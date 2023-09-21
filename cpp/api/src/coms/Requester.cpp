@@ -33,6 +33,9 @@ namespace coms {
 
 Requester::Checker::Checker(Requester &requester) :
 	m_requester{requester} {
+
+	// Connect the app to have an instance that is accessed only by the Checker thread.
+	m_app = m_requester.m_app.connect();
 }
 
 void Requester::Checker::start() {
@@ -41,7 +44,7 @@ void Requester::Checker::start() {
 	m_thread = std::make_unique<std::thread>([&] {
 
 		// Wait for the app that can be canceled.
-		State state = m_requester.m_app.waitFor();
+		State state = m_app->waitFor();
 		if (state == FAILURE) {
 			// Cancel the requester if the app fails.
 			m_requester.cancel();
@@ -51,8 +54,8 @@ void Requester::Checker::start() {
 
 void Requester::Checker::terminate() {
 
-	// Cancel the wait for call.
-	m_requester.m_app.cancel();
+	// Cancel the waitFor() call.
+	m_app->cancel();
 
 	// Clean the thread.
 	if (m_thread) {
@@ -60,7 +63,7 @@ void Requester::Checker::terminate() {
 	}
 }
 
-Requester::Requester(App & app, const std::string &responderName) :
+Requester::Requester(const App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
 	m_timeout{-1},
@@ -141,7 +144,7 @@ void Requester::init() {
 	setReady();
 }
 
-std::unique_ptr<Requester> Requester::create(App & app, const std::string& responderName) {
+std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
 	return std::unique_ptr<Requester>{new Requester(app, responderName)};
 }
 

@@ -72,6 +72,7 @@ public class TestBasicResponder {
 				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
 
 				Requester requester = Requester.create(responderApplication, "responder");
+				requester.setCheckApp(true);
 				
 				System.out.println("Requester ready ? " + requester.isReady());
 				requester.init();

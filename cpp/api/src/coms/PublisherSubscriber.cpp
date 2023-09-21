@@ -251,7 +251,7 @@ std::string Publisher::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Subscriber
 
-Subscriber::Subscriber(App & app, const std::string &publisherName) :
+Subscriber::Subscriber(const App & app, const std::string &publisherName) :
 	m_app{app},
 	m_publisherName{publisherName},
 	m_timeout{-1},
@@ -423,7 +423,7 @@ void Subscriber::init() {
 	setReady();
 }
 
-std::unique_ptr<Subscriber> Subscriber::create(App & app, const std::string &publisherName) {
+std::unique_ptr<Subscriber> Subscriber::create(const App & app, const std::string &publisherName) {
 	return std::unique_ptr<Subscriber>{new Subscriber(app, publisherName)};
 }
 

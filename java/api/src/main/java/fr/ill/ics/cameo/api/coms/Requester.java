@@ -47,10 +47,14 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	static class Checker {
 		
 		private Requester requester;
+		private App app;
 		private Thread thread = null;
 		
 		Checker(Requester requester) {
 			this.requester = requester;
+			
+			// Connect the app to have an instance that is accessed only by the Checker thread.
+			this.app = requester.app.connect();
 		}
 
 		void start() {
@@ -59,7 +63,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 				public void run() {
 				
 					// Wait for the app that can be canceled.
-					int state = requester.app.waitFor();
+					int state = app.waitFor();
 					if (state == State.FAILURE) {
 						// Cancel the requester if the app fails.
 						requester.cancel();
@@ -71,8 +75,8 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 		}
 
 		void terminate() {
-			// Cancel the wait for call.
-			requester.app.cancel();
+			// Cancel the waitFor() call.
+			app.cancel();
 
 			// Clean the thread.
 			if (thread != null) {

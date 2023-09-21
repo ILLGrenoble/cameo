@@ -579,6 +579,23 @@ public class App extends EventListener {
 	}
 	
 	/**
+	 * Connects to the same App. Is equivalent to cloning the App instance.
+	 * @param options The options.
+	 * @return The cloned App instance.
+	 */
+	public App connect(int options) {
+		return server.connect(id, options);
+	}
+	
+	/**
+	 * Connects to the same App. Is equivalent to cloning the App instance.
+	 * @return The cloned App instance.
+	 */
+	public App connect() {
+		return server.connect(id, 0);
+	}
+		
+	/**
 	 * Stops the remote application.
 	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
 	 * @return True if the request succeeded.

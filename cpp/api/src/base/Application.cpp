@@ -737,6 +737,10 @@ bool App::hasResult() const {
 	return m_hasResult;
 }
 
+std::unique_ptr<App> App::connect(int options) const {
+	return m_server->connect(m_id, options);
+}
+
 bool App::stop() {
 	try {
 		Response response {m_server->stop(m_id, false)};

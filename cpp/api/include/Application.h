@@ -824,6 +824,12 @@ public:
 	bool hasResult() const;
 
 	/**
+	 * Connects to the same App. Is equivalent to cloning the App instance.
+	 * \param options The options.
+	 */
+	std::unique_ptr<App> connect(int options = 0) const;
+
+	/**
 	 * Stops the remote application.
 	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
 	 * \return True if the request succeeded.

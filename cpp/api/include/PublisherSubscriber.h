@@ -199,7 +199,7 @@ public:
 	 * \param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
 	 * \return A new Subscriber object.
 	 */
-	static std::unique_ptr<Subscriber> create(App & app, const std::string &publisherName);
+	static std::unique_ptr<Subscriber> create(const App & app, const std::string &publisherName);
 
 	/**
 	 * Sets the check app feature. Default value is false.
@@ -291,10 +291,10 @@ public:
 	std::string toString() const override;
 
 private:
-	Subscriber(App & app, const std::string &publisherName);
+	Subscriber(const App & app, const std::string &publisherName);
 	void synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers);
 
-	App & m_app;
+	const App & m_app;
 	std::string m_publisherName;
 	bool m_checkApp = false;
 	int m_timeout;

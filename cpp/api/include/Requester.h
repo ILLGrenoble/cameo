@@ -47,7 +47,7 @@ public:
 	 * \param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
 	 * \return A new Requester object.
 	 */
-	static std::unique_ptr<Requester> create(App &app, const std::string &responderName);
+	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
 
 	/**
 	 * Sets the check app feature. Default value is false.
@@ -154,7 +154,7 @@ public:
 	std::string toString() const override;
 
 private:
-	Requester(App & app, const std::string & responderName);
+	Requester(const App & app, const std::string & responderName);
 
 	class Checker {
 
@@ -166,10 +166,11 @@ private:
 
 	private:
 		Requester& m_requester;
+		std::unique_ptr<App> m_app;
 		std::unique_ptr<std::thread> m_thread;
 	};
 
-	App & m_app;
+	const App & m_app;
 	std::string m_responderName;
 	int m_timeout;
 	bool m_useProxy;
