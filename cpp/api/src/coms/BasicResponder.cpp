@@ -56,14 +56,12 @@ const std::string& Request::getSecondPart() const {
 	return m_messagePart2;
 }
 
-Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& messagePart1, const std::string& messagePart2) :
+Request::Request(const std::string & requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2) :
 	m_responder{nullptr},
 	m_messagePart1{messagePart1},
 	m_messagePart2{messagePart2},
 	m_requesterApplicationName{requesterApplicationName},
-	m_requesterApplicationId{requesterApplicationId},
-	m_proxyIdentity{proxyIdentity},
-	m_requesterIdentity{requesterIdentity} {
+	m_requesterApplicationId{requesterApplicationId} {
 
 	m_requesterServerEndpoint = Endpoint::parse(serverEndpoint);
 	m_requesterServerProxyPort = serverProxyPort;
@@ -75,7 +73,7 @@ void Request::reply(const std::string& response) {
 	jsonRequest.pushKey(message::TYPE);
 	jsonRequest.pushValue(message::RESPONSE);
 
-	m_responder->reply(m_proxyIdentity, m_requesterIdentity, jsonRequest.dump(), response);
+	m_responder->reply(jsonRequest.dump(), response);
 }
 
 std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy, int timeout) {
@@ -221,8 +219,8 @@ std::unique_ptr<Request> Responder::receive() {
 	return request;
 }
 
-void Responder::reply(const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& type, const std::string& response) {
-	m_impl->reply(proxyIdentity, requesterIdentity, type, response);
+void Responder::reply(const std::string& type, const std::string& response) {
+	m_impl->reply(type, response);
 }
 
 bool Responder::isCanceled() const {

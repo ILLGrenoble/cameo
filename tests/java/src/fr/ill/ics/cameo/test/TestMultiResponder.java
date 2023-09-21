@@ -78,6 +78,7 @@ public class TestMultiResponder {
 				// Send a simple message.
 				requester.sendString("request");
 				System.out.println("Response is " + requester.receiveString());
+				System.out.println("Response 2 is " + requester.receiveString());
 			
 				
 				// Send a two-parts message.

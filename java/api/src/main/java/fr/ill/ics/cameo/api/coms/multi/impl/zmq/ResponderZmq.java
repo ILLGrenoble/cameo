@@ -35,21 +35,61 @@ public class ResponderZmq implements ResponderImpl {
 	private Zmq.Context context;
 	private Zmq.Socket responder;
 	private String cancelEndpoint;
-	private Zmq.Msg reply = null; // Memorize the reply before sending it.
+	
+	private final static int HEADER_SIZE = 5;
+	private byte[][] requestHeader = new byte[HEADER_SIZE][];
 	
 	private AtomicBoolean canceled = new AtomicBoolean(false);
 	
 	public void init(String endpoint) {
 		
-		// Create a socket REP.
+		// Create a socket router.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
-		responder = context.createSocket(Zmq.REP);
+		responder = context.createSocket(Zmq.ROUTER);
 		
 		// Connect to the dealer.
 		responder.connect(endpoint);
 		
 		cancelEndpoint = "inproc://" + IdGenerator.newStringId();
 		responder.bind(cancelEndpoint);
+	}
+
+	private void copyHeader(byte[][] data) {
+		for (int i = 0; i < HEADER_SIZE; ++i) {
+			
+			if (i < data.length) {
+				requestHeader[i] = data[i];
+			}
+			else {
+				requestHeader[i] = new byte[0];
+			}
+		}
+	}
+	
+	private Request processCancel() {
+		canceled.set(true);
+		
+		// Reply immediately.
+		replyOK();
+		
+		return null;
+	}
+	
+	private Request processRequest(JSONObject request, byte[][] data) {
+		
+		String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
+		int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
+		String serverEndpoint = JSON.getString(request, Messages.Request.SERVER_ENDPOINT);
+		int serverProxyPort = JSON.getInt(request, Messages.Request.SERVER_PROXY_PORT);
+		
+		byte[] messagePart1 = data[HEADER_SIZE + 1];
+		byte[] messagePart2 = null;
+		if (data.length > HEADER_SIZE + 2) {
+			messagePart2 = data[HEADER_SIZE + 2];
+		}
+		
+		// Return the request but do not reply to the client now. This will be done by the Request.			
+		return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
 	}
 	
 	public Request receive() {
@@ -68,55 +108,32 @@ public class ResponderZmq implements ResponderImpl {
 				
 				// Get all the parts. 
 				byte[][] data = message.getAllData();
-		
-				// Get the identity of the proxy.
-				byte[] responderIdentity = data[0];
-		
-				// Prepare the reply.
-				reply = new Zmq.Msg();
+
+				// Memorize the header to reuse when replying.
+				copyHeader(data);
 				
-				// Add the necessary parts.
-				reply.add(responderIdentity);
-				reply.add(new byte[0]);
+				// Special case for cancel messages which are shorter.
+				if (data.length < HEADER_SIZE + 1) {
+					return processCancel();
+				}
 				
 				// Get the JSON request object.
-				JSONObject request = This.getCom().parse(data[2]);
+				JSONObject request = This.getCom().parse(data[HEADER_SIZE]);
 				
 				// Get the type.
 				long type = JSON.getLong(request, Messages.TYPE);
 				
 				if (type == Messages.REQUEST) {
-	
-					String name = JSON.getString(request, Messages.Request.APPLICATION_NAME);
-					int id = JSON.getInt(request, Messages.Request.APPLICATION_ID);
-					String serverEndpoint = JSON.getString(request, Messages.Request.SERVER_ENDPOINT);
-					int serverProxyPort = JSON.getInt(request, Messages.Request.SERVER_PROXY_PORT);
+					return processRequest(request, data); 
 					
-					byte[] messagePart1 = data[3];
-					byte[] messagePart2 = null;
-					if (data.length > 4) {
-						messagePart2 = data[4];
-					}
-					
-					// Return the request but do not reply to the client now. This will be done by the Request.			
-					return new Request(name, id, serverEndpoint, serverProxyPort, messagePart1, messagePart2);
 				}
 				else if (type == Messages.CANCEL) {
-					canceled.set(true);
-	
-					// Reply immediately.
-					responseToRequest(reply);
-					reply.send(responder);
-					reply = null;
-					
-					return null;
+					return processCancel();
 				}
 				else if (type == Messages.SYNC) {
 					
 					// Reply immediately.
-					responseToRequest(reply);
-					reply.send(responder);
-					reply = null;
+					replyOK();
 					
 					// Do not return, continue the loop.
 				}
@@ -131,15 +148,37 @@ public class ResponderZmq implements ResponderImpl {
 	
 	public void reply(byte[] part1, byte[] part2) {
 		
-		// The reply has already been created at the reception of the request.
+		Zmq.Msg reply = new Zmq.Msg();
+		
+		for (int i = 0; i < HEADER_SIZE; ++i) {
+			reply.add(requestHeader[i]);
+		}
+				
 		reply.add(part1);
 		reply.add(part2);
 		
 		reply.send(responder);
-		reply = null;
+	}
+
+	private void replyOK() {
+		
+		Zmq.Msg reply = new Zmq.Msg();
+		
+		for (int i = 0; i < HEADER_SIZE; ++i) {
+			reply.add(requestHeader[i]);
+		}
+		
+		reply.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
+		
+		reply.send(responder);
 	}
 	
 	public void cancel() {
+		
+		if (canceled.get()) {
+			return;
+		}
+		
 		JSONObject jsonRequest = new JSONObject();
 		jsonRequest.put(Messages.TYPE, Messages.CANCEL);
 		
@@ -149,10 +188,6 @@ public class ResponderZmq implements ResponderImpl {
 		
 		// Terminate the socket.
 		requestSocket.terminate();
-	}
-
-	private void responseToRequest(Zmq.Msg reply) {
-		reply.add(Messages.serialize(Messages.createRequestResponse(0, "OK")));
 	}
 		
 	public boolean isCanceled() {

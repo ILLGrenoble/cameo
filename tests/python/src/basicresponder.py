@@ -1,4 +1,5 @@
 import sys
+import time
 import cameopy
 
 this = cameopy.This
@@ -27,27 +28,38 @@ sp = request.getSecondPart()
 
 print("Received request with parts", request.getString(), request.getSecondPart().decode("utf-8"))
 
-res = request.reply("2nd response")
+request.reply("2nd response")
 
-if not res:
-    print("Error, no timeout expected with", request)    
+#if not res:
+#    print("Error, no timeout expected with", request)    
 
 
-# Receive third request without receive on the requester side.
+# Receive third request.
 request = responder.receive();
 print("Received request", request.getString())
 
-res = request.reply("3rd response")
+request.reply("3rd response")
 
-if not res:
-    print("Timeout with", request)    
-
-# Receive request after timeout.
+# Receive the fourth request.
 request = responder.receive();
 print("Received request", request.getString())
 
-request.reply("4th response after timeout")
+print("Wait so that the requester has timed out")
 
+time.sleep(1)
+
+request.reply("4th response")
+
+# Receive the fifth request.
+request = responder.receive();
+print("Received request " + request.getString())
+
+# Reply.
+request.reply("5th response")
+
+print("Replied 5th")
+
+# Test connection.
 requester = request.connectToRequester(0, useProxy)
 app = requester.getApp()
 

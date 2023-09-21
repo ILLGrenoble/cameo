@@ -54,16 +54,40 @@ for i in range(numberOfTimes):
     # Send a simple message but do not receive the response immediately.
     requester.send("request");
     
-    print("Wait so that the responder has timed out")
+    print("Wait so that the responder has replied")
     time.sleep(1)
     
     response = requester.receiveString()
     print("Response is", response)
     
     # Send a new simple message.
-    requester.send("request after timeout")
+    requester.send("request after wait")
+    requester.setTimeout(200)
 
     response = requester.receiveString()
+    
+    if not response is None:
+        print("Response is", response);
+    elif requester.hasTimedout():
+        print("Timeout")    
+    else:
+        print("No response")    
+
+    # The requester needs to resync after a timeout.
+    # If the server does not respond within the configured timeout, an error occurs.
+    requester.send("request after timeout")
+    if requester.hasTimedout():
+        print("Timeout while resyncing")
+    
+    print("Wait so that the server is able to respond")            
+    time.sleep(1)
+        
+    # Resend the request.
+    requester.send("request after timeout")
+    if not requester.hasTimedout():
+        print("No timeout while sending")
+    
+    response = requester.receiveString();
     print("Response is", response)
     
     # Wait for the application.

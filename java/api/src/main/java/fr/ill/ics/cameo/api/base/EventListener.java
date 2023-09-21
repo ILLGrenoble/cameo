@@ -55,7 +55,6 @@ public class EventListener {
 			eventQueue.put(event);
 		}
 		catch (InterruptedException e) {
-			System.out.println("interrupted EventListener while putting");
 		}
 	}
 	
@@ -83,7 +82,6 @@ public class EventListener {
 			return eventQueue.poll();
 		}
 		catch (InterruptedException e) {
-			System.out.println("interrupted EventListener while popping");
 			return null;
 		}
 	}

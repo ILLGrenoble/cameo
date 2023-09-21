@@ -62,49 +62,29 @@ public class RequesterZmq implements RequesterImpl {
 		}
 	}
 	
-	private void initSocket() {
+	private void createSocket() {
 		
-		if (requester == null) {
-			// Create the socket dealer.
-			requester = context.createSocket(Zmq.DEALER);
-			requester.connect(endpoint.toString());
-			
-			//TODO Shall we set linger to 0?
-		}
+		// Create the socket dealer.
+		// The dealer socket can receive multiple response.
+		// It also does not require to provide the identity of the recipient socket that should be done with a socket router.
+		requester = context.createSocket(Zmq.DEALER);
+		
+		requester.connect(endpoint.toString());
+		
+		//TODO Shall we set linger to 0?
 	}
 	
-	private boolean sendSync() {
+	private void createAndSyncSocket(TimeoutCounter timeoutCounter) {
 		
-		// Create the request.
-		JSONObject jsonRequest = new JSONObject();
-		jsonRequest.put(Messages.TYPE, Messages.SYNC);
-	
-		sendRequest(Messages.serialize(jsonRequest));
-		if (receiveMessage() != null) {
-			// Had a response we can exit the loop.
-			return true;
-		}
-		
-		return false;
-	}
-		
-	public void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter) {
-		
-		this.endpoint = endpoint;
-		this.responderIdentity = responderIdentity;
-		
-		// Get the context.
-		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
-
 		// Memorize the timeout that can have been set before init().
 		int previousTimeout = timeout;
 		
-		// Loop to ensure that the responder is connected to the proxy and can reply.
 		timeout = SYNC_TIMEOUT;
 		
 		while (true) {
+			
 			// Init the socket.
-			initSocket();
+			createSocket();
 			
 			// Send sync returns false if a timeout occurred.
 			if (sendSync()) {
@@ -127,6 +107,54 @@ public class RequesterZmq implements RequesterImpl {
 		timeout = previousTimeout;
 	}
 	
+
+	private boolean initSocket() {
+		
+		// Reset timedout.
+		timedout.set(false);
+		
+		if (requester == null) {
+			try {
+				createAndSyncSocket(new TimeoutCounter(timeout));
+			}
+			catch (Timeout e) {
+				// Timeout. As initSocket() is called in sendRequest, we prefer to not throw a timeout exception.
+				timedout.set(true);
+				
+				// Init failed.
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean sendSync() {
+		
+		// Create the request.
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.SYNC);
+	
+		sendRequest(Messages.serialize(jsonRequest));
+		if (receiveMessage() != null) {
+			// Had a response we can exit the loop.
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void init(Endpoint endpoint, String responderIdentity, TimeoutCounter timeoutCounter) {
+		
+		this.endpoint = endpoint;
+		this.responderIdentity = responderIdentity;
+		
+		// Get the context.
+		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
+		
+		createAndSyncSocket(timeoutCounter);
+	}
+	
 	private Zmq.Msg createMessage() {
 		
 		Zmq.Msg message = new Zmq.Msg();
@@ -140,51 +168,45 @@ public class RequesterZmq implements RequesterImpl {
 	}
 	
 	private void sendRequest(byte[] part) {
-	
-		// Reset timedout.
-		timedout.set(false);
 		
 		// Init the socket if necessary.
-		initSocket();
-		
-		// Prepare and send the message.
-		Zmq.Msg message = createMessage();
-		message.add(part);
-		
-		message.send(requester);
+		if (initSocket()) {
+			
+			// Prepare and send the message.
+			Zmq.Msg message = createMessage();
+			message.add(part);
+			
+			message.send(requester);
+		}
 	}
 	
 	private void sendRequest(byte[] part1, byte[] part2) {
 		
-		// Reset timedout.
-		timedout.set(false);
-		
 		// Init the socket if necessary.
-		initSocket();
-		
-		// Prepare and send the message.
-		Zmq.Msg message = createMessage();
-		message.add(part1);
-		message.add(part2);
-		
-		message.send(requester);
+		if (initSocket()) {
+			
+			// Prepare and send the message.
+			Zmq.Msg message = createMessage();
+			message.add(part1);
+			message.add(part2);
+			
+			message.send(requester);
+		}
 	}
 	
 	private void sendRequest(byte[] part1, byte[] part2, byte[] part3) {
-	
-		// Reset timedout.
-		timedout.set(false);
 		
 		// Init the socket if necessary.
-		initSocket();
-		
-		// Prepare and send the message.
-		Zmq.Msg message = createMessage();
-		message.add(part1);
-		message.add(part2);
-		message.add(part3);
-		
-		message.send(requester);
+		if (initSocket()) {
+			
+			// Prepare and send the message.
+			Zmq.Msg message = createMessage();
+			message.add(part1);
+			message.add(part2);
+			message.add(part3);
+			
+			message.send(requester);
+		}
 	}
 	
 	public void send(byte[] requestData) {

@@ -18,6 +18,7 @@
 #define CAMEO_COMS_BASIC_RESPONDERZMQ_H_
 
 #include "../BasicResponderImpl.h"
+#include "JSON.h"
 #include <zmq.hpp>
 #include <atomic>
 
@@ -39,17 +40,21 @@ public:
 	virtual bool isCanceled();
 
 	virtual std::unique_ptr<Request> receive();
-	virtual void reply(const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& type, const std::string& response);
+	virtual void reply(const std::string& type, const std::string& response);
 
 private:
-	zmq::message_t * responseToRequest();
-	zmq::message_t * responseToCancelResponder();
+	void replyOK();
+	std::unique_ptr<Request> processCancel();
+	std::unique_ptr<Request> processRequest(const json::Object& jsonRequest);
 
 	void terminate();
 
 	int m_responderPort;
 	std::unique_ptr<zmq::socket_t> m_responder;
 	std::string m_responderIdentity;
+
+	static constexpr int HEADER_SIZE = 4;
+	std::string m_requestHeader[HEADER_SIZE];
 
 	std::atomic_bool m_canceled;
 };

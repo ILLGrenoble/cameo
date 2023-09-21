@@ -18,6 +18,7 @@ def responderProcess():
     print("Received request", request.getString())
     
     request.reply("1st response")
+    request.reply("1st response (bis)")
     
     # Receive second request.
     request = responder.receive();

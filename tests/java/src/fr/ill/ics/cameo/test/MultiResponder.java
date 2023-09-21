@@ -61,6 +61,7 @@ public class MultiResponder {
 
 					// Reply.
 					request.replyString("1st response");
+					request.replyString("1st response (bis)");
 					
 					request = responder.receive();
 					byte[][] data = request.getTwoParts();

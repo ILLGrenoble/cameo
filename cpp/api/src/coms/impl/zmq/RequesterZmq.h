@@ -51,7 +51,9 @@ public:
 
 private:
 	void resetSocket();
-	void initSocket();
+	void createSocket();
+	void createAndSyncSocket(const TimeoutCounter& timeoutCounter);
+	bool initSocket();
 	bool sendSync();
 	void sendRequest(const std::string& request);
 	void sendRequest(const std::string& requestPart1, const std::string& requestPart2);

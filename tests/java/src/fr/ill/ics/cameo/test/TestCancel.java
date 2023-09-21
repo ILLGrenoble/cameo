@@ -346,6 +346,9 @@ public class TestCancel {
 				if (request != null) {
 					System.err.println("Responder error: receive should return null");		
 				}
+				else {
+					System.out.println("Received cancel");
+				}
 				
 				cancelThread.join();
 				

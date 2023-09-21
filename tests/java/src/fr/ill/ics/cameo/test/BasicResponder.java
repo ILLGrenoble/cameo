@@ -45,7 +45,7 @@ public class BasicResponder {
 			
 			// Receive the first request.
 			fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
-			System.out.println("Received request " + request.get());
+			System.out.println("Received request " + request.getString());
 
 			// Reply.
 			request.replyString("1st response");
@@ -62,7 +62,7 @@ public class BasicResponder {
 			
 			// Receive the third request.
 			request = responder.receive();
-			System.out.println("Received request " + request.get());
+			System.out.println("Received request " + request.getString());
 
 			// Reply.
 			request.replyString("3rd response");
@@ -72,7 +72,7 @@ public class BasicResponder {
 			
 			// Receive the fourth request.
 			request = responder.receive();
-			System.out.println("Received request " + request.get());
+			System.out.println("Received request " + request.getString());
 
 			System.out.println("Wait so that the requester has timed out");			
 			try {
@@ -84,12 +84,16 @@ public class BasicResponder {
 			// Reply.
 			request.replyString("4th response");
 			
+			System.out.println("Replied 4th");
 			
 			// Receive the fifth request.
 			request = responder.receive();
+			System.out.println("Received request " + request.getString());
 			
 			// Reply.
 			request.replyString("5th response");
+			
+			System.out.println("Replied 5th");
 			
 			// Test connection.
 			ServerAndApp requester = request.connectToRequester(0, useProxy);

@@ -55,7 +55,7 @@ public:
 	 * \param messagePart1 The message part 1.
 	 * \param messagePart2 The message part 2.
 	 */
-	Request(const std::string& requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& messagePart1, const std::string& messagePart2);
+	Request(const std::string& requesterApplicationName, int requesterApplicationId, const std::string& serverEndpoint, int serverProxyPort, const std::string& messagePart1, const std::string& messagePart2);
 
 	/**
 	 * Destructor.
@@ -117,9 +117,6 @@ private:
 	int m_requesterApplicationId;
 	Endpoint m_requesterServerEndpoint;
 	int m_requesterServerProxyPort;
-	std::string m_proxyIdentity;
-	std::string m_requesterIdentity;
-
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -199,7 +196,7 @@ public:
 private:
 	Responder(const std::string &name);
 
-	void reply(const std::string& proxyIdentity, const std::string& requesterIdentity, const std::string& type, const std::string& response);
+	void reply(const std::string& type, const std::string& response);
 
 	std::string m_name;
 	std::unique_ptr<ResponderImpl> m_impl;

@@ -58,6 +58,7 @@ int main(int argc, char *argv[]) {
 		cout << "Received request " << *request << endl;
 
 		request->reply("1st response");
+		request->reply("1st response (bis)");
 
 		// Receive second request.
 		request = responder->receive();

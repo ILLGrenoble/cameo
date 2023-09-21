@@ -48,20 +48,74 @@ void RequesterZmq::resetSocket() {
 	}
 }
 
-void RequesterZmq::initSocket() {
+void RequesterZmq::createSocket() {
+
+	// Create a socket dealer.
+	// The dealer socket can receive multiple response.
+	// It also does not require to provide the identity of the recipient socket that should be done with a socket router.
+	m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::dealer});
+
+	// Connect to the endpoint.
+	m_requester->connect(m_endpoint.toString());
+
+	// Configure the socket to not wait at close time.
+	int linger {0};
+	m_requester->set(zmq::sockopt::linger, linger);
+}
+
+void RequesterZmq::createAndSyncSocket(const TimeoutCounter& timeoutCounter) {
+
+	// Memorize the timeout that can have been set before init().
+	int previousTimeout = m_timeout;
+
+	// Loop to ensure that the responder is connected to the proxy and can reply.
+	m_timeout = SYNC_TIMEOUT;
+
+	while (true) {
+
+		// Init the socket.
+		createSocket();
+
+		// Send sync returns false if a timeout occurred.
+		if (sendSync()) {
+			break;
+		}
+
+		// Reset the socket in case of timeout.
+		resetSocket();
+
+		// Increase timeout.
+		m_timeout += SYNC_TIMEOUT;
+
+		// Check the global timeout.
+		if (timeoutCounter.remains() == 0) {
+			throw Timeout();
+		}
+	}
+
+	// Reset timeout.
+	m_timeout = previousTimeout;
+}
+
+bool RequesterZmq::initSocket() {
+
+	// Reset timedout.
+	m_timedout.store(false);
 
 	if (!m_requester) {
-		// Create a socket dealer.
-		// The dealer socket can receive multiple response.
-		m_requester.reset(new zmq::socket_t{m_contextImpl->getContext(), zmq::socket_type::dealer});
+		try {
+			createAndSyncSocket(TimeoutCounter(m_timeout));
+		}
+		catch (const Timeout&) {
+			// Timeout. As initSocket() is called in sendRequest, we prefer to not throw a timeout exception.
+			m_timedout.store(true);
 
-		// Connect to the endpoint.
-		m_requester->connect(m_endpoint.toString());
-
-		// Configure the socket to not wait at close time.
-		int linger {0};
-		m_requester->set(zmq::sockopt::linger, linger);
+			// Init failed.
+			return false;
+		}
 	}
+
+	return true;
 }
 
 bool RequesterZmq::sendSync() {
@@ -97,36 +151,7 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 	// Get the context.
 	m_contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 
-	// Memorize the timeout that can have been set before init().
-	int previousTimeout = m_timeout;
-
-	// Loop to ensure that the responder is connected to the proxy and can reply.
-	m_timeout = SYNC_TIMEOUT;
-
-	while (true) {
-
-		// Init the socket.
-		initSocket();
-
-		// Send sync returns false if a timeout occurred.
-		if (sendSync()) {
-			break;
-		}
-
-		// Reset the socket in case of timeout.
-		resetSocket();
-
-		// Increase timeout.
-		m_timeout += SYNC_TIMEOUT;
-
-		// Check the global timeout.
-		if (timeoutCounter.remains() == 0) {
-			throw Timeout();
-		}
-	}
-
-	// Reset timeout.
-	m_timeout = previousTimeout;
+	createAndSyncSocket(timeoutCounter);
 }
 
 RequesterZmq::~RequesterZmq() {
@@ -135,76 +160,70 @@ RequesterZmq::~RequesterZmq() {
 
 void RequesterZmq::sendRequest(const std::string& request) {
 
-	// Reset timedout.
-	m_timedout.store(false);
-
 	// Init the socket if necessary.
-	initSocket();
+	if (initSocket()) {
 
-	// Start with an empty message for the dealer socket. The identity of the connected router is added by the dealer socket.
-	zmq::message_t empty;
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		// Start with an empty message for the dealer socket. The identity of the connected router is added by the dealer socket.
+		zmq::message_t empty;
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
-	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
+		zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
+		m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart {request.c_str(), request.size()};
-	m_requester->send(requestPart, zmq::send_flags::none);
+		zmq::message_t requestPart {request.c_str(), request.size()};
+		m_requester->send(requestPart, zmq::send_flags::none);
+	}
 }
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2) {
 
-	// Reset timedout.
-	m_timedout.store(false);
-
 	// Init the socket if necessary.
-	initSocket();
+	if (initSocket()) {
 
-	// Start with an empty message for the dealer socket.
-	zmq::message_t empty;
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		// Start with an empty message for the dealer socket.
+		zmq::message_t empty;
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
-	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
+		zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
+		m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	// Send the request in two parts.
-	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
-	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
+		// Send the request in two parts.
+		zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
+		m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
-	m_requester->send(requestPart2Part, zmq::send_flags::none);
+		zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
+		m_requester->send(requestPart2Part, zmq::send_flags::none);
+	}
 }
 
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3) {
 
-	// Reset timedout.
-	m_timedout.store(false);
-
 	// Init the socket if necessary.
-	initSocket();
+	if (initSocket()) {
 
-	// Start with an empty message for the dealer socket.
-	zmq::message_t empty;
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		// Start with an empty message for the dealer socket.
+		zmq::message_t empty;
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
-	m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
+		zmq::message_t responderIdentityPart {m_responderIdentity.c_str(), m_responderIdentity.size()};
+		m_requester->send(responderIdentityPart, zmq::send_flags::sndmore);
 
-	m_requester->send(empty, zmq::send_flags::sndmore);
+		m_requester->send(empty, zmq::send_flags::sndmore);
 
-	// Send the request in three parts.
-	zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
-	m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
+		// Send the request in three parts.
+		zmq::message_t requestPart1Part {requestPart1.c_str(), requestPart1.size()};
+		m_requester->send(requestPart1Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
-	m_requester->send(requestPart2Part, zmq::send_flags::sndmore);
+		zmq::message_t requestPart2Part {requestPart2.c_str(), requestPart2.size()};
+		m_requester->send(requestPart2Part, zmq::send_flags::sndmore);
 
-	zmq::message_t requestPart3Part {requestPart3.c_str(), requestPart3.size()};
-	m_requester->send(requestPart3Part, zmq::send_flags::none);
+		zmq::message_t requestPart3Part {requestPart3.c_str(), requestPart3.size()};
+		m_requester->send(requestPart3Part, zmq::send_flags::none);
+	}
 }
 
 void RequesterZmq::send(const std::string& requestData) {

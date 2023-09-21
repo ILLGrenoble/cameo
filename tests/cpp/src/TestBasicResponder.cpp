@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 
 		// Send a new simple message.
 		requester->send("request after timeout");
-		requester->setTimeout(500);
+		requester->setTimeout(200);
 
 		response = requester->receive();
 
@@ -127,8 +127,21 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		// Send a simple message.
+		// The requester needs to resync after a timeout.
+		// If the server does not respond within the configured timeout, an error occurs.
 		requester->send("request after timeout");
+		if (requester->hasTimedout()) {
+			cout << "Timeout while resyncing" << endl;
+		}
+
+		cout << "Wait so that the server is able to respond" << endl;
+		this_thread::sleep_for(chrono::seconds(1));
+
+		// Resend the request.
+		requester->send("request after timeout");
+		if (!requester->hasTimedout()) {
+			cout << "No timeout while sending" << endl;
+		}
 
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;

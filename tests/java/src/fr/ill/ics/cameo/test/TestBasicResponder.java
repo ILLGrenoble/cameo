@@ -20,6 +20,7 @@ import fr.ill.ics.cameo.api.base.App;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.State;
 import fr.ill.ics.cameo.api.base.This;
+import fr.ill.ics.cameo.api.base.Timeout;
 import fr.ill.ics.cameo.api.coms.Requester;
 import fr.ill.ics.cameo.common.messages.Messages;
 
@@ -112,7 +113,7 @@ public class TestBasicResponder {
 				
 				// Send a simple message.
 				requester.sendString("request after wait");
-				requester.setTimeout(500);
+				requester.setTimeout(200);
 				
 				String response = requester.receiveString();
 				
@@ -127,8 +128,25 @@ public class TestBasicResponder {
 				}
 				
 
-				// Send a simple message.
+				// The requester needs to resync after a timeout.
+				// If the server does not respond within the configured timeout, an error occurs.
 				requester.sendString("request after timeout");
+				if (requester.hasTimedout()) {
+					System.out.println("Timeout while resyncing");
+				}
+				
+				System.out.println("Wait so that the server is able to respond");			
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+				}
+				
+				// Resend the request.
+				requester.sendString("request after timeout");
+				if (!requester.hasTimedout()) {
+					System.out.println("No timeout while sending");
+				}
 				
 				response = requester.receiveString();
 				System.out.println("Response is " + response);
