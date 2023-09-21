@@ -10,6 +10,7 @@
 * Publisher with synchronized subscribers.
 * Coms classes options outside create().
 * Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
+* Added connect() in App to facilitate concurrent process.
 
 2.1.1
 -----
