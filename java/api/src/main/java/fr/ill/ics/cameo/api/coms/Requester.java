@@ -92,6 +92,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	
 	private App app;
 	private String responderName;
+	private boolean checkApp = false;
 	private int timeout = -1;
 	private boolean useProxy = false;
 	private String appName;
@@ -132,9 +133,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	 * @param value True if the app is checked.
 	 */
 	public void setCheckApp(boolean value) {
-		if (value) {
-			checker = new Checker(this);
-		}
+		checkApp = value;
 	}
 	
 	/**
@@ -204,7 +203,9 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 			throw new InitException("Cannot initialize requester to responder '" + responderName + "': " + e.getMessage());
 		}
 		
-		if (checker != null) {
+		if (checkApp) {
+			// The creation of the Checker object can throw a ConnectionTimeout exception.
+			checker = new Checker(this);
 			checker.start();
 		}
 		

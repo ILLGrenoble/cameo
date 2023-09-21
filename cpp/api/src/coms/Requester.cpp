@@ -66,6 +66,7 @@ void Requester::Checker::terminate() {
 Requester::Requester(const App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
+	m_checkApp{false},
 	m_timeout{-1},
 	m_useProxy{m_app.usesProxy()},
 	m_appName{m_app.getName()},
@@ -137,7 +138,9 @@ void Requester::init() {
 	}
 
 	// Start the checker if it was created.
-	if (m_checker) {
+	if (m_checkApp) {
+		// The creation of the Checker object can throw a ConnectionTimeout exception.
+		m_checker = std::make_unique<Checker>(*this);
 		m_checker->start();
 	}
 
@@ -149,9 +152,7 @@ std::unique_ptr<Requester> Requester::create(const App & app, const std::string&
 }
 
 void Requester::setCheckApp(bool value) {
-	if (value) {
-		m_checker = std::make_unique<Checker>(*this);
-	}
+	m_checkApp = value;
 }
 
 void Requester::setTimeout(int value) {

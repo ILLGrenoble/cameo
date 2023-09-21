@@ -172,6 +172,7 @@ private:
 
 	const App & m_app;
 	std::string m_responderName;
+	bool m_checkApp;
 	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;
