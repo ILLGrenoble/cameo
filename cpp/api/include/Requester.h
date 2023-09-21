@@ -70,6 +70,7 @@ public:
 	/**
 	 * Initializes the requester.
 	 * \throws InitException if the requester cannot be created.
+	 * \throws SynchronizationTimeout if the requester cannot synchronize the responder.
 	 */
 	void init() override;
 
@@ -121,12 +122,14 @@ public:
 
 	/**
 	 * Sends a request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * \param request The request.
 	 */
 	void send(const std::string &request);
 
 	/**
 	 * Sends a request in two parts.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * \param request1 The first part of the request.
 	 * \param request2 The seconds part of the request.
 	 */

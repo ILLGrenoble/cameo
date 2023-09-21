@@ -210,6 +210,7 @@ public:
 	/**
 	 * Initializes the subscriber.
 	 * \throws InitException if the subscriber cannot be created.
+	 * \throws SynchronizationTimeout if the subscriber cannot synchronize the publisher.
 	 */
 	void init() override;
 

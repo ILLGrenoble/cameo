@@ -163,6 +163,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	/**
 	 * Initializes the subscriber.
 	 * @throws InitException if the subscriber cannot be created.
+	 * @throws SynchronizationTimeout if the subscriber cannot synchronize the publisher.
 	 */
 	@Override
 	public void init() throws InitException {

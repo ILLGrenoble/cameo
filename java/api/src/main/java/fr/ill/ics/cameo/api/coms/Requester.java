@@ -154,6 +154,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	/**
 	 * Initializes the requester.
 	 * @throws InitException if the requester cannot be created.
+	 * @throws SynchronizationTimeout if the requester cannot synchronize the responder.
 	 */
 	@Override
 	public void init() throws InitException {
@@ -249,6 +250,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	
 	/**
 	 * Sends a binary request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization. 
 	 * @param request The binary request.
 	 */
 	public void send(byte[] request) {
@@ -257,6 +259,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	
 	/**
 	 * Sends a string request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * @param request The string request.
 	 */
 	public void sendString(String request) {
@@ -267,6 +270,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	 * Sends a request in two binary parts.
 	 * @param request1 The first part of the request.
 	 * @param request2 The seconds part of the request.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 */
 	public void sendTwoParts(byte[] request1, byte[] request2) {
 		impl.sendTwoParts(request1, request2);
