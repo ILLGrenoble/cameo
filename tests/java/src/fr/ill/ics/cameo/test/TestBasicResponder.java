@@ -20,7 +20,6 @@ import fr.ill.ics.cameo.api.base.App;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.State;
 import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.Timeout;
 import fr.ill.ics.cameo.api.coms.Requester;
 import fr.ill.ics.cameo.common.messages.Messages;
 

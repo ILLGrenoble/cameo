@@ -24,6 +24,12 @@ int main(int argc, char *argv[]) {
 	// Initialize cameo.
 	This::init(argc, argv);
 
+	// Define the stop handler to properly stop.
+	This::handleStop([] {
+		// Cancel the subscriber.
+		This::cancelAll();
+	});
+
 	// Parameters: publisher endpoint, language.
 	if (argc < 4) {
 		std::cout << "Parameters: <publisher endpoint> <language>" << std::endl;
@@ -52,16 +58,15 @@ int main(int argc, char *argv[]) {
 	// Create a subscriber.
 	std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
 
-	auto start = std::chrono::steady_clock::now();
 	subscriber->init();
-	auto end = std::chrono::steady_clock::now();
 
-	std::cout << "Created subscriber " << *subscriber << " after " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
+	std::cout << "Created subscriber " << *subscriber << std::endl;
 
 	// Receive messages.
 	while (true) {
 		std::optional<std::string> message = subscriber->receive();
 		if (!message.has_value()) {
+			// Subscriber is canceled.
 			break;
 		}
 		std::string value = message.value();
@@ -73,6 +78,12 @@ int main(int argc, char *argv[]) {
 			std::cout << "\tvalue : " << object["value"].GetInt() << std::endl;
 		}
 	}
+
+	// Stop the responder app and wait for its termination.
+	publisherApp->stop();
+	State state = publisherApp->waitFor();
+
+	std::cout << "App publisher finished with state " << toString(state) << std::endl;
 
 	std::cout << "Finished the application" << std::endl;
 

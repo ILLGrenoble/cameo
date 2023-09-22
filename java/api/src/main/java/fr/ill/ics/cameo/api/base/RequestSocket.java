@@ -21,8 +21,8 @@ import org.json.simple.parser.ParseException;
 
 import fr.ill.ics.cameo.api.base.impl.RequestSocketImpl;
 import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.messages.JSON.Parser;
+import fr.ill.ics.cameo.common.messages.Messages;
 
 /**
  * Class defining a request socket.

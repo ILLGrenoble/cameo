@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.api.coms;
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.api.base.ConnectionTimeout;
 import fr.ill.ics.cameo.api.base.ICancelable;
 import fr.ill.ics.cameo.api.base.ITimeoutable;
@@ -29,7 +30,6 @@ import fr.ill.ics.cameo.api.base.SynchronizationTimeout;
 import fr.ill.ics.cameo.api.base.This;
 import fr.ill.ics.cameo.api.base.Timeout;
 import fr.ill.ics.cameo.api.base.TimeoutCounter;
-import fr.ill.ics.cameo.api.base.App.Com.KeyValueGetter;
 import fr.ill.ics.cameo.api.coms.basic.Responder;
 import fr.ill.ics.cameo.api.coms.impl.RequesterImpl;
 import fr.ill.ics.cameo.api.factory.ImplFactory;

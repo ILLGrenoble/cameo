@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.examples;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.api.base.This;
@@ -50,7 +48,6 @@ public class PublisherApp {
 		try {
 			// Create the publisher.
 			publisher = Publisher.create("the-publisher");
-			publisher.setSyncSubscribers(true);
 			publisher.setWaitForSubscribers(numberOfSubscribers);
 
 			System.out.println("Created publisher " + publisher);

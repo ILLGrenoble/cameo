@@ -10,6 +10,12 @@ if len(sys.argv) < 4:
     print("Parameters: <publisher endpoint> <language>")
     exit(-1)
 
+# Define the stop handler to properly stop.
+def stop():
+    this.cancelAll()
+
+this.handleStop(stop)
+
 publisherEndpoint = sys.argv[1]
 language = sys.argv[2]
 
@@ -42,6 +48,11 @@ while True:
         print("Received", message)
     else:
         print("Canceled")
+        break
+
+# Stop the publisher app and wait for its termination.
+publisherApp.stop()
+state = publisherApp.waitFor()
 
 # Terminate the cameo objects.
 subscriber.terminate()

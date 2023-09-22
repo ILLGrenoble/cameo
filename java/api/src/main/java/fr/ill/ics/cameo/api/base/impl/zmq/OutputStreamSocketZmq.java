@@ -31,8 +31,8 @@ import fr.ill.ics.cameo.api.base.UnexpectedException;
 import fr.ill.ics.cameo.api.base.impl.OutputStreamSocketImpl;
 import fr.ill.ics.cameo.com.Zmq;
 import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.messages.JSON.Parser;
+import fr.ill.ics.cameo.common.messages.Messages;
 import fr.ill.ics.cameo.common.strings.Endpoint;
 import fr.ill.ics.cameo.common.strings.StringId;
 

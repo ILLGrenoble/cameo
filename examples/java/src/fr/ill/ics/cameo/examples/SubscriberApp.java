@@ -16,8 +16,6 @@
 
 package fr.ill.ics.cameo.examples;
 
-import java.util.Date;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -55,6 +53,12 @@ public class SubscriberApp {
 			System.exit(-1);
 		}
 		
+		// Define the stop handler to properly stop.
+		This.handleStop(() -> {
+			// Cancel the subscriber.
+			This.cancelAll();
+		});
+		
 		String publisherEndpoint = args[0];
 		String language = args[1];
 		
@@ -77,13 +81,11 @@ public class SubscriberApp {
 			// Create a subscriber.
 			Subscriber subscriber = Subscriber.create(publisherApp, "the-publisher");
 			
-			Date start = new Date();
 			subscriber.init();
-			Date end = new Date();
 			
-			System.out.println("Created subscriber " + subscriber + " after " + (end.getTime() - start.getTime()) + " ms");
+			System.out.println("Created subscriber " + subscriber);
 			
-			// Receive messages.
+			// Receive messages as long as the subscriber has not been canceled.
 			while (true) {
 				String message = subscriber.receiveString();
 				if (message != null) {
@@ -95,12 +97,20 @@ public class SubscriberApp {
 					System.out.println("\tvalue: " + (Long)object.get("value"));
 				}
 				else {
+					// Subscriber is canceled.
 					break;
 				}
 			}
+			
+			// Stop the publisher app and wait for its termination.
+			publisherApp.stop();
+			int state = publisherApp.waitFor();
+						
+			System.out.println("App publisher finished with state " + State.toString(state));
 				
-			// Terminate the subscriber.
+			// Terminate the subscriber and server.
 			subscriber.terminate();
+			server.terminate();
 		}
 		finally {
 			// Do not forget to terminate This.
