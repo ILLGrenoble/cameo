@@ -17,12 +17,6 @@
 			<groupId>fr.ill.ics</groupId>
 			<artifactId>cameo-api</artifactId>
 			<version>2.2.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>fr.ill.ics</groupId>
-					<artifactId>cameo-com-jeromq</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 	

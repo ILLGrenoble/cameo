@@ -7,6 +7,8 @@
 * Java modularization.
 * Coms classes options outside create().
 * Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
+* Default ZeroMQ implementation is JZMQ in Java API.
+  WARNING: Change maven pom.xml in dependent applications.
 
 2.1.1
 -----

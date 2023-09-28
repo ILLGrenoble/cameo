@@ -11,6 +11,8 @@
 * Coms classes options outside create().
 * Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
 * Added connect() in App to facilitate concurrent process.
+* Default ZeroMQ implementation is JZMQ.
+  WARNING: Change pom.xml in dependent applications.
 
 2.1.1
 -----
