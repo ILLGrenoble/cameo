@@ -35,6 +35,7 @@ PYBIND11_MODULE(cameopy, m) {
 
 	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
 	m.attr("UNLINKED")           = cameo::UNLINKED;
+	m.attr("USE_PROXY")          = cameo::USE_PROXY;
 	m.attr("NIL")                = NIL;
 	m.attr("STARTING")           = STARTING;
 	m.attr("RUNNING")            = RUNNING;
@@ -108,7 +109,6 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 	    .def_static("connectToStarter", &This::connectToStarter,
 	    		"options"_a = 0,
-				"useProxy"_a = false,
 				"timeout"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def_static("__str__", &This::toString,
@@ -174,9 +174,9 @@ PYBIND11_MODULE(cameopy, m) {
 	py::class_<AppArray>(m, "AppArray");
 
 	py::class_<Server>(m, "Server")
-		.def_static("create", py::overload_cast<const std::string&, bool>(&Server::create),
+		.def_static("create", py::overload_cast<const std::string&, int>(&Server::create),
 				"endpoint"_a,
-				"useProxy"_a = false,
+				"options"_a = 0,
 		   		py::call_guard<py::gil_scoped_release>())
 		.def("init", &Server::init, py::call_guard<py::gil_scoped_release>())
 		.def("isReady", &Server::isReady)
@@ -419,7 +419,6 @@ PYBIND11_MODULE(cameopy, m) {
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("connectToRequester", &basic::Request::connectToRequester,
 	    		"options"_a = 0,
-				"useProxy"_a = false,
 				"timeout"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &basic::Request::toString,
@@ -465,7 +464,6 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>())
 		.def("connectToRequester", &multi::Request::connectToRequester,
 				"options"_a = 0,
-				"useProxy"_a = false,
 				"timeout"_a = 0,
 				py::call_guard<py::gil_scoped_release>())
 		.def("__str__", &multi::Request::toString,

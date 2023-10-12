@@ -7,6 +7,10 @@ this.init(sys.argv)
 
 useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
 
+options = 0
+if useProxy:
+    options |= cameopy.USE_PROXY
+
 print("Creating responder")
 
 responder = cameopy.coms.basic.Responder.create("responder")
@@ -60,7 +64,7 @@ request.reply("5th response")
 print("Replied 5th")
 
 # Test connection.
-requester = request.connectToRequester(0, useProxy)
+requester = request.connectToRequester(options)
 app = requester.getApp()
 
 print("Requester", app.getId())

@@ -24,12 +24,16 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
+	int options = 0;
 	bool useProxy = false;
 	if (argc > 2) {
 		useProxy = (string(argv[1]) == "true");
 	}
+	if (useProxy) {
+		options |= USE_PROXY;
+	}
 
-	std::unique_ptr<ServerAndApp> starter = This::connectToStarter(0, useProxy);
+	std::unique_ptr<ServerAndApp> starter = This::connectToStarter(options);
 
 	cout << "Connected to starter" << endl;
 

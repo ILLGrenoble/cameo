@@ -30,16 +30,18 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
+	int options = 0;
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
 	if (argc > 3) {
 		useProxy = (string(argv[2]) == "true");
 	}
 	if (useProxy) {
+		options |= USE_PROXY;
 		endpoint = "tcp://localhost:10000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, useProxy);
+	unique_ptr<Server> server = Server::create(endpoint, options);
 	server->init();
 
 	// Loop the number of times.

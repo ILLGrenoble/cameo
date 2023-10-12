@@ -76,7 +76,7 @@ void Request::reply(const std::string& response) {
 	m_responder->reply(jsonRequest.dump(), response);
 }
 
-std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy, int timeout) {
+std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, int timeout) {
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -86,11 +86,12 @@ std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useP
 	std::unique_ptr<Server> server;
 	std::unique_ptr<App> app;
 
+	bool useProxy = ((options & USE_PROXY) != 0);
 	if (useProxy) {
-		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
+		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), USE_PROXY);
 	}
 	else {
-		server = Server::create(m_requesterServerEndpoint.toString(), false);
+		server = Server::create(m_requesterServerEndpoint.toString());
 	}
 
 	// Set the server init timeout.

@@ -7,7 +7,11 @@ this.init(sys.argv)
 
 useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
 
-starter = this.connectToStarter(0, useProxy)
+options = 0
+if useProxy:
+    options |= cameopy.USE_PROXY
+
+starter = this.connectToStarter(options)
 
 app = starter.getApp()
 

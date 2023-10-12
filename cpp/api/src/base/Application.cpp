@@ -101,6 +101,7 @@ int This::Com::getSubscriberProxyPort() const {
 void This::Com::storeKeyValue(const std::string& key, const std::string& value) const {
 	m_server->storeKeyValue(m_applicationId, key, value);
 }
+
 std::string This::Com::getKeyValue(const std::string& key) const {
 	return m_server->getKeyValue(m_applicationId, key);
 }
@@ -272,7 +273,7 @@ void This::initApplication(const std::string& name, const std::string& endpoint)
 void This::initApplication() {
 
 	// Create the local server.
-	m_server = Server::create(m_serverEndpoint, false);
+	m_server = Server::create(m_serverEndpoint);
 	m_server->init();
 
 	// Registered apps have the id key.
@@ -388,7 +389,7 @@ State This::getState(int id) const {
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-std::unique_ptr<ServerAndApp> This::connectToStarter(int options, bool useProxy, int timeout) {
+std::unique_ptr<ServerAndApp> This::connectToStarter(int options, int timeout) {
 
 	// Create the starter server.
 	if (m_instance.m_starterEndpoint.getAddress() == "") {
@@ -399,11 +400,12 @@ std::unique_ptr<ServerAndApp> This::connectToStarter(int options, bool useProxy,
 	std::unique_ptr<App> app;
 
 	// Create the server with proxy or not.
+	bool useProxy = ((options & USE_PROXY) != 0);
 	if (useProxy) {
-		server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), true);
+		server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), USE_PROXY);
 	}
 	else {
-		server = Server::create(m_instance.m_starterEndpoint, false);
+		server = Server::create(m_instance.m_starterEndpoint);
 	}
 
 	// Set the server init timeout.
@@ -462,10 +464,10 @@ void This::initStarterCheck() {
 	// Create the starter server.
 	// If the starter has a running proxy, then use the proxy is reasonable.
 	if (m_starterProxyPort != 0) {
-		m_starterServer = Server::create(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), true);
+		m_starterServer = Server::create(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), USE_PROXY);
 	}
 	else {
-		m_starterServer = Server::create(m_starterEndpoint, false);
+		m_starterServer = Server::create(m_starterEndpoint);
 	}
 
 	m_starterServer->init();

@@ -55,16 +55,16 @@ public:
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param useProxy Uses the proxy or not.
+	 * \param options Uses the proxy with USE_PROXY.
 	 */
-	static std::unique_ptr<Server> create(const Endpoint& endpoint, bool useProxy = false);
+	static std::unique_ptr<Server> create(const Endpoint& endpoint, int options = 0);
 
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param useProxy Uses the proxy or not.
+	 * \param options Uses the proxy with USE_PROXY.
 	 */
-	static std::unique_ptr<Server> create(const std::string& endpoint, bool useProxy = false);
+	static std::unique_ptr<Server> create(const std::string& endpoint, int options = 0);
 	
 	/**
 	 * Destructor.
@@ -293,8 +293,8 @@ public:
 	std::string toString() const override;
 
 private:
-	Server(const Endpoint& endpoint, bool useProxy);
-	Server(const std::string& endpoint, bool useProxy);
+	Server(const Endpoint& endpoint, int options);
+	Server(const std::string& endpoint, int options);
 
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;

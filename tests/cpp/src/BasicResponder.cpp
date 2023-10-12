@@ -25,9 +25,13 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
+	int options = 0;
 	bool useProxy = false;
 	if (argc > 2) {
 		useProxy = (string(argv[1]) == "true");
+	}
+	if (useProxy) {
+		options |= USE_PROXY;
 	}
 
 	unique_ptr<coms::basic::Responder> responder;
@@ -84,7 +88,7 @@ int main(int argc, char *argv[]) {
 	request->reply("5th response");
 
 
-	std::unique_ptr<ServerAndApp> requester = request->connectToRequester(0, useProxy);
+	std::unique_ptr<ServerAndApp> requester = request->connectToRequester(options);
 	cout << "Requester " << requester->getApp() << endl;
 
 

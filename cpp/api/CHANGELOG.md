@@ -10,6 +10,8 @@
 * Coms classes options outside create().
 * Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
 * Added connect() in App to facilitate concurrent process.
+* Server::create(), This::connectToStarter(), BasicResponder::connectToRequester(), MultiResponder::connectToRequester() lose useProxy parameter.
+  WARNING: Default values can cause a change of behavior
 
 2.1.1
 -----
