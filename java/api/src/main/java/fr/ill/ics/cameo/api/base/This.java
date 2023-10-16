@@ -442,10 +442,9 @@ public class This {
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @param options The options passed to connect the starter app.
-	 * @param useProxy True if the proxy is used to connect to the starter app.
 	 * @param timeout Timeout for the server initialization.
 	 */
-	static public ServerAndApp connectToStarter(int options, boolean useProxy, int timeout) {
+	static public ServerAndApp connectToStarter(int options, int timeout) {
 		
 		if (instance.getStarterEndpoint() == null) {
 			return null;
@@ -455,11 +454,12 @@ public class This {
 		Server starterServer = null;
 		App starterInstance = null;
 		
+		boolean useProxy = ((options & Option.USE_PROXY) != 0);
 		if (useProxy) {
-			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), true);
+			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), Option.USE_PROXY);
 		}
 		else {
-			starterServer = Server.create(instance.getStarterEndpoint(), false);
+			starterServer = Server.create(instance.getStarterEndpoint(), 0);
 		}
 		
 		starterServer.setTimeout(timeout);
@@ -491,27 +491,17 @@ public class This {
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @param options The options passed to connect the starter app.
-	 * @param useProxy True if the proxy is used to connect to the starter app.
 	 */
-	static public ServerAndApp connectToStarter(int options, boolean useProxy) {
-		return connectToStarter(options, useProxy, 0);
+	static public ServerAndApp connectToStarter(int options) {
+		return connectToStarter(options, 0);
 	}
 	
 	/**
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
-	 * @param options The options passed to connect the starter app.
-	 */
-	static public ServerAndApp connectToStarter(int options) {
-		return connectToStarter(options, false, 0);
-	}
-
-	/**
-	 * Connects to the starter application, i.e. the application which started this application.
-	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 */
 	static public ServerAndApp connectToStarter() {
-		return connectToStarter(0, false, 0);
+		return connectToStarter(0, 0);
 	}
 	
 	private This(String[] args) {
@@ -582,7 +572,7 @@ public class This {
 	private void initApplication() {
 
 		// Create the server.
-		server = Server.create(serverEndpoint, false);
+		server = Server.create(serverEndpoint);
 		server.init();
 		
 		// Init the unregistered application.
@@ -758,10 +748,10 @@ public class This {
 		// Create the starter server.
 		// If the starter has a running proxy, then use the proxy: it is reasonable.
 		if (starterProxyPort != 0) {
-			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), true);
+			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), Option.USE_PROXY);
 		}
 		else {
-			starterServer = Server.create(starterEndpoint, false);
+			starterServer = Server.create(starterEndpoint, 0);
 		}
 		
 		starterServer.init();

@@ -13,6 +13,8 @@
 * Added connect() in App to facilitate concurrent process.
 * Default ZeroMQ implementation is JZMQ.
   WARNING: Change pom.xml in dependent applications.
+* Server.create(), This.connectToStarter(), BasicResponder.connectToRequester(), MultiResponder.connectToRequester() lose useProxy parameter.
+  WARNING: Default values can cause a change of behavior
 
 2.1.1
 -----

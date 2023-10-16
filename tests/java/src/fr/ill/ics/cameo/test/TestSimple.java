@@ -19,6 +19,7 @@ package fr.ill.ics.cameo.test;
 import java.util.Date;
 
 import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.This;
 
@@ -44,7 +45,7 @@ public class TestSimple {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = Server.create(endpoint, useProxy);
+		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
 		
 		System.out.println("Server ready ? " + server.isReady());
 		server.init();

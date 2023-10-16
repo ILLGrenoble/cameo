@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 
 import fr.ill.ics.cameo.api.base.App;
 import fr.ill.ics.cameo.api.base.ConnectionTimeout;
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.ServerAndApp;
 import fr.ill.ics.cameo.common.messages.Messages;
@@ -122,11 +123,10 @@ public class Request {
 	/**
 	 * Connects to the requester.
 	 * @param options Options of connection.
-	 * @param useProxy True if proxy is used.
 	 * @param timeout Timeout for the server used for the initialization and subsequent requests.
 	 * @return The ServerAndApp object.
 	 */
-	public ServerAndApp connectToRequester(int options, boolean useProxy, int timeout) {
+	public ServerAndApp connectToRequester(int options, int timeout) {
 		
 		if (requesterServerEndpoint == null) {
 			return null;
@@ -135,11 +135,12 @@ public class Request {
 		Server starterServer = null;
 		App starterInstance = null;
 		
+		boolean useProxy = ((options & Option.USE_PROXY) != 0);
 		if (useProxy) {
-			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), true);
+			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), Option.USE_PROXY);
 		}
 		else {
-			starterServer = Server.create(requesterServerEndpoint, false);
+			starterServer = Server.create(requesterServerEndpoint, 0);
 		}
 		
 		starterServer.setTimeout(timeout);
@@ -170,28 +171,18 @@ public class Request {
 	/**
 	 * Connects to the requester.
 	 * @param options Options of connection.
-	 * @param useProxy True if proxy is used.
-	 * @return The ServerAndApp object.
-	 */
-	public ServerAndApp connectToRequester(int options, boolean useProxy) {
-		return connectToRequester(options, useProxy, 0);
-	}
-	
-	/**
-	 * Connects to the requester.
-	 * @param options Options of connection.
 	 * @return The ServerAndApp object.
 	 */
 	public ServerAndApp connectToRequester(int options) {
-		return connectToRequester(options, false, 0);
+		return connectToRequester(options, 0);
 	}
-
+	
 	/**
 	 * Connects to the requester.
 	 * @return The ServerAndApp object.
 	 */
 	public ServerAndApp connectToRequester() {
-		return connectToRequester(0, false, 0);
+		return connectToRequester(0, 0);
 	}
 
 	@Override

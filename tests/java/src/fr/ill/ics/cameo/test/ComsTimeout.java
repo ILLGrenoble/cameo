@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.ServerAndApp;
 import fr.ill.ics.cameo.api.base.This;
 import fr.ill.ics.cameo.api.coms.Requester;
@@ -35,7 +36,7 @@ public class ComsTimeout {
 		
 		try {
 			// Get the starter app.
-			ServerAndApp starter = This.connectToStarter(0, useProxy);
+			ServerAndApp starter = This.connectToStarter((useProxy ? Option.USE_PROXY : 0));
 
 			System.out.println("Connected to starter");
 		

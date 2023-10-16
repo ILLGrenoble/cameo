@@ -34,5 +34,10 @@ public class Option {
 	/**
 	 * Constant for unlinked.
 	 */
-	public final static int UNLINKED = 2;
+	public final static int UNLINKED = (1 << 1);
+	
+	/**
+	 * Constant for no proxy.
+	 */
+	public final static int USE_PROXY = (1 << 2);
 }

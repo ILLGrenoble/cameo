@@ -17,6 +17,7 @@
 package fr.ill.ics.cameo.test;
 
 import fr.ill.ics.cameo.api.base.App;
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.This;
 
@@ -42,7 +43,7 @@ public class TestResult {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = Server.create(endpoint, useProxy);
+		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
 		server.init();
 		
 		try {

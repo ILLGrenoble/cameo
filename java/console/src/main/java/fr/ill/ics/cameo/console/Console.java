@@ -264,7 +264,7 @@ public class Console {
 		
 		// Initialise the server if it is not a help command.
 		if (!commandName.equals("help")) {
-			server = Server.create(endpoint, useProxy);
+			server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
 			server.init();
 		}
 	}

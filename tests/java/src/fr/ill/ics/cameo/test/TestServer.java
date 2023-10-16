@@ -29,7 +29,7 @@ public class TestServer {
 
 		System.out.println("Create server");
 		
-		Server server = Server.create("tcp://localhost:11000", false);
+		Server server = Server.create("tcp://localhost:11000", 0);
 		server.setTimeout(100);
 		server.init();
 		

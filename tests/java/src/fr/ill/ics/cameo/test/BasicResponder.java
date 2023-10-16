@@ -16,6 +16,7 @@
 
 package fr.ill.ics.cameo.test;
 
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.ServerAndApp;
 import fr.ill.ics.cameo.api.base.This;
 import fr.ill.ics.cameo.common.messages.Messages;
@@ -96,7 +97,7 @@ public class BasicResponder {
 			System.out.println("Replied 5th");
 			
 			// Test connection.
-			ServerAndApp requester = request.connectToRequester(0, useProxy);
+			ServerAndApp requester = request.connectToRequester((useProxy ? Option.USE_PROXY : 0));
 			System.out.println("Requester is " + requester.getApp());
 			
 			requester.terminate();

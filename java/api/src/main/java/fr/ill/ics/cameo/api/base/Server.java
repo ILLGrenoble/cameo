@@ -57,25 +57,25 @@ public class Server extends StateObject implements ITimeoutable {
 	private ConcurrentLinkedDeque<FilteredEventListener> eventListeners = new ConcurrentLinkedDeque<FilteredEventListener>(); 
 	private EventThread eventThread;
 	
-	private Server(Endpoint endpoint, boolean useProxy) {
+	private Server(Endpoint endpoint, int options) {
 		
 		this.serverEndpoint = endpoint;
-		this.useProxy = useProxy;
+		this.useProxy = ((options & Option.USE_PROXY) != 0);
 	}
 
-	private Server(String endpoint, boolean useProxy) {
+	private Server(String endpoint, int options) {
 
 		this.serverEndpointString = endpoint;
-		this.useProxy = useProxy;
+		this.useProxy = ((options & Option.USE_PROXY) != 0);
 	}
 	
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param useProxy Uses the proxy or not.
+	 * @param options Uses the proxy with USE_PROXY.
 	 */	
-	public static Server create(Endpoint endpoint, boolean useProxy) {
-		return new Server(endpoint, useProxy);
+	public static Server create(Endpoint endpoint, int options) {
+		return new Server(endpoint, options);
 	}
 	
 	/**
@@ -83,16 +83,16 @@ public class Server extends StateObject implements ITimeoutable {
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public static Server create(Endpoint endpoint) {
-		return new Server(endpoint, false);
+		return new Server(endpoint, 0);
 	}
 
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param useProxy Uses the proxy or not.
+	 * @param options Uses the proxy with USE_PROXY.
 	 */
-	public static Server create(String endpoint, boolean useProxy) {
-		return new Server(endpoint, useProxy);
+	public static Server create(String endpoint, int options) {
+		return new Server(endpoint, options);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class Server extends StateObject implements ITimeoutable {
 	 * @param endpoint The endpoint of the remote server.
 	 */
 	public static Server create(String endpoint) {
-		return new Server(endpoint, false);
+		return new Server(endpoint, 0);
 	}
 	
 	/**

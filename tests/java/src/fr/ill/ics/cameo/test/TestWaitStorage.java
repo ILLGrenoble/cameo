@@ -20,6 +20,7 @@ import java.util.Date;
 
 import fr.ill.ics.cameo.api.base.App;
 import fr.ill.ics.cameo.api.base.KeyValue;
+import fr.ill.ics.cameo.api.base.Option;
 import fr.ill.ics.cameo.api.base.Server;
 import fr.ill.ics.cameo.api.base.This;
 
@@ -45,7 +46,7 @@ public class TestWaitStorage {
 			endpoint = "tcp://localhost:10000";
 		}
 		
-		Server server = Server.create(endpoint, useProxy);
+		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
 		server.init();
 		
 		Date d = new Date();
