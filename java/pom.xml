@@ -26,6 +26,5 @@
 		<module>server</module>
 		<module>api</module>
 		<module>console</module>
-		<module>console-jzmq</module>
 	</modules>
 </project>
