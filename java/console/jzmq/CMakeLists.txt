@@ -33,7 +33,7 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
 #  COMPONENT console
   )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../console/scripts/cmo.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../scripts/cmo.in
   ${CMAKE_CURRENT_BINARY_DIR}/cmo)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
@@ -43,7 +43,7 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
 #------------------------------------------------------------
 # CPack
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../CPackConfigCommon.in)
   include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
 endif()
