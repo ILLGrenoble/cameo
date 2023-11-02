@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<config port="11000" proxy_ports="10000, 10001, 10002" max_applications="200" polling_time="100" log_level="fine" log_directory="logs">
+<config port="11000" proxy_ports="12000, 12001, 12002" max_applications="200" polling_time="100" log_level="fine" log_directory="logs">
 
 	<applications>
 		
