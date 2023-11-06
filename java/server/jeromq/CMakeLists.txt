@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(cameo-server-jzmq
+project(cameo-server-jeromq
   VERSION 2.2.0
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -23,7 +23,7 @@ add_custom_command(
   VERBATIM
   )
 
-add_custom_target(server-jzmq
+add_custom_target(server-jeromq
   ALL
   DEPENDS ${PROJECT_JAR}
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_JAR} ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}
@@ -32,19 +32,3 @@ add_custom_target(server-jzmq
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
   )
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../server/scripts/cameo-server.in
-  ${CMAKE_CURRENT_BINARY_DIR}/cameo-server)
-
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
-  TYPE BIN
-  )
-
-#------------------------------------------------------------
-# CPack
-if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
-  include(CPack)
-endif()
-#------------------------------------------------------------

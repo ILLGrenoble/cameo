@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(cameo-console-jzmq
+project(cameo-console-jeromq
   VERSION 2.2.0
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -22,7 +22,7 @@ add_custom_command(
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   VERBATIM
   )
-add_custom_target(console-jzmq
+add_custom_target(console-jeromq
   ALL
   DEPENDS ${PROJECT_JAR}
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_JAR} ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}
@@ -32,19 +32,3 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
 #  COMPONENT console
   )
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../console/scripts/cmo.in
-  ${CMAKE_CURRENT_BINARY_DIR}/cmo)
-
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
-  TYPE BIN
-  )
-
-#------------------------------------------------------------
-# CPack
-if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
-  include(CPack)
-endif()
-#------------------------------------------------------------

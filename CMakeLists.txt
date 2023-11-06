@@ -55,7 +55,7 @@ endmacro()
 #endforeach()
 
 
-foreach(package java/server/jzmq java/console/jzmq
+foreach(package java/server/jzmq java/server/jeromq java/console/jzmq java/console/jeromq
     ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
