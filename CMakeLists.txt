@@ -10,6 +10,7 @@ option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
 option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
 option(CAMEO_TESTS "Compile the tests" OFF)
 option(CAMEO_EXAMPLES "Compile the examples" OFF)
+set(ZEROMQ_JAVA "jzmq" CACHE STRING "ZeroMQ Java implementation (jzmq/jeromq)")
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release") # set Release by default
@@ -54,9 +55,17 @@ endmacro()
 #  add_subdirectory(cameo-com/${package})
 #endforeach()
 
+if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+  list(APPEND JavaPrograms java/server/jzmq java/console/jzmq)
+  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
+elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+  list(APPEND JavaPrograms java/server/jeromq java/console/jeromq)
+  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
+else()
+  message(STATUS "Unknown ZeroMQ implementation: ${ZEROMQ_JAVA}")
+endif()
 
-foreach(package java/server/jzmq java/server/jeromq java/console/jzmq java/console/jeromq
-    ${APIs} ${TestsExamples})
+foreach(package ${JavaPrograms} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
 

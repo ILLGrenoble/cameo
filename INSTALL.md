@@ -45,6 +45,7 @@ $ cmake --build build/
 ```
 
 Possible options are:
+ - ZEROMQ_JAVA=*value*: value is 'jzmq' or 'jeromq'
  - CMAKE_INSTALL_PREFIX=*directory*: to install in a non-standard directory
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
