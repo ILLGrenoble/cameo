@@ -42,8 +42,6 @@ public:
 	virtual bool isCanceled() = 0;
 
 	virtual bool hasTimedout() = 0;
-
-	virtual void terminate() = 0;
 };
 
 }

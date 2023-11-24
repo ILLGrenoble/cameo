@@ -186,6 +186,9 @@
 			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisherError publishererrorjava"/>
 		</application>
 	
+		<application name="testsubscribertimeoutjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="fr.ill.ics.cameo.test.TestSubscriberTimeout"/>
+		</application>
 
 		<!-- C++ apps -->
 		
@@ -361,6 +364,10 @@
 			<start executable="testpublishererror" args="publishererrorcpp"/>
 		</application>
 		
+		<application name="testsubscribertimeoutcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testsubscribertimeout"/>
+		</application>
+		
 		
 		<!-- Python apps -->
 		
@@ -498,6 +505,10 @@
 
 		<application name="testpublishererrorpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python3" args="-u tests/python/src/testpublishererror.py publishererrorpy"/>
+		</application>
+		
+		<application name="testsubscribertimeoutpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python3" args="-u tests/python/src/testsubscribertimeout.py"/>
 		</application>
 				
 	</applications>

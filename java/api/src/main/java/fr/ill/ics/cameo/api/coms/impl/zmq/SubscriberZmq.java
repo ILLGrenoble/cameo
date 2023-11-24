@@ -32,6 +32,9 @@ import fr.ill.ics.cameo.common.strings.Endpoint;
 
 public class SubscriberZmq implements SubscriberImpl {
 	
+	private int pollingTime = 100;
+	private int timeout = 0;
+	
 	private Zmq.Context context;
 	private Zmq.Socket subscriber;
 	private String publisherIdentity;
@@ -40,7 +43,16 @@ public class SubscriberZmq implements SubscriberImpl {
 	private int appId;
 	private AtomicBoolean ended = new AtomicBoolean(false);
 	private AtomicBoolean canceled = new AtomicBoolean(false);
+	private AtomicBoolean timedout = new AtomicBoolean(false);
 	private Zmq.Poller poller;
+	
+	public void setPollingTime(int value) {
+		pollingTime = value;
+	}
+	
+	public void setTimeout(int value) {
+		timeout = value;
+	}
 	
 	public void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity, boolean checkApp) {
 
@@ -92,6 +104,65 @@ public class SubscriberZmq implements SubscriberImpl {
 		return canceled.get();
 	}
 	
+	@Override
+	public boolean hasTimedout() {
+		return timedout.get();
+	}
+	
+	private byte[] receiveMessage() {
+		
+		// Reset timeout.
+		timedout.set(false);
+		
+		// Define the number of iterations.
+		int n = 0;
+		if (pollingTime > 0) {
+			n = timeout / pollingTime + 1;
+		}
+
+		// Create the poller.
+		Zmq.Poller poller = this.context.createPoller(1);
+		poller.register(subscriber);
+		
+		// Infinite loop if timeout is 0 or finite loop if timeout is defined.
+		int i = 0;
+		while (i < n || timeout == 0) {
+
+			// Check if the requester has been canceled.
+			if (canceled.get()) {
+				return null;
+			}
+
+			// Poll the requester.
+			poller.poll(pollingTime);
+			if (poller.pollin(0)) {
+				//return Zmq.Msg.recvMsg(subscriber);
+				return subscriber.recv();
+			}
+
+			i++;
+		}
+
+		// Timeout occurred.
+		timedout.set(true);
+
+		// Reset the socket because it cannot be reused after a timeout.
+		//resetSocket();
+		
+		return null;
+	}
+	
+	private String receiveStringMessage() {
+		
+		byte[] response = receiveMessage();
+		
+		if (response != null) {
+			return Messages.parseString(response);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * 
 	 * @return the byte[] data. If the return value is null, then the stream is finished. 
@@ -99,11 +170,17 @@ public class SubscriberZmq implements SubscriberImpl {
 	public byte[] receive() {
 
 		while (true) {
-			String message = subscriber.recvStr();
+			String message = receiveStringMessage();
+			if (message == null) {
+				return null;
+			}
 			
 			if (message.equals(publisherIdentity)) {
 				
-				String messageTypePart = subscriber.recvStr();
+				String messageTypePart = receiveStringMessage();
+				if (messageTypePart == null) {
+					return null;
+				}
 				
 				// Get the JSON object.
 				JSONObject messageType = This.getCom().parse(messageTypePart);
@@ -112,7 +189,7 @@ public class SubscriberZmq implements SubscriberImpl {
 				long type = JSON.getLong(messageType, Messages.TYPE);
 				
 				if (type == Messages.STREAM) {
-					return subscriber.recv();
+					return receiveMessage();
 				}
 				else if (type == Messages.SYNC_STREAM) {
 					// Do nothing.
@@ -126,7 +203,10 @@ public class SubscriberZmq implements SubscriberImpl {
 				return null;
 			}
 			else if (message.equals(Messages.Event.STATUS)) {
-				byte[] statusMessage = subscriber.recv();
+				byte[] statusMessage = receiveMessage();
+				if (statusMessage == null) {
+					return null;
+				}
 				
 				// Get the JSON object.
 				JSONObject status = This.getCom().parse(statusMessage);
@@ -159,11 +239,17 @@ public class SubscriberZmq implements SubscriberImpl {
 	public byte[][] receiveTwoParts() {
 
 		while (true) {
-			String message = subscriber.recvStr();
+			String message = receiveStringMessage();
+			if (message == null) {
+				return null;
+			}
 			
 			if (message.equals(publisherIdentity)) {
 				
-				String messageTypePart = subscriber.recvStr();
+				String messageTypePart = receiveStringMessage();
+				if (messageTypePart == null) {
+					return null;
+				}
 				
 				// Get the JSON object.
 				JSONObject messageType = This.getCom().parse(messageTypePart);
@@ -173,8 +259,8 @@ public class SubscriberZmq implements SubscriberImpl {
 				
 				if (type == Messages.STREAM) {
 					byte[][] result = new byte[2][];
-					result[0] = subscriber.recv();
-					result[1] = subscriber.recv();
+					result[0] = receiveMessage();
+					result[1] = receiveMessage();
 					
 					return result;
 				}
@@ -187,7 +273,10 @@ public class SubscriberZmq implements SubscriberImpl {
 				return null;
 			}
 			else if (message.equals(Messages.Event.STATUS)) {
-				byte[] statusMessage = subscriber.recv();
+				byte[] statusMessage = receiveMessage();
+				if (statusMessage == null) {
+					return null;
+				}
 				
 				// Get the JSON request object.
 				JSONObject request =  This.getCom().parse(statusMessage);

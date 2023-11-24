@@ -29,11 +29,22 @@ namespace coms {
 
 SubscriberZmq::SubscriberZmq() :
 	m_appId{0},
+	m_pollingTime{100},
+	m_timeout{0},
 	m_ended{false},
-	m_canceled{false} {
+	m_canceled{false},
+	m_timedout{false} {
 }
 
 SubscriberZmq::~SubscriberZmq() {
+}
+
+void SubscriberZmq::setPollingTime(int value) {
+	m_pollingTime = value;
+}
+
+void SubscriberZmq::setTimeout(int value) {
+	m_timeout = value;
 }
 
 void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp) {
@@ -89,11 +100,62 @@ bool SubscriberZmq::isCanceled() const {
 	return m_canceled;
 }
 
+bool SubscriberZmq::hasTimedout() {
+	return m_timedout;
+}
+
+bool SubscriberZmq::receiveMessage(zmq::message_t& message) {
+
+	// Define the number of iterations.
+	int n {0};
+	if (m_pollingTime > 0) {
+		n = m_timeout / m_pollingTime + 1;
+	}
+
+	// Create the poller.
+	zmq::pollitem_t items[] = {
+		{ *m_subscriber.get(), 0, ZMQ_POLLIN, 0 }
+	};
+
+	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
+	int i {0};
+	while (i < n || m_timeout == 0) {
+
+		// Check if the requester has been canceled.
+		if (m_canceled) {
+			return false;
+		}
+
+		// Poll the requester.
+		zmq::poll(&items[0], 1, std::chrono::milliseconds{m_pollingTime});
+
+		// Get a reply.
+		if (items[0].revents & ZMQ_POLLIN) {
+			if (!m_subscriber->recv(message, zmq::recv_flags::none).has_value()) {
+				return false;
+			}
+			return true;
+		}
+
+		i++;
+	}
+
+	// Timeout.
+	m_timedout.store(true);
+
+	// No need to reset the socket after a timeout.
+
+	return false;
+}
+
 std::optional<std::string> SubscriberZmq::receive() {
+
+	// Reset timedout.
+	m_timedout.store(false);
 
 	while (true) {
 		zmq::message_t firstPart;
-		if (!m_subscriber->recv(firstPart, zmq::recv_flags::none).has_value()) {
+		if (!receiveMessage(firstPart)) {
 			return {};
 		}
 
@@ -102,7 +164,7 @@ std::optional<std::string> SubscriberZmq::receive() {
 		if (first == m_publisherIdentity) {
 
 			zmq::message_t typePart;
-			if (!m_subscriber->recv(typePart, zmq::recv_flags::none).has_value()) {
+			if (!receiveMessage(typePart)) {
 				return {};
 			}
 
@@ -116,7 +178,7 @@ std::optional<std::string> SubscriberZmq::receive() {
 
 			if (type == message::STREAM) {
 				zmq::message_t dataPart;
-				if (!m_subscriber->recv(dataPart, zmq::recv_flags::none).has_value()) {
+				if (!receiveMessage(dataPart)) {
 					return {};
 				}
 				return std::string {static_cast<char*>(dataPart.data()), dataPart.size()};
@@ -134,7 +196,7 @@ std::optional<std::string> SubscriberZmq::receive() {
 		}
 		else if (first == message::Event::STATUS) {
 			zmq::message_t statusPart;
-			if (!m_subscriber->recv(statusPart, zmq::recv_flags::none).has_value()) {
+			if (!receiveMessage(statusPart)) {
 				return {};
 			}
 
@@ -166,7 +228,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 
 	while (true) {
 		zmq::message_t firstPart;
-		if (!m_subscriber->recv(firstPart, zmq::recv_flags::none).has_value()) {
+		if (!receiveMessage(firstPart)) {
 			return {};
 		}
 
@@ -175,7 +237,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 		if (first == m_publisherIdentity) {
 
 			zmq::message_t typePart;
-			if (!m_subscriber->recv(typePart, zmq::recv_flags::none).has_value()) {
+			if (!receiveMessage(typePart)) {
 				return {};
 			}
 
@@ -192,13 +254,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 				std::tuple<std::string, std::string> result;
 
 				zmq::message_t data1Part;
-				if (!m_subscriber->recv(data1Part, zmq::recv_flags::none).has_value()) {
+				if (!receiveMessage(data1Part)) {
 					return {};
 				}
 				std::string data1 {static_cast<char*>(data1Part.data()), data1Part.size()};
 
 				zmq::message_t data2Part;
-				if (!m_subscriber->recv(data2Part, zmq::recv_flags::none).has_value()) {
+				if (!receiveMessage(data2Part)) {
 					return {};
 				}
 				std::string data2 {static_cast<char*>(data2Part.data()), data2Part.size()};
@@ -215,7 +277,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 		}
 		else if (first == message::Event::STATUS) {
 			zmq::message_t statusPart;
-			if (!m_subscriber->recv(statusPart, zmq::recv_flags::none).has_value()) {
+			if (!receiveMessage(statusPart)) {
 				return {};
 			}
 

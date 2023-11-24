@@ -52,7 +52,7 @@ public class TestPublisher {
 			useProxy = Boolean.parseBoolean(args[2]);
 		}
 		if (useProxy) {
-			endpoint = "tcp://localhost:10000";
+			endpoint = "tcp://localhost:12000";
 		}
 		
 		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));

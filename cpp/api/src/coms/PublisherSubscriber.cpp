@@ -286,6 +286,11 @@ void Subscriber::setCheckApp(bool value) {
 
 void Subscriber::setTimeout(int value) {
 	m_timeout = value;
+	m_impl->setTimeout(value);
+}
+
+void Subscriber::setPollingTime(int value) {
+	m_impl->setPollingTime(value);
 }
 
 int Subscriber::getTimeout() const {
@@ -457,6 +462,10 @@ std::optional<std::string> Subscriber::receive() const {
 
 std::optional<std::tuple<std::string, std::string>> Subscriber::receiveTwoParts() const {
 	return m_impl->receiveTwoParts();
+}
+
+bool Subscriber::hasTimedout() const {
+	return m_impl->hasTimedout();
 }
 
 void Subscriber::cancel() {

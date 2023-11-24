@@ -28,10 +28,9 @@ constexpr int SYNC_TIMEOUT = 200;
 RequesterZmq::RequesterZmq() :
 	m_pollingTime{100},
 	m_timeout{0},
-	m_contextImpl{nullptr} {
-
-	m_canceled.store(false);
-	m_timedout.store(false);
+	m_contextImpl{nullptr},
+	m_canceled{false},
+	m_timedout{false} {
 }
 
 void RequesterZmq::setPollingTime(int value) {
@@ -377,10 +376,6 @@ bool RequesterZmq::isCanceled() {
 
 bool RequesterZmq::hasTimedout() {
 	return m_timedout;
-}
-
-void RequesterZmq::terminate() {
-	resetSocket();
 }
 
 }

@@ -21,10 +21,14 @@ import fr.ill.ics.cameo.common.strings.Endpoint;
 
 public interface SubscriberImpl {
 	
+	void setPollingTime(int value);
+	void setTimeout(int value);
+	
 	void init(int appId, Endpoint endpoint, Endpoint appStatusEndpoint, String publisherIdentity, boolean checkApp) throws ConnectionTimeout;
 	boolean sync(int timeout);
 	boolean hasEnded();
 	boolean isCanceled();
+	boolean hasTimedout();
 	byte[] receive();
 	byte[][] receiveTwoParts();
 	String receiveString();

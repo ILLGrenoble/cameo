@@ -157,3 +157,6 @@ target_link_libraries(publishererror PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testpublishererror src/TestPublisherError.cpp)
 target_link_libraries(testpublishererror PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testsubscribertimeout src/TestSubscriberTimeout.cpp)
+target_link_libraries(testsubscribertimeout PRIVATE Cameo::cameo-api-cpp)

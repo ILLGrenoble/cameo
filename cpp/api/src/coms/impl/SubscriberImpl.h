@@ -29,11 +29,16 @@ class SubscriberImpl {
 public:
 	virtual ~SubscriberImpl() {}
 
+	virtual void setPollingTime(int value) = 0;
+	virtual void setTimeout(int value) = 0;
+
 	virtual void init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp) = 0;
 	virtual bool sync(int timeout) = 0;
 
 	virtual bool hasEnded() const = 0;
 	virtual bool isCanceled() const = 0;
+
+	virtual bool hasTimedout() = 0;
 
 	virtual std::optional<std::string> receive() = 0;
 	virtual std::optional<std::tuple<std::string, std::string>> receiveTwoParts() = 0;

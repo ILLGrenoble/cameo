@@ -10,6 +10,7 @@
 * Default ZeroMQ implementation is JZMQ in Java API.
   WARNING: Change maven pom.xml in dependent applications.
 * Directory review for server and console java projects.
+* Subscriber receive() can timeout.
 
 2.1.1
 -----

@@ -226,6 +226,12 @@ public:
 	void setTimeout(int value) override;
 
 	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
+	void setPollingTime(int value);
+
+	/**
 	 * Gets the timeout.
 	 * \return The timeout.
 	 */
@@ -283,6 +289,12 @@ public:
 	 * \return The tuple of string data or null.
 	 */
 	std::optional<std::tuple<std::string, std::string>> receiveTwoParts() const;
+
+	/**
+	 * Returns true if the subscriber has timed out.
+	 * \return True if the subscriber has timed out.
+	 */
+	bool hasTimedout() const;
 
 	/**
 	 * Returns a string representation of the subscriber.

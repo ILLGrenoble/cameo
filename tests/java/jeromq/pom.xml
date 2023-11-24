@@ -10,7 +10,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>fr.ill.ics</groupId>
-			<artifactId>cameo-server</artifactId>
+			<artifactId>cameo-server-jeromq</artifactId>
 			<version>2.2.0</version>
 		</dependency>
  		<dependency>

@@ -47,8 +47,6 @@ public:
 
 	virtual bool hasTimedout();
 
-	virtual void terminate();
-
 private:
 	void resetSocket();
 	void createSocket();

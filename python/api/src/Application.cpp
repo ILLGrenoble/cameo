@@ -301,6 +301,7 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("isReady", &Subscriber::isReady)
 		.def("setTimeout", &Subscriber::setTimeout)
 		.def("getTimeout", &Subscriber::getTimeout)
+		.def("setPollingTime", &Subscriber::setPollingTime)
 		.def("terminate", &Subscriber::terminate, py::call_guard<py::gil_scoped_release>())
 		.def("isTerminated", &Subscriber::isTerminated)
 	    .def("getPublisherName", &Subscriber::getPublisherName)
@@ -343,6 +344,7 @@ PYBIND11_MODULE(cameopy, m) {
 			})
 	    .def("cancel", &Subscriber::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Subscriber::isCanceled)
+		.def("hasTimedout", &Subscriber::hasTimedout)
 		.def("__str__", &Subscriber::toString,
 					py::call_guard<py::gil_scoped_release>());
 

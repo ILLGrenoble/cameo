@@ -12,6 +12,7 @@
 * Added connect() in App to facilitate concurrent process.
 * Server::create(), This::connectToStarter(), BasicResponder::connectToRequester(), MultiResponder::connectToRequester() lose useProxy parameter.
   WARNING: Default values can cause a change of behavior
+* Subscriber receive() can timeout.
 
 2.1.1
 -----

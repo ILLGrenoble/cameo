@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 	}
 	if (useProxy) {
 		options |= USE_PROXY;
-		endpoint = "tcp://localhost:10000";
+		endpoint = "tcp://localhost:12000";
 	}
 
 	unique_ptr<Server> server = Server::create(endpoint, options);

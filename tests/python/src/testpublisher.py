@@ -21,7 +21,7 @@ options = 0
 endpoint = "tcp://localhost:11000";
 if useProxy:
     options |= cameopy.USE_PROXY
-    endpoint = "tcp://localhost:10000";
+    endpoint = "tcp://localhost:12000";
 
 server = cameopy.Server.create(endpoint, options)
 server.init()

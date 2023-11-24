@@ -94,6 +94,7 @@ public class TestSelector {
 		}
 		catch (StartException e) {
 			System.out.println("*** No application ***");
+			e.printStackTrace();
 		}
 	}
 	
@@ -123,6 +124,7 @@ public class TestSelector {
 		apps.add("testcomstimeoutjava");
 		apps.add("testrespondererrorjava");
 		apps.add("testpublishererrorjava");
+		apps.add("testsubscribertimeoutjava");
 		
 		return apps;
 	}
@@ -152,6 +154,7 @@ public class TestSelector {
 		apps.add("testcomstimeoutcpp");
 		apps.add("testrespondererrorcpp");
 		apps.add("testpublishererrorcpp");
+		apps.add("testsubscribertimeoutcpp");
 		
 		return apps;
 	}
@@ -176,6 +179,7 @@ public class TestSelector {
 		apps.add("testterminatepy");
 		apps.add("testrespondererrorpy");
 		apps.add("testpublishererrorpy");
+		apps.add("testsubscribertimeoutpy");
 		
 		return apps;
 	}
@@ -208,7 +212,7 @@ public class TestSelector {
 				System.out.println("*** Trying to create server ***");
 				
 				if (useProxy) {
-					server = Server.create("tcp://localhost:10000", Option.USE_PROXY);
+					server = Server.create("tcp://localhost:12000", Option.USE_PROXY);
 					
 				}
 				else {
@@ -281,6 +285,7 @@ public class TestSelector {
 			}
 		}
 		finally {
+			
 			// Terminate the server.
 			server.terminate();
 

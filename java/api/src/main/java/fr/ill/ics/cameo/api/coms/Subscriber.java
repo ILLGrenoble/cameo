@@ -291,8 +291,17 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public void setTimeout(int value) {
 		timeout = value;
+		impl.setTimeout(value);
 	}
 
+	/**
+	 * Sets the polling time.
+	 * @param value The value.
+	 */
+	void setPollingTime(int value) {
+		impl.setPollingTime(value);
+	}
+	
 	@Override
 	public int getTimeout() {
 		return timeout;
@@ -318,6 +327,14 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 	@Override
 	public boolean isCanceled() {
 		return impl.isCanceled();
+	}
+	
+	/**
+	 * Returns true if the subscriber has timed out.
+	 * @return True if the subscriber has timed out.
+	 */
+	public boolean hasTimedout() {
+		return impl.hasTimedout();
 	}
 	
 	/**
