@@ -16,6 +16,9 @@ cameo_api_cpp_lib = library('cameo_api_cpp',
                             include_directories: [public_headers_inc, base_impl_zmq_inc],
                             dependencies: zmq_dep,
                             install: true,
+                            version: meson.project_version(),
+                            soversion: meson.project_version().split('.')[0],
+                            pic: true,
                            )
 
 include_path_subdir = 'cameo'/'api'
@@ -23,9 +26,9 @@ cameo_main_header_IN = 'cameo.h.in'
 cameo_main_header_IN_file = files('include'/cameo_main_header_IN)
 cameo_main_header_file = configure_file(
   configuration: {
-    'PROJECT_VERSION_MAJOR': '2',
-    'PROJECT_VERSION_MINOR': '1',
-    'PROJECT_VERSION_PATCH': '1'},
+    'PROJECT_VERSION_MAJOR': meson.project_version().split('.')[0],
+    'PROJECT_VERSION_MINOR': meson.project_version().split('.')[1],
+    'PROJECT_VERSION_PATCH': meson.project_version().split('.')[2]},
   input: cameo_main_header_IN_file,
   output: '@BASENAME@',
   install: true,
