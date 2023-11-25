@@ -36,3 +36,5 @@ base_files = files(
   'Waiting.cpp',
   'WaitingSet.cpp',
   )
+base_impl_inc = include_directories('impl')
+base_inc = include_directories('.')
