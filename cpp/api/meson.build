@@ -1,19 +1,11 @@
-project('cameo-api-cpp', 'cpp',
-        version: '2.1.1',
-        license: 'EUPL-1.2',
-        default_options: ['default_library=both', 'cpp_std=c++17']
-       )
-
 zmq_dep = dependency('libzmq', required: true)
 #thread_dep = dependency('threads', required: true)
-#rapidjson_dep = dependency('RapidJSON', required: true)
+rapidjson_dep = dependency('RapidJSON', required: true)
 
 public_headers_inc = include_directories('include')
 subdir('src/base/impl/zmq')
-#subdir('src/base/impl')
 subdir('src/base')
 subdir('src/coms/impl/zmq')
-#subdir('src/coms/impl')
 subdir('src/coms')
 subdir('src/factory')
 
@@ -26,31 +18,43 @@ cameo_api_cpp_lib = library('cameo_api_cpp',
                             install: true,
                            )
 
-cameo_main_header_IN_file = 'include/cameo.h.in'
+include_path_subdir = 'cameo'/'api'
+cameo_main_header_IN = 'cameo.h.in'
+cameo_main_header_IN_file = files('include'/cameo_main_header_IN)
 cameo_main_header_file = configure_file(
   configuration: {
-    '@PROJECT_VERSION_MAJOR@': '2',
-    '@PROJECT_VERSION_MINOR@': '1',
-    '@PROJECT_VERSION_PATCH@': '1'},
+    'PROJECT_VERSION_MAJOR': '2',
+    'PROJECT_VERSION_MINOR': '1',
+    'PROJECT_VERSION_PATCH': '1'},
   input: cameo_main_header_IN_file,
   output: '@BASENAME@',
   install: true,
-  install_dir: get_option('includedir'),
+  install_dir: get_option('includedir')/ include_path_subdir,
   install_tag: 'devel',
 )
 
+############################### Headers
 install_subdir('include',
-               install_dir: get_option('includedir'),
+               install_dir: get_option('includedir')/ include_path_subdir,
                install_tag: 'devel',
                strip_directory: true,
-               exclude_files: cameo_main_header_IN_file,
+               exclude_files: cameo_main_header_IN,
               )
 
+############################### Dependencies
+cameo_api_cpp_dep = declare_dependency(
+  sources: cameo_main_header_file,
+  link_with: cameo_api_cpp_lib,
+  include_directories: [public_headers_inc, meson.current_build_dir()],
+  dependencies: rapidjson_dep,
+  )
 
+############################### pkgconfig
 pkg_mod = import('pkgconfig')
-pkg_mod.generate(libraries: cameo_api_cpp_lib,
-                 version: '2.1.1',
+pkg_mod.generate(cameo_api_cpp_lib,
+                 version: meson.project_version(),
                  name: 'libcameo-api-cpp',
                  filebase: 'cameo-api-cpp',
                  description: 'Cameo C++ API',
+                 subdirs: include_path_subdir,
                 )
