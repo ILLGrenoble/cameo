@@ -47,6 +47,8 @@ public class TestSimple {
 		
 		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
 		
+		System.out.println("Created server " + server);
+		
 		System.out.println("Server ready ? " + server.isReady());
 		server.init();
 		System.out.println("Server ready ? " + server.isReady());

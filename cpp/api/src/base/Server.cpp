@@ -824,7 +824,16 @@ std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
 }
 
 std::string Server::toString() const {
-	return ServerIdentity{m_serverEndpoint.toString(), m_useProxy}.toJSONString();
+
+	std::string serverEndpoint;
+	if (!m_serverEndpointString.empty()) {
+		serverEndpoint = m_serverEndpointString;
+	}
+	else {
+		serverEndpoint = m_serverEndpoint.toString();
+	}
+
+	return ServerIdentity{serverEndpoint, m_useProxy}.toJSONString();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {

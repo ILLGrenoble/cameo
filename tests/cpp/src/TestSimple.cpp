@@ -47,6 +47,8 @@ int main(int argc, char *argv[]) {
 
 	unique_ptr<Server> server = Server::create(endpoint, options);
 
+	cout << "Created server " << *server << endl;
+
 	cout << "Server ready ? " << server->isReady() << endl;
 	server->init();
 	cout << "Server ready ? " << server->isReady() << endl;

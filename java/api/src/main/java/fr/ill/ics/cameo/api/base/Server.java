@@ -1039,7 +1039,16 @@ public class Server extends StateObject implements ITimeoutable {
 
 	@Override
 	public String toString() {
-		return new ServerIdentity(serverEndpoint.toString(), useProxy).toString();
+		
+		String serverEndpointStr = "";
+		if (!serverEndpointString.isEmpty()) {
+			serverEndpointStr = serverEndpointString;
+		}
+		else {
+			serverEndpointStr = serverEndpoint.toString();
+		}
+		
+		return new ServerIdentity(serverEndpointStr, useProxy).toString();
 	}
 
 }
