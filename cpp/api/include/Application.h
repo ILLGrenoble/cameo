@@ -305,7 +305,14 @@ public:
 	static void init(int argc, char *argv[]);
 
 	/**
-	 * Initializes this application with direct parameters.
+	 * Initializes this application with explicit parameters.
+	 * \param name The Cameo name.
+	 * \param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
+	 */
+	static void init(const std::string &name, const Endpoint &endpoint);
+
+	/**
+	 * Initializes this application with explicit parameters.
 	 * \param name The Cameo name.
 	 * \param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
 	 */
@@ -416,6 +423,7 @@ private:
 	void terminateImpl();
 
 	void initApplication(int argc, char *argv[]);
+	void initApplication(const std::string &name, const Endpoint &endpoint);
 	void initApplication(const std::string &name, const std::string &endpoint);
 	void initApplication();
 

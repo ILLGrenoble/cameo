@@ -257,6 +257,15 @@ public class This {
 	 * @param name The Cameo name.
 	 * @param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
 	 */
+	static public void init(String name, Endpoint endpoint) {
+		instance = new This(name, endpoint);
+	}
+	
+	/**
+	 * Initializes this application with direct parameters.
+	 * @param name The Cameo name.
+	 * @param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
+	 */
 	static public void init(String name, String endpoint) {
 		instance = new This(name, endpoint);
 	}
@@ -554,10 +563,30 @@ public class This {
 		initApplication();
 	}
 	
+	private This(String name, Endpoint endpoint) {
+		
+		// Get the server endpoint.
+		serverEndpoint = endpoint;
+		
+		// Get the name.
+		this.name = name; 
+		
+		// This is de-facto an unregistered application.		
+		registered = false;
+		
+		// Init.
+		initApplication();
+	}
+	
 	private This(String name, String endpoint) {
 		
 		// Get the server endpoint.
-		serverEndpoint = Endpoint.parse(endpoint);
+		try {
+			serverEndpoint = Endpoint.parse(endpoint);	
+		}
+		catch (Exception e) {
+			throw new InvalidArgumentException("Cannot initialize the app with server " + endpoint + ": invalid endpoint");
+		}
 		
 		// Get the name.
 		this.name = name; 

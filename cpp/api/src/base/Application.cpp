@@ -172,6 +172,12 @@ void This::init(int argc, char *argv[]) {
 	}
 }
 
+void This::init(const std::string& name, const Endpoint& endpoint) {
+	if (!m_instance.m_inited) {
+		m_instance.initApplication(name, endpoint);
+	}
+}
+
 void This::init(const std::string& name, const std::string& endpoint) {
 	if (!m_instance.m_inited) {
 		m_instance.initApplication(name, endpoint);
@@ -255,19 +261,29 @@ void This::initApplication(int argc, char *argv[]) {
 	initApplication();
 }
 
-void This::initApplication(const std::string& name, const std::string& endpoint) {
+void This::initApplication(const std::string& name, const Endpoint& endpoint) {
+
+	// Get the server endpoint.
+	m_serverEndpoint = endpoint;
 
 	// Get the name.
 	m_name = name;
-
-	// Get the server endpoint.
-	m_serverEndpoint = Endpoint::parse(endpoint);
 
 	// The application is de-facto unregistered.
 	m_registered = false;
 
 	// Init the app.
 	initApplication();
+}
+
+void This::initApplication(const std::string& name, const std::string& endpoint) {
+
+	try {
+		This::initApplication(name, Endpoint::parse(endpoint));
+	}
+	catch (...) {
+		throw InvalidArgumentException(std::string{"Cannot initialize the app with server "} + endpoint + ": invalid endpoint");
+	}
 }
 
 void This::initApplication() {
