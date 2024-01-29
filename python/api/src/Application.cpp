@@ -63,11 +63,22 @@ PYBIND11_MODULE(cameopy, m) {
 	///////////////////////////////////////////////////////////////////////////
 	// base
 
+	py::class_<Endpoint>(m, "Endpoint")
+		.def(py::init<const std::string&, const std::string&, int>())
+		.def(py::init<const std::string&, int>())
+		.def("getProtocol", &Endpoint::getProtocol)
+		.def("getAddress", &Endpoint::getAddress)
+		.def("getPort", &Endpoint::getPort)
+		.def_static("parse", &Endpoint::parse)
+		.def("withPort", &Endpoint::withPort,
+				"port"_a)
+		.def("__str__", &Endpoint::toString, py::call_guard<py::gil_scoped_release>());
+
 	py::class_<ServerAndApp>(m, "ServerAndApp")
-		    .def("getServer", &ServerAndApp::getServer, py::return_value_policy::reference)
-			.def("hasApp", &ServerAndApp::hasApp)
-			.def("getApp", &ServerAndApp::getApp, py::return_value_policy::reference)
-			.def("terminate", &ServerAndApp::terminate, py::call_guard<py::gil_scoped_release>());
+		.def("getServer", &ServerAndApp::getServer, py::return_value_policy::reference)
+		.def("hasApp", &ServerAndApp::hasApp)
+		.def("getApp", &ServerAndApp::getApp, py::return_value_policy::reference)
+		.def("terminate", &ServerAndApp::terminate, py::call_guard<py::gil_scoped_release>());
 
 	py::class_<This>(m, "This")
 	    .def_static(
