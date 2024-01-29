@@ -17,6 +17,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h> // Necessary for This::handleStop()
+#include <pybind11/operators.h>
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -72,6 +73,8 @@ PYBIND11_MODULE(cameopy, m) {
 		.def_static("parse", &Endpoint::parse)
 		.def("withPort", &Endpoint::withPort,
 				"port"_a)
+		.def(py::self == py::self)
+		.def(py::self != py::self)
 		.def("__str__", &Endpoint::toString, py::call_guard<py::gil_scoped_release>());
 
 	py::class_<ServerAndApp>(m, "ServerAndApp")

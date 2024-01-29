@@ -60,11 +60,18 @@ public:
 	Endpoint();
 
 	/**
-	 * Equality operator.
+	 * Equals operator.
 	 * \param endpoint The endpoint to compare.
 	 * \return True if equals, false otherwise.
 	 */
 	bool operator==(const Endpoint& endpoint) const;
+
+	/**
+	 * Non-equals operator.
+	 * \param endpoint The endpoint to compare.
+	 * \return True if equals, false otherwise.
+	 */
+	bool operator!=(const Endpoint& endpoint) const;
 
 	/**
 	 * Gets the protocol.

@@ -61,6 +61,10 @@ bool Endpoint::operator==(const Endpoint& endpoint) const {
 			&& m_port == endpoint.m_port;
 }
 
+bool Endpoint::operator!=(const Endpoint& endpoint) const {
+	return !(*this == endpoint);
+}
+
 const std::string& Endpoint::getProtocol() const {
 	return m_protocol;
 }
