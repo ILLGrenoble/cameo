@@ -2,10 +2,12 @@ JZMQ or JeroMQ?
 ---------------
 
 CAMEO provides three Java projects and a C++ project. ZeroMQ is written in C and using it in Java projects can be done:
+
 * Use the Java binding [JZMQ](https://github.com/zeromq/jzmq).
 * Use the pure Java implementation [JeroMQ](https://github.com/zeromq/jeromq).
 
 CAMEO can use both as they follow the same interface, so that they can be easily replaced. However some differences exist:
+
 * JZMQ has better performances than JeroMQ.
 * JZMQ is more difficult to configure as the dynamic library of ZeroMQ must be accessible.
 * JZMQ is no longer developped. It is thus preferrable to use JeroMQ if no blockings are encountered.

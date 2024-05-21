@@ -1,6 +1,9 @@
+# Use the proxies with a firewall
+
+
 In the context of a firewall, you may run the CAMEO server with proxies so that the number of exposed ports is fixed.
 
-# Open ports
+## Open ports
 
 CAMEO communication is based on ZeroMQ for which main sockets own a port. For instance you open a *REP* or a *PUB* socket by opening a new port. CAMEO communication objects *Responder* and *Publisher* have between one and two ports opened dynamically. Moreover the CAMEO server itself opens some ports. As a consequence, the **number of ports** used by a CAMEO application can **increase** rapidly.  
 
@@ -13,7 +16,7 @@ In the context of a **firewall** which needs to minimize the number of ports acc
 
 The solution is to use proxies.
 
-# Use of proxies
+## Use of proxies
 
 Using proxies allow to forward messages. There is a responder proxy which is a relay between the *Requester* and the *Responder* objects. There is also a publisher proxy which is a relay between the *Subscriber* and the *Publisher* objects.
 
@@ -44,15 +47,15 @@ The first argument of *Server::create()* is the responder proxy endpoint and the
 
 Once the server is created, the definition of a *Requester* or *Subscriber* is exactly the same as before.
 
-# Proxy path
+## Proxy path
 
 Currently, the proxy programs are written in C++. When the CAMEO server starts, it tries to launch the proxy programs. However if they are not installed in a standard path, they may not be found. In that case, an argument is provided:
 
 ```
-$ java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies
+java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies
 ```
 
-# List of functions or methods using the proxies
+## List of functions or methods using the proxies
 
 Here is the list of functions or methods that can be parameterized with a proxy:
 

@@ -13,8 +13,8 @@ The CAMEO middleware is made up of:
 - Different **APIs** for C++, Java, Python languages.
 
 CAMEO is very flexible and many different use cases are possible. 
-There is no constraint on the applications that can be managed by CAMEO:
-**graphical** or black box applications are supported. With CAMEO, it becomes very easy to **integrate** any external component including proprietary software.
+There is **no constraint** on the applications that can be managed by CAMEO:
+graphical or black box applications are supported. With CAMEO, it becomes very easy to **integrate** any external component including proprietary software.
 
 ## Typical use case
 
@@ -34,23 +34,5 @@ Sequence of actions:
 Notice that the interaction between *App1* and *App2* is made using the API.
 This example shows the possible interactions between the applications: start, stop, synchronize, communicate.
 
-## Documentation
-
-1. [Installation](installation)
-2. [First example](First-example)
-3. [Configure a server](Configure-a-server)
-4. [Control the apps](Control-the-apps)
-5. [Make the apps communicate](Make-the-apps-communicate)
-6. [Synchronization](Synchronization)
-7. [Track the app failures](Track-the-app-failures)
-8. [Use the proxies with a firewall](Use-the-proxies-with-a-firewall)
-9. [Exceptions](Exceptions)
-
-## Development notes
-* [Tests](tests)
-* [Developments](developments)
-* [Implementation](implementation)
-* [Dependencies](dependencies)
-* [Windows compilation](windows-compilation)
 
 Contact legoc@ill.eu for any help.

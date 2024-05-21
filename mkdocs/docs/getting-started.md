@@ -1,8 +1,10 @@
-# Getting Started
+# Getting started
+
 We present a complete simple example where two CAMEO applications interact with a publisher/subscriber pattern.
 
 ## Code
 We define:
+
 * a C++ publisher application that publishes to a single subscriber.
 * a Java subscriber application which starts the publisher application on the local CAMEO server and subscribes to it.
 
@@ -129,6 +131,7 @@ Here is a possible configuration file *config.xml*:
 </config>
 ```
 A CAMEO server configuration file contains:
+
 * The base port from which it is accessed i.e. 7000.
 * The list of applications that can be started with their name, executable and other attributes. Each application is a mapping between a name and a command including the executable and the fixed arguments. This configuration file supposes:
   * The jar *tests.jar* contains the code of the Java application.
@@ -137,19 +140,19 @@ A CAMEO server configuration file contains:
 First we must start the CAMEO server. This can be done directly in a shell:
 
 ```
-$ cameo-server config.xml --log-console
+cameo-server config.xml --log-console
 ```
 
 Now we have to execute the *subpubjava* application as it is the entry point. That can be done by using the CAMEO console on the machine that runs the CAMEO server:
 
 ```
-$ cmo exec subpubjava
+cmo exec subpubjava
 ```
 
 If *serverhost* is the hostname of the machine running the CAMEO server, you can go on another machine and run *subpubjava* remotely:
 
 ```
-$ cmo -e tcp://serverhost:7000 exec subpubjava
+cmo -e tcp://serverhost:7000 exec subpubjava
 ```
 
 You have the first running example.

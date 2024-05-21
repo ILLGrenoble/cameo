@@ -1,12 +1,13 @@
-# Introduction
+# Control the apps
 The first goal of CAMEO is to provide services for starting, stopping, synchronizing remote applications. The control of the lifecycle of the applications is made either by the console i.e. *cmo* either programmatically using the API. Here are the controls:
+
 * **Start**: Starts a remote application that will run on the contacted CAMEO server. The application must be registered.
 * **Stop**: Stops a running remote application. The application is notified and can properly stop.
 * **Kill**: Kills a running remote application. The application is immediately terminated.
 * **Connect**: Connects a running application.
 The combination of these controls gives lots of flexibility e.g. applications can be started in cascade.
 
-# State diagram of an app
+## State diagram of an app
 
 Every control is made by contacting the CAMEO server which is responsible to control the applications. Every CAMEO application has a sequence of states. The following diagram shows the complete possibilities:
 
@@ -15,6 +16,7 @@ Every control is made by contacting the CAMEO server which is responsible to con
 The arrows show which transitions are possible.  
 
 The different states are described:
+
 * **Starting**: Once the CAMEO server received a *start* request for a valid application.
 * **Running**: The application becomes *Running* after a defined amount of time or the application defined itself as running.
 * **Success**: The application successfully terminated without any *stop* or *kill* request.
@@ -27,13 +29,14 @@ The different states are described:
 
 Once the CAMEO server is changing the state of an application, it also publishes the new state as an event. All the connected clients receive the new state and can react to it.
 
-# Events in the API and the console
+## Events in the API and the console
 
 Let's take a concrete example and show how to do it with the API and the console. Here is the diagram showing the interactions: 
 
 ![Control the apps](images/Control-the-apps.png)
 
 Sequence of actions:
+
 * The application *App1* on *A* is contacting the CAMEO server on *B* to start *App2*.
 * The application *App2* is running on *B*.
 * The application *App3* on *C* is contacting the CAMEO server on *B* to connect *App2*.
@@ -129,7 +132,7 @@ print("The application", app2.toString(), "terminated with state", cameopy.toStr
 On computer *D*, the console connects to *App2* and receives some output before *App2* is stopped:
 
 ```
-$ cmo -e tcp://B:7000 connect App2 
+cmo -e tcp://B:7000 connect App2 
 Connected App2.5
 Printing 5
 Printing 6
@@ -142,37 +145,37 @@ The lines starting with *Connected* and *The application* are written by the con
 
 The calls to *waitFor()* were blocking and the termination of *App2* unblocked them as an event was sent from the CAMEO server to all the clients. The console received the error and output stream before stopping, the *connect* command being blocking.
 
-# Using the console
+## Using the console
 
 The console *cmo* offers interesting features to start or monitor a CAMEO environment. To print the help:
 ```
-$ cmo
+cmo
 ```
 
 To display the list of registered apps that can be started:
 ```
-$ cmo list
+cmo list
 ```
 
 By default, the CAMEO server is the local on the 7000 port but it can be configured.
 If a CAMEO server is running on the port 8000:
 ```
-$ cmo -p 8000 list
+cmo -p 8000 list
 ```
 
 If a CAMEO server is running on *B*:
 ```
-$ cmo -e tcp://B:7000 list
+cmo -e tcp://B:7000 list
 ```
 
 To start *App2* from localhost:
 ```
-$ cmo start App2
+cmo start App2
 ```
 
 The command immediately returns. Then it is possible to see if it is running:
 ```
-$ cmo apps
+cmo apps
 Name ID        PID       Status              Args
 -------------------------------------------------
 App2 5         9087      RUNNING
@@ -182,7 +185,7 @@ The *ID* is the id of the CAMEO server which is unique different from the *PID* 
 
 We can connect to it now:
 ```
-$ cmo connect App2
+cmo connect App2
 Printing 8
 Printing 9
 Printing 10
@@ -192,17 +195,17 @@ The command is blocking and typing *ctl+c* or *shift+q* stops the command but no
 
 To stop *App2*:
 ```
-$ cmo stop App2
+cmo stop App2
 ```
 
 As there is no stop handler defined for *App2*, the stop is equivalent to a kill, so we could have done:
 ```
-$ cmo kill App2
+cmo kill App2
 ```
 
 To start *App2* with a blocking command, we can use:
 ```
-$ cmo exec App2
+cmo exec App2
 Printing 1
 Printing 2
 Printing 3
@@ -217,18 +220,18 @@ We saw that by default *cmo* contacts the local CAMEO server on port 7000. You c
 
 You can display the CAMEO server endpoint:
 ```
-$ cmo endpoint
+cmo endpoint
 ```
 You can display the version of the server:
 ```
-$ cmo version
+cmo version
 ```
 
-# Pass arguments
+## Pass arguments
 
 It is possible to pass arguments to a *start* request. With the console it is naturally done:
 ```
-$ cmo start App2 -debug true -timeout 10
+cmo start App2 -debug true -timeout 10
 ```
 This example shows that the arguments *-debug true -timeout 10* will be passed to the executable. It can also be done with the APIs. In C++:
 ```cpp
@@ -244,7 +247,7 @@ server.start("App2", ["-debug", "true", "-timeout", "10"]);
 ```
 These arguments are set after the arguments defined into the configuration file.
 
-# Application state
+## Application state
 
 There are different ways to get the state of an app. We already saw that *waitFor()* returns a state which is the last state of the app execution. You can also get the states directly:
 
@@ -263,7 +266,7 @@ std::set<cameo::State> states = app->getPastStates();
 The call to *getLastState()* does not invoke a call on the CAMEO server but only pulls all the states already received. If the app has terminated then it should be *SUCCESS*, *STOPPED*, *KILLED* or *FAILURE*.
 However a call to *getActualState()* makes a request to the CAMEO server i.e. it can fail if the server is not accessible anymore.
 
-# Exit code
+## Exit code
 
 Sometimes we need to get the exit code of an app. It is possible to do it with the API as well as with the console. The APIs provide the *getExitCode()* function or method of the *Instance* class. 
 We suppose to have an *App4* application that returns after a certain amount of time.
@@ -283,14 +286,14 @@ int exitCode = app4->getExitCode();
 To get the value of the exit code of the app with the console depends on the *shell* you use.
 With a bash shell:
 ```
-$ cmo exec App4
+cmo exec App4
 The application App4.13 terminated successfully.
-$ exitCode=$?
+exitCode=$?
 ```
 
 What you do with this code is on your own.
 
-# Stop handler
+## Stop handler
 
 We saw before that there was a difference between a *stop* and a *kill* request. The CAMEO server immediately stops the app for a *kill* request whereas in case of a *stop* request it sets the state *STOPPING* to the app. The app receives the *STOPPING* event and a stop handler is triggered if it has been registered allowing to properly terminate the app.
 
@@ -391,11 +394,12 @@ while not stopping.is_set():
 The Python example follows the same principle as the C++ and Java examples but this time we use the *Event* object provided by the *threading* module to share the stopping state.
 
 To finish, it is **highly recommended** to follow these guidelines to implement a stop handler:
+
 * Do not implement cleaning code e.g. resource deallocation in stop handlers.
 * Only write code that unblocks blocking calls: graphical loop, etc.
 * Let the cleaning code at the very end of the main.
 
-# Connect to the starter app
+## Connect to the starter app
 
 There are some use cases where it is interesting or even necessary to get a reference to the application that started *this* application.
 Let's take the previous example where we defined the code of *App2*. We modify it to get an access to the *starter* app:
@@ -433,9 +437,9 @@ In our example, the *starter* app should be the running application *App1*. But 
 
 Once you have a reference to the *starter* you can decide to stop it or use it to connect a communication object.
 
-# Standard error and output
+## Standard error and output
 
-The standard error and output can be printed by the console application or retrieved by the API. For that the attribute *stream* of the application tag must have been set to *yes* in the configuration of the application. See the page [Configure a server](Configure-a-server).  
+The standard error and output can be printed by the console application or retrieved by the API. For that the attribute *stream* of the application tag must have been set to *yes* in the configuration of the application. See the page [Configure a server](configure-a-server.md).  
 An example with the C++ API:
 ```cpp
 // Start the app with the OUTPUTSTREAM option.
@@ -544,7 +548,7 @@ t.join()
 
 Retrieving the output may not be only restricted to debug. If you need to integrate an external program that only has output, control could be done by analyzing the output stream.
 
-# Unlinked apps
+## Unlinked apps
 
 By default, if *App1* starts *App2* and *App1* finished before *App2* then *App2* will be stopped i.e. a stop request will be sent to its CAMEO server. This default behaviour avoids to have orphaned apps that have in fact no reason to live especially if their starter app terminated unexpectedly.
 

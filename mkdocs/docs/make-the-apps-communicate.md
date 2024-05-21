@@ -1,9 +1,10 @@
-# Introduction
+# Make the apps communicate
+
 Controlling the CAMEO apps is already a form of communication between the apps. We show here the common ways to make them communicate by using the communication patterns aka coms and the return value.
 
 The following examples will only show string messages however any kind of serialization can be used: binary serialization with *Protobuf* or ascii serialization with *JSON*.
 
-# Function pattern
+## Function pattern
 First and easiest way to pass data from an app to another is to use the function pattern. When an app terminates it is possible to set a return value that will be published to all the instance references. We can extend the Java application of *App2*:
 
 ```java
@@ -68,12 +69,13 @@ int main(int argc, char *argv[]) {
 In Java and Python, you have the *getStringResult()* method and function to retrieve the string result. If you need to set and get a binary result, use the related *setResult()* and *getResult()* methods and functions.
 
 Use the return value can be very helpful to use an app as a function. However it is **not recommended** to use it in those cases:
+
 * The execution of the app is very short and it is executed lots of time.
 * The data passed are big.  
 
 Indeed in that case it is better to setup a requester/responder communication to avoid too many creation and destruction of processes and to avoid a network overload.
 
-# Requester/Responder pattern
+## Requester/Responder pattern
 
 If you need to setup a request/response mechanism between different apps then use the provided requester/responder communication pattern.
 
@@ -174,11 +176,12 @@ Notice that the responder can reply **multiple times** for the same request. The
 
 Notice that we presented the basic responder which cannot process requests in parallel. A **single thread** must be used to receive and reply. If you need to process the requests in parallel, then you have to create some multiple responders.
 
-# Multiple responders
+### Multiple responders
 
 To process the requests in parallel, a set of multi responders must be created. They are attached to a responder router. 
 
 An example of multiple responders in a Java application:
+
 ```java
 try {
     // Create the router.
@@ -229,7 +232,7 @@ catch (InitException e) {
 Once the router is receiving a request from a requester, it forwards it to a multi responder (round-robin distribution) that can process it in its **own thread**. It can also reply multiple times. The router run() call is **blocking** and the router must be canceled to return.
 
 
-# Publisher/Subscriber pattern
+## Publisher/Subscriber pattern
 
 Another useful communication pattern is the publish/subscribe pattern. It allows asynchronous messages from one application to other ones. Let's define a Java application *PubJava* which defines a publisher:
 ```java

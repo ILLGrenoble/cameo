@@ -1,6 +1,8 @@
-# List of exceptions
+# Exceptions
 
 A summary of the exceptions that can be thrown in a program using the CAMEO API:
+
+## List of exceptions
 
 **Exception**                    | **Where**               | **Description**
 ---------------------------------|-------------------------|----------------
@@ -13,12 +15,13 @@ UnregisteredApplicationException | This.init()             | Maximum number of r
 KeyAlreadyExistsException        | This.Com.storeKeyValue()| Key is already stored for the application.
 UndefinedKeyException            | This.Com.getKeyValue(), App.Com.getKeyValue() | Key does not exist.
 
-# More details on the exceptions
+## More details on the exceptions
 
 The most common exception is *ConnectionTimeout* that can occur in any call to a remote *Server* object.
 As the process of the requests to a remote *Server* object should be quick, a *ConnectionTimeout* should mean that the network was not fast enough or the remote computer is not accessible any more.
 
 However a call to a local *Server* object may not throw such a *ConnectionTimeout* exception. That is why a good practice is:
+
 - Set a timeout to remote *Server* objects.
 - Do not set a timeout to local *Server* objects.
 

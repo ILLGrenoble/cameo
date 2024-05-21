@@ -1,9 +1,11 @@
-# Introduction
+# Synchronization
+
+
 The C++, Java and Python APIs provide a synchronous programming model with some blocking calls. This model provides a simple and easy understandable way of programming.
 
-# Blocking calls
+## Blocking calls
 
-## List of blocking functions or methods
+### List of blocking functions or methods
 
 Here is the list of blocking functions or methods:
 
@@ -20,7 +22,7 @@ Here is the list of blocking functions or methods:
 
 The cancelable functions or methods are canceled by calling *cancel()*. When a timeout occurs, the call terminates with an exception.
 
-## Cancel the blocking calls
+### Cancel the blocking calls
 
 A blocking call blocks the thread in which it executes. To unblock it, the cancel call must be done in another thread. For example in C++ supposing we have a *server* object:
 ```cpp
@@ -92,7 +94,7 @@ Once again we need another thread to unblock the call to *waitFor()*.
 
 You noticed that the *create()* functions or methods of the *Requester* and *Subscriber* classes were not yet cancelable. Indeed they are blocking calls - we will see later why it is interesting - but the current implementation does not allow to cancel them. However a future release will allow to do it.
 
-## Timeout
+### Timeout
 
 Some functions or methods are timeoutable e.g. *init()* in *Server* and *receive()* in *Requester*.
 For the server in C++:
@@ -126,7 +128,7 @@ if (requester->hasTimedOut()) {
 ```
 Here this the time to let the responder to send a response i.e. the connection can still be established but simply the responder takes too much time to respond.
 
-# The benefits of synchronization
+## The benefits of synchronization
 
 We saw that the *init()* functions or methods of the *Requester* and *Subscriber* were blocking. It means that they do not return until they effectively connected. For the requester it means that it waits for the responder to be initialized. For the subscriber it means that it waits for the publisher to be initialized. This feature is important as it allows to start an application - operation that is asynchronous - and define a requester/responder pair that themselves are synchronized. This allows you to define chains of applications like it is shown in this figure:
 

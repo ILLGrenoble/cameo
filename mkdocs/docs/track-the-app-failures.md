@@ -1,7 +1,9 @@
-# Introduction
+# Track the app failures
+
+
 In CAMEO, an app that crashes is not an unexpected behavior but is a common use case. However how to track the failures? How to interrupt a communication with an app responder or publisher if the app has crashed?
 
-# Control the state
+## Control the state
 We already saw the different ways of getting the state of an app in a previous section.
 To track the failure it is possible to poll using *getLastState()*. In Java:
 
@@ -43,7 +45,7 @@ if state == cameopy.FAILURE:
 Using *waitFor()* you will get the notification of the failure as soon as it happens however it is a blocking call so that you will have to put it in a thread to control the code.
 That is the strategy of the *check app* feature of the coms classes shown in the next section.
 
-# Failure of a Responder app
+## Failure of a Responder app
 
 Suppose you defined a *Requester* and connected it to a *Responder* defined on a remote app. What happens if the remote app is crashing?
 A timeout can be set for a *Requester* so that the *receive()* call will return if the remote app has crashed and is unable to respond. However it is possible to not set a timeout and the *Requester* shall wait indefinitely in the *receive()* call. To avoid the blocking, you can define the *Requester* with the *check app* feature enabled. In Java:
@@ -83,7 +85,7 @@ requester.terminate();
 We check the response from *receive()* which is null only if the *Requester* is canceled.
 If the *Responder* app is crashing then the *Requester* is automatically canceled and the *receive()* call returns. Notice that the *check app* feature requires an additional thread for the *Requester*.
 
-# Failure of a Publisher app
+## Failure of a Publisher app
 
 Suppose you defined a *Subscriber* and connected it to a *Publisher* defined on a remote app. What happens if the remote app is crashing?
 If the remote app has crashed the *Subscriber* will wait indefinitely in the *receive()* call. To avoid the blocking, you can define the *Subscriber* with the *check app* feature enabled.

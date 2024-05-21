@@ -5,10 +5,31 @@ theme:
   highlightjs: true
   palette:
     primary: orange
-  
+  features:
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
 extra_css:
   - style.css
   
 nav:
   - 'index.md'
-  - 'First-example.md'
+  - 'installation.md'
+  - 'getting-started.md'
+  - 'configure-a-server.md'
+  - 'control-the-apps.md'
+  - 'make-the-apps-communicate.md'
+  - 'synchronization.md'
+  - 'track-the-app-failures.md'
+  - 'use-the-proxies-with-a-firewall.md'
+  - 'exceptions.md'
+  - 'examples.md'
+  - 'development-notes.md'

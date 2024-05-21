@@ -13,6 +13,7 @@ Internally, a CAMEO server is written in pure Java so that it only requires a co
 To organize the network services, we use the robust and reliable ZeroMQ message queue for which a 100% Java implementation called JeroMQ exists. ZeroMQ is not only an open-source library, it also provides a precise documentation on how to use it in different network contexts. For example we followed the recommendations to implement a real synchronized publisher/subscriber pattern. 
 
 The main feature of a CAMEO server is to start and stop applications on the local system. For that, a CAMEO server is configured with a list of applications. Each application has a list of attributes so that an application instance can be seen as an enriched system process. We won’t provide all the available attributes here but we can cite:
+
 * Name: String identifier used by clients to start an application instance.
 * Executable: The path to the executable.
 * Args: The list of arguments that are always passed to the executable.
@@ -23,13 +24,15 @@ Applications have a workflow state shown in the next figure.
 
 ![Application States](images/Application-states.png)
 
-Around the *Running* state, there are the transitional states *Starting*, *Stopping*, *Killing*, *Processing Error* and the terminal states *Success*, *Stopped*, *Killed*, *Error*. Once the process of the application is launched, the application has the *Starting* state. It becomes *Running* when:
+Around the *Running* state, there are the transitional states *Starting*, *Stopping*, *Killing*, *Processing Failure* and the terminal states *Success*, *Stopped*, *Killed*, *Failure*. Once the process of the application is launched, the application has the *Starting* state. It becomes *Running* when:
+
 * It remains alive for a certain time, defined as an attribute of the application or, 
 * The application itself changes its state to *Running*.
 
-When a client requests the stop of the application, it immediately becomes *Stopping* until it terminates. At that moment, its state becomes *Stopped*. Notice that after the crash of an application (segmentation fault in C++ or exception in Java), its state becomes *Error*. The state changes are all sent to the clients of the application. 
+When a client requests the stop of the application, it immediately becomes *Stopping* until it terminates. At that moment, its state becomes *Stopped*. Notice that after the crash of an application (segmentation fault in C++ or exception in Java), its state becomes *Failure*. The state changes are all sent to the clients of the application. 
 
 The messages that are passed between applications can be of any type. CAMEO provides binary messages as well as string messages so that the programmer can choose the encoding that can be Protocol Buffers or JSON. Theses messages can be used in the different communication contexts:
+
 * publisher/subscriber
 * request/response
 * return value

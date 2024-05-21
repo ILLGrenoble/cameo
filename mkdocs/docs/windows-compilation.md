@@ -25,21 +25,23 @@ It must be built with the version of ZeroMQ. Follow the instructions at https://
 HTTP_PROXY and HTTPS_PROXY must be set to clone the project.
 
 ```
-$ cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. -G "NMake Makefiles" -DZMQ_C_INCLUDE_PATH=C:\Users\legoc\Documents\zmq\zeromq-4.3.3\include -DZMQ_C_LIB_PATH=C:\Users\legoc\Documents\zmq\zeromq-4.3.3\lib
+cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. -G "NMake Makefiles" -DZMQ_C_INCLUDE_PATH=C:\Users\legoc\Documents\zmq\zeromq-4.3.3\include -DZMQ_C_LIB_PATH=C:\Users\legoc\Documents\zmq\zeromq-4.3.3\lib
 ```
   Curious: Found JNI: in jdk 1.8 and not 10 like Java
 ```
-$ nmake
+nmake
 ```
 Terminates with the error when generating files from native methods: could not find class file for org.zeromq.ZMQ
 
 By trying to compile on another computer, it was another error at the previous stage (building zmq.jar).
 
 To do:
+
 * Remove the jdk 1.8 and retry the process.
 * Try to fix the errors that must come from the configuration files that must be updated.
 
 We have two options:
+
 - Do not use JZMQ on Windows and use JeroMQ instead, hoping that it is stable enough for our puposes. 
 - Still use the old ZeroMQ 4.0.5, but that means compiling *cameo-api-cpp* with ZeroMQ 4.0.5.
 
@@ -83,7 +85,7 @@ Notes
 ### CAMEO API C++ Tests
 
 ```
-$ set PATH=C:\Users\legoc\Documents\zmq\bin\4.3.3;%PATH%
+set PATH=C:\Users\legoc\Documents\zmq\bin\4.3.3;%PATH%
 ```
 
 The tests were not run yet.
@@ -94,10 +96,11 @@ The library is no longer required to compile CAMEO API C++ but it is used in the
 1. Create the directory *C:/Users/legoc/Documents/zmq/protobuf-3.12.4/cmake/build*
 2. Launch cmake-gui
 
-    * Source code: *C:/Users/legoc/Documents/zmq/protobuf-3.12.4/cmake*
-    * Build: *C:/Users/legoc/Documents/zmq/protobuf-3.12.4/cmake/build*
-    * Configure, Generate, Open Project (launches Visual Studio 19)
+* Source code: *C:/Users/legoc/Documents/zmq/protobuf-3.12.4/cmake*
+* Build: *C:/Users/legoc/Documents/zmq/protobuf-3.12.4/cmake/build*
+* Configure, Generate, Open Project (launches Visual Studio 19)
 
-Notes
+Notes:
+
 * The documentation suggests to use *nmake* however using it compiles the library in *x86* format. Maybe an option is missing.
 * It was necessary to switch the flag *Runtime Library* from */MT* to */MD* to conform to the other projects. Then only the libprotobuf.lib is linking.
