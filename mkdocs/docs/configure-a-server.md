@@ -6,10 +6,10 @@ The main configuration file of a CAMEO server is an XML file usually called *con
 Let's take an example with two applications registered:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<config host="gamma-machine" port="7000" proxy_ports="10000, 10001, 10002"
+<config host="mycomputer" port="7000" proxy_ports="10000, 10001, 10002"
         polling_time="100" sleep_time="10"
         max_applications="20" 
-        log_level="FINE" log_directory="/users/cameo/log">
+        log_level="FINE" log_directory="/home/cameo/log">
     <applications>
         <application name="App1" description="My application"
                      working_directory=""
@@ -18,12 +18,12 @@ Let's take an example with two applications registered:
                      stream="yes"
                      log_directory="default"
                      environment="app.properties">
-            <start executable="/users/ics/app1" args="-option test"/>
+            <start executable="/home/cameo/app1" args="-option test"/>
         </application>
         <application name="App2">
-            <start executable="/users/ics/app2"/>
+            <start executable="/home/cameo/app2"/>
             <stop executable="kill" args="-2"/>
-            <error executable="bash" args="/users/ics/error.sh -debug"/>
+            <error executable="bash" args="/home/cameo/error.sh -debug"/>
         </application>
     <applications>	
 </config>
@@ -80,9 +80,9 @@ An application often depends on environment variables. When an application is la
 
 An example with the *app.properties* file:
 ```
-MYAPP_HOME=/users/ics/home
+MYAPP_HOME=/home/cameo/myapp
 LD_LIBRARY_PATH=/usr/local/lib
-PATH=/users/ics/bin:$PATH
+PATH=/home/cameo/bin:$PATH
 ```
 
 The variables are written using a standard *shell* syntax, and composition is possible. These variables are applied to the context of the launched process. So be careful with the special *PATH* variable: it cannot be the path of the executable. However if you need to execute a program inside your app, then this *PATH* will be used. Be also careful with *LD_LIBRARY_PATH* which is for security reason not inherited. It means that it is empty by default.
@@ -140,13 +140,13 @@ Once *This* is initialized it can be used for example to get a reference to the 
 * **Registered application**: If the application is registered in the configuration file, then *info_arg* must be *yes* which is the default value so it is not necessary to specify it. Otherwise the application will not start.
 * **Not registered application**: If the application is not registered in the configuration file, it is possible to start directly the app by adding a last argument that contains the CAMEO server reference and its name. For instance:
 ```
-/users/ics/app1 "{\"name\":\"App1\", \"server\":\"tcp://localhost:10000\"}"
+/home/cameo/app1 "{\"name\":\"App1\", \"server\":\"tcp://localhost:10000\"}"
 ```
 Then if the passed arguments are correct, *This* will initialize and the application will become **attached** to the CAMEO server referenced by the endpoint in the *server* value.
 
 ### *This* initialized with explicit arguments
 
-It is not mandatory to initialize *This* with the program arguments. It is possible to pass an explicit endpoint.  
+It is not mandatory to initialize *This* with the program arguments. It is possible to pass an explicit endpoint that must be a **local** endpoint because it has no sense to attach the app to a remote computer.  
 In C++:
 ```cpp
 cameo::This::init("App1", "tcp://localhost:10000");
@@ -178,13 +178,13 @@ Registering an app offers more flexibility in the way to start an app.
 If you want to register a script e.g. a Bash script or a Python script, it is highly recommended to define the executable with the interpreter program rather the script itself even if it is executable. For example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<config host="gamma-machine">
+<config host="mycomputer">
     <applications>
         <application name="Script1">
-            <start executable="/usr/bin/bash" args="/users/ics/app1.sh"/>
+            <start executable="/usr/bin/bash" args="/home/cameo/app1.sh"/>
         </application>
         <application name="Script2">
-            <start executable="/usr/bin/python3" args="-u /users/ics/app2.py"/>
+            <start executable="/usr/bin/python3" args="-u /home/cameo/app2.py"/>
         </application>
     <applications>	
 </config>
@@ -213,10 +213,10 @@ The *PID* of the running application is added as a last argument.
 
 If you need to define an error executable, you can for instance define:
 ```xml
-<error executable="bash" args="/users/ics/error.sh -debug"/>
+<error executable="bash" args="/home/cameo/error.sh -debug"/>
 ```
 If the running application terminates with an error the following arguments will be added to the command executed: id, error code, state before the error. For instance:
 ```
-bash /users/ics/error.sh -debug 13 139 RUNNING
+bash /home/cameo/error.sh -debug 13 139 RUNNING
 ```
 These information can be used to send a report by email.

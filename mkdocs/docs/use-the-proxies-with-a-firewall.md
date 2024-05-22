@@ -39,11 +39,16 @@ std::unique_ptr<cameo::Server> server = cameo::Server::create("tcp://A:7000");
 ```
 The port is the base port of the CAMEO server.
 
-However the creation of the CAMEO server with proxies:
+However the C++ creation of the CAMEO server with proxies:
 ```cpp
-std::unique_ptr<cameo::Server> server = cameo::Server::create("tcp://A:10000", true);
+std::unique_ptr<cameo::Server> server = cameo::Server::create("tcp://A:10000", cameo::USE_PROXY);
 ```
-The first argument of *Server::create()* is the responder proxy endpoint and the second argument is the boolean telling that this is the proxy port.
+In Java:
+```java
+Server server = Server.create("tcp://A:10000", Option.USE_PROXY);
+```
+
+The first argument of *Server::create()* is the responder proxy endpoint and the second argument is the integer telling that this is the proxy port.
 
 Once the server is created, the definition of a *Requester* or *Subscriber* is exactly the same as before.
 
