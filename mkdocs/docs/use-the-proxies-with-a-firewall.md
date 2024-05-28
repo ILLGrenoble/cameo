@@ -18,7 +18,7 @@ The solution is to use proxies.
 
 ## Use of proxies
 
-Using proxies allow to forward messages. There is a responder proxy which is a relay between the *Requester* and the *Responder* objects. There is also a publisher proxy which is a relay between the *Subscriber* and the *Publisher* objects.
+Using proxies allows to forward messages. There is a responder proxy which is a relay between the *Requester* and the *Responder* objects. There is also a publisher proxy which is a relay between the *Subscriber* and the *Publisher* objects.
 
 The proxies are launched by the CAMEO server. You simply have to specify which ports they will use. For instance you can specify in the configuration file:
 ```xml
@@ -35,13 +35,13 @@ However passing through the proxies is not automatically done. It must be specif
 
 If you were not using the proxies, the creation would have been in C++ for *App3*:
 ```cpp
-std::unique_ptr<cameo::Server> server = cameo::Server::create("tcp://A:7000");
+auto server = cameo::Server::create("tcp://A:7000");
 ```
 The port is the base port of the CAMEO server.
 
 However the C++ creation of the CAMEO server with proxies:
 ```cpp
-std::unique_ptr<cameo::Server> server = cameo::Server::create("tcp://A:10000", cameo::USE_PROXY);
+auto server = cameo::Server::create("tcp://A:10000", cameo::USE_PROXY);
 ```
 In Java:
 ```java
