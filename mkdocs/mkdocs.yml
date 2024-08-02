@@ -7,6 +7,8 @@ theme:
     primary: orange
   features:
     - content.code.copy
+  logo: images/Logo.png
+  favicon: images/Logo.png
 
 markdown_extensions:
   - pymdownx.highlight:
