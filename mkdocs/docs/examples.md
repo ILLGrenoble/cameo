@@ -37,7 +37,7 @@ java fr.ill.ics.cameo.server.Server examples/config.xml --log-console
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console-jzmq/target/cameo-console-jzmq-2.2.0-full.jar"
+alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-2.2.0-full.jar"
 ```
 
 Case *jeromq*:
@@ -47,7 +47,7 @@ export CLASSPATH=examples/java/jeromq/target/cameo-tests-jeromq-full.jar
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console/target/cameo-console-2.2.0-full.jar"
+alias cmo="java -jar java/console/jeromq/target/cameo-console-2.2.0-full.jar"
 ```
 
 

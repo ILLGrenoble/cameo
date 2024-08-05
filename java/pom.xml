@@ -17,7 +17,6 @@
 			<url>https://maven.ill.fr/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-
 	
 	<modules>
 		<module>process-handle</module>

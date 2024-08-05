@@ -7,7 +7,7 @@ project(cameo-server-jeromq
 
 include(GNUInstallDirs)
 
-# find the jar file produced by MAVEN
+# find the jar file produced by Maven
 set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
 set(PROJECT_TARGET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/target")
 set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
@@ -15,14 +15,7 @@ set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
 set(JAVA_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/java/cameo)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
-
-add_custom_command(
-  OUTPUT ${PROJECT_JAR}
-  COMMAND mvn clean install
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../
-  VERBATIM
-  )
-
+# copy the jar generated in java directory
 add_custom_target(server-jeromq
   ALL
   DEPENDS ${PROJECT_JAR}
