@@ -16,18 +16,13 @@ For the Python API:
 
 OpenJDK or Oracle JDK can be both installed.
 
-### Debian-Based Linux distribution
+### Debian-based Linux distribution
  
 Install all the dependencies (except Java):
 
 ```
 sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
 ```
- 
-### Centos 8
-
-To be filled.
-
 
 
 ## Instructions
@@ -55,7 +50,7 @@ Possible options are:
 Install:
 
 ```
-$ sudo cmake --build . --target install
+$ sudo cmake --build build/ --target install
 ```
 
 ### Option 2: Generate the Debian packages
@@ -74,5 +69,5 @@ They can be installed using package manager.
 Generate the C++ Doxygen:
 
 ```
-$ cmake --build . --target doc
+$ cmake --build build/ --target doc
 ```

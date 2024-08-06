@@ -8,8 +8,10 @@ project(cameo-java
 include(GNUInstallDirs)
 
 # build all the Java modules
+# the command is called twice: during build and install
+# do not clean, to avoid useless recompilation
 add_custom_target(cameo-java
   ALL
-  COMMAND mvn clean install
+  COMMAND mvn install
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )

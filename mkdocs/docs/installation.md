@@ -15,11 +15,11 @@ Download the latest release:
 git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
 ```
 
-Then follow the instructions in [INSTALL.md](https://code.ill.fr/cameo/cameo/-/blob/master/INSTALL.md).
+Then follow the instructions [here](https://code.ill.fr/cameo/cameo/-/blob/master/INSTALL.md).
 Our experience on the windows compilation is described in [windows compilation](windows-compilation.md).
 
 
-### List of the components
+### List of the installed components
 
 Depending on your install directory you should have:
 
@@ -66,8 +66,8 @@ Now create the simple configuration *config.xml*:
 ```xml
 <config port="7000">
 	<applications>
-		<application name="ls" info_arg="no">
-			<start executable="/usr/bin/ls"/>
+		<application name="ping" info_arg="no">
+			<start executable="/usr/bin/ping"/>
 		</application>
 	</applications>
 </config>
@@ -96,12 +96,13 @@ cmo -p 11000 list
 ```
 
 Or you can set the *CAMEO_SERVER* environment variable to *tcp://localhost:11000*.
-Open a new shell and run to execute the *ls* app:
+Open a new shell and run to execute the *ping* app with the *localhost* argument:
 
 ```
-cmo exec ls
+cmo exec ping localhost
 ```
 
+The ping lines are streamed and you can stop the app by *ctl-C*.
 
 ### Tests
 
@@ -144,7 +145,7 @@ Select the cameo server bat file and let the working directory as is. Start the 
 
 ## JZMQ or JeroMQ ?
 
-By default the JZMQ is used because it has better performance. The scripts *cameo-server* and *cmo* use JZMQ. However if you prefer to use JeroMQ, the server can be called:
+By default JZMQ is used because it has better performance. The scripts *cameo-server* and *cmo* use JZMQ. However if you prefer to use JeroMQ, the server can be called:
 ```
 java -jar <install directory>/share/java/cameo/cameo-server-jeromq-<version>-full.jar "$@"
 ```
