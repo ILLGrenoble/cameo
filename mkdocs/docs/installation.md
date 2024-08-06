@@ -21,34 +21,34 @@ Our experience on the windows compilation is described in [windows compilation](
 
 ### List of the installed components
 
-Depending on your install directory you should have:
+Depending on your &lt;install&gt; directory you should have:
 
 Server:
 ``` { .bash .no-copy }
-<install directory>/share/java/cameo/cameo-server-jzmq-<version>-full.jar
-<install directory>/share/java/cameo/cameo-server-jeromq-<version>-full.jar
-<install directory>/bin/cameo-rep-proxy
-<install directory>/bin/cameo-pub-proxy
-<install directory>/bin/cameo-server
+<install>/share/java/cameo/cameo-server-jzmq-<version>-full.jar
+<install>/share/java/cameo/cameo-server-jeromq-<version>-full.jar
+<install>/bin/cameo-rep-proxy
+<install>/bin/cameo-pub-proxy
+<install>/bin/cameo-server
 ```
 Console:
 ``` { .bash .no-copy }
-<install directory>/share/java/cameo/cameo-console-jzmq-<version>-full.jar
-<install directory>/share/java/cameo/cameo-console-jeromq-<version>-full.jar
-<install directory>/bin/cmo
+<install>/share/java/cameo/cameo-console-jzmq-<version>-full.jar
+<install>/share/java/cameo/cameo-console-jeromq-<version>-full.jar
+<install>/bin/cmo
 ```
 C++ API:
 ``` { .bash .no-copy }
-<install directory>/lib/libcameo-api-cpp.so.<version>
-<install directory>/lib/libcameo-api-cpp.so
-<install directory>/include/cameo/api/
-<install directory>/share/cmake/cameo-api-cpp/
+<install>/lib/libcameo-api-cpp.so.<version>
+<install>/lib/libcameo-api-cpp.so
+<install>/include/cameo/api/
+<install>/share/cmake/cameo-api-cpp/
 ```
 Python API:
 ``` { .bash .no-copy }
-<install directory>/lib/cmake/cameopy/
-<install directory>/lib/python3/dist-packages/cameopy/__init__.py
-<install directory>/lib/python3/dist-packages/cameopy/cameopy.cpython-310-x86_64-linux-gnu.so
+<install>/lib/cmake/cameopy/
+<install>/lib/python3/dist-packages/cameopy/__init__.py
+<install>/lib/python3/dist-packages/cameopy/cameopy.cpython-310-x86_64-linux-gnu.so
 ```
 
 Debian packages have */usr* as install directory.
