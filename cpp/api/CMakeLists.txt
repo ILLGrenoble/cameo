@@ -38,6 +38,10 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 
 find_package(ZeroMQ REQUIRED)
+
+# msvc
+find_package(cppzmq REQUIRED)
+
 find_package (Threads REQUIRED)
 find_package(Rapidjson 1.1.0 QUIET)
 if(NOT Rapidjson_FOUND)
@@ -66,7 +70,12 @@ file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
 add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
-target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
+target_link_libraries(${LIBNAME}-obj PUBLIC Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
+
+# Provided by ZeroMQ cmake 
+target_link_libraries(${LIBNAME}-obj PRIVATE libzmq)
+
+
 target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -74,6 +83,7 @@ target_include_directories(${LIBNAME}-obj
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 target_include_directories(${LIBNAME}-obj
+  SYSTEM PRIVATE ${cppzmq_INCLUDE_DIR}
   SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
 )
 target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)

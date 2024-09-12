@@ -18,17 +18,18 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
-  list(APPEND APIs cpp/api cpp/proxy)
+  #list(APPEND APIs cpp/api cpp/proxy)
+  list(APPEND APIs cpp/api)
 endif()
 
 if(${CAMEO_TESTS})
   list(APPEND TestsExamples tests/java/jeromq)
-  list(APPEND TestsExamples tests/java/jzmq)
-  list(APPEND TestsExamples tests/cpp)
+  #list(APPEND TestsExamples tests/java/jzmq)
+  #list(APPEND TestsExamples tests/cpp)
 endif()
 if(${CAMEO_EXAMPLES})  
-  list(APPEND TestsExamples examples/java/jeromq)
-  list(APPEND TestsExamples examples/java/jzmq)
+  #list(APPEND TestsExamples examples/java/jeromq)
+  #list(APPEND TestsExamples examples/java/jzmq)
   list(APPEND TestsExamples examples/cpp)
 endif()
 
@@ -42,12 +43,12 @@ list(REMOVE_DUPLICATES APIs)
 # This is a trick: for the subprojects metioned here,
 # the find_package does nothing, since the targets will be defined
 # by the add_subdirectory command
-set(as_subproject cameo-api-cpp-static)
-macro(find_package)
-  if(NOT "${ARGV0}" IN_LIST as_subproject)
-    _find_package(${ARGV})
-  endif()
-endmacro()
+#set(as_subproject cameo-api-cpp-static)
+#macro(find_package)
+#  if(NOT "${ARGV0}" IN_LIST as_subproject)
+#    _find_package(${ARGV})
+#  endif()
+#endmacro()
 
 
 #dependencies
@@ -55,15 +56,6 @@ endmacro()
 #  add_subdirectory(cameo-com/${package})
 #endforeach()
 
-if(${ZEROMQ_JAVA} STREQUAL "jzmq")
-  list(APPEND JavaPrograms java/server/jzmq java/console/jzmq)
-  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
-elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
-  list(APPEND JavaPrograms java/server/jeromq java/console/jeromq)
-  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
-else()
-  message(STATUS "Unknown ZeroMQ implementation: ${ZEROMQ_JAVA}")
-endif()
 
 foreach(package ${JavaPrograms} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
