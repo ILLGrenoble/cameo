@@ -36,16 +36,41 @@ endif()
 # Dependencies
 #------------------------------------------------------------
 # this is needed when including this file as subdir
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(ZeroMQ QUIET)
+find_package(cppzmq QUIET)
+if(NOT cppzmq_FOUND)
+  message(STATUS "CMake cppzmq package not found")
 
-pkg_check_modules(ZMQ libzmq REQUIRED)
+  # Use cppzmq CMake code
+  if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
+    find_package(ZeroMQ QUIET)
+	
+    # libzmq autotools install: fallback to pkg-config
+    if(NOT ZeroMQ_FOUND)
+      message(STATUS "CMake libzmq package not found, trying again with pkg-config (normal install of zeromq)")
+      list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/libzmq-pkg-config)
+      find_package(ZeroMQ REQUIRED)
+    endif()
+	
+    # TODO "REQUIRED" above should already cause a fatal failure if not found, but this doesn't seem to work
+    if(NOT ZeroMQ_FOUND)
+      message(FATAL_ERROR "ZeroMQ was not found, neither as a CMake package nor via pkg-config")
+    endif()
+	
+    if (ZeroMQ_FOUND AND NOT (TARGET libzmq OR TARGET libzmq-static))
+      message(FATAL_ERROR "ZeroMQ version not supported!")
+    endif()
+  endif()
+else()
+  message(STATUS "CMake cppzmq package found")
+endif()
 
-message(STATUS "ZMQ ${ZMQ_INCLUDE_DIRS} ${ZMQ_LIBRARIES}")
+
+#message(STATUS "ZMQ ${ZMQ_INCLUDE_DIRS} ${ZMQ_LIBRARIES}")
 
 # msvc
-find_package(cppzmq QUIET)
+#find_package(cppzmq QUIET)
 
 find_package (Threads REQUIRED)
 find_package(Rapidjson 1.1.0 QUIET)
@@ -80,8 +105,10 @@ target_link_libraries(${LIBNAME}-obj PUBLIC Threads::Threads) # for some reason 
 # Provided by ZeroMQ cmake 
 # WIN
 #target_link_libraries(${LIBNAME}-obj PRIVATE libzmq)
-#from pkg
-target_link_libraries(${LIBNAME}-obj PRIVATE ${ZMQ_LIBRARIES})
+target_link_libraries(${LIBNAME}-obj INTERFACE libzmq)
+
+# Q? 
+# target_link_libraries(${LIBNAME}-static INTERFACE libzmq-static)
 
 target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
