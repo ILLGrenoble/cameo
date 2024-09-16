@@ -42,7 +42,7 @@ set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON )
 set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY ">=")
 
 set(CPACK_DEBIAN_${component_runtime}_PACKAGE_DEPENDS "libzmq5")
-set(CPACK_DEBIAN_${component_development}_PACKAGE_DEPENDS "")
+set(CPACK_DEBIAN_${component_development}_PACKAGE_DEPENDS "rapidjson-dev")
 set(CPACK_RPM_${component_runtime}_PACKAGE_REQUIRES "cameo-server >= 2.0.0, zeromq")
 set(CPACK_RPM_${component_development}_PACKAGE_DEPENDS "")
 
