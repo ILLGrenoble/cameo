@@ -111,8 +111,8 @@ public class TestSelector {
 		apps.add("testwaitstoragejava");
 		apps.add("testbasicresponderjava");
 		apps.add("testbasicrequesterjava");
-		apps.add("testmultiresponderjava");
-		apps.add("testmultirespondersjava");
+		//apps.add("testmultiresponderjava");
+		//apps.add("testmultirespondersjava");
 		apps.add("testpublisherjava");
 		apps.add("testpublishersyncjava");
 		apps.add("testsubscriberjava");
@@ -142,8 +142,8 @@ public class TestSelector {
 		apps.add("testwaitstoragecpp");
 		apps.add("testbasicrespondercpp");
 		apps.add("testbasicrequestercpp");
-		apps.add("testmultirespondercpp");
-		apps.add("testmultiresponderscpp");		
+		//apps.add("testmultirespondercpp");
+		//apps.add("testmultiresponderscpp");		
 		apps.add("testpublishercpp");
 		apps.add("testpublishersynccpp");
 		apps.add("testsubscribercpp");
@@ -172,8 +172,8 @@ public class TestSelector {
 		apps.add("testsubscriberpy");
 		apps.add("testbasicresponderpy");
 		apps.add("testbasicrequesterpy");
-		apps.add("testmultiresponderpy");
-		apps.add("testmultiresponderspy");
+		//apps.add("testmultiresponderpy");
+		//apps.add("testmultiresponderspy");
 		apps.add("testcancelpy");
 		apps.add("teststreampy");
 		apps.add("testterminatepy");

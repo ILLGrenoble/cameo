@@ -21,7 +21,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 #------------------------------------------------------------
 #list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
 #message(STATUS ${CMAKE_MODULE_PATH})
-find_package(cameo-api-cpp-static 2.1 REQUIRED) # provided by the C++ API
+#find_package(cameo-api-cpp-static 2.1 REQUIRED) # provided by the C++ API
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 

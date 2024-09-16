@@ -9,6 +9,7 @@ project(cameo-api-cpp
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
+include(FindPkgConfig)
 
 # name of the target library
 set(LIBNAME ${PROJECT_NAME})
@@ -37,7 +38,15 @@ endif()
 # this is needed when including this file as subdir
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
 
-find_package(ZeroMQ REQUIRED)
+find_package(ZeroMQ QUIET)
+
+pkg_check_modules(ZMQ libzmq REQUIRED)
+
+message(STATUS "ZMQ ${ZMQ_INCLUDE_DIRS} ${ZMQ_LIBRARIES}")
+
+# msvc
+find_package(cppzmq QUIET)
+
 find_package (Threads REQUIRED)
 find_package(Rapidjson 1.1.0 QUIET)
 if(NOT Rapidjson_FOUND)
@@ -66,7 +75,14 @@ file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
 add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
-target_link_libraries(${LIBNAME}-obj PUBLIC zmq Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
+target_link_libraries(${LIBNAME}-obj PUBLIC Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
+
+# Provided by ZeroMQ cmake 
+# WIN
+#target_link_libraries(${LIBNAME}-obj PRIVATE libzmq)
+#from pkg
+target_link_libraries(${LIBNAME}-obj PRIVATE ${ZMQ_LIBRARIES})
+
 target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -74,6 +90,7 @@ target_include_directories(${LIBNAME}-obj
   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 target_include_directories(${LIBNAME}-obj
+  SYSTEM PRIVATE ${cppzmq_INCLUDE_DIR}
   SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
 )
 target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
@@ -203,7 +220,7 @@ install(
   FILES
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/FindZeroMQ.cmake
+  #${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/FindZeroMQ.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT ${component_development}
   )

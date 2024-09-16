@@ -17,6 +17,7 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
 endif()
 
+
 #------------------------------------------------------------
 # Programs
 #------------------------------------------------------------
@@ -24,13 +25,17 @@ endif()
 # Examples
 
 add_executable(responderapp src/ResponderApp.cpp)
-target_link_libraries(responderapp PRIVATE Cameo::cameo-api-cpp)
+target_include_directories(responderapp SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
+target_link_libraries(responderapp PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(requesterapp src/RequesterApp.cpp)
-target_link_libraries(requesterapp PRIVATE Cameo::cameo-api-cpp)
+target_include_directories(requesterapp SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
+target_link_libraries(requesterapp PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(publisherapp src/PublisherApp.cpp)
-target_link_libraries(publisherapp PRIVATE Cameo::cameo-api-cpp)
+target_include_directories(publisherapp SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
+target_link_libraries(publisherapp PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(subscriberapp src/SubscriberApp.cpp)
-target_link_libraries(subscriberapp PRIVATE Cameo::cameo-api-cpp)
+target_include_directories(subscriberapp SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
+target_link_libraries(subscriberapp PRIVATE Cameo::cameo-api-cpp-static)

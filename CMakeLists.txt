@@ -18,17 +18,29 @@ endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(${CAMEO_API_CPP})
-  list(APPEND APIs cpp/api cpp/proxy)
+  #list(APPEND APIs cpp/api cpp/proxy)
+  list(APPEND APIs cpp/api)
 endif()
 
 if(${CAMEO_TESTS})
-  list(APPEND TestsExamples tests/java/jeromq)
-  list(APPEND TestsExamples tests/java/jzmq)
+
+  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+    list(APPEND TestsExamples tests/java/jzmq)
+  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+    list(APPEND TestsExamples tests/java/jeromq)
+  endif()    
+  
   list(APPEND TestsExamples tests/cpp)
 endif()
-if(${CAMEO_EXAMPLES})  
-  list(APPEND TestsExamples examples/java/jeromq)
-  list(APPEND TestsExamples examples/java/jzmq)
+
+if(${CAMEO_EXAMPLES})
+
+  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+    list(APPEND TestsExamples examples/java/jzmq)
+  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+    list(APPEND TestsExamples examples/java/jeromq)
+  endif()
+  
   list(APPEND TestsExamples examples/cpp)
 endif()
 
@@ -42,12 +54,12 @@ list(REMOVE_DUPLICATES APIs)
 # This is a trick: for the subprojects metioned here,
 # the find_package does nothing, since the targets will be defined
 # by the add_subdirectory command
-set(as_subproject cameo-api-cpp-static)
-macro(find_package)
-  if(NOT "${ARGV0}" IN_LIST as_subproject)
-    _find_package(${ARGV})
-  endif()
-endmacro()
+#set(as_subproject cameo-api-cpp-static)
+#macro(find_package)
+#  if(NOT "${ARGV0}" IN_LIST as_subproject)
+#    _find_package(${ARGV})
+#  endif()
+#endmacro()
 
 
 #dependencies
