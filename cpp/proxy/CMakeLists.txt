@@ -18,19 +18,19 @@ include(FetchContent)
 # name of the target library
 set(LIBNAME ${PROJECT_NAME})
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
-
-find_package(ZeroMQ REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
+include(AddZeroMQLibrary)
+add_zeromq_library()
 
 #------------------------------------------------------------
 # Programs
 #------------------------------------------------------------
 
 add_executable(cameo-rep-proxy src/RepProxy.cpp)
-target_link_libraries(cameo-rep-proxy PRIVATE zmq)
+target_link_libraries(cameo-rep-proxy PRIVATE libzmq)
 
 add_executable(cameo-pub-proxy src/PubProxy.cpp)
-target_link_libraries(cameo-pub-proxy PRIVATE zmq)
+target_link_libraries(cameo-pub-proxy PRIVATE libzmq)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-rep-proxy ${CMAKE_CURRENT_BINARY_DIR}/cameo-pub-proxy 
         TYPE BIN

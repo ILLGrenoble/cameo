@@ -1,5 +1,5 @@
 ﻿#.rst:
-# FindRapidjson
+# FindRapidJSON
 # --------
 #
 # Find the native rapidjson includes and library.
@@ -15,9 +15,9 @@
 #
 # ::
 #
-#   Rapidjson_INCLUDE_DIRS   - where to find rapidjson/document.h, etc.
-#   Rapidjson_LIBRARIES      - List of libraries when using rapidjson.
-#   Rapidjson_FOUND          - True if rapidjson found.
+#   RapidJSON_INCLUDE_DIRS   - where to find rapidjson/document.h, etc.
+#   RapidJSON_LIBRARIES      - List of libraries when using rapidjson.
+#   RapidJSON_FOUND          - True if rapidjson found.
 #
 # ::
 #
@@ -41,14 +41,15 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-# This file have been downloaded from: https://raw.githubusercontent.com/owent-contrib/rapidjson/aa4c227/contrib/cmake/FindRapidjson.cmake
+# This file have been downloaded from: https://raw.githubusercontent.com/owent-contrib/rapidjson/aa4c227/contrib/cmake/FindRapidJSON.cmake
+# It has been modified (Rapidjson -> RapidJSON) to have coherent naming scheme
 
 unset(_RAPIDJSON_SEARCH_ROOT_INC)
 unset(_RAPIDJSON_SEARCH_ROOT_LIB)
 
 # Search RAPIDJSON_ROOT first if it is set.
-if (Rapidjson_ROOT)
-  set(RAPIDJSON_ROOT ${Rapidjson_ROOT})
+if (RapidJSON_ROOT)
+  set(RAPIDJSON_ROOT ${RapidJSON_ROOT})
 endif()
 
 if(RAPIDJSON_ROOT)
@@ -56,18 +57,18 @@ if(RAPIDJSON_ROOT)
 endif()
 
 # Try each search configuration.
-find_path(Rapidjson_INCLUDE_DIRS    NAMES rapidjson/document.h  ${_RAPIDJSON_SEARCH_ROOT_INC})
+find_path(RapidJSON_INCLUDE_DIRS    NAMES rapidjson/document.h  ${_RAPIDJSON_SEARCH_ROOT_INC})
 
-mark_as_advanced(Rapidjson_INCLUDE_DIRS)
+mark_as_advanced(RapidJSON_INCLUDE_DIRS)
 
 # handle the QUIETLY and REQUIRED arguments and set RAPIDJSON_FOUND to TRUE if
 # all listed variables are TRUE
 include("FindPackageHandleStandardArgs")
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(Rapidjson
-  REQUIRED_VARS Rapidjson_INCLUDE_DIRS
-  FOUND_VAR Rapidjson_FOUND
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(RapidJSON
+  REQUIRED_VARS RapidJSON_INCLUDE_DIRS
+  FOUND_VAR RapidJSON_FOUND
 )
 
-if(Rapidjson_FOUND)
-    set(RAPIDJSON_FOUND ${Rapidjson_FOUND})
+if(RapidJSON_FOUND)
+    set(RAPIDJSON_FOUND ${RapidJSON_FOUND})
 endif()

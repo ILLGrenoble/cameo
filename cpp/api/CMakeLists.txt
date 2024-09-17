@@ -35,60 +35,27 @@ endif()
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
-# this is needed when including this file as subdir
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
+include(AddZeroMQLibrary)
+add_zeromq_library()
 
-find_package(cppzmq QUIET)
-if(NOT cppzmq_FOUND)
-  message(STATUS "CMake cppzmq package not found")
-
-  # Use cppzmq CMake code
-  if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
-    find_package(ZeroMQ QUIET)
-	
-    # libzmq autotools install: fallback to pkg-config
-    if(NOT ZeroMQ_FOUND)
-      message(STATUS "CMake libzmq package not found, trying again with pkg-config (normal install of zeromq)")
-      list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/libzmq-pkg-config)
-      find_package(ZeroMQ REQUIRED)
-    endif()
-	
-    # TODO "REQUIRED" above should already cause a fatal failure if not found, but this doesn't seem to work
-    if(NOT ZeroMQ_FOUND)
-      message(FATAL_ERROR "ZeroMQ was not found, neither as a CMake package nor via pkg-config")
-    endif()
-	
-    if (ZeroMQ_FOUND AND NOT (TARGET libzmq OR TARGET libzmq-static))
-      message(FATAL_ERROR "ZeroMQ version not supported!")
-    endif()
-  endif()
-else()
-  message(STATUS "CMake cppzmq package found")
-endif()
-
-
-#message(STATUS "ZMQ ${ZMQ_INCLUDE_DIRS} ${ZMQ_LIBRARIES}")
-
-# msvc
-#find_package(cppzmq QUIET)
 
 find_package (Threads REQUIRED)
-find_package(Rapidjson 1.1.0 QUIET)
-if(NOT Rapidjson_FOUND)
+find_package(RapidJSON 1.1.0 QUIET)
+if(NOT RapidJSON_FOUND)
   message(WARNING "Using Rapidjson from GIT repository")
-  FetchContent_Declare(rapidjson
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+  FetchContent_Declare(RapidJSON
 	GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
 	GIT_TAG v1.1.0
 	GIT_SHALLOW True
 	)
-  FetchContent_GetProperties(rapidjson)
-  FetchContent_Populate(rapidjson)
+  FetchContent_GetProperties(RapidJSON)
+  FetchContent_Populate(RapidJSON)
 
-  set(Rapidjson_ROOT ${rapidjson_SOURCE_DIR})
-  find_package(Rapidjson REQUIRED)
+  set(RapidJSON_ROOT ${rapidjson_SOURCE_DIR})
+  find_package(RapidJSON REQUIRED)
 endif()
-message(STATUS "Rapidjson found here: ${Rapidjson_INCLUDE_DIRS}")
-
 
 #------------------------------------------------------------
 #------------------------------------------------------------
