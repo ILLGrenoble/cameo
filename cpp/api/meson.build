@@ -3,6 +3,7 @@ zmq_dep = dependency('libzmq', required: true)
 rapidjson_dep = dependency('RapidJSON', required: true)
 
 public_headers_inc = include_directories('include')
+# each subdir's meson file provide a XX_files with the list of source files
 subdir('src/base/impl/zmq')
 subdir('src/base')
 subdir('src/coms/impl/zmq')

@@ -27,14 +27,15 @@ base_files = files(
   'SocketException.cpp',
   'StatusEvent.cpp',
   'Strings.cpp',
+  'SynchronizationTimeout.cpp',
   'TimeCondition.cpp',
-  'Timeout.cpp',
   'TimeoutCounter.cpp',
+  'Timeout.cpp',
   'UndefinedApplicationException.cpp',
   'UndefinedKeyException.cpp',
   'UnregisteredApplicationException.cpp',
   'Waiting.cpp',
   'WaitingSet.cpp',
-  )
+)
 base_impl_inc = include_directories('impl')
 base_inc = include_directories('.')
