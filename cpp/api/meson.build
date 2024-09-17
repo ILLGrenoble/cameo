@@ -1,6 +1,5 @@
-zmq_dep = dependency('libzmq', required: true)
+#zmq_dep = dependency('libzmq', required: true)
 #thread_dep = dependency('threads', required: true)
-rapidjson_dep = dependency('RapidJSON', required: true)
 
 public_headers_inc = include_directories('include')
 # each subdir's meson file provide a XX_files with the list of source files
