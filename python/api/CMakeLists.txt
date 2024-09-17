@@ -44,6 +44,7 @@ if(NOT pybind11_FOUND)
 endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
+target_include_directories(cameopy SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
 
 #file(GENERATE OUTPUT /tmp/message.log CONTENT $<TARGET_PROPERTY:cameo,INTERFACE_INCLUDE_DIRECTORIES>)
 target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
