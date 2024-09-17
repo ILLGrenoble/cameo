@@ -78,7 +78,7 @@ target_include_directories(${LIBNAME}-obj
   )
 target_include_directories(${LIBNAME}-obj
   SYSTEM PRIVATE ${cppzmq_INCLUDE_DIR}
-  SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+  SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS}/
 )
 target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
 
@@ -97,7 +97,7 @@ add_library(${NAMESPACE}::${LIBNAME}-obj ALIAS ${LIBNAME}-obj)
 add_library(${NAMESPACE}::${LIBNAME}-static ALIAS ${LIBNAME}-static)
 
 target_include_directories(${LIBNAME}
-  SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS}/
+  SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS}/
   )
 
 get_target_property(obj_INTERFACE_LINK_LIBRARIES ${LIBNAME}-obj INTERFACE_LINK_LIBRARIES)
