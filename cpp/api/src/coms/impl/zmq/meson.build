@@ -5,4 +5,5 @@ coms_impl_zmq_files = files(
   'PublisherZmq.cpp',
   'RequesterZmq.cpp',
   'SubscriberZmq.cpp',
+  'SyncPublisherZmq.cpp',
 )
