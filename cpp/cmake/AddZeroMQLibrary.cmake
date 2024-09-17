@@ -1,4 +1,4 @@
-function(add_zeromq_library)
+macro(add_zeromq_library)
 
 find_package(cppzmq QUIET)
 if(NOT cppzmq_FOUND)
@@ -6,8 +6,6 @@ if(NOT cppzmq_FOUND)
 
   # Use cppzmq CMake code
   if (NOT TARGET libzmq AND NOT TARGET libzmq-static)
-  
-    message(STATUS "Target not found")
   
     find_package(ZeroMQ QUIET)
 	
@@ -26,12 +24,9 @@ if(NOT cppzmq_FOUND)
     if (ZeroMQ_FOUND AND NOT (TARGET libzmq OR TARGET libzmq-static))
       message(FATAL_ERROR "ZeroMQ version not supported!")
     endif()
-  else()
-    message(STATUS "Target found")
   endif()
 else()
   message(STATUS "CMake cppzmq package found")
 endif()
 
-
-endfunction()
+endmacro()
