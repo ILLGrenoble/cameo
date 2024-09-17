@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Started application " << *responderApplication << endl;
 
-	int N = 5;
+	constexpr int N = 5;
 
 	// Instantiate the requesters sequentially with the same application.
 	vector<unique_ptr<coms::Requester>> requesters;

@@ -113,7 +113,7 @@ target_link_libraries(publisherloop PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(testcancel src/TestCancel.cpp)
 target_include_directories(testcancel SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
-target_link_libraries(testcancel PRIVATE Cameo::cameo-api-cpp  pthread)
+target_link_libraries(testcancel PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(openport src/OpenPort.cpp)
 target_include_directories(openport SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
@@ -133,7 +133,7 @@ target_link_libraries(stream PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(teststream src/TestStream.cpp)
 target_include_directories(teststream SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})
-target_link_libraries(teststream PRIVATE Cameo::cameo-api-cpp  pthread)
+target_link_libraries(teststream PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(basicresponder src/BasicResponder.cpp)
 target_include_directories(basicresponder SYSTEM PRIVATE ${Rapidjson_INCLUDE_DIRS})

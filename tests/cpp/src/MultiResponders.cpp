@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 
 	This::setRunning();
 
-	int N = 5;
+	constexpr int N = 5;
 
 	std::thread tds[N];
 
