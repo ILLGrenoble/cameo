@@ -21,7 +21,17 @@ OpenJDK or Oracle JDK can be both installed.
 Install all the dependencies (except Java):
 
 ```
-sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
+$ sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
+```
+
+### Windows with vcpkg
+
+To install the C++ and Python APIs, first install vcpkg, then install the dependencies:
+
+```
+$ vcpkg install zeromq
+$ vcpkg install cppzmq
+
 ```
 
 
@@ -34,9 +44,9 @@ You can either generate the binaries or the Debian packages.
 Compile:
 
 ```
-$ cd cameo/
-$ cmake -S . -B build/ -D<OPTION>
-$ cmake --build build/
+$ cd cameo
+$ cmake -S . -B build -D<OPTION>
+$ cmake --build build
 ```
 
 Possible options are:
@@ -46,11 +56,18 @@ Possible options are:
  - CAMEO_API_PYTHON=ON: to build and install the Python API
  - CAMEO_TESTS=ON: to build the Java and C++ tests
  - CAMEO_EXAMPLES=ON: to build the Java and C++ examples
- 
-Install:
+
+For windows it is recommended to use the *jeromq* implementation.
+With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=<path/to/vcpkg.cmake> and compile the release objects:
 
 ```
-$ sudo cmake --build build/ --target install
+$ cmake --build build --config Release
+```
+
+Install on Linux:
+
+```
+$ sudo cmake --build build --target install
 ```
 
 ### Option 2: Generate the Debian packages
@@ -69,5 +86,5 @@ They can be installed using package manager.
 Generate the C++ Doxygen:
 
 ```
-$ cmake --build build/ --target doc
+$ cmake --build build --target doc
 ```
