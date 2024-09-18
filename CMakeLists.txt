@@ -17,9 +17,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
+list(APPEND Proxies cpp/proxy)
+
 if(${CAMEO_API_CPP})
-  list(APPEND APIs cpp/api cpp/proxy)
-  #list(APPEND APIs cpp/api)
+  list(APPEND APIs cpp/api)
 endif()
 
 if(${CAMEO_TESTS})
@@ -77,7 +78,7 @@ else()
   message(STATUS "Unknown ZeroMQ implementation: ${ZEROMQ_JAVA}")
 endif()
 
-foreach(package ${Java} ${APIs} ${TestsExamples})
+foreach(package ${Java} ${Proxies} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
 
