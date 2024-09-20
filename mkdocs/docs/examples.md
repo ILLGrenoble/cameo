@@ -1,23 +1,26 @@
-The source package comes up with examples in the different languages. The current page is showing how to run them in Linux.
+The source package comes up with examples in the different languages. The current page is showing how to run them in Linux.  
+The end of the page shows rapidly how to run on Windows.
 
 
 ## Setup
 
+### Linux
+
 The Java, C++ and Python examples can be run using either *jzmq* or *jeromq*.
 
-Open a shell and go to the CAMEO **root** directory:
+Open a shell and go to the CAMEO **root** directory.
 
 Set the *PATH* variable so that the C++ programs are found:
 ```
-export PATH=build/examples/cpp:$PATH
+export PATH=build/examples/cpp:build/cpp/proxy:$PATH
 ```
 
-If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found.
-The path is dependent on the system e.g.:
+If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
 ```
-export CAMEO_PATH=<cameo-install-path>
-export PYTHONPATH=$CAMEO_PATH/lib/python3/dist-packages:$PYTHONPATH
+export PYTHONPATH=/path/to/install/lib/python3/dist-packages:$PYTHONPATH
 ```
+You may have to verify that *python* is defined (install *python-is-python3* package on Ubuntu).
+
 
 Select *jzmq* **or** *jeromq* Java library.
 
@@ -28,7 +31,7 @@ export CLASSPATH=examples/java/jzmq/target/cameo-examples-jzmq-full.jar
 
 You shall define the variable *LD_LIBRARY_PATH* so that *libjzmq.so* is found:
 ```
-export LD_LIBRARY_PATH=<path-to-libjzmq>
+export LD_LIBRARY_PATH=/path/to/libjzmq
 ```
 Start the cameo server with the examples configuration:
 ```
@@ -50,6 +53,32 @@ In each new shell, create the alias for *cmo*:
 alias cmo="java -jar java/console/jeromq/target/cameo-console-2.2.0-full.jar"
 ```
 
+### Windows
+
+Open a standard prompt and go to the CAMEO **root** directory. Then set the *PATH*:
+```
+set PATH=build\examples\cpp\Release;build\cpp\proxy\Release;%PATH%
+```
+
+Set the *CLASSPATH* to use *jeromq*:
+```
+set CLASSPATH=tests\java\jeromq\target\cameo-tests-jeromq-full.jar
+```
+
+If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
+```
+set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
+```
+
+Run the server:
+```
+java fr.ill.ics.cameo.server.Server examples\config.xml --log-console
+```
+
+In each new prompt or shell, create the alias for *cmo*:
+```
+doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-2.2.0-full.jar $*
+```
 
 ## Requester/Responder
 
@@ -116,7 +145,7 @@ Code is available:
 
 ### Mixing languages
 
-You can mix the langagues e.g. *cpp* with *python*:
+You can mix the languages e.g. *cpp* with *python*:
 ```
 cmo -p 11000 exec requester-python tcp://localhost:11000 cpp "a message" 10
 ```
@@ -218,3 +247,7 @@ cmo -e tcp://computer-a:11000 exec subscriber-python tcp://computer-b:11000 cpp
 The console *cmo* application is executing *subscriber-python* on *computer-a* which interacts with *publisher-cpp* executing on *computer-b*.
 
 Here again, this example shows that by a single entry point (the console), the subscriber and publisher apps start and communicate on two computers without losing any request and terminate synchronously.
+
+
+
+

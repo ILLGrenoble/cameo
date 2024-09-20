@@ -16,7 +16,6 @@ git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
 ```
 
 Then follow the instructions [here](https://code.ill.fr/cameo/cameo/-/blob/master/INSTALL.md).
-Our experience on the windows compilation is described in [windows compilation](windows-compilation.md).
 
 
 ### List of the installed components

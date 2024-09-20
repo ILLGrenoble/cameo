@@ -40,19 +40,19 @@
 		
 		<!-- Python -->
 		<application name="responder-python" multiple="no">
-			<start executable="python3" args="-u examples/python/src/responderapp.py"/>
+			<start executable="python" args="-u examples/python/src/responderapp.py"/>
 		</application>
 		
 		<application name="requester-python" multiple="no">
-			<start executable="python3" args="-u examples/python/src/requesterapp.py"/>
+			<start executable="python" args="-u examples/python/src/requesterapp.py"/>
 		</application>
 		
 		<application name="publisher-python" multiple="no">
-			<start executable="python3" args="-u examples/python/src/publisherapp.py"/>
+			<start executable="python" args="-u examples/python/src/publisherapp.py"/>
 		</application>
 		
 		<application name="subscriber-python" multiple="no">
-			<start executable="python3" args="-u examples/python/src/subscriberapp.py"/>
+			<start executable="python" args="-u examples/python/src/subscriberapp.py"/>
 		</application>
 		
 	</applications>
