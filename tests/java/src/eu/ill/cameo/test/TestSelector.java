@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,12 +6,12 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.OutputPrintThread;
-import fr.ill.ics.cameo.api.base.OutputStreamSocket;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.StartException;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.OutputPrintThread;
+import eu.ill.cameo.api.base.OutputStreamSocket;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.StartException;
 
 public class TestSelector {
 
@@ -40,7 +40,7 @@ public class TestSelector {
 		}
 		commandList.add("-classpath");
 		commandList.add(jarFileName);
-		commandList.add("fr.ill.ics.cameo.server.Server");
+		commandList.add("eu.ill.cameo.server.Server");
 		commandList.add(config);
 
 		// Proxy path is let by default.

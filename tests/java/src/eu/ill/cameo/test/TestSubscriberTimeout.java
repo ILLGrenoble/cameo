@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.This;
 
 
 public class TestSubscriberTimeout {
@@ -54,7 +54,7 @@ public class TestSubscriberTimeout {
 				final App thisApp = server.connect(This.getName());
 				
 				// Create a subscriber to the application.
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(thisApp, "publisher");
+				eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(thisApp, "publisher");
 				subscriber.init();
 				
 				System.out.println("Created subscriber " + subscriber);
@@ -85,7 +85,7 @@ public class TestSubscriberTimeout {
 			});
 			td.start();
 			
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 			publisher.setSyncSubscribers(true);
 			publisher.setWaitForSubscribers(1);
 			publisher.init();

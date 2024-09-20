@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.common.messages.Messages;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.common.messages.Messages;
 
 
 public class Subscriber {
@@ -45,7 +45,7 @@ public class Subscriber {
 			App publisherApplication = server.connect(applicationName);
 			
 			System.out.println("Subscribing publisher...");
-			fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
+			eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
 			subscriber.init();
 			System.out.println("Synchronized with 1 publisher");
 			

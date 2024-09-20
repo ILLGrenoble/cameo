@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test.attic;
+package eu.ill.cameo.test.attic;
 
-import fr.ill.ics.cameo.api.base.Server;
+import eu.ill.cameo.api.base.Server;
 
 public class TestBadEndpoint {
 			

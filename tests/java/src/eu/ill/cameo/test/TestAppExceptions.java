@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.StartException;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.StartException;
+import eu.ill.cameo.api.base.This;
 
 
 public class TestAppExceptions {
@@ -61,12 +61,12 @@ public class TestAppExceptions {
 			// Test basic responder.
 			System.out.println("Creating basic responder");
 
-			fr.ill.ics.cameo.api.coms.basic.Responder basicResponder = fr.ill.ics.cameo.api.coms.basic.Responder.create("basic-responder");
+			eu.ill.cameo.api.coms.basic.Responder basicResponder = eu.ill.cameo.api.coms.basic.Responder.create("basic-responder");
 			basicResponder.init();
 
 			System.out.println("Created basic responder");
 
-			fr.ill.ics.cameo.api.coms.basic.Responder basicResponder2 = fr.ill.ics.cameo.api.coms.basic.Responder.create("basic-responder");
+			eu.ill.cameo.api.coms.basic.Responder basicResponder2 = eu.ill.cameo.api.coms.basic.Responder.create("basic-responder");
 			
 			try {
 				basicResponder2.init();
@@ -80,12 +80,12 @@ public class TestAppExceptions {
 			// Test multi responder.
 			System.out.println("Creating multi responder");
 
-			fr.ill.ics.cameo.api.coms.multi.ResponderRouter multiResponder = fr.ill.ics.cameo.api.coms.multi.ResponderRouter.create("multi-responder");
+			eu.ill.cameo.api.coms.multi.ResponderRouter multiResponder = eu.ill.cameo.api.coms.multi.ResponderRouter.create("multi-responder");
 			multiResponder.init();
 
 			System.out.println("Created multi responder");
 
-			fr.ill.ics.cameo.api.coms.multi.ResponderRouter multiResponder2 = fr.ill.ics.cameo.api.coms.multi.ResponderRouter.create("multi-responder");
+			eu.ill.cameo.api.coms.multi.ResponderRouter multiResponder2 = eu.ill.cameo.api.coms.multi.ResponderRouter.create("multi-responder");
 			
 			try {
 				multiResponder2.init();
@@ -99,12 +99,12 @@ public class TestAppExceptions {
 			// Test publisher.
 			System.out.println("Creating publisher");
 
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 			publisher.init();
 
 			System.out.println("Created publisher");
 
-			fr.ill.ics.cameo.api.coms.Publisher publisher2 = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			eu.ill.cameo.api.coms.Publisher publisher2 = eu.ill.cameo.api.coms.Publisher.create("publisher");
 			
 			try {
 				publisher2.init();

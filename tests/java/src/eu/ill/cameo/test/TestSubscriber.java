@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.This;
 
 /**
  * The test is not a real test because the subscribers are not synchronized.
@@ -87,7 +87,7 @@ public class TestSubscriber {
 				wait(1000);
 				
 				// The publisher is created after the applications that will wait for it.
-				fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+				eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 				
 				System.out.println("Publisher ready ? " + publisher.isReady());
 				publisher.init();

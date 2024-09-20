@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.This;
 
 
 public class TestBasicRequester {
@@ -85,7 +85,7 @@ public class TestBasicRequester {
 				}
 				
 				// Create the responder.
-				fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
+				eu.ill.cameo.api.coms.basic.Responder responder = eu.ill.cameo.api.coms.basic.Responder.create("responder");
 				
 				System.out.println("Responder ready ? " + responder.isReady());
 				responder.init();
@@ -98,7 +98,7 @@ public class TestBasicRequester {
 				for (int j = 0; j < N * 10; ++j) {
 					
 					// Receive the simple request.
-					fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
+					eu.ill.cameo.api.coms.basic.Request request = responder.receive();
 		    		request.replyString("done");
 		    		
 		    		System.out.println("Processed " + request);

@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.This;
 
 
 public class Publisher {
@@ -43,7 +43,7 @@ public class Publisher {
 			System.out.println("Creating publisher and waiting for " + numberOfSubscribers + " subscriber(s)...");
 			
 			// Create the publisher.
-			fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 			publisher.setSyncSubscribers(syncSubscribers);
 			publisher.setWaitForSubscribers(numberOfSubscribers);
 			

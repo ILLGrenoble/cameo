@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import java.util.List;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.StartException;
-import fr.ill.ics.cameo.api.base.State;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.StartException;
+import eu.ill.cameo.api.base.State;
 
 public class TestServer {
 

@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import java.util.Date;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.KeyValue;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.KeyValue;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.This;
 
 
 public class TestWaitStorage {
@@ -51,7 +51,7 @@ public class TestWaitStorage {
 		
 		Date d = new Date();
 		
-		String key = "fr.ill.ics.cameo.test.testkey";
+		String key = "eu.ill.cameo.test.testkey";
 		
 		try {
 			// Loop the number of times.

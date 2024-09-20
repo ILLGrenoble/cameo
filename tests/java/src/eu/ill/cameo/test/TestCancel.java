@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.State;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.Requester;
-import fr.ill.ics.cameo.api.coms.basic.Request;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.State;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.Requester;
+import eu.ill.cameo.api.coms.basic.Request;
 
 
 public class TestCancel {
@@ -115,7 +115,7 @@ public class TestCancel {
 				System.out.println("Creating publisher and waiting for 1 subscriber...");
 				
 				// create the publisher
-				final fr.ill.ics.cameo.api.coms.Publisher publisher = fr.ill.ics.cameo.api.coms.Publisher.create("publisher");
+				final eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 				publisher.setWaitForSubscribers(1);
 				
 				Thread cancelThread = new Thread(new Runnable() {
@@ -164,7 +164,7 @@ public class TestCancel {
 				
 				cancelThread.start();
 				
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher");
+				eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher");
 				subscriber.setCheckApp(true);
 				subscriber.init();
 				
@@ -198,7 +198,7 @@ public class TestCancel {
 				final App thisApp = server.connect(This.getName());
 				
 				// Create the subscriber.
-				final fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(thisApp, "an unknown publisher");
+				final eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(thisApp, "an unknown publisher");
 				
 				// Start thread.
 				Thread cancelThread = new Thread(new Runnable() {
@@ -228,7 +228,7 @@ public class TestCancel {
 				
 				final App pubLoopApplication = server.start("publisherloopjava");
 				
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher");
+				eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(pubLoopApplication, "publisher");
 				subscriber.init();
 				
 				// Start thread.
@@ -322,7 +322,7 @@ public class TestCancel {
 				System.out.println("Creating basic responder and waiting for requests");
 				
 				// Create the responder.
-				final fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
+				final eu.ill.cameo.api.coms.basic.Responder responder = eu.ill.cameo.api.coms.basic.Responder.create("responder");
 				responder.init();
 				
 				// Start thread.
@@ -342,7 +342,7 @@ public class TestCancel {
 				
 				System.out.println("Wait for requests");
 				
-				fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
+				eu.ill.cameo.api.coms.basic.Request request = responder.receive();
 				
 				if (request != null) {
 					System.err.println("Responder error: receive should return null");		
@@ -361,7 +361,7 @@ public class TestCancel {
 				System.out.println("Creating basic responder and requester");
 				
 				// Create the responder.
-				final fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
+				final eu.ill.cameo.api.coms.basic.Responder responder = eu.ill.cameo.api.coms.basic.Responder.create("responder");
 				responder.init();
 
 				// Start thread.
@@ -428,10 +428,10 @@ public class TestCancel {
 			// Test the multi responder.
 			{
 				// Create the responder.
-				final fr.ill.ics.cameo.api.coms.multi.ResponderRouter router = fr.ill.ics.cameo.api.coms.multi.ResponderRouter.create("responder");
+				final eu.ill.cameo.api.coms.multi.ResponderRouter router = eu.ill.cameo.api.coms.multi.ResponderRouter.create("responder");
 				router.init();
 				
-				final fr.ill.ics.cameo.api.coms.multi.Responder responder = fr.ill.ics.cameo.api.coms.multi.Responder.create(router);
+				final eu.ill.cameo.api.coms.multi.Responder responder = eu.ill.cameo.api.coms.multi.Responder.create(router);
 				responder.init();
 
 				Thread routerThread = new Thread(new Runnable() {

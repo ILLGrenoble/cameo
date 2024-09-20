@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.UndefinedKeyException;
+import eu.ill.cameo.api.base.KeyAlreadyExistsException;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.UndefinedKeyException;
 
 
 public class WaitStorage {
@@ -28,7 +28,7 @@ public class WaitStorage {
 	public static void main(String[] args) {
 		
 		This.init(args);
-		String key = "fr.ill.ics.cameo.test.testkey";
+		String key = "eu.ill.cameo.test.testkey";
 		
 		JSONObject valueObject = new JSONObject();
 		valueObject.put("x", 12);

@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.This;
 
 
 public class ResponderError {
@@ -34,7 +34,7 @@ public class ResponderError {
 			System.out.println("Creating responder");
 			
 			// Create the responder.
-			fr.ill.ics.cameo.api.coms.basic.Responder responder = fr.ill.ics.cameo.api.coms.basic.Responder.create("responder");
+			eu.ill.cameo.api.coms.basic.Responder responder = eu.ill.cameo.api.coms.basic.Responder.create("responder");
 			responder.init();
 			
 			// Set the state.
@@ -42,7 +42,7 @@ public class ResponderError {
 			
 			
 			// Receive the first request.
-			fr.ill.ics.cameo.api.coms.basic.Request request = responder.receive();
+			eu.ill.cameo.api.coms.basic.Request request = responder.receive();
 			System.out.println("Received request " + request.get());
 
 			// Reply.

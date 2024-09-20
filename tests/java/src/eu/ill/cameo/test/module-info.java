@@ -1,5 +1,5 @@
-module fr.ill.ics.cameo.test {
+module eu.ill.cameo.test {
 	
-	requires fr.ill.ics.cameo.server;
-	requires fr.ill.ics.cameo.api;
+	requires eu.ill.cameo.server;
+	requires eu.ill.cameo.api;
 }

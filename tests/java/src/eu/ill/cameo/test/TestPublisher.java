@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.State;
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.State;
+import eu.ill.cameo.api.base.This;
 
 
 public class TestPublisher {
@@ -66,7 +66,7 @@ public class TestPublisher {
 				App publisherApplication = server.start(applicationName);
 				System.out.println("Started application " + publisherApplication);
 				
-				fr.ill.ics.cameo.api.coms.Subscriber subscriber = fr.ill.ics.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
+				eu.ill.cameo.api.coms.Subscriber subscriber = eu.ill.cameo.api.coms.Subscriber.create(publisherApplication, "publisher");
 				
 				System.out.println("Subscriber ready ? " + subscriber.isReady());
 				subscriber.init();

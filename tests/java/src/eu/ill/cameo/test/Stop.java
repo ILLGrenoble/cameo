@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import fr.ill.ics.cameo.api.base.This;
+import eu.ill.cameo.api.base.This;
 
 
 public class Stop {

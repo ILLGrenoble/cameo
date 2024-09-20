@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.test;
+package eu.ill.cameo.test;
 
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.ServerAndApp;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.Requester;
-import fr.ill.ics.cameo.api.coms.Subscriber;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.ServerAndApp;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.Requester;
+import eu.ill.cameo.api.coms.Subscriber;
 
 
 public class ComsTimeout {
