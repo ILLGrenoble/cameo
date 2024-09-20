@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+		<parent>
+		<groupId>fr.ill.ics</groupId>
+		<artifactId>cameo</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<artifactId>cameo-api</artifactId>
+	<version>2.2.0</version>
+	<packaging>jar</packaging>
+	
+	<properties>
+		<project.scm.id>ill-code</project.scm.id>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-common</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-com-jzmq</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.ill.ics</groupId>
+			<artifactId>cameo-process-handle-default</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<release>11</release>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						<manifestEntries>
+							<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<goals>deploy</goals>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+					<useReleaseProfile>false</useReleaseProfile>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+</project>
