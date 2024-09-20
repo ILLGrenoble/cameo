@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 		useProxy = (string(argv[1]) == "true");
 	}
 	if (useProxy) {
-		options |= USE_PROXY;
+		options |= option::USE_PROXY;
 		endpoint = "tcp://localhost:12000";
 	}
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 	server->init();
 
 	// Start the application.
-	unique_ptr<App> app = server->start("streamcpp", cameo::OUTPUTSTREAM);
+	unique_ptr<App> app = server->start("streamcpp", cameo::option::OUTPUTSTREAM);
 
 	shared_ptr<OutputStreamSocket> socket = app->getOutputStreamSocket();
 	std::thread outputThread([&] {

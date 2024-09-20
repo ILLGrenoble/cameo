@@ -9,7 +9,7 @@ useProxy = False if len(sys.argv) < 2 else (sys.argv[1] == "true")
 
 options = 0
 if useProxy:
-    options |= cameopy.USE_PROXY
+    options |= cameopy.option.USE_PROXY
     
 starter = this.connectToStarter(options)
 

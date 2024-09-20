@@ -52,7 +52,7 @@
  * Main namespace of the library.
  */
 namespace cameo {
-
+namespace option {
 /**
  * Option output stream.
  */
@@ -67,6 +67,8 @@ const int UNLINKED = 1 << 1;
  * Option use proxy.
  */
 const int USE_PROXY = 1 << 2;
+
+}
 
 class Server;
 class EventStreamSocket;

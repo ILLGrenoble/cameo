@@ -1,6 +1,8 @@
 3.0.0
 -----
 
+* Options in option namespace.
+
 2.2.0
 -----
 

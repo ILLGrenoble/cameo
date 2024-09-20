@@ -98,7 +98,7 @@ Server::Server(const Endpoint& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & USE_PROXY) != 0);
+	m_useProxy = ((options & option::USE_PROXY) != 0);
 	m_serverVersion = {0, 0, 0};
 }
 
@@ -112,7 +112,7 @@ Server::Server(const std::string& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & USE_PROXY) != 0);
+	m_useProxy = ((options & option::USE_PROXY) != 0);
 	m_serverVersion = {0, 0, 0};
 }
 
@@ -223,8 +223,8 @@ std::unique_ptr<App> Server::start(const std::string& name, int options) {
 
 std::unique_ptr<App> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
-	bool outputStream = ((options & OUTPUTSTREAM) != 0);
-	bool linked = ((options & UNLINKED) == 0);
+	bool outputStream = ((options & option::OUTPUTSTREAM) != 0);
+	bool linked = ((options & option::UNLINKED) == 0);
 
 	std::unique_ptr<App> instance {makeInstance()};
 
@@ -289,7 +289,7 @@ Response Server::stop(int id, bool immediately) const {
 
 AppArray Server::connectAll(const std::string& name, int options) {
 
-	bool outputStream {((options & OUTPUTSTREAM) != 0)};
+	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
 
 	json::Object response {m_requestSocket->requestJSON(createConnectRequest(name))};
 
@@ -360,7 +360,7 @@ std::unique_ptr<App> Server::connect(const std::string& name, int options) {
 
 std::unique_ptr<App> Server::connect(int id, int options) {
 
-	bool outputStream {((options & OUTPUTSTREAM) != 0)};
+	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
 
 	json::Object response {m_requestSocket->requestJSON(createConnectWithIdRequest(id))};
 

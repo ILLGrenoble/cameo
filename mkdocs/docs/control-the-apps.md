@@ -443,7 +443,7 @@ The standard error and output can be printed by the console application or retri
 An example with the C++ API:
 ```cpp
 // Start the app with the OUTPUTSTREAM option.
-std::unique_ptr<cameo::App> app = server.start("App2", cameo::OUTPUTSTREAM);
+std::unique_ptr<cameo::App> app = server.start("App2", cameo::option::OUTPUTSTREAM);
 
 // Get the outputstream socket.
 std::shared_ptr<cameo::OutputStreamSocket> socket = app->getOutputStreamSocket();
@@ -527,7 +527,7 @@ def printOutput(socket):
             return
 
 # Start the app with the OUTPUTSTREAM option.
-app = server.start("streampy", cameopy.OUTPUTSTREAM)
+app = server.start("streampy", cameopy.option.OUTPUTSTREAM)
 
 # Get the outputstream socket.
 socket = app.getOutputStreamSocket()    

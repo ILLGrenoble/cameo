@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		useProxy = (string(argv[2]) == "true");
 	}
 	if (useProxy) {
-		options |= USE_PROXY;
+		options |= option::USE_PROXY;
 		endpoint = "tcp://localhost:12000";
 	}
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < numberOfTimes; ++i) {
 
 		// start the application.
-		unique_ptr<App> app = server->start("veryfastcpp", OUTPUTSTREAM);
+		unique_ptr<App> app = server->start("veryfastcpp", option::OUTPUTSTREAM);
 
 		State state = app->waitFor();
 

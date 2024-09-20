@@ -41,7 +41,7 @@ The port is the base port of the CAMEO server.
 
 However the C++ creation of the CAMEO server with proxies:
 ```cpp
-auto server = cameo::Server::create("tcp://A:10000", cameo::USE_PROXY);
+auto server = cameo::Server::create("tcp://A:10000", cameo::option::USE_PROXY);
 ```
 In Java:
 ```java

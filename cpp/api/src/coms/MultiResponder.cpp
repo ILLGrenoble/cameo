@@ -86,9 +86,9 @@ std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, int timeo
 	std::unique_ptr<Server> server;
 	std::unique_ptr<App> app;
 
-	bool useProxy = ((options & USE_PROXY) != 0);
+	bool useProxy = ((options & option::USE_PROXY) != 0);
 	if (useProxy) {
-		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), USE_PROXY);
+		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), option::USE_PROXY);
 	}
 	else {
 		server = Server::create(m_requesterServerEndpoint.toString());

@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 		useProxy = (string(argv[1]) == "true");
 	}
 	if (useProxy) {
-		options |= USE_PROXY;
+		options |= option::USE_PROXY;
 		endpoint = "tcp://localhost:12000";
 	}
 

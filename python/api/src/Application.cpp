@@ -34,9 +34,6 @@ PYBIND11_MODULE(cameopy, m) {
 	m.doc() = "Python binding of Cameo C++ API"; // optional module docstring
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
-	m.attr("OUTPUTSTREAM")       = cameo::OUTPUTSTREAM;
-	m.attr("UNLINKED")           = cameo::UNLINKED;
-	m.attr("USE_PROXY")          = cameo::USE_PROXY;
 	m.attr("NIL")                = NIL;
 	m.attr("STARTING")           = STARTING;
 	m.attr("RUNNING")            = RUNNING;
@@ -48,8 +45,15 @@ PYBIND11_MODULE(cameopy, m) {
 	m.attr("STOPPED")            = STOPPED;
 	m.attr("KILLED")             = KILLED;
 
-	// Exceptions
+	py::module om = m.def_submodule("option", "Option module");
 
+	om.attr("OUTPUTSTREAM")       = cameo::option::OUTPUTSTREAM;
+	om.attr("UNLINKED")           = cameo::option::UNLINKED;
+	om.attr("USE_PROXY")          = cameo::option::USE_PROXY;
+
+
+
+	// Exceptions
 	py::register_exception<UnregisteredApplicationException>(m, "UnregisteredApplicationException");
 	py::register_exception<InvalidArgumentException>(m, "InvalidArgumentException");
 	py::register_exception<SocketException>(m, "SocketException");
