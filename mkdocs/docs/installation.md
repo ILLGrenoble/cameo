@@ -171,7 +171,7 @@ Then add the dependency:
 <dependency>
     <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-api</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 By default the JZMQ implementation is used which requires to have the Java ZeroMQ binding installed but if your prefer JeroMQ then add the dependencies:
@@ -179,7 +179,7 @@ By default the JZMQ implementation is used which requires to have the Java ZeroM
 <dependency>
     <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-api</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
     <exclusions>
         <exclusion>
             <groupId>eu.ill.cameo</groupId>

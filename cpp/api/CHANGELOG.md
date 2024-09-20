@@ -1,4 +1,7 @@
-2.2.0 (NP)
+3.0.0
+-----
+
+2.2.0
 -----
 
 * Minor review of exceptions.

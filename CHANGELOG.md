@@ -1,3 +1,8 @@
+3.0.0
+-----
+
+* Java packages start with eu.ill.cameo.
+
 2.2.0
 -----
 

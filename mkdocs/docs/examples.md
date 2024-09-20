@@ -40,7 +40,7 @@ java eu.ill.cameo.server.Server examples/config.xml --log-console
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-2.2.0-full.jar"
+alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar"
 ```
 
 Case *jeromq*:
@@ -50,7 +50,7 @@ export CLASSPATH=examples/java/jeromq/target/cameo-tests-jeromq-full.jar
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console/jeromq/target/cameo-console-2.2.0-full.jar"
+alias cmo="java -jar java/console/jeromq/target/cameo-console-3.0.0-full.jar"
 ```
 
 ### Windows
@@ -77,7 +77,7 @@ java eu.ill.cameo.server.Server examples\config.xml --log-console
 
 In each new prompt or shell, create the alias for *cmo*:
 ```
-doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-2.2.0-full.jar $*
+doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-3.0.0-full.jar $*
 ```
 
 ## Requester/Responder
