@@ -1,4 +1,4 @@
-2.2.0 (NP)
+2.2.0
 -----
 
 * Renamed constant PROCESSING_ERROR into PROCESSING_FAILURE.
