@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 
 public class ApplicationInfo {

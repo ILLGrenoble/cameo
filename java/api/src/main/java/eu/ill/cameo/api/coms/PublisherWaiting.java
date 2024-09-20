@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms;
+package eu.ill.cameo.api.coms;
 
-import fr.ill.ics.cameo.api.base.Waiting;
+import eu.ill.cameo.api.base.Waiting;
 
 /**
  * Class defining a waiting for the Publisher class.

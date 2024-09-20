@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi.impl;
+package eu.ill.cameo.api.coms.multi.impl;
 
 public interface ResponderRouterImpl {
 

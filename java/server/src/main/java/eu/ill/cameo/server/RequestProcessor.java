@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server;
+package eu.ill.cameo.server;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,30 +23,30 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.com.Zmq.Msg;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.StringId;
-import fr.ill.ics.cameo.server.Server.Version;
-import fr.ill.ics.cameo.server.exception.IdNotFoundException;
-import fr.ill.ics.cameo.server.exception.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
-import fr.ill.ics.cameo.server.exception.MaxNumberOfApplicationsReached;
-import fr.ill.ics.cameo.server.exception.StreamNotPublishedException;
-import fr.ill.ics.cameo.server.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.server.exception.UnregisteredApplicationException;
-import fr.ill.ics.cameo.server.manager.Application;
-import fr.ill.ics.cameo.server.manager.ApplicationConfig;
-import fr.ill.ics.cameo.server.manager.ApplicationInfo;
-import fr.ill.ics.cameo.server.manager.ApplicationState;
-import fr.ill.ics.cameo.server.manager.ConfigManager;
-import fr.ill.ics.cameo.server.manager.Log;
-import fr.ill.ics.cameo.server.manager.Manager;
-import fr.ill.ics.cameo.server.manager.PortInfo;
-import fr.ill.ics.cameo.server.manager.StatusInfo;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.com.Zmq.Msg;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.ApplicationIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.StringId;
+import eu.ill.cameo.server.Server.Version;
+import eu.ill.cameo.server.exception.IdNotFoundException;
+import eu.ill.cameo.server.exception.KeyAlreadyExistsException;
+import eu.ill.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
+import eu.ill.cameo.server.exception.MaxNumberOfApplicationsReached;
+import eu.ill.cameo.server.exception.StreamNotPublishedException;
+import eu.ill.cameo.server.exception.UnknownApplicationException;
+import eu.ill.cameo.server.exception.UnregisteredApplicationException;
+import eu.ill.cameo.server.manager.Application;
+import eu.ill.cameo.server.manager.ApplicationConfig;
+import eu.ill.cameo.server.manager.ApplicationInfo;
+import eu.ill.cameo.server.manager.ApplicationState;
+import eu.ill.cameo.server.manager.ConfigManager;
+import eu.ill.cameo.server.manager.Log;
+import eu.ill.cameo.server.manager.Manager;
+import eu.ill.cameo.server.manager.PortInfo;
+import eu.ill.cameo.server.manager.StatusInfo;
 
 /**
  * 

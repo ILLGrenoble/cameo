@@ -52,10 +52,10 @@ int main(int argc, char *argv[]) {
 ```
 Code for the Java Subscriber application:
 ```java
-import fr.ill.ics.cameo.base.App;
-import fr.ill.ics.cameo.base.Server;
-import fr.ill.ics.cameo.base.This;
-import fr.ill.ics.cameo.coms.Subscriber;
+import eu.ill.cameo.base.App;
+import eu.ill.cameo.base.Server;
+import eu.ill.cameo.base.This;
+import eu.ill.cameo.coms.Subscriber;
 
 public class SubscriberApplication {
 

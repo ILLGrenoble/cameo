@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 /**
  * Helper class to provide an App instance and its associated Server instance.

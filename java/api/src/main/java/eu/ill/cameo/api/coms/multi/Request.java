@@ -14,21 +14,21 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi;
+package eu.ill.cameo.api.coms.multi;
 
 import java.util.List;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.ServerAndApp;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.AppIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.ServerAndApp;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.AppIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.ServerIdentity;
 
 /**
  * Class defining a request received by the multi responder.

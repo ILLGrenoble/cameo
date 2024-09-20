@@ -14,18 +14,18 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi;
+package eu.ill.cameo.api.coms.multi;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.ICancelable;
-import fr.ill.ics.cameo.api.base.StateObject;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.multi.impl.ResponderImpl;
-import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.AppIdentity;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.api.base.ICancelable;
+import eu.ill.cameo.api.base.StateObject;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.multi.impl.ResponderImpl;
+import eu.ill.cameo.api.factory.ImplFactory;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.AppIdentity;
+import eu.ill.cameo.common.strings.ServerIdentity;
 
 /**
  * Class defining a responder for the responder router.

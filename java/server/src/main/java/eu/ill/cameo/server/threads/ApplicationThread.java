@@ -1,7 +1,7 @@
-package fr.ill.ics.cameo.server.threads;
+package eu.ill.cameo.server.threads;
 
-import fr.ill.ics.cameo.server.manager.Application;
-import fr.ill.ics.cameo.server.manager.ConfigManager;
+import eu.ill.cameo.server.manager.Application;
+import eu.ill.cameo.server.manager.ConfigManager;
 
 /**
  * Base class for the application thread: LifecycleApplicationThread and StreamApplicationThread.  

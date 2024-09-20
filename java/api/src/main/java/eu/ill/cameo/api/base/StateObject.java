@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 /**
  * Interface defining an abstract Cameo object that can be initialized and terminated.

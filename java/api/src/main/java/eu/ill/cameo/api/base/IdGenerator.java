@@ -15,7 +15,7 @@
  */
 
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

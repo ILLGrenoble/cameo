@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi.impl.zmq;
+package eu.ill.cameo.api.coms.multi.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.api.coms.multi.impl.ResponderRouterImpl;
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.impl.zmq.ContextZmq;
+import eu.ill.cameo.api.coms.multi.impl.ResponderRouterImpl;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public class ResponderRouterZmq implements ResponderRouterImpl {
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;
-import fr.ill.ics.cameo.server.Converter;
-import fr.ill.ics.cameo.server.threads.StreamApplicationThread;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.processhandle.ProcessHandlerImpl;
+import eu.ill.cameo.server.Converter;
+import eu.ill.cameo.server.threads.StreamApplicationThread;
 
 /**
  * describe an application

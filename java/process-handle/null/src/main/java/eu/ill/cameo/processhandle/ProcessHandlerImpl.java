@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.processhandle;
+package eu.ill.cameo.processhandle;
 
 public class ProcessHandlerImpl {
 

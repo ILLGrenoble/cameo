@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.basic.impl;
+package eu.ill.cameo.api.coms.basic.impl;
 
-import fr.ill.ics.cameo.api.coms.basic.Request;
+import eu.ill.cameo.api.coms.basic.Request;
 
 public interface ResponderImpl {
 

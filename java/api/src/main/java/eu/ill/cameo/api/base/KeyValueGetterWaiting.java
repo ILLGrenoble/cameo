@@ -14,9 +14,9 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
-import fr.ill.ics.cameo.api.base.App.Com.KeyValueGetter;
+import eu.ill.cameo.api.base.App.Com.KeyValueGetter;
 
 /**
  * Class defining a waiting for the KeyValueGetter class.

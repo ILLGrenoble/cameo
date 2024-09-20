@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.processhandle;
+package eu.ill.cameo.processhandle;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

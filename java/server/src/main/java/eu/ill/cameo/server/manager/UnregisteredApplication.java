@@ -1,7 +1,7 @@
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.processhandle.ProcessHandlerImpl;
 
 public class UnregisteredApplication extends Application {
 

@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.api.base.impl;
+package eu.ill.cameo.api.base.impl;
 
 public interface RequestSocketImpl {
 

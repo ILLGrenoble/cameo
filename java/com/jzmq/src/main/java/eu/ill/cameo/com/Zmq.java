@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.com;
+package eu.ill.cameo.com;
 
 import java.util.Iterator;
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.exception;
+package eu.ill.cameo.server.exception;
 
 public class StreamNotPublishedException extends Exception {
 

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,20 +29,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.com.Zmq.Context;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.server.exception.IdNotFoundException;
-import fr.ill.ics.cameo.server.exception.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
-import fr.ill.ics.cameo.server.exception.MaxNumberOfApplicationsReached;
-import fr.ill.ics.cameo.server.exception.StreamNotPublishedException;
-import fr.ill.ics.cameo.server.exception.UnknownApplicationException;
-import fr.ill.ics.cameo.server.exception.UnregisteredApplicationException;
-import fr.ill.ics.cameo.server.threads.LifecycleApplicationThread;
-import fr.ill.ics.cameo.server.threads.StreamApplicationThread;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.com.Zmq.Context;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.ApplicationIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.server.exception.IdNotFoundException;
+import eu.ill.cameo.server.exception.KeyAlreadyExistsException;
+import eu.ill.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
+import eu.ill.cameo.server.exception.MaxNumberOfApplicationsReached;
+import eu.ill.cameo.server.exception.StreamNotPublishedException;
+import eu.ill.cameo.server.exception.UnknownApplicationException;
+import eu.ill.cameo.server.exception.UnregisteredApplicationException;
+import eu.ill.cameo.server.threads.LifecycleApplicationThread;
+import eu.ill.cameo.server.threads.StreamApplicationThread;
 
 public class Manager extends ConfigLoader {
 

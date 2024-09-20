@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.common.messages;
+package eu.ill.cameo.common.messages;
 
 import java.nio.charset.Charset;
 

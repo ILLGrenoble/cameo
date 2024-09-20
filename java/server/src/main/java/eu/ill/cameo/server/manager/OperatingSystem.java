@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.util.Locale;
 

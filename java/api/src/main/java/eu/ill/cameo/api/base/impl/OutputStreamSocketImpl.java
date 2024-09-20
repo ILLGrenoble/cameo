@@ -1,10 +1,10 @@
-package fr.ill.ics.cameo.api.base.impl;
+package eu.ill.cameo.api.base.impl;
 
-import fr.ill.ics.cameo.api.base.Context;
-import fr.ill.ics.cameo.api.base.OutputStreamSocket;
-import fr.ill.ics.cameo.api.base.RequestSocket;
-import fr.ill.ics.cameo.common.messages.JSON.Parser;
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.api.base.Context;
+import eu.ill.cameo.api.base.OutputStreamSocket;
+import eu.ill.cameo.api.base.RequestSocket;
+import eu.ill.cameo.common.messages.JSON.Parser;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public interface OutputStreamSocketImpl {
 

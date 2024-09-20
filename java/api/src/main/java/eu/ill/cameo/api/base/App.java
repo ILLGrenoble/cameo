@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -22,10 +22,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.AppIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.AppIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.ServerIdentity;
 
 /**
  * Class defining a remote Cameo application.

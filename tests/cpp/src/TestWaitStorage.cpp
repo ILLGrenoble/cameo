@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	server->init();
 
 	// Define the shared key.
-	string key = "fr.ill.ics.cameo.test.testkey";
+	string key = "eu.ill.cameo.test.testkey";
 
 	// loop the number of times.
 	for (int i = 0; i < numberOfTimes; ++i) {

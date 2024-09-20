@@ -14,21 +14,21 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi.impl.zmq;
+package eu.ill.cameo.api.coms.multi.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.IdGenerator;
-import fr.ill.ics.cameo.api.base.RequestSocket;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.api.coms.multi.Request;
-import fr.ill.ics.cameo.api.coms.multi.impl.ResponderImpl;
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
+import eu.ill.cameo.api.base.IdGenerator;
+import eu.ill.cameo.api.base.RequestSocket;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.impl.zmq.ContextZmq;
+import eu.ill.cameo.api.coms.multi.Request;
+import eu.ill.cameo.api.coms.multi.impl.ResponderImpl;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
 
 public class ResponderZmq implements ResponderImpl {
 

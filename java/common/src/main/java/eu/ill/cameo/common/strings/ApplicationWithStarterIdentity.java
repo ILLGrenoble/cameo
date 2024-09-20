@@ -1,8 +1,8 @@
-package fr.ill.ics.cameo.common.strings;
+package eu.ill.cameo.common.strings;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.common.messages.Messages;
+import eu.ill.cameo.common.messages.Messages;
 
 public class ApplicationWithStarterIdentity {
 

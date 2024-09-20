@@ -14,14 +14,14 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server;
+package eu.ill.cameo.server;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.com.Zmq.Msg;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.server.manager.ApplicationState;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.com.Zmq.Msg;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.server.manager.ApplicationState;
 
 public class Converter {
 

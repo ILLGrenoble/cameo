@@ -14,21 +14,21 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.impl.zmq;
+package eu.ill.cameo.api.coms.impl.zmq;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.Timeout;
-import fr.ill.ics.cameo.api.base.TimeoutCounter;
-import fr.ill.ics.cameo.api.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.api.coms.impl.RequesterImpl;
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.Timeout;
+import eu.ill.cameo.api.base.TimeoutCounter;
+import eu.ill.cameo.api.base.impl.zmq.ContextZmq;
+import eu.ill.cameo.api.coms.impl.RequesterImpl;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public class RequesterZmq implements RequesterImpl {
 

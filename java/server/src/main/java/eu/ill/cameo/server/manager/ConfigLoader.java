@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
-import fr.ill.ics.cameo.server.exception.UnknownApplicationException;
+import eu.ill.cameo.server.exception.UnknownApplicationException;
 
 public abstract class ConfigLoader {
 

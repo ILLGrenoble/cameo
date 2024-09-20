@@ -1,7 +1,7 @@
-package fr.ill.ics.cameo.api.base.impl.zmq;
+package eu.ill.cameo.api.base.impl.zmq;
 
-import fr.ill.ics.cameo.api.base.Context;
-import fr.ill.ics.cameo.com.Zmq;
+import eu.ill.cameo.api.base.Context;
+import eu.ill.cameo.com.Zmq;
 
 public class ContextZmq implements Context {
 	

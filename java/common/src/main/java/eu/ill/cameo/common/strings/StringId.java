@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.common.strings;
+package eu.ill.cameo.common.strings;
 
 import java.nio.ByteBuffer;
 

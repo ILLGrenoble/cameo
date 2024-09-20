@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.api.base.impl.RequestSocketImpl;
-import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.messages.JSON.Parser;
-import fr.ill.ics.cameo.common.messages.Messages;
+import eu.ill.cameo.api.base.impl.RequestSocketImpl;
+import eu.ill.cameo.api.factory.ImplFactory;
+import eu.ill.cameo.common.messages.JSON.Parser;
+import eu.ill.cameo.common.messages.Messages;
 
 /**
  * Class defining a request socket.

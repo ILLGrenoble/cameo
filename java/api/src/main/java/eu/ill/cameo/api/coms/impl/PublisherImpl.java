@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.impl;
+package eu.ill.cameo.api.coms.impl;
 
 public interface PublisherImpl {
 	

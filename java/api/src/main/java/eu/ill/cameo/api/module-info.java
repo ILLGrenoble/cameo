@@ -1,15 +1,15 @@
-module fr.ill.ics.cameo.api {
+module eu.ill.cameo.api {
 	
-	requires fr.ill.ics.cameo.com;
-	requires fr.ill.ics.cameo.processhandle;
+	requires eu.ill.cameo.com;
+	requires eu.ill.cameo.processhandle;
 	
-	requires transitive fr.ill.ics.cameo.common;
+	requires transitive eu.ill.cameo.common;
 		
-	exports fr.ill.ics.cameo.api.base;
+	exports eu.ill.cameo.api.base;
 	
-	exports fr.ill.ics.cameo.api.coms;
-	exports fr.ill.ics.cameo.api.coms.basic;
-	exports fr.ill.ics.cameo.api.coms.multi;
+	exports eu.ill.cameo.api.coms;
+	exports eu.ill.cameo.api.coms.basic;
+	exports eu.ill.cameo.api.coms.multi;
 	
-	exports fr.ill.ics.cameo.api.factory;
+	exports eu.ill.cameo.api.factory;
 }

@@ -1,4 +1,4 @@
-module fr.ill.ics.cameo.console {
+module eu.ill.cameo.console {
 	
-	requires fr.ill.ics.cameo.api;
+	requires eu.ill.cameo.api;
 }

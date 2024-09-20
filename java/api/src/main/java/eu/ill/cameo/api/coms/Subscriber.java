@@ -14,29 +14,29 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms;
+package eu.ill.cameo.api.coms;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.App.Com.KeyValueGetter;
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.api.base.ICancelable;
-import fr.ill.ics.cameo.api.base.ITimeoutable;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.StateObject;
-import fr.ill.ics.cameo.api.base.SynchronizationTimeout;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.Timeout;
-import fr.ill.ics.cameo.api.base.TimeoutCounter;
-import fr.ill.ics.cameo.api.coms.impl.SubscriberImpl;
-import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.AppIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
-import fr.ill.ics.cameo.common.strings.StringId;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.App.Com.KeyValueGetter;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.api.base.ICancelable;
+import eu.ill.cameo.api.base.ITimeoutable;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.StateObject;
+import eu.ill.cameo.api.base.SynchronizationTimeout;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.Timeout;
+import eu.ill.cameo.api.base.TimeoutCounter;
+import eu.ill.cameo.api.coms.impl.SubscriberImpl;
+import eu.ill.cameo.api.factory.ImplFactory;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.AppIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.common.strings.StringId;
 
 /**
  * Class defining a subscriber.

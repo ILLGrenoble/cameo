@@ -14,10 +14,10 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.impl;
+package eu.ill.cameo.api.coms.impl;
 
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public interface SubscriberImpl {
 	

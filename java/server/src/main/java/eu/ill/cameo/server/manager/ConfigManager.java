@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public final class ConfigManager {
 

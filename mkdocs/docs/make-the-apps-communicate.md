@@ -8,7 +8,7 @@ The following examples will only show string messages however any kind of serial
 First and easiest way to pass data from an app to another is to use the function pattern. When an app terminates it is possible to set a return value that will be published to all the instance references. We can extend the Java application of *App2*:
 
 ```java
-import fr.ill.ics.cameo.base.This;
+import eu.ill.cameo.base.This;
 
 public class JavaApp {
 

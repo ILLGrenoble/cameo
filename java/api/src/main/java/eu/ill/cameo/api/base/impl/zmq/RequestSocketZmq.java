@@ -1,12 +1,12 @@
-package fr.ill.ics.cameo.api.base.impl.zmq;
+package eu.ill.cameo.api.base.impl.zmq;
 
 import java.util.Arrays;
 
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.api.base.Context;
-import fr.ill.ics.cameo.api.base.SocketException;
-import fr.ill.ics.cameo.api.base.impl.RequestSocketImpl;
-import fr.ill.ics.cameo.com.Zmq;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.api.base.Context;
+import eu.ill.cameo.api.base.SocketException;
+import eu.ill.cameo.api.base.impl.RequestSocketImpl;
+import eu.ill.cameo.com.Zmq;
 
 public class RequestSocketZmq implements RequestSocketImpl {
 

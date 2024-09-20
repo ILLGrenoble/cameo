@@ -1,3 +1,3 @@
-module fr.ill.ics.cameo.processhandle {
-	exports fr.ill.ics.cameo.processhandle;
+module eu.ill.cameo.processhandle {
+	exports eu.ill.cameo.processhandle;
 }

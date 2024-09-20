@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
-	string key = "fr.ill.ics.cameo.test.testkey";
+	string key = "eu.ill.cameo.test.testkey";
 
 	rapidjson::StringBuffer buffer;
 	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);

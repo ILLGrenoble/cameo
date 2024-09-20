@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server;
+package eu.ill.cameo.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,14 +28,14 @@ import java.util.jar.Manifest;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.StringId;
-import fr.ill.ics.cameo.server.manager.ConfigManager;
-import fr.ill.ics.cameo.server.manager.Log;
-import fr.ill.ics.cameo.server.manager.Manager;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.StringId;
+import eu.ill.cameo.server.manager.ConfigManager;
+import eu.ill.cameo.server.manager.Log;
+import eu.ill.cameo.server.manager.Manager;
 
 public class Server {
 

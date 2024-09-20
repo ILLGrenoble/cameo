@@ -14,11 +14,11 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.examples;
+package eu.ill.cameo.examples;
 
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.basic.Request;
-import fr.ill.ics.cameo.api.coms.basic.Responder;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.basic.Request;
+import eu.ill.cameo.api.coms.basic.Responder;
 
 
 public class ResponderApp {

@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.console;
+package eu.ill.cameo.console;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,15 +25,15 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.api.base.Option;
-import fr.ill.ics.cameo.api.base.OutputPrintThread;
-import fr.ill.ics.cameo.api.base.OutputStreamSocket;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.StartException;
-import fr.ill.ics.cameo.api.base.State;
-import fr.ill.ics.cameo.api.base.UnexpectedException;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.api.base.Option;
+import eu.ill.cameo.api.base.OutputPrintThread;
+import eu.ill.cameo.api.base.OutputStreamSocket;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.StartException;
+import eu.ill.cameo.api.base.State;
+import eu.ill.cameo.api.base.UnexpectedException;
 
 public class Console {
 

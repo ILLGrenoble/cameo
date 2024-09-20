@@ -14,22 +14,22 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.multi;
+package eu.ill.cameo.api.coms.multi;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.ICancelable;
-import fr.ill.ics.cameo.api.base.IdGenerator;
-import fr.ill.ics.cameo.api.base.InitException;
-import fr.ill.ics.cameo.api.base.KeyAlreadyExistsException;
-import fr.ill.ics.cameo.api.base.StateObject;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.base.UndefinedKeyException;
-import fr.ill.ics.cameo.api.coms.multi.impl.ResponderRouterImpl;
-import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.strings.AppIdentity;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
-import fr.ill.ics.cameo.common.strings.StringId;
+import eu.ill.cameo.api.base.ICancelable;
+import eu.ill.cameo.api.base.IdGenerator;
+import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.KeyAlreadyExistsException;
+import eu.ill.cameo.api.base.StateObject;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.base.UndefinedKeyException;
+import eu.ill.cameo.api.coms.multi.impl.ResponderRouterImpl;
+import eu.ill.cameo.api.factory.ImplFactory;
+import eu.ill.cameo.common.strings.AppIdentity;
+import eu.ill.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.common.strings.StringId;
 
 /**
  * Class defining a responder router.

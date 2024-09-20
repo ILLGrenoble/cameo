@@ -14,15 +14,15 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.server.threads;
+package eu.ill.cameo.server.threads;
 
 import java.util.logging.Logger;
 
-import fr.ill.ics.cameo.server.manager.Application;
-import fr.ill.ics.cameo.server.manager.ApplicationState;
-import fr.ill.ics.cameo.server.manager.Log;
-import fr.ill.ics.cameo.server.manager.Manager;
-import fr.ill.ics.cameo.server.manager.ProcessState;
+import eu.ill.cameo.server.manager.Application;
+import eu.ill.cameo.server.manager.ApplicationState;
+import eu.ill.cameo.server.manager.Log;
+import eu.ill.cameo.server.manager.Manager;
+import eu.ill.cameo.server.manager.ProcessState;
 
 /**
  * Class following the execution of the application. 

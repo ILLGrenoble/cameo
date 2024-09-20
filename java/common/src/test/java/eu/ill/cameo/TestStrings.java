@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo;
+package eu.ill.cameo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,11 +8,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.common.strings.ApplicationWithStarterIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.ApplicationIdentity;
+import eu.ill.cameo.common.strings.ApplicationWithStarterIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
 
 public class TestStrings {
 

@@ -1,14 +1,14 @@
-package fr.ill.ics.cameo.server.manager;
+package eu.ill.cameo.server.manager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import fr.ill.ics.cameo.common.strings.ApplicationIdentity;
-import fr.ill.ics.cameo.common.strings.ApplicationWithStarterIdentity;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.processhandle.ProcessHandlerImpl;
-import fr.ill.ics.cameo.server.manager.OperatingSystem.OS;
+import eu.ill.cameo.common.strings.ApplicationIdentity;
+import eu.ill.cameo.common.strings.ApplicationWithStarterIdentity;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.processhandle.ProcessHandlerImpl;
+import eu.ill.cameo.server.manager.OperatingSystem.OS;
 
 public class RegisteredApplication extends Application {
 

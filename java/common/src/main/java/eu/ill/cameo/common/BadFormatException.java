@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.common;
+package eu.ill.cameo.common;
 
 public class BadFormatException extends RuntimeException {
 

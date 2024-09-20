@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.api.base.impl.zmq;
+package eu.ill.cameo.api.base.impl.zmq;
 /*
  * Copyright 2015 Institut Laue-Langevin
  *
@@ -22,19 +22,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.api.base.ConnectionTimeout;
-import fr.ill.ics.cameo.api.base.Context;
-import fr.ill.ics.cameo.api.base.IdGenerator;
-import fr.ill.ics.cameo.api.base.OutputStreamSocket;
-import fr.ill.ics.cameo.api.base.RequestSocket;
-import fr.ill.ics.cameo.api.base.UnexpectedException;
-import fr.ill.ics.cameo.api.base.impl.OutputStreamSocketImpl;
-import fr.ill.ics.cameo.com.Zmq;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.JSON.Parser;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.StringId;
+import eu.ill.cameo.api.base.ConnectionTimeout;
+import eu.ill.cameo.api.base.Context;
+import eu.ill.cameo.api.base.IdGenerator;
+import eu.ill.cameo.api.base.OutputStreamSocket;
+import eu.ill.cameo.api.base.RequestSocket;
+import eu.ill.cameo.api.base.UnexpectedException;
+import eu.ill.cameo.api.base.impl.OutputStreamSocketImpl;
+import eu.ill.cameo.com.Zmq;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.JSON.Parser;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.StringId;
 
 public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 	

@@ -35,7 +35,7 @@ export LD_LIBRARY_PATH=/path/to/libjzmq
 ```
 Start the cameo server with the examples configuration:
 ```
-java fr.ill.ics.cameo.server.Server examples/config.xml --log-console
+java eu.ill.cameo.server.Server examples/config.xml --log-console
 ```
 
 In each new shell, create the alias for *cmo*:
@@ -72,7 +72,7 @@ set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
 
 Run the server:
 ```
-java fr.ill.ics.cameo.server.Server examples\config.xml --log-console
+java eu.ill.cameo.server.Server examples\config.xml --log-console
 ```
 
 In each new prompt or shell, create the alias for *cmo*:

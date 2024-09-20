@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.console;
+package eu.ill.cameo.console;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
-import fr.ill.ics.cameo.api.base.RemoteException;
-import fr.ill.ics.cameo.api.base.Server;
+import eu.ill.cameo.api.base.RemoteException;
+import eu.ill.cameo.api.base.Server;
 
 public class InputThread extends Thread {
 

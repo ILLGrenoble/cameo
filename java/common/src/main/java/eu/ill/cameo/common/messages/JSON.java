@@ -1,4 +1,4 @@
-package fr.ill.ics.cameo.common.messages;
+package eu.ill.cameo.common.messages;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

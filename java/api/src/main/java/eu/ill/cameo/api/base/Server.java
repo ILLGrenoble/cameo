@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.base;
+package eu.ill.cameo.api.base;
 
 
 import java.util.ArrayList;
@@ -28,12 +28,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import fr.ill.ics.cameo.api.factory.ImplFactory;
-import fr.ill.ics.cameo.common.messages.JSON;
-import fr.ill.ics.cameo.common.messages.Messages;
-import fr.ill.ics.cameo.common.strings.Endpoint;
-import fr.ill.ics.cameo.common.strings.ServerIdentity;
-import fr.ill.ics.cameo.common.strings.StringId;
+import eu.ill.cameo.api.factory.ImplFactory;
+import eu.ill.cameo.common.messages.JSON;
+import eu.ill.cameo.common.messages.Messages;
+import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.ServerIdentity;
+import eu.ill.cameo.common.strings.StringId;
 
 /**
  * Class defining a Cameo remote server.

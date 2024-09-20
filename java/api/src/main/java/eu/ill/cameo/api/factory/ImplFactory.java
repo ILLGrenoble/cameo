@@ -14,21 +14,21 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.factory;
+package eu.ill.cameo.api.factory;
 
-import fr.ill.ics.cameo.api.base.Context;
-import fr.ill.ics.cameo.api.base.impl.EventStreamSocketImpl;
-import fr.ill.ics.cameo.api.base.impl.OutputStreamSocketImpl;
-import fr.ill.ics.cameo.api.base.impl.RequestSocketImpl;
-import fr.ill.ics.cameo.api.base.impl.zmq.ContextZmq;
-import fr.ill.ics.cameo.api.base.impl.zmq.EventStreamSocketZmq;
-import fr.ill.ics.cameo.api.base.impl.zmq.OutputStreamSocketZmq;
-import fr.ill.ics.cameo.api.base.impl.zmq.RequestSocketZmq;
-import fr.ill.ics.cameo.api.coms.impl.PublisherImpl;
-import fr.ill.ics.cameo.api.coms.impl.SubscriberImpl;
-import fr.ill.ics.cameo.api.coms.impl.zmq.PublisherZmq;
-import fr.ill.ics.cameo.api.coms.impl.zmq.SubscriberZmq;
-import fr.ill.ics.cameo.api.coms.impl.zmq.SyncPublisherZmq;
+import eu.ill.cameo.api.base.Context;
+import eu.ill.cameo.api.base.impl.EventStreamSocketImpl;
+import eu.ill.cameo.api.base.impl.OutputStreamSocketImpl;
+import eu.ill.cameo.api.base.impl.RequestSocketImpl;
+import eu.ill.cameo.api.base.impl.zmq.ContextZmq;
+import eu.ill.cameo.api.base.impl.zmq.EventStreamSocketZmq;
+import eu.ill.cameo.api.base.impl.zmq.OutputStreamSocketZmq;
+import eu.ill.cameo.api.base.impl.zmq.RequestSocketZmq;
+import eu.ill.cameo.api.coms.impl.PublisherImpl;
+import eu.ill.cameo.api.coms.impl.SubscriberImpl;
+import eu.ill.cameo.api.coms.impl.zmq.PublisherZmq;
+import eu.ill.cameo.api.coms.impl.zmq.SubscriberZmq;
+import eu.ill.cameo.api.coms.impl.zmq.SyncPublisherZmq;
 
 /**
  * Class defining an implementation factory.
@@ -112,34 +112,34 @@ public class ImplFactory {
 	
 	/**
 	 * Creates a basic responder.
-	 * @return A fr.ill.ics.cameo.coms.basic.impl.ResponderImpl object.
+	 * @return A eu.ill.cameo.coms.basic.impl.ResponderImpl object.
 	 */
-	public static fr.ill.ics.cameo.api.coms.basic.impl.ResponderImpl createBasicResponder() {
-		return new fr.ill.ics.cameo.api.coms.basic.impl.zmq.ResponderZmq();
+	public static eu.ill.cameo.api.coms.basic.impl.ResponderImpl createBasicResponder() {
+		return new eu.ill.cameo.api.coms.basic.impl.zmq.ResponderZmq();
 	}
 	
 	/**
 	 * Creates a requester.
-	 * @return A fr.ill.ics.cameo.coms.impl.RequesterImpl object.
+	 * @return A eu.ill.cameo.coms.impl.RequesterImpl object.
 	 */
-	public static fr.ill.ics.cameo.api.coms.impl.RequesterImpl createRequester() {
-		return new fr.ill.ics.cameo.api.coms.impl.zmq.RequesterZmq();
+	public static eu.ill.cameo.api.coms.impl.RequesterImpl createRequester() {
+		return new eu.ill.cameo.api.coms.impl.zmq.RequesterZmq();
 	}
 	
 	/**
 	 * Creates a multi responder.
-	 * @return A fr.ill.ics.cameo.coms.multi.impl.ResponderImpl object.
+	 * @return A eu.ill.cameo.coms.multi.impl.ResponderImpl object.
 	 */
-	public static fr.ill.ics.cameo.api.coms.multi.impl.ResponderImpl createMultiResponder() {
-		return new fr.ill.ics.cameo.api.coms.multi.impl.zmq.ResponderZmq();
+	public static eu.ill.cameo.api.coms.multi.impl.ResponderImpl createMultiResponder() {
+		return new eu.ill.cameo.api.coms.multi.impl.zmq.ResponderZmq();
 	}
 	
 	/**
 	 * Creates a multi responder router.
-	 * @return A fr.ill.ics.cameo.coms.multi.impl.ResponderRouterImpl object.
+	 * @return A eu.ill.cameo.coms.multi.impl.ResponderRouterImpl object.
 	 */
-	public static fr.ill.ics.cameo.api.coms.multi.impl.ResponderRouterImpl createMultiResponderRouter() {
-		return new fr.ill.ics.cameo.api.coms.multi.impl.zmq.ResponderRouterZmq();
+	public static eu.ill.cameo.api.coms.multi.impl.ResponderRouterImpl createMultiResponderRouter() {
+		return new eu.ill.cameo.api.coms.multi.impl.zmq.ResponderRouterZmq();
 	}
 	
 }

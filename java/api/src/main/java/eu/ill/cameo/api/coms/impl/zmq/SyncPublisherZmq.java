@@ -14,7 +14,7 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.api.coms.impl.zmq;
+package eu.ill.cameo.api.coms.impl.zmq;
 
 public class SyncPublisherZmq extends PublisherZmq {
 

@@ -1,6 +1,6 @@
-package fr.ill.ics.cameo.common.strings;
+package eu.ill.cameo.common.strings;
 
-import fr.ill.ics.cameo.common.BadFormatException;
+import eu.ill.cameo.common.BadFormatException;
 
 public class Endpoint {
 
