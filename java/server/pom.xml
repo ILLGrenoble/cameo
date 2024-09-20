@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server</artifactId>
-	<version>2.2.0</version>
+	<version>3.0.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -25,12 +25,12 @@
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-common</artifactId>
-			<version>2.2.0</version>
+			<version>3.0.0</version>
 		</dependency>
  		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-process-handle-default</artifactId>
-			<version>0.1.0</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-console</artifactId>
-	<version>2.2.0</version>
+	<version>3.0.0</version>
 	<packaging>pom</packaging>
 	
 	<properties>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-api</artifactId>
-			<version>2.2.0</version>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 
