@@ -23,19 +23,19 @@
 		
 		<!-- Java -->
 		<application name="responder-java" multiple="no">
-			<start executable="java" args="fr.ill.ics.cameo.examples.ResponderApp"/>
+			<start executable="java" args="eu.ill.cameo.examples.ResponderApp"/>
 		</application>
 		
 		<application name="requester-java" multiple="no">
-			<start executable="java" args="fr.ill.ics.cameo.examples.RequesterApp"/>
+			<start executable="java" args="eu.ill.cameo.examples.RequesterApp"/>
 		</application>
 		
 		<application name="publisher-java" multiple="no">
-			<start executable="java" args="fr.ill.ics.cameo.examples.PublisherApp"/>
+			<start executable="java" args="eu.ill.cameo.examples.PublisherApp"/>
 		</application>
 		
 		<application name="subscriber-java" multiple="no">
-			<start executable="java" args="fr.ill.ics.cameo.examples.SubscriberApp"/>
+			<start executable="java" args="eu.ill.cameo.examples.SubscriberApp"/>
 		</application>
 		
 		<!-- Python -->

@@ -169,26 +169,26 @@ To use the Java API, first add to your Maven POM file the repository:
 Then add the dependency:
 ```xml
 <dependency>
-    <groupId>fr.ill.ics</groupId>
+    <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-api</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 By default the JZMQ implementation is used which requires to have the Java ZeroMQ binding installed but if your prefer JeroMQ then add the dependencies:
 ```xml
 <dependency>
-    <groupId>fr.ill.ics</groupId>
+    <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-api</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
     <exclusions>
         <exclusion>
-            <groupId>fr.ill.ics</groupId>
+            <groupId>eu.ill.cameo</groupId>
             <artifactId>cameo-com-jzmq</artifactId>
         </exclusion>
     </exclusions>
 </dependency>
 <dependency>
-    <groupId>fr.ill.ics</groupId>
+    <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-com-jeromq</artifactId>
     <version>0.1.0</version>
 </dependency>

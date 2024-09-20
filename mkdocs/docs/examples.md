@@ -35,12 +35,12 @@ export LD_LIBRARY_PATH=/path/to/libjzmq
 ```
 Start the cameo server with the examples configuration:
 ```
-java fr.ill.ics.cameo.server.Server examples/config.xml --log-console
+java eu.ill.cameo.server.Server examples/config.xml --log-console
 ```
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-2.2.0-full.jar"
+alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar"
 ```
 
 Case *jeromq*:
@@ -50,7 +50,7 @@ export CLASSPATH=examples/java/jeromq/target/cameo-tests-jeromq-full.jar
 
 In each new shell, create the alias for *cmo*:
 ```
-alias cmo="java -jar java/console/jeromq/target/cameo-console-2.2.0-full.jar"
+alias cmo="java -jar java/console/jeromq/target/cameo-console-3.0.0-full.jar"
 ```
 
 ### Windows
@@ -72,12 +72,12 @@ set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
 
 Run the server:
 ```
-java fr.ill.ics.cameo.server.Server examples\config.xml --log-console
+java eu.ill.cameo.server.Server examples\config.xml --log-console
 ```
 
 In each new prompt or shell, create the alias for *cmo*:
 ```
-doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-2.2.0-full.jar $*
+doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-3.0.0-full.jar $*
 ```
 
 ## Requester/Responder
@@ -102,8 +102,8 @@ This example shows that by a single entry point (the console), the requester and
 
 Code is available:
 
-* [Java Responder](https://code.ill.fr/cameo/cameo/-/blob/master/examples/java/src/fr/ill/ics/cameo/examples/ResponderApp.java)
-* [Java Requester](https://code.ill.fr/cameo/cameo/-/blob/master/examples/java/src/fr/ill/ics/cameo/examples/RequesterApp.java)
+* [Java Responder](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/java/src/fr/ill/ics/cameo/examples/ResponderApp.java)
+* [Java Requester](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/java/src/fr/ill/ics/cameo/examples/RequesterApp.java)
 
 
 ### C++
@@ -121,8 +121,8 @@ Same comments as for Java.
 
 Code is available:
 
-* [C++ Responder](https://code.ill.fr/cameo/cameo/-/blob/master/examples/cpp/src/ResponderApp.cpp)
-* [C++ Requester](https://code.ill.fr/cameo/cameo/-/blob/master/examples/cpp/src/RequesterApp.cpp)
+* [C++ Responder](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/cpp/src/ResponderApp.cpp)
+* [C++ Requester](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/cpp/src/RequesterApp.cpp)
 
 
 ### Python
@@ -140,8 +140,8 @@ Same comments as for Java.
 
 Code is available:
 
-* [Python Responder](https://code.ill.fr/cameo/cameo/-/blob/master/examples/python/src/responderapp.py)
-* [Python Requester](https://code.ill.fr/cameo/cameo/-/blob/master/examples/python/src/requesterapp.py)
+* [Python Responder](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/python/src/responderapp.py)
+* [Python Requester](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/python/src/requesterapp.py)
 
 ### Mixing languages
 
@@ -187,8 +187,8 @@ This example shows that by a single entry point (the console), the subscriber an
 
 Code is available:
 
-* [Java Publisher](https://code.ill.fr/cameo/cameo/-/blob/master/examples/java/src/fr/ill/ics/cameo/examples/PublisherApp.java)
-* [Java Subscriber](https://code.ill.fr/cameo/cameo/-/blob/master/examples/java/src/fr/ill/ics/cameo/examples/SubscriberApp.java)
+* [Java Publisher](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/java/src/fr/ill/ics/cameo/examples/PublisherApp.java)
+* [Java Subscriber](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/java/src/fr/ill/ics/cameo/examples/SubscriberApp.java)
 
 
 ### C++
@@ -206,8 +206,8 @@ Same comments as for Java.
 
 Code is available:
 
-* [C++ Publisher](https://code.ill.fr/cameo/cameo/-/blob/master/examples/cpp/src/PublisherApp.cpp)
-* [C++ Subscriber](https://code.ill.fr/cameo/cameo/-/blob/master/examples/cpp/src/SubscriberApp.cpp)
+* [C++ Publisher](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/cpp/src/PublisherApp.cpp)
+* [C++ Subscriber](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/cpp/src/SubscriberApp.cpp)
 
 
 ### Python
@@ -225,8 +225,8 @@ Same comments as for Java.
 
 Code is available:
 
-* [Python Publisher](https://code.ill.fr/cameo/cameo/-/blob/master/examples/python/src/publisherapp.py)
-* [Python Subscriber](https://code.ill.fr/cameo/cameo/-/blob/master/examples/python/src/subscriberapp.py)
+* [Python Publisher](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/python/src/publisherapp.py)
+* [Python Subscriber](https://github.com/ILLGrenoble/cameo/blob/cmake-review-cppzmq/examples/python/src/subscriberapp.py)
 
 
 ### Mixing languages

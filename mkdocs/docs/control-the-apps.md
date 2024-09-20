@@ -47,7 +47,7 @@ Sequence of actions:
 Let's see the code for each application. The application *App2* written in Java can look like:
 
 ```java
-import fr.ill.ics.cameo.base.This;
+import eu.ill.cameo.base.This;
 
 public class JavaApp {
 
@@ -330,7 +330,7 @@ This example uses an *std::atomic_bool* variable to stop the while loop.
 
 An example in Java:
 ```java
-import fr.ill.ics.cameo.base.This;
+import eu.ill.cameo.base.This;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class JavaStop {
@@ -404,7 +404,7 @@ To finish, it is **highly recommended** to follow these guidelines to implement 
 There are some use cases where it is interesting or even necessary to get a reference to the application that started *this* application.
 Let's take the previous example where we defined the code of *App2*. We modify it to get an access to the *starter* app:
 ```java
-import fr.ill.ics.cameo.base.This;
+import eu.ill.cameo.base.This;
 
 public class JavaApp {
 

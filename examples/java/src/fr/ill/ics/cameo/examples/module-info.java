@@ -1,5 +1,5 @@
-module fr.ill.ics.cameo.examples {
+module eu.ill.cameo.examples {
 	
-	requires fr.ill.ics.cameo.server;
-	requires fr.ill.ics.cameo.api;
+	requires eu.ill.cameo.server;
+	requires eu.ill.cameo.api;
 }

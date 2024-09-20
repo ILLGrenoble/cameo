@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 
 In Java:
 ```java
-import fr.ill.ics.cameo.base.This;
+import eu.ill.cameo.base.This;
 
 public static void main(String[] args) {
 

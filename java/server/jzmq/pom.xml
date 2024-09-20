@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fr.ill.ics</groupId>
+		<groupId>eu.ill.cameo</groupId>
 		<artifactId>cameo-server</artifactId>
-		<version>2.2.0</version>
+		<version>3.0.0</version>
 	</parent>
 	<artifactId>cameo-server-jzmq</artifactId>
 	
 	<dependencies>
 		<dependency>
-			<groupId>fr.ill.ics</groupId>
+			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-com-jzmq</artifactId>
-			<version>0.1.0</version>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

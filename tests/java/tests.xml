@@ -7,187 +7,187 @@
 		<!-- Java apps -->
 
 		<application name="testappexceptionsjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestAppExceptions"/>	
+			<start executable="java" args="eu.ill.cameo.test.TestAppExceptions"/>	
 		</application>
 		
 		<application name="simplejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Simple"/>
+			<start executable="java" args="eu.ill.cameo.test.Simple"/>
 		</application>
 		
 		<application name="testsimplejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestSimple"/>
+			<start executable="java" args="eu.ill.cameo.test.TestSimple"/>
 		</application>
 		
 		<application name="veryfastjava" starting_time="0" stopping_time="0" output_stream="yes" multiple="yes" restart="no" info_arg="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.VeryFast"/>
+			<start executable="java" args="eu.ill.cameo.test.VeryFast"/>
 		</application>
 		
 		<application name="testveryfastjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestVeryFast"/>
+			<start executable="java" args="eu.ill.cameo.test.TestVeryFast"/>
 		</application>
 		
 		<application name="stopjava" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
+			<start executable="java" args="eu.ill.cameo.test.Stop"/>
 		</application>
 		
 		<application name="teststopjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestStop"/>
+			<start executable="java" args="eu.ill.cameo.test.TestStop"/>
 		</application>
 		
 		<application name="resultjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Result"/>
+			<start executable="java" args="eu.ill.cameo.test.Result"/>
 		</application>
 		
 		<application name="testresultjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestResult"/>
+			<start executable="java" args="eu.ill.cameo.test.TestResult"/>
 		</application>
 		
 		<application name="errorjava" starting_time="0" stopping_time="1" multiple="no" restart="no" info_arg="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Error"/>
+			<start executable="java" args="eu.ill.cameo.test.Error"/>
 		</application>
 		
 		<application name="testerrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestError"/>
+			<start executable="java" args="eu.ill.cameo.test.TestError"/>
 		</application>
 								
 		<application name="teststoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestStorage"/>
+			<start executable="java" args="eu.ill.cameo.test.TestStorage"/>
 		</application>
 		
 		<application name="waitstoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.WaitStorage"/>
+			<start executable="java" args="eu.ill.cameo.test.WaitStorage"/>
 		</application>
 		
 		<application name="testwaitstoragejava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestWaitStorage"/>
+			<start executable="java" args="eu.ill.cameo.test.TestWaitStorage"/>
 		</application>
 				
 		<application name="basicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.BasicResponder"/>
+			<start executable="java" args="eu.ill.cameo.test.BasicResponder"/>
 		</application>
 		
 		<application name="testbasicresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicResponder basicresponderjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestBasicResponder basicresponderjava"/>
 		</application>
 	
 		<application name="basicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.BasicRequester"/>
+			<start executable="java" args="eu.ill.cameo.test.BasicRequester"/>
 		</application>
 		
 		<application name="testbasicrequesterjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestBasicRequester basicrequesterjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestBasicRequester basicrequesterjava"/>
 		</application>
 		
 		<application name="publisherjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Publisher"/>
+			<start executable="java" args="eu.ill.cameo.test.Publisher"/>
 		</application>
 				
 		<application name="testpublisherjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisher publisherjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestPublisher publisherjava"/>
 		</application>
 		
 		<application name="publishersyncjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Publisher true 1"/>
+			<start executable="java" args="eu.ill.cameo.test.Publisher true 1"/>
 		</application>
 		
 		<application name="testpublishersyncjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisher publishersyncjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestPublisher publishersyncjava"/>
 		</application>
 		
 		<application name="subscriberjava" starting_time="0" stopping_time="1" multiple="yes" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Subscriber"/>
+			<start executable="java" args="eu.ill.cameo.test.Subscriber"/>
 		</application>
 		
 		<application name="testsubscriberjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestSubscriber subscriberjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestSubscriber subscriberjava"/>
 		</application>
 		
 		<application name="publisherloopjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.PublisherLoop"/>
+			<start executable="java" args="eu.ill.cameo.test.PublisherLoop"/>
 		</application>
 						
 		<application name="testcanceljava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestCancel"/>
+			<start executable="java" args="eu.ill.cameo.test.TestCancel"/>
 		</application>
 		
 		<application name="comportjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.ComPort"/>
+			<start executable="java" args="eu.ill.cameo.test.ComPort"/>
 		</application>
 		
 		<application name="testcomportjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestComPort"/>
+			<start executable="java" args="eu.ill.cameo.test.TestComPort"/>
 		</application>
 		
 		<application name="streamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Stream"/>
+			<start executable="java" args="eu.ill.cameo.test.Stream"/>
 		</application>
 		
 		<application name="teststreamjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestStream"/>
+			<start executable="java" args="eu.ill.cameo.test.TestStream"/>
 		</application>
 		
 		<application name="testcheckappjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestCheckApp"/>	
+			<start executable="java" args="eu.ill.cameo.test.TestCheckApp"/>	
 		</application>
 		
 		<application name="multiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponder"/>
+			<start executable="java" args="eu.ill.cameo.test.MultiResponder"/>
 		</application>
 		
 		<application name="testmultiresponderjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponder multiresponderjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestMultiResponder multiresponderjava"/>
 		</application>
 		
 		<application name="multirespondersjava" starting_time="0" stopping_time="inf" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.MultiResponders"/>
+			<start executable="java" args="eu.ill.cameo.test.MultiResponders"/>
 		</application>
 
 		<application name="testmultirespondersjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestMultiResponders multirespondersjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestMultiResponders multirespondersjava"/>
 		</application>
 		
 		<application name="linkedjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Linked"/>
+			<start executable="java" args="eu.ill.cameo.test.Linked"/>
 		</application>
 		
 		<application name="testlinkedjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestLinked"/>
+			<start executable="java" args="eu.ill.cameo.test.TestLinked"/>
 		</application>
 		
 		<application name="maxstopjava" starting_time="inf" stopping_time="inf" output_stream="yes" multiple="10" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.Stop"/>
+			<start executable="java" args="eu.ill.cameo.test.Stop"/>
 		</application>
 		
 		<application name="testmaxappsjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestMaxApps 11"/>
+			<start executable="java" args="eu.ill.cameo.test.TestMaxApps 11"/>
 		</application>
 	
 		<application name="comstimeoutjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.ComsTimeout"/>
+			<start executable="java" args="eu.ill.cameo.test.ComsTimeout"/>
 		</application>
 		
 		<application name="testcomstimeoutjava" starting_time="inf" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestComsTimeout"/>
+			<start executable="java" args="eu.ill.cameo.test.TestComsTimeout"/>
 		</application>
 	
 		<application name="respondererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.ResponderError"/>
+			<start executable="java" args="eu.ill.cameo.test.ResponderError"/>
 		</application>
 
 		<application name="testrespondererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestResponderError respondererrorjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestResponderError respondererrorjava"/>
 		</application>
 	
 		<application name="publishererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.PublisherError"/>
+			<start executable="java" args="eu.ill.cameo.test.PublisherError"/>
 		</application>
 
 		<application name="testpublishererrorjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestPublisherError publishererrorjava"/>
+			<start executable="java" args="eu.ill.cameo.test.TestPublisherError publishererrorjava"/>
 		</application>
 	
 		<application name="testsubscribertimeoutjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
-			<start executable="java" args="fr.ill.ics.cameo.test.TestSubscriberTimeout"/>
+			<start executable="java" args="eu.ill.cameo.test.TestSubscriberTimeout"/>
 		</application>
 
 		<!-- C++ apps -->

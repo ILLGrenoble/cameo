@@ -28,7 +28,7 @@ export CLASSPATH=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
 
 You shall define the variable *LD_LIBRARY_PATH* so that *libjzmq.so* is found:
 ```
-export LD_LIBRARY_PATH=<path-to-libjzmq>
+export LD_LIBRARY_PATH=/path/to/libjzmq
 ```
 
 Case *jeromq*:
@@ -58,38 +58,38 @@ set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
 
 Run all the tests with 10 iterations for each individual test:  
 ``` 
-java fr.ill.ics.cameo.test.TestSelector all 10
+java eu.ill.cameo.test.TestSelector all 10
 ```
 Start only the java tests:
 ```
-java fr.ill.ics.cameo.test.TestSelector java 10
+java eu.ill.cameo.test.TestSelector java 10
 ```
 Start only the C++ tests:
 ```
-java fr.ill.ics.cameo.test.TestSelector cpp 10
+java eu.ill.cameo.test.TestSelector cpp 10
 ```
 Start only the Python tests:
 ```
-java fr.ill.ics.cameo.test.TestSelector python 10
+java eu.ill.cameo.test.TestSelector python 10
 ```
 Display the available tests:
 ```
-java fr.ill.ics.cameo.test.TestSelector
+java eu.ill.cameo.test.TestSelector
 ```
 	
 Start a specific test:
 ```
-java fr.ill.ics.cameo.test.TestSelector testsimplejava 100
+java eu.ill.cameo.test.TestSelector testsimplejava 100
 ```
 
 Test the Java unmanaged application:
 Start the server in a specific shell
 ```
-java fr.ill.ics.cameo.server.Server tests/java/tests.xml
+java eu.ill.cameo.server.Server tests/java/tests.xml
 ```
 Start the application:
 ```
-java fr.ill.ics.cameo.test.Stop "{\"name\":\"stop\", \"server\":\"tcp://localhost:11000\"}"
+java eu.ill.cameo.test.Stop "{\"name\":\"stop\", \"server\":\"tcp://localhost:11000\"}"
 ```
 
 Then kill the application that should disappear from the list of applications.

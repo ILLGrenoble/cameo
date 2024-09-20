@@ -14,13 +14,13 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.examples;
+package eu.ill.cameo.examples;
 
-import fr.ill.ics.cameo.api.base.App;
-import fr.ill.ics.cameo.api.base.Server;
-import fr.ill.ics.cameo.api.base.State;
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.Requester;
+import eu.ill.cameo.api.base.App;
+import eu.ill.cameo.api.base.Server;
+import eu.ill.cameo.api.base.State;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.Requester;
 
 
 public class RequesterApp {

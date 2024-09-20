@@ -14,12 +14,12 @@
  * limitations under the Licence.
  */
 
-package fr.ill.ics.cameo.examples;
+package eu.ill.cameo.examples;
 
 import org.json.simple.JSONObject;
 
-import fr.ill.ics.cameo.api.base.This;
-import fr.ill.ics.cameo.api.coms.Publisher;
+import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.Publisher;
 
 public class PublisherApp {
 	
