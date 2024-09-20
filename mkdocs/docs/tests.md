@@ -28,7 +28,7 @@ export CLASSPATH=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
 
 You shall define the variable *LD_LIBRARY_PATH* so that *libjzmq.so* is found:
 ```
-export LD_LIBRARY_PATH=<path-to-libjzmq>
+export LD_LIBRARY_PATH=/path/to/libjzmq
 ```
 
 Case *jeromq*:
