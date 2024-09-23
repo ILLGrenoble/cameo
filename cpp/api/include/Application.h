@@ -126,65 +126,61 @@ private:
 	std::unique_ptr<App> m_app;
 };
 
-/**
- * Alias for the state of an App.
- */
-typedef int32_t State;
+namespace state {
 
-#undef ERROR
+typedef int32_t Value;
 
 /**
  * Unknown state.
  */
-const State NIL = 0;
+const Value NIL = 0;
 
 /**
  * Starting state.
  */
-const State STARTING = 1;
+const Value STARTING = 1;
 
 /**
  * Running state.
  */
-const State RUNNING = 2;
+const Value RUNNING = 2;
 
 /**
  * Stopping state.
  */
-const State STOPPING = 4;
+const Value STOPPING = 4;
 
 /**
  * Killing state.
  */
-const State KILLING = 8;
+const Value KILLING = 8;
 
 /**
  * Processing error state.
  */
-const State PROCESSING_FAILURE = 16;
-
-[[deprecated("Use PROCESSING_FAILURE instead.")]]
-const State PROCESSING_ERROR = 16;
+const Value PROCESSING_FAILURE = 16;
 
 /**
  * Failure state.
  */
-const State FAILURE = 32;
+const Value FAILURE = 32;
 
 /**
  * Success state.
  */
-const State SUCCESS = 64;
+const Value SUCCESS = 64;
 
 /**
  * Stopped state.
  */
-const State STOPPED = 128;
+const Value STOPPED = 128;
 
 /**
  * Killed state.
  */
-const State KILLED = 256;
+const Value KILLED = 256;
+
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // This
@@ -429,8 +425,8 @@ private:
 	void initApplication(const std::string &name, const std::string &endpoint);
 	void initApplication();
 
-	static State parseState(const std::string &value);
-	State getState(int id) const;
+	static state::Value parseState(const std::string &value);
+	state::Value getState(int id) const;
 
 	int initUnregisteredApplication();
 	void terminateUnregisteredApplication();
@@ -676,7 +672,7 @@ public:
 		 * \param pastApplicationStates The past application states.
 		 * \param args The arguments of the executable.
 		 */
-		Info(const std::string &name, int id, int pid, State applicationState, State pastApplicationStates, const std::string &args);
+		Info(const std::string &name, int id, int pid, state::Value applicationState, state::Value pastApplicationStates, const std::string &args);
 
 		/**
 		 * Gets the id.
@@ -688,13 +684,13 @@ public:
 		 * Gets the state.
 		 * \return The state.
 		 */
-		State getState() const;
+		state::Value getState() const;
 
 		/**
 		 * Gets the past states.
 		 * \return the past states.
 		 */
-		State getPastStates() const;
+		state::Value getPastStates() const;
 
 		/**
 		 * Gets the arguments of the executable.
@@ -723,8 +719,8 @@ public:
 	private:
 		int m_id;
 		int m_pid;
-		State m_applicationState;
-		State m_pastApplicationStates;
+		state::Value m_applicationState;
+		state::Value m_pastApplicationStates;
 		std::string m_processState;
 		std::string m_args;
 		std::string m_name;
@@ -861,14 +857,14 @@ public:
 	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The state when the call returned.
 	 */
-	State waitFor(int states);
+	state::Value waitFor(int states);
 
 	/**
 	 * Waits for the termination of the application.
 	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The terminal state.
 	 */
-	State waitFor();
+	state::Value waitFor();
 
 	/**
 	 * Waits for the key value.
@@ -876,7 +872,7 @@ public:
 	 * \param keyValue The key value.
 	 * \return The state when the call returned.
 	 */
-	State waitFor(KeyValue &keyValue);
+	state::Value waitFor(KeyValue &keyValue);
 
 	/**
 	 * Cancels the blocking waitFor() in another thread.
@@ -887,22 +883,22 @@ public:
 	 * Gets the last state.
 	 * \return The last state.
 	 */
-	State getLastState();
+	state::Value getLastState();
 
 	[[deprecated("Use getState() instead.")]]
-	State getActualState() const;
+	state::Value getActualState() const;
 
 	/**
 	 * Returns the current state and NIL if the instance does not exist anymore.
 	 * \return The current state.
 	 */
-	State getState() const;
+	state::Value getState() const;
 
 	/**
 	 * Returns the past states.
 	 * \return The past states.
 	 */
-	std::set<State> getPastStates() const;
+	std::set<state::Value> getPastStates() const;
 
 	/**
 	 * Returns the exit code.
@@ -914,7 +910,7 @@ public:
 	 * Gets the initial state.
 	 * \return The initial state.
 	 */
-	State getInitialState() const;
+	state::Value getInitialState() const;
 
 	/**
 	 * Returns the result if there is one.
@@ -939,9 +935,9 @@ private:
 
 	void setId(int id);
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket> &socket);
-	void setPastStates(State pastStates);
-	void setInitialState(State state);
-	State waitFor(int states, KeyValue &keyValue, bool blocking);
+	void setPastStates(state::Value pastStates);
+	void setInitialState(state::Value state);
+	state::Value waitFor(int states, KeyValue &keyValue, bool blocking);
 
 	Server *m_server;
 	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;
@@ -949,8 +945,8 @@ private:
 	Com m_com;
 
 	int m_pastStates;
-	State m_initialState;
-	State m_lastState;
+	state::Value m_initialState;
+	state::Value m_lastState;
 	bool m_hasResult;
 	std::string m_resultData;
 	int m_exitCode;
@@ -967,7 +963,7 @@ typedef std::vector<std::unique_ptr<App>> AppArray;
 /**
  * Converts a set of states to a string.
  */
-std::string toString(cameo::State applicationStates);
+std::string toString(cameo::state::Value applicationStates);
 
 /**
  * Stream operator for an App object.

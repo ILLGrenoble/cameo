@@ -47,7 +47,7 @@ int main(int, char *[]) {
 
 	try {
 		unique_ptr<App> instance = server->start("simplecpp");
-		State state = instance->waitFor();
+		state::Value state = instance->waitFor();
 
 		cout << "Terminated simple with state " << toString(state) << endl;
 	}

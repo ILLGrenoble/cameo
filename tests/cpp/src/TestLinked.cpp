@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
 
 		{
 			unique_ptr<App> app = server->start("linkedcpp");
-			State state = app->waitFor(RUNNING);
+			state::Value state = app->waitFor(state::RUNNING);
 			unique_ptr<App> stopApp = server->connect("stopcpp");
-			state = stopApp->waitFor(RUNNING);
+			state = stopApp->waitFor(state::RUNNING);
 
 			app->kill();
 			app->waitFor();
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 		{
 			unique_ptr<App> app = server->start("linkedcpp");
-			State state = app->waitFor(RUNNING);
+			state::Value state = app->waitFor(state::RUNNING);
 			unique_ptr<App> stopApp = server->connect("stopcpp");
 
 			app->kill();

@@ -20,7 +20,7 @@ server.init()
 this.setRunning()
 
 app = server.start("comstimeoutpy")
-app.waitFor(cameopy.RUNNING)
+app.waitFor(cameopy.state.RUNNING)
 
 publisher = cameopy.coms.Publisher.create("pub")
 publisher.setWaitForSubscribers(2)

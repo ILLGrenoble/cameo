@@ -40,7 +40,7 @@ public:
 	 * \param pastStates The past states.
 	 * \param exitCode The exit code.
 	 */
-	StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode = -1);
+	StatusEvent(int id, const std::string& name, state::Value state, state::Value pastStates, int exitCode = -1);
 
 	/**
 	 * Copy constructor.
@@ -58,13 +58,13 @@ public:
 	 * Gets the current state.
 	 * \return The state.
 	 */
-	State getState() const;
+	state::Value getState() const;
 
 	/**
 	 * Gets the past states.
 	 * \return The past states.
 	 */
-	State getPastStates() const;
+	state::Value getPastStates() const;
 
 	/**
 	 * Gets the exit code.
@@ -79,8 +79,8 @@ public:
 	std::string toString() const;
 
 private:
-	State m_state;
-	State m_pastStates;
+	state::Value m_state;
+	state::Value m_pastStates;
 	int m_exitCode; // TODO replace with optional
 };
 

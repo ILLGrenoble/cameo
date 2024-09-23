@@ -476,8 +476,8 @@ std::vector<App::Info> Server::getApplicationInfos() const {
 		std::string name {info[message::ApplicationInfo::NAME].GetString()};
 		int id {info[message::ApplicationInfo::ID].GetInt()};
 		int pid {info[message::ApplicationInfo::PID].GetInt()};
-		State state {info[message::ApplicationInfo::APPLICATION_STATE].GetInt()};
-		State pastStates {info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt()};
+		state::Value state {info[message::ApplicationInfo::APPLICATION_STATE].GetInt()};
+		state::Value pastStates {info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt()};
 		std::string args {info[message::ApplicationInfo::ARGS].GetString()};
 
 		App::Info applicationInfo{name,
@@ -533,60 +533,60 @@ std::vector<App::Port> Server::getPorts() const {
 	return ports;
 }
 
-State Server::getActualState(int id) const {
+state::Value Server::getActualState(int id) const {
 	return getState(id);
 }
 
 
-State Server::getState(int id) const {
+state::Value Server::getState(int id) const {
 
 	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
 
 	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-std::set<State> Server::getPastStates(int id) const {
+std::set<state::Value> Server::getPastStates(int id) const {
 
 	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
 
-	State applicationStates {response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
+	state::Value applicationStates {response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
 
-	std::set<State> result;
+	std::set<state::Value> result;
 
-	if ((applicationStates & STARTING) != 0) {
-		result.insert(STARTING);
+	if ((applicationStates & state::STARTING) != 0) {
+		result.insert(state::STARTING);
 	}
 
-	if ((applicationStates & RUNNING) != 0) {
-		result.insert(RUNNING);
+	if ((applicationStates & state::RUNNING) != 0) {
+		result.insert(state::RUNNING);
 	}
 
-	if ((applicationStates & STOPPING) != 0) {
-		result.insert(STOPPING);
+	if ((applicationStates & state::STOPPING) != 0) {
+		result.insert(state::STOPPING);
 	}
 
-	if ((applicationStates & KILLING) != 0) {
-		result.insert(KILLING);
+	if ((applicationStates & state::KILLING) != 0) {
+		result.insert(state::KILLING);
 	}
 
-	if ((applicationStates & PROCESSING_FAILURE) != 0) {
-		result.insert(PROCESSING_FAILURE);
+	if ((applicationStates & state::PROCESSING_FAILURE) != 0) {
+		result.insert(state::PROCESSING_FAILURE);
 	}
 
-	if ((applicationStates & FAILURE) != 0) {
-		result.insert(FAILURE);
+	if ((applicationStates & state::FAILURE) != 0) {
+		result.insert(state::FAILURE);
 	}
 
-	if ((applicationStates & SUCCESS) != 0) {
-		result.insert(SUCCESS);
+	if ((applicationStates & state::SUCCESS) != 0) {
+		result.insert(state::SUCCESS);
 	}
 
-	if ((applicationStates & STOPPED) != 0) {
-		result.insert(STOPPED);
+	if ((applicationStates & state::STOPPED) != 0) {
+		result.insert(state::STOPPED);
 	}
 
-	if ((applicationStates & KILLED) != 0) {
-		result.insert(KILLED);
+	if ((applicationStates & state::KILLED) != 0) {
+		result.insert(state::KILLED);
 	}
 
 	return result;

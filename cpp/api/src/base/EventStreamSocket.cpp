@@ -60,8 +60,8 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 
 		int id {event[message::StatusEvent::ID].GetInt()};
 		std::string name {event[message::StatusEvent::NAME].GetString()};
-		State state {event[message::StatusEvent::APPLICATION_STATE].GetInt()};
-		State pastStates {event[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
+		state::Value state {event[message::StatusEvent::APPLICATION_STATE].GetInt()};
+		state::Value pastStates {event[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
 
 		if (event.HasMember(message::StatusEvent::EXIT_CODE)) {
 			return std::make_unique<StatusEvent>(id, name, state, pastStates, event[message::StatusEvent::EXIT_CODE].GetInt());

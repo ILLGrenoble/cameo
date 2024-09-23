@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 			cout << "Requester canceled, last responder application state " << toString(responderApplication->getLastState()) << endl;
 		}
 
-		State state = responderApplication->waitFor();
+		state::Value state = responderApplication->waitFor();
 
 		cout << "Responder application terminated with state " << toString(state) << endl;
 

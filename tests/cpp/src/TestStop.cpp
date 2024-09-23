@@ -21,7 +21,7 @@ using namespace std;
 using namespace cameo;
 
 struct StateHandler {
-	void operator()(State state) {
+	void operator()(state::Value state) {
 		cout << "Received state " << toString(state) << endl;
 	}
 };

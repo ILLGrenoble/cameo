@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 			This::cancelAll();
 		});
 
-		State state = stopApplication->waitFor();
+		state::Value state = stopApplication->waitFor();
 
 		cout << "End of waitFor with state " << toString(state) << endl;
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 			stopApplication->cancel();
 		});
 
-		State state = stopApplication->waitFor();
+		state::Value state = stopApplication->waitFor();
 
 		cout << "End of waitFor with state " << toString(state) << endl;
 
@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
 
 		cout << "Subscriber end of stream " << subscriber->hasEnded() << endl;
 
-		State state = pubLoopApplication->waitFor();
+		state::Value state = pubLoopApplication->waitFor();
 
 		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
 			pubLoopApplication->kill();
 		});
 
-		State state = pubLoopApplication->waitFor();
+		state::Value state = pubLoopApplication->waitFor();
 
 		cout << "End of publisherloopcpp with state " << toString(state) << endl;
 

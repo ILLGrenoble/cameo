@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 	unique_ptr<App> app = server->start("comstimeoutcpp");
 
 	// Wait for running to synchronize with the beginning of the requester init.
-	app->waitFor(cameo::RUNNING);
+	app->waitFor(cameo::state::RUNNING);
 
 	// Wait for 250ms which is half the requester timeout.
 	std::this_thread::sleep_for(std::chrono::milliseconds(250));

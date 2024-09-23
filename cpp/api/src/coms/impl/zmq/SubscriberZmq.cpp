@@ -207,13 +207,13 @@ std::optional<std::string> SubscriberZmq::receive() {
 			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
+				state::Value state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == SUCCESS
-					|| state == STOPPED
-					|| state == KILLED
-					|| state == FAILURE) {
+				if (state == state::SUCCESS
+					|| state == state::STOPPED
+					|| state == state::KILLED
+					|| state == state::FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}
@@ -288,13 +288,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
+				state::Value state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == SUCCESS
-					|| state == STOPPED
-					|| state == KILLED
-					|| state == FAILURE) {
+				if (state == state::SUCCESS
+					|| state == state::STOPPED
+					|| state == state::KILLED
+					|| state == state::FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}

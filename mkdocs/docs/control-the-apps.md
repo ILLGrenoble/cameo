@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     std::unique_ptr<cameo::App> app2 = server.start("App2");
 
     // Wait for the end of the app and get the terminal state.
-    cameo::State state = app2->waitFor();
+    cameo::state::Value state = app2->waitFor();
 
     // Print the terminal state.
     std::cout << "The application " << *app2 
@@ -254,13 +254,13 @@ There are different ways to get the state of an app. We already saw that *waitFo
 For example in C++:
 ```cpp
 // Get the last execution state.
-cameo::State state = app->getLastState();
+cameo::state::Value state = app->getLastState();
 
 // Get the actual state that can be NIL if the app is not executing anymore.
-cameo::State state = app->getActualState();
+cameo::state::Value state = app->getActualState();
 
 // Get the past execution states, e.g. from RUNNING to SUCCESS.
-std::set<cameo::State> states = app->getPastStates();
+std::set<cameo::state::Value> states = app->getPastStates();
 ```
 
 The call to *getLastState()* does not invoke a call on the CAMEO server but only pulls all the states already received. If the app has terminated then it should be *SUCCESS*, *STOPPED*, *KILLED* or *FAILURE*.
@@ -277,7 +277,7 @@ For example in C++:
 std::unique_ptr<cameo::App> app4 = server.connect("App4");
 
 // Wait for the end of the app and get the terminal state.
-cameo::State state = app4->waitFor();
+cameo::state::Value state = app4->waitFor();
 
 // Get the exit code.
 int exitCode = app4->getExitCode();

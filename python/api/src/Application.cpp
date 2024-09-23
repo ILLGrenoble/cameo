@@ -34,22 +34,24 @@ PYBIND11_MODULE(cameopy, m) {
 	m.doc() = "Python binding of Cameo C++ API"; // optional module docstring
 	m.def("toString", &toString, "Function converting numerical state to its string representation");
 
-	m.attr("NIL")                = NIL;
-	m.attr("STARTING")           = STARTING;
-	m.attr("RUNNING")            = RUNNING;
-	m.attr("STOPPING")           = STOPPING;
-	m.attr("KILLING")            = KILLING;
-	m.attr("PROCESSING_FAILURE") = PROCESSING_FAILURE;
-	m.attr("FAILURE")            = FAILURE;
-	m.attr("SUCCESS")            = SUCCESS;
-	m.attr("STOPPED")            = STOPPED;
-	m.attr("KILLED")             = KILLED;
+	py::module sm = m.def_submodule("state", "State module");
+
+	sm.attr("NIL")                = state::NIL;
+	sm.attr("STARTING")           = state::STARTING;
+	sm.attr("RUNNING")            = state::RUNNING;
+	sm.attr("STOPPING")           = state::STOPPING;
+	sm.attr("KILLING")            = state::KILLING;
+	sm.attr("PROCESSING_FAILURE") = state::PROCESSING_FAILURE;
+	sm.attr("FAILURE")            = state::FAILURE;
+	sm.attr("SUCCESS")            = state::SUCCESS;
+	sm.attr("STOPPED")            = state::STOPPED;
+	sm.attr("KILLED")             = state::KILLED;
 
 	py::module om = m.def_submodule("option", "Option module");
 
-	om.attr("OUTPUTSTREAM")       = cameo::option::OUTPUTSTREAM;
-	om.attr("UNLINKED")           = cameo::option::UNLINKED;
-	om.attr("USE_PROXY")          = cameo::option::USE_PROXY;
+	om.attr("OUTPUTSTREAM")       = option::OUTPUTSTREAM;
+	om.attr("UNLINKED")           = option::UNLINKED;
+	om.attr("USE_PROXY")          = option::USE_PROXY;
 
 
 
@@ -261,7 +263,7 @@ PYBIND11_MODULE(cameopy, m) {
 				py::call_guard<py::gil_scoped_release>());
 
 	py::class_<App::Info>(am, "Info")
-		.def(py::init<const std::string&, int, int, State, State, const std::string&>())
+		.def(py::init<const std::string&, int, int, state::Value, state::Value, const std::string&>())
 		.def("getId", &App::Info::getId)
 		.def("getState", &App::Info::getState)
 		.def("getPastStates", &App::Info::getPastStates)

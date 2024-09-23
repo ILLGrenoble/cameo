@@ -44,8 +44,8 @@ void Requester::Checker::start() {
 	m_thread = std::make_unique<std::thread>([&] {
 
 		// Wait for the app that can be canceled.
-		State state = m_app->waitFor();
-		if (state == FAILURE) {
+		state::Value state = m_app->waitFor();
+		if (state == state::FAILURE) {
 			// Cancel the requester if the app fails.
 			m_requester.cancel();
 		}

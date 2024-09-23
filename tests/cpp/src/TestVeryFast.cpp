@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 		// start the application.
 		unique_ptr<App> app = server->start("veryfastcpp", option::OUTPUTSTREAM);
 
-		State state = app->waitFor();
+		state::Value state = app->waitFor();
 
 		cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 	}

@@ -207,21 +207,21 @@ public:
 	std::vector<App::Port> getPorts() const;
 
 	[[deprecated("Use getState(int) instead.")]]
-	State getActualState(int id) const;
+	state::Value getActualState(int id) const;
 
 	/**
 	 * Gets the actual state of an application.
 	 * \param id The id of the application.
 	 * \return The actual state.
 	 */
-	State getState(int id) const;
+	state::Value getState(int id) const;
 
 	/**
 	 * Gets the past states of an application.
 	 * \param id The id of the application.
 	 * \return The set of states.
 	 */
-	std::set<State> getPastStates(int id) const;
+	std::set<state::Value> getPastStates(int id) const;
 
 	/**
 	 * Creates an event stream socket.

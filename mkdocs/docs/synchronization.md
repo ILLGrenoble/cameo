@@ -156,7 +156,7 @@ The application that starts *CppApp* in Python:
 app = server.start("CppApp")
 
 # Wait for the state RUNNING.
-app.waitFor(cameopy.RUNNING)
+app.waitFor(cameopy.state.RUNNING)
 ```
 
 The call to *waitFor()* will wait until the state *RUNNING* is published by the CAMEO server of *CppApp*.

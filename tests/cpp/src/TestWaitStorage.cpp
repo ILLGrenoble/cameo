@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 		app->waitFor(keyValue);
 		cout << "storage event " << keyValue.getStatus() << " " << keyValue.getValue() << endl;
 
-		State state = app->waitFor();
+		state::Value state = app->waitFor();
 
 		cout << "finished the application " << *app << " with state " << toString(state) << endl;
 	}

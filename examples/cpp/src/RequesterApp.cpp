@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
 	// Stop the responder app and wait for its termination.
 	responderApp->stop();
-	State state = responderApp->waitFor();
+	state::Value state = responderApp->waitFor();
 
 	std::cout << "App responder finished with state " << toString(state) << std::endl;
 

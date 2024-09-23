@@ -130,40 +130,40 @@ std::unique_ptr<RequestSocket> This::Com::createRequestSocket(const std::string&
 	return m_server->createRequestSocket(endpoint, responderIdentity, timeout);
 }
 
-State This::parseState(const std::string& value) {
+state::Value This::parseState(const std::string& value) {
 
 	if (value == "NIL") {
-		return NIL;
+		return state::NIL;
 	}
 	else if (value == "STARTING") {
-		return STARTING;
+		return state::STARTING;
 	}
 	else if (value == "RUNNING") {
-		return RUNNING;
+		return state::RUNNING;
 	}
 	else if (value == "STOPPING") {
-		return STOPPING;
+		return state::STOPPING;
 	}
 	else if (value == "KILLING") {
-		return KILLING;
+		return state::KILLING;
 	}
 	else if (value == "PROCESSING_FAILURE") {
-		return PROCESSING_FAILURE;
+		return state::PROCESSING_FAILURE;
 	}
 	else if (value == "FAILURE") {
-		return FAILURE;
+		return state::FAILURE;
 	}
 	else if (value == "SUCCESS") {
-		return SUCCESS;
+		return state::SUCCESS;
 	}
 	else if (value == "STOPPED") {
-		return STOPPED;
+		return state::STOPPED;
 	}
 	else if (value == "KILLED") {
-		return KILLED;
+		return state::KILLED;
 	}
 
-	return NIL;
+	return state::NIL;
 }
 
 void This::init(int argc, char *argv[]) {
@@ -362,7 +362,7 @@ bool This::isAvailable(int timeout) {
 }
 
 bool This::isStopping() {
-	return m_instance.getState(m_instance.m_id) == STOPPING;
+	return m_instance.getState(m_instance.m_id) == state::STOPPING;
 }
 
 void This::handleStop(StopFunctionType function, int stoppingTime) {
@@ -384,7 +384,7 @@ void This::terminateUnregisteredApplication() {
 }
 
 bool This::setRunning() {
-	json::Object response {m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, RUNNING))};
+	json::Object response {m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, state::RUNNING))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -398,7 +398,7 @@ void This::setResult(const std::string& data) {
 	m_instance.m_server->requestJSON(createSetResultRequest(m_instance.m_id), data);
 }
 
-State This::getState(int id) const {
+state::Value This::getState(int id) const {
 
 	json::Object event {m_server->requestJSON(createGetStatusRequest(id))};
 
@@ -492,10 +492,10 @@ void This::initStarterCheck() {
 	m_starterServer->registerEventListener(this, false);
 
 	// Get the actual state. It is necessary to get the actual state after the registration so that we do not miss any events.
-	State state {m_starterServer->getState(m_starterId)};
+	state::Value state {m_starterServer->getState(m_starterId)};
 
 	// Stop this app if the starter is already terminated i.e. the state is NIL.
-	if (state == NIL) {
+	if (state == state::NIL) {
 		stop();
 	}
 	else {
@@ -521,10 +521,10 @@ void This::checkStates() {
 			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state {status->getState()};
+				state::Value state {status->getState()};
 
 				// Call the stop function if stop has been requested.
-				if (state == STOPPING) {
+				if (state == state::STOPPING) {
 
 					if (m_stopFunction) {
 						m_stopFunction();
@@ -539,10 +539,10 @@ void This::checkStates() {
 			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state {status->getState()};
+				state::Value state {status->getState()};
 
 				// Stop this application if it was linked.
-				if (state == STOPPED || state == KILLED || state == SUCCESS || state == FAILURE) {
+				if (state == state::STOPPED || state == state::KILLED || state == state::SUCCESS || state == state::FAILURE) {
 					stop();
 				}
 			}
@@ -632,13 +632,13 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) 
 			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state {status->getState()};
+				state::Value state {status->getState()};
 
 				// Test the terminal state.
-				if (state == SUCCESS
-					|| state == STOPPED
-					|| state == KILLED
-					|| state == FAILURE) {
+				if (state == state::SUCCESS
+					|| state == state::STOPPED
+					|| state == state::KILLED
+					|| state == state::FAILURE) {
 					throw KeyValueGetterException("Application terminated");
 				}
 			}
@@ -680,8 +680,8 @@ App::App(Server * server) :
 	m_id{-1},
 	m_com{server},
 	m_pastStates{0},
-	m_initialState{NIL},
-	m_lastState{NIL},
+	m_initialState{state::NIL},
+	m_lastState{state::NIL},
 	m_hasResult{false},
 	m_exitCode{-1} {
 }
@@ -716,11 +716,11 @@ void App::setOutputStreamSocket(std::unique_ptr<OutputStreamSocket>& socket) {
 	}
 }
 
-void App::setPastStates(State pastStates) {
+void App::setPastStates(state::Value pastStates) {
 	m_pastStates = pastStates;
 }
 
-void App::setInitialState(State state) {
+void App::setInitialState(state::Value state) {
 	m_initialState = state;
 
 	// It is important to set the last state, because in case of a call to the function now without any incoming state.
@@ -781,16 +781,16 @@ bool App::kill() {
 	return true;
 }
 
-State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
+state::Value App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 
 	// Create a scoped waiting so that it is removed at the exit of the function.
 	Waiting scopedWaiting {std::bind(&App::cancel, this)};
 
 	// Test the terminal state.
-	if (m_lastState == SUCCESS
-		|| m_lastState == STOPPED
-		|| m_lastState == KILLED
-		|| m_lastState == FAILURE) {
+	if (m_lastState == state::SUCCESS
+		|| m_lastState == state::STOPPED
+		|| m_lastState == state::KILLED
+		|| m_lastState == state::FAILURE) {
 		// The application is already terminated
 		return m_lastState;
 	}
@@ -814,7 +814,7 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 			StatusEvent * status {dynamic_cast<StatusEvent *>(event.get())};
 
 			if (status != nullptr) {
-				State state {status->getState()};
+				state::Value state {status->getState()};
 				m_pastStates = status->getPastStates();
 				m_lastState = state;
 
@@ -824,10 +824,10 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 				}
 
 				// Test the terminal state.
-				if (state == SUCCESS
-					|| state == STOPPED
-					|| state == KILLED
-					|| state == FAILURE) {
+				if (state == state::SUCCESS
+					|| state == state::STOPPED
+					|| state == state::KILLED
+					|| state == state::FAILURE) {
 					break;
 				}
 
@@ -864,17 +864,17 @@ State App::waitFor(int states, KeyValue& keyValue, bool blocking) {
 	return m_lastState;
 }
 
-State App::waitFor(int states) {
+state::Value App::waitFor(int states) {
 	KeyValue keyValue {""};
 	return waitFor(states, keyValue, true);
 }
 
-State App::waitFor() {
+state::Value App::waitFor() {
 	KeyValue keyValue {""};
 	return waitFor(0, keyValue, true);
 }
 
-State App::waitFor(KeyValue& keyValue) {
+state::Value App::waitFor(KeyValue& keyValue) {
 	return waitFor(0, keyValue, true);
 }
 
@@ -882,20 +882,20 @@ void App::cancel() {
 	EventListener::cancel(m_id);
 }
 
-State App::getLastState() {
+state::Value App::getLastState() {
 	KeyValue keyValue {""};
 	return waitFor(0, keyValue, false);
 }
 
-State App::getActualState() const {
+state::Value App::getActualState() const {
 	return getState();
 }
 
-State App::getState() const {
+state::Value App::getState() const {
 	return m_server->getState(m_id);
 }
 
-std::set<State> App::getPastStates() const {
+std::set<state::Value> App::getPastStates() const {
 	return m_server->getPastStates(m_id);
 }
 
@@ -903,7 +903,7 @@ int App::getExitCode() const {
 	return m_exitCode;
 }
 
-State App::getInitialState() const {
+state::Value App::getInitialState() const {
 	return m_initialState;
 }
 
@@ -990,7 +990,7 @@ std::string App::Config::toString() const {
 ///////////////////////////////////////////////////////////////////////////
 // Info
 
-App::Info::Info(const std::string& name, int id, int pid, State applicationState, State pastApplicationStates, const std::string& args) :
+App::Info::Info(const std::string& name, int id, int pid, state::Value applicationState, state::Value pastApplicationStates, const std::string& args) :
 	m_id{id},
 	m_pid{pid},
 	m_applicationState{applicationState},
@@ -1003,11 +1003,11 @@ int App::Info::getId() const {
 	return m_id;
 }
 
-State App::Info::getState() const {
+state::Value App::Info::getState() const {
 	return m_applicationState;
 }
 
-State App::Info::getPastStates() const {
+state::Value App::Info::getPastStates() const {
 	return m_pastApplicationStates;
 }
 
@@ -1082,43 +1082,43 @@ std::string App::Port::toString() const {
 	return jsonObject.dump();
 }
 
-std::string toString(cameo::State applicationStates) {
+std::string toString(cameo::state::Value applicationStates) {
 
 	std::vector<std::string> states;
 
-	if ((applicationStates & STARTING) != 0) {
+	if ((applicationStates & state::STARTING) != 0) {
 		states.push_back("STARTING");
 	}
 
-	if ((applicationStates & RUNNING) != 0) {
+	if ((applicationStates & state::RUNNING) != 0) {
 		states.push_back("RUNNING");
 	}
 
-	if ((applicationStates & STOPPING) != 0) {
+	if ((applicationStates & state::STOPPING) != 0) {
 		states.push_back("STOPPING");
 	}
 
-	if ((applicationStates & KILLING) != 0) {
+	if ((applicationStates & state::KILLING) != 0) {
 		states.push_back("KILLING");
 	}
 
-	if ((applicationStates & PROCESSING_FAILURE) != 0) {
+	if ((applicationStates & state::PROCESSING_FAILURE) != 0) {
 		states.push_back("PROCESSING_FAILURE");
 	}
 
-	if ((applicationStates & FAILURE) != 0) {
+	if ((applicationStates & state::FAILURE) != 0) {
 		states.push_back("FAILURE");
 	}
 
-	if ((applicationStates & SUCCESS) != 0) {
+	if ((applicationStates & state::SUCCESS) != 0) {
 		states.push_back("SUCCESS");
 	}
 
-	if ((applicationStates & STOPPED) != 0) {
+	if ((applicationStates & state::STOPPED) != 0) {
 		states.push_back("STOPPED");
 	}
 
-	if ((applicationStates & KILLED) != 0) {
+	if ((applicationStates & state::KILLED) != 0) {
 		states.push_back("KILLED");
 	}
 

@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
 		cout << "Finished stream" << endl;
 
-		State state = publisherApplication->waitFor();
+		state::Value state = publisherApplication->waitFor();
 
 		cout << "Publisher application terminated with state " << toString(state) << endl;
 	}

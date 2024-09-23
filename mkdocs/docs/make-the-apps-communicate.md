@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     std::unique_ptr<cameo::App> app2 = server.start("App2");
 
     // Wait for the end of the app and get the terminal state.
-    cameo::State state = app2->waitFor();
+    cameo::state::Value state = app2->waitFor();
 
     // Get the result and display it.
     std::optional<std::string> result = app2->getResult();

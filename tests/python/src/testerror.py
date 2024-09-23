@@ -20,7 +20,7 @@ for i in range(numberOfTimes):
     app = server.start("errorpy")
     state = app.waitFor()
     
-    if state == cameopy.FAILURE:
+    if state == cameopy.state.FAILURE:
         print("Error")
     else:
         print("No error")

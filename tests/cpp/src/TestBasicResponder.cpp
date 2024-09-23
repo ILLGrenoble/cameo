@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
 		cout << "Response is " << response.value() << endl;
 
 		// Wait for the end of the application.
-		State state = responderApplication->waitFor();
+		state::Value state = responderApplication->waitFor();
 
 		cout << "Responder application terminated with state " << toString(state) << endl;
 		cout << "Finished the application" << endl;

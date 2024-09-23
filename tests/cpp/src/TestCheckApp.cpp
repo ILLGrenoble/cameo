@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 		while (counter < N) {
 
 			for (int j = 0; j < N; ++j) {
-				if (!appFinished[j] && apps[j]->getLastState() == SUCCESS) {
+				if (!appFinished[j] && apps[j]->getLastState() == state::SUCCESS) {
 					counter++;
 					appFinished[j] = true;
 					cout << "App " << j << " finished" << endl;

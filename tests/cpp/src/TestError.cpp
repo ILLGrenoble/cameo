@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 			// Start the application.
 			unique_ptr<App> app = server->start("errorcpp");
 
-			State state = app->waitFor();
+			state::Value state = app->waitFor();
 
 			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 		}
@@ -64,12 +64,12 @@ int main(int argc, char *argv[]) {
 			unique_ptr<App> app = server->start("errorcpp");
 
 			// Check the state. When exiting the application will have terminated.
-			while (app->getLastState() != FAILURE) {
+			while (app->getLastState() != state::FAILURE) {
 				this_thread::sleep_for(chrono::milliseconds(100));
 				cout << "...checking application state" << endl;
 			}
 
-			State state = app->waitFor();
+			state::Value state = app->waitFor();
 
 			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 		}
@@ -80,12 +80,12 @@ int main(int argc, char *argv[]) {
 			unique_ptr<App> app = server->start("errorcpp");
 
 			// Check the state. When exiting the application will have terminated.
-			while (app->getState() != NIL) {
+			while (app->getState() != state::NIL) {
 				this_thread::sleep_for(chrono::milliseconds(100));
 				cout << "...checking application state" << endl;
 			}
 
-			State state = app->waitFor();
+			state::Value state = app->waitFor();
 
 			cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 		}

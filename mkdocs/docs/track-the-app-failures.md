@@ -38,7 +38,7 @@ app = server.connect("App2")
 state = app.waitFor()
 
 # Check the state.
-if state == cameopy.FAILURE:
+if state == cameopy.state.FAILURE:
     print("Application", app.getName(), "terminated with failure")
 ```
 
@@ -113,7 +113,7 @@ while (true) {
 
 // The publication is finished.
 State state = publisherApp->waitFor();
-if (state == FAILURE) {
+if (state == state::FAILURE) {
 	std::cout << "Publisher application terminated with state FAILURE" << std::endl;
 }
 ```
