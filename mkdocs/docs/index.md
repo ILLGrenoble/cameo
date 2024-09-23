@@ -27,13 +27,14 @@ Three computers *A*, *B*, *C* are used. A CAMEO server is running on the compute
 Sequence of actions:
 
 - Execute a console to start the execution of *App1* by contacting the CAMEO server on *B*.
-- The application *App1* is starting and starts the execution of *App2* by contacting the CAMEO server on *C*.
-- Once *App2* has started, *App1* is sending requests to *App2* that is responding to *App1*.
+	- The application *App1* is starting and starts the execution of *App2* by contacting the CAMEO server on *C*.
+	- *App1* is waiting for the initialization of *App2* and once it is done, *App1* is sending requests to *App2* that is responding to *App1*.
 - Use the console to stop the execution of *App1*.
-- *App1* is stopping and stops *App2*.
+	- *App1* is stopping and stops *App2*.
 
 Notice that the interaction between *App1* and *App2* is made using the API.
-This example shows the possible interactions between the applications: start, stop, synchronize, communicate.
+This example shows that with a **single** entry point with the console, two apps are started, synchronized and communicate.
+
 
 
 Contact legoc@ill.eu for any help.

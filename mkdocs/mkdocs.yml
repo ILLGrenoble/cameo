@@ -7,8 +7,11 @@ theme:
     primary: orange
   features:
     - content.code.copy
+    - navigation.footer
   logo: images/Logo.png
   favicon: images/Logo.png
+  icon:
+    repo: fontawesome/brands/github
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -21,7 +24,14 @@ markdown_extensions:
 
 extra_css:
   - style.css
-  
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ILLGrenoble/cameo
+
+repo_url: https://github.com/ILLGrenoble/cameo
+
 nav:
   - 'index.md'
   - 'installation.md'
