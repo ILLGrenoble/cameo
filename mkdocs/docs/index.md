@@ -1,10 +1,11 @@
 # Welcome to CAMEO
 CAMEO is a lightweight middleware providing services to write **distributed** applications running on **any** platform and language. CAMEO focuses on the applications which are the main components of the CAMEO middleware.
 
-CAMEO provides two main services:
+CAMEO allows:
 
 * Starting, stopping, synchronizing your apps wherever they run: CAMEO is a **remote application manager**.
 * Making your apps communicate: **High-level communication patterns** are provided.
+* **Single** entry point for running the entire network of apps.
 
 The CAMEO middleware is made up of:
 
