@@ -2,6 +2,7 @@
 -----
 
 * Options in option namespace.
+* States in state namespace.
 
 2.2.0
 -----
