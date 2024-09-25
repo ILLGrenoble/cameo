@@ -12,7 +12,8 @@ if(NOT cppzmq_FOUND)
     # libzmq autotools install: fallback to pkg-config
     if(NOT ZeroMQ_FOUND)
       message(STATUS "CMake libzmq package not found, trying again with pkg-config (normal install of zeromq)")
-      list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../api/libzmq-pkg-config)
+      # Two libzmq-pkg-config folders added for proxies and Python
+      list (APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../api/libzmq-pkg-config ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/api/libzmq-pkg-config)
       find_package(ZeroMQ REQUIRED)
     endif()
 	

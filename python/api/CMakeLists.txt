@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 # Project name and version
 project(cameopy
-  VERSION 2.1.2
+  VERSION 3.0.0
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -13,15 +13,20 @@ include(CMakePackageConfigHelpers)
 include(FetchContent)
 
 
-# in order to find FindZeroMQ.cmake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/)
+# in order to find AddZeroMQLibrary.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp/cmake/)
+
+include(AddZeroMQLibrary)
+add_zeromq_library()
 
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
 #list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cameo-api-cpp/build/)
 #message(STATUS ${CMAKE_MODULE_PATH})
-#find_package(cameo-api-cpp-static 2.1 REQUIRED) # provided by the C++ API
+if (NOT TARGET cameo-api-cpp-static)
+  find_package(cameo-api-cpp-static 3.0 REQUIRED) # provided by the C++ API
+endif()
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 
