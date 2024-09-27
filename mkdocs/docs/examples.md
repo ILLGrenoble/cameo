@@ -6,51 +6,15 @@ The end of the page shows rapidly how to run on Windows.
 
 ### Linux
 
-The Java, C++ and Python examples can be run using either *jzmq* or *jeromq*.
+Go to the CAMEO root directory and start the examples server:
 
-Open a shell and go to the CAMEO **root** directory.
-
-Set the *PATH* variable so that the C++ programs are found:
 ```
-export PATH=build/examples/cpp:build/cpp/proxy:$PATH
+./examples/server.sh
 ```
 
-If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
+If CAMEO is not installed and only built locally, then in each new shell, create an alias for *cmo*:
 ```
-export PYTHONPATH=/path/to/install/lib/python3/dist-packages:$PYTHONPATH
-```
-You may have to verify that *python* is defined (install *python-is-python3* package on Ubuntu).
-
-
-Select *jzmq* **or** *jeromq* Java library.
-
-Case *jzmq*:
-```
-export CLASSPATH=examples/java/jzmq/target/cameo-examples-jzmq-full.jar
-```
-
-You shall define the variable *LD_LIBRARY_PATH* so that *libjzmq.so* is found:
-```
-export LD_LIBRARY_PATH=/path/to/libjzmq
-```
-Start the cameo server with the examples configuration:
-```
-java eu.ill.cameo.server.Server examples/config.xml --log-console
-```
-
-In each new shell, create the alias for *cmo*:
-```
-alias cmo="java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar"
-```
-
-Case *jeromq*:
-```
-export CLASSPATH=examples/java/jeromq/target/cameo-tests-jeromq-full.jar
-```
-
-In each new shell, create the alias for *cmo*:
-```
-alias cmo="java -jar java/console/jeromq/target/cameo-console-3.0.0-full.jar"
+alias cmo="./examples/cmo.sh"
 ```
 
 ### Windows

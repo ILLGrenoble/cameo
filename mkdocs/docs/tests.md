@@ -1,40 +1,17 @@
 # Tests
 
-## Setup
+## Run the tests
 
 ### Linux
 
-The Java, C++ and Python tests can be run using either *jzmq* or *jeromq*.
+Go to the CAMEO root directory and execute:
 
-Open a shell and go to the root CAMEO directory:
-
-Set the *PATH* variable so that the C++ programs are found:
 ```
-export PATH=build/tests/cpp:build/cpp/proxy:$PATH
+./tests/run.sh
 ```
 
-If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
-```
-export PYTHONPATH=/path/to/install/lib/python3/dist-packages:$PYTHONPATH
-```
-You may have to verify that *python* is defined (install *python-is-python3* package on Ubuntu).
+The tests executed will depend on the components build.
 
-Select *jzmq* **or** *jeromq* Java library.
-
-Case *jzmq*:
-```
-export CLASSPATH=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
-```
-
-You shall define the variable *LD_LIBRARY_PATH* so that *libjzmq.so* is found:
-```
-export LD_LIBRARY_PATH=/path/to/libjzmq
-```
-
-Case *jeromq*:
-```
-export CLASSPATH=tests/java/jeromq/target/cameo-tests-jeromq-full.jar
-```
 
 ### Windows
 
@@ -54,7 +31,18 @@ set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
 ```
 
 
-## Run the tests
+
+
+
+## Run specific tests
+
+### Linux setup
+
+Go to the CAMEO root directory, open a shell and set the paths as it is done at the startup of *tests/run.sh*.
+
+### Windows setup
+
+### Run
 
 Run all the tests with 10 iterations for each individual test:  
 ``` 
