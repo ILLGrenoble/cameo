@@ -1,7 +1,3 @@
-#------------------------------------------------------------
-# Project
-#------------------------------------------------------------
-
 cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
@@ -21,8 +17,6 @@ endif()
 #------------------------------------------------------------
 # Programs
 #------------------------------------------------------------
-
-# Examples
 
 add_executable(responderapp src/ResponderApp.cpp)
 target_include_directories(responderapp SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})

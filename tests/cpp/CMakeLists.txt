@@ -1,7 +1,3 @@
-#------------------------------------------------------------
-# Project
-#------------------------------------------------------------
-
 cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
@@ -17,11 +13,10 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
 endif()
 
+
 #------------------------------------------------------------
 # Programs
 #------------------------------------------------------------
-
-# Tests
 
 add_executable(testservererror src/TestServerError.cpp)
 target_include_directories(testservererror SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})

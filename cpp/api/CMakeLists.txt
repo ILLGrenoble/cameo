@@ -5,20 +5,20 @@ project(cameo-api-cpp
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
-#--------------- Helpers
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
-include(FindPkgConfig)
 
-# name of the target library
+# Name of the target library
 set(LIBNAME ${PROJECT_NAME})
 set(NAMESPACE Cameo)
 set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/cameo/api)
 set(ConfigPackageLocation ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME})
 set(component_runtime CAMEO_API_CPP_RUNTIME)
 set(component_development CAMEO_API_CPP_DEVELOPMENT)
-#--------------- Options
+
+# Options
 option(CAMEO_API_CPP_TESTS "Compiling the unit test programs" OFF)
 option(BUILD_SHARED_LIBS "Compiling shared or static library version of the api" ON)
 
@@ -27,14 +27,16 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-# fix the RPATH for the linker
+# Fix the RPATH for the linker
 if(NOT APPLE)
   set(CMAKE_INSTALL_RPATH $ORIGIN)
 endif()
 
+
 #------------------------------------------------------------
 # Dependencies
 #------------------------------------------------------------
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 include(AddZeroMQLibrary)
 add_zeromq_library()
@@ -56,12 +58,11 @@ if(NOT RapidJSON_FOUND)
   find_package(RapidJSON REQUIRED)
 endif()
 
-#------------------------------------------------------------
+
 #------------------------------------------------------------
 # Libraries
 #------------------------------------------------------------
-#---------------
-# Files
+
 file(GLOB_RECURSE CAMEO_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
@@ -119,6 +120,7 @@ set_target_properties(${LIBNAME}-static PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
   )
 
+
 #------------------------------------------------------------
 
 include(GenerateExportHeader)
@@ -130,6 +132,7 @@ generate_export_header(${LIBNAME}
 #------------------------------------------------------------
 # Install
 #------------------------------------------------------------
+
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
   DESTINATION ${CMAKE_INSTALL_DOCDIR}/
   RENAME copyright
@@ -137,9 +140,10 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
   )
 
 
-
-#---------------
+#------------------------------------------------------------
 # Library version
+#------------------------------------------------------------
+
 write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake
   COMPATIBILITY SameMajorVersion
   VERSION ${PROJECT_VERSION}
@@ -237,6 +241,7 @@ if(UNIX)
 	)
 endif(UNIX)
 
+
 #------------------------------------------------------------
 # Doc
 #------------------------------------------------------------
@@ -263,11 +268,14 @@ else (DOXYGEN_FOUND)
   message(STATUS "Doxygen needs to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
 
+
 #------------------------------------------------------------
 # CPack
 #------------------------------------------------------------
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
 include(CPack)
+
 
 #------------------------------------------------------------
 # Tests

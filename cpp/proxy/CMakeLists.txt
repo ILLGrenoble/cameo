@@ -1,7 +1,3 @@
-#------------------------------------------------------------
-# Project
-#------------------------------------------------------------
-
 cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
@@ -22,6 +18,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 include(AddZeroMQLibrary)
 add_zeromq_library()
 
+
 #------------------------------------------------------------
 # Programs
 #------------------------------------------------------------
@@ -36,8 +33,10 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-rep-proxy ${CMAKE_CURRENT_BIN
         TYPE BIN
 )
 
+
 #------------------------------------------------------------
 # CPack
 #------------------------------------------------------------
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
 include(CPack)

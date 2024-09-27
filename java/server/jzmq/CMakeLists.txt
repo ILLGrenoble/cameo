@@ -7,7 +7,7 @@ project(cameo-server-jzmq
 
 include(GNUInstallDirs)
 
-# find the jar file produced by Maven
+# Find the jar file produced by Maven
 set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
 set(PROJECT_TARGET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/target")
 set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
@@ -15,7 +15,7 @@ set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
 set(JAVA_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/java/cameo)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
-# copy the jar generated in java directory
+# Copy the jar generated in java directory
 add_custom_target(server-jzmq
   ALL
   DEPENDS ${PROJECT_JAR}
@@ -33,11 +33,13 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
   TYPE BIN
   )
 
+
 #------------------------------------------------------------
 # CPack
+#------------------------------------------------------------
+
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
   include(${CMAKE_CURRENT_SOURCE_DIR}/../../../CPackConfigCommon.in)
   include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
 endif()
-#------------------------------------------------------------

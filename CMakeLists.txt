@@ -51,22 +51,6 @@ if(${CAMEO_API_PYTHON})
   list(APPEND APIs python/api)
 endif()
 list(REMOVE_DUPLICATES APIs)
-#------------------------------------------------------------
-# This is a trick: for the subprojects metioned here,
-# the find_package does nothing, since the targets will be defined
-# by the add_subdirectory command
-#set(as_subproject cameo-api-cpp-static)
-#macro(find_package)
-#  if(NOT "${ARGV0}" IN_LIST as_subproject)
-#    _find_package(${ARGV})
-#  endif()
-#endmacro()
-
-
-#dependencies
-#foreach(package cameo-com-jzmq  )
-#  add_subdirectory(cameo-com/${package})
-#endforeach()
 
 if(${ZEROMQ_JAVA} STREQUAL "jzmq")
   list(APPEND Java java java/server/jzmq java/console/jzmq)
@@ -81,9 +65,3 @@ endif()
 foreach(package ${Java} ${Proxies} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
-
-
-# common CPack configuration
-#include(${CMAKE_SOURCE_DIR}/CPackConfigCommon.in)
-#set(CPACK_PROJECT_CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/packaging/CPackConfig.cmake)
-#include(CPack)
