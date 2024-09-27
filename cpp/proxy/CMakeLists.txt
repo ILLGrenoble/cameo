@@ -29,8 +29,9 @@ target_link_libraries(cameo-rep-proxy PRIVATE libzmq)
 add_executable(cameo-pub-proxy src/PubProxy.cpp)
 target_link_libraries(cameo-pub-proxy PRIVATE libzmq)
 
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-rep-proxy ${CMAKE_CURRENT_BINARY_DIR}/cameo-pub-proxy 
-        TYPE BIN
+install(TARGETS cameo-rep-proxy cameo-pub-proxy
+        CONFIGURATIONS Release
+        DESTINATION bin
 )
 
 
