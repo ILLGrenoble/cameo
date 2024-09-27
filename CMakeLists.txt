@@ -6,62 +6,69 @@ project(cameo
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
-option(CAMEO_API_CPP "Compile and install cameo C++ api" OFF)
-option(CAMEO_API_PYTHON "Compile and install cameo Python api" OFF)
-option(CAMEO_TESTS "Compile the tests" OFF)
-option(CAMEO_EXAMPLES "Compile the examples" OFF)
+option(CAMEO_ALL "Compile all the components including tests and examples" OFF)
+option(CAMEO_JAVA "Compile Java server, console and API" OFF)
+option(CAMEO_PROXIES "Compile proxies" OFF)
+option(CAMEO_API_CPP "Compile and install C++ api" OFF)
+option(CAMEO_API_PYTHON "Compile and install Python api" OFF)
 set(ZEROMQ_JAVA "jzmq" CACHE STRING "ZeroMQ Java implementation (jzmq/jeromq)")
 
+# Force Release by default
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release") # set Release by default
+  set(CMAKE_BUILD_TYPE "Release")
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-list(APPEND Proxies cpp/proxy)
+# Java
+if(${CAMEO_ALL} OR ${CAMEO_JAVA})
+  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+    list(APPEND Java java java/server/jzmq java/console/jzmq)
+    message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
+  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+    list(APPEND Java java java/server/jeromq java/console/jeromq)
+    message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
+  else()
+    message(STATUS "Unknown ZeroMQ implementation: ${ZEROMQ_JAVA}")
+  endif()
+endif()
 
-if(${CAMEO_API_CPP})
+# Proxies
+if(${CAMEO_ALL} OR ${CAMEO_PROXIES})
+  list(APPEND Proxies cpp/proxy)
+endif()
+
+# C++ API
+if(${CAMEO_ALL} OR ${CAMEO_API_CPP})
   list(APPEND APIs cpp/api)
 endif()
 
-if(${CAMEO_TESTS})
-
-  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
-    list(APPEND TestsExamples tests/java/jzmq)
-  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
-    list(APPEND TestsExamples tests/java/jeromq)
-  endif()    
-  
-  list(APPEND TestsExamples tests/cpp)
-endif()
-
-if(${CAMEO_EXAMPLES})
-
-  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
-    list(APPEND TestsExamples examples/java/jzmq)
-  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
-    list(APPEND TestsExamples examples/java/jeromq)
-  endif()
-  
-  list(APPEND TestsExamples examples/cpp)
-endif()
-
-if(${CAMEO_API_PYTHON})
+# Python API
+if(${CAMEO_ALL} OR ${CAMEO_API_PYTHON})
   list(APPEND APIs cpp/api)
   mark_as_advanced(CAMEO_API_CPP)
   list(APPEND APIs python/api)
 endif()
 list(REMOVE_DUPLICATES APIs)
 
-if(${ZEROMQ_JAVA} STREQUAL "jzmq")
-  list(APPEND Java java java/server/jzmq java/console/jzmq)
-  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
-elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
-  list(APPEND Java java java/server/jeromq java/console/jeromq)
-  message(STATUS "Java ZeroMQ implementation: ${ZEROMQ_JAVA}")
-else()
-  message(STATUS "Unknown ZeroMQ implementation: ${ZEROMQ_JAVA}")
+# Tests and examples
+if(${CAMEO_ALL})
+  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+    list(APPEND TestsExamples tests/java/jzmq)
+  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+    list(APPEND TestsExamples tests/java/jeromq)
+  endif()
+  list(APPEND TestsExamples tests/cpp)
+
+  if(${ZEROMQ_JAVA} STREQUAL "jzmq")
+    list(APPEND TestsExamples examples/java/jzmq)
+  elseif(${ZEROMQ_JAVA} STREQUAL "jeromq")
+    list(APPEND TestsExamples examples/java/jeromq)
+  endif()
+  list(APPEND TestsExamples examples/cpp)
 endif()
 
+
+# Walk through subdirectories
 foreach(package ${Java} ${Proxies} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()

@@ -30,7 +30,7 @@ find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 
 if(NOT pybind11_FOUND)
-  message(WARNING "Using pybind11 from GIT repository")
+  message(STATUS "Using pybind11 from GIT repository")
   FetchContent_Declare(pybind11
 	GIT_REPOSITORY https://github.com/pybind/pybind11.git
 	GIT_TAG v2.9.2

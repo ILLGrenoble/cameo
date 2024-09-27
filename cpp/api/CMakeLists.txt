@@ -44,7 +44,7 @@ add_zeromq_library()
 find_package (Threads REQUIRED)
 find_package(RapidJSON 1.1.0 QUIET)
 if(NOT RapidJSON_FOUND)
-  message(WARNING "Using Rapidjson from GIT repository")
+  message(STATUS "Using Rapidjson from GIT repository")
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
   FetchContent_Declare(RapidJSON
 	GIT_REPOSITORY https://github.com/Tencent/rapidjson.git

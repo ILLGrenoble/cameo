@@ -50,12 +50,14 @@ $ cmake --build build
 ```
 
 Possible options are:
+ - CAMEO_ALL: to build everything including tests and examples
+ - CAMEO_JAVA: to build all the Java artifacts
  - ZEROMQ_JAVA=*value*: value is 'jzmq' or 'jeromq'
- - CMAKE_INSTALL_PREFIX=*directory*: to install in a non-standard directory
+ - CAMEO_PROXIES: to build the proxies
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
- - CAMEO_TESTS=ON: to build the Java and C++ tests
- - CAMEO_EXAMPLES=ON: to build the Java and C++ examples
+
+If CAMEO_ALL is selected then all the options are selected.
 
 For windows it is recommended to use the *jeromq* implementation.
 With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=<path/to/vcpkg.cmake> and compile the release objects:
@@ -64,10 +66,10 @@ With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=<path/to/vcpkg.cmake> 
 $ cmake --build build --config Release
 ```
 
-Install on Linux:
+Install:
 
 ```
-$ sudo cmake --build build --target install
+$ sudo cmake --build build --install --prefix <path/to/install>
 ```
 
 ### Option 2: Generate the Debian packages
