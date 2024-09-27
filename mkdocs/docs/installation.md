@@ -4,7 +4,7 @@
 
 ### From the packages
 
-Debian packages are provided in the [releases](https://code.ill.fr/cameo/cameo/-/releases) page.
+Debian packages are provided in the [releases](https://github.com/ILLGrenoble/cameo/releases) page.
 If you can install them, it is the recommended installation. If you cannot then you have to manually compile the components.
 
 ### Compile the components
@@ -12,10 +12,10 @@ If you can install them, it is the recommended installation. If you cannot then 
 Download the latest release:
 
 ```
-git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
+git clone -b r3.0.0 --depth 1 https://github.com/ILLGrenoble/cameo.git
 ```
 
-Then follow the instructions [here](https://code.ill.fr/cameo/cameo/-/blob/master/INSTALL.md).
+Then follow the instructions [here](https://github.com/ILLGrenoble/cameo/blob/master/INSTALL.md).
 
 
 ### List of the installed components
@@ -105,7 +105,7 @@ The ping lines are streamed and you can stop the app by *ctl-C*.
 
 ### Tests
 
-Once you compiled successfully the different components, you can test them at the [tests](tests.md) page.
+Once you compiled successfully the different components, you can test them at the [Tests](tests.md) page.
 
 ## Run the CAMEO server as a service
 
@@ -132,13 +132,13 @@ WantedBy=default.target
 ### Windows
 
 On windows we successfully used [nssm](https://nssm.cc/).
-You can install the [JDK](resources/cameo-file-transfer/jdk-14.0.2_windows-x64_bin.exe) and test [cameo-file-transfer.zip](resources/cameo-file-transfer/cameo-file-transfer.zip). Modify the file *config.xml* to reference the correct absolute path to the bin directory of the freshly installed JDK and modify the cameo server bat file to point java on the bin directory of the freshly installed JDK. Test the cameo server by running the bat file and request it from a remote computer. The firewall may ask to accept the connection. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft [recommendations](https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c).
+The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft [recommendations](https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c).
 
-Then register the cameo service using nssm. Run in command line:
+Then register the CAMEO service using nssm. Run in command line:
 ```
 nssm install cameo
 ```
-Select the cameo server bat file and let the working directory as is. Start the newly installed cameo service by starting *services.msc* in command line and right-click on the cameo service and start.
+Select the CAMEO server bat file and let the working directory as is. Start the newly installed service by starting *services.msc* in command line and right-click on the CAMEO service and start.
 
 
 
@@ -152,7 +152,7 @@ The console can also be called:
 ```
 java -jar <install directory>/share/java/cameo/cameo-console-jeromq-<version>-full.jar "$@"
 ```
-Using one or another ZeroMQ implementation is discussed in the page [dependencies](dependencies).  
+Using one or another ZeroMQ implementation is discussed in the page [Dependencies](dependencies.md).  
 
 ## Use the APIs
 

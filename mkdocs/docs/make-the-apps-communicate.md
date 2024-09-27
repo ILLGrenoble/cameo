@@ -269,7 +269,7 @@ try {
     std::unique_ptr<App> publisherApp = server.connect("PubApp");
 
     // Create a subscriber to the application.
-    std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "publisher");
+    std::unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*publisherApp, "the-publisher");
 
     // Initialize the subscriber.
     subscriber->init();
@@ -298,7 +298,7 @@ try:
     publisherApp = server.connect("PubApp")
 
     # Create a subscriber to the application.
-    subscriber = cameopy.coms.Subscriber.create(publisherApp, "publisher")
+    subscriber = cameopy.coms.Subscriber.create(publisherApp, "the-publisher")
 
     # Initialize the subscriber.
     subscriber.init()

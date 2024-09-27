@@ -879,13 +879,13 @@
 <h1 id="installation">Installation</h1>
 <h2 id="install-a-release">Install a release</h2>
 <h3 id="from-the-packages">From the packages</h3>
-<p>Debian packages are provided in the <a href="https://code.ill.fr/cameo/cameo/-/releases">releases</a> page.
+<p>Debian packages are provided in the <a href="https://github.com/ILLGrenoble/cameo/releases">releases</a> page.
 If you can install them, it is the recommended installation. If you cannot then you have to manually compile the components.</p>
 <h3 id="compile-the-components">Compile the components</h3>
 <p>Download the latest release:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b r2.1.1 --depth 1 https://code.ill.fr/cameo/cameo.git
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b r3.0.0 --depth 1 https://github.com/ILLGrenoble/cameo.git
 </span></code></pre></div>
-<p>Then follow the instructions <a href="https://code.ill.fr/cameo/cameo/-/blob/master/INSTALL.md">here</a>.</p>
+<p>Then follow the instructions <a href="https://github.com/ILLGrenoble/cameo/blob/master/INSTALL.md">here</a>.</p>
 <h3 id="list-of-the-installed-components">List of the installed components</h3>
 <p>Depending on your &lt;install&gt; directory you should have:</p>
 <p>Server:
@@ -943,7 +943,7 @@ Open a new shell and run to execute the <em>ping</em> app with the <em>localhost
 </span></code></pre></div>
 <p>The ping lines are streamed and you can stop the app by <em>ctl-C</em>.</p>
 <h3 id="tests">Tests</h3>
-<p>Once you compiled successfully the different components, you can test them at the <a href="../tests/">tests</a> page.</p>
+<p>Once you compiled successfully the different components, you can test them at the <a href="../tests/">Tests</a> page.</p>
 <h2 id="run-the-cameo-server-as-a-service">Run the CAMEO server as a service</h2>
 <p>It is recommended to run your CAMEO server as a service. </p>
 <h3 id="linux">Linux</h3>
@@ -962,11 +962,11 @@ We give an example of a user <em>systemd</em> configuration:</p>
 </span></code></pre></div>
 <h3 id="windows">Windows</h3>
 <p>On windows we successfully used <a href="https://nssm.cc/">nssm</a>.
-You can install the <a href="resources/cameo-file-transfer/jdk-14.0.2_windows-x64_bin.exe">JDK</a> and test <a href="resources/cameo-file-transfer/cameo-file-transfer.zip">cameo-file-transfer.zip</a>. Modify the file <em>config.xml</em> to reference the correct absolute path to the bin directory of the freshly installed JDK and modify the cameo server bat file to point java on the bin directory of the freshly installed JDK. Test the cameo server by running the bat file and request it from a remote computer. The firewall may ask to accept the connection. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft <a href="https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c">recommendations</a>.</p>
-<p>Then register the cameo service using nssm. Run in command line:
+The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft <a href="https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c">recommendations</a>.</p>
+<p>Then register the CAMEO service using nssm. Run in command line:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>nssm install cameo
 </span></code></pre></div>
-Select the cameo server bat file and let the working directory as is. Start the newly installed cameo service by starting <em>services.msc</em> in command line and right-click on the cameo service and start.</p>
+Select the CAMEO server bat file and let the working directory as is. Start the newly installed service by starting <em>services.msc</em> in command line and right-click on the CAMEO service and start.</p>
 <h2 id="jzmq-or-jeromq">JZMQ or JeroMQ ?</h2>
 <p>By default JZMQ is used because it has better performance. The scripts <em>cameo-server</em> and <em>cmo</em> use JZMQ. However if you prefer to use JeroMQ, the server can be called:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-server-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
@@ -974,7 +974,7 @@ Select the cameo server bat file and let the working directory as is. Start the 
 The console can also be called:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-console-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
 </span></code></pre></div>
-Using one or another ZeroMQ implementation is discussed in the page <a href="dependencies">dependencies</a>.  </p>
+Using one or another ZeroMQ implementation is discussed in the page <a href="../dependencies/">Dependencies</a>.  </p>
 <h2 id="use-the-apis">Use the APIs</h2>
 <h3 id="java">Java</h3>
 <p>To use the Java API, first add to your Maven POM file the repository:
