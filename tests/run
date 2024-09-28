@@ -11,20 +11,23 @@ cameo_jeromq_jar=tests/java/jeromq/target/cameo-tests-jeromq-full.jar
 if [ -f $cameo_jeromq_jar ]
 then
   export CLASSPATH=$cameo_jeromq_jar
-  echo "export CLASSPATH=$cameo_jeromq_jar"
   java=true
-else
-  cameo_jzmq_jar=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
-  if [ -f $cameo_jzmq_jar ]
-  then
-    export CLASSPATH=$cameo_jzmq_jar
-    echo "export CLASSPATH=$cameo_jzmq_jar"
-    java=true
-  else
-    echo "Cannot run the tests without Java build"
-    exit
-  fi
 fi
+
+cameo_jzmq_jar=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
+if [ -f $cameo_jzmq_jar ]
+then
+  export CLASSPATH=$cameo_jzmq_jar
+  java=true
+fi
+
+if [ "$java" = false ]
+then
+  echo "Cannot run the tests without Java build"
+  exit 1
+fi
+
+echo "export CLASSPATH=$CLASSPATH"
 
 cameo_proxy=build/cpp/proxy/cameo-rep-proxy
 if [ -f $cameo_proxy ]
