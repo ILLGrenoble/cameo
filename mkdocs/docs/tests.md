@@ -73,7 +73,7 @@ java eu.ill.cameo.test.TestSelector testsimplejava 100
 Test the Java unmanaged application:
 Start the server in a specific shell
 ```
-java eu.ill.cameo.server.Server tests/java/tests.xml
+java eu.ill.cameo.server.Server tests/java/tests.xml --log-console
 ```
 Start the application:
 ```

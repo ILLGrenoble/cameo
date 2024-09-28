@@ -34,13 +34,11 @@ then
   export PYTHONPATH=build/python/api:$PYTHONPATH
 fi
 
-echo "PATH $PATH"
-
 
 if [ "$java" = true ]
 then
   java eu.ill.cameo.server.Server examples/config.xml --log-console
 else
   echo "Cannot run the server without Java build"
-  exit
+  exit 1
 fi
