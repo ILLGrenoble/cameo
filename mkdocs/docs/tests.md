@@ -7,7 +7,7 @@
 Go to the CAMEO root directory and execute:
 
 ```
-./tests/run.sh
+./tests/run
 ```
 
 The tests executed will depend on the components build.

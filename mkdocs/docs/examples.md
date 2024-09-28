@@ -9,12 +9,12 @@ The end of the page shows rapidly how to run on Windows.
 Go to the CAMEO root directory and start the examples server:
 
 ```
-./examples/server.sh
+./examples/cameo-server
 ```
 
 If CAMEO is not installed and only built locally, then in each new shell, create an alias for *cmo*:
 ```
-alias cmo="./examples/cmo.sh"
+alias cmo="./examples/cmo"
 ```
 
 ### Windows
