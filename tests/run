@@ -53,7 +53,11 @@ then
   python=true
 fi
 
-echo ""
+if [ "$1" = "setup" ]
+then
+  exit 0
+fi
+
 
 if [ "$java" = true ]
 then
