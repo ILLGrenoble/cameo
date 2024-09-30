@@ -46,7 +46,6 @@ while True:
     message = subscriber.receiveString()
     if message:
         print("Received", message)
-        counter += 1
     else:
         print("Canceled")
         break
