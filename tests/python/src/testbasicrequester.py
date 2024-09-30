@@ -57,6 +57,11 @@ for i in range(numberOfTimes):
         apps[j].waitFor()
         print("Finished application", apps[j])
 
+
+responder.terminate()
+server.terminate()
+this.terminate()
+
 print("Finished the application")
 
 

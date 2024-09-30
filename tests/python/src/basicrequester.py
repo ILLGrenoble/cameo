@@ -34,6 +34,8 @@ for i in range(R):
 
     time.sleep(0.1)
 
+requester.terminate()
 starter.terminate()
+this.terminate()
 
 print("Finished the application")

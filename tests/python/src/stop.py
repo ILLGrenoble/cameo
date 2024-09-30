@@ -24,7 +24,6 @@ while not stopping.is_set():
 
 this.setResult("3097")
 
-# This is not mandatory but it ensures that objects are cleaned before the end of the Python context.
 this.terminate()
 
 print("Finished the application")

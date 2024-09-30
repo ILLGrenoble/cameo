@@ -73,6 +73,9 @@ app.stop()
 # Wait for the application.
 app.waitFor()
 
+server.terminate()
+this.terminate()
+
 print("Finished the application")
 
 

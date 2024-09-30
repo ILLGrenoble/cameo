@@ -59,6 +59,8 @@ publisher.send("message after timeout")
 
 t.join()
 
+publisher.terminate()
 server.terminate()
+this.terminate()
 
 print("Finished the application")

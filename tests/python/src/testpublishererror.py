@@ -50,6 +50,10 @@ for i in range(numberOfTimes):
     state = app.waitFor()
     
     print("Publisher application terminated with state", cameopy.toString(state))
+    
+    subscriber.terminate()
 
 
+server.terminate()
+this.terminate()
     

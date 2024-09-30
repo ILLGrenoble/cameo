@@ -27,7 +27,8 @@ def responderProcess():
     
     request.reply("2nd response")
     
-    router.cancel() 
+    router.cancel()
+    responder.terminate()
     
 
 print("Creating router")
@@ -45,5 +46,7 @@ t.start()
 router.run()
 
 t.join()
+
+this.terminate()
 
 print("Finished the application")

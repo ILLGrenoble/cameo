@@ -44,4 +44,7 @@ t.join()
 
 state = app.waitFor()
 
+server.terminate()
+this.terminate()
+
 print("Finished the application")

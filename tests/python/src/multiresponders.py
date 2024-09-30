@@ -39,7 +39,7 @@ def responderProcess(id):
     
         request.reply(str(id) + " to " + request.getString())
     
-    #responder.terminate()
+    responder.terminate()
 
 print("Creating router")
 

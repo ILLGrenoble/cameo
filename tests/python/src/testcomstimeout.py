@@ -41,5 +41,8 @@ print("Canceled publisher")
 
 app.waitFor()
 
+server.terminate()
+this.terminate()
+
 print("Finished the application")
 

@@ -60,6 +60,10 @@ for i in range(numberOfTimes):
         app.waitFor()
         print("Finished the application", app)
         
+    publisher.terminate()
+        
+server.terminate()
+this.terminate()
 
 print("Finished the application")
 

@@ -23,4 +23,7 @@ for i in range(100):
 
 publisher.sendEnd()
 
+publisher.terminate()
+this.terminate()
+
 print("Finished the application")

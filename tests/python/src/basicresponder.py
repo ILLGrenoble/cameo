@@ -69,4 +69,7 @@ app = requester.getApp()
 
 print("Requester", app.getId())
 
+responder.terminate()
+this.terminate()
+
 print("Finished the application")

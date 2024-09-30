@@ -17,4 +17,7 @@ while (True):
     publisher.send("hello")
     time.sleep(0.1)
 
+publisher.terminate()
+this.terminate()
+
 print("Finished the application")

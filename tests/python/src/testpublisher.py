@@ -48,7 +48,11 @@ for i in range(numberOfTimes):
     
     state = app.waitFor()
     
+    subscriber.terminate()
+    
     print("Publisher application terminated")
 
 
+server.terminate()
+this.terminate()
     

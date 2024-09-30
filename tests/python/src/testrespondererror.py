@@ -57,6 +57,8 @@ for i in range(numberOfTimes):
     print("Finished the application")
 
     requester.terminate()
-    server.terminate()
 
+
+server.terminate()
+this.terminate()
     

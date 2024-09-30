@@ -30,3 +30,7 @@ for i in range(numberOfTimes):
         print("No result")
         
     print("Finished the application")
+
+
+server.terminate()
+this.terminate()

@@ -57,3 +57,11 @@ try:
     publisher2.init()
 except cameopy.InitException:
     print("Publisher cannot be initialized")
+
+
+basicResponder.terminate()
+multiResponder.terminate()
+publisher.terminate()
+
+server.terminate()
+this.terminate()

@@ -263,5 +263,6 @@ testResponder()
 testRequester()
 
 server.terminate()
+this.terminate()
 
 print("Finished the application")

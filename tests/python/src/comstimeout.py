@@ -57,4 +57,6 @@ subscriber.terminate()
 
 starter.terminate()
 
+this.terminate()
+
 print("Finished the application")

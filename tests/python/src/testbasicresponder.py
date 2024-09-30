@@ -99,5 +99,6 @@ for i in range(numberOfTimes):
     
     print("Finished the application")
 
-
+server.terminate()
+this.terminate()
     

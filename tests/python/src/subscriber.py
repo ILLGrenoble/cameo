@@ -27,4 +27,7 @@ while True:
     else:
         break
 
+subscriber.terminate()
+this.terminate()
+
 print("Finished the application")

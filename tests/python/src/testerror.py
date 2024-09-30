@@ -26,3 +26,7 @@ for i in range(numberOfTimes):
         print("No error")
     
     print("Finished the application", app, "with state", cameopy.toString(state), "and code", app.getExitCode())
+
+
+server.terminate()
+this.terminate()
