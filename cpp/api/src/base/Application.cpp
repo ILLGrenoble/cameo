@@ -30,6 +30,7 @@
 #include "WaitingSet.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
+#include "ImplFactory.h"
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
@@ -209,6 +210,15 @@ void This::terminateImpl() {
 		// Join the thread.
 		m_checkStatesThread->join();
 	}
+	
+	// Reset the starter server.
+	m_starterServer.reset();
+
+	// Reset the server.
+	m_server.reset();
+	
+	// Terminate the default context to ensure good cleanup. 
+	ImplFactory::terminateDefaultContext();
 
 	// Inited.
 	m_inited = false;

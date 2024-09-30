@@ -17,13 +17,16 @@
 #include "ContextZmq.h"
 #include <zmq.hpp>
 
+#include <iostream>
+
 namespace cameo {
 
 ContextZmq::ContextZmq() : Context(),
 	m_context{new zmq::context_t{1}} {
 }
 
-ContextZmq::~ContextZmq() {
+ContextZmq::~ContextZmq() {	
+	m_context.reset();
 }
 
 zmq::context_t& ContextZmq::getContext() {

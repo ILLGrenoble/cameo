@@ -28,6 +28,8 @@
 #include "../coms/impl/zmq/MultiResponderZmq.h"
 #include "../coms/impl/zmq/MultiResponderRouterZmq.h"
 
+#include <iostream>
+
 namespace cameo {
 
 std::mutex ImplFactory::m_mutex;
@@ -47,8 +49,17 @@ std::shared_ptr<Context> ImplFactory::getDefaultContext() {
 
 void ImplFactory::terminateDefaultContext() {
 
+	//std::cout << "terminateDefaultContext " << m_defaultContext.use_count() << std::endl;
+
 	std::unique_lock<std::mutex> lock {m_mutex};
+	//return;
+	// At this point, only one reference should remain.
 	m_defaultContext.reset();
+	
+	if (m_defaultContext.use_count() > 0) {
+		std::cout << "CAMEO inconsistency detected: some objects have not been destroyed" << std::endl;
+	}
+
 }
 
 std::unique_ptr<Context> ImplFactory::createContext() {

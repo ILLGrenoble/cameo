@@ -20,3 +20,6 @@ for i in range(numberOfTimes):
     app = server.start("simplepy")
     state = app.waitFor()
     print("Finished the application", app, "with state", cameopy.toString(state), "and code", app.getExitCode())
+
+server.terminate()
+this.terminate()

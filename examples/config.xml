@@ -5,53 +5,53 @@
 	<applications>
 		
 		<!-- C++ -->
-		<application name="responder-cpp" multiple="no">
+		<application name="responder-cpp" multiple="no" log_directory="logs">
 			<start executable="responderapp"/>
 		</application>
 		
-		<application name="requester-cpp" multiple="no">
+		<application name="requester-cpp" multiple="no" log_directory="logs">
 			<start executable="requesterapp"/>
 		</application>
 		
-		<application name="publisher-cpp" multiple="no">
+		<application name="publisher-cpp" multiple="no" log_directory="logs">
 			<start executable="publisherapp"/>
 		</application>
 		
-		<application name="subscriber-cpp" multiple="no">
+		<application name="subscriber-cpp" multiple="no" log_directory="logs">
 			<start executable="subscriberapp"/>
 		</application>
 		
 		<!-- Java -->
-		<application name="responder-java" multiple="no">
+		<application name="responder-java" multiple="no" log_directory="logs">
 			<start executable="java" args="eu.ill.cameo.examples.ResponderApp"/>
 		</application>
 		
-		<application name="requester-java" multiple="no">
+		<application name="requester-java" multiple="no" log_directory="logs">
 			<start executable="java" args="eu.ill.cameo.examples.RequesterApp"/>
 		</application>
 		
-		<application name="publisher-java" multiple="no">
+		<application name="publisher-java" multiple="no" log_directory="logs">
 			<start executable="java" args="eu.ill.cameo.examples.PublisherApp"/>
 		</application>
 		
-		<application name="subscriber-java" multiple="no">
+		<application name="subscriber-java" multiple="no" log_directory="logs">
 			<start executable="java" args="eu.ill.cameo.examples.SubscriberApp"/>
 		</application>
 		
 		<!-- Python -->
-		<application name="responder-python" multiple="no">
+		<application name="responder-python" multiple="no" log_directory="logs">
 			<start executable="python" args="-u examples/python/src/responderapp.py"/>
 		</application>
 		
-		<application name="requester-python" multiple="no">
+		<application name="requester-python" multiple="no" log_directory="logs">
 			<start executable="python" args="-u examples/python/src/requesterapp.py"/>
 		</application>
 		
-		<application name="publisher-python" multiple="no">
+		<application name="publisher-python" multiple="no" log_directory="logs">
 			<start executable="python" args="-u examples/python/src/publisherapp.py"/>
 		</application>
 		
-		<application name="subscriber-python" multiple="no">
+		<application name="subscriber-python" multiple="no" log_directory="logs">
 			<start executable="python" args="-u examples/python/src/subscriberapp.py"/>
 		</application>
 		
