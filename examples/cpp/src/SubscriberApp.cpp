@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Created subscriber " << *subscriber << std::endl;
 
-	// Receive messages.
+	// Receive messages as long as the subscriber has not been canceled.
 	while (true) {
 		std::optional<std::string> message = subscriber->receive();
 		if (!message.has_value()) {

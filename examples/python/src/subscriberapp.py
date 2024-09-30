@@ -41,9 +41,8 @@ subscriber.init()
 
 print("Created subscriber", subscriber)
 
-# Receive 10 messages.
-counter = 0
-while counter < 10:
+# Receive messages as long as the subscriber has not been canceled.
+while True:
     message = subscriber.receiveString()
     if message:
         print("Received", message)
