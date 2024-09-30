@@ -1,5 +1,4 @@
-The source package comes up with examples in the different languages. The current page is showing how to run them in Linux.  
-The end of the page shows rapidly how to run on Windows.
+The source package comes up with examples in the different languages.
 
 
 ## Setup
@@ -19,29 +18,15 @@ alias cmo="./examples/cmo"
 
 ### Windows
 
-Open a standard prompt and go to the CAMEO **root** directory. Then set the *PATH*:
-```
-set PATH=build\examples\cpp\Release;build\cpp\proxy\Release;%PATH%
-```
+Go to the CAMEO root directory and start the examples server:
 
-Set the *CLASSPATH* to use *jeromq*:
 ```
-set CLASSPATH=tests\java\jeromq\target\cameo-tests-jeromq-full.jar
-```
-
-If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
-```
-set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
-```
-
-Run the server:
-```
-java eu.ill.cameo.server.Server examples\config.xml --log-console
+examples\cameo-server
 ```
 
 In each new prompt or shell, create the alias for *cmo*:
 ```
-doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-3.0.0-full.jar $*
+doskey cmo=examples\cmo $*
 ```
 
 ## Requester/Responder

@@ -15,21 +15,13 @@ The tests executed will depend on the components build.
 
 ### Windows
 
-Open a standard prompt and go to the CAMEO root directory. Then set the *PATH*:
+Go to the CAMEO root directory and execute:
+
 ```
-set PATH=build\examples\cpp\Release;build\cpp\proxy\Release;%PATH%
+tests\run
 ```
 
-Set the *CLASSPATH* to use *jeromq*:
-```
-set CLASSPATH=tests\java\jeromq\target\cameo-tests-jeromq-full.jar
-```
-
-If necessary, set the *PYTHONPATH* variable so that the *cameopy* module is found e.g.:
-```
-set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
-```
-
+The tests executed will depend on the components build.
 
 
 
@@ -38,9 +30,11 @@ set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
 
 ### Linux setup
 
-Go to the CAMEO root directory, open a shell and set the paths as it is done at the startup of *tests/run.sh*.
+Go to the CAMEO root directory, open a shell, run *tests/run setup* and set the paths as it is done.
 
 ### Windows setup
+
+Go to the CAMEO root directory, open a shell, run *tests\run setup* and set the paths as it is done.
 
 ### Run
 
