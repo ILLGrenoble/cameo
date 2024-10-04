@@ -15,9 +15,6 @@
  */
 
 #include <cameo/api/cameo.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/document.h>
 
 using namespace std;
 using namespace cameo;
@@ -28,17 +25,10 @@ int main(int argc, char *argv[]) {
 
 	string key = "eu.ill.cameo.test.testkey";
 
-	rapidjson::StringBuffer buffer;
-	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-	writer.StartObject();
-	writer.Key("x");
-	writer.Int(12);
-	writer.EndObject();
-
 	try {
 		// Sleep 100ms.
 		this_thread::sleep_for(chrono::milliseconds(100));
-		This::getCom().storeKeyValue(key, buffer.GetString());
+		This::getCom().storeKeyValue(key, "{x:12}");
 
 		// Sleep 100ms.
 		this_thread::sleep_for(chrono::milliseconds(100));
