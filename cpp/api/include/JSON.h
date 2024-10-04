@@ -135,6 +135,8 @@ bool parse(Object & object, const Message& message) {
 
 bool parse(Object & object, const std::string& string);
 
+json::Object toJSON(const std::string& string);
+
 }
 }
 

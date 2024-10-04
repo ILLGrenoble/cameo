@@ -17,6 +17,7 @@
 #include "Strings.h"
 #include "Messages.h"
 #include "BadFormatException.h"
+#include "JSON.h"
 #include <regex>
 #include <ostream>
 #include <iostream>

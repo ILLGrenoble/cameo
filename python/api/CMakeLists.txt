@@ -48,7 +48,6 @@ if(NOT pybind11_FOUND)
 endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
-target_include_directories(cameopy SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
 

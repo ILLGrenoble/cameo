@@ -17,11 +17,14 @@
 #ifndef CAMEO_STRINGS_H_
 #define CAMEO_STRINGS_H_
 
-#include "JSON.h"
 #include <string>
 #include <vector>
 
 namespace cameo {
+
+namespace json {
+	class StringObject;
+}
 
 const int Null = 0;
 

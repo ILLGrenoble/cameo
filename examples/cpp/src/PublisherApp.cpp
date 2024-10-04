@@ -19,19 +19,6 @@
 
 using namespace cameo;
 
-std::string serializeToJSON(const std::string& message, int i) {
-
-	json::StringObject object;
-
-	object.pushKey("message");
-	object.pushValue(message);
-
-	object.pushKey("value");
-	object.pushValue(i);
-
-	return object.dump();
-}
-
 int main(int argc, char *argv[]) {
 
 	// Initialize cameo.
@@ -67,7 +54,7 @@ int main(int argc, char *argv[]) {
 	while (!This::isStopping()) {
 
 		// Send a message.
-		publisher->send(serializeToJSON("a message", i));
+		publisher->send(std::string{"a message "} + std::to_string(i));
 		i++;
 		
 		// Sleep for 1s.

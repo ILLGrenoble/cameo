@@ -384,17 +384,17 @@ void This::cancelAll() {
 }
 
 int This::initUnregisteredApplication() {
-	json::Object response {m_server->requestJSON(createAttachUnregisteredRequest(m_name, GET_PROCESS_PID()))};
+	json::Object response {json::toJSON(m_server->request(createAttachUnregisteredRequest(m_name, GET_PROCESS_PID())))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 void This::terminateUnregisteredApplication() {
-	m_server->requestJSON(createDetachUnregisteredRequest(m_id));
+	m_server->request(createDetachUnregisteredRequest(m_id));
 }
 
 bool This::setRunning() {
-	json::Object response {m_instance.m_server->requestJSON(createSetStatusRequest(m_instance.m_id, state::RUNNING))};
+	json::Object response {json::toJSON(m_instance.m_server->request(createSetStatusRequest(m_instance.m_id, state::RUNNING)))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -405,12 +405,12 @@ bool This::setRunning() {
 }
 
 void This::setResult(const std::string& data) {
-	m_instance.m_server->requestJSON(createSetResultRequest(m_instance.m_id), data);
+	m_instance.m_server->request(createSetResultRequest(m_instance.m_id), data);
 }
 
 state::Value This::getState(int id) const {
 
-	json::Object event {m_server->requestJSON(createGetStatusRequest(id))};
+	json::Object event {json::toJSON(m_server->request(createGetStatusRequest(id)))};
 
 	return event[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
@@ -476,7 +476,7 @@ void This::startCheckStatesThread() {
 void This::initStopCheck(StopFunctionType function, int stoppingTime) {
 
 	// Notify the server.
-	m_server->requestJSON(createSetStopHandlerRequest(m_id, stoppingTime));
+	m_server->request(createSetStopHandlerRequest(m_id, stoppingTime));
 
 	// Memorize the stop function.
 	m_stopFunction = function;

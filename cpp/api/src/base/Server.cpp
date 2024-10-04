@@ -697,12 +697,12 @@ void Server::releasePort(int id, int port) {
 	}
 }
 
-json::Object Server::requestJSON(const std::string& request, int overrideTimeout) {
-	return m_requestSocket->requestJSON(request, overrideTimeout);
+std::string Server::request(const std::string& request, int overrideTimeout) {
+	return m_requestSocket->request(request, overrideTimeout);
 }
 
-json::Object Server::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
-	return m_requestSocket->requestJSON(requestPart1, requestPart2, overrideTimeout);
+std::string Server::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+	return m_requestSocket->request(requestPart1, requestPart2, overrideTimeout);
 }
 
 std::vector<Server::FilteredEventListener> Server::getEventListeners() {

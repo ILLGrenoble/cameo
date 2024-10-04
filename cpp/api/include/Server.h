@@ -314,8 +314,8 @@ private:
 	void setPortUnavailable(int id, int port);
 	void releasePort(int id, int port);
 
-	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
-	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+	std::string request(const std::string& request, int overrideTimeout = -1);
+	std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
 
 	void initContext();
 	void initRequestSocket();

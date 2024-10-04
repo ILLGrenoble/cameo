@@ -71,12 +71,6 @@ int main(int argc, char *argv[]) {
 		}
 		std::string value = message.value();
 		std::cout << "Received " << value << std::endl;
-
-		json::Object object;
-		if (json::parse(object, value)) {
-			std::cout << "\tmessage : " << object["message"].GetString() << std::endl;
-			std::cout << "\tvalue : " << object["value"].GetInt() << std::endl;
-		}
 	}
 
 	// Stop the responder app and wait for its termination.

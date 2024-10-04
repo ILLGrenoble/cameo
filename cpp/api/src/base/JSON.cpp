@@ -86,5 +86,13 @@ bool parse(Object & object, const std::string& string) {
 	return true;
 }
 
+json::Object toJSON(const std::string& string) {
+
+	json::Object response;
+	json::parse(response, string);
+
+	return response;
+}
+
 }
 }
