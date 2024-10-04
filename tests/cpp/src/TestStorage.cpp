@@ -15,9 +15,6 @@
  */
 
 #include <cameo/api/cameo.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/document.h>
 
 using namespace std;
 using namespace cameo;
@@ -27,13 +24,7 @@ int main(int argc, char *argv[]) {
 	This::init(argc, argv);
 
 	string key = "eu.ill.cameo.test.testkey";
-
-	rapidjson::StringBuffer buffer;
-	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-	writer.StartObject();
-	writer.Key("x");
-	writer.Int(12);
-	writer.EndObject();
+	string buffer = "{x:5}";
 
 	try {
 		string valueString = This::getCom().getKeyValue(key);
@@ -42,10 +33,10 @@ int main(int argc, char *argv[]) {
 		cout << "Key is undefined: " << e.what() << endl;
 	}
 
-	This::getCom().storeKeyValue(key, buffer.GetString());
+	This::getCom().storeKeyValue(key, buffer);
 
 	try {
-		This::getCom().storeKeyValue(key, buffer.GetString());
+		This::getCom().storeKeyValue(key, buffer);
 	}
 	catch (const KeyAlreadyExistsException& e) {
 		cout << "Key already exists: " << e.what() << endl;
@@ -53,11 +44,7 @@ int main(int argc, char *argv[]) {
 
 	try {
 		string valueString = This::getCom().getKeyValue(key);
-
-		rapidjson::Document value;
-		value.Parse(static_cast<const char *>(valueString.c_str()), valueString.size());
-
-		cout << "x = " << value["x"].GetInt() << endl;
+		cout << "Value is " << valueString << endl;
 
 		This::getCom().removeKey(key);
 	}
