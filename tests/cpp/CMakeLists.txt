@@ -110,9 +110,9 @@ add_executable(testcancel src/TestCancel.cpp)
 target_include_directories(testcancel SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})
 target_link_libraries(testcancel PRIVATE Cameo::cameo-api-cpp-static)
 
-add_executable(openport src/OpenPort.cpp)
-target_include_directories(openport SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})
-target_link_libraries(openport PRIVATE Cameo::cameo-api-cpp-static)
+#add_executable(openport src/OpenPort.cpp)
+#target_include_directories(openport SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})
+#target_link_libraries(openport PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(comport src/ComPort.cpp)
 target_include_directories(comport SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS})

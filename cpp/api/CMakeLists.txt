@@ -68,7 +68,7 @@ configure_file(include/cameo.h.in ${INSTALL_INCLUDEDIR}/cameo.h )
 
 add_library(${LIBNAME}-obj OBJECT ${CAMEO_SOURCE_FILES})
 target_link_libraries(${LIBNAME}-obj PUBLIC Threads::Threads) # for some reason this is not propagated to ${LIBNAME}
-target_link_libraries(${LIBNAME}-obj INTERFACE libzmq) # libzmq-static is not a portable interface (not well defined)
+target_link_libraries(${LIBNAME}-obj PRIVATE libzmq) # libzmq-static is not a portable interface (not well defined)
 
 target_include_directories(${LIBNAME}-obj
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/ # all the private headers
