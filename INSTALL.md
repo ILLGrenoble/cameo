@@ -60,7 +60,7 @@ Possible options are:
 If CAMEO_ALL is selected then all the options are selected.
 
 For windows it is recommended to use the *jeromq* implementation.
-With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=<path/to/vcpkg.cmake> and compile the release objects:
+With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake and compile the release objects:
 
 ```
 $ cmake --build build --config Release
@@ -71,6 +71,15 @@ Install:
 ```
 $ sudo cmake --build build --install --prefix <path/to/install>
 ```
+
+With windows vcpkg, you can compile in full static with:
+
+```
+cmake -B build -S . -DCAMEO_ALL=ON -DZEROMQ_JAVA=jeromq -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=x64-windows-static "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>" "-DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+```
+
+You will need to install the static libraries of zeromq and cppzmq in vcpkg.
+
 
 ### Option 2: Generate the Debian packages
 
