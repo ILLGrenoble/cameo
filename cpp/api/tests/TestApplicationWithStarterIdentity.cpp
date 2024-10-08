@@ -1,8 +1,7 @@
 #include "Test.h"
 #include "Strings.h"
 #include "Messages.h"
-#include "JSON.h"
-#include <iostream>
+#include "../src/base/JSON.h"
 
 using namespace std;
 using namespace cameo;

@@ -17,7 +17,6 @@
 #ifndef CAMEO_REQUESTSOCKET_H_
 #define CAMEO_REQUESTSOCKET_H_
 
-#include "JSON.h"
 #include <string>
 #include <memory>
 
@@ -78,33 +77,6 @@ public:
 	 * \return The response.
 	 */
 	std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
-
-	/**
-	 * Send a request.
-	 * \param request The JSON string request.
-	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
-	 * \return The JSON object response.
-	 */
-	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
-
-	/**
-	 * Send a request.
-	 * \param requestPart1 The JSON string request part 1.
-	 * \param requestPart2 The request part 2.
-	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
-	 * \return The JSON object response.
-	 */
-	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
-
-	/**
-	 * Send a request.
-	 * \param requestPart1 The JSON string request part 1.
-	 * \param requestPart2 The request part 2.
-	 * \param requestPart3 The request part 3.
-	 * \param overrideTimeout Timeout that overrides the timeout defined previously.
-	 * \return The JSON object response.
-	 */
-	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 private:
 	std::unique_ptr<RequestSocketImpl> m_impl;

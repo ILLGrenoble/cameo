@@ -66,7 +66,7 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 
 	while (true) {
 		try {
-			requestSocket->requestJSON(createSyncRequest());
+			requestSocket->request(createSyncRequest());
 		}
 		catch (const ConnectionTimeout& e) {
 			// The server is not accessible.

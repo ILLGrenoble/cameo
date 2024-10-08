@@ -26,6 +26,7 @@
 #include "Requester.h"
 #include "impl/zmq/PublisherZmq.h"
 #include "impl/zmq/SubscriberZmq.h"
+#include "../base/JSON.h"
 
 namespace cameo {
 namespace coms {

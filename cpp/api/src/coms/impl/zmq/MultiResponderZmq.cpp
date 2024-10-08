@@ -54,7 +54,7 @@ void ResponderZmq::cancel() {
 
 	// Create a request socket connected directly to the responder.
 	std::unique_ptr<RequestSocket> requestSocket {This::getCom().createRequestSocket(m_cancelEndpoint, "")};
-	requestSocket->requestJSON(jsonRequest.dump());
+	requestSocket->request(jsonRequest.dump());
 }
 
 std::unique_ptr<Request> ResponderZmq::processCancel() {

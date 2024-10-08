@@ -52,37 +52,4 @@ std::string RequestSocket::request(const std::string& requestPart1, const std::s
 	return m_impl->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
 }
 
-json::Object RequestSocket::requestJSON(const std::string& request, int overrideTimeout) {
-
-	std::string reply {this->request(request, overrideTimeout)};
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply);
-
-	return response;
-}
-
-json::Object RequestSocket::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
-
-	std::string reply {this->request(requestPart1, requestPart2, overrideTimeout)};
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply);
-
-	return response;
-}
-
-json::Object RequestSocket::requestJSON(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
-
-	std::string reply {this->request(requestPart1, requestPart2, requestPart3, overrideTimeout)};
-
-	// Get the JSON response.
-	json::Object response;
-	json::parse(response, reply);
-
-	return response;
-}
-
 }

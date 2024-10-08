@@ -463,7 +463,7 @@ void This::stop() {
 	std::unique_ptr<RequestSocket> requestSocket{m_server->createServerRequestSocket()};
 
 	std::string request {createStopRequest(m_id, true)};
-	requestSocket->requestJSON(request);
+	requestSocket->request(request);
 }
 
 void This::startCheckStatesThread() {

@@ -69,7 +69,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 	while (true) {
 		try {
-			requestSocket->requestJSON(createSyncStreamRequest(m_name));
+			requestSocket->request(createSyncStreamRequest(m_name));
 		}
 		catch (const ConnectionTimeout&) {
 			// The server is not accessible.

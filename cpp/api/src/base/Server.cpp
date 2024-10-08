@@ -189,7 +189,7 @@ bool Server::usesProxy() const {
 bool Server::isAvailable(int timeout) const {
 
 	try {
-		m_requestSocket->requestJSON(createSyncRequest(), timeout);
+		m_requestSocket->request(createSyncRequest(), timeout);
 		return true;
 	}
 	catch (const ConnectionTimeout&) {
@@ -243,10 +243,10 @@ std::unique_ptr<App> Server::start(const std::string& name, const std::vector<st
 		json::Object response;
 
 		if (This::getId() == -1) {
-			response = m_requestSocket->requestJSON(createStartRequest(name, args, "", 0, "", 0, false));
+			response = json::toJSON(m_requestSocket->request(createStartRequest(name, args, "", 0, "", 0, false)));
 		}
 		else {
-			response = m_requestSocket->requestJSON(createStartRequest(name, args, This::getName(), This::getId(), This::getEndpoint().toString(), This::getServer().m_responderProxyPort, linked));
+			response = json::toJSON(m_requestSocket->request(createStartRequest(name, args, This::getName(), This::getId(), This::getEndpoint().toString(), This::getServer().m_responderProxyPort, linked)));
 		}
 
 		int value {response[message::RequestResponse::VALUE].GetInt()};
@@ -279,7 +279,7 @@ Response Server::stop(int id, bool immediately) const {
 		request = createStopRequest(id, false);
 	}
 
-	json::Object response {m_requestSocket->requestJSON(request)};
+	json::Object response {json::toJSON(m_requestSocket->request(request))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	std::string message {response[message::RequestResponse::MESSAGE].GetString()};
@@ -291,7 +291,7 @@ AppArray Server::connectAll(const std::string& name, int options) {
 
 	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
 
-	json::Object response {m_requestSocket->requestJSON(createConnectRequest(name))};
+	json::Object response {json::toJSON(m_requestSocket->request(createConnectRequest(name)))};
 
 	AppArray instances;
 
@@ -362,7 +362,7 @@ std::unique_ptr<App> Server::connect(int id, int options) {
 
 	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
 
-	json::Object response {m_requestSocket->requestJSON(createConnectWithIdRequest(id))};
+	json::Object response {json::toJSON(m_requestSocket->request(createConnectWithIdRequest(id)))};
 
 	json::Value& applicationInfo {response[message::ApplicationInfoListResponse::APPLICATION_INFO]};
 	json::Value::Array array = {applicationInfo.GetArray()};
@@ -411,7 +411,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	json::Object response {m_requestSocket->requestJSON(createIsAliveRequest(id))};
+	json::Object response {json::toJSON(m_requestSocket->request(createIsAliveRequest(id)))};
 
 	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
@@ -420,7 +420,7 @@ std::vector<App::Config> Server::getApplicationConfigs() const {
 
 	std::vector<App::Config> configs;
 
-	json::Object response {m_requestSocket->requestJSON(createListRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createListRequest()))};
 
 	json::Value& applicationConfigs {response[message::ApplicationConfigListResponse::APPLICATION_CONFIG]};
 	json::Value::Array array {applicationConfigs.GetArray()};
@@ -464,7 +464,7 @@ std::vector<App::Info> Server::getApplicationInfos() const {
 
 	std::vector<App::Info> infos;
 
-	json::Object response {m_requestSocket->requestJSON(createAppsRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createAppsRequest()))};
 
 	json::Value& applicationInfos {response[message::ApplicationInfoListResponse::APPLICATION_INFO]};
 	json::Value::Array array {applicationInfos.GetArray()};
@@ -512,7 +512,7 @@ std::vector<App::Port> Server::getPorts() const {
 
 	std::vector<App::Port> ports;
 
-	json::Object response {m_requestSocket->requestJSON(createPortsRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createPortsRequest()))};
 
 	json::Value& portInfos {response[message::PortInfoListResponse::PORT_INFO]};
 	json::Value::Array array {portInfos.GetArray()};
@@ -540,14 +540,14 @@ state::Value Server::getActualState(int id) const {
 
 state::Value Server::getState(int id) const {
 
-	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
+	json::Object response {json::toJSON(m_requestSocket->request(createGetStatusRequest(id)))};
 
 	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
 std::set<state::Value> Server::getPastStates(int id) const {
 
-	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
+	json::Object response {json::toJSON(m_requestSocket->request(createGetStatusRequest(id)))};
 
 	state::Value applicationStates {response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
 
@@ -623,7 +623,7 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
-	json::Object response {m_requestSocket->requestJSON(createStoreKeyValueRequest(id, key, value))};
+	json::Object response {json::toJSON(m_requestSocket->request(createStoreKeyValueRequest(id, key, value)))};
 
 	int responseValue {response[message::RequestResponse::VALUE].GetInt()};
 	if (responseValue == -1) {
@@ -636,7 +636,7 @@ void Server::storeKeyValue(int id, const std::string& key, const std::string& va
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
-	json::Object response {m_requestSocket->requestJSON(createGetKeyValueRequest(id, key))};
+	json::Object response {json::toJSON(m_requestSocket->request(createGetKeyValueRequest(id, key)))};
 
 	int responseValue {response[message::RequestResponse::VALUE].GetInt()};
 	if (responseValue == 0) {
@@ -654,7 +654,7 @@ std::string Server::getKeyValue(int id, const std::string& key) {
 
 void Server::removeKey(int id, const std::string& key) {
 
-	json::Object response {m_requestSocket->requestJSON(createRemoveKeyRequest(id, key))};
+	json::Object response {json::toJSON(m_requestSocket->request(createRemoveKeyRequest(id, key)))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -667,7 +667,7 @@ void Server::removeKey(int id, const std::string& key) {
 
 int Server::requestPort(int id) {
 
-	json::Object response {m_requestSocket->requestJSON(createRequestPortRequest(id))};
+	json::Object response {json::toJSON(m_requestSocket->request(createRequestPortRequest(id)))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -679,7 +679,7 @@ int Server::requestPort(int id) {
 
 void Server::setPortUnavailable(int id, int port) {
 
-	json::Object response {m_requestSocket->requestJSON(createPortUnavailableRequest(id, port))};
+	json::Object response {json::toJSON(m_requestSocket->request(createPortUnavailableRequest(id, port)))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -689,7 +689,7 @@ void Server::setPortUnavailable(int id, int port) {
 
 void Server::releasePort(int id, int port) {
 
-	json::Object response {m_requestSocket->requestJSON(createReleasePortRequest(id, port))};
+	json::Object response {json::toJSON(m_requestSocket->request(createReleasePortRequest(id, port)))};
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -748,7 +748,7 @@ void Server::initRequestSocket() {
 
 void Server::retrieveServerVersion() {
 
-	json::Object response {m_requestSocket->requestJSON(createVersionRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createVersionRequest()))};
 
 	m_serverVersion[0] = response[message::VersionResponse::MAJOR].GetInt();
 	m_serverVersion[1] = response[message::VersionResponse::MINOR].GetInt();
@@ -757,35 +757,35 @@ void Server::retrieveServerVersion() {
 
 int Server::retrieveStatusPort() {
 
-	json::Object response {m_requestSocket->requestJSON(createStreamStatusRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createStreamStatusRequest()))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveStreamPort(const std::string& name) {
 
-	json::Object response {m_requestSocket->requestJSON(createOutputPortRequest(name))};
+	json::Object response {json::toJSON(m_requestSocket->request(createOutputPortRequest(name)))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveResponderProxyPort() {
 
-	json::Object response {m_requestSocket->requestJSON(createResponderProxyPortRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createResponderProxyPortRequest()))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrievePublisherProxyPort() {
 
-	json::Object response {m_requestSocket->requestJSON(createPublisherProxyPortRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createPublisherProxyPortRequest()))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveSubscriberProxyPort() {
 
-	json::Object response {m_requestSocket->requestJSON(createSubscriberProxyPortRequest())};
+	json::Object response {json::toJSON(m_requestSocket->request(createSubscriberProxyPortRequest()))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }

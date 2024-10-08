@@ -17,8 +17,8 @@
 #include "RequesterZmq.h"
 #include "Application.h"
 #include "Messages.h"
-#include "JSON.h"
 #include "ContextZmq.h"
+#include "../../../base/JSON.h"
 
 namespace cameo {
 namespace coms {

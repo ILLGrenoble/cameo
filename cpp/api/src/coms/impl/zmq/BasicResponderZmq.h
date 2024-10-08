@@ -18,7 +18,7 @@
 #define CAMEO_COMS_BASIC_RESPONDERZMQ_H_
 
 #include "../BasicResponderImpl.h"
-#include "JSON.h"
+#include "../../../base/JSON.h"
 #include <zmq.hpp>
 #include <atomic>
 

@@ -17,12 +17,12 @@
 #include "SubscriberZmq.h"
 #include "Server.h"
 #include "Messages.h"
-#include "JSON.h"
 #include "Waiting.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
 #include "IdGenerator.h"
 #include "../PublisherImpl.h"
+#include "../../../base/JSON.h"
 
 namespace cameo {
 namespace coms {
