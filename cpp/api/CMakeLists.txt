@@ -32,6 +32,8 @@ if(NOT APPLE)
   set(CMAKE_INSTALL_RPATH $ORIGIN)
 endif()
 
+# Export all the symbols on windows
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 #------------------------------------------------------------
 # Dependencies
