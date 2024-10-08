@@ -17,6 +17,8 @@
 #ifndef CAMEO_TEST_H_
 #define CAMEO_TEST_H_
 
+#include <stdexcept>
+
 #define CAMEO_ASSERT_TRUE( condition )                              \
 {                                                                   \
   if( !( condition ) )                                              \

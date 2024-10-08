@@ -1,6 +1,5 @@
 #include "Test.h"
 #include "Strings.h"
-#include <iostream>
 
 using namespace std;
 using namespace cameo;
