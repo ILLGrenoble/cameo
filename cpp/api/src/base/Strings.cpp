@@ -89,12 +89,20 @@ Endpoint Endpoint::parse(const std::string& str) {
 	std::string protocol {tokens[0]};
 	std::string substr {tokens[1]};
 
-	std::string address {substr.substr(2)};
+	std::string address;
 
 	try {
 		address = substr.substr(2);
 	}
 	catch (...) {
+		throw BadFormatException("Bad format for endpoint " + str);
+	}
+
+	if (substr.substr(0, 2) != "//") {
+		throw BadFormatException("Bad format for endpoint " + str);
+	}
+
+	if (address.length() == 0) {
 		throw BadFormatException("Bad format for endpoint " + str);
 	}
 

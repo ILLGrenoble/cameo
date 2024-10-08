@@ -49,6 +49,24 @@ public class TestStrings {
 			error = true;
 		}
 		assertTrue(error);
+		
+		error = false;
+		try {
+			Endpoint.parse("tcp:/gamma75:9999");
+		}
+		catch (Exception e) {
+			error = true;
+		}
+		assertTrue(error);
+		
+		error = false;
+		try {
+			Endpoint.parse("tcp://:9999");
+		}
+		catch (Exception e) {
+			error = true;
+		}
+		assertTrue(error);
 	}
 	
 	@Test

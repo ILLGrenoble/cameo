@@ -86,6 +86,14 @@ public class Endpoint {
 			throw new BadFormatException("Bad format for endpoint " + string);
 		}
 		
+		if (!substring.startsWith("//")) {
+			throw new BadFormatException("Bad format for endpoint " + string);
+		}
+		
+		if (address.length() == 0) {
+			throw new BadFormatException("Bad format for endpoint " + string);
+		}
+		
 		int port = 0;
 		
 		try {

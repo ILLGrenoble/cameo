@@ -40,7 +40,6 @@ int main(int, char *[]) {
 	catch (...) {
 		error = true;
 	}
-
 	CAMEO_ASSERT_TRUE(error);
 
 	error = false;
@@ -50,7 +49,24 @@ int main(int, char *[]) {
 	catch (...) {
 		error = true;
 	}
+	CAMEO_ASSERT_TRUE(error);
 
+	error = false;
+	try {
+		Endpoint::parse("tcp:/gamma75:9999");
+	}
+	catch (...) {
+		error = true;
+	}
+	CAMEO_ASSERT_TRUE(error);
+
+	error = false;
+	try {
+		Endpoint::parse("tcp://:9999");
+	}
+	catch (...) {
+		error = true;
+	}
 	CAMEO_ASSERT_TRUE(error);
 
 	return 0;
