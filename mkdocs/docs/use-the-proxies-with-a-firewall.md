@@ -60,6 +60,10 @@ Currently, the proxy programs are written in C++. When the CAMEO server starts, 
 java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies
 ```
 
+## Multiple servers
+
+If multiple servers are running on the same computer, give different proxy ports to the servers so that they are not shared.
+
 ## List of functions or methods using the proxies
 
 Here is the list of functions or methods that can be parameterized with a proxy:

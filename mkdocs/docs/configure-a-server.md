@@ -58,7 +58,7 @@ restart             | no                    | If *yes*, the app is automatically
 info_arg            | yes                   | If *yes*, an additional argument containing information about the app is passed. For unmanaged application, it can be necessary to set it to *no*. Possible values are *yes* and *no*.
 stream              | yes                  | If *yes*, the standard error and output stream are published to the console application and other instance reference objects. Possible values are *yes* and *no*.
 log_directory       |                       | The directory where the *&lt;name&gt;.&lt;id&gt;.log* file of the app instance is written. An empty value means no log, a *default* value means it inherits the value of the *config* tag.
-environment         |                       | The environment file where environment variables dedicated to the app can be defined.
+environment         |                       | The path to the properties file where environment variables dedicated to the app can be defined. It can be absolute or relative to the folder of the main configuration file.
 
 
 Attributes of the *start*, *stop*, *error* tags:
