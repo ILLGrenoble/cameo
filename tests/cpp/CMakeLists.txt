@@ -155,3 +155,9 @@ target_link_libraries(testpublishererror PRIVATE Cameo::cameo-api-cpp-static)
 
 add_executable(testsubscribertimeout src/TestSubscriberTimeout.cpp)
 target_link_libraries(testsubscribertimeout PRIVATE Cameo::cameo-api-cpp-static)
+
+add_executable(remoteserver src/RemoteServer.cpp)
+target_link_libraries(remoteserver PRIVATE Cameo::cameo-api-cpp-static)
+
+add_executable(testremoteserver src/TestRemoteServer.cpp)
+target_link_libraries(testremoteserver PRIVATE Cameo::cameo-api-cpp-static)

@@ -368,6 +368,10 @@
 			<start executable="testsubscribertimeout"/>
 		</application>
 		
+		<application name="testremoteservercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testremoteserver"/>
+		</application>
+		
 		
 		<!-- Python apps -->
 		
