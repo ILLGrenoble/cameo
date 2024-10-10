@@ -39,6 +39,7 @@ nav:
   - 'configure-a-server.md'
   - 'control-the-apps.md'
   - 'make-the-apps-communicate.md'
+  - 'app-registration.md'
   - 'synchronization.md'
   - 'track-the-app-failures.md'
   - 'use-the-proxies-with-a-firewall.md'

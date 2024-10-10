@@ -191,14 +191,14 @@ Printing 9
 Printing 10
 Q
 ```
-The command is blocking and typing *ctl+c* or *shift+q* stops the command but not the app.
+The command is blocking and typing *ctl+c* or *shift+q* stops the connect command but not the app.
 
 To stop *App2*:
 ```
 cmo stop App2
 ```
 
-As there is no stop handler defined for *App2*, the stop is equivalent to a kill, so we could have done:
+The stop is equivalent here to a kill because there is no way stop the app nicely, so we could have done:
 ```
 cmo kill App2
 ```
@@ -293,9 +293,16 @@ exitCode=$?
 
 What you do with this code is on your own.
 
-## Stop handler
+## How to request the termination of an app
 
-We saw before that there was a difference between a *stop* and a *kill* request. The CAMEO server immediately stops the app for a *kill* request whereas in case of a *stop* request it sets the state *STOPPING* to the app. The app receives the *STOPPING* event and a stop handler is triggered if it has been registered allowing to properly terminate the app.
+There are different ways to request the termination of an app that we explain here.
+
+First we have to clarify the difference between a *stop* and a *kill*. On one side, a *kill* is a system termination which is platform dependent: the CAMEO server will ask the system to terminate the app as quick as possible. On the other side, a *stop* will be nicely done if it is possible i.e. a final code will be executed to properly terminate the app. There are two ways to do it:
+
+* Define a stop executable as shown in [Configure a server](configure-a-server.md) usually used to send a signal to the app. This way is not portable.
+* Define a stop handler in the code of the app.
+
+We saw before that there was a difference between a *stop* and a *kill* request. The CAMEO server immediately stops the app for a *kill* request so that the app terminates its execution with the *KILLED* state. However in case of a *stop* request it first sets the state *STOPPING* to the app. The app receives the *STOPPING* event and a stop handler is triggered if it has been registered.
 
 The C++, Java and Python APIs support the stop handler. An example in C++:
 ```cpp

@@ -64,8 +64,9 @@ Start a specific test:
 java eu.ill.cameo.test.TestSelector testsimplejava 100
 ```
 
-Test the Java unmanaged application:
-Start the server in a specific shell
+### Test an unregistered application
+
+Test the Java unregistered application. Start the server in a specific shell:
 ```
 java eu.ill.cameo.server.Server tests/java/tests.xml --log-console
 ```
@@ -76,8 +77,23 @@ java eu.ill.cameo.test.Stop "{\"name\":\"stop\", \"server\":\"tcp://localhost:11
 
 Then kill the application that should disappear from the list of applications.
 
-Test the C++ unmanaged application
+Test the C++ unregistered application:
 ```
 stop "{\"name\":\"stop\", \"server\":\"tcp://localhost:11000\"}"
 ```
 
+### Test the attachment to a remote CAMEO server
+
+Test the app connected to a remote server. Start the server in a specific shell:
+```
+java eu.ill.cameo.server.Server tests/java/tests.xml --log-console
+```
+Start the first application on the same computer:
+```
+java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar -p 11000 exec testremoteservercpp
+```
+
+Start the second application on a second computer by passing the endpoint of the first computer:
+```
+./build/tests/cpp/remoteserver tcp://computer:11000
+```

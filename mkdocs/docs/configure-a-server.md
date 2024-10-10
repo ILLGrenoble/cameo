@@ -102,107 +102,6 @@ CAMEO applications are started in background and it is possible to log the stand
 
 Once the configuration file and its associated environment files have been defined, the CAMEO server can be started. The server can be started directly in a shell however it is recommended to start it as a service. See the [Installation](installation.md) page for more details.
 
-## Registered and unregistered apps
-
-CAMEO is very flexible and accepts different combinations for an application to be controlled by CAMEO.
-
-### *This* initialized with the *arguments* variable
-
-Usually to benefit from the CAMEO services inside an application, the *This* object is initialized by passing the arguments of the program. In C++:
-```cpp
-int main(int argc, char *argv[]) {
-
-    // Initialize This.
-    cameo::This::init(argc, argv);
-```
-
-In Java:
-```java
-import eu.ill.cameo.base.This;
-
-public static void main(String[] args) {
-
-    // Initialize This.
-    This.init(args);
-```
-
-In Python:
-```python
-import sys
-import cameopy
-
-## Initialize This.
-cameopy.This.init(sys.argv)
-```
-
-Once *This* is initialized it can be used for example to get a reference to the CAMEO server that started it. When *This* is initialized with the *arguments* variable, there are two cases:
-
-* **Registered application**: If the application is registered in the configuration file, then *info_arg* must be *yes* which is the default value so it is not necessary to specify it. Otherwise the application will not start.
-* **Not registered application**: If the application is not registered in the configuration file, it is possible to start directly the app by adding a last argument that contains the CAMEO server reference and its name. For instance:
-```
-/home/cameo/app1 "{\"name\":\"App1\", \"server\":\"tcp://localhost:10000\"}"
-```
-Then if the passed arguments are correct, *This* will initialize and the application will become **attached** to the CAMEO server referenced by the endpoint in the *server* value.
-
-### *This* initialized with explicit arguments
-
-It is not mandatory to initialize *This* with the program arguments. It is possible to pass an explicit endpoint that must be a **local** endpoint because it has no sense to attach the app to a remote computer.  
-In C++:
-```cpp
-cameo::This::init("App1", "tcp://localhost:10000");
-```
-In Java:
-```java
-This.init("App1", "tcp://localhost:10000");
-```
-In Python:
-```python
-cameopy.This.init("App1", "tcp://localhost:10000")
-```
-In that case, the application shall **not** be **registered**.
-
-### *This* not initialized
-
-If you have a black box application i.e. that you cannot compile or modify, then you cannot initialize *This* inside but you can still **register** the application in the configuration file. However it is recommended in that special case to set *info_arg* to *no*. Otherwise the additional argument may not be supported by the app when it parses the arguments.
-
-### Registered vs unregistered
-
-We saw the different cases based on the initialization of *This* or not. But what is the difference between a registered app and an unregistered app that is attached?  
-
-The response is simple: a registered app can be started by the console *cmo* from another computer. Moreover in case of unexpected termination a program can be run to make a report.  
-
-Registering an app offers more flexibility in the way to start an app.
-
-## Register a script
-
-If you want to register a script e.g. a Bash script or a Python script, it is highly recommended to define the executable with the interpreter program rather the script itself even if it is executable. For example:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<config host="mycomputer">
-    <applications>
-        <application name="Script1">
-            <start executable="/usr/bin/bash" args="/home/cameo/app1.sh"/>
-        </application>
-        <application name="Script2">
-            <start executable="/usr/bin/python3" args="-u /home/cameo/app2.py"/>
-        </application>
-    <applications>	
-</config>
-```
-The reason is because the underlying process execution works not well when the executable is the script.
-
-## Ports
-
-The implementation of a CAMEO server is based on ZeroMQ and a sockets of different types are open. Here are the different ports:
-
-* **Base**: This is the port of the server endpoint. By default it is 7000 but it can be defined by the *port* attribute in the configuration file.
-* **Status**: This is the port from which are published the events of status of the different running applications.
-* **Stream**: Each application for which the attribute *stream* is set to *yes* publishes the standard error and output on a stream port.
-* **Coms**: We will see later that the provided coms also use some ports for their implementation.
-* **Proxy**: The ports used by the proxies. See section [Use the proxies with a firewall](use-the-proxies-with-a-firewall.md) for more details.
-
-Except the base port and the proxy ports that are fixed meaning that they must be free before starting the CAMEO server, all the other ports are **dynamically assigned** i.e. they will surely assigned.
-
 ## Stop and error executables
 
 If you need to define a stop executable then you can send a signal to the process of the application. For instance:
@@ -220,3 +119,15 @@ If the running application terminates with an error the following arguments will
 bash /home/cameo/error.sh -debug 13 139 RUNNING
 ```
 These information can be used to send a report by email.
+
+## Ports
+
+The implementation of a CAMEO server is based on ZeroMQ and a sockets of different types are open. Here are the different ports:
+
+* **Base**: This is the port of the server endpoint. By default it is 7000 but it can be defined by the *port* attribute in the configuration file.
+* **Status**: This is the port from which are published the events of status of the different running applications.
+* **Stream**: Each application for which the attribute *stream* is set to *yes* publishes the standard error and output on a stream port.
+* **Coms**: We will see later that the provided coms also use some ports for their implementation.
+* **Proxy**: The ports used by the proxies. See section [Use the proxies with a firewall](use-the-proxies-with-a-firewall.md) for more details.
+
+Except the base port and the proxy ports that are fixed meaning that they must be free before starting the CAMEO server, all the other ports are **dynamically assigned** i.e. they will surely assigned.
