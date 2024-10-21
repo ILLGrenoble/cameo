@@ -33,6 +33,7 @@ import eu.ill.cameo.common.messages.JSON;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.Endpoint;
 import eu.ill.cameo.common.strings.StringId;
+import eu.ill.cameo.server.manager.ConfigLoader;
 import eu.ill.cameo.server.manager.ConfigManager;
 import eu.ill.cameo.server.manager.Log;
 import eu.ill.cameo.server.manager.Manager;
@@ -79,6 +80,10 @@ public class Server {
 
 	private void setProxyPath(String proxyPath) {
 		this.proxyPath = proxyPath;
+	}
+	
+	private void setProxyPorts(String proxyPorts) {
+		ConfigManager.getInstance().setProxyPorts(proxyPorts);
 	}
 
 	private void startProxies() {
@@ -436,12 +441,13 @@ public class Server {
 		// Verify arguments.
 		if (args.length < 1) {
 			showVersion();
-			System.out.printf("Usage: [--log-console] [--proxy-path <path>] <config file>\n");
+			System.out.printf("Usage: [--log-console] [--proxy-path <path>] [--proxy-ports <ports>] <config file>\n");
 			System.exit(1);
 		}
 		
 		String configFile = "";
 		String proxyPath = null;
+		String proxyPorts = null;
 		
 		int i = 0;
 		while (i < args.length) {
@@ -454,6 +460,12 @@ public class Server {
 					proxyPath = args[i];
 				}
 			}
+			else if (args[i].equals("--proxy-ports")) {
+				++i;
+				if (i < args.length) {
+					proxyPorts = args[i];
+				}
+			}
 			else if (args[i].endsWith(".xml")) {
 				configFile = args[i];
 			}
@@ -463,9 +475,15 @@ public class Server {
 		// Create the server.
 		Server server = new Server(configFile);
 
-		// Set the proxy path if it is defined.
+		// Set the proxy path if defined.
 		if (proxyPath != null) {
 			server.setProxyPath(proxyPath);
+		}
+		
+		// Set the proxy ports if defined.
+		if (proxyPorts != null) {
+			System.out.println("PROXY PORTS !!!!!!!!!!");
+			server.setProxyPorts(proxyPorts);
 		}
 		
 		// Start the server with the blocking call run() which waits for requests.

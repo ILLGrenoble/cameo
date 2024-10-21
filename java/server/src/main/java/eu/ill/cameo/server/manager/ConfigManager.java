@@ -33,9 +33,10 @@ public final class ConfigManager {
 	private int sleepTime;
 	private int pollingTime;
 	private String logPath;
-	private int responderProxyPort;
-	private int subscriberProxyPort;
-	private int publisherProxyPort;
+	private String proxyPorts;
+	private int responderProxyPort = 0;
+	private int subscriberProxyPort = 0;
+	private int publisherProxyPort = 0;
 	private Endpoint responderProxyLocalEndpoint;
 	private Endpoint responderProxyHostEndpoint;
 	private Endpoint subscriberProxyLocalEndpoint;
@@ -73,6 +74,14 @@ public final class ConfigManager {
 			logPath = path;
 		}	
 	}
+	
+	public String getProxyPorts() {
+		return this.proxyPorts;
+	}
+	
+	public void setProxyPorts(String ports) {
+		this.proxyPorts = ports;
+	}
 
 	public int getSleepTime() {
 		return sleepTime;		
@@ -93,11 +102,7 @@ public final class ConfigManager {
 	public int getPort() {
 		return endpoint.getPort();
 	}
-	
-	public int getProxyPort() {
-		return responderProxyLocalEndpoint.getPort();
-	}
-		
+			
 	public int getMaxNumberOfApplications() {
 		return maxNumberOfApplications;
 	}
@@ -240,14 +245,7 @@ public final class ConfigManager {
 			System.err.println("Error: responder proxy port is not an integer");
 		}
 		
-		String localhost;
-		
-		try {
-			localhost = InetAddress.getLocalHost().getHostAddress();
-		}
-		catch (UnknownHostException e) {
-			localhost = "127.0.0.1"; 
-		}
+		String localhost = InetAddress.getLoopbackAddress().getHostAddress();
 		
 		responderProxyLocalEndpoint = new Endpoint(localhost, responderProxyPort);
 		responderProxyHostEndpoint = endpoint.withPort(responderProxyPort);
@@ -284,14 +282,7 @@ public final class ConfigManager {
 			System.err.println("Error: subscriber proxy port is not an integer");
 		}
 		
-		String localhost;
-		
-		try {
-			localhost = InetAddress.getLocalHost().getHostAddress();
-		}
-		catch (UnknownHostException e) {
-			localhost = "127.0.0.1"; 
-		}
+		String localhost = InetAddress.getLoopbackAddress().getHostAddress();
 		
 		subscriberProxyLocalEndpoint = new Endpoint(localhost, subscriberProxyPort);
 		subscriberProxyHostEndpoint = endpoint.withPort(subscriberProxyPort);

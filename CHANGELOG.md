@@ -2,6 +2,8 @@
 -----
 
 * Java packages start with eu.ill.cameo.
+* Corrected server responder and subscriber proxy ports to use loopback address.
+* Server configuration proxy ports can be overriden by command line.
 
 2.2.0
 -----

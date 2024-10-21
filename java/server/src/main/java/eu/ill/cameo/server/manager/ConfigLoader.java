@@ -153,16 +153,7 @@ public abstract class ConfigLoader {
 		return configXML;
 	}
 	
-	private void loadXml(org.jdom2.Document configXML) {
-		
-		Element root = configXML.getRootElement();
-		
-		// Set the base parameters.
-		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
-		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
-		
-		// Get the proxy ports.
-		String proxyPortsString = root.getAttributeValue(PROXY_PORTS);
+	public static void setProxyPorts(String proxyPortsString) {
 		
 		if (proxyPortsString != null) {
 			String[] proxyPorts = proxyPortsString.split(",");
@@ -177,6 +168,24 @@ public abstract class ConfigLoader {
 				
 				ConfigManager.getInstance().setProxies(true);
 			}
+		}
+	}
+	
+	private void loadXml(org.jdom2.Document configXML) {
+		
+		Element root = configXML.getRootElement();
+		
+		// Set the base parameters.
+		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
+		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
+		
+		// Get the proxy ports that defined in command line to override those defined in the config file.
+		String proxyPortsOverride = ConfigManager.getInstance().getProxyPorts();
+		if (proxyPortsOverride != null) {
+			setProxyPorts(proxyPortsOverride);	
+		}
+		else {
+			setProxyPorts(root.getAttributeValue(PROXY_PORTS));
 		}
 		
 		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));

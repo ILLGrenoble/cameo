@@ -2,6 +2,8 @@
 -----
 
 * Packages start with eu.ill.cameo.
+* Corrected responder and subscriber proxy ports to use loopback address.
+* Configuration proxy ports can be overriden by command line.
 
 2.2.0
 -----
