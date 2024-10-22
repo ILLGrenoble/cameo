@@ -57,8 +57,17 @@ Once the server is created, the definition of a *Requester* or *Subscriber* is e
 Currently, the proxy programs are written in C++. When the CAMEO server starts, it tries to launch the proxy programs. However if they are not installed in a standard path, they may not be found. In that case, an argument is provided:
 
 ```
-java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies
+java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies config.xml
 ```
+
+## Override ports of the configuration
+
+It is possible to override the ports of the configuration by defining them in the command line:
+
+```
+java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-ports "12000, 12001, 12002" config.xml
+```
+
 
 ## Multiple servers
 
