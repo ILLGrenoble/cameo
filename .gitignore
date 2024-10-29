@@ -7,5 +7,6 @@
 
 **/.settings
 **/.project
+**/.cproject
 **/.pydevproject
 **/.classpath
