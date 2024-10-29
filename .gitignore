@@ -1,6 +1,10 @@
-/target/
-/bin/
-/.settings/
-build/
-/build-deb/
-/logs/
+**/target/
+**/bin/
+
+**/build/
+**/build-deb/
+**/logs
+
+#**/.settings
+#**/.project
+#**/.pydevproject
