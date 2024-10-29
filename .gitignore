@@ -5,6 +5,7 @@
 **/build-deb/
 **/logs
 
-#**/.settings
-#**/.project
-#**/.pydevproject
+**/.settings
+**/.project
+**/.pydevproject
+**/.classpath
