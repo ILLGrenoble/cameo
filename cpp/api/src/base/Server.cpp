@@ -18,6 +18,7 @@
 
 #include "Application.h"
 #include "ConnectionChecker.h"
+#include "This.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"

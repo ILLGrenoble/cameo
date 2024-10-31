@@ -15,7 +15,8 @@
  */
 
 #include "PublisherZmq.h"
-#include "Application.h"
+
+#include "This.h"
 #include "Messages.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"

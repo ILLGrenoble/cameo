@@ -15,7 +15,8 @@
  */
 
 #include "MultiResponderRouterZmq.h"
-#include "Application.h"
+
+#include "This.h"
 #include "ContextZmq.h"
 
 namespace cameo {

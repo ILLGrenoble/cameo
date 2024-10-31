@@ -17,7 +17,7 @@
 #ifndef CAMEO_COMS_BASIC_RESPONDER_H_
 #define CAMEO_COMS_BASIC_RESPONDER_H_
 
-#include "Application.h"
+#include "ServerAndApp.h"
 
 namespace cameo {
 

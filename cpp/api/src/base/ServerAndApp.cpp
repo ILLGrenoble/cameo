@@ -14,19 +14,33 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_H_
-#define CAMEO_H_
+#include "ServerAndApp.h"
 
-#define CAMEO_API_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
-#define CAMEO_API_VERSION_MINOR @PROJECT_VERSION_MINOR@
-#define CAMEO_API_VERSION_REVISION @PROJECT_VERSION_PATCH@
+namespace cameo {
 
-#include "This.h"
-#include "ContextZmq.h"
-#include "ImplFactory.h"
-#include "BasicResponder.h"
-#include "MultiResponder.h"
-#include "Requester.h"
-#include "PublisherSubscriber.h"
+ServerAndApp::ServerAndApp() {
+}
 
-#endif
+ServerAndApp::ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app) :
+	m_server(std::move(server)), m_app(std::move(app)) {
+}
+
+Server& ServerAndApp::getServer() {
+	return *m_server.get();
+}
+
+bool ServerAndApp::hasApp() const {
+	return m_app.get() != nullptr;
+}
+
+App& ServerAndApp::getApp() {
+	return *m_app.get();
+}
+
+void ServerAndApp::terminate() {
+
+	m_server->terminate();
+	m_app->terminate();
+}
+
+}

@@ -16,6 +16,7 @@
 
 #include "PublisherSubscriber.h"
 
+#include "This.h"
 #include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "Messages.h"

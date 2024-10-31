@@ -40,8 +40,6 @@ class Responder;
  */
 class CAMEO_EXPORT Publisher : public Object, public Cancelable {
 
-	friend class cameo::This;
-
 public:
 	/**
 	 * Destructor.

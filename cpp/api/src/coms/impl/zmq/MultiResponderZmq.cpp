@@ -15,8 +15,9 @@
  */
 
 #include "MultiResponderZmq.h"
+
 #include "MultiResponder.h"
-#include "Application.h"
+#include "This.h"
 #include "Messages.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
