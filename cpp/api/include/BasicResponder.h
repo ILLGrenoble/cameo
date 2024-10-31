@@ -206,12 +206,12 @@ private:
 /**
  * Stream operator for a Request object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Request&);
+std::ostream& operator<<(std::ostream&, const Request&);
 
 /**
  * Stream operator for a Responder object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Responder&);
+std::ostream& operator<<(std::ostream&, const Responder&);
 
 }
 }

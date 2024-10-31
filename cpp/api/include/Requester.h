@@ -188,7 +188,7 @@ private:
 /**
  * Stream operator for a Requester object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Requester&);
+std::ostream& operator<<(std::ostream&, const Requester&);
 
 }
 }

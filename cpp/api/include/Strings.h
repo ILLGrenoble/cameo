@@ -332,6 +332,6 @@ struct CAMEO_EXPORT StringId {
 /**
  * Stream operator for an Endpoint object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
+std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif

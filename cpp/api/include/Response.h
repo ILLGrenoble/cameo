@@ -75,7 +75,7 @@ private:
 /**
  * Stream operator for a Response object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Response&);
+std::ostream& operator<<(std::ostream&, const Response&);
 
 }
 

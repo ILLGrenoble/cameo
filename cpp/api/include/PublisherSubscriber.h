@@ -324,12 +324,12 @@ private:
 /**
  * Stream operator for a Publisher object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
 
 /**
  * Stream operator for a Subscriber object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 
 }
 }

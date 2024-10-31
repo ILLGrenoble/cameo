@@ -354,7 +354,7 @@ private:
 /**
  * Stream operator for a Server object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Server&);
+std::ostream& operator<<(std::ostream&, const Server&);
 
 }
 

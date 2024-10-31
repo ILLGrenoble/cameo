@@ -966,22 +966,22 @@ CAMEO_EXPORT std::string toString(cameo::state::Value applicationStates);
 /**
  * Stream operator for an App object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App&);
+std::ostream& operator<<(std::ostream&, const cameo::App&);
 
 /**
  * Stream operator for a Config object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
 
 /**
  * Stream operator for an Info object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
 
 /**
  * Stream operator for a Port object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
 
 }
 
