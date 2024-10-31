@@ -17,12 +17,14 @@
 #ifndef CAMEO_TIMEOUTABLE_H_
 #define CAMEO_TIMEOUTABLE_H_
 
+#include "Defines.h"
+
 namespace cameo {
 
 /**
  * Class defining an interface for objects that have a timeout.
  */
-class Timeoutable {
+class CAMEO_EXPORT Timeoutable {
 
 public:
 	/**

@@ -17,6 +17,7 @@
 #ifndef CAMEO_IDGENERATOR_H_
 #define CAMEO_IDGENERATOR_H_
 
+#include "Defines.h"
 #include <atomic>
 #include <string>
 
@@ -25,7 +26,7 @@ namespace cameo {
 /**
  * Class managing the ids of communication objects.
  */
-class IdGenerator {
+class CAMEO_EXPORT IdGenerator {
 
 public:
 	/**

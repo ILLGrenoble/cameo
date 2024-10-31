@@ -40,7 +40,7 @@ class ResponderImpl;
 /**
  * Request received by the basic responder.
  */
-class Request {
+class CAMEO_EXPORT Request {
 
 	friend class Responder;
 	friend std::ostream& operator<<(std::ostream&, const Request&);
@@ -124,7 +124,7 @@ private:
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-class Responder : public Object, public Cancelable {
+class CAMEO_EXPORT Responder : public Object, public Cancelable {
 
 	friend class Request;
 	friend std::ostream& operator<<(std::ostream&, const Responder&);
@@ -206,12 +206,12 @@ private:
 /**
  * Stream operator for a Request object.
  */
-std::ostream& operator<<(std::ostream&, const Request&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Request&);
 
 /**
  * Stream operator for a Responder object.
  */
-std::ostream& operator<<(std::ostream&, const Responder&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const Responder&);
 
 }
 }

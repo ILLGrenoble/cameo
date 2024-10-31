@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception when starting an App.
  */
-class StartException : public RemoteException {
+class CAMEO_EXPORT StartException : public RemoteException {
 
 public:
 	/**

@@ -37,7 +37,7 @@ namespace cameo {
 /**
  * Class wrapping the ZeroMQ context.
  */
-class ContextZmq : public Context {
+class CAMEO_EXPORT ContextZmq : public Context {
 
 public:
 	/**

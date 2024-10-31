@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for an unregistered application.
  */
-class UnregisteredApplicationException : public RemoteException {
+class CAMEO_EXPORT UnregisteredApplicationException : public RemoteException {
 
 public:
 	/**

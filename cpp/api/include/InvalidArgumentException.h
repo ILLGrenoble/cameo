@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for an invalid argument.
  */
-class InvalidArgumentException : public RemoteException {
+class CAMEO_EXPORT InvalidArgumentException : public RemoteException {
 
 public:
 	/**

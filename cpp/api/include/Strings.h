@@ -17,6 +17,7 @@
 #ifndef CAMEO_STRINGS_H_
 #define CAMEO_STRINGS_H_
 
+#include "Defines.h"
 #include <string>
 #include <vector>
 
@@ -32,12 +33,12 @@ const int Null = 0;
  * Splits the string with delimiter.
  * \return The list of strings.
  */
-std::vector<std::string> split(const std::string& str, char c);
+CAMEO_EXPORT std::vector<std::string> split(const std::string& str, char c);
 
 /**
  * Class defining an endpoint.
  */
-class Endpoint {
+class CAMEO_EXPORT Endpoint {
 
 	friend std::ostream& operator<<(std::ostream&, const Endpoint&);
 
@@ -121,7 +122,7 @@ private:
 /**
  * Class defining an application identity.
  */
-class ApplicationIdentity {
+class CAMEO_EXPORT ApplicationIdentity {
 
 public:
 	/**
@@ -183,7 +184,7 @@ private:
 /**
  * Class defining an application identity with starter.
  */
-class ApplicationWithStarterIdentity {
+class CAMEO_EXPORT ApplicationWithStarterIdentity {
 
 public:
 	/**
@@ -238,7 +239,7 @@ private:
 /**
  * Class defining a Server identity.
  */
-class ServerIdentity {
+class CAMEO_EXPORT ServerIdentity {
 
 public:
 	constexpr static const char* ENDPOINT = "endpoint";
@@ -271,7 +272,7 @@ private:
 /**
  * Class defining an App identity.
  */
-class AppIdentity {
+class CAMEO_EXPORT AppIdentity {
 
 public:
 	constexpr static const char* NAME = "name";
@@ -307,7 +308,7 @@ private:
 /**
  * Class defining a string id for the communication identities.
  */
-struct StringId {
+struct CAMEO_EXPORT StringId {
 
 	/**
 	 * Creates the string id.
@@ -331,6 +332,6 @@ struct StringId {
 /**
  * Stream operator for an Endpoint object.
  */
-std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif

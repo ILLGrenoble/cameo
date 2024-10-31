@@ -17,12 +17,14 @@
 #ifndef CAMEO_CANCELABLE_H_
 #define CAMEO_CANCELABLE_H_
 
+#include "Defines.h"
+
 namespace cameo {
 
 /**
  * Class defining an interface for cancelable objects.
  */
-class Cancelable {
+class CAMEO_EXPORT Cancelable {
 
 public:
 	/**

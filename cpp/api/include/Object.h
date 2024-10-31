@@ -17,6 +17,7 @@
 #ifndef CAMEO_OBJECT_H_
 #define CAMEO_OBJECT_H_
 
+#include "Defines.h"
 #include <string>
 #include <atomic>
 
@@ -25,7 +26,7 @@ namespace cameo {
 /**
  * Class defining an abstract Cameo object that can be initialized and terminated.
  */
-class Object {
+class CAMEO_EXPORT Object {
 
 public:
 	/**

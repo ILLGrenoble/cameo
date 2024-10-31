@@ -17,6 +17,7 @@
 #ifndef CAMEO_TIMECONDITION_H_
 #define CAMEO_TIMECONDITION_H_
 
+#include "Defines.h"
 #include <mutex>
 #include <condition_variable>
 
@@ -26,7 +27,7 @@ namespace cameo {
  * An "improved" "one-time notify" condition. If a notify occurs before the wait then
  * the condition does NOT wait. Must not be used if the notify can occur for many times.
  */
-class TimeCondition {
+class CAMEO_EXPORT TimeCondition {
 
 public:
 	/**

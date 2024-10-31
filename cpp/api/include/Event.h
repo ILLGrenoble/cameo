@@ -17,6 +17,7 @@
 #ifndef CAMEO_EVENT_H_
 #define CAMEO_EVENT_H_
 
+#include "Defines.h"
 #include <string>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Base class for events.
  */
-class Event {
+class CAMEO_EXPORT Event {
 
 public:
 	/**

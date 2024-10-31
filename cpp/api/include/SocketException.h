@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for a socket.
  */
-class SocketException : public RemoteException {
+class CAMEO_EXPORT SocketException : public RemoteException {
 
 public:
 	/**

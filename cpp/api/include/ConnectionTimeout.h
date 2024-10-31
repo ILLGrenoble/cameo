@@ -17,6 +17,7 @@
 #ifndef CAMEO_CONNECTIONTIMEOUT_H_
 #define CAMEO_CONNECTIONTIMEOUT_H_
 
+#include "Defines.h"
 #include <stdexcept>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Exception for a connection timeout.
  */
-class ConnectionTimeout : public std::runtime_error {
+class CAMEO_EXPORT ConnectionTimeout : public std::runtime_error {
 
 public:
 	/**

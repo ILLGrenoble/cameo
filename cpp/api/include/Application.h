@@ -81,7 +81,7 @@ class App;
 /**
  * Helper class to provide an App instance and its associated Server instance.
  */
-class ServerAndApp {
+class CAMEO_EXPORT ServerAndApp {
 
 public:
 	/**
@@ -188,7 +188,7 @@ const Value KILLED = 256;
  *
  * The application can be launched by the Cameo console or another Cameo App.
  */
-class This: private EventListener {
+class CAMEO_EXPORT This : private EventListener {
 
 	friend class cameo::Waiting;
 	friend class cameo::Server;
@@ -469,7 +469,7 @@ private:
  *
  * An App instance is created by a Server instance. It represents a real remote application that was started by a real Cameo server.
  */
-class App: private EventListener {
+class CAMEO_EXPORT App : private EventListener {
 
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const App&);
@@ -481,7 +481,7 @@ public:
 	 *
 	 * It facilitates the definition of communication objects.
 	 */
-	class Com {
+	class CAMEO_EXPORT Com {
 
 		friend class App;
 
@@ -527,7 +527,7 @@ public:
 		/**
 		 * Class defining a getter for a key value.
 		 */
-		class KeyValueGetter: private EventListener {
+		class CAMEO_EXPORT KeyValueGetter: private EventListener {
 
 			friend class Com;
 
@@ -583,7 +583,7 @@ public:
 	/**
 	 * Class defining the configuration of a registered application.
 	 */
-	class Config {
+	class CAMEO_EXPORT Config {
 
 		friend std::ostream& operator<<(std::ostream&, const Config&);
 
@@ -656,7 +656,7 @@ public:
 	/**
 	 * Class showing the information of a running Cameo application.
 	 */
-	class Info {
+	class CAMEO_EXPORT Info {
 
 		friend std::ostream& operator<<(std::ostream&, const Info&);
 
@@ -730,7 +730,7 @@ public:
 	/**
 	 * Class defining a system port associated to a Cameo application.
 	 */
-	class Port {
+	class CAMEO_EXPORT Port {
 
 		friend std::ostream& operator<<(std::ostream&, const Port&);
 
@@ -961,27 +961,27 @@ typedef std::vector<std::unique_ptr<App>> AppArray;
 /**
  * Converts a set of states to a string.
  */
-std::string toString(cameo::state::Value applicationStates);
+CAMEO_EXPORT std::string toString(cameo::state::Value applicationStates);
 
 /**
  * Stream operator for an App object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App&);
 
 /**
  * Stream operator for a Config object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
 
 /**
  * Stream operator for an Info object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
 
 /**
  * Stream operator for a Port object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
 
 }
 

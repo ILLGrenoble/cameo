@@ -14,9 +14,26 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_EXPORT_H_
-#define CAMEO_EXPORT_H_
+#ifndef CAMEO_DEFINES_H_
+#define CAMEO_DEFINES_H_
 
+#if defined _WIN32
+  #if defined CAMEO_STATIC
+    #define CAMEO_EXPORT
+  #elif defined DLL_EXPORT
+    #define CAMEO_EXPORT __declspec(dllexport)
+  #else
+    #define CAMEO_EXPORT __declspec(dllimport)
+  #endif
+#else
+  #if defined __SUNPRO_C || defined __SUNPRO_CC
+    #define CAMEO_EXPORT __global
+  #elif (defined __GNUC__ && __GNUC__ >= 4) || defined __INTEL_COMPILER
+    #define CAMEO_EXPORT __attribute__ ((visibility ("default")))
+  #else
+    #define CAMEO_EXPORT
+  #endif
+#endif
 
 
 #endif

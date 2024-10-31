@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for a bad format.
  */
-class BadFormatException : public RemoteException {
+class CAMEO_EXPORT BadFormatException : public RemoteException {
 
 public:
 	/**

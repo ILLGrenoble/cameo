@@ -17,6 +17,7 @@
 #ifndef CAMEO_TIMEOUTCOUNTER_H_
 #define CAMEO_TIMEOUTCOUNTER_H_
 
+#include "Defines.h"
 #include <chrono>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * A class providing a helper to define timeouts for operations that have different steps.
  */
-class TimeoutCounter {
+class CAMEO_EXPORT TimeoutCounter {
 
 public:
 	static const TimeoutCounter None;

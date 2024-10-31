@@ -31,7 +31,7 @@ class App;
 /**
  * Class defining an event stream socket.
  */
-class EventStreamSocket {
+class CAMEO_EXPORT EventStreamSocket {
 
 	friend class Server;
 	friend class App;

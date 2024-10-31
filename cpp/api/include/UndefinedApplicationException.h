@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for an undefined application.
  */
-class UndefinedApplicationException : public RemoteException {
+class CAMEO_EXPORT UndefinedApplicationException : public RemoteException {
 
 public:
 	/**

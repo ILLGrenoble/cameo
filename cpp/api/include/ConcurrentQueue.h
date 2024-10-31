@@ -32,7 +32,7 @@ namespace cameo {
  * Supports only pointer types.
  */
 template<typename Type>
-class ConcurrentQueue {
+class CAMEO_EXPORT ConcurrentQueue {
 
 public:
 	/**

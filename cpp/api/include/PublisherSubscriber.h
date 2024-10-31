@@ -38,7 +38,7 @@ class Responder;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class Publisher : public Object, public Cancelable {
+class CAMEO_EXPORT Publisher : public Object, public Cancelable {
 
 	friend class cameo::This;
 
@@ -181,7 +181,7 @@ private:
 /**
  * Class defining a subscriber.
  */
-class Subscriber : public Object, public Timeoutable, public Cancelable {
+class CAMEO_EXPORT Subscriber : public Object, public Timeoutable, public Cancelable {
 
 	friend class cameo::Server;
 	friend class cameo::App;
@@ -324,12 +324,12 @@ private:
 /**
  * Stream operator for a Publisher object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
 
 /**
  * Stream operator for a Subscriber object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 
 }
 }

@@ -17,6 +17,7 @@
 #ifndef CAMEO_KEYVALUE_H_
 #define CAMEO_KEYVALUE_H_
 
+#include "Defines.h"
 #include <string>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Class defining a key value.
  */
-class KeyValue {
+class CAMEO_EXPORT KeyValue {
 
 public:
 	/**

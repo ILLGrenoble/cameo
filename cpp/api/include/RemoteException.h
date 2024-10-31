@@ -17,6 +17,7 @@
 #ifndef CAMEO_REMOTEEXCEPTION_H_
 #define CAMEO_REMOTEEXCEPTION_H_
 
+#include "Defines.h"
 #include <stdexcept>
 #include <string>
 
@@ -25,7 +26,7 @@ namespace cameo {
 /**
  * Base class for remote exception.
  */
-class RemoteException : public std::exception {
+class CAMEO_EXPORT RemoteException : public std::exception {
 
 public:
 	/**
