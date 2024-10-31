@@ -84,6 +84,7 @@ target_include_directories(${LIBNAME}-obj
 )
 target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
 
+# For windows to help to export the symbols in dll. 
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(${LIBNAME}-obj PUBLIC CAMEO_STATIC)
 endif()
