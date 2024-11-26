@@ -837,6 +837,8 @@ std::string Server::toString() const {
 	return ServerIdentity{serverEndpoint, m_useProxy}.toJSONString();
 }
 
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 
 	os << server.toString();
@@ -844,4 +846,3 @@ std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 	return os;
 }
 
-}

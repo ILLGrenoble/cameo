@@ -47,8 +47,7 @@ class CAMEO_EXPORT Server : public Object, public Timeoutable {
 	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
-	friend std::ostream& operator<<(std::ostream&, const Server&);
-
+	
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
@@ -351,11 +350,12 @@ private:
 	const static std::string CAMEO_SERVER;
 };
 
+}
+
+
 /**
  * Stream operator for a Server object.
  */
-std::ostream& operator<<(std::ostream&, const Server&);
-
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::Server&);
 
 #endif
