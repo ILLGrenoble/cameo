@@ -499,6 +499,9 @@ std::string Subscriber::toString() const {
 	return jsonObject.dump();
 }
 
+}
+}
+
 std::ostream& operator<<(std::ostream& os, const cameo::coms::Publisher& publisher) {
 
 	os << publisher.toString();
@@ -513,6 +516,4 @@ std::ostream& operator<<(std::ostream& os, const cameo::coms::Subscriber& subscr
 	return os;
 }
 
-}
-}
 

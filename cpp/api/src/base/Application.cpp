@@ -621,35 +621,36 @@ std::string toString(cameo::state::Value applicationStates) {
 	return result.str();
 }
 
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // operator<<
 
-std::ostream& operator<<(std::ostream& os, const App& instance) {
+std::ostream& operator<<(std::ostream& os, const cameo::App& instance) {
 
 	os << instance.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const App::Config& configuration) {
+std::ostream& operator<<(std::ostream& os, const cameo::App::Config& configuration) {
 
 	os << configuration.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const App::Info& info) {
+std::ostream& operator<<(std::ostream& os, const cameo::App::Info& info) {
 
 	os << info.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const App::Port& port) {
+std::ostream& operator<<(std::ostream& os, const cameo::App::Port& port) {
 
 	os << port.toString();
 
 	return os;
 }
 
-}

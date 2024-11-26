@@ -319,17 +319,17 @@ private:
 	std::unique_ptr<Requester> m_requester;
 };
 
+}
+}
+
 /**
  * Stream operator for a Publisher object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
 
 /**
  * Stream operator for a Subscriber object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
-
-}
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
 
 #endif

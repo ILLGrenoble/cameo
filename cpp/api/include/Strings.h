@@ -40,8 +40,6 @@ CAMEO_EXPORT std::vector<std::string> split(const std::string& str, char c);
  */
 class CAMEO_EXPORT Endpoint {
 
-	friend std::ostream& operator<<(std::ostream&, const Endpoint&);
-
 public:
 	/**
 	 * Constructor.
@@ -332,6 +330,6 @@ struct CAMEO_EXPORT StringId {
 /**
  * Stream operator for an Endpoint object.
  */
-std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif

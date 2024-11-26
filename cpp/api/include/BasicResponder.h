@@ -43,7 +43,6 @@ class ResponderImpl;
 class CAMEO_EXPORT Request {
 
 	friend class Responder;
-	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
 	/**
@@ -127,7 +126,6 @@ private:
 class CAMEO_EXPORT Responder : public Object, public Cancelable {
 
 	friend class Request;
-	friend std::ostream& operator<<(std::ostream&, const Responder&);
 
 public:
 	/**
@@ -203,18 +201,18 @@ private:
 	std::string m_key;
 };
 
+}
+}
+}
+
 /**
  * Stream operator for a Request object.
  */
-std::ostream& operator<<(std::ostream&, const Request&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::basic::Request&);
 
 /**
  * Stream operator for a Responder object.
  */
-std::ostream& operator<<(std::ostream&, const Responder&);
-
-}
-}
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::basic::Responder&);
 
 #endif

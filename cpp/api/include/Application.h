@@ -145,7 +145,6 @@ const Value KILLED = 256;
 class CAMEO_EXPORT App : private EventListener {
 
 	friend class cameo::Server;
-	friend std::ostream& operator<<(std::ostream&, const App&);
 
 public:
 
@@ -258,8 +257,6 @@ public:
 	 */
 	class CAMEO_EXPORT Config {
 
-		friend std::ostream& operator<<(std::ostream&, const Config&);
-
 	public:
 		/**
 		 * Constructor.
@@ -330,8 +327,6 @@ public:
 	 * Class showing the information of a running Cameo application.
 	 */
 	class CAMEO_EXPORT Info {
-
-		friend std::ostream& operator<<(std::ostream&, const Info&);
 
 	public:
 		/**
@@ -404,8 +399,6 @@ public:
 	 * Class defining a system port associated to a Cameo application.
 	 */
 	class CAMEO_EXPORT Port {
-
-		friend std::ostream& operator<<(std::ostream&, const Port&);
 
 	public:
 		/**
@@ -636,26 +629,27 @@ typedef std::vector<std::unique_ptr<App>> AppArray;
  */
 CAMEO_EXPORT std::string toString(cameo::state::Value applicationStates);
 
+}
+
 /**
  * Stream operator for an App object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App&);
 
 /**
  * Stream operator for a Config object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
 
 /**
  * Stream operator for an Info object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
 
 /**
  * Stream operator for a Port object.
  */
-std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
 
-}
 
 #endif

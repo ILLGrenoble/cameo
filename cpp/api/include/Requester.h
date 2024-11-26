@@ -32,8 +32,6 @@ class RequesterImpl;
  */
 class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable {
 
-	friend std::ostream& operator<<(std::ostream&, const Requester&);
-
 public:
 	/**
 	 * Destructor.
@@ -185,12 +183,12 @@ private:
 	std::unique_ptr<Checker> m_checker;
 };
 
+}
+}
+
 /**
  * Stream operator for a Requester object.
  */
-std::ostream& operator<<(std::ostream&, const Requester&);
-
-}
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
 
 #endif

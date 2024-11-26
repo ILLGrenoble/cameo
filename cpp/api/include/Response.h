@@ -28,8 +28,6 @@ namespace cameo {
  */
 class CAMEO_EXPORT Response {
 
-	friend std::ostream& operator<<(std::ostream&, const Response&);
-
 public:
 	/**
 	 * Constructor.
@@ -72,11 +70,11 @@ private:
 	std::string m_message;
 };
 
+}
+
 /**
  * Stream operator for a Response object.
  */
-std::ostream& operator<<(std::ostream&, const Response&);
-
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::Response&);
 
 #endif
