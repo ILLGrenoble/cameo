@@ -28,7 +28,7 @@ class Event;
  * Class defining an event listener.
  * The application name is not required, in that case all messages are received.
  */
-class EventListener {
+class CAMEO_EXPORT EventListener {
 
 public:
 	/**

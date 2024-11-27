@@ -17,12 +17,14 @@
 #ifndef CAMEO_CONTEXT_H_
 #define CAMEO_CONTEXT_H_
 
+#include "Defines.h"
+
 namespace cameo {
 
 /**
  * Base class for the communication context.
  */
-class Context {
+class CAMEO_EXPORT Context {
 
 public:
 	/**

@@ -17,6 +17,7 @@
 #ifndef CAMEO_SYNCHRONIZATIONTIMEOUT_H_
 #define CAMEO_SYNCHRONIZATIONTIMEOUT_H_
 
+#include "Defines.h"
 #include <stdexcept>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Exception for a synchronization timeout.
  */
-class SynchronizationTimeout : public std::runtime_error {
+class CAMEO_EXPORT SynchronizationTimeout : public std::runtime_error {
 
 public:
 	/**

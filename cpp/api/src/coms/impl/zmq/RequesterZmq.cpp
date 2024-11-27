@@ -15,7 +15,8 @@
  */
 
 #include "RequesterZmq.h"
-#include "Application.h"
+
+#include "This.h"
 #include "Messages.h"
 #include "ContextZmq.h"
 #include "../../../base/JSON.h"

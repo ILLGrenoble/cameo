@@ -17,6 +17,7 @@
 #ifndef CAMEO_RESPONSE_H_
 #define CAMEO_RESPONSE_H_
 
+#include "Defines.h"
 #include <string>
 #include <iostream>
 
@@ -25,9 +26,7 @@ namespace cameo {
 /**
  * Class defining a response.
  */
-class Response {
-
-	friend std::ostream& operator<<(std::ostream&, const Response&);
+class CAMEO_EXPORT Response {
 
 public:
 	/**
@@ -71,11 +70,11 @@ private:
 	std::string m_message;
 };
 
+}
+
 /**
  * Stream operator for a Response object.
  */
-std::ostream& operator<<(std::ostream&, const Response&);
-
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::Response&);
 
 #endif

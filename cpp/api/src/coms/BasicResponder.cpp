@@ -16,6 +16,7 @@
 
 #include "BasicResponder.h"
 
+#include "This.h"
 #include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "Messages.h"
@@ -247,21 +248,21 @@ std::string Responder::toString() const {
 	return jsonObject.dump();
 }
 
-std::ostream& operator<<(std::ostream& os, const Request& request) {
+}
+}
+}
+
+std::ostream& operator<<(std::ostream& os, const cameo::coms::basic::Request& request) {
 
 	os << request.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Responder& responder) {
+std::ostream& operator<<(std::ostream& os, const cameo::coms::basic::Responder& responder) {
 
 	os << responder.toString();
 
 	return os;
-}
-
-}
-}
 }
 

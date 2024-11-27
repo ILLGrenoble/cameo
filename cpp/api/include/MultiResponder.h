@@ -17,7 +17,7 @@
 #ifndef CAMEO_COMS_MULTI_RESPONDER_H_
 #define CAMEO_COMS_MULTI_RESPONDER_H_
 
-#include "Application.h"
+#include "ServerAndApp.h"
 
 namespace cameo {
 namespace coms {
@@ -38,10 +38,9 @@ class ResponderRouterImpl;
 /**
  * Class defining a request received by the multi responder.
  */
-class Request {
+class CAMEO_EXPORT Request {
 
 	friend class Responder;
-	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
 	/**
@@ -123,11 +122,10 @@ private:
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-class ResponderRouter : public Object, public Cancelable {
+class CAMEO_EXPORT ResponderRouter : public Object, public Cancelable {
 
 	friend class Responder;
 	friend class Request;
-	friend std::ostream& operator<<(std::ostream&, const ResponderRouter&);
 
 public:
 	/**
@@ -216,10 +214,9 @@ private:
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-class Responder : public Object, public Cancelable {
+class CAMEO_EXPORT Responder : public Object, public Cancelable {
 
 	friend class Request;
-	friend std::ostream& operator<<(std::ostream&, const Responder&);
 
 public:
 	/**
@@ -277,23 +274,23 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 };
 
+}
+}
+}
+
 /**
  * Stream operator for a Request object.
  */
-std::ostream& operator<<(std::ostream&, const Request&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::Request&);
 
 /**
  * Stream operator for a ResponderRouter object.
  */
-std::ostream& operator<<(std::ostream&, const ResponderRouter&);
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::ResponderRouter&);
 
 /**
  * Stream operator for a Responder object.
  */
-std::ostream& operator<<(std::ostream&, const Responder&);
-
-}
-}
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::Responder&);
 
 #endif

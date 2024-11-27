@@ -15,6 +15,8 @@
  */
 
 #include "MultiResponder.h"
+
+#include "This.h"
 #include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "Messages.h"
@@ -332,28 +334,27 @@ std::string Responder::toString() const {
 	return jsonObject.dump();
 }
 
-std::ostream& operator<<(std::ostream& os, const Request& request) {
+}
+}
+}
+
+std::ostream& operator<<(std::ostream& os, const cameo::coms::multi::Request& request) {
 
 	os << request.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const ResponderRouter& router) {
+std::ostream& operator<<(std::ostream& os, const cameo::coms::multi::ResponderRouter& router) {
 
 	os << router.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Responder& responder) {
+std::ostream& operator<<(std::ostream& os, const cameo::coms::multi::Responder& responder) {
 
 	os << responder.toString();
 
 	return os;
 }
-
-}
-}
-}
-

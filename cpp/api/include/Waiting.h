@@ -17,6 +17,7 @@
 #ifndef CAMEO_WAITING_H_
 #define CAMEO_WAITING_H_
 
+#include "Defines.h"
 #include <functional>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Class defining a waiting that can be canceled. It is used in blocking calls.
  */
-class Waiting {
+class CAMEO_EXPORT Waiting {
 
 public:
 	/**

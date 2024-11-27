@@ -50,10 +50,10 @@ $ cmake --build build
 ```
 
 Possible options are:
- - CAMEO_ALL: to build everything including tests and examples
- - CAMEO_JAVA: to build all the Java artifacts
+ - CAMEO_ALL=ON: to build everything including tests and examples
+ - CAMEO_JAVA=ON: to build all the Java artifacts
  - ZEROMQ_JAVA=*value*: value is 'jzmq' or 'jeromq'
- - CAMEO_PROXIES: to build the proxies
+ - CAMEO_PROXIES=ON: to build the proxies
  - CAMEO_API_CPP=ON: to build and install the C++ API
  - CAMEO_API_PYTHON=ON: to build and install the Python API
 

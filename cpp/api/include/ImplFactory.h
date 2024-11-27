@@ -17,6 +17,7 @@
 #ifndef CAMEO_IMPLFACTORY_H_
 #define CAMEO_IMPLFACTORY_H_
 
+#include "Defines.h"
 #include <memory>
 #include <mutex>
 
@@ -47,7 +48,7 @@ class SubscriberImpl;
  * Factory for the implementation objects.
  * This implementation of the factory generates ZeroMQ implementations.
  */
-class ImplFactory {
+class CAMEO_EXPORT ImplFactory {
 
 public:
 	/**

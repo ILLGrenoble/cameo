@@ -229,13 +229,14 @@ std::string Requester::toString() const {
 	return jsonObject.dump();
 }
 
-std::ostream& operator<<(std::ostream& os, const Requester& requester) {
+}
+}
+
+std::ostream& operator<<(std::ostream& os, const cameo::coms::Requester& requester) {
 
 	os << requester.toString();
 
 	return os;
 }
 
-}
-}
 

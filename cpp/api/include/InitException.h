@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for an initialization.
  */
-class InitException : public RemoteException {
+class CAMEO_EXPORT InitException : public RemoteException {
 
 public:
 	/**

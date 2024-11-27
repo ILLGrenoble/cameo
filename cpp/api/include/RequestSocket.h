@@ -17,6 +17,7 @@
 #ifndef CAMEO_REQUESTSOCKET_H_
 #define CAMEO_REQUESTSOCKET_H_
 
+#include "Defines.h"
 #include <string>
 #include <memory>
 
@@ -28,7 +29,7 @@ class RequestSocketImpl;
 /**
  * Class defining a request socket.
  */
-class RequestSocket {
+class CAMEO_EXPORT RequestSocket {
 
 public:
 	/**

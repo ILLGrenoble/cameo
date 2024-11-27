@@ -17,6 +17,7 @@
 #ifndef CAMEO_TIMEOUT_H_
 #define CAMEO_TIMEOUT_H_
 
+#include "Defines.h"
 #include <stdexcept>
 
 namespace cameo {
@@ -24,7 +25,7 @@ namespace cameo {
 /**
  * Exception for a general timeout.
  */
-class Timeout : public std::runtime_error {
+class CAMEO_EXPORT Timeout : public std::runtime_error {
 
 public:
 	/**

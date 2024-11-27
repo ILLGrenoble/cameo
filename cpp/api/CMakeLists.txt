@@ -33,7 +33,7 @@ if(NOT APPLE)
 endif()
 
 # Export all the symbols on windows
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 #------------------------------------------------------------
 # Dependencies
@@ -84,7 +84,13 @@ target_include_directories(${LIBNAME}-obj
 )
 target_compile_features(${LIBNAME}-obj PUBLIC cxx_std_17)
 
+# For windows to help to export the symbols in dll. 
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(${LIBNAME}-obj PUBLIC CAMEO_STATIC)
+endif()
+
 set_target_properties(${LIBNAME}-obj PROPERTIES
+  COMPILE_DEFINITIONS "DLL_EXPORT"
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
@@ -110,6 +116,7 @@ get_target_property(obj_INTERFACE_INCLUDE_DIRECTORIES ${LIBNAME}-obj INTERFACE_I
 target_link_libraries(${LIBNAME} PUBLIC "${obj_INTERFACE_LINK_LIBRARIES}")
 
 set_target_properties(${LIBNAME} PROPERTIES
+  COMPILE_DEFINITIONS "DLL_EXPORT"
   SOVERSION ${PROJECT_VERSION_MAJOR}
   VERSION ${PROJECT_VERSION}
   POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python

@@ -30,9 +30,7 @@ class RequesterImpl;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class Requester : public Object, public Timeoutable, public Cancelable {
-
-	friend std::ostream& operator<<(std::ostream&, const Requester&);
+class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable {
 
 public:
 	/**
@@ -185,12 +183,12 @@ private:
 	std::unique_ptr<Checker> m_checker;
 };
 
+}
+}
+
 /**
  * Stream operator for a Requester object.
  */
-std::ostream& operator<<(std::ostream&, const Requester&);
-
-}
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
 
 #endif

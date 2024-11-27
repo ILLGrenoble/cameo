@@ -15,7 +15,8 @@
  */
 
 #include "SubscriberZmq.h"
-#include "Server.h"
+
+#include "This.h"
 #include "Messages.h"
 #include "Waiting.h"
 #include "RequestSocket.h"

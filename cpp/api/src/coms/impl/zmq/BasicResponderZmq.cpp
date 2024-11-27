@@ -15,7 +15,8 @@
  */
 
 #include "BasicResponderZmq.h"
-#include "Application.h"
+
+#include "This.h"
 #include "Messages.h"
 #include "BasicResponder.h"
 #include "RequestSocket.h"

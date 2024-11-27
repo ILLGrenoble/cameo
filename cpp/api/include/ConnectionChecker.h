@@ -17,6 +17,7 @@
 #ifndef CAMEO_CONNECTIONCHECKER_H_
 #define CAMEO_CONNECTIONCHECKER_H_
 
+#include "Defines.h"
 #include <functional>
 #include <thread>
 #include <memory>
@@ -31,7 +32,7 @@ class TimeCondition;
 /**
  * Class providing a simple connection checker.
  */
-class ConnectionChecker {
+class CAMEO_EXPORT ConnectionChecker {
 
 	friend class Server;
 

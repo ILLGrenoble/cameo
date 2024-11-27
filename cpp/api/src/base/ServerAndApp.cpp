@@ -14,26 +14,33 @@
  * limitations under the Licence.
  */
 
-#ifndef CAMEO_UNREGISTEREDAPPLICATIONEXCEPTION_H_
-#define CAMEO_UNREGISTEREDAPPLICATIONEXCEPTION_H_
-
-#include "RemoteException.h"
+#include "ServerAndApp.h"
 
 namespace cameo {
 
-/**
- * Exception for an unregistered application.
- */
-class CAMEO_EXPORT UnregisteredApplicationException : public RemoteException {
-
-public:
-	/**
-	 * Constructor.
-	 * \param message The message.
-	 */
-	UnregisteredApplicationException(const std::string& message);
-};
-
+ServerAndApp::ServerAndApp() {
 }
 
-#endif
+ServerAndApp::ServerAndApp(std::unique_ptr<Server>& server, std::unique_ptr<App>& app) :
+	m_server(std::move(server)), m_app(std::move(app)) {
+}
+
+Server& ServerAndApp::getServer() {
+	return *m_server.get();
+}
+
+bool ServerAndApp::hasApp() const {
+	return m_app.get() != nullptr;
+}
+
+App& ServerAndApp::getApp() {
+	return *m_app.get();
+}
+
+void ServerAndApp::terminate() {
+
+	m_server->terminate();
+	m_app->terminate();
+}
+
+}

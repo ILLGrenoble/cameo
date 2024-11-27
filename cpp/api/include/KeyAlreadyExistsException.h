@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for a key that already exists.
  */
-class KeyAlreadyExistsException : public RemoteException {
+class CAMEO_EXPORT KeyAlreadyExistsException : public RemoteException {
 
 public:
 	/**

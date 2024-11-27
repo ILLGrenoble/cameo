@@ -21,8 +21,7 @@
 #define CAMEO_API_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #define CAMEO_API_VERSION_REVISION @PROJECT_VERSION_PATCH@
 
-#include "Application.h"
-#include "Server.h"
+#include "This.h"
 #include "ContextZmq.h"
 #include "ImplFactory.h"
 #include "BasicResponder.h"

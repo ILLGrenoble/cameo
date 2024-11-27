@@ -41,14 +41,13 @@ class RequestSocket;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-class Server : public Object, public Timeoutable {
+class CAMEO_EXPORT Server : public Object, public Timeoutable {
 
 	friend class App;
 	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
-	friend std::ostream& operator<<(std::ostream&, const Server&);
-
+	
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
@@ -240,7 +239,7 @@ public:
 	/**
 	 * Class used for filtering events.
 	 */
-	class FilteredEventListener {
+	class CAMEO_EXPORT FilteredEventListener {
 
 	public:
 		/**
@@ -351,11 +350,12 @@ private:
 	const static std::string CAMEO_SERVER;
 };
 
+}
+
+
 /**
  * Stream operator for a Server object.
  */
-std::ostream& operator<<(std::ostream&, const Server&);
-
-}
+CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::Server&);
 
 #endif

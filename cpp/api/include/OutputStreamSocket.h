@@ -34,7 +34,7 @@ class App;
 /**
  * Class defining an output for application streams.
  */
-class Output {
+class CAMEO_EXPORT Output {
 
 	friend class OutputStreamSocket;
 
@@ -77,7 +77,7 @@ private:
 /**
  * Class defining an output stream socket.
  */
-class OutputStreamSocket : public Cancelable {
+class CAMEO_EXPORT OutputStreamSocket : public Cancelable {
 
 	friend class Server;
 	friend class App;

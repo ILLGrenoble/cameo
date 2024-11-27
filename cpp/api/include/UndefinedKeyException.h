@@ -24,7 +24,7 @@ namespace cameo {
 /**
  * Exception for an undefined key.
  */
-class UndefinedKeyException : public RemoteException {
+class CAMEO_EXPORT UndefinedKeyException : public RemoteException {
 
 public:
 	/**
