@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-Cameo depends on:
+CAMEO depends on:
  - CMake (>=3.20)
  - Java JDK (>=11)
  - Maven
@@ -16,7 +16,7 @@ For the Python API:
 
 OpenJDK or Oracle JDK can be both installed.
 
-### Debian-based Linux distribution
+### Debian-based Linux
  
 Install all the dependencies (except Java):
 
@@ -24,13 +24,13 @@ Install all the dependencies (except Java):
 $ sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
 ```
 
-### Windows with vcpkg
+### Windows vcpkg
 
+We recommend to use vcpkg to compile on Windows.
 To install the C++ and Python APIs, first install vcpkg, then install the dependencies:
 
 ```
-$ vcpkg install zeromq
-$ vcpkg install cppzmq
+$ vcpkg install zeromq cppzmq rapidjson pybind11
 
 ```
 
@@ -40,14 +40,6 @@ $ vcpkg install cppzmq
 You can either generate the binaries or the Debian packages.
 
 ### Option 1: Generate the binaries
-
-Compile:
-
-```
-$ cd cameo
-$ cmake -S . -B build -D<OPTION>
-$ cmake --build build
-```
 
 Possible options are:
  - CAMEO_ALL=ON: to build everything including tests and examples
@@ -59,26 +51,49 @@ Possible options are:
 
 If CAMEO_ALL is selected then all the options are selected.
 
-For windows it is recommended to use the *jeromq* implementation.
-With windows vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake and compile the release objects:
+
+#### Debian-based Linux
+
+Configure and compile:
+
+```
+$ cd cameo
+$ cmake -S . -B build -D<OPTION>
+$ cmake --build build
+```
+
+
+#### Windows vcpkg
+
+The options are still valid and the configuration is done with:
+
+```
+$ cd cameo
+$ cmake -S . -B build -D<OPTION>
+```
+
+It is recommended on Windows to use the *jeromq* implementation since *jzmq* is not well compiled.
+To use vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake and compile the release objects:
 
 ```
 $ cmake --build build --config Release
 ```
 
-Install:
+The *dll* library file is generated.
+You can also compile in full static. Install the static dependencies:
 
 ```
-$ sudo cmake --build build --install --prefix <path/to/install>
-```
-
-With windows vcpkg, you can compile in full static with:
+$ vcpkg install zeromq:x64-windows-static cppzmq:x64-windows-static
 
 ```
-cmake -B build -S . -DCAMEO_ALL=ON -DZEROMQ_JAVA=jeromq -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=x64-windows-static "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>" "-DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+
+Configure the build with:
+
+```
+$ cmake -B build -S . -DCAMEO_ALL=ON -DZEROMQ_JAVA=jeromq -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=x64-windows-static "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>" "-DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
 ```
 
-You will need to install the static libraries of zeromq and cppzmq in vcpkg.
+The static library file is generated.
 
 
 ### Option 2: Generate the Debian packages
