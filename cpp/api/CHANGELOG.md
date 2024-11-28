@@ -3,6 +3,7 @@
 
 * Options in option namespace.
 * States in state namespace.
+* Exports for Windows DLL.
 
 2.2.0
 -----
