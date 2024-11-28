@@ -142,9 +142,8 @@ generate_export_header(${LIBNAME}
 # Install
 #------------------------------------------------------------
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/copyright
   DESTINATION ${CMAKE_INSTALL_DOCDIR}/
-  RENAME copyright
   COMPONENT ${component_runtime}
   )
 
