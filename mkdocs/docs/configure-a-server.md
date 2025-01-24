@@ -25,7 +25,7 @@ Let's take an example with two applications registered:
             <stop executable="kill" args="-2"/>
             <error executable="bash" args="/home/cameo/error.sh -debug"/>
         </application>
-    <applications>	
+    </applications>	
 </config>
 ```
 
