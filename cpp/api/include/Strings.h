@@ -1,25 +1,27 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_STRINGS_H_
 #define CAMEO_STRINGS_H_
 
-#include "Defines.h"
+#include "JSON.h"
 #include <string>
 #include <vector>
 
 namespace cameo {
-
-namespace json {
-	class StringObject;
-}
 
 const int Null = 0;
 
@@ -27,12 +29,14 @@ const int Null = 0;
  * Splits the string with delimiter.
  * \return The list of strings.
  */
-CAMEO_EXPORT std::vector<std::string> split(const std::string& str, char c);
+std::vector<std::string> split(const std::string& str, char c);
 
 /**
  * Class defining an endpoint.
  */
-class CAMEO_EXPORT Endpoint {
+class Endpoint {
+
+	friend std::ostream& operator<<(std::ostream&, const Endpoint&);
 
 public:
 	/**
@@ -56,18 +60,11 @@ public:
 	Endpoint();
 
 	/**
-	 * Equals operator.
+	 * Equality operator.
 	 * \param endpoint The endpoint to compare.
 	 * \return True if equals, false otherwise.
 	 */
 	bool operator==(const Endpoint& endpoint) const;
-
-	/**
-	 * Non-equals operator.
-	 * \param endpoint The endpoint to compare.
-	 * \return True if equals, false otherwise.
-	 */
-	bool operator!=(const Endpoint& endpoint) const;
 
 	/**
 	 * Gets the protocol.
@@ -114,7 +111,7 @@ private:
 /**
  * Class defining an application identity.
  */
-class CAMEO_EXPORT ApplicationIdentity {
+class ApplicationIdentity {
 
 public:
 	/**
@@ -176,7 +173,7 @@ private:
 /**
  * Class defining an application identity with starter.
  */
-class CAMEO_EXPORT ApplicationWithStarterIdentity {
+class ApplicationWithStarterIdentity {
 
 public:
 	/**
@@ -231,7 +228,7 @@ private:
 /**
  * Class defining a Server identity.
  */
-class CAMEO_EXPORT ServerIdentity {
+class ServerIdentity {
 
 public:
 	constexpr static const char* ENDPOINT = "endpoint";
@@ -264,7 +261,7 @@ private:
 /**
  * Class defining an App identity.
  */
-class CAMEO_EXPORT AppIdentity {
+class AppIdentity {
 
 public:
 	constexpr static const char* NAME = "name";
@@ -300,7 +297,7 @@ private:
 /**
  * Class defining a string id for the communication identities.
  */
-struct CAMEO_EXPORT StringId {
+struct StringId {
 
 	/**
 	 * Creates the string id.
@@ -324,6 +321,6 @@ struct CAMEO_EXPORT StringId {
 /**
  * Stream operator for an Endpoint object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
+std::ostream& operator<<(std::ostream& os, const cameo::Endpoint& endpoint);
 
 #endif

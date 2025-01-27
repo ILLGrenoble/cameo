@@ -1,16 +1,21 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "BasicResponder.h"
 
-#include "This.h"
 #include "ImplFactory.h"
 #include "RequestSocket.h"
 #include "Messages.h"
@@ -71,7 +76,7 @@ void Request::reply(const std::string& response) {
 	m_responder->reply(jsonRequest.dump(), response);
 }
 
-std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, int timeout) {
+std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, bool useProxy, int timeout) {
 
 	// Create the starter server.
 	if (m_requesterServerEndpoint.getAddress() == "") {
@@ -81,12 +86,11 @@ std::unique_ptr<ServerAndApp> Request::connectToRequester(int options, int timeo
 	std::unique_ptr<Server> server;
 	std::unique_ptr<App> app;
 
-	bool useProxy = ((options & option::USE_PROXY) != 0);
 	if (useProxy) {
-		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), option::USE_PROXY);
+		server = Server::create(m_requesterServerEndpoint.withPort(m_requesterServerProxyPort).toString(), true);
 	}
 	else {
-		server = Server::create(m_requesterServerEndpoint.toString());
+		server = Server::create(m_requesterServerEndpoint.toString(), false);
 	}
 
 	// Set the server init timeout.
@@ -242,20 +246,21 @@ std::string Responder::toString() const {
 	return jsonObject.dump();
 }
 
-}
-}
-}
-
-std::ostream& operator<<(std::ostream& os, const cameo::coms::basic::Request& request) {
+std::ostream& operator<<(std::ostream& os, const Request& request) {
 
 	os << request.toString();
 
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const cameo::coms::basic::Responder& responder) {
+std::ostream& operator<<(std::ostream& os, const Responder& responder) {
 
 	os << responder.toString();
 
 	return os;
 }
+
+}
+}
+}
+

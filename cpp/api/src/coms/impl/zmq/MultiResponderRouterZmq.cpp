@@ -1,16 +1,21 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "MultiResponderRouterZmq.h"
-
-#include "This.h"
+#include "Application.h"
 #include "ContextZmq.h"
 
 namespace cameo {
@@ -34,7 +39,7 @@ void ResponderRouterZmq::init(const std::string &responderIdentity, const std::s
 	m_router.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::router});
 
 	// Set the identity.
-	m_router->set(zmq::sockopt::routing_id, responderIdentity);
+	m_router->setsockopt(ZMQ_IDENTITY, responderIdentity.data(), responderIdentity.size());
 
 	// Connect to the proxy.
 	Endpoint proxyEndpoint {This::getEndpoint().withPort(This::getCom().getResponderProxyPort())};
@@ -87,7 +92,7 @@ void ResponderRouterZmq::run() {
 	// Switch messages between sockets.
 	while (true) {
 
-		zmq::poll(&items[0], 2, std::chrono::milliseconds{m_pollingTime});
+		zmq::poll(&items[0], 2, m_pollingTime);
 
 		if (items[0].revents & ZMQ_POLLIN) {
 
@@ -145,3 +150,4 @@ void ResponderRouterZmq::terminate() {
 }
 }
 }
+

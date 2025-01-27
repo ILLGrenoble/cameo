@@ -1,17 +1,22 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_TIMECONDITION_H_
 #define CAMEO_TIMECONDITION_H_
 
-#include "Defines.h"
 #include <mutex>
 #include <condition_variable>
 
@@ -21,7 +26,7 @@ namespace cameo {
  * An "improved" "one-time notify" condition. If a notify occurs before the wait then
  * the condition does NOT wait. Must not be used if the notify can occur for many times.
  */
-class CAMEO_EXPORT TimeCondition {
+class TimeCondition {
 
 public:
 	/**
@@ -55,3 +60,4 @@ private:
 }
 
 #endif
+

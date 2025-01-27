@@ -1,48 +1,42 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "SubscriberZmq.h"
-
-#include "This.h"
+#include "Server.h"
 #include "Messages.h"
+#include "JSON.h"
 #include "Waiting.h"
 #include "RequestSocket.h"
 #include "ContextZmq.h"
 #include "IdGenerator.h"
 #include "../PublisherImpl.h"
-#include "../../../base/JSON.h"
 
 namespace cameo {
 namespace coms {
 
 SubscriberZmq::SubscriberZmq() :
 	m_appId{0},
-	m_pollingTime{100},
-	m_timeout{0},
 	m_ended{false},
-	m_canceled{false},
-	m_timedout{false} {
+	m_canceled{false} {
 }
 
 SubscriberZmq::~SubscriberZmq() {
 }
 
-void SubscriberZmq::setPollingTime(int value) {
-	m_pollingTime = value;
-}
-
-void SubscriberZmq::setTimeout(int value) {
-	m_timeout = value;
-}
-
-void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity, bool checkApp) {
+void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& appStatusEndpoint, const std::string& publisherIdentity) {
 
 	m_publisherIdentity = publisherIdentity;
 	m_appId = appId;
@@ -54,7 +48,7 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_subscriber.reset(new zmq::socket_t{contextImpl->getContext(), zmq::socket_type::sub});
 	m_subscriber->connect(endpoint.toString());
 
-	m_subscriber->set(zmq::sockopt::subscribe, publisherIdentity);
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, publisherIdentity.c_str(), publisherIdentity.length());
 
 	// First define the cancel endpoint.
 	m_cancelEndpoint = std::string{"inproc://" + IdGenerator::newStringId()};
@@ -63,28 +57,10 @@ void SubscriberZmq::init(int appId, const Endpoint& endpoint, const Endpoint& ap
 	m_cancelPublisher->bind(m_cancelEndpoint);
 
 	m_subscriber->connect(m_cancelEndpoint);
-	m_subscriber->set(zmq::sockopt::subscribe, message::Event::CANCEL);
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::CANCEL, std::string(message::Event::CANCEL).length());
 
-	// Connect the status publisher if the app is checked.
-	if (checkApp) {
-		m_subscriber->connect(appStatusEndpoint.toString().c_str());
-		m_subscriber->set(zmq::sockopt::subscribe, message::Event::STATUS);
-	}
-
-	// Set the poll item.
-	m_items[0].socket = static_cast<void *>(*(m_subscriber.get()));
-	m_items[0].fd = 0;
-	m_items[0].events = ZMQ_POLLIN;
-	m_items[0].revents = 0;
-}
-
-bool SubscriberZmq::sync(int timeout) {
-
-	// Wait for timeout ms.
-	int rc = zmq::poll(m_items, 1, std::chrono::milliseconds{timeout});
-
-	// Return true if the subscriber received a message.
-	return (rc != 0);
+	m_subscriber->connect(appStatusEndpoint.toString().c_str());
+	m_subscriber->setsockopt(ZMQ_SUBSCRIBE, message::Event::STATUS, std::string(message::Event::STATUS).length());
 }
 
 bool SubscriberZmq::hasEnded() const {
@@ -95,62 +71,11 @@ bool SubscriberZmq::isCanceled() const {
 	return m_canceled;
 }
 
-bool SubscriberZmq::hasTimedout() {
-	return m_timedout;
-}
-
-bool SubscriberZmq::receiveMessage(zmq::message_t& message) {
-
-	// Define the number of iterations.
-	int n {0};
-	if (m_pollingTime > 0) {
-		n = m_timeout / m_pollingTime + 1;
-	}
-
-	// Create the poller.
-	zmq::pollitem_t items[] = {
-		{ *m_subscriber.get(), 0, ZMQ_POLLIN, 0 }
-	};
-
-	// Infinite loop if timeout is 0 or finite loop if timeout is defined.
-	int i {0};
-	while (i < n || m_timeout == 0) {
-
-		// Check if the requester has been canceled.
-		if (m_canceled) {
-			return false;
-		}
-
-		// Poll the requester.
-		zmq::poll(&items[0], 1, std::chrono::milliseconds{m_pollingTime});
-
-		// Get a reply.
-		if (items[0].revents & ZMQ_POLLIN) {
-			if (!m_subscriber->recv(message, zmq::recv_flags::none).has_value()) {
-				return false;
-			}
-			return true;
-		}
-
-		i++;
-	}
-
-	// Timeout.
-	m_timedout.store(true);
-
-	// No need to reset the socket after a timeout.
-
-	return false;
-}
-
 std::optional<std::string> SubscriberZmq::receive() {
-
-	// Reset timedout.
-	m_timedout.store(false);
 
 	while (true) {
 		zmq::message_t firstPart;
-		if (!receiveMessage(firstPart)) {
+		if (!m_subscriber->recv(firstPart, zmq::recv_flags::none).has_value()) {
 			return {};
 		}
 
@@ -159,7 +84,7 @@ std::optional<std::string> SubscriberZmq::receive() {
 		if (first == m_publisherIdentity) {
 
 			zmq::message_t typePart;
-			if (!receiveMessage(typePart)) {
+			if (!m_subscriber->recv(typePart, zmq::recv_flags::none).has_value()) {
 				return {};
 			}
 
@@ -173,13 +98,10 @@ std::optional<std::string> SubscriberZmq::receive() {
 
 			if (type == message::STREAM) {
 				zmq::message_t dataPart;
-				if (!receiveMessage(dataPart)) {
+				if (!m_subscriber->recv(dataPart, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
 				return std::string {static_cast<char*>(dataPart.data()), dataPart.size()};
-			}
-			else if (type == message::SYNC_STREAM) {
-				// Do nothing.
 			}
 			else if (type == message::STREAM_END) {
 				m_ended = true;
@@ -191,7 +113,7 @@ std::optional<std::string> SubscriberZmq::receive() {
 		}
 		else if (first == message::Event::STATUS) {
 			zmq::message_t statusPart;
-			if (!receiveMessage(statusPart)) {
+			if (!m_subscriber->recv(statusPart, zmq::recv_flags::none).has_value()) {
 				return {};
 			}
 
@@ -202,13 +124,13 @@ std::optional<std::string> SubscriberZmq::receive() {
 			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				state::Value state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
+				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == state::SUCCESS
-					|| state == state::STOPPED
-					|| state == state::KILLED
-					|| state == state::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}
@@ -223,7 +145,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 
 	while (true) {
 		zmq::message_t firstPart;
-		if (!receiveMessage(firstPart)) {
+		if (!m_subscriber->recv(firstPart, zmq::recv_flags::none).has_value()) {
 			return {};
 		}
 
@@ -232,7 +154,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 		if (first == m_publisherIdentity) {
 
 			zmq::message_t typePart;
-			if (!receiveMessage(typePart)) {
+			if (!m_subscriber->recv(typePart, zmq::recv_flags::none).has_value()) {
 				return {};
 			}
 
@@ -249,13 +171,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 				std::tuple<std::string, std::string> result;
 
 				zmq::message_t data1Part;
-				if (!receiveMessage(data1Part)) {
+				if (!m_subscriber->recv(data1Part, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
 				std::string data1 {static_cast<char*>(data1Part.data()), data1Part.size()};
 
 				zmq::message_t data2Part;
-				if (!receiveMessage(data2Part)) {
+				if (!m_subscriber->recv(data2Part, zmq::recv_flags::none).has_value()) {
 					return {};
 				}
 				std::string data2 {static_cast<char*>(data2Part.data()), data2Part.size()};
@@ -272,7 +194,7 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 		}
 		else if (first == message::Event::STATUS) {
 			zmq::message_t statusPart;
-			if (!receiveMessage(statusPart)) {
+			if (!m_subscriber->recv(statusPart, zmq::recv_flags::none).has_value()) {
 				return {};
 			}
 
@@ -283,13 +205,13 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 			int id {status[message::StatusEvent::ID].GetInt()};
 
 			if (id == m_appId) {
-				state::Value state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
+				State state {status[message::StatusEvent::APPLICATION_STATE].GetInt()};
 
 				// test the terminal state
-				if (state == state::SUCCESS
-					|| state == state::STOPPED
-					|| state == state::KILLED
-					|| state == state::FAILURE) {
+				if (state == SUCCESS
+					|| state == STOPPED
+					|| state == KILLED
+					|| state == FAILURE) {
 					// Exit because the remote application has terminated.
 					return {};
 				}

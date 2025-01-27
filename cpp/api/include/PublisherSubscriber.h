@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_PUBLISHERSUBSCRIBER_H_
@@ -32,7 +38,9 @@ class Responder;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class CAMEO_EXPORT Publisher : public Object, public Cancelable {
+class Publisher : public Object, public Cancelable {
+
+	friend class cameo::This;
 
 public:
 	/**
@@ -43,21 +51,10 @@ public:
 	/**
 	 * Returns the publisher with name.
 	 * \param name The name.
+	 * \param numberOfSubscribers The number of subscribers.
 	 * \return A new Publisher object.
 	 */
-	static std::unique_ptr<Publisher> create(const std::string &name);
-
-	/**
-	 * Sets the subscribers synchronized. By default, the subscribers are not synchronized.
-	 * \param value True if synchronized.
-	 */
-	void setSyncSubscribers(bool value);
-
-	/**
-	 * Sets the wait for subscribers. If set then the subscribers are set synchronized.
-	 * \param numberOfSubscribers The number of subscribers.
-	 */
-	void setWaitForSubscribers(int numberOfSubscribers);
+	static std::unique_ptr<Publisher> create(const std::string &name, int numberOfSubscribers = 0);
 
 	/**
 	 * Initializes the publisher.
@@ -117,53 +114,23 @@ public:
 	 */
 	std::string toString() const override;
 
-	/**
-	 * Constant uuid for the unique publisher key.
-	 */
 	static const std::string KEY;
-
-	/**
-	 * Port key for the JSON object stored for the responder key.
-	 */
 	static const std::string PUBLISHER_PORT;
-
-	/**
-	 * Number of subscribers key for the JSON object stored for the responder key.
-	 */
 	static const std::string NUMBER_OF_SUBSCRIBERS;
-
-	/**
-	 * Sync subscribers key for the JSON object stored for the responder key.
-	 */
-	static const std::string SYNC_SUBSCRIBERS;
-
-	/**
-	 * Prefix for the temporary responder used for the synchronization.
-	 */
 	static const std::string RESPONDER_PREFIX;
-
-	/**
-	 * Message type for the responder used for the synchronization.
-	 */
 	static const int SUBSCRIBE_PUBLISHER = 100;
 
 private:
-	static const int CANCEL_RESPONDER = 0;
+	Publisher(const std::string &name, int numberOfSubscribers);
 
-	Publisher(const std::string &name);
-
-	void responderLoop();
 	bool waitForSubscribers();
 
 	std::string m_name;
-	bool m_syncSubscribers = false;
-	int m_numberOfSubscribers = 0;
+	int m_numberOfSubscribers;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<basic::Responder> m_responder;
-	std::unique_ptr<std::thread> m_responderThread;
-	ConcurrentQueue<int> m_responderQueue;
 	std::atomic_bool m_canceled;
 };
 
@@ -173,7 +140,7 @@ private:
 /**
  * Class defining a subscriber.
  */
-class CAMEO_EXPORT Subscriber : public Object, public Timeoutable, public Cancelable {
+class Subscriber : public Object, public Timeoutable, public Cancelable {
 
 	friend class cameo::Server;
 	friend class cameo::App;
@@ -188,21 +155,13 @@ public:
 	 * Returns a new subscriber.
 	 * \param app The application where the publisher is defined.
 	 * \param publisherName The name of the publisher.
-	 * \param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
 	 * \return A new Subscriber object.
 	 */
 	static std::unique_ptr<Subscriber> create(const App & app, const std::string &publisherName);
 
 	/**
-	 * Sets the check app feature. Default value is false.
-	 * \param value True if app is checked.
-	 */
-	void setCheckApp(bool value);
-
-	/**
 	 * Initializes the subscriber.
 	 * \throws InitException if the subscriber cannot be created.
-	 * \throws SynchronizationTimeout if the subscriber cannot synchronize the publisher.
 	 */
 	void init() override;
 
@@ -216,12 +175,6 @@ public:
 	 * \param value The value.
 	 */
 	void setTimeout(int value) override;
-
-	/**
-	 * Sets the polling time.
-	 * \param value The value.
-	 */
-	void setPollingTime(int value);
 
 	/**
 	 * Gets the timeout.
@@ -283,12 +236,6 @@ public:
 	std::optional<std::tuple<std::string, std::string>> receiveTwoParts() const;
 
 	/**
-	 * Returns true if the subscriber has timed out.
-	 * \return True if the subscriber has timed out.
-	 */
-	bool hasTimedout() const;
-
-	/**
 	 * Returns a string representation of the subscriber.
 	 * \return The string representation.
 	 */
@@ -296,11 +243,10 @@ public:
 
 private:
 	Subscriber(const App & app, const std::string &publisherName);
-	void synchronize(const TimeoutCounter& timeout, int numberOfSubscribers, bool syncSubscribers);
+	void synchronize(const TimeoutCounter& timeout);
 
 	const App & m_app;
 	std::string m_publisherName;
-	bool m_checkApp = false;
 	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;
@@ -313,17 +259,17 @@ private:
 	std::unique_ptr<Requester> m_requester;
 };
 
-}
-}
-
 /**
  * Stream operator for a Publisher object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Publisher&);
 
 /**
  * Stream operator for a Subscriber object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
+std::ostream& operator<<(std::ostream&, const cameo::coms::Subscriber&);
+
+}
+}
 
 #endif

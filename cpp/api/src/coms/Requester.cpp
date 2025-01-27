@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "Requester.h"
@@ -25,42 +31,9 @@ namespace coms {
 ///////////////////////////////////////////////////////////////////////////
 // Requester
 
-Requester::Checker::Checker(Requester &requester) :
-	m_requester{requester} {
-
-	// Connect the app to have an instance that is accessed only by the Checker thread.
-	m_app = m_requester.m_app.connect();
-}
-
-void Requester::Checker::start() {
-
-	// Start the thread.
-	m_thread = std::make_unique<std::thread>([&] {
-
-		// Wait for the app that can be canceled.
-		state::Value state = m_app->waitFor();
-		if (state == state::FAILURE) {
-			// Cancel the requester if the app fails.
-			m_requester.cancel();
-		}
-	});
-}
-
-void Requester::Checker::terminate() {
-
-	// Cancel the waitFor() call.
-	m_app->cancel();
-
-	// Clean the thread.
-	if (m_thread) {
-		m_thread->join();
-	}
-}
-
 Requester::Requester(const App & app, const std::string &responderName) :
 	m_app{app},
 	m_responderName{responderName},
-	m_checkApp{false},
 	m_timeout{-1},
 	m_useProxy{m_app.usesProxy()},
 	m_appName{m_app.getName()},
@@ -77,12 +50,6 @@ Requester::~Requester() {
 }
 
 void Requester::terminate() {
-
-	if (m_checker) {
-		m_checker->terminate();
-		m_checker.reset();
-	}
-
 	m_impl.reset();
 	setTerminated();
 }
@@ -121,21 +88,8 @@ void Requester::init() {
 
 		m_impl->init(endpoint, StringId::from(m_key, m_appId), timeoutCounter);
 	}
-	catch (const ConnectionTimeout&) {
-		throw;
-	}
-	catch (const Timeout&) {
-		throw SynchronizationTimeout(std::string{"Requester cannot synchronize responder '"} + m_responderName + "'");
-	}
 	catch (const std::exception& e) {
-		throw InitException(std::string{"Cannot initialize requester to responder '"} + m_responderName + "': " + e.what());
-	}
-
-	// Start the checker if it was created.
-	if (m_checkApp) {
-		// The creation of the Checker object can throw a ConnectionTimeout exception.
-		m_checker = std::make_unique<Checker>(*this);
-		m_checker->start();
+		throw InitException(std::string("Cannot initialize requester: ") + e.what());
 	}
 
 	setReady();
@@ -143,10 +97,6 @@ void Requester::init() {
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
 	return std::unique_ptr<Requester>{new Requester(app, responderName)};
-}
-
-void Requester::setCheckApp(bool value) {
-	m_checkApp = value;
 }
 
 void Requester::setTimeout(int value) {
@@ -223,12 +173,13 @@ std::string Requester::toString() const {
 	return jsonObject.dump();
 }
 
-}
-}
-
-std::ostream& operator<<(std::ostream& os, const cameo::coms::Requester& requester) {
+std::ostream& operator<<(std::ostream& os, const Requester& requester) {
 
 	os << requester.toString();
 
 	return os;
 }
+
+}
+}
+

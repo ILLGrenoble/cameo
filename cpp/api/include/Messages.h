@@ -1,17 +1,22 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_REQUESTS_H_
 #define CAMEO_REQUESTS_H_
 
-#include "Defines.h"
 #include <string>
 #include <vector>
 
@@ -536,20 +541,20 @@ namespace message {
  * Creates a sync request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSyncRequest();
+std::string createSyncRequest();
 
 /**
  * Creates a sync stream request.
  * \param name The name.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSyncStreamRequest(const std::string& name);
+std::string createSyncStreamRequest(const std::string& name);
 
 /**
  * Creates a version request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createVersionRequest();
+std::string createVersionRequest();
 
 /**
  * Creates a start request.
@@ -562,7 +567,7 @@ CAMEO_EXPORT std::string createVersionRequest();
  * \param linked True if the application is linked.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort, bool linked);
+std::string createStartRequest(const std::string& name, const std::vector<std::string> & args, const std::string& thisName, int thisId, const std::string& thisEndpoint, int thisProxyPort, bool linked);
 
 /**
  * Creates a set stop handler request.
@@ -570,7 +575,7 @@ CAMEO_EXPORT std::string createStartRequest(const std::string& name, const std::
  * \param stoppingTime The stopping time.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSetStopHandlerRequest(int id, int stoppingTime);
+std::string createSetStopHandlerRequest(int id, int stoppingTime);
 
 /**
  * Creates a stop request.
@@ -578,53 +583,53 @@ CAMEO_EXPORT std::string createSetStopHandlerRequest(int id, int stoppingTime);
  * \param link True if the stop is because the app is linked to its parent which is stopping.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createStopRequest(int id, bool link);
+std::string createStopRequest(int id, bool link);
 
 /**
  * Creates a kill request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createKillRequest(int id);
+std::string createKillRequest(int id);
 
 /**
  * Creates a connect request.
  * \param name The name.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createConnectRequest(const std::string& name);
+std::string createConnectRequest(const std::string& name);
 
 /**
  * Creates a connect with id request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createConnectWithIdRequest(int id);
+std::string createConnectWithIdRequest(int id);
 
 /**
  * Creates a is alive request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createIsAliveRequest(int id);
+std::string createIsAliveRequest(int id);
 
 /**
  * Creates a list request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createListRequest();
+std::string createListRequest();
 
 /**
  * Creates an apps request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createAppsRequest();
+std::string createAppsRequest();
 
 /**
  * Creates a stream status request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createStreamStatusRequest();
+std::string createStreamStatusRequest();
 
 /**
  * Creates a set status request.
@@ -632,39 +637,39 @@ CAMEO_EXPORT std::string createStreamStatusRequest();
  * \param state The state.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSetStatusRequest(int id, int32_t state);
+std::string createSetStatusRequest(int id, int32_t state);
 
 /**
  * Creates a get status request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createGetStatusRequest(int id);
+std::string createGetStatusRequest(int id);
 
 /**
  * Creates a responder proxy port request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createResponderProxyPortRequest();
+std::string createResponderProxyPortRequest();
 
 /**
  * Creates a publisher proxy port request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createPublisherProxyPortRequest();
+std::string createPublisherProxyPortRequest();
 
 /**
  * Creates a subscriber proxy port request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSubscriberProxyPortRequest();
+std::string createSubscriberProxyPortRequest();
 
 /**
  * Creates a set result request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSetResultRequest(int id);
+std::string createSetResultRequest(int id);
 
 /**
  * Creates an attach unregistered request.
@@ -672,28 +677,28 @@ CAMEO_EXPORT std::string createSetResultRequest(int id);
  * \param pid The PID.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createAttachUnregisteredRequest(const std::string& name, long pid);
+std::string createAttachUnregisteredRequest(const std::string& name, long pid);
 
 /**
  * Creates a detached unregistered request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createDetachUnregisteredRequest(int id);
+std::string createDetachUnregisteredRequest(int id);
 
 /**
  * Creates an output port with id request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createOutputPortWithIdRequest(int id);
+std::string createOutputPortWithIdRequest(int id);
 
 /**
  * Creates an output port request.
  * \param name The name.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createOutputPortRequest(const std::string& name);
+std::string createOutputPortRequest(const std::string& name);
 
 /**
  * Creates a request response.
@@ -701,7 +706,7 @@ CAMEO_EXPORT std::string createOutputPortRequest(const std::string& name);
  * \param message The message.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createRequestResponse(int32_t value, const std::string& message);
+std::string createRequestResponse(int32_t value, const std::string& message);
 
 /**
  * Creates a store key value request.
@@ -710,7 +715,7 @@ CAMEO_EXPORT std::string createRequestResponse(int32_t value, const std::string&
  * \param value The value.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
+std::string createStoreKeyValueRequest(int id, const std::string& key, const std::string& value);
 
 /**
  * Creates a get key value request.
@@ -718,7 +723,7 @@ CAMEO_EXPORT std::string createStoreKeyValueRequest(int id, const std::string& k
  * \param key The key.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createGetKeyValueRequest(int id, const std::string& key);
+std::string createGetKeyValueRequest(int id, const std::string& key);
 
 /**
  * Creates a remove key request.
@@ -726,14 +731,14 @@ CAMEO_EXPORT std::string createGetKeyValueRequest(int id, const std::string& key
  * \param key The key.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createRemoveKeyRequest(int id, const std::string& key);
+std::string createRemoveKeyRequest(int id, const std::string& key);
 
 /**
  * Creates a request port request.
  * \param id The id.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createRequestPortRequest(int id);
+std::string createRequestPortRequest(int id);
 
 /**
  * Creates a port unavailable request.
@@ -741,7 +746,7 @@ CAMEO_EXPORT std::string createRequestPortRequest(int id);
  * \param port The port.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createPortUnavailableRequest(int id, int port);
+std::string createPortUnavailableRequest(int id, int port);
 
 /**
  * Creates a release port request.
@@ -749,14 +754,15 @@ CAMEO_EXPORT std::string createPortUnavailableRequest(int id, int port);
  * \param port The port.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createReleasePortRequest(int id, int port);
+std::string createReleasePortRequest(int id, int port);
 
 /**
  * Creates a ports request.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createPortsRequest();
+std::string createPortsRequest();
 
 }
 
 #endif
+

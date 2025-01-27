@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "EventStreamSocketZmq.h"
@@ -44,7 +50,7 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 	streamList.push_back(message::Event::CANCEL);
 
 	for (std::vector<std::string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
-		m_socket->set(zmq::sockopt::subscribe, *s);
+		m_socket->setsockopt(ZMQ_SUBSCRIBE, s->c_str(), s->length());
 	}
 
 	m_socket->connect(endpoint.toString().c_str());
@@ -60,14 +66,14 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 
 	while (true) {
 		try {
-			requestSocket->request(createSyncRequest());
+			requestSocket->requestJSON(createSyncRequest());
 		}
 		catch (const ConnectionTimeout& e) {
 			// The server is not accessible.
 		}
 
 		// Wait for 100ms.
-		int rc = zmq::poll(items, 1, std::chrono::milliseconds{100});
+		int rc = zmq::poll(items, 1, 100);
 		if (rc != 0) {
 			break;
 		}

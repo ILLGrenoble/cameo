@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_PUBLISHERZMQ_H_
@@ -23,12 +29,11 @@ class PublisherZmq : public PublisherImpl {
 
 public:
 	PublisherZmq();
-	virtual ~PublisherZmq();
+	~PublisherZmq();
 
 	virtual void init(const std::string& publisherIdentity);
 	virtual int getPublisherPort() const;
 
-	virtual void sendSync();
 	virtual void send(const std::string& data);
 	virtual void sendTwoParts(const std::string& data1, const std::string& data2);
 	virtual void setEnd();
@@ -37,6 +42,9 @@ public:
 
 private:
 	std::string createMessageType(int type);
+
+	void publish(const char* data, std::size_t size);
+	void publishTwoParts(const char* data1, std::size_t size1, const char* data2, std::size_t size2);
 
 	int m_publisherPort;
 	std::string m_publisherIdentity;

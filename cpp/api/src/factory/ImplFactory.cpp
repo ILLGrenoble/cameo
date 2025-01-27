@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "ImplFactory.h"
@@ -15,14 +21,11 @@
 #include "../base/impl/zmq/EventStreamSocketZmq.h"
 #include "../base/impl/zmq/OutputStreamSocketZmq.h"
 #include "../coms/impl/zmq/PublisherZmq.h"
-#include "../coms/impl/zmq/SyncPublisherZmq.h"
 #include "../coms/impl/zmq/SubscriberZmq.h"
 #include "../coms/impl/zmq/BasicResponderZmq.h"
 #include "../coms/impl/zmq/RequesterZmq.h"
 #include "../coms/impl/zmq/MultiResponderZmq.h"
 #include "../coms/impl/zmq/MultiResponderRouterZmq.h"
-
-#include <iostream>
 
 namespace cameo {
 
@@ -43,17 +46,8 @@ std::shared_ptr<Context> ImplFactory::getDefaultContext() {
 
 void ImplFactory::terminateDefaultContext() {
 
-	//std::cout << "terminateDefaultContext " << m_defaultContext.use_count() << std::endl;
-
 	std::unique_lock<std::mutex> lock {m_mutex};
-	//return;
-	// At this point, only one reference should remain.
 	m_defaultContext.reset();
-	
-	if (m_defaultContext.use_count() > 0) {
-		std::cout << "CAMEO inconsistency detected: some objects have not been destroyed" << std::endl;
-	}
-
 }
 
 std::unique_ptr<Context> ImplFactory::createContext() {
@@ -72,13 +66,8 @@ std::unique_ptr<StreamSocketImpl> ImplFactory::createOutputStreamSocket(const st
 	return std::make_unique<OutputStreamSocketZmq>(name);
 }
 
-std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher(bool sync) {
-	if (sync) {
-		return std::make_unique<coms::SyncPublisherZmq>();
-	}
-	else {
-		return std::make_unique<coms::PublisherZmq>();
-	}
+std::unique_ptr<coms::PublisherImpl> ImplFactory::createPublisher() {
+	return std::make_unique<coms::PublisherZmq>();
 }
 
 std::unique_ptr<coms::SubscriberImpl> ImplFactory::createSubscriber() {

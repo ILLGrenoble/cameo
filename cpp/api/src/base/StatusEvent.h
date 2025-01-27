@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_STATUSEVENT_H_
@@ -34,7 +40,7 @@ public:
 	 * \param pastStates The past states.
 	 * \param exitCode The exit code.
 	 */
-	StatusEvent(int id, const std::string& name, state::Value state, state::Value pastStates, int exitCode = -1);
+	StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode = -1);
 
 	/**
 	 * Copy constructor.
@@ -52,13 +58,13 @@ public:
 	 * Gets the current state.
 	 * \return The state.
 	 */
-	state::Value getState() const;
+	State getState() const;
 
 	/**
 	 * Gets the past states.
 	 * \return The past states.
 	 */
-	state::Value getPastStates() const;
+	State getPastStates() const;
 
 	/**
 	 * Gets the exit code.
@@ -73,8 +79,8 @@ public:
 	std::string toString() const;
 
 private:
-	state::Value m_state;
-	state::Value m_pastStates;
+	State m_state;
+	State m_pastStates;
 	int m_exitCode; // TODO replace with optional
 };
 

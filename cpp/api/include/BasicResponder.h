@@ -1,17 +1,23 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_COMS_BASIC_RESPONDER_H_
 #define CAMEO_COMS_BASIC_RESPONDER_H_
 
-#include "ServerAndApp.h"
+#include "Application.h"
 
 namespace cameo {
 
@@ -34,9 +40,10 @@ class ResponderImpl;
 /**
  * Request received by the basic responder.
  */
-class CAMEO_EXPORT Request {
+class Request {
 
 	friend class Responder;
+	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
 	/**
@@ -88,10 +95,11 @@ public:
 	/**
 	 * Connects to the requester application.
 	 * \param options The options to the connection.
+	 * \param useProxy Use the proxy to connect.
 	 * \param timeout Timeout for the server used for the initialization and subsequent requests.
 	 * \return The ServerAndApp pair.
 	 */
-	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, int timeout = 0);
+	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false, int timeout = 0);
 
 	/**
 	 * Returns a string representation of the request.
@@ -117,9 +125,10 @@ private:
 /**
  * Class defining a basic responder. Requests are processed sequentially.
  */
-class CAMEO_EXPORT Responder : public Object, public Cancelable {
+class Responder : public Object, public Cancelable {
 
 	friend class Request;
+	friend std::ostream& operator<<(std::ostream&, const Responder&);
 
 public:
 	/**
@@ -180,7 +189,7 @@ public:
 	static const std::string KEY;
 
 	/**
-	 * Port key for the JSON object stored for the responder key.
+	 * Constant uuid for the unique responder port.
 	 */
 	static const std::string PORT;
 
@@ -195,18 +204,18 @@ private:
 	std::string m_key;
 };
 
-}
-}
-}
-
 /**
  * Stream operator for a Request object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::basic::Request&);
+std::ostream& operator<<(std::ostream&, const Request&);
 
 /**
  * Stream operator for a Responder object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::basic::Responder&);
+std::ostream& operator<<(std::ostream&, const Responder&);
+
+}
+}
+}
 
 #endif

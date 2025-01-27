@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_SERVER_H_
@@ -35,29 +41,30 @@ class RequestSocket;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-class CAMEO_EXPORT Server : public Object, public Timeoutable {
+class Server : public Object, public Timeoutable {
 
 	friend class App;
 	friend class This;
 	friend class EventStreamSocket;
 	friend class OutputStreamSocket;
-	
+	friend std::ostream& operator<<(std::ostream&, const Server&);
+
 public:
 	typedef std::function<void (bool)> ConnectionCheckerType;
 
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param options Uses the proxy with USE_PROXY.
+	 * \param useProxy Uses the proxy or not.
 	 */
-	static std::unique_ptr<Server> create(const Endpoint& endpoint, int options = 0);
+	static std::unique_ptr<Server> create(const Endpoint& endpoint, bool useProxy = false);
 
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param options Uses the proxy with USE_PROXY.
+	 * \param useProxy Uses the proxy or not.
 	 */
-	static std::unique_ptr<Server> create(const std::string& endpoint, int options = 0);
+	static std::unique_ptr<Server> create(const std::string& endpoint, bool useProxy = false);
 	
 	/**
 	 * Destructor.
@@ -199,22 +206,19 @@ public:
 	 */
 	std::vector<App::Port> getPorts() const;
 
-	[[deprecated("Use getState(int) instead.")]]
-	state::Value getActualState(int id) const;
-
 	/**
 	 * Gets the actual state of an application.
 	 * \param id The id of the application.
 	 * \return The actual state.
 	 */
-	state::Value getState(int id) const;
+	State getActualState(int id) const;
 
 	/**
 	 * Gets the past states of an application.
 	 * \param id The id of the application.
 	 * \return The set of states.
 	 */
-	std::set<state::Value> getPastStates(int id) const;
+	std::set<State> getPastStates(int id) const;
 
 	/**
 	 * Creates an event stream socket.
@@ -233,7 +237,7 @@ public:
 	/**
 	 * Class used for filtering events.
 	 */
-	class CAMEO_EXPORT FilteredEventListener {
+	class FilteredEventListener {
 
 	public:
 		/**
@@ -286,8 +290,8 @@ public:
 	std::string toString() const override;
 
 private:
-	Server(const Endpoint& endpoint, int options);
-	Server(const std::string& endpoint, int options);
+	Server(const Endpoint& endpoint, bool useProxy);
+	Server(const std::string& endpoint, bool useProxy);
 
 	int getResponderProxyPort() const;
 	int getPublisherProxyPort() const;
@@ -307,8 +311,8 @@ private:
 	void setPortUnavailable(int id, int port);
 	void releasePort(int id, int port);
 
-	std::string request(const std::string& request, int overrideTimeout = -1);
-	std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
+	json::Object requestJSON(const std::string& request, int overrideTimeout = -1);
+	json::Object requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout = -1);
 
 	void initContext();
 	void initRequestSocket();
@@ -344,12 +348,11 @@ private:
 	const static std::string CAMEO_SERVER;
 };
 
-}
-
-
 /**
  * Stream operator for a Server object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::Server&);
+std::ostream& operator<<(std::ostream&, const Server&);
+
+}
 
 #endif

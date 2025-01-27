@@ -1,26 +1,3 @@
-3.0.0
------
-
-* Options in option namespace.
-* States in state namespace.
-* Exports for Windows DLL.
-
-2.2.0
------
-
-* Minor review of exceptions.
-* Renamed PROCESSING_ERROR into PROCESSING_FAILURE.
-* Added the checkApp feature to Requester and Subscriber classes which implied some changes in their current implementation.
-  WARNING: Create Subscriber with checkApp = true to cancel receive() automatically as in the previous version.
-* Renamed getActualState() functions into getState().
-* Publisher with synchronized subscribers.
-* Coms classes options outside create().
-* Requester/Responder reimplemented with dealer/router sockets to allow multiple response.
-* Added connect() in App to facilitate concurrent process.
-* Server::create(), This::connectToStarter(), BasicResponder::connectToRequester(), MultiResponder::connectToRequester() lose useProxy parameter.
-  WARNING: Default values can cause a change of behavior
-* Subscriber receive() can timeout.
-
 2.1.1
 -----
 

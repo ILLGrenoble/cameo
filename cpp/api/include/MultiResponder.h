@@ -1,17 +1,23 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_COMS_MULTI_RESPONDER_H_
 #define CAMEO_COMS_MULTI_RESPONDER_H_
 
-#include "ServerAndApp.h"
+#include "Application.h"
 
 namespace cameo {
 namespace coms {
@@ -32,9 +38,10 @@ class ResponderRouterImpl;
 /**
  * Class defining a request received by the multi responder.
  */
-class CAMEO_EXPORT Request {
+class Request {
 
 	friend class Responder;
+	friend std::ostream& operator<<(std::ostream&, const Request&);
 
 public:
 	/**
@@ -86,10 +93,11 @@ public:
 	/**
 	 * Connects to the requester application.
 	 * \param options The options to the connection.
+	 * \param useProxy Use the proxy to connect.
 	 * \param timeout Timeout for the server initialization.
 	 * \return The ServerAndApp pair.
 	 */
-	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, int timeout = 0);
+	std::unique_ptr<ServerAndApp> connectToRequester(int options = 0, bool useProxy = false, int timeout = 0);
 
 	/**
 	 * Returns a string representation of the request
@@ -116,10 +124,11 @@ private:
  * Class defining a responder router.
  * Requests are dispatched to the multi responders that process them in parallel.
  */
-class CAMEO_EXPORT ResponderRouter : public Object, public Cancelable {
+class ResponderRouter : public Object, public Cancelable {
 
 	friend class Responder;
 	friend class Request;
+	friend std::ostream& operator<<(std::ostream&, const ResponderRouter&);
 
 public:
 	/**
@@ -208,9 +217,10 @@ private:
  * Class defining a responder for the responder router.
  * Requests are processed sequentially.
  */
-class CAMEO_EXPORT Responder : public Object, public Cancelable {
+class Responder : public Object, public Cancelable {
 
 	friend class Request;
+	friend std::ostream& operator<<(std::ostream&, const Responder&);
 
 public:
 	/**
@@ -268,23 +278,23 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 };
 
-}
-}
-}
-
 /**
  * Stream operator for a Request object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::Request&);
+std::ostream& operator<<(std::ostream&, const Request&);
 
 /**
  * Stream operator for a ResponderRouter object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::ResponderRouter&);
+std::ostream& operator<<(std::ostream&, const ResponderRouter&);
 
 /**
  * Stream operator for a Responder object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::multi::Responder&);
+std::ostream& operator<<(std::ostream&, const Responder&);
+
+}
+}
+}
 
 #endif

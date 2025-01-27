@@ -1,18 +1,23 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "Server.h"
 
 #include "Application.h"
 #include "ConnectionChecker.h"
-#include "This.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
@@ -54,7 +59,7 @@ void Server::init() {
 			m_serverEndpoint = Endpoint::parse(m_serverEndpointString);
 		}
 		catch (...) {
-			throw InvalidArgumentException(std::string{"Cannot initialize the server "} + m_serverEndpointString + ": invalid endpoint");
+			throw InvalidArgumentException(m_serverEndpointString + " is not a valid endpoint");
 		}
 	}
 
@@ -73,19 +78,17 @@ void Server::init() {
 		m_eventThread.reset(new EventThread{this, socket});
 		m_eventThread->start();
 	}
-	catch (const ConnectionTimeout&) {
-		throw;
-	}
-	catch (const std::exception& e) {
-		throw InitException(std::string{"Cannot initialize the server " + m_serverEndpointString + ": "} + e.what());
+	catch (const SocketException& e) {
+		throw InitException(std::string{"Cannot initialize the server:"} + e.what());
 	}
 
 	setReady();
 }
 
-Server::Server(const Endpoint& endpoint, int options) :
+Server::Server(const Endpoint& endpoint, bool useProxy) :
 	m_serverEndpoint{endpoint},
 	m_timeout{0},
+	m_useProxy{useProxy},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
 	m_subscriberProxyPort{0},
@@ -93,13 +96,13 @@ Server::Server(const Endpoint& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & option::USE_PROXY) != 0);
 	m_serverVersion = {0, 0, 0};
 }
 
-Server::Server(const std::string& endpoint, int options) :
+Server::Server(const std::string& endpoint, bool useProxy) :
 	m_serverEndpointString{endpoint},
 	m_timeout{0},
+	m_useProxy{useProxy},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
 	m_subscriberProxyPort{0},
@@ -107,16 +110,15 @@ Server::Server(const std::string& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & option::USE_PROXY) != 0);
 	m_serverVersion = {0, 0, 0};
 }
 
-std::unique_ptr<Server> Server::create(const Endpoint& endpoint, int options) {
-	return std::unique_ptr<Server>{new Server(endpoint, options)};
+std::unique_ptr<Server> Server::create(const Endpoint& endpoint, bool useProxy) {
+	return std::unique_ptr<Server>{new Server(endpoint, useProxy)};
 }
 
-std::unique_ptr<Server> Server::create(const std::string& endpoint, int options) {
-	return std::unique_ptr<Server>{new Server(endpoint, options)};
+std::unique_ptr<Server> Server::create(const std::string& endpoint, bool useProxy) {
+	return std::unique_ptr<Server>{new Server(endpoint, useProxy)};
 }
 
 Server::~Server() {
@@ -184,7 +186,7 @@ bool Server::usesProxy() const {
 bool Server::isAvailable(int timeout) const {
 
 	try {
-		m_requestSocket->request(createSyncRequest(), timeout);
+		m_requestSocket->requestJSON(createSyncRequest(), timeout);
 		return true;
 	}
 	catch (const ConnectionTimeout&) {
@@ -218,8 +220,8 @@ std::unique_ptr<App> Server::start(const std::string& name, int options) {
 
 std::unique_ptr<App> Server::start(const std::string& name, const std::vector<std::string> & args, int options) {
 
-	bool outputStream = ((options & option::OUTPUTSTREAM) != 0);
-	bool linked = ((options & option::UNLINKED) == 0);
+	bool outputStream = ((options & OUTPUTSTREAM) != 0);
+	bool linked = ((options & UNLINKED) == 0);
 
 	std::unique_ptr<App> instance {makeInstance()};
 
@@ -238,10 +240,10 @@ std::unique_ptr<App> Server::start(const std::string& name, const std::vector<st
 		json::Object response;
 
 		if (This::getId() == -1) {
-			response = json::toJSON(m_requestSocket->request(createStartRequest(name, args, "", 0, "", 0, false)));
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, "", 0, "", 0, false));
 		}
 		else {
-			response = json::toJSON(m_requestSocket->request(createStartRequest(name, args, This::getName(), This::getId(), This::getEndpoint().toString(), This::getServer().m_responderProxyPort, linked)));
+			response = m_requestSocket->requestJSON(createStartRequest(name, args, This::getName(), This::getId(), This::getEndpoint().toString(), This::getServer().m_responderProxyPort, linked));
 		}
 
 		int value {response[message::RequestResponse::VALUE].GetInt()};
@@ -274,7 +276,7 @@ Response Server::stop(int id, bool immediately) const {
 		request = createStopRequest(id, false);
 	}
 
-	json::Object response {json::toJSON(m_requestSocket->request(request))};
+	json::Object response {m_requestSocket->requestJSON(request)};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	std::string message {response[message::RequestResponse::MESSAGE].GetString()};
@@ -284,9 +286,9 @@ Response Server::stop(int id, bool immediately) const {
 
 AppArray Server::connectAll(const std::string& name, int options) {
 
-	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
+	bool outputStream {((options & OUTPUTSTREAM) != 0)};
 
-	json::Object response {json::toJSON(m_requestSocket->request(createConnectRequest(name)))};
+	json::Object response {m_requestSocket->requestJSON(createConnectRequest(name))};
 
 	AppArray instances;
 
@@ -355,9 +357,9 @@ std::unique_ptr<App> Server::connect(const std::string& name, int options) {
 
 std::unique_ptr<App> Server::connect(int id, int options) {
 
-	bool outputStream {((options & option::OUTPUTSTREAM) != 0)};
+	bool outputStream {((options & OUTPUTSTREAM) != 0)};
 
-	json::Object response {json::toJSON(m_requestSocket->request(createConnectWithIdRequest(id)))};
+	json::Object response {m_requestSocket->requestJSON(createConnectWithIdRequest(id))};
 
 	json::Value& applicationInfo {response[message::ApplicationInfoListResponse::APPLICATION_INFO]};
 	json::Value::Array array = {applicationInfo.GetArray()};
@@ -406,7 +408,7 @@ void Server::killAllAndWaitFor(const std::string& name) {
 
 bool Server::isAlive(int id) const {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createIsAliveRequest(id)))};
+	json::Object response {m_requestSocket->requestJSON(createIsAliveRequest(id))};
 
 	return response[message::IsAliveResponse::IS_ALIVE].GetBool();
 }
@@ -415,7 +417,7 @@ std::vector<App::Config> Server::getApplicationConfigs() const {
 
 	std::vector<App::Config> configs;
 
-	json::Object response {json::toJSON(m_requestSocket->request(createListRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createListRequest())};
 
 	json::Value& applicationConfigs {response[message::ApplicationConfigListResponse::APPLICATION_CONFIG]};
 	json::Value::Array array {applicationConfigs.GetArray()};
@@ -459,7 +461,7 @@ std::vector<App::Info> Server::getApplicationInfos() const {
 
 	std::vector<App::Info> infos;
 
-	json::Object response {json::toJSON(m_requestSocket->request(createAppsRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createAppsRequest())};
 
 	json::Value& applicationInfos {response[message::ApplicationInfoListResponse::APPLICATION_INFO]};
 	json::Value::Array array {applicationInfos.GetArray()};
@@ -471,8 +473,8 @@ std::vector<App::Info> Server::getApplicationInfos() const {
 		std::string name {info[message::ApplicationInfo::NAME].GetString()};
 		int id {info[message::ApplicationInfo::ID].GetInt()};
 		int pid {info[message::ApplicationInfo::PID].GetInt()};
-		state::Value state {info[message::ApplicationInfo::APPLICATION_STATE].GetInt()};
-		state::Value pastStates {info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt()};
+		State state {info[message::ApplicationInfo::APPLICATION_STATE].GetInt()};
+		State pastStates {info[message::ApplicationInfo::PAST_APPLICATION_STATES].GetInt()};
 		std::string args {info[message::ApplicationInfo::ARGS].GetString()};
 
 		App::Info applicationInfo{name,
@@ -507,7 +509,7 @@ std::vector<App::Port> Server::getPorts() const {
 
 	std::vector<App::Port> ports;
 
-	json::Object response {json::toJSON(m_requestSocket->request(createPortsRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createPortsRequest())};
 
 	json::Value& portInfos {response[message::PortInfoListResponse::PORT_INFO]};
 	json::Value::Array array {portInfos.GetArray()};
@@ -528,60 +530,55 @@ std::vector<App::Port> Server::getPorts() const {
 	return ports;
 }
 
-state::Value Server::getActualState(int id) const {
-	return getState(id);
-}
+State Server::getActualState(int id) const {
 
-
-state::Value Server::getState(int id) const {
-
-	json::Object response {json::toJSON(m_requestSocket->request(createGetStatusRequest(id)))};
+	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
 
 	return response[message::StatusEvent::APPLICATION_STATE].GetInt();
 }
 
-std::set<state::Value> Server::getPastStates(int id) const {
+std::set<State> Server::getPastStates(int id) const {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createGetStatusRequest(id)))};
+	json::Object response {m_requestSocket->requestJSON(createGetStatusRequest(id))};
 
-	state::Value applicationStates {response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
+	State applicationStates {response[message::StatusEvent::PAST_APPLICATION_STATES].GetInt()};
 
-	std::set<state::Value> result;
+	std::set<State> result;
 
-	if ((applicationStates & state::STARTING) != 0) {
-		result.insert(state::STARTING);
+	if ((applicationStates & STARTING) != 0) {
+		result.insert(STARTING);
 	}
 
-	if ((applicationStates & state::RUNNING) != 0) {
-		result.insert(state::RUNNING);
+	if ((applicationStates & RUNNING) != 0) {
+		result.insert(RUNNING);
 	}
 
-	if ((applicationStates & state::STOPPING) != 0) {
-		result.insert(state::STOPPING);
+	if ((applicationStates & STOPPING) != 0) {
+		result.insert(STOPPING);
 	}
 
-	if ((applicationStates & state::KILLING) != 0) {
-		result.insert(state::KILLING);
+	if ((applicationStates & KILLING) != 0) {
+		result.insert(KILLING);
 	}
 
-	if ((applicationStates & state::PROCESSING_FAILURE) != 0) {
-		result.insert(state::PROCESSING_FAILURE);
+	if ((applicationStates & PROCESSING_ERROR) != 0) {
+		result.insert(PROCESSING_ERROR);
 	}
 
-	if ((applicationStates & state::FAILURE) != 0) {
-		result.insert(state::FAILURE);
+	if ((applicationStates & FAILURE) != 0) {
+		result.insert(FAILURE);
 	}
 
-	if ((applicationStates & state::SUCCESS) != 0) {
-		result.insert(state::SUCCESS);
+	if ((applicationStates & SUCCESS) != 0) {
+		result.insert(SUCCESS);
 	}
 
-	if ((applicationStates & state::STOPPED) != 0) {
-		result.insert(state::STOPPED);
+	if ((applicationStates & STOPPED) != 0) {
+		result.insert(STOPPED);
 	}
 
-	if ((applicationStates & state::KILLED) != 0) {
-		result.insert(state::KILLED);
+	if ((applicationStates & KILLED) != 0) {
+		result.insert(KILLED);
 	}
 
 	return result;
@@ -618,7 +615,7 @@ std::unique_ptr<ConnectionChecker> Server::createConnectionChecker(ConnectionChe
 
 void Server::storeKeyValue(int id, const std::string& key, const std::string& value) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createStoreKeyValueRequest(id, key, value)))};
+	json::Object response {m_requestSocket->requestJSON(createStoreKeyValueRequest(id, key, value))};
 
 	int responseValue {response[message::RequestResponse::VALUE].GetInt()};
 	if (responseValue == -1) {
@@ -631,7 +628,7 @@ void Server::storeKeyValue(int id, const std::string& key, const std::string& va
 
 std::string Server::getKeyValue(int id, const std::string& key) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createGetKeyValueRequest(id, key)))};
+	json::Object response {m_requestSocket->requestJSON(createGetKeyValueRequest(id, key))};
 
 	int responseValue {response[message::RequestResponse::VALUE].GetInt()};
 	if (responseValue == 0) {
@@ -649,7 +646,7 @@ std::string Server::getKeyValue(int id, const std::string& key) {
 
 void Server::removeKey(int id, const std::string& key) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createRemoveKeyRequest(id, key)))};
+	json::Object response {m_requestSocket->requestJSON(createRemoveKeyRequest(id, key))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -662,7 +659,7 @@ void Server::removeKey(int id, const std::string& key) {
 
 int Server::requestPort(int id) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createRequestPortRequest(id)))};
+	json::Object response {m_requestSocket->requestJSON(createRequestPortRequest(id))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -674,7 +671,7 @@ int Server::requestPort(int id) {
 
 void Server::setPortUnavailable(int id, int port) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createPortUnavailableRequest(id, port)))};
+	json::Object response {m_requestSocket->requestJSON(createPortUnavailableRequest(id, port))};
 
 	int value {response[message::RequestResponse::VALUE].GetInt()};
 	if (value == -1) {
@@ -684,7 +681,7 @@ void Server::setPortUnavailable(int id, int port) {
 
 void Server::releasePort(int id, int port) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createReleasePortRequest(id, port)))};
+	json::Object response {m_requestSocket->requestJSON(createReleasePortRequest(id, port))};
 
 	int value = response[message::RequestResponse::VALUE].GetInt();
 	if (value == -1) {
@@ -692,12 +689,12 @@ void Server::releasePort(int id, int port) {
 	}
 }
 
-std::string Server::request(const std::string& request, int overrideTimeout) {
-	return m_requestSocket->request(request, overrideTimeout);
+json::Object Server::requestJSON(const std::string& request, int overrideTimeout) {
+	return m_requestSocket->requestJSON(request, overrideTimeout);
 }
 
-std::string Server::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
-	return m_requestSocket->request(requestPart1, requestPart2, overrideTimeout);
+json::Object Server::requestJSON(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+	return m_requestSocket->requestJSON(requestPart1, requestPart2, overrideTimeout);
 }
 
 std::vector<Server::FilteredEventListener> Server::getEventListeners() {
@@ -743,7 +740,7 @@ void Server::initRequestSocket() {
 
 void Server::retrieveServerVersion() {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createVersionRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createVersionRequest())};
 
 	m_serverVersion[0] = response[message::VersionResponse::MAJOR].GetInt();
 	m_serverVersion[1] = response[message::VersionResponse::MINOR].GetInt();
@@ -752,35 +749,35 @@ void Server::retrieveServerVersion() {
 
 int Server::retrieveStatusPort() {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createStreamStatusRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createStreamStatusRequest())};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveStreamPort(const std::string& name) {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createOutputPortRequest(name)))};
+	json::Object response {m_requestSocket->requestJSON(createOutputPortRequest(name))};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveResponderProxyPort() {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createResponderProxyPortRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createResponderProxyPortRequest())};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrievePublisherProxyPort() {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createPublisherProxyPortRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createPublisherProxyPortRequest())};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
 int Server::retrieveSubscriberProxyPort() {
 
-	json::Object response {json::toJSON(m_requestSocket->request(createSubscriberProxyPortRequest()))};
+	json::Object response {m_requestSocket->requestJSON(createSubscriberProxyPortRequest())};
 
 	return response[message::RequestResponse::VALUE].GetInt();
 }
@@ -819,18 +816,7 @@ std::unique_ptr<RequestSocket> Server::createServerRequestSocket() {
 }
 
 std::string Server::toString() const {
-
-	std::string serverEndpoint;
-	if (!m_serverEndpointString.empty()) {
-		serverEndpoint = m_serverEndpointString;
-	}
-	else {
-		serverEndpoint = m_serverEndpoint.toString();
-	}
-
-	return ServerIdentity{serverEndpoint, m_useProxy}.toJSONString();
-}
-
+	return ServerIdentity{m_serverEndpoint.toString(), m_useProxy}.toJSONString();
 }
 
 std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
@@ -838,4 +824,6 @@ std::ostream& operator<<(std::ostream& os, const cameo::Server& server) {
 	os << server.toString();
 
 	return os;
+}
+
 }

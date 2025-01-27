@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_COMS_REQUESTERRESPONDER_H_
@@ -24,7 +30,9 @@ class RequesterImpl;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable {
+class Requester : public Object, public Timeoutable, public Cancelable {
+
+	friend std::ostream& operator<<(std::ostream&, const Requester&);
 
 public:
 	/**
@@ -36,33 +44,13 @@ public:
 	 * Returns a new requester.
 	 * \param app The application where the responder is defined.
 	 * \param responderName The responder name.
-	 * \param checkApp If true, a thread is checking the state of the app and cancels the requester if it fails.
 	 * \return A new Requester object.
 	 */
 	static std::unique_ptr<Requester> create(const App &app, const std::string &responderName);
 
 	/**
-	 * Sets the check app feature. Default value is false.
-	 * \param value True if app is checked.
-	 */
-	void setCheckApp(bool value);
-
-	/**
-	 * Sets the timeout.
-	 * \param value The value.
-	 */
-	void setTimeout(int value) override;
-
-	/**
-	 * Sets the polling time.
-	 * \param value The value.
-	 */
-	void setPollingTime(int value);
-
-	/**
 	 * Initializes the requester.
 	 * \throws InitException if the requester cannot be created.
-	 * \throws SynchronizationTimeout if the requester cannot synchronize the responder.
 	 */
 	void init() override;
 
@@ -70,6 +58,12 @@ public:
 	 * Terminates the communication.
 	 */
 	void terminate() override;
+
+	/**
+	 * Sets the timeout.
+	 * \param value The value.
+	 */
+	void setTimeout(int value) override;
 
 	/**
 	 * Gets the timeout.
@@ -87,6 +81,12 @@ public:
 	 * \return True if the requester has been canceled.
 	 */
 	bool isCanceled() const override;
+
+	/**
+	 * Sets the polling time.
+	 * \param value The value.
+	 */
+	void setPollingTime(int value);
 
 	/**
 	 * Gets the responder name.
@@ -114,14 +114,12 @@ public:
 
 	/**
 	 * Sends a request in one part.
-	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * \param request The request.
 	 */
 	void send(const std::string &request);
 
 	/**
 	 * Sends a request in two parts.
-	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * \param request1 The first part of the request.
 	 * \param request2 The seconds part of the request.
 	 */
@@ -148,23 +146,8 @@ public:
 private:
 	Requester(const App & app, const std::string & responderName);
 
-	class Checker {
-
-	public:
-		Checker(Requester &requester);
-
-		void start();
-		void terminate();
-
-	private:
-		Requester& m_requester;
-		std::unique_ptr<App> m_app;
-		std::unique_ptr<std::thread> m_thread;
-	};
-
 	const App & m_app;
 	std::string m_responderName;
-	bool m_checkApp;
 	int m_timeout;
 	bool m_useProxy;
 	std::string m_appName;
@@ -174,15 +157,14 @@ private:
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;
 	std::unique_ptr<App::Com::KeyValueGetter> m_keyValueGetter;
-	std::unique_ptr<Checker> m_checker;
 };
-
-}
-}
 
 /**
  * Stream operator for a Requester object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::coms::Requester&);
+std::ostream& operator<<(std::ostream&, const Requester&);
+
+}
+}
 
 #endif

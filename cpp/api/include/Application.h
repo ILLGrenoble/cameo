@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_APPLICATION_H_
@@ -18,7 +24,6 @@
 #include "UnregisteredApplicationException.h"
 #include "SocketException.h"
 #include "ConnectionTimeout.h"
-#include "SynchronizationTimeout.h"
 #include "UndefinedApplicationException.h"
 #include "UndefinedKeyException.h"
 #include "KeyAlreadyExistsException.h"
@@ -28,9 +33,11 @@
 #include "Context.h"
 #include "TimeCondition.h"
 #include "EventListener.h"
+#include "JSON.h"
 #include "KeyValue.h"
 #include "Strings.h"
 #include "IdGenerator.h"
+#include "RequestSocket.h"
 #include "Waiting.h"
 #include "Messages.h"
 #include <functional>
@@ -44,7 +51,6 @@
  * Main namespace of the library.
  */
 namespace cameo {
-namespace option {
 
 /**
  * Option output stream.
@@ -54,14 +60,7 @@ const int OUTPUTSTREAM = 1;
 /**
  * Option unlinked.
  */
-const int UNLINKED = 1 << 1;
-
-/**
- * Option use proxy.
- */
-const int USE_PROXY = 1 << 2;
-
-}
+const int UNLINKED = 2;
 
 class Server;
 class EventStreamSocket;
@@ -71,62 +70,384 @@ class WaitingSet;
 class StopHandler;
 class RequestSocket;
 
-namespace state {
+class App;
 
-typedef int32_t Value;
+/**
+ * Helper class to provide an App instance and its associated Server instance.
+ */
+class ServerAndApp {
+
+public:
+	/**
+	 * Empty constructor.
+	 */
+	ServerAndApp();
+
+	/**
+	 * Constructor.
+	 * \param server The server.
+	 * \param app The app started by the server.
+	 */
+	ServerAndApp(std::unique_ptr<Server> &server, std::unique_ptr<App> &app);
+
+	/**
+	 * Gets the server.
+	 * \return The server.
+	 */
+	Server& getServer();
+
+	/**
+	 * Returns the App instance existence. The instance may not exist if it was not possible to connect it.
+	 * \return true if the App instance exists.
+	 */
+	bool hasApp() const;
+
+	/**
+	 * Gets the app.
+	 * \return The app.
+	 */
+	App& getApp();
+
+	/**
+	 * Terminates the server and app.
+	 */
+	void terminate();
+
+private:
+	std::unique_ptr<Server> m_server;
+	std::unique_ptr<App> m_app;
+};
+
+/**
+ * Alias for the state of an App.
+ */
+typedef int32_t State;
+
+#undef ERROR
 
 /**
  * Unknown state.
  */
-const Value NIL = 0;
+const State NIL = 0;
 
 /**
  * Starting state.
  */
-const Value STARTING = 1;
+const State STARTING = 1;
 
 /**
  * Running state.
  */
-const Value RUNNING = 2;
+const State RUNNING = 2;
 
 /**
  * Stopping state.
  */
-const Value STOPPING = 4;
+const State STOPPING = 4;
 
 /**
  * Killing state.
  */
-const Value KILLING = 8;
+const State KILLING = 8;
 
 /**
  * Processing error state.
  */
-const Value PROCESSING_FAILURE = 16;
+const State PROCESSING_ERROR = 16;
 
 /**
  * Failure state.
  */
-const Value FAILURE = 32;
+const State FAILURE = 32;
 
 /**
  * Success state.
  */
-const Value SUCCESS = 64;
+const State SUCCESS = 64;
 
 /**
  * Stopped state.
  */
-const Value STOPPED = 128;
+const State STOPPED = 128;
 
 /**
  * Killed state.
  */
-const Value KILLED = 256;
+const State KILLED = 256;
 
-}
+///////////////////////////////////////////////////////////////////////////
+// This
 
+/**
+ * Class managing the current Cameo application.
+ *
+ * The application can be launched by the Cameo console or another Cameo App.
+ */
+class This: private EventListener {
+
+	friend class cameo::Waiting;
+	friend class cameo::Server;
+	friend std::ostream& operator<<(std::ostream&, const cameo::This&);
+
+public:
+	typedef std::function<void()> StopFunctionType;
+
+	/**
+	 * Class defining the Communication Operations Manager (COM) for this application.
+	 *
+	 * It facilitates the definition of communication objects.
+	 */
+	class Com {
+
+		friend class This;
+
+	public:
+		/**
+		 * Gets the communication context. Shall be a ZeroMQ context i.e. a ContextZmq instance.
+		 * \return The context.
+		 */
+		Context* getContext() const;
+
+		/**
+		 * Gets the responder proxy port.
+		 * \return The port.
+		 */
+		int getResponderProxyPort() const;
+
+		/**
+		 * Gets the publisher proxy port.
+		 * \return The port.
+		 */
+		int getPublisherProxyPort() const;
+
+		/**
+		 * Gets the subscriber proxy port.
+		 * \return The port.
+		 */
+		int getSubscriberProxyPort() const;
+
+		/**
+		 * Stores the key value in the Cameo server.
+		 * \param key The key.
+		 * \param value The value.
+		 */
+		void storeKeyValue(const std::string &key, const std::string &value) const;
+
+		/**
+		 * Gets the key value from the Cameo server.
+		 * \param key The key.
+		 * \return The value associated to key.
+		 */
+		std::string getKeyValue(const std::string &key) const;
+
+		/**
+		 * Removes the key from the Cameo server.
+		 * \param key The key.
+		 */
+		void removeKey(const std::string &key) const;
+
+		/**
+		 * Requests a new port from the Cameo server.
+		 * \return An available port.
+		 */
+		int requestPort() const;
+
+		/**
+		 * Tells the Cameo server that the port is not availaible i.e. another application onws it.
+		 * \param port The port.
+		 */
+		void setPortUnavailable(int port) const;
+
+		/**
+		 * Releases the port so that the Cameo server will be able to return it in a future request.
+		 * \param port The port.
+		 */
+		void releasePort(int port) const;
+
+		/**
+		 * Creates a request socket.
+		 * \return A new request socket.
+		 */
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string &endpoint, const std::string &responderIdentity) const;
+
+		/**
+		 * Creates a request socket with a timeout.
+		 * \return A new request socket.
+		 */
+		std::unique_ptr<RequestSocket> createRequestSocket(const std::string &endpoint, const std::string &responderIdentity, int timeout) const;
+
+	private:
+		Com(Server *server, int applicationId);
+
+		Server *m_server;
+		int m_applicationId;
+	};
+
+	/**
+	 * Destructor.
+	 */
+	~This();
+
+	/**
+	 * Initializes this application from the main arguments.
+	 * \param argc The number of arguments.
+	 * \param argv The arguments.
+	 */
+	static void init(int argc, char *argv[]);
+
+	/**
+	 * Initializes this application with direct parameters.
+	 * \param name The Cameo name.
+	 * \param endpoint The Cameo server endpoint e.g. tcp://myhost:7000.
+	 */
+	static void init(const std::string &name, const std::string &endpoint);
+
+	/**
+	 * Terminates the application.
+	 */
+	static void terminate();
+
+	/**
+	 * Returns the Cameo name of this application.
+	 * \return The Cameo name.
+	 */
+	static const std::string& getName();
+
+	/**
+	 * Returns the Cameo id of this application.
+	 * \return The Cameo id.
+	 */
+	static int getId();
+
+	/**
+	 * Sets the timeout.
+	 * \param value The timeout value.
+	 */
+	static void setTimeout(int value);
+
+	/**
+	 * Gets the timeout.
+	 * \return The timeout value.
+	 */
+	static int getTimeout();
+
+	/**
+	 * Returns the endpoint of the Cameo server.
+	 * \return The Cameo endpoint.
+	 */
+	static const Endpoint& getEndpoint();
+
+	/**
+	 * Returns the Cameo server that owns this application.
+	 * \return The Server instance.
+	 */
+	static Server& getServer();
+
+	/**
+	 * Returns the COM object.
+	 * \return The Com object.
+	 */
+	static const Com& getCom();
+
+	/**
+	 * Returns true if the Cameo server that owns this application is available.
+	 * \param timeout The timeout value.
+	 * \return True if the Cameo replies within the timeout.
+	 */
+	static bool isAvailable(int timeout = 10000);
+
+	/**
+	 * Returns true if the application is in STOPPING state.
+	 * \return True or false.
+	 */
+	static bool isStopping();
+
+	/**
+	 * Sets the stop handler with stopping time that overrides the one that may be defined in the
+	 * configuration of the server.
+	 * \param function The stop handler.
+	 * \param stoppingTime The stopping time in milliseconds.
+	 */
+	static void handleStop(StopFunctionType function, int stoppingTime = -1);
+
+	/**
+	 * Cancels all the waiting calls.
+	 */
+	static void cancelAll();
+
+	/**
+	 * Sets this application in RUNNING state.
+	 * \return True or false.
+	 */
+	static bool setRunning();
+
+	/**
+	 * Sets the result.
+	 * \param data The string result.
+	 */
+	static void setResult(const std::string &data);
+
+	/**
+	 * Connects to the starter application, i.e. the application which started this application.
+	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
+	 * \param options The options passed to connect the starter app.
+	 * \param useProxy True if the proxy is used to connect to the starter app.
+	 * \param timeout Timeout for the server initialization.
+	 */
+	static std::unique_ptr<ServerAndApp> connectToStarter(int options = 0, bool useProxy = false, int timeout = 0);
+
+	/**
+	 * Returns a string representation of this application.
+	 * \return The string representation.
+	 */
+	static std::string toString();
+
+private:
+	This();
+
+	void terminateImpl();
+
+	void initApplication(int argc, char *argv[]);
+	void initApplication(const std::string &name, const std::string &endpoint);
+	void initApplication();
+
+	static State parseState(const std::string &value);
+	State getState(int id) const;
+
+	int initUnregisteredApplication();
+	void terminateUnregisteredApplication();
+
+	void initStopCheck(StopFunctionType function, int stoppingTime);
+	void stop();
+	void checkStates();
+	void initStarterCheck();
+	void startCheckStatesThread();
+
+	std::string m_name;
+	int m_id;
+	bool m_registered;
+
+	Endpoint m_serverEndpoint;
+	Endpoint m_starterEndpoint;
+	std::string m_starterName;
+	int m_starterId;
+	int m_starterProxyPort;
+	bool m_starterLinked;
+
+	std::unique_ptr<Server> m_server;
+	std::unique_ptr<Com> m_com;
+
+	std::unique_ptr<WaitingSet> m_waitingSet;
+
+	StopFunctionType m_stopFunction;
+	std::unique_ptr<Server> m_starterServer;
+	std::unique_ptr<std::thread> m_checkStatesThread;
+
+	bool m_inited;
+
+	static This m_instance;
+	static const std::string RUNNING_STATE;
+};
 
 ///////////////////////////////////////////////////////////////////////////
 // App
@@ -136,9 +457,10 @@ const Value KILLED = 256;
  *
  * An App instance is created by a Server instance. It represents a real remote application that was started by a real Cameo server.
  */
-class CAMEO_EXPORT App : private EventListener {
+class App: private EventListener {
 
 	friend class cameo::Server;
+	friend std::ostream& operator<<(std::ostream&, const App&);
 
 public:
 
@@ -147,7 +469,7 @@ public:
 	 *
 	 * It facilitates the definition of communication objects.
 	 */
-	class CAMEO_EXPORT Com {
+	class Com {
 
 		friend class App;
 
@@ -193,7 +515,7 @@ public:
 		/**
 		 * Class defining a getter for a key value.
 		 */
-		class CAMEO_EXPORT KeyValueGetter: private EventListener {
+		class KeyValueGetter: private EventListener {
 
 			friend class Com;
 
@@ -249,7 +571,9 @@ public:
 	/**
 	 * Class defining the configuration of a registered application.
 	 */
-	class CAMEO_EXPORT Config {
+	class Config {
+
+		friend std::ostream& operator<<(std::ostream&, const Config&);
 
 	public:
 		/**
@@ -320,7 +644,9 @@ public:
 	/**
 	 * Class showing the information of a running Cameo application.
 	 */
-	class CAMEO_EXPORT Info {
+	class Info {
+
+		friend std::ostream& operator<<(std::ostream&, const Info&);
 
 	public:
 		/**
@@ -332,7 +658,7 @@ public:
 		 * \param pastApplicationStates The past application states.
 		 * \param args The arguments of the executable.
 		 */
-		Info(const std::string &name, int id, int pid, state::Value applicationState, state::Value pastApplicationStates, const std::string &args);
+		Info(const std::string &name, int id, int pid, State applicationState, State pastApplicationStates, const std::string &args);
 
 		/**
 		 * Gets the id.
@@ -344,13 +670,13 @@ public:
 		 * Gets the state.
 		 * \return The state.
 		 */
-		state::Value getState() const;
+		State getState() const;
 
 		/**
 		 * Gets the past states.
 		 * \return the past states.
 		 */
-		state::Value getPastStates() const;
+		State getPastStates() const;
 
 		/**
 		 * Gets the arguments of the executable.
@@ -379,8 +705,8 @@ public:
 	private:
 		int m_id;
 		int m_pid;
-		state::Value m_applicationState;
-		state::Value m_pastApplicationStates;
+		State m_applicationState;
+		State m_pastApplicationStates;
 		std::string m_processState;
 		std::string m_args;
 		std::string m_name;
@@ -392,7 +718,9 @@ public:
 	/**
 	 * Class defining a system port associated to a Cameo application.
 	 */
-	class CAMEO_EXPORT Port {
+	class Port {
+
+		friend std::ostream& operator<<(std::ostream&, const Port&);
 
 	public:
 		/**
@@ -492,12 +820,6 @@ public:
 	bool hasResult() const;
 
 	/**
-	 * Connects to the same App. Is equivalent to cloning the App instance.
-	 * \param options The options.
-	 */
-	std::unique_ptr<App> connect(int options = 0) const;
-
-	/**
 	 * Stops the remote application.
 	 * The call is not blocking, so it must be followed by a call to waitFor to ensure the termination of the application.
 	 * \return True if the request succeeded.
@@ -515,14 +837,14 @@ public:
 	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The state when the call returned.
 	 */
-	state::Value waitFor(int states);
+	State waitFor(int states);
 
 	/**
 	 * Waits for the termination of the application.
 	 * The method is not thread-safe and must not be called concurrently.
 	 * \return The terminal state.
 	 */
-	state::Value waitFor();
+	State waitFor();
 
 	/**
 	 * Waits for the key value.
@@ -530,7 +852,7 @@ public:
 	 * \param keyValue The key value.
 	 * \return The state when the call returned.
 	 */
-	state::Value waitFor(KeyValue &keyValue);
+	State waitFor(KeyValue &keyValue);
 
 	/**
 	 * Cancels the blocking waitFor() in another thread.
@@ -541,22 +863,19 @@ public:
 	 * Gets the last state.
 	 * \return The last state.
 	 */
-	state::Value getLastState();
-
-	[[deprecated("Use getState() instead.")]]
-	state::Value getActualState() const;
+	State getLastState();
 
 	/**
-	 * Returns the current state and NIL if the instance does not exist anymore.
-	 * \return The current state.
+	 * Returns the actual state and NIL if the instance does not exist anymore.
+	 * \return The actual state.
 	 */
-	state::Value getState() const;
+	State getActualState() const;
 
 	/**
 	 * Returns the past states.
 	 * \return The past states.
 	 */
-	std::set<state::Value> getPastStates() const;
+	std::set<State> getPastStates() const;
 
 	/**
 	 * Returns the exit code.
@@ -568,7 +887,7 @@ public:
 	 * Gets the initial state.
 	 * \return The initial state.
 	 */
-	state::Value getInitialState() const;
+	State getInitialState() const;
 
 	/**
 	 * Returns the result if there is one.
@@ -593,9 +912,9 @@ private:
 
 	void setId(int id);
 	void setOutputStreamSocket(std::unique_ptr<OutputStreamSocket> &socket);
-	void setPastStates(state::Value pastStates);
-	void setInitialState(state::Value state);
-	state::Value waitFor(int states, KeyValue &keyValue, bool blocking);
+	void setPastStates(State pastStates);
+	void setInitialState(State state);
+	State waitFor(int states, KeyValue &keyValue, bool blocking);
 
 	Server *m_server;
 	std::unique_ptr<OutputStreamSocket> m_outputStreamSocket;
@@ -603,8 +922,8 @@ private:
 	Com m_com;
 
 	int m_pastStates;
-	state::Value m_initialState;
-	state::Value m_lastState;
+	State m_initialState;
+	State m_lastState;
 	bool m_hasResult;
 	std::string m_resultData;
 	int m_exitCode;
@@ -621,29 +940,28 @@ typedef std::vector<std::unique_ptr<App>> AppArray;
 /**
  * Converts a set of states to a string.
  */
-CAMEO_EXPORT std::string toString(cameo::state::Value applicationStates);
-
-}
+std::string toString(cameo::State applicationStates);
 
 /**
  * Stream operator for an App object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App&);
+std::ostream& operator<<(std::ostream&, const cameo::App&);
 
 /**
  * Stream operator for a Config object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Config&);
 
 /**
  * Stream operator for an Info object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Info&);
 
 /**
  * Stream operator for a Port object.
  */
-CAMEO_EXPORT std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
+std::ostream& operator<<(std::ostream&, const cameo::App::Port&);
 
+}
 
 #endif

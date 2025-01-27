@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "RequestSocketZmq.h"
@@ -48,7 +54,7 @@ void RequestSocketZmq::setSocketLinger() {
 	// If a Server instance is not reachable, the context that contains the message in timeout will block during this linger period.
 	if (m_timeout > 0 && m_socket) {
 		int lingerValue {100};
-		m_socket->set(zmq::sockopt::linger, lingerValue);
+		m_socket->setsockopt(ZMQ_LINGER, &lingerValue, sizeof(int));
 	}
 }
 
@@ -60,7 +66,7 @@ void RequestSocketZmq::init() {
 
 		// Set the linger value to 0 to ensure that pending requests are destroyed in case of timeout.
 		int value {0};
-		m_socket->set(zmq::sockopt::linger, value);
+		m_socket->setsockopt(ZMQ_LINGER, &value, sizeof(int));
 
 		try {
 			// Connect to the endpoint.
@@ -98,13 +104,13 @@ std::unique_ptr<zmq::message_t> RequestSocketZmq::receive(int overrideTimeout) {
 		items[0].events = ZMQ_POLLIN;
 		items[0].revents = 0;
 
-		int rc = zmq::poll(items, 1, std::chrono::milliseconds{timeout});
+		int rc = zmq::poll(items, 1, timeout);
 		if (rc == 0) {
 			// Reset the socket. It is necessary if a new request is done.
 			reset();
 
 			// Timeout occurred.
-			throw ConnectionTimeout(m_endpoint);
+			throw ConnectionTimeout();
 		}
 	}
 

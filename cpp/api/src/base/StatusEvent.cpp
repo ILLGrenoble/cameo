@@ -1,11 +1,17 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #include "StatusEvent.h"
@@ -14,7 +20,7 @@
 
 namespace cameo {
 
-StatusEvent::StatusEvent(int id, const std::string& name, state::Value state, state::Value pastStates, int exitCode) :
+StatusEvent::StatusEvent(int id, const std::string& name, State state, State pastStates, int exitCode) :
 	Event{id, name},
 	m_state{state},
 	m_pastStates{pastStates},
@@ -32,11 +38,11 @@ StatusEvent* StatusEvent::clone() {
 	return new StatusEvent{*this};
 }
 
-state::Value StatusEvent::getState() const {
+State StatusEvent::getState() const {
 	return m_state;
 }
 
-state::Value StatusEvent::getPastStates() const {
+State StatusEvent::getPastStates() const {
 	return m_pastStates;
 }
 

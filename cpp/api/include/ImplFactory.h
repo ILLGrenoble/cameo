@@ -1,17 +1,22 @@
 /*
- * CAMEO
- *
  * Copyright 2015 Institut Laue-Langevin
  *
- * Licensed under BSD 3-Clause and GPL-v3 as described in license files.
- * You may not use this work except in compliance with the Licences.
+ * Licensed under the EUPL, Version 1.1 only (the "License");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
  *
+ * http://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 
 #ifndef CAMEO_IMPLFACTORY_H_
 #define CAMEO_IMPLFACTORY_H_
 
-#include "Defines.h"
 #include <memory>
 #include <mutex>
 
@@ -42,7 +47,7 @@ class SubscriberImpl;
  * Factory for the implementation objects.
  * This implementation of the factory generates ZeroMQ implementations.
  */
-class CAMEO_EXPORT ImplFactory {
+class ImplFactory {
 
 public:
 	/**
@@ -86,10 +91,9 @@ public:
 
 	/**
 	 * Creates a publisher implementation.
-	 * \param sync True if is a synchronized publisher.
 	 * \return A new coms::PublisherImpl object.
 	 */
-	static std::unique_ptr<coms::PublisherImpl> createPublisher(bool sync);
+	static std::unique_ptr<coms::PublisherImpl> createPublisher();
 
 	/**
 	 * Creates a subscriber implementation.
