@@ -34,6 +34,23 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<!-- Profile for Eclipse compilation -->
+		<profile>
+			<id>eclipse</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-jzmq</artifactId>
+					<version>1.0.0</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
