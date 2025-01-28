@@ -5,9 +5,9 @@
 		<artifactId>cameo</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>cameo-console</artifactId>
+	<artifactId>cameo-console-jzmq</artifactId>
 	<version>3.0.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
@@ -147,10 +147,5 @@
 
 		</plugins>
 	</build>
-	
-	<modules>
-		<module>jzmq</module>
-		<module>jeromq</module>
-	</modules>
 	
 </project>

@@ -10,7 +10,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-api</artifactId>
+			<artifactId>cameo-console-jzmq</artifactId>
 			<version>3.0.0</version>
 			<exclusions>
 				<exclusion>
@@ -25,9 +25,5 @@
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-		
-	<build>
-		<sourceDirectory>../src</sourceDirectory>
-	</build>
 	
 </project>
