@@ -9,7 +9,6 @@
  */
 
 module eu.ill.cameo.com {
-	//requires org.zeromq.jeromq;
-	requires jeromq; // Temporary until future release
+	requires org.zeromq.jeromq;
 	exports eu.ill.cameo.com;
 }

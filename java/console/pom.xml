@@ -65,7 +65,7 @@
 			                        </moduleInfoSource>
 								</module>
 								
-								<module>
+								<!--<module>
 									<artifact>
 										<groupId>org.zeromq</groupId>
 										<artifactId>jeromq</artifactId>
@@ -76,7 +76,7 @@
 				                                exports org.zeromq;
 				                            }
 			                        </moduleInfoSource>
-								</module>
+								</module>-->
 								
 							</modules>
 						</configuration>
