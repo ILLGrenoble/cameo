@@ -11,6 +11,6 @@ software according to the terms of one of the two licenses.
 
 # Compile and install
 
-Instructions about compilation and installation can be found in [INSTALL.md](INSTALL.md).
+Instructions about compilation and installation can be found [here](INSTALL.md).
 
 For the documentation, please go to the [site](https://illgrenoble.github.io/cameo/).
