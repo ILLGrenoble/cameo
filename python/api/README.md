@@ -4,15 +4,15 @@ This library provides the Python API for Cameo.
  
 ## Compilation dependencies
 
-- cmake 3.12.0
-- [pybind11](https://github.com/pybind/pybind11): The API is obtained using pybind11 and the C++ Cameo API. 
+Dependencies:
+- CMake 3.12.0
+- [Pybind11](https://github.com/pybind/pybind11): The API is obtained using pybind11 and the C++ Cameo API. 
 If the required version is not available on the system, it is automatically downloaded from source and compiled in place.
-- [doctest](https://github.com/onqtam/doctest)
+- [Doctest](https://github.com/onqtam/doctest)
 Testing is performed using the doctest framework.
-- cameo-api-cpp-static: The static library needs to be compiled first. See [here](../cameo-api-cpp/README.md) for compilation instructions of cameo-cpp-api.
+- Cameo API library: The static library needs to be compiled first. See [here](../cameo-api-cpp/README.md) for compilation instructions of cameo-cpp-api.
 
 For convenience, the packages for some major distributions are listed in the following:
-
 - CENTOS 8: `yum install -y cmake pybind11-devel`
 - Ubuntu: `sudo apt install libzmq3-dev python3-dev python3-distutils`
 

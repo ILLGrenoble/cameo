@@ -3,10 +3,10 @@
 ## Dependencies
 
 CAMEO depends on:
- - CMake (>=3.20)
- - Java JDK (>=11)
- - Maven
- - ZeroMQ
+- CMake (>=3.20)
+- Java JDK (>=11)
+- Maven
+- ZeroMQ
   
 For the C++ API:
  - Rapidjson
@@ -31,7 +31,6 @@ To install the C++ and Python APIs, first install vcpkg, then install the depend
 
 ```
 vcpkg install zeromq cppzmq rapidjson pybind11
-
 ```
 
 
@@ -42,12 +41,12 @@ You can either generate the binaries or the Debian packages.
 ### Option 1: Generate the binaries
 
 Possible options are:
- - CAMEO_ALL=ON: to build everything including tests and examples
- - CAMEO_JAVA=ON: to build all the Java artifacts
- - ZEROMQ_JAVA=*value*: value is 'jzmq' or 'jeromq'
- - CAMEO_PROXIES=ON: to build the proxies
- - CAMEO_API_CPP=ON: to build and install the C++ API
- - CAMEO_API_PYTHON=ON: to build and install the Python API
+- CAMEO_ALL=ON: to build everything including tests and examples
+- CAMEO_JAVA=ON: to build all the Java artifacts
+- ZEROMQ_JAVA=*value*: value is 'jzmq' or 'jeromq'
+- CAMEO_PROXIES=ON: to build the proxies
+- CAMEO_API_CPP=ON: to build and install the C++ API
+- CAMEO_API_PYTHON=ON: to build and install the Python API
 
 If CAMEO_ALL is selected then all the options are selected.
 
@@ -84,7 +83,6 @@ You can also compile in full static. Install the static dependencies:
 
 ```
 vcpkg install zeromq:x64-windows-static cppzmq:x64-windows-static
-
 ```
 
 Configure the build with:

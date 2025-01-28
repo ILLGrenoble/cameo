@@ -5,11 +5,12 @@ This library provides the C++ API for Cameo.
 
 ## Compilation dependencies 
 
-- cmake 3.12.0
-- cppzmq
-- [rapidjson](https://github.com/Tencent/rapidjson)
+Dependencies:
+- CMake 3.12.0
+- Cppzmq
+- [Rapidjson](https://github.com/Tencent/rapidjson)
   If not found on the system it is automatically downloaded and installed
-- doxygen (optional)
+- Doxygen (optional)
  
 For convenience, the packages for some major distributions are listed in the following:
 
