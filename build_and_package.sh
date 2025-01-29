@@ -23,7 +23,7 @@ function mvPack(){
 }
 
 #--------------- JAVA
-for source_dir in java/server/jzmq java/console/jzmq
+for source_dir in java/server-jzmq java/console-jzmq
 do
 	echo "COMPONENT: $source_dir"
 	build_dir=$BASE_BUILD_DIR/$source_dir
