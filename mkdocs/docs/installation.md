@@ -20,20 +20,18 @@ Then follow the instructions [here](https://github.com/ILLGrenoble/cameo/blob/ma
 
 ### List of the installed components
 
-Depending on your &lt;install&gt; directory you should have:
+Depending on your &lt;install&gt; directory and &lt;zeromq&gt; implementation you should have:
 
 Server:
 ``` { .bash .no-copy }
-<install>/share/java/cameo/cameo-server-jzmq-<version>-full.jar
-<install>/share/java/cameo/cameo-server-jeromq-<version>-full.jar
+<install>/share/java/cameo/cameo-server-<zeromq>-<version>-full.jar
 <install>/bin/cameo-rep-proxy
 <install>/bin/cameo-pub-proxy
 <install>/bin/cameo-server
 ```
 Console:
 ``` { .bash .no-copy }
-<install>/share/java/cameo/cameo-console-jzmq-<version>-full.jar
-<install>/share/java/cameo/cameo-console-jeromq-<version>-full.jar
+<install>/share/java/cameo/cameo-console-<zeromq>-<version>-full.jar
 <install>/bin/cmo
 ```
 C++ API:
