@@ -2,21 +2,28 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.ill.cameo</groupId>
-		<artifactId>cameo-server</artifactId>
-		<version>3.0.0</version>
+		<artifactId>cameo</artifactId>
+		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server-jeromq</artifactId>
-	
+
 	<dependencies>
+		<dependency>
+			<groupId>eu.ill.cameo</groupId>
+			<artifactId>cameo-server-jzmq</artifactId>
+			<version>3.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-jzmq</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-com-jeromq</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<sourceDirectory>../src</sourceDirectory>
-	</build>
-
+	
 </project>

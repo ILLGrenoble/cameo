@@ -5,9 +5,9 @@
 		<artifactId>cameo</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>cameo-server</artifactId>
+	<artifactId>cameo-server-jzmq</artifactId>
 	<version>3.0.0</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<properties>
 		<project.scm.id>ill-code</project.scm.id>
@@ -32,24 +32,12 @@
 			<artifactId>cameo-process-handle-default</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>eu.ill.cameo</groupId>
+			<artifactId>cameo-com-jzmq</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
-
-	<profiles>
-		<!-- Profile for Eclipse compilation -->
-		<profile>
-			<id>eclipse</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>eu.ill.cameo</groupId>
-					<artifactId>cameo-com-jzmq</artifactId>
-					<version>1.0.0</version>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
@@ -186,10 +174,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<modules>
-		<module>jzmq</module>
-		<module>jeromq</module>
-	</modules>
 
 </project>

@@ -26,7 +26,7 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
   )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../scripts/cameo-server.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cameo-server.in
   ${CMAKE_CURRENT_BINARY_DIR}/cameo-server)
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
@@ -39,7 +39,7 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
 #------------------------------------------------------------
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../CPackConfigCommon.in)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
   include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
 endif()

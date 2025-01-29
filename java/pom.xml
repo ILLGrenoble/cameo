@@ -23,6 +23,7 @@
 		<module>common</module>
 		<module>com</module>
 		<module>server</module>
+		<module>server-jeromq</module>
 		<module>api</module>
 		<module>console</module>
 		<module>console-jeromq</module>
