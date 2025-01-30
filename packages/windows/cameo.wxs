@@ -1,0 +1,32 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+	
+  <Package Manufacturer="ILL" Name="Cameo" Version="2.1.1">
+    
+	<WixVariable Id="WixUILicenseRtf" Value="license.rtf"/>
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER"/>
+    <ComponentGroup Id="ExampleComponents" Directory="INSTALLFOLDER">
+      <Files Include="**.jar" />
+	  <Files Include="**.cmd" />
+	  <Files Include="**.xml" />
+	  <Files Include="**.exe" />
+	  <Component Id="EnvComponent" Directory="INSTALLFOLDER" Guid="7c532b67-4b3b-4c16-9322-76a150df8199">
+        <Environment Id="UpdatePath" Name="Path" Value="&quot;[INSTALLFOLDER]&quot;" Action="set" Part="last" System="yes"/>
+		<ServiceControl Stop="both" Remove="uninstall" Name="CAMEO" Wait="yes" />
+		
+		<RemoveFile Id="PurgeLogsFolder" Subdirectory="logs" Name="*.*" On="uninstall" />
+		<RemoveFolder Id="DeleteLogsFolder" Subdirectory="logs" On="uninstall" />
+		
+      </Component>
+    </ComponentGroup>
+	
+    <CustomAction Id="InstallNSSM" Directory="INSTALLFOLDER" Execute="commit" Impersonate="no" ExeCommand="cmd.exe /c &quot;&quot;[INSTALLFOLDER]nssm-2.24\win64\nssm.exe&quot; install CAMEO &quot;[INSTALLFOLDER]cameo-server.cmd&quot; &quot;[INSTALLFOLDER]config.xml&quot; &quot;" Return="ignore" />
+		
+	<InstallExecuteSequence>
+      <Custom Action="InstallNSSM" After="InstallInitialize" />
+   </InstallExecuteSequence>
+   
+   <MediaTemplate EmbedCab="yes" />
+   
+  </Package>
+</Wix>

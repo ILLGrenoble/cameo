@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config port="7000"
+        polling_time="100" sleep_time="10"
+        max_applications="100" 
+        log_level="INFO" log_directory="logs">
+    <applications>
+        <application name="filetransfer" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
+			<start executable="java" args="-jar cameo-file-transfer.jar"/>
+		</application>
+
+		<application name="testfiletransfer" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
+			<start executable="java" args="-classpath cameo-file-transfer.jar fr.ill.ics.cameoapps.TestFileTransfer"/>
+		</application>
+    </applications>
+</config>

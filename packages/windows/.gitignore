@@ -1,0 +1,6 @@
+.wix/
+cameo.log
+cameo.msi
+cameo.wixpdb
+cab1.cab
+*.jar
