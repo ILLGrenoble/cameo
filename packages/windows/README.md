@@ -1,16 +1,20 @@
-# wix-test
+# Install with Wix
 
-Install extension:
+Install the wix software and install the extension:
 
-$ wix extension list
-$ wix extension add WixToolset.UI.wixext
+```
+wix extension add WixToolset.UI.wixext
+```
 
-
+Copy the cameo-server.jar, cameo-console.jar and cameo-file-transfer.jar files in the current directory.
 Compile msi:
 
-$ wix build -ext WixToolset.UI.wixext cameo.wxs
+```
+wix build -ext WixToolset.UI.wixext cameo.wxs
+```
 
-Debug with log:
+Debug the installation with log:
 
-$ msiexec /i cameo.msi /l* cameo.log
-
+```
+msiexec /i cameo.msi /l* cameo.log
+```
