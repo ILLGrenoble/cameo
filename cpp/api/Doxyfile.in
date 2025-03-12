@@ -9,7 +9,7 @@ PROJECT_BRIEF          =
 
 PROJECT_LOGO           =
 
-OUTPUT_DIRECTORY       = doc
+OUTPUT_DIRECTORY       = ../../docs/APIs/doxygen-cpp
 
 CREATE_SUBDIRS         = NO
 
@@ -733,7 +733,6 @@ FILE_PATTERNS          = *.c \
                          *.inc \
                          *.m \
                          *.markdown \
-                         *.md \
                          *.mm \
                          *.dox \
                          *.py \
@@ -868,7 +867,7 @@ FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
 
 
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE =
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing

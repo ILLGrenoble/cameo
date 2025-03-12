@@ -72,3 +72,10 @@ endif()
 foreach(package ${Java} ${Proxies} ${APIs} ${TestsExamples})
   add_subdirectory(${package})
 endforeach()
+
+# Build the doc
+add_custom_target(doc-site
+  ALL
+  COMMAND mkdocs build -d ${CMAKE_CURRENT_BINARY_DIR}/docs
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/mkdocs
+  )

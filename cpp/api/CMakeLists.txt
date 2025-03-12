@@ -254,8 +254,6 @@ endif(UNIX)
 # Doc
 #------------------------------------------------------------
 
-option(BUILD_DOC "Build documentation" ON)
-
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
   # set input and output files
@@ -264,16 +262,17 @@ if (DOXYGEN_FOUND)
   
   # request to configure the file
   configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-  message(STATUS "Doxygen build started")
+  message(STATUS "Doxygen ready to generate the C++ documentation")
   
   # note the option ALL which allows to build the docs together with the application
-  add_custom_target( doc 
+  add_custom_target(doc 
+    ALL
     COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen"
-    VERBATIM )
+    )
 else (DOXYGEN_FOUND)
-  message(STATUS "Doxygen needs to be installed to generate the doxygen documentation")
+  message(STATUS "Doxygen needs to be installed to generate the C++ documentation")
 endif (DOXYGEN_FOUND)
 
 
