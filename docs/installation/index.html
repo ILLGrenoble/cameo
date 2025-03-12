@@ -551,6 +551,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../app-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../synchronization/" class="md-nav__link">
         
   
@@ -887,18 +907,16 @@ If you can install them, it is the recommended installation. If you cannot then 
 </span></code></pre></div>
 <p>Then follow the instructions <a href="https://github.com/ILLGrenoble/cameo/blob/master/INSTALL.md">here</a>.</p>
 <h3 id="list-of-the-installed-components">List of the installed components</h3>
-<p>Depending on your &lt;install&gt; directory you should have:</p>
+<p>Depending on your &lt;install&gt; directory and &lt;zeromq&gt; implementation you should have:</p>
 <p>Server:
-<div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;install&gt;/share/java/cameo/cameo-server-jzmq-&lt;version&gt;-full.jar
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>&lt;install&gt;/share/java/cameo/cameo-server-jeromq-&lt;version&gt;-full.jar
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>&lt;install&gt;/bin/cameo-rep-proxy
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>&lt;install&gt;/bin/cameo-pub-proxy
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>&lt;install&gt;/bin/cameo-server
+<div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;install&gt;/share/java/cameo/cameo-server-&lt;zeromq&gt;-&lt;version&gt;-full.jar
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>&lt;install&gt;/bin/cameo-rep-proxy
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>&lt;install&gt;/bin/cameo-pub-proxy
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>&lt;install&gt;/bin/cameo-server
 </span></code></pre></div>
 Console:
-<div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;install&gt;/share/java/cameo/cameo-console-jzmq-&lt;version&gt;-full.jar
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>&lt;install&gt;/share/java/cameo/cameo-console-jeromq-&lt;version&gt;-full.jar
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>&lt;install&gt;/bin/cmo
+<div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;install&gt;/share/java/cameo/cameo-console-&lt;zeromq&gt;-&lt;version&gt;-full.jar
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>&lt;install&gt;/bin/cmo
 </span></code></pre></div>
 C++ API:
 <div class="language-bash no-copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&lt;install&gt;/lib/libcameo-api-cpp.so.&lt;version&gt;

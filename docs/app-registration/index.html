@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../use-the-proxies-with-a-firewall/">
+        <link rel="prev" href="../make-the-apps-communicate/">
       
       
-        <link rel="next" href="../examples/">
+        <link rel="next" href="../synchronization/">
       
       
       <link rel="icon" href="../images/Logo.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Exceptions - CAMEO</title>
+        <title>App registration - CAMEO</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#exceptions" class="md-skip">
+        <a href="#app-registration" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Exceptions
+              App registration
             
           </span>
         </div>
@@ -340,10 +340,30 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../app-registration/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    App registration
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -352,6 +372,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#registered-and-unregistered-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registered and unregistered apps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registered and unregistered apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#this-initialized-with-the-arguments-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      This initialized with the arguments variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-initialized-with-explicit-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      This initialized with explicit arguments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-not-initialized" class="md-nav__link">
+    <span class="md-ellipsis">
+      This not initialized
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registered-vs-unregistered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registered vs unregistered
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#register-a-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Register a script
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -420,30 +520,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Exceptions
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../exceptions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -452,44 +532,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#list-of-exceptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      List of exceptions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#more-details-on-the-exceptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      More details on the exceptions
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -561,18 +603,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#list-of-exceptions" class="md-nav__link">
+  <a href="#registered-and-unregistered-apps" class="md-nav__link">
     <span class="md-ellipsis">
-      List of exceptions
+      Registered and unregistered apps
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registered and unregistered apps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#this-initialized-with-the-arguments-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      This initialized with the arguments variable
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#this-initialized-with-explicit-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      This initialized with explicit arguments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-not-initialized" class="md-nav__link">
+    <span class="md-ellipsis">
+      This not initialized
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#registered-vs-unregistered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Registered vs unregistered
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#more-details-on-the-exceptions" class="md-nav__link">
+  <a href="#register-a-script" class="md-nav__link">
     <span class="md-ellipsis">
-      More details on the exceptions
+      Register a script
     </span>
   </a>
   
@@ -596,75 +680,74 @@
   
 
 
-<h1 id="exceptions">Exceptions</h1>
-<p>A summary of the exceptions that can be thrown in a program using the CAMEO API:</p>
-<h2 id="list-of-exceptions">List of exceptions</h2>
-<table>
-<thead>
-<tr>
-<th><strong>Exception</strong></th>
-<th><strong>Where</strong></th>
-<th><strong>Description</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ConnectionTimeout</td>
-<td>Server.init(), Requester.init(), Subscriber.init(), all functions or methods accessing a remote Server</td>
-<td>A timeout occurs in a connection.</td>
-</tr>
-<tr>
-<td>InitException</td>
-<td>Server.init(), Responder.init(), ResponderRouter.init(), Requester.init(), Publisher.init(), Subscriber.init()</td>
-<td>Cannot initialize the object.</td>
-</tr>
-<tr>
-<td>SynchronizationTimeout</td>
-<td>Requester.init(), Subscriber.init()</td>
-<td>Timeout occurs during the synchronization of objects.</td>
-</tr>
-<tr>
-<td>InvalidArgumentException</td>
-<td>Server.init()</td>
-<td>Bad endpoint value.</td>
-</tr>
-<tr>
-<td>StartException</td>
-<td>Server.start()</td>
-<td>The application cannot be started.</td>
-</tr>
-<tr>
-<td>UnregisteredApplicationException</td>
-<td>This.init()</td>
-<td>Maximum number of running apps reached.</td>
-</tr>
-<tr>
-<td>KeyAlreadyExistsException</td>
-<td>This.Com.storeKeyValue()</td>
-<td>Key is already stored for the application.</td>
-</tr>
-<tr>
-<td>UndefinedKeyException</td>
-<td>This.Com.getKeyValue(), App.Com.getKeyValue()</td>
-<td>Key does not exist.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="more-details-on-the-exceptions">More details on the exceptions</h2>
-<p>The most common exception is <em>ConnectionTimeout</em> that can occur in any call to a remote <em>Server</em> object.
-As the process of the requests to a remote <em>Server</em> object should be quick, a <em>ConnectionTimeout</em> should mean that the network was not fast enough or the remote computer is not accessible any more.</p>
-<p>However a call to a local <em>Server</em> object may not throw such a <em>ConnectionTimeout</em> exception. That is why a good practice is:</p>
+<h1 id="app-registration">App registration</h1>
+<h2 id="registered-and-unregistered-apps">Registered and unregistered apps</h2>
+<p>CAMEO is very flexible and accepts different combinations for an application to be controlled by CAMEO.</p>
+<h3 id="this-initialized-with-the-arguments-variable"><em>This</em> initialized with the <em>arguments</em> variable</h3>
+<p>Usually to benefit from the CAMEO services inside an application, the <em>This</em> object is initialized by passing the arguments of the program. In C++:
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="c1">// Initialize This.</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">cameo</span><span class="o">::</span><span class="n">This</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">);</span>
+</span></code></pre></div></p>
+<p>In Java:
+<div class="language-java highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">eu.ill.cameo.base.This</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="c1">// Initialize This.</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">This</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+</span></code></pre></div></p>
+<p>In Python:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">sys</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">cameopy</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">## Initialize This.</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">cameopy</span><span class="o">.</span><span class="n">This</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>Once <em>This</em> is initialized it can be used for example to get a reference to the CAMEO server that started it. When <em>This</em> is initialized with the <em>arguments</em> variable, there are two cases:</p>
 <ul>
-<li>Set a timeout to remote <em>Server</em> objects.</li>
-<li>Do not set a timeout to local <em>Server</em> objects.</li>
+<li><strong>Registered application</strong>: If the application is registered in the configuration file, then <em>info_arg</em> must be <em>yes</em> which is the default value so it is not necessary to specify it. Otherwise the application will not start.</li>
+<li><strong>Not registered application</strong>: If the application is not registered in the configuration file, it is possible to start directly the app by adding a last argument that contains the CAMEO server reference and its name. For instance:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>/home/cameo/app1 &quot;{\&quot;name\&quot;:\&quot;App1\&quot;, \&quot;server\&quot;:\&quot;tcp://localhost:10000\&quot;}&quot;
+</span></code></pre></div>
+Then if the passed arguments are correct, <em>This</em> will initialize and the application will become <strong>attached</strong> to the CAMEO server referenced by the endpoint in the <em>server</em> value.</li>
 </ul>
-<p>A <em>SynchronizationTimeout</em> exception has a different meaning. It concerns blocking <em>init()</em> calls for the <em>Requester</em> and <em>Subscriber</em> objects. Indeed, a <em>Requester</em> may block indefinitely if the <em>Responder</em> is never ready. In that case, setting a timeout makes the <em>init()</em> call exit.</p>
-<p>An <em>InitException</em> exception should be thrown if the underlying communication object cannot be initialized i.e. ZeroMQ sockets.</p>
-<p>An <em>InvalidArgumentException</em> happens when the provided endpoint is invalid e.g. "tc://serv:10000" or "tcp://serv:".</p>
-<p>The <em>StartException</em> exception occurs when the <em>CAMEO</em> server is unable to start the requested application. It can happen if the program is not accessible or the maximum number of running apps is reached.</p>
-<p>The <em>UnregisteredApplicationException</em> exception occurs for an application that is not registered in the CAMEO server and tries to attach to it. If the maximum number of running apps is reached, it cannot attach.</p>
-<p>The exceptions <em>KeyAlreadyExistsException</em> and <em>UndefinedKeyException</em> are thrown in the communication objects. These exceptions concern the implementation of a communication object e.g. <em>Requester</em>, <em>Responder</em>, etc.</p>
-<p>Notice that a <em>Requester.receive()</em> call does not throw an exception if a timeout occurs. However the object returned is null and <em>Requester.hasTimedout()</em> returns true.</p>
+<h3 id="this-initialized-with-explicit-arguments"><em>This</em> initialized with explicit arguments</h3>
+<p>It is not mandatory to initialize <em>This</em> with the program arguments so that it is possible to pass an explicit server endpoint.<br />
+In C++:
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">cameo</span><span class="o">::</span><span class="n">This</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;App1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tcp://localhost:10000&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+In Java:
+<div class="language-java highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">This</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="s">&quot;App1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tcp://computer1:10000&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+In Python:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">cameopy</span><span class="o">.</span><span class="n">This</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="s2">&quot;App1&quot;</span><span class="p">,</span> <span class="s2">&quot;tcp://computer2:10000&quot;</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>The application shall <strong>not</strong> be <strong>registered</strong> and the app will be started locally and not by a CAMEO server. Then in the <em>init()</em> call, the CAMEO server is contacted to attach the app. As the app is not started by a CAMEO server, the CAMEO server extra functionalities are not available (output stream, log, stopping time, etc.).</p>
+<p>The endpoint is not necessarily local and a remote server endpoint can be used as shown in the Java and Python examples. In that case, it is possible to trigger a stop handler as explained in <a href="http://control-the-apps.md">Control the apps</a> that will provoke the termination of the app. But a direct stop or kill are not possible. Moreover, there is no timeout on the attach communication so that it could block indefinitely in case of a network failure.</p>
+<p>To conclude, it is possible to attach an app to a remote CAMEO server however it is not recommended and should be done only when it is not possible to have a local server.</p>
+<h3 id="this-not-initialized"><em>This</em> not initialized</h3>
+<p>If you have a black box application i.e. that you cannot compile or modify, then you cannot initialize <em>This</em> inside but you can still <strong>register</strong> the application in the configuration file. However it is recommended in that special case to set <em>info_arg</em> to <em>no</em>. Otherwise the additional argument may not be supported by the app when it parses the arguments. The application is <strong>unmanaged</strong>.</p>
+<h3 id="registered-vs-unregistered">Registered vs unregistered</h3>
+<p>We saw the different cases based on the initialization of <em>This</em> or not. But what is the difference between a registered app and an unregistered app that is attached?  </p>
+<p>The response is simple: a registered app can be started by the console <em>cmo</em> from another computer. Moreover in case of unexpected termination a program can be run to make a report.  </p>
+<p>Registering an app offers more flexibility in the way to start an app.</p>
+<h2 id="register-a-script">Register a script</h2>
+<p>If you want to register a script e.g. a Bash script or a Python script, it is highly recommended to define the executable with the interpreter program rather the script itself even if it is executable. For example:
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">&lt;config</span><span class="w"> </span><span class="na">host=</span><span class="s">&quot;mycomputer&quot;</span><span class="nt">&gt;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">&lt;applications&gt;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">        </span><span class="nt">&lt;application</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Script1&quot;</span><span class="nt">&gt;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">            </span><span class="nt">&lt;start</span><span class="w"> </span><span class="na">executable=</span><span class="s">&quot;/usr/bin/bash&quot;</span><span class="w"> </span><span class="na">args=</span><span class="s">&quot;/home/cameo/app1.sh&quot;</span><span class="nt">/&gt;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">        </span><span class="nt">&lt;/application&gt;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">        </span><span class="nt">&lt;application</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Script2&quot;</span><span class="nt">&gt;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">            </span><span class="nt">&lt;start</span><span class="w"> </span><span class="na">executable=</span><span class="s">&quot;/usr/bin/python3&quot;</span><span class="w"> </span><span class="na">args=</span><span class="s">&quot;-u /home/cameo/app2.py&quot;</span><span class="nt">/&gt;</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">        </span><span class="nt">&lt;/application&gt;</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nt">&lt;applications&gt;</span><span class="w">  </span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="nt">&lt;/config&gt;</span>
+</span></code></pre></div>
+The reason is because the underlying process execution works not well when the executable is the script.</p>
 
 
 
@@ -694,7 +777,7 @@ As the process of the requests to a remote <em>Server</em> object should be quic
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../use-the-proxies-with-a-firewall/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Use the proxies with a firewall">
+          <a href="../make-the-apps-communicate/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Make the apps communicate">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
@@ -704,20 +787,20 @@ As the process of the requests to a remote <em>Server</em> object should be quic
                 Previous
               </span>
               <div class="md-ellipsis">
-                Use the proxies with a firewall
+                Make the apps communicate
               </div>
             </div>
           </a>
         
         
           
-          <a href="../examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Examples">
+          <a href="../synchronization/" class="md-footer__link md-footer__link--next" aria-label="Next: Synchronization">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Examples
+                Synchronization
               </div>
             </div>
             <div class="md-footer__button md-icon">

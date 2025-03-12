@@ -343,6 +343,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../app-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../synchronization/" class="md-nav__link">
         
   
@@ -450,6 +470,24 @@
   <a href="#proxy-path" class="md-nav__link">
     <span class="md-ellipsis">
       Proxy path
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#override-ports-of-the-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override ports of the configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple servers
     </span>
   </a>
   
@@ -586,6 +624,24 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#override-ports-of-the-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Override ports of the configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiple-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiple servers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#list-of-functions-or-methods-using-the-proxies" class="md-nav__link">
     <span class="md-ellipsis">
       List of functions or methods using the proxies
@@ -645,8 +701,14 @@ In Java:
 <p>Once the server is created, the definition of a <em>Requester</em> or <em>Subscriber</em> is exactly the same as before.</p>
 <h2 id="proxy-path">Proxy path</h2>
 <p>Currently, the proxy programs are written in C++. When the CAMEO server starts, it tries to launch the proxy programs. However if they are not installed in a standard path, they may not be found. In that case, an argument is provided:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies config.xml
 </span></code></pre></div>
+<h2 id="override-ports-of-the-configuration">Override ports of the configuration</h2>
+<p>It is possible to override the ports of the configuration by defining them in the command line:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-ports &quot;12000, 12001, 12002&quot; config.xml
+</span></code></pre></div>
+<h2 id="multiple-servers">Multiple servers</h2>
+<p>If multiple servers are running on the same computer, give different proxy ports to the servers so that they are not shared.</p>
 <h2 id="list-of-functions-or-methods-using-the-proxies">List of functions or methods using the proxies</h2>
 <p>Here is the list of functions or methods that can be parameterized with a proxy:</p>
 <table>

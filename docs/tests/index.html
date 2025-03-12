@@ -339,6 +339,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../app-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../synchronization/" class="md-nav__link">
         
   
@@ -479,13 +499,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
+  <a href="#run-the-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Setup
+      Run the tests
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setup">
+    <nav class="md-nav" aria-label="Run the tests">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -512,11 +532,62 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-the-tests" class="md-nav__link">
+  <a href="#run-specific-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Run the tests
+      Run specific tests
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Run specific tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-an-unregistered-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test an unregistered application
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-attachment-to-a-remote-cameo-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test the attachment to a remote CAMEO server
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -539,66 +610,61 @@
 
 
 <h1 id="tests">Tests</h1>
-<h2 id="setup">Setup</h2>
-<h3 id="linux">Linux</h3>
-<p>The Java, C++ and Python tests can be run using either <em>jzmq</em> or <em>jeromq</em>.</p>
-<p>Open a shell and go to the root CAMEO directory:</p>
-<p>Set the <em>PATH</em> variable so that the C++ programs are found:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>export PATH=build/tests/cpp:build/cpp/proxy:$PATH
-</span></code></pre></div></p>
-<p>If necessary, set the <em>PYTHONPATH</em> variable so that the <em>cameopy</em> module is found e.g.:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>export PYTHONPATH=/path/to/install/lib/python3/dist-packages:$PYTHONPATH
-</span></code></pre></div>
-You may have to verify that <em>python</em> is defined (install <em>python-is-python3</em> package on Ubuntu).</p>
-<p>Select <em>jzmq</em> <strong>or</strong> <em>jeromq</em> Java library.</p>
-<p>Case <em>jzmq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>export CLASSPATH=tests/java/jzmq/target/cameo-tests-jzmq-full.jar
-</span></code></pre></div></p>
-<p>You shall define the variable <em>LD_LIBRARY_PATH</em> so that <em>libjzmq.so</em> is found:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>export LD_LIBRARY_PATH=/path/to/libjzmq
-</span></code></pre></div></p>
-<p>Case <em>jeromq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>export CLASSPATH=tests/java/jeromq/target/cameo-tests-jeromq-full.jar
-</span></code></pre></div></p>
-<h3 id="windows">Windows</h3>
-<p>Open a standard prompt and go to the CAMEO root directory. Then set the <em>PATH</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>set PATH=build\examples\cpp\Release;build\cpp\proxy\Release;%PATH%
-</span></code></pre></div></p>
-<p>Set the <em>CLASSPATH</em> to use <em>jeromq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>set CLASSPATH=tests\java\jeromq\target\cameo-tests-jeromq-full.jar
-</span></code></pre></div></p>
-<p>If necessary, set the <em>PYTHONPATH</em> variable so that the <em>cameopy</em> module is found e.g.:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
-</span></code></pre></div></p>
 <h2 id="run-the-tests">Run the tests</h2>
+<h3 id="linux">Linux</h3>
+<p>Go to the CAMEO root directory and execute:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./tests/run
+</span></code></pre></div>
+<p>The tests executed will depend on the components build.</p>
+<h3 id="windows">Windows</h3>
+<p>Go to the CAMEO root directory and execute:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>tests\run
+</span></code></pre></div>
+<p>The tests executed will depend on the components build.</p>
+<h2 id="run-specific-tests">Run specific tests</h2>
+<h3 id="linux-setup">Linux setup</h3>
+<p>Go to the CAMEO root directory, open a shell, run <em>tests/run setup</em> and set the paths as it is done.</p>
+<h3 id="windows-setup">Windows setup</h3>
+<p>Go to the CAMEO root directory, open a shell, run <em>tests\run setup</em> and set the paths as it is done.</p>
+<h3 id="run">Run</h3>
 <p>Run all the tests with 10 iterations for each individual test:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>java eu.ill.cameo.test.TestSelector all 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>java eu.ill.cameo.test.TestSelector all 10
 </span></code></pre></div>
 Start only the java tests:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>java eu.ill.cameo.test.TestSelector java 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>java eu.ill.cameo.test.TestSelector java 10
 </span></code></pre></div>
 Start only the C++ tests:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>java eu.ill.cameo.test.TestSelector cpp 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>java eu.ill.cameo.test.TestSelector cpp 10
 </span></code></pre></div>
 Start only the Python tests:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>java eu.ill.cameo.test.TestSelector python 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>java eu.ill.cameo.test.TestSelector python 10
 </span></code></pre></div>
 Display the available tests:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>java eu.ill.cameo.test.TestSelector
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>java eu.ill.cameo.test.TestSelector
 </span></code></pre></div></p>
 <p>Start a specific test:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>java eu.ill.cameo.test.TestSelector testsimplejava 100
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>java eu.ill.cameo.test.TestSelector testsimplejava 100
 </span></code></pre></div></p>
-<p>Test the Java unmanaged application:
-Start the server in a specific shell
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>java eu.ill.cameo.server.Server tests/java/tests.xml
+<h3 id="test-an-unregistered-application">Test an unregistered application</h3>
+<p>Test the Java unregistered application. Start the server in a specific shell:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>java eu.ill.cameo.server.Server tests/java/tests.xml --log-console
 </span></code></pre></div>
 Start the application:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>java eu.ill.cameo.test.Stop &quot;{\&quot;name\&quot;:\&quot;stop\&quot;, \&quot;server\&quot;:\&quot;tcp://localhost:11000\&quot;}&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>java eu.ill.cameo.test.Stop &quot;{\&quot;name\&quot;:\&quot;stop\&quot;, \&quot;server\&quot;:\&quot;tcp://localhost:11000\&quot;}&quot;
 </span></code></pre></div></p>
 <p>Then kill the application that should disappear from the list of applications.</p>
-<p>Test the C++ unmanaged application
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>stop &quot;{\&quot;name\&quot;:\&quot;stop\&quot;, \&quot;server\&quot;:\&quot;tcp://localhost:11000\&quot;}&quot;
+<p>Test the C++ unregistered application:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>stop &quot;{\&quot;name\&quot;:\&quot;stop\&quot;, \&quot;server\&quot;:\&quot;tcp://localhost:11000\&quot;}&quot;
+</span></code></pre></div></p>
+<h3 id="test-the-attachment-to-a-remote-cameo-server">Test the attachment to a remote CAMEO server</h3>
+<p>Test the app connected to a remote server. Start the server in a specific shell:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>java eu.ill.cameo.server.Server tests/java/tests.xml --log-console
+</span></code></pre></div>
+Start the first application on the same computer:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar -p 11000 exec testremoteservercpp
+</span></code></pre></div></p>
+<p>Start the second application on a second computer by passing the endpoint of the first computer:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>./build/tests/cpp/remoteserver tcp://computer:11000
 </span></code></pre></div></p>
 
 

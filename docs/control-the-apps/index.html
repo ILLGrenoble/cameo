@@ -403,9 +403,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#stop-handler" class="md-nav__link">
+  <a href="#how-to-request-the-termination-of-an-app" class="md-nav__link">
     <span class="md-ellipsis">
-      Stop handler
+      How to request the termination of an app
     </span>
   </a>
   
@@ -458,6 +458,26 @@
   
   <span class="md-ellipsis">
     Make the apps communicate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../app-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App registration
   </span>
   
 
@@ -667,9 +687,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#stop-handler" class="md-nav__link">
+  <a href="#how-to-request-the-termination-of-an-app" class="md-nav__link">
     <span class="md-ellipsis">
-      Stop handler
+      How to request the termination of an app
     </span>
   </a>
   
@@ -874,11 +894,11 @@ If a CAMEO server is running on the port 8000:
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Printing 10
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>Q
 </span></code></pre></div>
-The command is blocking and typing <em>ctl+c</em> or <em>shift+q</em> stops the command but not the app.</p>
+The command is blocking and typing <em>ctl+c</em> or <em>shift+q</em> stops the connect command but not the app.</p>
 <p>To stop <em>App2</em>:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>cmo stop App2
 </span></code></pre></div></p>
-<p>As there is no stop handler defined for <em>App2</em>, the stop is equivalent to a kill, so we could have done:
+<p>The stop is equivalent here to a kill because there is no way stop the app nicely, so we could have done:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cmo kill App2
 </span></code></pre></div></p>
 <p>To start <em>App2</em> with a blocking command, we can use:
@@ -946,8 +966,14 @@ With a bash shell:
 </span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>exitCode=$?
 </span></code></pre></div></p>
 <p>What you do with this code is on your own.</p>
-<h2 id="stop-handler">Stop handler</h2>
-<p>We saw before that there was a difference between a <em>stop</em> and a <em>kill</em> request. The CAMEO server immediately stops the app for a <em>kill</em> request whereas in case of a <em>stop</em> request it sets the state <em>STOPPING</em> to the app. The app receives the <em>STOPPING</em> event and a stop handler is triggered if it has been registered allowing to properly terminate the app.</p>
+<h2 id="how-to-request-the-termination-of-an-app">How to request the termination of an app</h2>
+<p>There are different ways to request the termination of an app that we explain here.</p>
+<p>First we have to clarify the difference between a <em>stop</em> and a <em>kill</em>. On one side, a <em>kill</em> is a system termination which is platform dependent: the CAMEO server will ask the system to terminate the app as quick as possible. On the other side, a <em>stop</em> will be nicely done if it is possible i.e. a final code will be executed to properly terminate the app. There are two ways to do it:</p>
+<ul>
+<li>Define a stop executable as shown in <a href="../configure-a-server/">Configure a server</a> usually used to send a signal to the app. This way is not portable.</li>
+<li>Define a stop handler in the code of the app.</li>
+</ul>
+<p>We saw before that there was a difference between a <em>stop</em> and a <em>kill</em> request. The CAMEO server immediately stops the app for a <em>kill</em> request so that the app terminates its execution with the <em>KILLED</em> state. However in case of a <em>stop</em> request it first sets the state <em>STOPPING</em> to the app. The app receives the <em>STOPPING</em> event and a stop handler is triggered if it has been registered.</p>
 <p>The C++, Java and Python APIs support the stop handler. An example in C++:
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cameo/api/cameo.h&gt;</span>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>

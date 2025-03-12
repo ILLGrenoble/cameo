@@ -343,6 +343,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../app-registration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    App registration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../synchronization/" class="md-nav__link">
         
   
@@ -842,62 +862,30 @@
 
   <h1>Examples</h1>
 
-<p>The source package comes up with examples in the different languages. The current page is showing how to run them in Linux.<br />
-The end of the page shows rapidly how to run on Windows.</p>
+<p>The source package comes up with examples in the different languages.</p>
 <h2 id="setup">Setup</h2>
 <h3 id="linux">Linux</h3>
-<p>The Java, C++ and Python examples can be run using either <em>jzmq</em> or <em>jeromq</em>.</p>
-<p>Open a shell and go to the CAMEO <strong>root</strong> directory.</p>
-<p>Set the <em>PATH</em> variable so that the C++ programs are found:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>export PATH=build/examples/cpp:build/cpp/proxy:$PATH
-</span></code></pre></div></p>
-<p>If necessary, set the <em>PYTHONPATH</em> variable so that the <em>cameopy</em> module is found e.g.:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>export PYTHONPATH=/path/to/install/lib/python3/dist-packages:$PYTHONPATH
+<p>Go to the CAMEO root directory and start the examples server:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./examples/cameo-server
 </span></code></pre></div>
-You may have to verify that <em>python</em> is defined (install <em>python-is-python3</em> package on Ubuntu).</p>
-<p>Select <em>jzmq</em> <strong>or</strong> <em>jeromq</em> Java library.</p>
-<p>Case <em>jzmq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>export CLASSPATH=examples/java/jzmq/target/cameo-examples-jzmq-full.jar
-</span></code></pre></div></p>
-<p>You shall define the variable <em>LD_LIBRARY_PATH</em> so that <em>libjzmq.so</em> is found:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>export LD_LIBRARY_PATH=/path/to/libjzmq
-</span></code></pre></div>
-Start the cameo server with the examples configuration:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>java eu.ill.cameo.server.Server examples/config.xml --log-console
-</span></code></pre></div></p>
-<p>In each new shell, create the alias for <em>cmo</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>alias cmo=&quot;java -jar java/console/jzmq/target/cameo-console-jzmq-3.0.0-full.jar&quot;
-</span></code></pre></div></p>
-<p>Case <em>jeromq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>export CLASSPATH=examples/java/jeromq/target/cameo-tests-jeromq-full.jar
-</span></code></pre></div></p>
-<p>In each new shell, create the alias for <em>cmo</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>alias cmo=&quot;java -jar java/console/jeromq/target/cameo-console-3.0.0-full.jar&quot;
+<p>If CAMEO is not installed and only built locally, then in each new shell, create an alias for <em>cmo</em>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>alias cmo=&quot;./examples/cmo&quot;
 </span></code></pre></div></p>
 <h3 id="windows">Windows</h3>
-<p>Open a standard prompt and go to the CAMEO <strong>root</strong> directory. Then set the <em>PATH</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>set PATH=build\examples\cpp\Release;build\cpp\proxy\Release;%PATH%
-</span></code></pre></div></p>
-<p>Set the <em>CLASSPATH</em> to use <em>jeromq</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>set CLASSPATH=tests\java\jeromq\target\cameo-tests-jeromq-full.jar
-</span></code></pre></div></p>
-<p>If necessary, set the <em>PYTHONPATH</em> variable so that the <em>cameopy</em> module is found e.g.:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>set PYTHONPATH=build\python\api\Release;%PYTHONPATH%
-</span></code></pre></div></p>
-<p>Run the server:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>java eu.ill.cameo.server.Server examples\config.xml --log-console
-</span></code></pre></div></p>
+<p>Go to the CAMEO root directory and start the examples server:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>examples\cameo-server
+</span></code></pre></div>
 <p>In each new prompt or shell, create the alias for <em>cmo</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>doskey cmo=java -jar java\console\jeromq\target\cameo-console-jeromq-3.0.0-full.jar $*
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>doskey cmo=examples\cmo $*
 </span></code></pre></div></p>
 <h2 id="requesterresponder">Requester/Responder</h2>
 <h3 id="java">Java</h3>
 <p>The requester/responder in Java can be tested.</p>
 <p>Start the responder app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cmo -p 11000 exec responder-java
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cmo -p 11000 exec responder-java
 </span></code></pre></div>
 Execute the requester app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cmo -p 11000 exec requester-java tcp://localhost:11000 java &quot;a message&quot; 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cmo -p 11000 exec requester-java tcp://localhost:11000 java &quot;a message&quot; 10
 </span></code></pre></div>
 The requester app is sending 10 requests to the responder, receives the responses and then stops. Notice that the responder app also stops. Indeed the requester app stops itself the responder app.</p>
 <p>Now relaunch the requester app without relaunching the responder app. The requester app is also sending and receiving messages from the responder app. Indeed the responder app has been started by the requester app because it was not running.</p>
@@ -910,10 +898,10 @@ The requester app is sending 10 requests to the responder, receives the response
 <h3 id="c">C++</h3>
 <p>The requester/responder in C++ can be tested in the same way by replacing <em>java</em> with <em>cpp</em>.
 Start the responder in a shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cmo -p 11000 exec responder-cpp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cmo -p 11000 exec responder-cpp
 </span></code></pre></div>
 Execute the requester app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cmo -p 11000 exec requester-cpp tcp://localhost:11000 cpp &quot;a message&quot; 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cmo -p 11000 exec requester-cpp tcp://localhost:11000 cpp &quot;a message&quot; 10
 </span></code></pre></div>
 Same comments as for Java.</p>
 <p>Code is available:</p>
@@ -924,10 +912,10 @@ Same comments as for Java.</p>
 <h3 id="python">Python</h3>
 <p>The requester/responder in Python can be tested in the same way by replacing <em>cpp</em> with <em>python</em>.
 Start the responder in a shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>cmo -p 11000 exec responder-python
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cmo -p 11000 exec responder-python
 </span></code></pre></div>
 Execute the requester app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cmo -p 11000 exec requester-python tcp://localhost:11000 python &quot;a message&quot; 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cmo -p 11000 exec requester-python tcp://localhost:11000 python &quot;a message&quot; 10
 </span></code></pre></div>
 Same comments as for Java.</p>
 <p>Code is available:</p>
@@ -937,11 +925,11 @@ Same comments as for Java.</p>
 </ul>
 <h3 id="mixing-languages">Mixing languages</h3>
 <p>You can mix the languages e.g. <em>cpp</em> with <em>python</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>cmo -p 11000 exec requester-python tcp://localhost:11000 cpp &quot;a message&quot; 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cmo -p 11000 exec requester-python tcp://localhost:11000 cpp &quot;a message&quot; 10
 </span></code></pre></div></p>
 <h3 id="remote-execution">Remote execution</h3>
 <p>You can also execute the last example in three different computers:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cmo -e tcp://computer-a:11000 exec requester-python tcp://computer-b:11000 cpp &quot;a message&quot; 10
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>cmo -e tcp://computer-a:11000 exec requester-python tcp://computer-b:11000 cpp &quot;a message&quot; 10
 </span></code></pre></div>
 <p>The console <em>cmo</em> application is executing <em>requester-python</em> on <em>computer-a</em> which interacts with <em>responder-cpp</em> executing on <em>computer-b</em>.</p>
 <p>Here again, this example shows that by a single entry point (the console), the requester and responder apps start and communicate on two computers without losing any request and terminate synchronously.</p>
@@ -949,10 +937,10 @@ Same comments as for Java.</p>
 <h3 id="java_1">Java</h3>
 <p>The publisher/subscriber in Java can be tested.
 Start the publisher app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>cmo -p 11000 exec publisher-java
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cmo -p 11000 exec publisher-java
 </span></code></pre></div>
 Execute the subscriber app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cmo -p 11000 exec subscriber-java tcp://localhost:11000 java
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cmo -p 11000 exec subscriber-java tcp://localhost:11000 java
 </span></code></pre></div></p>
 <p>The publisher app is waiting for 1 subscriber before starting to send messages.
 The subscriber app connects to the publisher app which triggers the sending of the messages.
@@ -968,10 +956,10 @@ If you kill the subscriber app with <em>ctl-c</em> then the publisher is also ki
 <h3 id="c_1">C++</h3>
 <p>The publisher/subscriber in C++ can be tested in the same way by replacing <em>java</em> with <em>cpp</em>.
 Start the publisher in a shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>cmo -p 11000 exec publisher-cpp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cmo -p 11000 exec publisher-cpp
 </span></code></pre></div>
 Execute the subscriber app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cmo -p 11000 exec subscriber-cpp tcp://localhost:11000 cpp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cmo -p 11000 exec subscriber-cpp tcp://localhost:11000 cpp
 </span></code></pre></div>
 Same comments as for Java.</p>
 <p>Code is available:</p>
@@ -982,10 +970,10 @@ Same comments as for Java.</p>
 <h3 id="python_1">Python</h3>
 <p>The publisher/subscriber in Python can be tested in the same way by replacing <em>java</em> with <em>python</em>.
 Start the publisher in a shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>cmo -p 11000 exec publisher-python
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cmo -p 11000 exec publisher-python
 </span></code></pre></div>
 Execute the subscriber app in a new shell:<br />
-<div class="language-text highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cmo -p 11000 exec subscriber-python tcp://localhost:11000 python
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>cmo -p 11000 exec subscriber-python tcp://localhost:11000 python
 </span></code></pre></div>
 Same comments as for Java.</p>
 <p>Code is available:</p>
@@ -995,11 +983,11 @@ Same comments as for Java.</p>
 </ul>
 <h3 id="mixing-languages_1">Mixing languages</h3>
 <p>You can mix the langagues e.g. <em>cpp</em> with <em>python</em>:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>cmo -p 11000 exec subscriber-python tcp://localhost:11000 cpp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cmo -p 11000 exec subscriber-python tcp://localhost:11000 cpp
 </span></code></pre></div></p>
 <h3 id="remote-execution_1">Remote execution</h3>
 <p>You can also execute the last example in three different computers:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>cmo -e tcp://computer-a:11000 exec subscriber-python tcp://computer-b:11000 cpp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>cmo -e tcp://computer-a:11000 exec subscriber-python tcp://computer-b:11000 cpp
 </span></code></pre></div>
 <p>The console <em>cmo</em> application is executing <em>subscriber-python</em> on <em>computer-a</em> which interacts with <em>publisher-cpp</em> executing on <em>computer-b</em>.</p>
 <p>Here again, this example shows that by a single entry point (the console), the subscriber and publisher apps start and communicate on two computers without losing any request and terminate synchronously.</p>
