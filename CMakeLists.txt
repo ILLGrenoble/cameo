@@ -12,6 +12,7 @@ option(CAMEO_PROXIES "Compile proxies" OFF)
 option(CAMEO_API_CPP "Compile and install C++ api" OFF)
 option(CAMEO_API_PYTHON "Compile and install Python api" OFF)
 set(ZEROMQ_JAVA "jzmq" CACHE STRING "ZeroMQ Java implementation (jzmq/jeromq)")
+option(CAMEO_DOC "Build the doc" OFF)
 
 # Force Release by default
 if(NOT CMAKE_BUILD_TYPE)
@@ -74,8 +75,10 @@ foreach(package ${Java} ${Proxies} ${APIs} ${TestsExamples})
 endforeach()
 
 # Build the doc
-add_custom_target(doc-site
-  ALL
-  COMMAND mkdocs build -d ${CMAKE_CURRENT_BINARY_DIR}/docs
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/mkdocs
+if(${CAMEO_DOC})
+  add_custom_target(doc-site
+    ALL
+    COMMAND mkdocs build -d ${CMAKE_CURRENT_BINARY_DIR}/docs
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/mkdocs
   )
+endif()

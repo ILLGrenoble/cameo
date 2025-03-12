@@ -47,8 +47,9 @@ Possible options are:
 - CAMEO_PROXIES=ON: to build the proxies
 - CAMEO_API_CPP=ON: to build and install the C++ API
 - CAMEO_API_PYTHON=ON: to build and install the Python API
+- CAMEO_DOC=ON: to build the documentation
 
-If CAMEO_ALL is selected then all the options are selected.
+If CAMEO_ALL is selected then all the options are selected except CAMEO_DOC.
 
 
 #### Debian-based Linux
