@@ -49,6 +49,11 @@ namespace option {
 /**
  * Option output stream.
  */
+const int NONE = 0;
+
+/**
+ * Option output stream.
+ */
 const int OUTPUTSTREAM = 1;
 
 /**

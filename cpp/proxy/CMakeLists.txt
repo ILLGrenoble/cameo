@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
 project(cameo-proxy
-  VERSION 2.0.1
+  VERSION 2.0.2
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -11,7 +11,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(FetchContent)
 
-# name of the target library
+# Name of the target library
 set(LIBNAME ${PROJECT_NAME})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
@@ -29,8 +29,9 @@ target_link_libraries(cameo-rep-proxy PRIVATE libzmq)
 add_executable(cameo-pub-proxy src/PubProxy.cpp)
 target_link_libraries(cameo-pub-proxy PRIVATE libzmq)
 
+# Install the proxies. For windows specify the configuration does seem necessary since it is done in command-line
 install(TARGETS cameo-rep-proxy cameo-pub-proxy
-        CONFIGURATIONS Release
+        #CONFIGURATIONS Release
         DESTINATION bin
 )
 

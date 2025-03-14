@@ -92,14 +92,18 @@ Configure the build with:
 cmake -B build -S . -DCAMEO_ALL=ON -DZEROMQ_JAVA=jeromq -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=x64-windows-static "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>" "-DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
 ```
 
-The static library file is generated.
-You can install the library:
+The static library file will be generated.
+You can compile the library:
 
 ```
-cmake --build build --config Release --target install
+cmake --build build --config Release
 ```
 
-The default location can be overriden using *--prefix* option.
+And install it. The default location can be overriden using *--prefix* option:
+
+```
+cmake --install build --config Release --prefix "path\to\install"
+```
 
 
 ### Option 2: Generate the Debian packages

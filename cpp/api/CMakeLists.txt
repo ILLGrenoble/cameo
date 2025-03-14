@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo-api-cpp
-  VERSION 3.0.0
+  VERSION 3.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -219,7 +219,8 @@ install(
   FILES
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-  #${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/FindZeroMQ.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/libzmq-pkg-config/FindZeroMQ.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/AddZeroMQLibrary.cmake
   DESTINATION ${ConfigPackageLocation}
   COMPONENT ${component_development}
   )
