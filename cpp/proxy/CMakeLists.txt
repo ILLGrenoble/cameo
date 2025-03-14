@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
   
 # Project name and version
 project(cameo-proxy
-  VERSION 2.0.2
+  VERSION 3.0.0
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
