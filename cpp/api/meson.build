@@ -45,10 +45,11 @@ install_subdir('include',
               )
 
 ############################### Dependencies
+generated_headers_inc = include_directories(meson.current_build_dir())
 cameo_api_cpp_dep = declare_dependency(
   sources: cameo_main_header_file,
   link_with: cameo_api_cpp_lib,
-  include_directories: [public_headers_inc, meson.current_build_dir()],
+  include_directories: [public_headers_inc, generated_headers_inc],
   dependencies: rapidjson_dep,
   )
 
