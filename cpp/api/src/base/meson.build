@@ -1,3 +1,4 @@
+# for file in *.cpp; if not grep -q $file meson.build; echo $file; end; end
 base_files = files(
   'AppException.cpp',
   'Application.cpp',
@@ -24,10 +25,12 @@ base_files = files(
   'Response.cpp',
   'ResultEvent.cpp',
   'Server.cpp',
+  'ServerAndApp.cpp',
   'SocketException.cpp',
   'StatusEvent.cpp',
   'Strings.cpp',
   'SynchronizationTimeout.cpp',
+  'This.cpp',
   'TimeCondition.cpp',
   'TimeoutCounter.cpp',
   'Timeout.cpp',
