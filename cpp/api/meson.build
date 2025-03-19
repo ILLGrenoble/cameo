@@ -9,7 +9,7 @@ subdir('src/coms/impl/zmq')
 subdir('src/coms')
 subdir('src/factory')
 
-cameo_api_cpp_lib = library('cameo_api_cpp',
+cameo_api_cpp_lib = library('cameo-api-cpp',
                             sources: [base_impl_zmq_files, base_files,
                                       coms_impl_zmq_files, coms_files,
                                       factory_files],
