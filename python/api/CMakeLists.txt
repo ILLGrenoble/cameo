@@ -49,6 +49,10 @@ endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
 
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(cameopy PUBLIC CAMEO_STATIC)
+endif()
+
 target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
 
 set_target_properties(cameopy PROPERTIES
