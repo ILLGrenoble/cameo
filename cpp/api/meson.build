@@ -62,3 +62,20 @@ pkg_mod.generate(cameo_api_cpp_lib,
                  description: 'Cameo C++ API',
                  subdirs: include_path_subdir,
                 )
+
+############################### cmake
+cmake = import('cmake')
+cmake.write_basic_package_version_file(name: 'cameo-api-cpp',
+                                       version: meson.project_version(),
+                                       compatibility: 'SameMajorVersion',
+                                      )
+conf = configuration_data()
+conf.set_quoted('NAMESPACE', 'Cameo')
+conf.set_quoted('LIBNAME', 'cameo-api-cpp')
+conf.set_quoted('PROJECT_NAME', 'cameo-api-cpp')
+
+cmake.configure_package_config_file(
+    name: 'cameo-api-cpp',
+    input: meson.current_source_dir()/'cmake/cameo-api-cpp-config.cmake.in',
+    configuration: conf
+)
