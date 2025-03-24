@@ -45,7 +45,12 @@ Two packages are created:
 - -lib: the runtime library for the user
 - -dev: the development package with the public headers and cmake config files
 
-
+### Using meson
+```
+meson setup <build directory> .
+meson compile -C <build directory>
+meson install -C <build directory>
+```
 ## Running tests
 
 To compile the test programs:
