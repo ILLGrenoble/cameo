@@ -188,7 +188,7 @@ By default the JZMQ implementation is used which requires to have the Java ZeroM
 <dependency>
     <groupId>eu.ill.cameo</groupId>
     <artifactId>cameo-com-jeromq</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
