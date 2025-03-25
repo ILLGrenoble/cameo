@@ -1,3 +1,8 @@
+3.0.1
+-----
+
+* Replaced jdom2 XML parser with standard JVM parser.
+
 3.0.0
 -----
 

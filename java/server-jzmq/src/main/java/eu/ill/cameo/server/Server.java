@@ -27,7 +27,6 @@ import eu.ill.cameo.common.messages.JSON;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.Endpoint;
 import eu.ill.cameo.common.strings.StringId;
-import eu.ill.cameo.server.manager.ConfigLoader;
 import eu.ill.cameo.server.manager.ConfigManager;
 import eu.ill.cameo.server.manager.Log;
 import eu.ill.cameo.server.manager.Manager;

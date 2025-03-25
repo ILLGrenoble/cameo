@@ -10,7 +10,6 @@
 
 module eu.ill.cameo.server {
 	
-	requires org.jdom2;
 	requires java.logging;
 	requires java.xml;
 	

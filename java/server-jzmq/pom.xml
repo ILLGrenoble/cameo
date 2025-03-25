@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server-jzmq</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -17,11 +17,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>jdom2</artifactId>
-			<version>2.0.6.1</version>
-		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-common</artifactId>
@@ -64,19 +59,6 @@
 							<overwriteExistingFiles>true</overwriteExistingFiles>
 							<outputDirectory>${project.build.directory}/modules</outputDirectory>
 							<modules>
-							
-								<module>
-									<artifact>
-										<groupId>org.jdom</groupId>
-										<artifactId>jdom2</artifactId>
-										<version>2.0.6.1</version>
-									</artifact>
-									<moduleInfoSource>
-				                            module org.jdom2 {
-				                                exports org.jdom2;
-				                            }
-			                        </moduleInfoSource>
-								</module>
 							
 								<module>
 									<artifact>
@@ -126,6 +108,21 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- Assemble a single jar -->

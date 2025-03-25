@@ -13,13 +13,19 @@ package eu.ill.cameo.server.manager;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import eu.ill.cameo.server.exception.UnknownApplicationException;
 
@@ -66,9 +72,53 @@ public abstract class ConfigLoader {
 		loadXml(buildXml(configStream));
 	}
 
+	private static String getElementAttribute(Element element, String attributeName) {
+		
+		if (element.hasAttribute(attributeName)) {
+			return element.getAttribute(attributeName);
+		}
+		
+		return null;
+	}
+	
+	private static List<Element> getElementChildren(Element element, String tagName) {
+		
+		List<Element> result = new ArrayList<Element>();
+		
+		NodeList nList = element.getElementsByTagName(tagName);
+		
+		// Iterate the child elements.
+		for (int temp = 0; temp < nList.getLength(); temp++) {      
+			Node nNode = nList.item(temp);
+	             
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {     
+				Element eElement = (Element) nNode;
+				result.add(eElement);
+			}
+		}
+		
+		return result;
+	}
+	
+	private static Element getElementChild(Element element, String tagName) {
+		
+		NodeList nList = element.getElementsByTagName(tagName);
+		
+		// Iterate the child elements.
+		for (int temp = 0; temp < nList.getLength(); temp++) {      
+			Node nNode = nList.item(temp);
+	             
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {     
+				return (Element) nNode;
+			}
+		}
+		
+		return null;
+	}
+	
 	private String[] loadArgs(Element item) {
 		
-		String argsString = item.getAttributeValue(ARGS);
+		String argsString = getElementAttribute(item, ARGS);
 		int argsLength = 0;
 		String[] startArgs = null;
 		
@@ -87,7 +137,7 @@ public abstract class ConfigLoader {
 		}
 				
 		// Process the arg tag and its value children.
-		List<Element> args = item.getChildren(ARG);
+		List<Element> args = getElementChildren(item, ARG);
 		String[] finalArgs = new String[argsLength + args.size()];
 		
 		int i = 0;
@@ -97,54 +147,62 @@ public abstract class ConfigLoader {
 		}
 		
 		for (Element arg : args) {
-			finalArgs[i] = arg.getAttributeValue(VALUE);
+			finalArgs[i] = getElementAttribute(arg, VALUE);
 			++i;
 		}
 		
 		return finalArgs;
 	}
 	
-	private org.jdom2.Document buildXml(String path) {
+	private org.w3c.dom.Document buildXml(String path) {
 		File configFile = new File(path);
 		
 		ConfigManager.getInstance().setConfigParent(configFile.getParent());
 		
 		// Load the configuration.
 		Log.logger().fine("Loading config");
-		org.jdom2.Document configXML = null;
-		SAXBuilder builder = new SAXBuilder();
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		
 		try {
-			configXML = builder.build(configFile);
+			DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+			
+			return docBuilder.parse(configFile);	
 		}
-		catch (JDOMException e) {
+		catch (ParserConfigurationException e) {
+			Log.logger().severe("Loading config failed: " + e.getMessage());
+		}	
+		catch (SAXException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		catch (IOException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
-		return configXML;
+		return null;
 	}
 	
-	private org.jdom2.Document buildXml(InputStream stream) {
+	private org.w3c.dom.Document buildXml(InputStream stream) {
 		
 		// Load the configuration.
 		Log.logger().fine("Loading config");
-		org.jdom2.Document configXML = null;
-		SAXBuilder builder = new SAXBuilder();
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		
 		try {
-			configXML = builder.build(stream);
+			DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
+			
+			return docBuilder.parse(stream);	
 		}
-		catch (JDOMException e) {
+		catch (ParserConfigurationException e) {
+			Log.logger().severe("Loading config failed: " + e.getMessage());
+		}	
+		catch (SAXException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		catch (IOException e) {
 			Log.logger().severe("Loading config failed: " + e.getMessage());
 		}
 		
-		return configXML;
+		return null;
 	}
 	
 	public static void setProxyPorts(String proxyPortsString) {
@@ -165,13 +223,13 @@ public abstract class ConfigLoader {
 		}
 	}
 	
-	private void loadXml(org.jdom2.Document configXML) {
+	private void loadXml(org.w3c.dom.Document configXML) {
 		
-		Element root = configXML.getRootElement();
+		Element root = configXML.getDocumentElement();
 		
 		// Set the base parameters.
-		ConfigManager.getInstance().setMaxNumberOfApplications(root.getAttributeValue(MAX_APPLICATIONS));
-		ConfigManager.getInstance().setEndpoint(root.getAttributeValue(HOST), root.getAttributeValue(PORT));
+		ConfigManager.getInstance().setMaxNumberOfApplications(getElementAttribute(root, MAX_APPLICATIONS));
+		ConfigManager.getInstance().setEndpoint(getElementAttribute(root, HOST), getElementAttribute(root, PORT));
 		
 		// Get the proxy ports that defined in command line to override those defined in the config file.
 		String proxyPortsOverride = ConfigManager.getInstance().getProxyPorts();
@@ -179,15 +237,15 @@ public abstract class ConfigLoader {
 			setProxyPorts(proxyPortsOverride);	
 		}
 		else {
-			setProxyPorts(root.getAttributeValue(PROXY_PORTS));
+			setProxyPorts(getElementAttribute(root, PROXY_PORTS));
 		}
 		
-		ConfigManager.getInstance().setLogPath(root.getAttributeValue(LOG_DIRECTORY));
-		ConfigManager.getInstance().setLogLevel(root.getAttributeValue(LOG_LEVEL));
+		ConfigManager.getInstance().setLogPath(getElementAttribute(root, LOG_DIRECTORY));
+		ConfigManager.getInstance().setLogLevel(getElementAttribute(root, LOG_LEVEL));
 		
 		// Sleep time.
 		int sleepTime = 5;
-		String sleepTimeString = root.getAttributeValue(SLEEP_TIME);
+		String sleepTimeString = getElementAttribute(root, SLEEP_TIME);
 		try {
 			sleepTime = Integer.parseInt(sleepTimeString);
 		}
@@ -199,7 +257,7 @@ public abstract class ConfigLoader {
 		
 		// Polling time.
 		int pollingTime = 100;
-		String pollingTimeString = root.getAttributeValue(POLLING_TIME);
+		String pollingTimeString = getElementAttribute(root, POLLING_TIME);
 		try {
 			pollingTime = Integer.parseInt(pollingTimeString);
 		}
@@ -210,20 +268,21 @@ public abstract class ConfigLoader {
 		ConfigManager.getInstance().setPollingTime(pollingTime);
 		
 		// Get applications.
-		List<Element> listApplication = root.getChild(APPLICATIONS).getChildren(APPLICATION);
+		Element apps = getElementChild(root, APPLICATIONS);
+		List<Element> listApplication = getElementChildren(apps, APPLICATION);
 		applicationList = new LinkedList<ApplicationConfig>();
 
 		for (Element item : listApplication) {
 			
 			ApplicationConfig application = new ApplicationConfig();
 			
-			String applicationName = item.getAttributeValue(NAME);
+			String applicationName = getElementAttribute(item, NAME);
 			
 			application.setName(applicationName);
-			application.setDescription(item.getAttributeValue(DESCRIPTION));
-			application.setDirectory(item.getAttributeValue(WORKING_DIRECTORY));
+			application.setDescription(getElementAttribute(item, DESCRIPTION));
+			application.setDirectory(getElementAttribute(item, WORKING_DIRECTORY));
 			
-			String logDirectory = item.getAttributeValue(LOG_DIRECTORY);
+			String logDirectory = getElementAttribute(item, LOG_DIRECTORY);
 			
 			// If the attribute is absent then there is no log.
 			if (DEFAULT.equals(logDirectory)) {
@@ -233,13 +292,13 @@ public abstract class ConfigLoader {
 				application.setLogPath(logDirectory);
 			}
 						
-			application.setStartingTime(item.getAttributeValue(STARTING_TIME));
-			application.setStoppingTime(item.getAttributeValue(STOPPING_TIME));
-			application.setRunMultiple(item.getAttributeValue(MULTIPLE));
+			application.setStartingTime(getElementAttribute(item, STARTING_TIME));
+			application.setStoppingTime(getElementAttribute(item, STOPPING_TIME));
+			application.setRunMultiple(getElementAttribute(item, MULTIPLE));
 			
 			// Both attributes are accepted: output_stream or stream.
-			String outputStreamValue = item.getAttributeValue(OUTPUT_STREAM);
-			String streamValue = item.getAttributeValue(STREAM);
+			String outputStreamValue = getElementAttribute(item, OUTPUT_STREAM);
+			String streamValue = getElementAttribute(item, STREAM);
 						
 			if (streamValue != null) {
 				application.setOutputStream(streamValue);
@@ -249,8 +308,8 @@ public abstract class ConfigLoader {
 			}
 			
 			// Both attributes are accepted: info_arg or pass_info.
-			String infoArg = item.getAttributeValue(INFO_ARG);
-			String passInfo = item.getAttributeValue(PASS_INFO);
+			String infoArg = getElementAttribute(item, INFO_ARG);
+			String passInfo = getElementAttribute(item, PASS_INFO);
 			
 			if (passInfo != null) {
 				application.setInfoArg(passInfo);
@@ -259,22 +318,22 @@ public abstract class ConfigLoader {
 				application.setInfoArg(infoArg);
 			}
 						
-			application.setRestart(item.getAttributeValue(RESTART));
-			application.setEnvironmentFile(item.getAttributeValue(ENVIRONMENT));
+			application.setRestart(getElementAttribute(item, RESTART));
+			application.setEnvironmentFile(getElementAttribute(item, ENVIRONMENT));
 			
 			// Start command.
-			Element startItem = item.getChild(START);
+			Element startItem = getElementChild(item, START);
 			if (startItem == null) {
 				continue;
 			}
-			application.setStartExecutable(startItem.getAttributeValue(EXECUTABLE));
+			application.setStartExecutable(getElementAttribute(startItem, EXECUTABLE));
 			String[] startArgs = loadArgs(startItem);
 			application.setStartArgs(startArgs);
 			
 			// Stop command.
-			Element stopItem = item.getChild(STOP);
+			Element stopItem = getElementChild(item, STOP);
 			if (stopItem != null) {
-				application.setStopExecutable(stopItem.getAttributeValue(EXECUTABLE));
+				application.setStopExecutable(getElementAttribute(stopItem, EXECUTABLE));
 				String[] stopArgs = loadArgs(stopItem);
 				application.setStopArgs(stopArgs);
 				
@@ -282,9 +341,9 @@ public abstract class ConfigLoader {
 			}
 
 			// Error command.
-			Element errorItem = item.getChild(ERROR);
+			Element errorItem = getElementChild(item, ERROR);
 			if (errorItem != null) {
-				application.setErrorExecutable(errorItem.getAttributeValue(EXECUTABLE));
+				application.setErrorExecutable(getElementAttribute(errorItem, EXECUTABLE));
 				String[] errorArgs = loadArgs(errorItem);
 				application.setErrorArgs(errorArgs);
 			}
