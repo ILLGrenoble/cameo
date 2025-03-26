@@ -730,7 +730,7 @@ void Server::initContext() {
 void Server::initRequestSocket() {
 
 	// Create the request socket. The server endpoint must have been initialized.
-	m_requestSocket = std::move(createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout));
+	m_requestSocket = createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout);
 
 	// Get the status port.
 	m_serverStatusPort = retrieveStatusPort();

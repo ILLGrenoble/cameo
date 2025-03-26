@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-server-jzmq</artifactId>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.0.1</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -59,7 +59,6 @@
 							<overwriteExistingFiles>true</overwriteExistingFiles>
 							<outputDirectory>${project.build.directory}/modules</outputDirectory>
 							<modules>
-							
 								<module>
 									<artifact>
 										<groupId>com.googlecode.json-simple</groupId>
@@ -67,26 +66,12 @@
 										<version>1.1.1</version>
 									</artifact>
 									<moduleInfoSource>
-				                            module json.simple {
-				                                exports org.json.simple;
-				                                exports org.json.simple.parser;
-				                            }
-			                        </moduleInfoSource>
+										module json.simple {
+											exports org.json.simple;
+											exports org.json.simple.parser;
+										}
+									</moduleInfoSource>
 								</module>
-								
-								<!--<module>
-									<artifact>
-										<groupId>org.zeromq</groupId>
-										<artifactId>jeromq</artifactId>
-										<version>0.5.3</version>
-									</artifact>
-									<moduleInfoSource>
-				                            module jeromq {
-				                                exports org.zeromq;
-				                            }
-			                        </moduleInfoSource>
-								</module>-->
-								
 							</modules>
 						</configuration>
 					</execution>
