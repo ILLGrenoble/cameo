@@ -53,7 +53,7 @@ if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(cameopy PUBLIC CAMEO_STATIC)
 endif()
 
-target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
+target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp)
 
 set_target_properties(cameopy PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
