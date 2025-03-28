@@ -185,7 +185,7 @@ public:
 		/**
 		 * Class defining an exception when getting a key value fails.
 		 */
-		class KeyValueGetterException: public RemoteException {
+		class CAMEO_EXPORT KeyValueGetterException: public RemoteException {
 
 		public:
 			/**
