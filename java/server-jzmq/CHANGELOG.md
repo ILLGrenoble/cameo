@@ -1,3 +1,8 @@
+3.0.2
+-----
+
+* Reimplemented the host="IP" feature so that we do not call InetAddress.getLocalHost().getHostAddress() but do an iteration over the network interfaces.
+
 3.0.1
 -----
 

@@ -1,3 +1,14 @@
+3.0.2
+-----
+
+* Reimplemented the host="IP" feature in server so that we do not call InetAddress.getLocalHost().getHostAddress() but do an iteration over the network interfaces.
+
+3.0.1
+-----
+
+* Replaced jdom2 XML parser with standard JVM parser in server.
+
+
 3.0.0
 -----
 

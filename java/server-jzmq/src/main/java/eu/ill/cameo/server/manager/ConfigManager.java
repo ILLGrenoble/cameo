@@ -201,9 +201,9 @@ public final class ConfigManager {
 		else if (hostString.equals("IP")) {
 			try {
 				// Try to get the IP address.
-				host = InetAddress.getLocalHost().getHostAddress();
+				host = IPAddress.getHost4Address();
 			}
-			catch (UnknownHostException e) {
+			catch (Exception e) {
 				// Otherwise set localhost.
 				host = "localhost";
 			}
