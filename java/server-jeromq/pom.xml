@@ -12,14 +12,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-server-jzmq</artifactId>
-			<version>3.0.2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>eu.ill.cameo</groupId>
-					<artifactId>cameo-com-jzmq</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>cameo-common</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+ 		<dependency>
+			<groupId>eu.ill.cameo</groupId>
+			<artifactId>cameo-process-handle-default</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>

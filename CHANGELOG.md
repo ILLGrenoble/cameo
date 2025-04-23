@@ -1,3 +1,8 @@
+?
+-
+
+* Default dependency to jeromq.
+
 3.0.2
 -----
 

@@ -19,13 +19,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-common</artifactId>
-			<version>3.0.0</version>
-		</dependency>
- 		<dependency>
-			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-process-handle-default</artifactId>
-			<version>1.0.0</version>
+			<artifactId>cameo-server-jeromq</artifactId>
+			<version>3.0.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-jeromq</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>

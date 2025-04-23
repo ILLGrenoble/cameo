@@ -12,19 +12,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-console-jzmq</artifactId>
+			<artifactId>cameo-api</artifactId>
 			<version>3.0.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>eu.ill.cameo</groupId>
-					<artifactId>cameo-com-jzmq</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-com-jeromq</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	
@@ -68,19 +57,6 @@
 				                            }
 			                        </moduleInfoSource>
 								</module>
-								
-								<!--<module>
-									<artifact>
-										<groupId>org.zeromq</groupId>
-										<artifactId>jeromq</artifactId>
-										<version>0.5.3</version>
-									</artifact>
-									<moduleInfoSource>
-				                            module jeromq {
-				                                exports org.zeromq;
-				                            }
-			                        </moduleInfoSource>
-								</module>-->
 								
 							</modules>
 						</configuration>

@@ -24,7 +24,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-com-jzmq</artifactId>
+			<artifactId>cameo-com-jeromq</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

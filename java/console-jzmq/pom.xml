@@ -19,8 +19,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-api</artifactId>
+			<artifactId>cameo-console-jeromq</artifactId>
 			<version>3.0.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-jeromq</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>eu.ill.cameo</groupId>
+			<artifactId>cameo-com-jzmq</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 
