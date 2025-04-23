@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo-server-jeromq
-  VERSION 3.0.2
+  VERSION 3.0.3
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
