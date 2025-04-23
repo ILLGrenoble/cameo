@@ -11,6 +11,7 @@ Debian packages can be generated and if you can get them, it is the recommended 
 #### Windows
 
 You can execute the *msi* installer provided in the [releases](https://github.com/ILLGrenoble/cameo/releases) page.
+A short test of the installation is presented [here](windows-test.md).
 
 ### Compile the components
 
@@ -134,15 +135,9 @@ WantedBy=default.target
 
 ### Windows
 
-On windows we successfully used [nssm](https://nssm.cc/).
+The *msi* installer registers the CAMEO service but does not start it. You need to do manually.
+
 The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft [recommendations](https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c).
-
-Then register the CAMEO service using nssm. Run in command line:
-```
-nssm install cameo
-```
-Select the CAMEO server bat file and let the working directory as is. Start the newly installed service by starting *services.msc* in command line and right-click on the CAMEO service and start.
-
 
 
 ## JZMQ or JeroMQ ?

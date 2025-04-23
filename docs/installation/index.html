@@ -970,7 +970,8 @@
 <h4 id="linux">Linux</h4>
 <p>Debian packages can be generated and if you can get them, it is the recommended installation. If you cannot then you have to manually compile the components.</p>
 <h4 id="windows">Windows</h4>
-<p>You can execute the <em>msi</em> installer provided in the <a href="https://github.com/ILLGrenoble/cameo/releases">releases</a> page.</p>
+<p>You can execute the <em>msi</em> installer provided in the <a href="https://github.com/ILLGrenoble/cameo/releases">releases</a> page.
+A short test of the installation is presented <a href="../windows-test/">here</a>.</p>
 <h3 id="compile-the-components">Compile the components</h3>
 <p>Download the latest release:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b r3.0.0 --depth 1 https://github.com/ILLGrenoble/cameo.git
@@ -1049,63 +1050,59 @@ We give an example of a user <em>systemd</em> configuration:</p>
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>WantedBy=default.target
 </span></code></pre></div>
 <h3 id="windows_1">Windows</h3>
-<p>On windows we successfully used <a href="https://nssm.cc/">nssm</a>.
-The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft <a href="https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c">recommendations</a>.</p>
-<p>Then register the CAMEO service using nssm. Run in command line:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>nssm install cameo
-</span></code></pre></div>
-Select the CAMEO server bat file and let the working directory as is. Start the newly installed service by starting <em>services.msc</em> in command line and right-click on the CAMEO service and start.</p>
+<p>The <em>msi</em> installer registers the CAMEO service but does not start it. You need to do manually.</p>
+<p>The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft <a href="https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c">recommendations</a>.</p>
 <h2 id="jzmq-or-jeromq">JZMQ or JeroMQ ?</h2>
 <p>By default JZMQ is used because it has better performance. The scripts <em>cameo-server</em> and <em>cmo</em> use JZMQ. However if you prefer to use JeroMQ, the server can be called:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-server-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-server-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
 </span></code></pre></div>
 The console can also be called:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-console-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>java -jar &lt;install directory&gt;/share/java/cameo/cameo-console-jeromq-&lt;version&gt;-full.jar &quot;$@&quot;
 </span></code></pre></div>
 Using one or another ZeroMQ implementation is discussed in the page <a href="../dependencies/">Dependencies</a>.  </p>
 <h2 id="use-the-apis">Use the APIs</h2>
 <h3 id="java">Java</h3>
 <p>To use the Java API, first add to your Maven POM file the repository:
-<div class="language-xml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">&lt;repository&gt;</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="nt">&lt;id&gt;</span>ill-repo-releases<span class="nt">&lt;/id&gt;</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">&lt;url&gt;</span>https://maven.ill.fr/content/repositories/releases<span class="nt">&lt;/url&gt;</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nt">&lt;/repository&gt;</span>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">&lt;repository&gt;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">&lt;id&gt;</span>ill-repo-releases<span class="nt">&lt;/id&gt;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">&lt;url&gt;</span>https://maven.ill.fr/content/repositories/releases<span class="nt">&lt;/url&gt;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nt">&lt;/repository&gt;</span>
 </span></code></pre></div></p>
 <p>Then add the dependency:
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">&lt;dependency&gt;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-api<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></div>
+By default the JZMQ implementation is used which requires to have the Java ZeroMQ binding installed but if your prefer JeroMQ then add the dependencies:
 <div class="language-xml highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">&lt;dependency&gt;</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-api<span class="nt">&lt;/artifactId&gt;</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nt">&lt;/dependency&gt;</span>
-</span></code></pre></div>
-By default the JZMQ implementation is used which requires to have the Java ZeroMQ binding installed but if your prefer JeroMQ then add the dependencies:
-<div class="language-xml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">&lt;dependency&gt;</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-api<span class="nt">&lt;/artifactId&gt;</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>3.0.0<span class="nt">&lt;/version&gt;</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">&lt;exclusions&gt;</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">        </span><span class="nt">&lt;exclusion&gt;</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>cameo-com-jzmq<span class="nt">&lt;/artifactId&gt;</span>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">        </span><span class="nt">&lt;/exclusion&gt;</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="nt">&lt;/exclusions&gt;</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="nt">&lt;/dependency&gt;</span>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="nt">&lt;dependency&gt;</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-com-jeromq<span class="nt">&lt;/artifactId&gt;</span>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
-</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="nt">&lt;/dependency&gt;</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">&lt;exclusions&gt;</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">        </span><span class="nt">&lt;exclusion&gt;</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>cameo-com-jzmq<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">        </span><span class="nt">&lt;/exclusion&gt;</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="nt">&lt;/exclusions&gt;</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="nt">&lt;/dependency&gt;</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="nt">&lt;dependency&gt;</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-com-jeromq<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="nt">&lt;/dependency&gt;</span>
 </span></code></pre></div></p>
 <h3 id="c">C++</h3>
 <p>If you installed the Debian package or compiled manually and have a correct include path you should be able to include:</p>
-<div class="language-c++ highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cameo/api/cameo.h&gt;</span>
+<div class="language-c++ highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cameo/api/cameo.h&gt;</span>
 </span></code></pre></div>
 <h3 id="python">Python</h3>
 <p>If you installed the Debian package, it should be available directly or if you compiled manually, you should update the <em>PYTHONPATH</em> variable:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>$ export PYTHONPATH=&lt;cameo install path&gt;/lib/python3/dist-packages:$PYTHONPATH
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>$ export PYTHONPATH=&lt;cameo install path&gt;/lib/python3/dist-packages:$PYTHONPATH
 </span></code></pre></div>
 Then you can import in your code:
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span> <span class="nn">cameopy</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">import</span> <span class="nn">cameopy</span>
 </span></code></pre></div></p>
 
 
