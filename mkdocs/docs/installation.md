@@ -18,7 +18,7 @@ A short test of the installation is presented [here](windows-test.md).
 Download the latest release:
 
 ```
-git clone -b r3.0.0 --depth 1 https://github.com/ILLGrenoble/cameo.git
+git clone -b r3.0.3 --depth 1 https://github.com/ILLGrenoble/cameo.git
 ```
 
 Then follow the instructions [here](https://github.com/ILLGrenoble/cameo/blob/master/INSTALL.md).
