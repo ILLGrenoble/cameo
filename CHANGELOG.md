@@ -1,5 +1,5 @@
-?
--
+3.0.3 not published
+-----
 
 * Default dependency to jeromq.
 
@@ -12,7 +12,6 @@
 -----
 
 * Replaced jdom2 XML parser with standard JVM parser in server.
-
 
 3.0.0
 -----

@@ -6,7 +6,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-console-jzmq</artifactId>
-	<version>3.0.0</version>
+	<version>3.0.1</version>
 	<packaging>jar</packaging>
 	
 	<properties>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-console-jeromq</artifactId>
-			<version>3.0.0</version>
+			<version>3.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>eu.ill.cameo</groupId>
@@ -75,20 +75,7 @@
 				                            }
 			                        </moduleInfoSource>
 								</module>
-								
-								<!--<module>
-									<artifact>
-										<groupId>org.zeromq</groupId>
-										<artifactId>jeromq</artifactId>
-										<version>0.5.3</version>
-									</artifact>
-									<moduleInfoSource>
-				                            module jeromq {
-				                                exports org.zeromq;
-				                            }
-			                        </moduleInfoSource>
-								</module>-->
-								
+																
 							</modules>
 						</configuration>
 					</execution>

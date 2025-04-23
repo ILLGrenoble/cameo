@@ -1,3 +1,8 @@
+3.0.3 not published
+-----
+
+* Changed dependency.
+
 3.0.2
 -----
 
@@ -31,7 +36,6 @@
 
 * Implemented the max number of applications for an application defined with an integer multiple attribute.
 * Corrected the check of the max global number of running applications.
-
 
 2.0.2
 -----

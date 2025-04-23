@@ -1,5 +1,5 @@
-?
--
+3.0.1
+-----
 
 * Default dependency to jeromq.
 

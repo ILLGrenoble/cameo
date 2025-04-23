@@ -11,12 +11,18 @@
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-server-jzmq</artifactId>
-			<version>3.0.2</version>
+			<version>3.0.3</version>
 		</dependency>
  		<dependency>
 			<groupId>eu.ill.cameo</groupId>
 			<artifactId>cameo-api</artifactId>
-			<version>3.0.0</version>
+			<version>3.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-jeromq</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	
