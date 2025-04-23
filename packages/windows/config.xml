@@ -4,12 +4,12 @@
         max_applications="100" 
         log_level="INFO" log_directory="logs">
     <applications>
-        <application name="filetransfer" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
+        <application name="file-transfer-server" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
 			<start executable="java" args="-jar cameo-file-transfer.jar"/>
 		</application>
 
-		<application name="testfiletransfer" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
-			<start executable="java" args="-classpath cameo-file-transfer.jar fr.ill.ics.cameoapps.TestFileTransfer"/>
+		<application name="file-transfer-client" starting_time="inf" retries="0" stopping_time="20" multiple="no" restart="no" info_arg="yes" log_directory="default">
+			<start executable="java" args="-classpath cameo-file-transfer.jar eu.ill.cameo.filetransfer.FileTransferClient"/>
 		</application>
     </applications>
 </config>
