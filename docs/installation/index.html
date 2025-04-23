@@ -305,6 +305,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="From the packages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -383,7 +407,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linux" class="md-nav__link">
+  <a href="#linux_1" class="md-nav__link">
     <span class="md-ellipsis">
       Linux
     </span>
@@ -392,7 +416,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows" class="md-nav__link">
+  <a href="#windows_1" class="md-nav__link">
     <span class="md-ellipsis">
       Windows
     </span>
@@ -747,6 +771,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="From the packages">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -825,7 +873,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#linux" class="md-nav__link">
+  <a href="#linux_1" class="md-nav__link">
     <span class="md-ellipsis">
       Linux
     </span>
@@ -834,7 +882,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows" class="md-nav__link">
+  <a href="#windows_1" class="md-nav__link">
     <span class="md-ellipsis">
       Windows
     </span>
@@ -919,8 +967,10 @@
 <h1 id="installation">Installation</h1>
 <h2 id="install-a-release">Install a release</h2>
 <h3 id="from-the-packages">From the packages</h3>
-<p>Debian packages are provided in the <a href="https://github.com/ILLGrenoble/cameo/releases">releases</a> page.
-If you can install them, it is the recommended installation. If you cannot then you have to manually compile the components.</p>
+<h4 id="linux">Linux</h4>
+<p>Debian packages can be generated and if you can get them, it is the recommended installation. If you cannot then you have to manually compile the components.</p>
+<h4 id="windows">Windows</h4>
+<p>You can execute the <em>msi</em> installer provided in the <a href="https://github.com/ILLGrenoble/cameo/releases">releases</a> page.</p>
 <h3 id="compile-the-components">Compile the components</h3>
 <p>Download the latest release:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git clone -b r3.0.0 --depth 1 https://github.com/ILLGrenoble/cameo.git
@@ -984,7 +1034,7 @@ Open a new shell and run to execute the <em>ping</em> app with the <em>localhost
 <p>Once you compiled successfully the different components, you can test them at the <a href="../tests/">Tests</a> page.</p>
 <h2 id="run-the-cameo-server-as-a-service">Run the CAMEO server as a service</h2>
 <p>It is recommended to run your CAMEO server as a service. </p>
-<h3 id="linux">Linux</h3>
+<h3 id="linux_1">Linux</h3>
 <p>On Linux, <em>systemd</em> can be used.
 We give an example of a user <em>systemd</em> configuration:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>[Unit]
@@ -998,7 +1048,7 @@ We give an example of a user <em>systemd</em> configuration:</p>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>[Install]
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>WantedBy=default.target
 </span></code></pre></div>
-<h3 id="windows">Windows</h3>
+<h3 id="windows_1">Windows</h3>
 <p>On windows we successfully used <a href="https://nssm.cc/">nssm</a>.
 The firewall may ask you to accept running applications. If this is not the case, check the allowed apps in the firewall settings and in particular the Java program. Follow the Microsoft <a href="https://support.microsoft.com/en-us/windows/risks-of-allowing-apps-through-windows-defender-firewall-654559af-3f54-3dcf-349f-71ccd90bcc5c">recommendations</a>.</p>
 <p>Then register the CAMEO service using nssm. Run in command line:
@@ -1043,7 +1093,7 @@ By default the JZMQ implementation is used which requires to have the Java ZeroM
 </span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="nt">&lt;dependency&gt;</span>
 </span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">    </span><span class="nt">&lt;groupId&gt;</span>eu.ill.cameo<span class="nt">&lt;/groupId&gt;</span>
 </span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>cameo-com-jeromq<span class="nt">&lt;/artifactId&gt;</span>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>0.1.0<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">    </span><span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
 </span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="nt">&lt;/dependency&gt;</span>
 </span></code></pre></div></p>
 <h3 id="c">C++</h3>

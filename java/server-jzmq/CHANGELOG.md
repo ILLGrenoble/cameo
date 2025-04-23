@@ -1,4 +1,4 @@
-3.0.3 not published
+3.0.3
 -----
 
 * Changed dependency.

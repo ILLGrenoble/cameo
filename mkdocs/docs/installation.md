@@ -4,8 +4,13 @@
 
 ### From the packages
 
-Debian packages are provided in the [releases](https://github.com/ILLGrenoble/cameo/releases) page.
-If you can install them, it is the recommended installation. If you cannot then you have to manually compile the components.
+#### Linux
+
+Debian packages can be generated and if you can get them, it is the recommended installation. If you cannot then you have to manually compile the components.
+
+#### Windows
+
+You can execute the *msi* installer provided in the [releases](https://github.com/ILLGrenoble/cameo/releases) page.
 
 ### Compile the components
 

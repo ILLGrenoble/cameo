@@ -24,6 +24,14 @@ Install all the dependencies (except Java):
 sudo apt install cmake maven libzmq3-dev libzmq-jni rapidjson-dev pybind11-dev doxygen
 ```
 
+You may also need to install some other dependencies:
+
+```
+sudo apt install cppzmq-dev mkdocs-material python-is-python3
+```
+
+The dependency *mkdocs-material* can be installed using *pip*.
+
 ### Windows vcpkg
 
 We recommend to use vcpkg to compile on Windows.
@@ -108,13 +116,13 @@ cmake --install build --config Release --prefix "path\to\install"
 
 ### Option 2: Generate the Debian packages
 
-It is also possible to build and create Debian packages. In this case, please use the *build_and_package.sh* script.
+It is also possible to build and create the Debian packages (distribution dependent). In this case, please use the *buildpackages.sh* script from the *packages/debian* directory:
 
 ```
-./build_and_package.sh <build directory>
+./buildpackages.sh <build directory>
 ```
 
-The script provides the following *.deb* packages located in <build directory>/packages/.
+The script provides the following *.deb* packages located in *<build directory>/packages/*.
 They can be installed using package manager.
 
 ### Generate the documentation
