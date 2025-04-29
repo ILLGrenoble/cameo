@@ -14,6 +14,7 @@
 #include "Defines.h"
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace cameo {
 
@@ -632,7 +633,7 @@ CAMEO_EXPORT std::string createStreamStatusRequest();
  * \param state The state.
  * \return The JSON string.
  */
-CAMEO_EXPORT std::string createSetStatusRequest(int id, int32_t state);
+CAMEO_EXPORT std::string createSetStatusRequest(int id, std::int32_t state);
 
 /**
  * Creates a get status request.

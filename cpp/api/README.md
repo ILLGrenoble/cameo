@@ -17,10 +17,11 @@ For convenience, the packages for some major distributions are listed in the fol
 - CENTOS 8: `yum install -y cmake cppzmq-devel rapidjson-devel`
 - Debian 10:
 - Ubuntu : `sudo apt install cmake libzmq3-dev rapidjson-dev`
-
+- Alpine: `apk add cppzmq rapidjson-dev`
 
 ## How to compile and install
 
+### Using CMake
 ```
 cmake -S . -B <build directory> -D<OPTION>
 cmake --build <build directory>
@@ -44,7 +45,12 @@ Two packages are created:
 - -lib: the runtime library for the user
 - -dev: the development package with the public headers and cmake config files
 
-
+### Using meson
+```
+meson setup <build directory> .
+meson compile -C <build directory>
+meson install -C <build directory>
+```
 ## Running tests
 
 To compile the test programs:
