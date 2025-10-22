@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(cameo-console-jzmq
-  VERSION 3.0.1
+project(cameo-server-jzmq
+  VERSION 3.0.3
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
 
@@ -16,7 +16,7 @@ set(JAVA_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/java/cameo)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
 # Copy the jar generated in java directory
-add_custom_target(console-jzmq
+add_custom_target(server-jzmq
   ALL
   DEPENDS ${PROJECT_JAR}
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_JAR} ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}
@@ -24,13 +24,12 @@ add_custom_target(console-jzmq
 
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}/
   DESTINATION ${JAVA_INSTALL_DIR}
-#  COMPONENT console
   )
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmo.in
-  ${CMAKE_CURRENT_BINARY_DIR}/cmo)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cameo-server.in
+  ${CMAKE_CURRENT_BINARY_DIR}/cameo-server)
 
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
+install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cameo-server
   TYPE BIN
   )
 
@@ -40,7 +39,7 @@ install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/cmo
 #------------------------------------------------------------
 
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../../CPackConfigCommon.in)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../../../CPackConfigCommon.in)
   include(${CMAKE_CURRENT_SOURCE_DIR}/CPackConfig.in)
   include(CPack)
 endif()

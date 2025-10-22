@@ -5,7 +5,7 @@
 		<artifactId>cameo</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>cameo-com</artifactId>
+	<artifactId>cameo-server</artifactId>
 	<packaging>pom</packaging>
 
 	<modules>

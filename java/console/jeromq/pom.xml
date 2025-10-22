@@ -2,23 +2,31 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.ill.cameo</groupId>
-		<artifactId>cameo</artifactId>
+		<artifactId>cameo-console</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>cameo-server-jeromq</artifactId>
-	<version>3.0.3</version>
+	<artifactId>cameo-console-jeromq</artifactId>
+	<version>3.0.1</version>
 	<packaging>jar</packaging>
+	
+	<properties>
+		<project.scm.id>ill-code</project.scm.id>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-common</artifactId>
-			<version>3.0.0</version>
-		</dependency>
- 		<dependency>
-			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-process-handle-default</artifactId>
-			<version>1.0.0</version>
+			<artifactId>cameo-console-null</artifactId>
+			<version>3.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-null</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
@@ -26,9 +34,10 @@
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
+			
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
@@ -52,6 +61,7 @@
 							<overwriteExistingFiles>true</overwriteExistingFiles>
 							<outputDirectory>${project.build.directory}/modules</outputDirectory>
 							<modules>
+							
 								<module>
 									<artifact>
 										<groupId>com.googlecode.json-simple</groupId>
@@ -59,12 +69,13 @@
 										<version>1.1.1</version>
 									</artifact>
 									<moduleInfoSource>
-										module json.simple {
-											exports org.json.simple;
-											exports org.json.simple.parser;
-										}
-									</moduleInfoSource>
+				                            module json.simple {
+				                                exports org.json.simple;
+				                                exports org.json.simple.parser;
+				                            }
+			                        </moduleInfoSource>
 								</module>
+																
 							</modules>
 						</configuration>
 					</execution>
@@ -92,11 +103,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.6</version>
+		 		<version>2.6</version>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>eu.ill.cameo.server.Server</mainClass>
+							<mainClass>eu.ill.cameo.console.Console</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
@@ -110,7 +121,6 @@
 					</descriptorRefs>
 					<finalName>${project.artifactId}-${project.version}-full</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
-					<attach>false</attach>
 				</configuration>
 				<executions>
 					<execution>
@@ -132,6 +142,7 @@
 					<useReleaseProfile>false</useReleaseProfile>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 	

@@ -29,9 +29,9 @@ function mvPack() {
 }
 
 # Java
-for source_dir in java/server-jzmq java/console-jzmq
+for source_dir in java/server/jzmq java/console/jzmq
 do
-	echo "COMPONENT: $source_dir"
+	echo "Building $source_dir"
 	build_dir=$BASE_BUILD_DIR/$source_dir
 	cmake -S $source_dir -B $build_dir/
 	cmake --build $build_dir 
