@@ -9,8 +9,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>jzmq</module>
+		<module>null</module>
 		<module>jeromq</module>
+		<module>jzmq</module>
 	</modules>
 
 </project>

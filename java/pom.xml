@@ -22,9 +22,11 @@
 		<module>process-handle</module>
 		<module>common</module>
 		<module>com</module>
+		<module>server-null</module>
 		<module>server-jzmq</module>
 		<module>server-jeromq</module>
 		<module>api</module>
+		<module>console-null</module>
 		<module>console-jzmq</module>
 		<module>console-jeromq</module>
 	</modules>

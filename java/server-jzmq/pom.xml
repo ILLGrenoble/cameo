@@ -19,12 +19,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-server-jeromq</artifactId>
+			<artifactId>cameo-server-null</artifactId>
 			<version>3.0.3</version>
 			<exclusions>
 				<exclusion>
 					<groupId>eu.ill.cameo</groupId>
-					<artifactId>cameo-com-jeromq</artifactId>
+					<artifactId>cameo-com-null</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

@@ -8,15 +8,33 @@
 	<artifactId>cameo-console-jeromq</artifactId>
 	<version>3.0.1</version>
 	<packaging>jar</packaging>
+	
+	<properties>
+		<project.scm.id>ill-code</project.scm.id>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-api</artifactId>
+			<artifactId>cameo-console-null</artifactId>
 			<version>3.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.ill.cameo</groupId>
+					<artifactId>cameo-com-null</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>eu.ill.cameo</groupId>
+			<artifactId>cameo-com-jeromq</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			
@@ -57,7 +75,7 @@
 				                            }
 			                        </moduleInfoSource>
 								</module>
-								
+																
 							</modules>
 						</configuration>
 					</execution>
