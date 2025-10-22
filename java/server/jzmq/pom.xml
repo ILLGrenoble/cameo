@@ -2,10 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.ill.cameo</groupId>
-		<artifactId>cameo</artifactId>
+		<artifactId>cameo-server</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>cameo-server-jeromq</artifactId>
+	<artifactId>cameo-server-jzmq</artifactId>
 	<version>3.0.3</version>
 	<packaging>jar</packaging>
 
@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.ill.cameo</groupId>
-			<artifactId>cameo-com-jeromq</artifactId>
+			<artifactId>cameo-com-jzmq</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 	</dependencies>

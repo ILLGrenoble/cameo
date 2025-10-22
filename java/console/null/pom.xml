@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.ill.cameo</groupId>
-		<artifactId>cameo</artifactId>
+		<artifactId>cameo-console</artifactId>
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>cameo-console-null</artifactId>
