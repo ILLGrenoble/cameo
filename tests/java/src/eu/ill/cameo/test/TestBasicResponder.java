@@ -119,7 +119,7 @@ public class TestBasicResponder {
 					System.out.println("Timeout");	
 				}
 				else {
-					System.out.println("No response");	
+					System.out.println("No response");
 				}
 				
 
@@ -146,6 +146,40 @@ public class TestBasicResponder {
 				response = requester.receiveString();
 				System.out.println("Response is " + response);
 				
+				
+				// Cancel the requester.
+				requester.cancel();
+				requester.sendString("request after cancel");
+				response = requester.receiveString();
+
+				if (response != null) {
+					System.out.println("Response is " + response);
+				}
+				else {
+					if (requester.hasTimedout()) {
+						System.out.println("Timeout");
+					}
+					else if (requester.isCanceled()) {
+						System.out.println("Canceled");
+					}
+				}
+
+				// Re-init the requester has no effect.
+				requester.init();
+				requester.sendString("2nd request after cancel");
+				response = requester.receiveString();
+
+				if (response != null) {
+					System.out.println("Response is " + response);
+				}
+				else {
+					if (requester.hasTimedout()) {
+						System.out.println("Timeout");
+					}
+					else if (requester.isCanceled()) {
+						System.out.println("Canceled");
+					}
+				}
 				
 				int state = responderApplication.waitFor();
 				System.out.println("Responder application terminated with state " + State.toString(state));

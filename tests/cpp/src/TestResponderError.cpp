@@ -55,50 +55,99 @@ int main(int argc, char *argv[]) {
 		// Args.
 		vector<string> args{(useProxy ? "true" : "false")};
 
-		// Start the application.
-		unique_ptr<App> responderApplication = server->start(applicationName, args);
+		// Test with check app = false.
+		{
+			// Start the application.
+			unique_ptr<App> responderApplication = server->start(applicationName, args);
 
-		cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getState()) << endl;
+			cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getState()) << endl;
 
-		// Create a subscriber to the application applicationName
-		unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
-		requester->setCheckApp(true);
-		requester->init();
+			// Create a subscriber to the application applicationName
+			unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+			requester->setCheckApp(false);
+			requester->setTimeout(1000);
+			requester->init();
 
-		cout << "Created requester " << *requester << endl;
+			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
-		if (!requester) {
-			cout << "Requester error" << endl;
-			return -1;
+			// Send a simple message.
+			requester->send("request");
+
+			// The app is terminating at this point so that the requester won't receive anything.
+			optional<string> response = requester->receive();
+			cout << "Response is " << response.value() << endl;
+
+			for (int j = 0; j < 3; j++) {
+				// Re-send message.
+				requester->send("request");
+				response = requester->receive();
+
+				// The requester is canceled because the app is terminated.
+				if (!response.has_value()) {
+					cout << "No response" << endl;
+				}
+
+				if (requester->hasTimedout()) {
+					cout << "Timeout" << endl;
+				}
+
+				if (requester->isCanceled()) {
+					cout << "Canceled" << endl;
+				}
+			}
+
+			state::Value state = responderApplication->waitFor();
+
+			cout << "Responder application terminated with state " << toString(state) << endl;
 		}
 
-		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
+		// Test with check app = true so that the requester must be canceled.
+		{
+			// Start the application.
+			unique_ptr<App> responderApplication = server->start(applicationName, args);
 
-		// Send a simple message.
-		requester->send("request");
+			cout << "Started application " << *responderApplication << " with state " << toString(responderApplication->getState()) << endl;
 
-		// The app is terminating at this point so that the requester won't receive anything.
-		optional<string> response = requester->receive();
-		cout << "Response is " << response.value() << endl;
+			// Create a subscriber to the application applicationName
+			unique_ptr<coms::Requester> requester = coms::Requester::create(*responderApplication, "responder");
+			requester->setCheckApp(true);
+			requester->init();
 
-		response = requester->receive();
+			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
-		// The requester is canceled because the app is terminated.
-		if (!response.has_value()) {
-			cout << "No response" << endl;
+			// Send a simple message.
+			requester->send("request");
+
+			// The app is terminating at this point so that the requester won't receive anything.
+			optional<string> response = requester->receive();
+			cout << "Response is " << response.value() << endl;
+
+			for (int j = 0; j < 3; j++) {
+				// Re-send message.
+				requester->send("request");
+				response = requester->receive();
+
+				// The requester is canceled because the app is terminated.
+				if (!response.has_value()) {
+					cout << "No response" << endl;
+				}
+
+				if (requester->hasTimedout()) {
+					cout << "Timeout" << endl;
+				}
+
+				if (requester->isCanceled()) {
+					cout << "Canceled" << endl;
+				}
+			}
+
+			state::Value state = responderApplication->waitFor();
+
+			cout << "Responder application terminated with state " << toString(state) << endl;
 		}
-
-		if (requester->isCanceled()) {
-			// The last state is FAILURE.
-			cout << "Requester canceled, last responder application state " << toString(responderApplication->getLastState()) << endl;
-		}
-
-		state::Value state = responderApplication->waitFor();
-
-		cout << "Responder application terminated with state " << toString(state) << endl;
-
-		cout << "Finished the application" << endl;
 	}
+
+	cout << "Finished the application" << endl;
 
 	return 0;
 }

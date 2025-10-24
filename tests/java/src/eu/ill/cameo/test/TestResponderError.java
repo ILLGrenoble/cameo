@@ -60,39 +60,94 @@ public class TestResponderError {
 				// Args.
 				String[] appArgs = new String[] {args[2]};
 				
-				// Start the application.
-				App responderApplication = server.start(applicationName, appArgs);
-				System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
+				// Test with check app = false
+				{
+					// Start the application.
+					App responderApplication = server.start(applicationName, appArgs);
+					System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
+	
+					Requester requester = Requester.create(responderApplication, "responder");
+					requester.setCheckApp(false);
+					requester.setTimeout(1000);
+					requester.init();
+					
+					// Check the state of the responder app.
+					System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
+					
+					// Send a simple message.
+					requester.sendString("request");
+					System.out.println("Response is " + requester.receiveString());
+	
+					for (int j = 0; j < 3; j++) {
 
-				Requester requester = Requester.create(responderApplication, "responder");
-				requester.setCheckApp(true);
-				requester.init();
-				
-				System.out.println("Created requester " + requester);
-			
-				// Check the state of the responder app.
-				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
-				
-				// Send a simple message.
-				requester.sendString("request");
-				System.out.println("Response is " + requester.receiveString());
-
-				byte[] response = requester.receive();
-
-				if (response == null) {
-					System.out.println("No response");
+						// Re-send message.
+						requester.sendString("request");
+						byte[] response = requester.receive();
+		
+						if (response == null) {
+							System.out.println("No response");
+						}
+						
+						if (requester.hasTimedout()) {
+							System.out.println("Timeout");
+						}
+						
+						if (requester.isCanceled()) {
+							System.out.println("Canceled");
+						}
+					}
+					
+					int state = responderApplication.waitFor();
+					
+					System.out.println("Application " + responderApplication + " terminated with state " + State.toString(state));
+					
+					// Terminate the requester.
+					requester.terminate();
 				}
 				
-				if (requester.isCanceled()) {
-					System.out.println("Requester canceled");
+				// Test with check app = true so that the requester must be canceled.
+				{
+					// Start the application.
+					App responderApplication = server.start(applicationName, appArgs);
+					System.out.println("Started application " + responderApplication + " with state " + State.toString(responderApplication.getState()));
+	
+					Requester requester = Requester.create(responderApplication, "responder");
+					requester.setCheckApp(true);
+					requester.init();
+					
+					// Check the state of the responder app.
+					System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
+					
+					// Send a simple message.
+					requester.sendString("request");
+					System.out.println("Response is " + requester.receiveString());
+					
+					for (int j = 0; j < 3; j++) {
+
+						// Re-send message.
+						requester.sendString("request");
+						byte[] response = requester.receive();
+		
+						if (response == null) {
+							System.out.println("No response");
+						}
+						
+						if (requester.hasTimedout()) {
+							System.out.println("Timeout");
+						}
+						
+						if (requester.isCanceled()) {
+							System.out.println("Canceled");
+						}
+					}
+					
+					int state = responderApplication.waitFor();
+					
+					System.out.println("Application " + responderApplication + " terminated with state " + State.toString(state));
+					
+					// Terminate the requester.
+					requester.terminate();
 				}
-				
-				int state = responderApplication.waitFor();
-				
-				System.out.println("Application " + responderApplication + " terminated with state " + State.toString(state));
-				
-				// Terminate the requester.
-				requester.terminate();
 			}
 		}
 		finally {

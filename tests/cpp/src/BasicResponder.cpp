@@ -74,16 +74,13 @@ int main(int argc, char *argv[]) {
 
 	request->reply("4th response");
 
-
 	// Receive request.
 	request = responder->receive();
 	cout << "received request " << *request << endl;
 	request->reply("5th response");
 
-
 	std::unique_ptr<ServerAndApp> requester = request->connectToRequester(options);
 	cout << "Requester " << requester->getApp() << endl;
-
 
 	cout << "Finished the application" << endl;
 

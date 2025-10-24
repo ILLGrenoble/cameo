@@ -89,7 +89,7 @@ void Requester::terminate() {
 
 void Requester::init() {
 
-	if (isReady()) {
+	if (isReady() || isCanceled()) {
 		// The object is already initialized.
 		return;
 	}

@@ -102,18 +102,27 @@ public class RequesterZmq implements RequesterImpl {
 	}
 	
 
-	private boolean initSocket() {
+	private boolean initSocket(TimeoutCounter timeoutCounter) {
+		
+		// Do not init if canceled.
+		if (canceled.get()) {
+			return false;
+		}
 		
 		// Reset timedout.
 		timedout.set(false);
 		
 		if (requester == null) {
 			try {
-				createAndSyncSocket(new TimeoutCounter(timeout));
+				createAndSyncSocket(timeoutCounter);
 			}
 			catch (Timeout e) {
-				// Timeout. As initSocket() is called in sendRequest, we prefer to not throw a timeout exception.
+				
+				// Timeout. As initSocket() is called in sendRequest(), we prefer to not throw a timeout exception.
 				timedout.set(true);
+				
+				// Reset the socket because it cannot be reused after a timeout.
+				resetSocket();
 				
 				// Init failed.
 				return false;
@@ -121,6 +130,10 @@ public class RequesterZmq implements RequesterImpl {
 		}
 		
 		return true;
+	}
+	
+	private boolean initSocketForSend() {
+		return initSocket(new TimeoutCounter(timeout));
 	}
 	
 	private boolean sendSync() {
@@ -142,11 +155,12 @@ public class RequesterZmq implements RequesterImpl {
 		
 		this.endpoint = endpoint;
 		this.responderIdentity = responderIdentity;
+		this.timedout.set(false);
 		
 		// Get the context.
 		this.context = ((ContextZmq)This.getCom().getContext()).getContext();
 		
-		createAndSyncSocket(timeoutCounter);
+		initSocket(timeoutCounter);
 	}
 	
 	private Zmq.Msg createMessage() {
@@ -164,7 +178,7 @@ public class RequesterZmq implements RequesterImpl {
 	private void sendRequest(byte[] part) {
 		
 		// Init the socket if necessary.
-		if (initSocket()) {
+		if (initSocketForSend()) {
 			
 			// Prepare and send the message.
 			Zmq.Msg message = createMessage();
@@ -177,7 +191,7 @@ public class RequesterZmq implements RequesterImpl {
 	private void sendRequest(byte[] part1, byte[] part2) {
 		
 		// Init the socket if necessary.
-		if (initSocket()) {
+		if (initSocketForSend()) {
 			
 			// Prepare and send the message.
 			Zmq.Msg message = createMessage();
@@ -191,7 +205,7 @@ public class RequesterZmq implements RequesterImpl {
 	private void sendRequest(byte[] part1, byte[] part2, byte[] part3) {
 		
 		// Init the socket if necessary.
-		if (initSocket()) {
+		if (initSocketForSend()) {
 			
 			// Prepare and send the message.
 			Zmq.Msg message = createMessage();
@@ -271,6 +285,11 @@ public class RequesterZmq implements RequesterImpl {
 	}
 	
 	public byte[] receive() {
+		
+		// Do not receive if canceled or the requester is not alive.
+		if (canceled.get() || requester == null) {
+			return null;
+		}
 		
 		Zmq.Msg message = null;
 		

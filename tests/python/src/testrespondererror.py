@@ -28,6 +28,45 @@ server.init()
 for i in range(numberOfTimes):
     
     args = ["true" if useProxy else "false"]
+    
+    # Test with check app = false
+    app = server.start(applicationName, args)
+    print("Started application", applicationName)
+
+    requester = cameopy.coms.Requester.create(app, "responder")
+    requester.setCheckApp(False)
+    requester.setTimeout(1000)
+    requester.init()
+    
+    print("Created requester", requester)
+    
+    # Send a simple message.
+    requester.send("request")
+    response = requester.receiveString()
+    
+    for j in range(3):
+    
+        # Re-send the message.
+        requester.send("request")
+        response = requester.receiveString()
+    
+        if response is None:
+            print("No response")
+
+        if requester.hasTimedout():
+            print("Timeout")
+
+        if requester.isCanceled():
+            print("Canceled")
+        
+    # Wait for the application.
+    state = app.waitFor()
+    
+    print("Responder application terminated with state", cameopy.toString(state))
+    
+    requester.terminate()
+    
+    # Test with check app = true
     app = server.start(applicationName, args)
     print("Started application", applicationName)
 
@@ -39,24 +78,31 @@ for i in range(numberOfTimes):
     
     # Send a simple message.
     requester.send("request")
-    
     response = requester.receiveString()
     
-    if response is None:
-        print("No response")
-
-    if requester.isCanceled():
-        print("Requester canceled, last responder application state", cameopy.toString(app.getLastState()))
+    for j in range(3):
     
+        # Re-send the message.
+        requester.send("request")
+        response = requester.receiveString()
+    
+        if response is None:
+            print("No response")
+
+        if requester.hasTimedout():
+            print("Timeout")
+
+        if requester.isCanceled():
+            print("Canceled")
     
     # Wait for the application.
     state = app.waitFor()
     
     print("Responder application terminated with state", cameopy.toString(state))
-        
-    print("Finished the application")
 
     requester.terminate()
+    
+    print("Finished the application")
 
 
 server.terminate()

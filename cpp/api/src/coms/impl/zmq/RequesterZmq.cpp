@@ -91,18 +91,27 @@ void RequesterZmq::createAndSyncSocket(const TimeoutCounter& timeoutCounter) {
 	m_timeout = previousTimeout;
 }
 
-bool RequesterZmq::initSocket() {
+bool RequesterZmq::initSocket(const TimeoutCounter& timeoutCounter) {
+
+	// Do not init if canceled.
+	if (m_canceled) {
+		return false;
+	}
 
 	// Reset timedout.
 	m_timedout.store(false);
 
 	if (!m_requester) {
 		try {
-			createAndSyncSocket(TimeoutCounter(m_timeout));
+			createAndSyncSocket(timeoutCounter);
 		}
 		catch (const Timeout&) {
-			// Timeout. As initSocket() is called in sendRequest, we prefer to not throw a timeout exception.
+
+			// Timeout. As initSocket() is called in sendRequest(), we prefer to not throw a timeout exception.
 			m_timedout.store(true);
+
+			// Reset the socket because it cannot be reused after a timeout.
+			resetSocket();
 
 			// Init failed.
 			return false;
@@ -110,6 +119,10 @@ bool RequesterZmq::initSocket() {
 	}
 
 	return true;
+}
+
+bool RequesterZmq::initSocketForSend() {
+	return initSocket(TimeoutCounter(m_timeout));
 }
 
 bool RequesterZmq::sendSync() {
@@ -141,11 +154,12 @@ void RequesterZmq::init(const Endpoint& endpoint, const std::string& responderId
 
 	m_endpoint = endpoint;
 	m_responderIdentity = responderIdentity;
+	m_timedout = false;
 
 	// Get the context.
 	m_contextImpl = dynamic_cast<ContextZmq *>(This::getCom().getContext());
 
-	createAndSyncSocket(timeoutCounter);
+	initSocket(timeoutCounter);
 }
 
 RequesterZmq::~RequesterZmq() {
@@ -155,7 +169,7 @@ RequesterZmq::~RequesterZmq() {
 void RequesterZmq::sendRequest(const std::string& request) {
 
 	// Init the socket if necessary.
-	if (initSocket()) {
+	if (initSocketForSend()) {
 
 		// Start with an empty message for the dealer socket. The identity of the connected router is added by the dealer socket.
 		zmq::message_t empty;
@@ -174,7 +188,7 @@ void RequesterZmq::sendRequest(const std::string& request) {
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2) {
 
 	// Init the socket if necessary.
-	if (initSocket()) {
+	if (initSocketForSend()) {
 
 		// Start with an empty message for the dealer socket.
 		zmq::message_t empty;
@@ -197,7 +211,7 @@ void RequesterZmq::sendRequest(const std::string& requestPart1, const std::strin
 void RequesterZmq::sendRequest(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3) {
 
 	// Init the socket if necessary.
-	if (initSocket()) {
+	if (initSocketForSend()) {
 
 		// Start with an empty message for the dealer socket.
 		zmq::message_t empty;
@@ -311,10 +325,10 @@ bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 
 std::optional<std::string> RequesterZmq::receive() {
 
-	if (m_canceled) {
+	// Do not receive if canceled or the requester is not alive.
+	if (m_canceled || !m_requester) {
 		return {};
 	}
-
 
 	// Receive the empty message.
 	zmq::message_t empty;

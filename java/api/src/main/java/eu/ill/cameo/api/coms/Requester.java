@@ -156,7 +156,7 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable 
 	@Override
 	public void init() throws InitException {
 		
-		if (isReady()) {
+		if (isReady() || isCanceled()) {
 			// The object is already initialized.
 			return;
 		}

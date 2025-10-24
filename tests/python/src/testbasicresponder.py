@@ -92,6 +92,28 @@ for i in range(numberOfTimes):
     response = requester.receiveString();
     print("Response is", response)
     
+    # Cancel the requester.
+    requester.cancel();
+    requester.send("request after cancel");
+    response = requester.receiveString();
+
+    if requester.hasTimedout():
+        print("Timeout")
+    
+    if requester.isCanceled():
+        print("Canceled")
+
+    # Re-init the requester.
+    requester.init();
+    requester.send("2nd request after cancel");
+    response = requester.receiveString();
+
+    if requester.hasTimedout():
+        print("Timeout")
+    
+    if requester.isCanceled():
+        print("Canceled")
+    
     # Wait for the application.
     app.waitFor()
     

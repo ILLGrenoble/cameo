@@ -141,6 +141,40 @@ int main(int argc, char *argv[]) {
 		response = requester->receive();
 		cout << "Response is " << response.value() << endl;
 
+		// Cancel the requester.
+		requester->cancel();
+		requester->send("request after cancel");
+		response = requester->receive();
+
+		if (response.has_value()) {
+			cout << "Response is " << response.value() << endl;
+		}
+		else {
+			if (requester->hasTimedout()) {
+				cout << "Timeout" << endl;
+			}
+			else if (requester->isCanceled()) {
+				cout << "Canceled" << endl;
+			}
+		}
+
+		// Re-init the requester has no effect.
+		requester->init();
+		requester->send("2nd request after cancel");
+		response = requester->receive();
+
+		if (response.has_value()) {
+			cout << "Response is " << response.value() << endl;
+		}
+		else {
+			if (requester->hasTimedout()) {
+				cout << "Timeout" << endl;
+			}
+			else if (requester->isCanceled()) {
+				cout << "Canceled" << endl;
+			}
+		}
+
 		// Wait for the end of the application.
 		state::Value state = responderApplication->waitFor();
 
