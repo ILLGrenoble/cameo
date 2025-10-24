@@ -22,9 +22,9 @@ add_zeromq_library()
 # Dependencies
 #------------------------------------------------------------
 
-if (NOT TARGET cameo-api-cpp-static)
-  find_package(cameo-api-cpp-static 3.0 REQUIRED) # provided by the C++ API
-endif()
+#if (NOT TARGET cameo-api-cpp-static)
+#  find_package(cameo-api-cpp-static 3.0 REQUIRED) # provided by the C++ API
+#endif()
 
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
@@ -49,7 +49,11 @@ endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
 
-target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(cameopy PUBLIC CAMEO_STATIC)
+endif()
+
+target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp)
 
 set_target_properties(cameopy PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}
