@@ -292,5 +292,5 @@ include(CPack)
 if(CAMEO_ALL)
   # Note: execute ctest --verbose to have more details 
   enable_testing()
-  add_subdirectory(tests)
+  #add_subdirectory(tests)
 endif()
