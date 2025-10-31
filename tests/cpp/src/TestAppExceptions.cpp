@@ -101,5 +101,7 @@ int main(int argc, char *argv[]) {
 		cout << "Publisher cannot be created: " << e.what() << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }

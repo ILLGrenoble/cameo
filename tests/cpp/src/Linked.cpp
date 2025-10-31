@@ -47,5 +47,7 @@ int main(int argc, char *argv[]) {
 		this_thread::sleep_for(chrono::milliseconds(100));
 	}
 
+	This::terminate();
+
 	return 0;
 }

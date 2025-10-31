@@ -106,5 +106,7 @@ int main(int argc, char *argv[]) {
 	cout << "Responder application terminated with state " << toString(state) << endl;
 	cout << "Finished the application" << endl;
 
+	This::terminate();
+
 	return 0;
 }

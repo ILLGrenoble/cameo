@@ -57,5 +57,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished the application" << std::endl;
 
+	This::terminate();
+
 	return EXIT_SUCCESS;
 }

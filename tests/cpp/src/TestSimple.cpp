@@ -67,5 +67,7 @@ int main(int argc, char *argv[]) {
 
 	cout << "Finished the application after " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " ms" << endl;
 
+	This::terminate();
+
 	return 0;
 }

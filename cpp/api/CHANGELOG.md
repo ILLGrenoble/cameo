@@ -1,3 +1,6 @@
+3.0.2 (not published)
+-----
+
 * Better timeout and cancel management in Requester.
 
 3.0.0
