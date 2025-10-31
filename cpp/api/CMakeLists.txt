@@ -96,13 +96,10 @@ set_target_properties(${LIBNAME}-obj PROPERTIES
   POSITION_INDEPENDENT_CODE 1 # this is needed for static compilation for cameo-api-python
   )
 
-#add_library(${LIBNAME}-static STATIC $<TARGET_OBJECTS:${LIBNAME}-obj>)
-
 add_library(${LIBNAME} $<TARGET_OBJECTS:${LIBNAME}-obj>)
 
 add_library(${NAMESPACE}::${LIBNAME} ALIAS ${LIBNAME})
 add_library(${NAMESPACE}::${LIBNAME}-obj ALIAS ${LIBNAME}-obj)
-#add_library(${NAMESPACE}::${LIBNAME}-static ALIAS ${LIBNAME}-static)
 
 target_include_directories(${LIBNAME}
   SYSTEM PRIVATE ${RapidJSON_INCLUDE_DIRS}/
@@ -123,12 +120,6 @@ set_target_properties(${LIBNAME} PROPERTIES
   INTERFACE_COMPILE_FEATURES ${obj_INTERFACE_COMPILE_FEATURES}
   INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
   )
-#set_target_properties(${LIBNAME}-static PROPERTIES
-#  INTERFACE_LINK_LIBRARIES "${obj_INTERFACE_LINK_LIBRARIES}"
-#  INTERFACE_COMPILE_FEATURES "${obj_INTERFACE_COMPILE_FEATURES}"
-#  INTERFACE_INCLUDE_DIRECTORIES "${obj_INTERFACE_INCLUDE_DIRECTORIES}"
-#  )
-
 
 #------------------------------------------------------------
 
@@ -188,11 +179,6 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ # don't forget the traili
   FILES_MATCHING  PATTERN *.h
   )
 
-# this is for cameo-api-python to compile from the local build tree
-#export(TARGETS ${LIBNAME}-static
-#  NAMESPACE ${NAMESPACE}::
-#  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-static-targets.cmake
-#  )
 export(EXPORT cameoTargets
   #   FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-${type}-targets.cmake
   FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-targets.cmake
