@@ -84,5 +84,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	This::terminate();
+
 	return 0;
 }

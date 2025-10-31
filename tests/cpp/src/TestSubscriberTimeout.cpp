@@ -93,5 +93,7 @@ int main(int argc, char *argv[]) {
 	td.join();
 	cout << "Subscriber terminated" << endl;
 
+	This::terminate();
+
 	return 0;
 }

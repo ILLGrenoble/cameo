@@ -182,5 +182,7 @@ int main(int argc, char *argv[]) {
 		cout << "Finished the application" << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }

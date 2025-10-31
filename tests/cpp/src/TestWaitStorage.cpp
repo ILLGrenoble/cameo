@@ -69,5 +69,7 @@ int main(int argc, char *argv[]) {
 		cout << "finished the application " << *app << " with state " << toString(state) << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }

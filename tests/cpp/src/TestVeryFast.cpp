@@ -52,5 +52,7 @@ int main(int argc, char *argv[]) {
 		cout << "Finished the application " << *app << " with state " << toString(state) << " and code " << app->getExitCode() << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }
