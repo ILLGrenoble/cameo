@@ -32,6 +32,8 @@ if exist "%cameo_python_api%" (
   set "PYTHONPATH=build\python\api\Release;%PYTHONPATH%"
 )
 
+rem Copy the dlls to ensure they are loaded at runtime
+copy build\cpp\api\Release\*.dll build\python\api\Release
 
 if "%java%" == "false" (
   echo Cannot run the server without Java build
