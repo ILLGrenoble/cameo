@@ -48,6 +48,9 @@ if exist "%cameo_python_api%" (
   set "python=true"
 )
 
+rem Copy the dlls to ensure they are loaded at runtime
+copy build\cpp\api\Release\*.dll build\python\api\Release
+
 if "%~1" == "setup" (
   exit /b 0
 )

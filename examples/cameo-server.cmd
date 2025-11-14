@@ -15,6 +15,8 @@ if exist "%cameo_jzmq_jar%" (
   set "java=true"
 )
 
+set "PATH=build\cpp\api\Release;%PATH%"
+
 set "cameo_proxy=build\cpp\proxy\Release\cameo-rep-proxy.exe"
 if exist "%cameo_proxy%" (
   set "PATH=build\cpp\proxy\Release;%PATH%"
@@ -30,6 +32,8 @@ if exist "%cameo_python_api%" (
   set "PYTHONPATH=build\python\api\Release;%PYTHONPATH%"
 )
 
+rem Copy the dlls to ensure they are loaded at runtime
+copy build\cpp\api\Release\*.dll build\python\api\Release
 
 if "%java%" == "false" (
   echo Cannot run the server without Java build
