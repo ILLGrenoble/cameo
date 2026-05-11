@@ -81,14 +81,21 @@ cmake -S . -B build -D<OPTION>
 ```
 
 It is recommended on Windows to use the *jeromq* implementation since *jzmq* is not well compiled.
-To use vcpkg, add the option -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake and compile the release objects:
+To use vcpkg, add the option CMAKE_TOOLCHAIN_FILE pointing to your installed file.
+Configure the build with:
+
+```
+cmake -B build -S . -DCAMEO_ALL=ON -DZEROMQ_JAVA=jeromq "-DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+```
+
+Compile the release objects:
 
 ```
 cmake --build build --config Release
 ```
 
 The *dll* library file is generated.
-You can also compile in full static. Install the static dependencies:
+You can also compile in full static. Install these static dependencies:
 
 ```
 vcpkg install zeromq:x64-windows-static cppzmq:x64-windows-static

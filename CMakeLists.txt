@@ -41,6 +41,10 @@ endif()
 # C++ API
 if(${CAMEO_ALL} OR ${CAMEO_API_CPP})
   list(APPEND APIs cpp/api)
+  # For windows to help to export the symbols in dll.
+  if(NOT BUILD_SHARED_LIBS)
+    add_compile_definitions(CAMEO_STATIC)
+  endif()
 endif()
 
 # Python API
