@@ -22,10 +22,6 @@ add_zeromq_library()
 # Dependencies
 #------------------------------------------------------------
 
-#if (NOT TARGET cameo-api-cpp-static)
-#  find_package(cameo-api-cpp-static 3.0 REQUIRED) # provided by the C++ API
-#endif()
-
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 
@@ -43,8 +39,6 @@ if(NOT pybind11_FOUND)
 	mark_as_advanced(PYBIND11_TEST)
 	mark_as_advanced(PYBIND11_INSTALL)
   endif()
-  #else()
-#  find_package(pybind11 2.4.3 REQUIRED)
 endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
