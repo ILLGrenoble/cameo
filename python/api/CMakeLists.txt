@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 # Project name and version
 project(cameopy
-  VERSION 3.0.0
+  VERSION 3.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -22,6 +22,7 @@ add_zeromq_library()
 # Dependencies
 #------------------------------------------------------------
 
+find_package(cameo-api-cpp 3.0.0 REQUIRED)
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 

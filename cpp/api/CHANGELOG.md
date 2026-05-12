@@ -2,6 +2,7 @@
 -----
 
 * Better timeout and cancel management in Requester.
+* Removal of cameo-api-cpp-static target.
 
 3.0.0
 -----

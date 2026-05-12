@@ -43,7 +43,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 include(AddZeroMQLibrary)
 add_zeromq_library()
 
-find_package (Threads REQUIRED)
+find_package(Threads REQUIRED)
 find_package(RapidJSON 1.1.0 QUIET)
 if(NOT RapidJSON_FOUND)
   message(STATUS "Using Rapidjson from GIT repository")

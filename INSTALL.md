@@ -70,6 +70,24 @@ cmake -S . -B build -D<OPTION>
 cmake --build build
 ```
 
+You can configure the build:
+
+```
+cmake -B build -S . -DCAMEO_ALL=ON
+```
+
+And compile with:
+
+```
+cmake --build build
+```
+
+You can also configure the static build:
+
+```
+cmake -B build -S . -DCAMEO_ALL=ON -DBUILD_SHARED_LIBS=OFF
+```
+
 
 #### Windows vcpkg
 

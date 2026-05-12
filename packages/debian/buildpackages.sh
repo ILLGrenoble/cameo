@@ -48,7 +48,6 @@ cmake --build $build_dir
 cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging -G $CPACK_GENERATORS
 mvPack
 
-
 # C++ API
 build_dir=$BASE_BUILD_DIR/$source_dir_cpp
 cmake -S $source_dir_cpp -B $build_dir -DCMAKE_INSTALL_PREFIX=/usr/ # with this it adds x86_64-linux-gnu to the path when running cpack
