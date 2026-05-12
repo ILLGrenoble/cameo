@@ -29,39 +29,42 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:12000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, options);
-	server->init();
+	// Block to ensure order of object deletion.
+	{
+		unique_ptr<Server> server = Server::create(endpoint, options);
+		server->init();
 
-	This::setRunning();
+		This::setRunning();
 
-	// Start the application.
-	unique_ptr<App> app = server->start("comstimeoutcpp");
+		// Start the application.
+		unique_ptr<App> app = server->start("comstimeoutcpp");
 
-	// Wait for running to synchronize with the beginning of the requester init.
-	app->waitFor(cameo::state::RUNNING);
+		// Wait for running to synchronize with the beginning of the requester init.
+		app->waitFor(cameo::state::RUNNING);
 
-	// Wait for 250ms which is half the requester timeout.
-	std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		// Wait for 250ms which is half the requester timeout.
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-	// Store a key to generate events in the keyvalue getter.
-	This::getCom().storeKeyValue("test", "value");
-	This::getCom().removeKey("test");
+		// Store a key to generate events in the keyvalue getter.
+		This::getCom().storeKeyValue("test", "value");
+		This::getCom().removeKey("test");
 
-	// Create a publisher that will never init.
-	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub");
-	publisher->setWaitForSubscribers(2);
+		// Create a publisher that will never init.
+		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("pub");
+		publisher->setWaitForSubscribers(2);
 
-	std::thread initThread([&] {
-		publisher->init();
-	});
+		std::thread initThread([&] {
+			publisher->init();
+		});
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	publisher->cancel();
-	initThread.join();
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		publisher->cancel();
+		initThread.join();
 
-	cout << "Canceled publisher" << endl;
+		cout << "Canceled publisher" << endl;
 
-	app->waitFor();
+		app->waitFor();
+	}
 
 	cout << "Finished the application" << endl;
 

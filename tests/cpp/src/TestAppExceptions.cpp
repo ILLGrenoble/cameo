@@ -29,76 +29,80 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:12000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, options);
-	server->init();
+	// Block to ensure order of object deletion.
+	{
+		unique_ptr<Server> server = Server::create(endpoint, options);
+		server->init();
 
-	// Test start.
-	try {
-		// Start the application.
-		unique_ptr<App> app = server->start("fuzz");
-	}
-	catch (const StartException& e) {
-		cout << "Application fuzz cannot be started" << endl;
-	}
+		// Test start.
+		try {
+			// Start the application.
+			unique_ptr<App> app = server->start("fuzz");
+		}
+		catch (const StartException& e) {
+			cout << "Application fuzz cannot be started" << endl;
+		}
 
-	// Connect the application.
-	unique_ptr<App> app = server->connect("fuzz");
+		// Connect the application.
+		unique_ptr<App> app = server->connect("fuzz");
 
-	if (!app) {
-		cout << "Application fuzz cannot be connected" << endl;
-	}
+		if (!app) {
+			cout << "Application fuzz cannot be connected" << endl;
+		}
 
-	// Test basic responder.
-	cout << "Creating basic responder" << endl;
+		// Test basic responder.
+		cout << "Creating basic responder" << endl;
 
-	unique_ptr<coms::basic::Responder> basicResponder = coms::basic::Responder::create("basic-responder");
-	basicResponder->init();
+		unique_ptr<coms::basic::Responder> basicResponder = coms::basic::Responder::create("basic-responder");
+		basicResponder->init();
 
-	cout << "Created basic responder" << endl;
-
-	unique_ptr<coms::basic::Responder> basicResponder2 = coms::basic::Responder::create("basic-responder");
-
-	try {
-		basicResponder2->init();
-	}
-	catch (const InitException& e) {
-		cout << "Basic responder cannot be created: " << e.what() << endl;
-	}
+		cout << "Created basic responder" << endl;
 
 
-	// Test multi responder.
-	cout << "Creating multi responder" << endl;
+		unique_ptr<coms::basic::Responder> basicResponder2 = coms::basic::Responder::create("basic-responder");
 
-	unique_ptr<coms::multi::ResponderRouter> multiResponder = coms::multi::ResponderRouter::create("multi-responder");
-	multiResponder->init();
-
-	cout << "Created multi responder" << endl;
-
-	unique_ptr<coms::multi::ResponderRouter> multiResponder2 = coms::multi::ResponderRouter::create("multi-responder");
-
-	try {
-		multiResponder2->init();
-	}
-	catch (const InitException& e) {
-		cout << "Multi responder cannot be created: " << e.what() << endl;
-	}
+		try {
+			basicResponder2->init();
+		}
+		catch (const InitException& e) {
+			cout << "Basic responder cannot be created: " << e.what() << endl;
+		}
 
 
-	// Test publisher.
-	cout << "Creating publisher" << endl;
+		// Test multi responder.
+		cout << "Creating multi responder" << endl;
 
-	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
-	publisher->init();
+		unique_ptr<coms::multi::ResponderRouter> multiResponder = coms::multi::ResponderRouter::create("multi-responder");
+		multiResponder->init();
 
-	cout << "Created publisher" << endl;
+		cout << "Created multi responder" << endl;
 
-	unique_ptr<coms::Publisher> publisher2 = coms::Publisher::create("publisher");
+		unique_ptr<coms::multi::ResponderRouter> multiResponder2 = coms::multi::ResponderRouter::create("multi-responder");
 
-	try {
-		publisher2->init();
-	}
-	catch (const InitException& e) {
-		cout << "Publisher cannot be created: " << e.what() << endl;
+		try {
+			multiResponder2->init();
+		}
+		catch (const InitException& e) {
+			cout << "Multi responder cannot be created: " << e.what() << endl;
+		}
+
+
+		// Test publisher.
+		cout << "Creating publisher" << endl;
+
+		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
+		publisher->init();
+
+		cout << "Created publisher" << endl;
+
+		unique_ptr<coms::Publisher> publisher2 = coms::Publisher::create("publisher");
+
+		try {
+			publisher2->init();
+		}
+		catch (const InitException& e) {
+			cout << "Publisher cannot be created: " << e.what() << endl;
+		}
 	}
 
 	This::terminate();

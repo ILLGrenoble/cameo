@@ -19,12 +19,12 @@
 			<url>https://maven.ill.fr/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
-
+<!--
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<src.dir>src</src.dir>
 	</properties>
-		
+-->		
 	<!-- The profiles are used into Eclipse to compile the code. -->
 	<profiles>
 		<profile>
@@ -38,9 +38,9 @@
 			</dependencies>
 		</profile>
 	</profiles>
-
+	
 	<build>
-        <sourceDirectory>${src.dir}</sourceDirectory>
+		<!--<sourceDirectory>${src.dir}</sourceDirectory>-->
 		<plugins>
 
 			<plugin>
