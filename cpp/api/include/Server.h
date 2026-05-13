@@ -35,7 +35,7 @@ class RequestSocket;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-class CAMEO_EXPORT Server : public Object, public Timeoutable {
+class CAMEO_EXPORT Server : public Object, public Timeoutable, public Pingable {
 
 	friend class App;
 	friend class This;
@@ -88,6 +88,12 @@ public:
 	 * \return The timeout.
 	 */
 	int getTimeout() const override;
+
+	/**
+	 * Pings with response.
+	 * \return true if there is no timeout.
+	 */
+	virtual bool ping() override;
 
 	/**
 	 * Gets the endpoint of the server running this remote application.

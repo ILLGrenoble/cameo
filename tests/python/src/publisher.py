@@ -17,6 +17,8 @@ this.setRunning()
 
 print("Synchronized with ", numberOfSubscribers, "subscriber(s)")
 
+publisher.ping()
+
 for i in range(100):
     message = "message " + str(i)  
     publisher.send(message)

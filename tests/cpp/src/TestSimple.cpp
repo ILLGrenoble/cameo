@@ -50,6 +50,11 @@ int main(int argc, char *argv[]) {
 	// Try a second init.
 	server->init();
 
+	// Ping.
+	bool pong = server->ping();
+
+	cout << "Server pong ? " << pong << endl;
+
 	auto start = chrono::steady_clock::now();
 
 	// Loop the number of times.

@@ -16,6 +16,9 @@ if useProxy:
 server = cameopy.Server.create(endpoint, options)
 server.init()
 
+pong = server.ping()
+print("Server pong ?", pong)
+
 for i in range(numberOfTimes):    
     app = server.start("simplepy")
     state = app.waitFor()

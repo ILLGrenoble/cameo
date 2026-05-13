@@ -65,7 +65,7 @@ int PublisherZmq::getPublisherPort() const {
 
 void PublisherZmq::sendSync() {
 
-	// send a SYNC_STREAM message by the publisher socket
+	// Send a SYNC_STREAM message by the publisher socket.
 	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
@@ -76,7 +76,7 @@ void PublisherZmq::sendSync() {
 
 void PublisherZmq::send(const std::string& data) {
 
-	// send a STREAM message by the publisher socket
+	// Send a STREAM message by the publisher socket.
 	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
@@ -90,7 +90,7 @@ void PublisherZmq::send(const std::string& data) {
 
 void PublisherZmq::sendTwoParts(const std::string& data1, const std::string& data2) {
 
-	// send a STREAM message by the publisher socket
+	// Send a STREAM message by the publisher socket.
 	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 	m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
@@ -108,7 +108,8 @@ void PublisherZmq::sendTwoParts(const std::string& data1, const std::string& dat
 void PublisherZmq::setEnd() {
 
 	if (!m_ended && m_publisher) {
-		// send a STREAM_END message by the publisher socket
+
+		// Send a STREAM_END message by the publisher socket.
 		zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
 		m_publisher->send(identityPart, zmq::send_flags::sndmore);
 
@@ -122,6 +123,17 @@ void PublisherZmq::setEnd() {
 
 bool PublisherZmq::hasEnded() {
 	return m_ended;
+}
+
+void PublisherZmq::ping() {
+
+	// Send a PING message by the publisher socket.
+	zmq::message_t identityPart {m_publisherIdentity.c_str(), m_publisherIdentity.length()};
+	m_publisher->send(identityPart, zmq::send_flags::sndmore);
+
+	std::string messageType {createMessageType(message::PING)};
+	zmq::message_t typePart {messageType.c_str(), messageType.length()};
+	m_publisher->send(typePart, zmq::send_flags::none);
 }
 
 void PublisherZmq::terminate() {

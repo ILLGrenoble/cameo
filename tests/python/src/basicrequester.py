@@ -19,6 +19,9 @@ app = starter.getApp()
 requester = cameopy.coms.Requester.create(app, "responder")
 requester.init()
 
+pong = requester.ping()
+print("Pong ?", pong)
+
 this.setRunning()
 
 # Send 10 requests.

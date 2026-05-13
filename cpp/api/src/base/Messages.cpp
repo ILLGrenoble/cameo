@@ -421,4 +421,22 @@ std::string createPortsRequest() {
 	return request.dump();
 }
 
+std::string createPingRequest() {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushValue(message::PING);
+
+	return request.dump();
+}
+
+std::string createPongResponse() {
+
+	json::StringObject request;
+	request.pushKey(message::TYPE);
+	request.pushValue(message::PONG);
+
+	return request.dump();
+}
+
 }

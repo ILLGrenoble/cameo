@@ -785,6 +785,21 @@ int Server::retrieveSubscriberProxyPort() {
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
+bool Server::ping() {
+
+	try {
+		json::Object response {json::toJSON(m_requestSocket->request(createPingRequest()))};
+	}
+	catch (const ConnectionTimeout&) {
+		return false;
+	}
+	catch (...) {
+		return false;
+	}
+
+	return true;
+}
+
 std::unique_ptr<OutputStreamSocket> Server::createOutputStreamSocket(const std::string& name) {
 
 	// Create the output stream socket.

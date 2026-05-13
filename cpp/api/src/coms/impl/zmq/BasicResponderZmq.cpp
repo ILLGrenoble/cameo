@@ -172,6 +172,13 @@ std::unique_ptr<Request> ResponderZmq::receive() {
 
 			// Do not return, continue the loop.
 		}
+		else if (type == message::PING) {
+
+			// Reply immediately.
+			replyPong();
+
+			// Do not return, continue the loop.
+		}
 	}
 }
 
@@ -200,6 +207,20 @@ void ResponderZmq::replyOK() {
 	}
 
 	std::string result {createRequestResponse(0, "OK")};
+	zmq::message_t messagePart {result.c_str(), result.size()};
+
+	m_responder->send(messagePart, zmq::send_flags::none);
+}
+
+void ResponderZmq::replyPong() {
+
+	// Send the headers.
+	for (int i = 0; i < HEADER_SIZE; ++i) {
+		zmq::message_t headerPart {m_requestHeader[i].c_str(), m_requestHeader[i].size()};
+		m_responder->send(headerPart, zmq::send_flags::sndmore);
+	}
+
+	std::string result {createPongResponse()};
 	zmq::message_t messagePart {result.c_str(), result.size()};
 
 	m_responder->send(messagePart, zmq::send_flags::none);

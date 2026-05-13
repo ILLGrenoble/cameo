@@ -38,6 +38,7 @@ public:
 
 private:
 	void replyOK();
+	void replyPong();
 	std::unique_ptr<Request> processCancel();
 	std::unique_ptr<Request> processRequest(const json::Object& jsonRequest);
 

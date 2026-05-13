@@ -32,7 +32,7 @@ class Responder;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class CAMEO_EXPORT Publisher : public Object, public Cancelable {
+class CAMEO_EXPORT Publisher : public Object, public Cancelable, public Pingable {
 
 public:
 	/**
@@ -110,6 +110,12 @@ public:
 	 * \return True if the stream ended.
 	 */
 	bool hasEnded() const;
+
+	/**
+	 * Pings with response.
+	 * \return always true.
+	 */
+	bool ping() override;
 
 	/**
 	 * Returns a string representation of the publisher.

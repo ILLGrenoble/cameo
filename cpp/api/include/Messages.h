@@ -208,6 +208,16 @@ namespace message {
 	const int STREAM_END = 35;
 
 	/**
+	 * Ping type value.
+	 */
+	const int PING = 36;
+
+	/**
+	 * Pong type value.
+	 */
+	const int PONG = 37;
+
+	/**
 	 * Event message constants.
 	 */
 	struct Event {
@@ -756,6 +766,18 @@ CAMEO_EXPORT std::string createReleasePortRequest(int id, int port);
  * \return The JSON string.
  */
 CAMEO_EXPORT std::string createPortsRequest();
+
+/**
+ * Creates a ping request.
+ * \return The JSON string.
+ */
+CAMEO_EXPORT std::string createPingRequest();
+
+/**
+ * Creates a pong response.
+ * \return The JSON string.
+ */
+CAMEO_EXPORT std::string createPongResponse();
 
 }
 

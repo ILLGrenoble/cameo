@@ -60,6 +60,8 @@ public class Messages {
 	public static final long SET_STOP_HANDLER = 33;
 	public static final long STREAM = 34;
 	public static final long STREAM_END = 35;
+	public static final long PING = 36;
+	public static final long PONG = 37;
 
 	public static class Event {
 		public static final String CANCEL = "cancel";
@@ -668,5 +670,20 @@ public class Messages {
 
 		return request;
 	}
+	
+	public static JSONObject createPingRequest() {
 
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.PING);
+
+		return request;
+	}
+
+	public static JSONObject createPongResponse() {
+
+		JSONObject request = new JSONObject();
+		request.put(Messages.TYPE, Messages.PONG);
+
+		return request;
+	}
 }

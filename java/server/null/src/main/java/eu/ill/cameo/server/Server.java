@@ -345,6 +345,9 @@ public class Server {
 				else if (type == Messages.SET_STOP_HANDLER) {
 					process.processSetStopHandlerRequest(request, reply, manager);
 				}
+				else if (type == Messages.PING) {
+					process.processPingRequest(request, reply, manager);
+				}
 				else {
 					Log.logger().info("Unknown request type " + type);
 				}

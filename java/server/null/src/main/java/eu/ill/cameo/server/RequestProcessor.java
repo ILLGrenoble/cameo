@@ -928,4 +928,16 @@ public class RequestProcessor {
 		reply.add(Messages.serialize(response));
 	}
 	
+	public void processPingRequest(JSONObject request, Msg reply, Manager manager) {
+		
+		Log.logger().finest("Received Ping request" + request);
+		
+		// Return the reply.
+		JSONObject response = new JSONObject();
+		response.put(Messages.RequestResponse.VALUE, 0);
+		response.put(Messages.RequestResponse.MESSAGE, "PONG");
+		
+		reply.add(Messages.serialize(response));
+	}
+	
 }

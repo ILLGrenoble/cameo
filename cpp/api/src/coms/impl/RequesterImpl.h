@@ -29,6 +29,7 @@ public:
 	virtual void init(const Endpoint& endpoint, const std::string& responderIdentity, const TimeoutCounter& timeoutCounter) = 0;
 	virtual void send(const std::string& requestData) = 0;
 	virtual void sendTwoParts(const std::string& requestData1, const std::string& requestData2) = 0;
+	virtual void ping() = 0;
 
 	virtual std::optional<std::string> receive() = 0;
 

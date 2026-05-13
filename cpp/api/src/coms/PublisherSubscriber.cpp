@@ -225,6 +225,12 @@ void Publisher::sendEnd() const {
 	m_impl->setEnd();
 }
 
+bool Publisher::ping() {
+	m_impl->ping();
+
+	return true;
+}
+
 std::string Publisher::toString() const {
 
 	json::StringObject jsonObject;

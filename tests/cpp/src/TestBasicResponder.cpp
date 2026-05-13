@@ -73,10 +73,10 @@ int main(int argc, char *argv[]) {
 
 			cout << "Created requester " << *requester << endl;
 
-			if (!requester) {
-				cout << "Requester error" << endl;
-				return -1;
-			}
+			// Pings the responder.
+			bool pong = requester->ping();
+
+			cout << "Pong ? " << pong << endl;
 
 			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 

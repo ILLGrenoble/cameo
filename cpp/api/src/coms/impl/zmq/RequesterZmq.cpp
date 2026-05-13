@@ -278,6 +278,16 @@ void RequesterZmq::sendTwoParts(const std::string& requestData1, const std::stri
 	sendRequest(jsonRequest.dump(), requestData1, requestData2);
 }
 
+void RequesterZmq::ping() {
+
+	json::StringObject jsonRequest;
+	jsonRequest.pushKey(message::TYPE);
+	jsonRequest.pushValue(message::PING);
+
+	// Send the request.
+	sendRequest(jsonRequest.dump());
+}
+
 bool RequesterZmq::receiveMessage(zmq::message_t& message) {
 
 	// Define the number of iterations.
@@ -370,6 +380,10 @@ std::optional<std::string> RequesterZmq::receive() {
 		}
 
 		result = std::string(responsePart.data<char>(), responsePart.size());
+	}
+	else if (type == message::PONG) {
+
+		result = std::string("Pong");
 	}
 
 	return result;

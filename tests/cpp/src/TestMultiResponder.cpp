@@ -70,6 +70,10 @@ int main(int argc, char *argv[]) {
 
 		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
+		// Ping.
+		bool pong = requester->ping();
+		cout << "Pong is " << pong << endl;
+
 		// Send a simple message.
 		requester->send("request");
 

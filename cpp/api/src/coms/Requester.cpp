@@ -203,6 +203,18 @@ bool Requester::hasTimedout() const {
 	return m_impl->hasTimedout();
 }
 
+bool Requester::ping() {
+
+	m_impl->ping();
+	std::optional<std::string> response = m_impl->receive();
+
+	if (response.has_value()) {
+		return true;
+	}
+
+	return false;
+}
+
 std::string Requester::toString() const {
 
 	json::StringObject jsonObject;

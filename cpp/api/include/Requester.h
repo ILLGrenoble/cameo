@@ -24,7 +24,7 @@ class RequesterImpl;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable {
+class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable, public Pingable {
 
 public:
 	/**
@@ -138,6 +138,12 @@ public:
 	 * \return True if the requester has timed out.
 	 */
 	bool hasTimedout() const;
+
+	/**
+	 * Pings with response.
+	 * \return true if there is no timeout.
+	 */
+	bool ping() override;
 
 	/**
 	 * Returns a string representation of the requester.

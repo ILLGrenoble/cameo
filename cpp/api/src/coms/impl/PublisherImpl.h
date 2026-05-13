@@ -30,6 +30,7 @@ public:
 	virtual void sendTwoParts(const std::string& data1, const std::string& data2) = 0;
 	virtual void setEnd() = 0;
 	virtual bool hasEnded() = 0;
+	virtual void ping() = 0;
 	virtual void terminate() = 0;
 };
 

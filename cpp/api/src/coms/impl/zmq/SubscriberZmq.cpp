@@ -181,6 +181,9 @@ std::optional<std::string> SubscriberZmq::receive() {
 			else if (type == message::SYNC_STREAM) {
 				// Do nothing.
 			}
+			else if (type == message::PING) {
+				// Do nothing.
+			}
 			else if (type == message::STREAM_END) {
 				m_ended = true;
 				return {};
@@ -261,6 +264,12 @@ std::optional<std::tuple<std::string, std::string>> SubscriberZmq::receiveTwoPar
 				std::string data2 {static_cast<char*>(data2Part.data()), data2Part.size()};
 
 				return std::make_tuple(data1, data2);
+			}
+			else if (type == message::SYNC_STREAM) {
+				// Do nothing.
+			}
+			else if (type == message::PING) {
+				// Do nothing.
 			}
 			else if (type == message::STREAM_END) {
 				m_ended = true;

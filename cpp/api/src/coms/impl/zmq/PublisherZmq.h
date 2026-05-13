@@ -33,6 +33,7 @@ public:
 	virtual void sendTwoParts(const std::string& data1, const std::string& data2);
 	virtual void setEnd();
 	virtual bool hasEnded();
+	virtual void ping();
 	virtual void terminate();
 
 private:

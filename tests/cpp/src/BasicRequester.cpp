@@ -37,6 +37,11 @@ int main(int argc, char *argv[]) {
 
 	cout << "Created requester" << endl;
 
+	// Pings the responder.
+	bool pong = requester->ping();
+
+	cout << "Pong ? " << pong << endl;
+
 	This::setRunning();
 
 	// Send 10 requests.
