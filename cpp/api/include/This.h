@@ -34,7 +34,7 @@ public:
 	 *
 	 * It facilitates the definition of communication objects.
 	 */
-	class Com {
+	class CAMEO_EXPORT Com {
 
 		friend class This;
 

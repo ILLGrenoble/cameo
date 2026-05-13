@@ -70,5 +70,7 @@ int main(int argc, char *argv[]) {
 		cout << "Finished loop" << endl << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }

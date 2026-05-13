@@ -19,13 +19,13 @@ endif()
 #------------------------------------------------------------
 
 add_executable(responderapp src/ResponderApp.cpp)
-target_link_libraries(responderapp PRIVATE Cameo::cameo-api-cpp-static)
+target_link_libraries(responderapp PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(requesterapp src/RequesterApp.cpp)
-target_link_libraries(requesterapp PRIVATE Cameo::cameo-api-cpp-static)
+target_link_libraries(requesterapp PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(publisherapp src/PublisherApp.cpp)
-target_link_libraries(publisherapp PRIVATE Cameo::cameo-api-cpp-static)
+target_link_libraries(publisherapp PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(subscriberapp src/SubscriberApp.cpp)
-target_link_libraries(subscriberapp PRIVATE Cameo::cameo-api-cpp-static)
+target_link_libraries(subscriberapp PRIVATE Cameo::cameo-api-cpp)

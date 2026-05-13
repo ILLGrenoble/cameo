@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 
 # Project name and version
 project(cameopy
-  VERSION 3.0.0
+  VERSION 3.0.1
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -22,10 +22,8 @@ add_zeromq_library()
 # Dependencies
 #------------------------------------------------------------
 
-if (NOT TARGET cameo-api-cpp-static)
-  find_package(cameo-api-cpp-static 3.0 REQUIRED) # provided by the C++ API
-endif()
-
+# Find cameo-api-cpp is required for the package generation but not for the global build. 
+find_package(cameo-api-cpp 3.0.0 CONFIG)
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 
@@ -33,7 +31,7 @@ if(NOT pybind11_FOUND)
   message(STATUS "Using pybind11 from GIT repository")
   FetchContent_Declare(pybind11
 	GIT_REPOSITORY https://github.com/pybind/pybind11.git
-	GIT_TAG v2.9.2
+	GIT_TAG v3.0.4
 	GIT_SHALLOW True
 	)
   FetchContent_GetProperties(pybind11)
@@ -43,13 +41,15 @@ if(NOT pybind11_FOUND)
 	mark_as_advanced(PYBIND11_TEST)
 	mark_as_advanced(PYBIND11_INSTALL)
   endif()
-  #else()
-#  find_package(pybind11 2.4.3 REQUIRED)
 endif()
 
 pybind11_add_module(cameopy src/Application.cpp)
 
-target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp-static)
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(cameopy PUBLIC CAMEO_STATIC)
+endif()
+
+target_link_libraries(cameopy PRIVATE Cameo::cameo-api-cpp)
 
 set_target_properties(cameopy PROPERTIES
   SOVERSION ${PROJECT_VERSION_MAJOR}

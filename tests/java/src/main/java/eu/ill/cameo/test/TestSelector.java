@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import eu.ill.cameo.api.base.App;
 import eu.ill.cameo.api.base.Option;
@@ -24,7 +26,36 @@ import eu.ill.cameo.api.base.Server;
 import eu.ill.cameo.api.base.StartException;
 
 public class TestSelector {
-
+	
+	private static String N = "1";
+	private static String proxy = "false";
+	private static boolean useProxy = false;
+	private static boolean verbose = false;
+	
+	private static LinkedHashMap<String, Integer> results = new LinkedHashMap<>();
+	
+	private static void printLine(String line) {
+		if (verbose) {
+			System.out.println(line);
+		}
+	}
+	
+	private static void parseArgs(String[] args) {
+		
+		if (args.length > 1) {
+			N = args[1];
+		}
+		if (args.length > 2) {
+			proxy = args[2];
+			useProxy = (args[2].equals("true"));
+		}
+		if (args.length > 3) {
+			verbose = (args[3].equals("true"));
+		}
+		
+		//System.out.println("Args " + N + " " + proxy + " " + useProxy + " " + verbose);
+	}
+	
 	public static Process startServer(String config) {
 
 		System.out.println("*** Starting Cameo server ***");
@@ -78,21 +109,25 @@ public class TestSelector {
 		try {
 			App instance = server.start(appName, appArgs, Option.OUTPUTSTREAM);
 
-			// Start output thread.
-			OutputStreamSocket streamSocket = instance.getOutputStreamSocket();
-
+			OutputStreamSocket streamSocket = null;
 			OutputPrintThread outputThread = null;
-
-			// The socket can be null if the application is already terminated.
-			if (streamSocket == null) {
-				System.out.println("*** The application " + instance.getNameId() + " has no output stream ***");
+			
+			if (verbose) {
+				// Start output thread.
+				streamSocket = instance.getOutputStreamSocket();
+	
+				// The socket can be null if the application is already terminated.
+				if (streamSocket == null) {
+					System.out.println("*** The application " + instance.getNameId() + " has no output stream ***");
+				}
+				else {
+					outputThread = new OutputPrintThread(streamSocket);
+					outputThread.start();
+				}
 			}
-			else {
-				outputThread = new OutputPrintThread(streamSocket);
-				outputThread.start();
-			}
-
-			System.out.println("\n*** Starting " + appName + " ***");
+			
+			// Start the application.
+			System.out.println("*** Starting " + appName + " ***");
 			instance.waitFor();
 			
 			// Terminate the thread and the server.
@@ -100,7 +135,13 @@ public class TestSelector {
 				outputThread.waitFor();
 			}
 			
-			System.out.println("*** Finished " + appName + " ***");
+			if (verbose) {
+				System.out.println("*** Finished " + appName + " ***");
+				System.out.println("");
+			}
+			
+			// Set the result.
+			results.put(appName, instance.getExitCode());
 		}
 		catch (StartException e) {
 			System.out.println("*** No application ***");
@@ -194,7 +235,47 @@ public class TestSelector {
 		return apps;
 	}
 	
+	private static String padRight(String s, int n) {
+	     return String.format("%-" + n + "s", s);  
+	}
+	
+	private static int getMaxAppNameLength() {
+		
+		int length = 1;
+		
+		for (String n : results.keySet()) {
+			if (n.length() > length) {
+				length = n.length();
+			}
+		}
+		
+		return length;
+	}
+	
+	private static void printResults() {
+		
+		int maxLength = getMaxAppNameLength();
+		int columnNameLength = maxLength + 10;
+		String line = "-".repeat(columnNameLength + 9);
+		System.out.println(line);
+		System.out.println("Results");
+		System.out.println(line);
+				
+		for (Entry<String, Integer> result : results.entrySet()) {
+			
+			String stringResult = "OK";
+			if (result.getValue() != 0) {
+				stringResult = "ERROR " + result.getValue();
+			}
+			
+			System.out.println(padRight(result.getKey(), columnNameLength) + stringResult);
+		}
+	}
+	
 	public static void main(String[] args) {
+		
+		// Parse the args.
+		parseArgs(args);
 		
 		// Define the server process.
 		Process serverProcess = null;
@@ -215,10 +296,6 @@ public class TestSelector {
 		// It is necessary to loop because the Cameo server may not be connected to the proxy (connect is asynchronous).
 		while (true) {
 			try {
-				String lastArg = args[args.length - 1];
-				
-				boolean useProxy = Boolean.parseBoolean(lastArg);
-				
 				System.out.println("*** Trying to create server ***");
 				
 				if (useProxy) {
@@ -241,15 +318,14 @@ public class TestSelector {
 		
 		if (server.isAvailable()) {
 			System.out.println("*** Server is available ***");
+			System.out.println("");
 		}
 		
 		try {
 			String appName;
-			String[] appArgs;
-			appArgs = new String[args.length - 1];
-			for (int i = 0; i < args.length - 1; ++i) {
-				appArgs[i] = args[i + 1];
-			}
+			String[] appArgs = new String[2];
+			appArgs[0] = N;
+			appArgs[1] = proxy;
 			
 			ArrayList<String> apps = new ArrayList<String>();
 						
@@ -314,5 +390,8 @@ public class TestSelector {
 				}
 			}
 		}
+		
+		System.out.println("");
+		printResults();
 	}
 }

@@ -55,5 +55,7 @@ int main(int argc, char *argv[]) {
 		cout << "Finished the application " << *resultApplication << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }

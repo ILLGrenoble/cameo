@@ -75,5 +75,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "App responder finished with state " << toString(state) << std::endl;
 
+	This::terminate();
+
 	return EXIT_SUCCESS;
 }

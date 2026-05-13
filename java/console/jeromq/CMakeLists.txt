@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(cameo-console-jzmq
+project(cameo-console-jeromq
   VERSION 3.0.1
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -8,7 +8,7 @@ project(cameo-console-jzmq
 include(GNUInstallDirs)
 
 # Find the jar file produced by Maven
-set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JZMQ}-${PROJECT_VERSION}-full.jar)
+set(PROJECT_JAR_FILE_NAME ${PROJECT_NAME}${JAVA_JEROMQ}-${PROJECT_VERSION}-full.jar)
 set(PROJECT_TARGET_DIR "${CMAKE_CURRENT_SOURCE_DIR}/target")
 set(PROJECT_JAR ${PROJECT_TARGET_DIR}/${PROJECT_JAR_FILE_NAME})
 
@@ -16,7 +16,7 @@ set(JAVA_INSTALL_DIR ${CMAKE_INSTALL_DATAROOTDIR}/java/cameo)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR})
 
 # Copy the jar generated in java directory
-add_custom_target(console-jzmq
+add_custom_target(console-jeromq
   ALL
   DEPENDS ${PROJECT_JAR}
   COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_JAR} ${CMAKE_CURRENT_BINARY_DIR}/installed/${JAVA_INSTALL_DIR}

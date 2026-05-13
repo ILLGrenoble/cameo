@@ -38,6 +38,8 @@ set "cameo_tests_cpp=build\tests\cpp\Release\testsimple.exe"
 if exist "%cameo_tests_cpp%" (
   set "PATH=build\tests\cpp\Release;%PATH%"
   echo set PATH=build\tests\cpp\Release;%%PATH%%
+  rem Copy the dlls to ensure they are loaded at runtime
+  copy build\cpp\api\Release\*.dll build\tests\cpp\Release
   set "cpp=true"
 )
 
@@ -45,6 +47,8 @@ set "cameo_python_api=build\python\api\cameopyConfigVersion.cmake"
 if exist "%cameo_python_api%" (
   set "PYTHONPATH=build\python\api\Release;%PYTHONPATH%"
   echo set PYTHONPATH=build\python\api\Release;%%PYTHONPATH%%
+  rem Copy the dlls to ensure they are loaded at runtime
+  copy build\cpp\api\Release\*.dll build\python\api\Release
   set "python=true"
 )
 

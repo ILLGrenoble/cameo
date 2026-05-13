@@ -46,5 +46,7 @@ int main(int argc, char *argv[]) {
 	port = This::getCom().requestPort();
 	cout << "Received port " << port << " that must be greater than first port" << endl;
 
+	This::terminate();
+
 	return 0;
 }

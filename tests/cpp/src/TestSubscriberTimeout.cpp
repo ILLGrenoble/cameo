@@ -36,62 +36,67 @@ int main(int argc, char *argv[]) {
 		endpoint = "tcp://localhost:12000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, options);
-	server->init();
+	// Block to ensure order of object deletion.
+	{
+		unique_ptr<Server> server = Server::create(endpoint, options);
+		server->init();
 
-	std::thread td([&] {
-		// Get this app.
-		unique_ptr<App> thisApp = server->connect(This::getName());
+		std::thread td([&] {
+			// Get this app.
+			unique_ptr<App> thisApp = server->connect(This::getName());
 
-		// Create a subscriber to the application
-		unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*thisApp, "publisher");
-		subscriber->init();
+			// Create a subscriber to the application
+			unique_ptr<coms::Subscriber> subscriber = coms::Subscriber::create(*thisApp, "publisher");
+			subscriber->init();
 
-		cout << "Created subscriber " << *subscriber << endl;
+			cout << "Created subscriber " << *subscriber << endl;
 
-		optional<string> data = subscriber->receive();
+			optional<string> data = subscriber->receive();
 
-		if (data.has_value()) {
-			cout << "Received " << data.value() << endl;
-		}
+			if (data.has_value()) {
+				cout << "Received " << data.value() << endl;
+			}
 
-		subscriber->setTimeout(500);
+			subscriber->setTimeout(500);
 
-		data = subscriber->receive();
+			data = subscriber->receive();
 
-		if (data.has_value()) {
-			cout << "Received " << data.value() << endl;
-		}
-		else {
-			cout << "Has not received data, has timedout " << subscriber->hasTimedout() << endl;
-		}
+			if (data.has_value()) {
+				cout << "Received " << data.value() << endl;
+			}
+			else {
+				cout << "Has not received data, has timedout " << subscriber->hasTimedout() << endl;
+			}
 
-		data = subscriber->receive();
+			data = subscriber->receive();
 
-		if (data.has_value()) {
-			cout << "Received " << data.value() << endl;
-		}
-		else {
-			cout << "Has not received, has timedout " << subscriber->hasTimedout() << endl;
-		}
+			if (data.has_value()) {
+				cout << "Received " << data.value() << endl;
+			}
+			else {
+				cout << "Has not received, has timedout " << subscriber->hasTimedout() << endl;
+			}
 
-	});
+		});
 
-	unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
-	publisher->setSyncSubscribers(true);
-	publisher->setWaitForSubscribers(1);
-	publisher->init();
+		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
+		publisher->setSyncSubscribers(true);
+		publisher->setWaitForSubscribers(1);
+		publisher->init();
 
-	publisher->send("first message");
+		publisher->send("first message");
 
-	this_thread::sleep_for(chrono::milliseconds(1000));
+		this_thread::sleep_for(chrono::milliseconds(1000));
 
-	publisher->send("message after timeout");
+		publisher->send("message after timeout");
 
 
-	cout << "Wait for subscriber termination" << endl;
-	td.join();
-	cout << "Subscriber terminated" << endl;
+		cout << "Wait for subscriber termination" << endl;
+		td.join();
+		cout << "Subscriber terminated" << endl;
+	}
+
+	This::terminate();
 
 	return 0;
 }

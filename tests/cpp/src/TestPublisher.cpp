@@ -92,5 +92,7 @@ int main(int argc, char *argv[]) {
 		cout << "Publisher application terminated with state " << toString(state) << endl;
 	}
 
+	This::terminate();
+
 	return 0;
 }
