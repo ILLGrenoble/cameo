@@ -22,7 +22,8 @@ add_zeromq_library()
 # Dependencies
 #------------------------------------------------------------
 
-find_package(cameo-api-cpp 3.0.0 REQUIRED)
+# Find cameo-api-cpp is required for the package generation but not for the global build. 
+find_package(cameo-api-cpp 3.0.0 CONFIG)
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 2.9 CONFIG)
 
