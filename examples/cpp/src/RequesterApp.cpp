@@ -61,10 +61,7 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < N; ++i) {
 
 		// Send a simple message as string.
-		requester->send(message + "-" + std::to_string(i));
-
-		// Receive the response.
-		std::optional<std::string> response = requester->receive();
+		std::optional<std::string> response = requester->request(message + "-" + std::to_string(i));
 
 		std::cout << "Response is " << response.value() << std::endl;
 	}

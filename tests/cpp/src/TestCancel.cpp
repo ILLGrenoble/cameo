@@ -283,11 +283,7 @@ int main(int argc, char *argv[]) {
 
 		cout << "Sending request" << endl;
 
-		requester->send("request");
-
-		cout << "Receiving response" << endl;
-
-		requester->receive();
+		requester->request("request");
 
 		if (requester->isCanceled()) {
 			cout << "Requester is canceled" << endl;

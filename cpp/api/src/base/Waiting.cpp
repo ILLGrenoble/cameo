@@ -14,8 +14,6 @@
 #include "This.h"
 #include <iostream>
 
-using namespace std;
-
 namespace cameo {
 
 Waiting::Waiting(Waiting::Function function)
@@ -29,7 +27,7 @@ Waiting::Waiting(Waiting::Function function)
 
 Waiting::~Waiting() {
 
-	// Remove the object in the waiting set if This exists.
+	// Remove the object from the waiting set if This exists.
 	if (This::m_instance.m_inited) {
 		This::m_instance.m_waitingSet->remove(this);
 	}

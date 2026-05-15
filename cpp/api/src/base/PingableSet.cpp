@@ -8,38 +8,38 @@
  *
  */
 
-#include "WaitingSet.h"
-#include "Waiting.h"
+#include "PingableSet.h"
+#include "Pingable.h"
 
 namespace cameo {
 
-WaitingSet::WaitingSet() {
+PingableSet::PingableSet() {
 }
 
-void WaitingSet::add(Waiting * waiting) {
+void PingableSet::add(Pingable * pingable) {
 
 	std::lock_guard<std::mutex> lock {m_mutex};
 
-	m_set.insert(waiting);
+	m_set.insert(pingable);
 }
 
-void WaitingSet::remove(Waiting * waiting) {
+void PingableSet::remove(Pingable * pingable) {
 
 	std::lock_guard<std::mutex> lock {m_mutex};
 
-	std::set<Waiting *>::iterator it = m_set.find(waiting);
+	std::set<Pingable *>::iterator it = m_set.find(pingable);
 
 	if (it != m_set.end()) {
 		m_set.erase(it);
 	}
 }
 
-void WaitingSet::cancelAll() {
+void PingableSet::pingAll() {
 
 	std::lock_guard<std::mutex> lock {m_mutex};
 
-	for (std::set<Waiting *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
-		(*it)->cancel();
+	for (std::set<Pingable *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
+		(*it)->ping();
 	}
 
 }

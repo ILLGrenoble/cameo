@@ -75,18 +75,15 @@ int main(int argc, char *argv[]) {
 		cout << "Pong is " << pong << endl;
 
 		// Send a simple message.
-		requester->send("request");
-
-		optional<string> response = requester->receive();
+		optional<string> response = requester->request("request");
 		cout << "Response is " << response.value() << endl;
 
 		response = requester->receive();
 		cout << "Response 2 is " << response.value() << endl;
 
 		// Send a two-parts message.
-		requester->sendTwoParts("first", "second");
+		response = requester->request("first", "second");
 
-		response = requester->receive();
 		cout << "Response is " << response.value() << endl;
 
 

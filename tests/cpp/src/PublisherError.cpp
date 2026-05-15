@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 
 	// Sending data.
 	for (int i = 0; i < 10; ++i) {
-		publisher->send("message " + to_string(i));
+		publisher->publish("message " + to_string(i));
 	}
 
 	// Cause the program to fail. Otherwise the destructor of the publisher will send a stream end.

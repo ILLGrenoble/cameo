@@ -14,6 +14,7 @@
 #include "Defines.h"
 #include <string>
 #include <memory>
+#include <mutex>
 
 namespace cameo {
 
@@ -74,6 +75,7 @@ public:
 	std::string request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout = -1);
 
 private:
+	std::mutex m_mutex;
 	std::unique_ptr<RequestSocketImpl> m_impl;
 };
 

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	while (!This::isStopping()) {
 
 		// Send a message.
-		publisher->send(std::string{"a message "} + std::to_string(i));
+		publisher->publish(std::string{"a message "} + std::to_string(i));
 		i++;
 		
 		// Sleep for 1s.

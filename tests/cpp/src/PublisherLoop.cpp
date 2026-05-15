@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 
 	// sending data
 	while (true) {
-		publisher->send("hello");
+		publisher->publish("hello");
 		this_thread::sleep_for(chrono::milliseconds(100));
 	}
 

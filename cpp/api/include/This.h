@@ -23,6 +23,7 @@ namespace cameo {
 class CAMEO_EXPORT This : private EventListener {
 
 	friend class cameo::Waiting;
+	friend class cameo::Pingable;
 	friend class cameo::Server;
 	friend std::ostream& operator<<(std::ostream&, const cameo::This&);
 
@@ -215,6 +216,12 @@ public:
 	static void handleStop(StopFunctionType function, int stoppingTime = -1);
 
 	/**
+	 * Starts the heartbeat.
+	 * \param period The period in seconds.
+	 */
+	static void hearbeat(int period);
+
+	/**
 	 * Cancels all the waiting calls.
 	 */
 	static void cancelAll();
@@ -266,6 +273,7 @@ private:
 	void checkStates();
 	void initStarterCheck();
 	void startCheckStatesThread();
+	void startHearbeatThread(int period);
 
 	std::string m_name;
 	int m_id;
@@ -287,7 +295,13 @@ private:
 	std::unique_ptr<Server> m_starterServer;
 	std::unique_ptr<std::thread> m_checkStatesThread;
 
-	bool m_inited;
+	std::unique_ptr<PingableSet> m_pingableSet;
+	std::mutex m_mutex;
+	std::condition_variable m_pingCondition;
+	std::unique_ptr<std::thread> m_pingThread;
+
+	std::atomic_bool m_inited;
+	std::atomic_bool m_terminated;
 
 	static This m_instance;
 	static const std::string RUNNING_STATE;

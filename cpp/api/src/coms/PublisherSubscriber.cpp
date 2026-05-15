@@ -217,15 +217,31 @@ void Publisher::sendTwoParts(const std::string& data1, const std::string& data2)
 	m_impl->sendTwoParts(data1, data2);
 }
 
-bool Publisher::hasEnded() const {
-	return m_impl->hasEnded();
-}
-
 void Publisher::sendEnd() const {
 	m_impl->setEnd();
 }
 
+void Publisher::publish(const std::string& data) {
+	std::unique_lock<std::mutex> lock(m_mutex);
+	m_impl->send(data);
+}
+
+void Publisher::publish(const std::string& data1, const std::string& data2) {
+	std::unique_lock<std::mutex> lock(m_mutex);
+	m_impl->sendTwoParts(data1, data2);
+}
+
+void Publisher::publishEnd() {
+	std::unique_lock<std::mutex> lock(m_mutex);
+	m_impl->setEnd();
+}
+
+bool Publisher::hasEnded() const {
+	return m_impl->hasEnded();
+}
+
 bool Publisher::ping() {
+	std::unique_lock<std::mutex> lock(m_mutex);
 	m_impl->ping();
 
 	return true;
@@ -328,8 +344,7 @@ void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscrib
 			jsonRequest.pushKey(message::TYPE);
 			jsonRequest.pushValue(message::SYNC_STREAM);
 
-			m_requester->send(jsonRequest.dump());
-			std::optional<std::string> response {m_requester->receive()};
+			std::optional<std::string> response {m_requester->request(jsonRequest.dump())};
 
 			syncTimeout += SYNC_TIMEOUT;
 
@@ -353,8 +368,7 @@ void Subscriber::synchronize(const TimeoutCounter& timeout, int numberOfSubscrib
 			jsonRequest.pushKey(message::TYPE);
 			jsonRequest.pushValue(Publisher::SUBSCRIBE_PUBLISHER);
 
-			m_requester->send(jsonRequest.dump());
-			std::optional<std::string> response {m_requester->receive()};
+			std::optional<std::string> response {m_requester->request(jsonRequest.dump())};
 		}
 	}
 

@@ -34,12 +34,12 @@
 #include "IdGenerator.h"
 #include "Waiting.h"
 #include "Messages.h"
+#include "TimeoutCounter.h"
 #include <functional>
 #include <vector>
 #include <set>
 #include <memory>
 #include <optional>
-#include "TimeoutCounter.h"
 
 /**
  * Main namespace of the library.
@@ -74,6 +74,7 @@ class EventStreamSocket;
 class OutputStreamSocket;
 class Waiting;
 class WaitingSet;
+class PingableSet;
 class StopHandler;
 class RequestSocket;
 

@@ -84,11 +84,11 @@ int main(int argc, char *argv[]) {
 		publisher->setWaitForSubscribers(1);
 		publisher->init();
 
-		publisher->send("first message");
+		publisher->publish("first message");
 
 		this_thread::sleep_for(chrono::milliseconds(1000));
 
-		publisher->send("message after timeout");
+		publisher->publish("message after timeout");
 
 
 		cout << "Wait for subscriber termination" << endl;

@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
 
 				string data = "{";
 				data += to_string(k) + ", " + to_string(k * k) + "}";
-				publisher->sendTwoParts(to_string(k), data);
+				publisher->publish(to_string(k), data);
 
 				cout << "Sent " << data << endl;
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 			}
 
 			// The publisher must terminate so that the subscriber applications receive end of stream.
-			publisher->sendEnd();
+			publisher->publishEnd();
 
 			// Wait for the end of the applications.
 			AppArray instances = server->connectAll(applicationName);

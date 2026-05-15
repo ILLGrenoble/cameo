@@ -8,48 +8,48 @@
  *
  */
 
-#ifndef CAMEO_WAITINGSET_H_
-#define CAMEO_WAITINGSET_H_
+#ifndef CAMEO_PINGABLESET_H_
+#define CAMEO_PINGABLESET_H_
 
 #include <set>
 #include <mutex>
 
 namespace cameo {
 
-class Waiting;
+class Pingable;
 
 /**
- * Class containing a set of Waiting objects.
+ * Class containing a set of Pingable objects.
  * It is protected with a mutex because the class must be thread-safe.
  */
-class WaitingSet {
+class PingableSet {
 
 public:
 	/**
 	 * Constructor.
 	 */
-	WaitingSet();
+	PingableSet();
 
 	/**
-	 * Adds a Waiting object.
-	 * \param waiting The Waiting object.
+	 * Adds a Pingable object.
+	 * \param Pingable The Pingable object.
 	 */
-	void add(Waiting * waiting);
+	void add(Pingable * Pingable);
 
 	/**
-	 * Removes a Waiting object.
-	 * \param waiting The Waiting object.
+	 * Removes a Pingable object.
+	 * \param Pingable The Pingable object.
 	 */
-	void remove(Waiting * waiting);
+	void remove(Pingable * Pingable);
 
 	/**
-	 * Cancels all the Waiting objects.
+	 * Pings all the Pingable objects.
 	 */
-	void cancelAll();
+	void pingAll();
 
 private:
 	std::mutex m_mutex;
-	std::set<Waiting *> m_set;
+	std::set<Pingable *> m_set;
 };
 
 }

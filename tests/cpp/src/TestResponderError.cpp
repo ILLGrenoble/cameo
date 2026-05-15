@@ -71,16 +71,14 @@ int main(int argc, char *argv[]) {
 			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
 			// Send a simple message.
-			requester->send("request");
-
 			// The app is terminating at this point so that the requester won't receive anything.
-			optional<string> response = requester->receive();
+			optional<string> response = requester->request("request");
+
 			cout << "Response is " << response.value() << endl;
 
 			for (int j = 0; j < 3; j++) {
 				// Re-send message.
-				requester->send("request");
-				response = requester->receive();
+				response = requester->request("request");
 
 				// The requester is canceled because the app is terminated.
 				if (!response.has_value()) {
@@ -116,16 +114,14 @@ int main(int argc, char *argv[]) {
 			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
 			// Send a simple message.
-			requester->send("request");
-
 			// The app is terminating at this point so that the requester won't receive anything.
-			optional<string> response = requester->receive();
+			optional<string> response = requester->request("request");
+
 			cout << "Response is " << response.value() << endl;
 
 			for (int j = 0; j < 3; j++) {
 				// Re-send message.
-				requester->send("request");
-				response = requester->receive();
+				response = requester->request("request");
 
 				// The requester is canceled because the app is terminated.
 				if (!response.has_value()) {

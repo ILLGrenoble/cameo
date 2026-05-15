@@ -50,9 +50,7 @@ int main(int argc, char *argv[]) {
 
 	This::setRunning();
 
-	requester->send("A message");
-
-	optional<string> response = requester->receive();
+	optional<string> response = requester->request("A message");
 
 	This::setResult("The result");
 

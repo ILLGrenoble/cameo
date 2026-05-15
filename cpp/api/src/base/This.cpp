@@ -14,6 +14,7 @@
 #include "JSON.h"
 #include "Waiting.h"
 #include "WaitingSet.h"
+#include "PingableSet.h"
 #include "RequestSocket.h"
 #include "CancelEvent.h"
 #include "StatusEvent.h"
@@ -141,6 +142,15 @@ void This::terminateImpl() {
 		return;
 	}
 
+	// Set terminated.
+	m_terminated = true;
+	m_pingCondition.notify_one();
+
+	// Join the ping thread.
+	if (m_pingThread) {
+		m_pingThread->join();
+	}
+
 	// Terminate the unregistered application.
 	if (!m_registered) {
 		terminateUnregisteredApplication();
@@ -176,7 +186,8 @@ This::This() :
 	m_starterId{0},
 	m_starterProxyPort{0},
 	m_starterLinked{false},
-	m_inited{false} {
+	m_inited{false},
+	m_terminated{false} {
 }
 
 void This::initApplication(int argc, char *argv[]) {
@@ -267,6 +278,8 @@ void This::initApplication() {
 		initStarterCheck();
 	}
 
+	m_pingableSet = std::make_unique<PingableSet>();
+
 	// Init com.
 	m_com = std::unique_ptr<Com>{new Com(m_server.get(), m_id)};
 
@@ -322,6 +335,10 @@ bool This::isStopping() {
 
 void This::handleStop(StopFunctionType function, int stoppingTime) {
 	m_instance.initStopCheck(function, stoppingTime);
+}
+
+void This::hearbeat(int period) {
+	m_instance.startHearbeatThread(period);
 }
 
 void This::cancelAll() {
@@ -506,6 +523,26 @@ void This::checkStates() {
 
 	// Reset the stop function here because in case of Python callback, it is necessary to do it here rather than in the This destructor.
 	m_stopFunction = StopFunctionType{};
+}
+
+void This::startHearbeatThread(int period) {
+
+	if (!m_pingThread) {
+		m_pingThread = std::make_unique<std::thread>([this, period]() {
+
+			while (true) {
+
+				std::unique_lock<std::mutex> lock(m_mutex);
+				m_pingCondition.wait_for(lock, std::chrono::seconds(period));
+
+				if (m_terminated) {
+					break;
+				}
+
+				m_pingableSet->pingAll();
+			}
+		});
+	}
 }
 
 std::string This::toString() {

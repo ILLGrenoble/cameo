@@ -105,6 +105,26 @@ public:
 	 */
 	void sendEnd() const;
 
+
+	/**
+	 * Publishes a message in one part.
+	 * \param data The data to send.
+	 */
+	void publish(const std::string &message);
+
+	/**
+	 * Publishes a message in two parts.
+	 * \param messagePart1 The first part.
+	 * \param messagePart2 The second part.
+	 */
+	void publish(const std::string &messagePart1, const std::string &messagePart2);
+
+	/**
+	 * Publishes the end of the stream.
+	 */
+	void publishEnd();
+
+
 	/**
 	 * Returns true if the stream ended.
 	 * \return True if the stream ended.
@@ -164,6 +184,7 @@ private:
 	std::string m_name;
 	bool m_syncSubscribers = false;
 	int m_numberOfSubscribers = 0;
+	std::mutex m_mutex;
 	std::unique_ptr<PublisherImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;

@@ -81,18 +81,14 @@ int main(int argc, char *argv[]) {
 			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
 			// Send a simple message.
-			requester->send("request");
-
-			optional<string> response = requester->receive();
+			optional<string> response = requester->request("request");
 			cout << "Response is " << response.value() << endl;
 
 			response = requester->receive();
 			cout << "Response 2 is " << response.value() << endl;
 
 			// Send a two-parts message.
-			requester->sendTwoParts("first", "second");
-
-			response = requester->receive();
+			response = requester->request("first", "second");
 			cout << "Response is " << response.value() << endl;
 
 			// Send a simple message but do not receive the response immediately.
@@ -105,10 +101,8 @@ int main(int argc, char *argv[]) {
 			cout << "Response is " << response.value() << endl;
 
 			// Send a new simple message.
-			requester->send("request after timeout");
 			requester->setTimeout(200);
-
-			response = requester->receive();
+			response = requester->request("request after timeout");
 
 			if (response.has_value()) {
 				cout << "Response is " << response.value() << endl;
@@ -124,7 +118,7 @@ int main(int argc, char *argv[]) {
 
 			// The requester needs to resync after a timeout.
 			// If the server does not respond within the configured timeout, an error occurs.
-			requester->send("request after timeout");
+			requester->request("request after timeout");
 			if (requester->hasTimedout()) {
 				cout << "Timeout while resyncing" << endl;
 			}
@@ -133,18 +127,16 @@ int main(int argc, char *argv[]) {
 			this_thread::sleep_for(chrono::seconds(1));
 
 			// Resend the request.
-			requester->send("request after timeout");
+			response = requester->request("request after timeout");
 			if (!requester->hasTimedout()) {
 				cout << "No timeout while sending" << endl;
 			}
 
-			response = requester->receive();
 			cout << "Response is " << response.value() << endl;
 
 			// Cancel the requester.
 			requester->cancel();
-			requester->send("request after cancel");
-			response = requester->receive();
+			response = requester->request("request after cancel");
 
 			if (response.has_value()) {
 				cout << "Response is " << response.value() << endl;
@@ -160,8 +152,7 @@ int main(int argc, char *argv[]) {
 
 			// Re-init the requester has no effect.
 			requester->init();
-			requester->send("2nd request after cancel");
-			response = requester->receive();
+			response = requester->request("2nd request after cancel");
 
 			if (response.has_value()) {
 				cout << "Response is " << response.value() << endl;

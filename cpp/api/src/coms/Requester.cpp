@@ -190,6 +190,18 @@ std::optional<std::string> Requester::receive() {
 	return m_impl->receive();
 }
 
+std::optional<std::string> Requester::request(const std::string& request) {
+	std::unique_lock<std::mutex> lock(m_mutex);
+	m_impl->send(request);
+	return m_impl->receive();
+}
+
+std::optional<std::string> Requester::request(const std::string& requestPart1, const std::string& requestPart2) {
+	std::unique_lock<std::mutex> lock(m_mutex);
+	m_impl->sendTwoParts(requestPart1, requestPart2);
+	return m_impl->receive();
+}
+
 void Requester::cancel() {
 	m_keyValueGetter->cancel();
 	m_impl->cancel();
@@ -204,7 +216,7 @@ bool Requester::hasTimedout() const {
 }
 
 bool Requester::ping() {
-
+	std::unique_lock<std::mutex> lock(m_mutex);
 	m_impl->ping();
 	std::optional<std::string> response = m_impl->receive();
 

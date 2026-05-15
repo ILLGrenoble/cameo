@@ -58,10 +58,10 @@ int main(int argc, char *argv[]) {
 
 		// Sending data.
 		for (int i = 0; i < 100; ++i) {
-			publisher->send("message " + to_string(i));
+			publisher->publish("message " + to_string(i));
 		}
 
-		publisher->sendEnd();
+		publisher->publishEnd();
 
 		cout << "Finished the application" << endl;
 	}

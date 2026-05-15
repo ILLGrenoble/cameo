@@ -48,9 +48,7 @@ int main(int argc, char *argv[]) {
 	int R = 10;
 	for (int i = 0; i < R; ++i) {
 		// Send and wait for the result.
-		requester->send("test");
-
-		std::optional<std::string> response = requester->receive();
+		std::optional<std::string> response = requester->request("test");
 
 		if (response.has_value()) {
 			cout << "Received " << response.value() << endl;

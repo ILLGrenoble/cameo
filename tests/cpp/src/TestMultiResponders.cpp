@@ -85,8 +85,7 @@ int main(int argc, char *argv[]) {
 			for (int i = 0; i < numberOfTimes; ++i) {
 
 				// Send a request.
-				requesters[t]->send(std::to_string(i));
-				optional<string> response = requesters[t]->receive();
+				optional<string> response = requesters[t]->request(std::to_string(i));
 
 				cout << t << " receives " << response.value() << endl;
 			}

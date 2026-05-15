@@ -35,14 +35,17 @@ void RequestSocket::setTimeout(int timeout) {
 }
 
 std::string RequestSocket::request(const std::string& request, int overrideTimeout) {
+	std::unique_lock<std::mutex> lock(m_mutex);
 	return m_impl->request(request, overrideTimeout);
 }
 
 std::string RequestSocket::request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) {
+	std::unique_lock<std::mutex> lock(m_mutex);
 	return m_impl->request(requestPart1, requestPart2, overrideTimeout);
 }
 
 std::string RequestSocket::request(const std::string& requestPart1, const std::string& requestPart2, const std::string& requestPart3, int overrideTimeout) {
+	std::unique_lock<std::mutex> lock(m_mutex);
 	return m_impl->request(requestPart1, requestPart2, requestPart3, overrideTimeout);
 }
 

@@ -134,6 +134,25 @@ public:
 	std::optional<std::string> receive();
 
 	/**
+	 * Sends a request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
+	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
+	 * \param request The request.
+	 * \return The response or null.
+	 */
+	std::optional<std::string> request(const std::string &request);
+
+	/**
+	 * Sends a request in two parts.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
+	 * \param requestPart1 The first part of the request.
+	 * \param requestPart2 The seconds part of the request.
+	 * Returns a string or nothing if the requester is canceled or a timeout occurred.
+	 * \return The response or null.
+	 */
+	std::optional<std::string> request(const std::string &requestPart1, const std::string &requestPart2);
+
+	/**
 	 * Returns true if the requester has timed out.
 	 * \return True if the requester has timed out.
 	 */
@@ -176,6 +195,7 @@ private:
 	std::string m_appName;
 	int m_appId;
 	Endpoint m_appEndpoint;
+	std::mutex m_mutex;
 	std::unique_ptr<RequesterImpl> m_impl;
 	std::unique_ptr<Waiting> m_waiting;
 	std::string m_key;

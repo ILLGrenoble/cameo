@@ -22,9 +22,14 @@ class CAMEO_EXPORT Pingable {
 
 public:
 	/**
+	 * Constructor.
+	 */
+	Pingable();
+
+	/**
 	 * Destructor.
 	 */
-	virtual ~Pingable() {}
+	virtual ~Pingable();
 
 	/**
 	 * Pings with response.
