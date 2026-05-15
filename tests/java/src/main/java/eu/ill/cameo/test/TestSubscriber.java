@@ -94,7 +94,7 @@ public class TestSubscriber {
 	
 					String ks = k + "";
 					String data = "{" + k + ", " + k * k + "}";
-					publisher.sendTwoParts(ks.getBytes(), data.getBytes());
+					publisher.publish(ks.getBytes(), data.getBytes());
 					
 					System.out.println("sent " + data);
 					

@@ -42,7 +42,7 @@ public class PublisherError {
 			
 			// Sending data.
 			for (int i = 0; i < 10; ++i) {
-				publisher.sendString("message " + i);
+				publisher.publish("message " + i);
 			}
 			
 			System.exit(123);

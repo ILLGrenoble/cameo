@@ -48,8 +48,7 @@ public class BasicRequester {
 			int R = 10;
 			for (int i = 0; i < R; ++i) {
 				// Send and wait for the result.
-				requester.sendString("test");
-				String result = requester.receiveString();
+				String result = requester.request("test");
 				
 				System.out.println("Received " + result);
 			}

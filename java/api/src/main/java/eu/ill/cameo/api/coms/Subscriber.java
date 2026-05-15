@@ -95,8 +95,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 				JSONObject jsonRequest = new JSONObject();
 				jsonRequest.put(Messages.TYPE, Messages.SYNC_STREAM);
 				
-				requester.sendString(jsonRequest.toJSONString());
-				String response = requester.receiveString();
+				String response = requester.request(jsonRequest.toJSONString());
 				
 				syncTimeout += SYNC_TIMEOUT;
 				
@@ -119,8 +118,7 @@ public class Subscriber extends StateObject implements ITimeoutable, ICancelable
 				JSONObject jsonRequest = new JSONObject();
 				jsonRequest.put(Messages.TYPE, Publisher.SUBSCRIBE_PUBLISHER);
 				
-				requester.sendString(jsonRequest.toJSONString());
-				String response = requester.receiveString();
+				String response = requester.request(jsonRequest.toJSONString());
 			}
 		}
 		

@@ -86,8 +86,8 @@ public class TestMultiResponders {
 					
 						for (int i = 0; i < fn; ++i) {
 							
-							requesters[ft].sendString("" + i);
-							System.out.println(ft + " receives " + requesters[ft].receiveString());
+							String response = requesters[ft].request("" + i);
+							System.out.println(ft + " receives " + response);
 						}
 					}
 				});

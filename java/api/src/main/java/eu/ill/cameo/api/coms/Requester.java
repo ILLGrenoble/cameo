@@ -293,6 +293,40 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable,
 	}
 	
 	/**
+	 * Requests a binary request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization. 
+	 * @param request The binary request.
+	 * @return The response or null.
+	 */
+	public synchronized byte[] request(byte[] request) {
+		impl.send(request);
+		return impl.receive();
+	}
+	
+	/**
+	 * Requests a string request in one part.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
+	 * @param request The string request.
+	 * @return The response or null.
+	 */
+	public synchronized String request(String request) {
+		impl.send(request);
+		return impl.receiveString();
+	}
+	
+	/**
+	 * Sends a request in two binary parts.
+	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
+	 * @param requestPart1 The first part of the request.
+	 * @param requestPart2 The seconds part of the request.
+	 * @return The response or null. Use Messages.parseString() to convert the response to a string.
+	 */
+	public synchronized byte[] request(byte[] requestPart1, byte[] requestPart2) {
+		impl.sendTwoParts(requestPart1, requestPart2);
+		return impl.receive();
+	}
+	
+	/**
 	 * Cancels the requester. Unblocks the receive() call in another thread.
 	 */
 	@Override

@@ -84,14 +84,14 @@ public class TestSubscriberTimeout {
 			publisher.setWaitForSubscribers(1);
 			publisher.init();
 		
-			publisher.sendString("first message");
+			publisher.publish("first message");
 			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
 			}
 						
-			publisher.sendString("message after timeout");
+			publisher.publish("message after timeout");
 			
 			System.out.println("Wait for subscriber termination");
 			

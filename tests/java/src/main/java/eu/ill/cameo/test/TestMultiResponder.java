@@ -74,14 +74,14 @@ public class TestMultiResponder {
 				System.out.println("Pong ? " + pong);
 				
 				// Send a simple message.
-				requester.sendString("request");
-				System.out.println("Response is " + requester.receiveString());
+				String response = requester.request("request");
+				System.out.println("Response is " + response);
 				System.out.println("Response 2 is " + requester.receiveString());
 			
 				
 				// Send a two-parts message.
-				requester.sendTwoParts(Messages.serialize("first"), Messages.serialize("second"));
-				System.out.println("Response is " + requester.receiveString());
+				byte[] bytes = requester.request(Messages.serialize("first"), Messages.serialize("second"));
+				System.out.println("Response is " + Messages.parseString(bytes));
 				
 				int state = responderApplication.waitFor();
 				System.out.println("Responder application terminated with state " + State.toString(state));			

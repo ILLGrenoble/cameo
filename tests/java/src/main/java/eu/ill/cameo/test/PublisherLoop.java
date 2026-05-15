@@ -36,7 +36,7 @@ public class PublisherLoop {
 			// Sending data.
 			while (!publisher.hasEnded()) {
 				
-				publisher.sendString("hello");
+				publisher.publish("hello");
 				
 				try {
 					Thread.sleep(100);

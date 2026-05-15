@@ -399,11 +399,7 @@ public class TestCancel {
 				
 				System.out.println("Sending request");
 				
-				requester.sendString("request");
-				
-				System.out.println("Receiving response");
-				
-				requester.receive();
+				requester.request("request");
 				
 				if (requester.isCanceled()) {
 					System.out.println("Requester is canceled");	

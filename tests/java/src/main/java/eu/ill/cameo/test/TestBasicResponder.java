@@ -86,18 +86,18 @@ public class TestBasicResponder {
 				
 				
 				// Send a simple message.
-				requester.sendString("request");
-				System.out.println("Response is " + requester.receiveString());
+				String response = requester.request("request");
+				System.out.println("Response is " + response);
 				System.out.println("Response 2 is " + requester.receiveString());
 			
 				
 				// Send a two-parts message.
-				requester.sendTwoParts(Messages.serialize("first"), Messages.serialize("second"));
-				System.out.println("Response is " + requester.receiveString());
+				byte[] bytes = requester.request(Messages.serialize("first"), Messages.serialize("second"));
+				System.out.println("Response is " + Messages.parseString(bytes));
 				
 				
 				// Send a simple message.
-				requester.sendString("request");
+				response = requester.request("request");
 				
 				// Wait 1s.
 				System.out.println("Wait so that the responder has replied");
@@ -107,14 +107,12 @@ public class TestBasicResponder {
 				catch (InterruptedException e) {
 				}
 				
-				System.out.println("Response is " + requester.receiveString());
+				System.out.println("Response is " + response);
 				
 				
 				// Send a simple message.
-				requester.sendString("request after wait");
 				requester.setTimeout(200);
-				
-				String response = requester.receiveString();
+				response = requester.request("request after wait");
 				
 				if (response != null) {
 					System.out.println("Response is " + response);
@@ -129,7 +127,7 @@ public class TestBasicResponder {
 
 				// The requester needs to resync after a timeout.
 				// If the server does not respond within the configured timeout, an error occurs.
-				requester.sendString("request after timeout");
+				requester.request("request after timeout");
 				if (requester.hasTimedout()) {
 					System.out.println("Timeout while resyncing");
 				}
@@ -142,19 +140,17 @@ public class TestBasicResponder {
 				}
 				
 				// Resend the request.
-				requester.sendString("request after timeout");
+				response = requester.request("request after timeout");
 				if (!requester.hasTimedout()) {
 					System.out.println("No timeout while sending");
 				}
 				
-				response = requester.receiveString();
 				System.out.println("Response is " + response);
 				
 				
 				// Cancel the requester.
 				requester.cancel();
-				requester.sendString("request after cancel");
-				response = requester.receiveString();
+				response = requester.request("request after cancel");
 
 				if (response != null) {
 					System.out.println("Response is " + response);
@@ -170,8 +166,7 @@ public class TestBasicResponder {
 
 				// Re-init the requester has no effect.
 				requester.init();
-				requester.sendString("2nd request after cancel");
-				response = requester.receiveString();
+				response = requester.request("2nd request after cancel");
 
 				if (response != null) {
 					System.out.println("Response is " + response);

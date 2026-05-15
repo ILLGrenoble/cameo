@@ -275,7 +275,39 @@ public class Publisher extends StateObject implements ICancelable, IPingable {
 	public void sendEnd() {
 		impl.sendEnd();
 	}
+		
+	/**
+	 * Publishes a message in one binary part.
+	 * @param message The data to send.
+	 */
+	public synchronized void publish(byte[] message) {
+		impl.send(message);
+	}
 	
+	/**
+	 * Publishes a message in one string part.
+	 * @param message The data to send.
+	 */
+	public synchronized void publish(String message) {
+		impl.send(message);
+	}
+	
+	/**
+	 * Publishes a message in two binary parts.
+	 * \param messagePart1 The first part.
+	 * \param messagePart2 The second part.
+	 */		
+	public synchronized void publish(byte[] messagePart1, byte[] messagePart2) {
+		impl.sendTwoParts(messagePart1, messagePart2);
+	}
+	
+	/**
+	 * Publishes the end of the stream.
+	 */
+	public synchronized void publishEnd() {
+		impl.sendEnd();
+	}
+		
 	/**
 	 * Returns true if the stream ended.
 	 * @return True if the stream ended.

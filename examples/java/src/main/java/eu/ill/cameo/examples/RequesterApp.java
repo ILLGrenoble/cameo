@@ -60,8 +60,8 @@ public class RequesterApp {
 			
 			for (int i = 0; i < N; ++i) {
 				// Send a simple message as string.
-				requester.sendString(message + "-" + i);
-				System.out.println("Response is " + requester.receiveString());
+				String response = requester.request(message + "-" + i);
+				System.out.println("Response is " + response);
 			}
 			
 			// Stop the responder app and wait for its termination.

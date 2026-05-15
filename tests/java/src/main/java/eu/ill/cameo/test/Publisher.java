@@ -50,7 +50,7 @@ public class Publisher {
 			
 			// Sending data.
 			for (int i = 0; i < 100; ++i) {
-				publisher.sendString("message " + i);
+				publisher.publish("message " + i);
 			}
 			
 			publisher.terminate();

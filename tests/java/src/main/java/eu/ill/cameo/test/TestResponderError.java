@@ -75,15 +75,14 @@ public class TestResponderError {
 					System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 					
 					// Send a simple message.
-					requester.sendString("request");
-					System.out.println("Response is " + requester.receiveString());
+					String response = requester.request("request");
+					System.out.println("Response is " + response);
 	
 					for (int j = 0; j < 3; j++) {
 
 						// Re-send message.
-						requester.sendString("request");
-						byte[] response = requester.receive();
-		
+						response = requester.request("request");
+								
 						if (response == null) {
 							System.out.println("No response");
 						}
@@ -119,15 +118,14 @@ public class TestResponderError {
 					System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 					
 					// Send a simple message.
-					requester.sendString("request");
-					System.out.println("Response is " + requester.receiveString());
+					String response = requester.request("request");
+					System.out.println("Response is " + response);
 					
 					for (int j = 0; j < 3; j++) {
 
 						// Re-send message.
-						requester.sendString("request");
-						byte[] response = requester.receive();
-		
+						response = requester.request("request");
+								
 						if (response == null) {
 							System.out.println("No response");
 						}
