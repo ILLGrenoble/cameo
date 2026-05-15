@@ -51,11 +51,11 @@ publisher.setSyncSubscribers(True)
 publisher.setWaitForSubscribers(1)
 publisher.init()
 
-publisher.send("first message")
+publisher.publish("first message")
 
 time.sleep(1)
 
-publisher.send("message after timeout")
+publisher.publish("message after timeout")
 
 t.join()
 

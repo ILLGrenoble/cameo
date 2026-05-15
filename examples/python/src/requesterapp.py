@@ -39,8 +39,8 @@ print("Created requester", requester)
 for i in range(numberOfTimes):
     # Send a simple message as string.
     request = message + "-" + str(i)
-    requester.send(request)
-    response = requester.receiveString()
+    response = requester.requestString(request)
+
     print("Response is", response)
 
 # Stop the responder app and wait for its termination.

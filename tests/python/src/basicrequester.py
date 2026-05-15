@@ -28,9 +28,7 @@ this.setRunning()
 R = 10
 for i in range(R):
     # Send and wait for the result.
-    requester.send("test")
-
-    response = requester.receiveString()
+    response = requester.requestString("test")
 
     if response:
         print("Received",  response)

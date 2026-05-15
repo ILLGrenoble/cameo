@@ -236,12 +236,8 @@ def testRequester():
 
     print("Sending request")
 
-    requester.send("request")
+    requester.request("request")
 
-    print("Receiving response")
-    
-    requester.receive()
-    
     if requester.isCanceled():
         print("Requester is canceled")
     else:

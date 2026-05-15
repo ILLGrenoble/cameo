@@ -219,7 +219,7 @@ public:
 	 * Starts the heartbeat.
 	 * \param period The period in seconds.
 	 */
-	static void hearbeat(int period);
+	static void heartbeat(int period);
 
 	/**
 	 * Cancels all the waiting calls.

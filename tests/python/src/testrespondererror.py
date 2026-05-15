@@ -41,14 +41,12 @@ for i in range(numberOfTimes):
     print("Created requester", requester)
     
     # Send a simple message.
-    requester.send("request")
-    response = requester.receiveString()
+    response = requester.requestString("request")
     
     for j in range(3):
     
         # Re-send the message.
-        requester.send("request")
-        response = requester.receiveString()
+        response = requester.requestString("request")
     
         if response is None:
             print("No response")
@@ -77,14 +75,12 @@ for i in range(numberOfTimes):
     print("Created requester", requester)
     
     # Send a simple message.
-    requester.send("request")
-    response = requester.receiveString()
+    response = requester.requestString("request")
     
     for j in range(3):
     
         # Re-send the message.
-        requester.send("request")
-        response = requester.receiveString()
+        response = requester.requestString("request")
     
         if response is None:
             print("No response")

@@ -39,9 +39,7 @@ for i in range(numberOfTimes):
     print("Pong ?", pong)
     
     # Send a simple message.
-    requester.send("request")
-    
-    response = requester.receiveString()
+    response = requester.requestString("request")
     print("Response is", response)
     
     response = requester.receiveString()

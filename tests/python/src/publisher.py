@@ -21,9 +21,9 @@ publisher.ping()
 
 for i in range(100):
     message = "message " + str(i)  
-    publisher.send(message)
+    publisher.publish(message)
 
-publisher.sendEnd()
+publisher.publishEnd()
 
 publisher.terminate()
 this.terminate()

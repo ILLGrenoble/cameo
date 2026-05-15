@@ -52,9 +52,7 @@ def requesterProcess(id):
     
     for i in range(numberOfTimes):
         # Send a simple message.
-        requesters[id].send(str(i))
-        
-        response = requesters[id].receiveString()
+        response = requesters[id].requestString(str(i))
         print(id, "receives", response)
         
 

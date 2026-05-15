@@ -337,7 +337,7 @@ void This::handleStop(StopFunctionType function, int stoppingTime) {
 	m_instance.initStopCheck(function, stoppingTime);
 }
 
-void This::hearbeat(int period) {
+void This::heartbeat(int period) {
 	m_instance.startHearbeatThread(period);
 }
 

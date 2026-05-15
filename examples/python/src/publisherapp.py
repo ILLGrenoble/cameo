@@ -32,7 +32,7 @@ i = 0
 while not this.isStopping():
     # Send a message.
     message = json.dumps({'message': "a message", 'value': i})
-    publisher.send(message)
+    publisher.publish(message)
   
     i += 1
   

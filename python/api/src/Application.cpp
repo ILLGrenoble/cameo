@@ -125,6 +125,9 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"options"_a = 0,
 				"timeout"_a = 0,
 	    		py::call_guard<py::gil_scoped_release>())
+		.def_static("heartbeat", &This::heartbeat,
+				"period"_a,
+				py::call_guard<py::gil_scoped_release>())
 		.def_static("__str__", &This::toString,
 				py::call_guard<py::gil_scoped_release>());
 
@@ -302,6 +305,13 @@ PYBIND11_MODULE(cameopy, m) {
 	    		"data1"_a, "data2"_a,
 	    		py::call_guard<py::gil_scoped_release>())
 	    .def("sendEnd", &Publisher::sendEnd, py::call_guard<py::gil_scoped_release>())
+		.def("publish", py::overload_cast<const std::string&>(&Publisher::publish),
+				"message"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("publish", py::overload_cast<const std::string&, const std::string&>(&Publisher::publish),
+		   		"messagePart1"_a, "messagePart2"_a,
+		   		py::call_guard<py::gil_scoped_release>())
+		.def("publishEnd", &Publisher::publishEnd, py::call_guard<py::gil_scoped_release>())
 	    .def("hasEnded", &Publisher::hasEnded)
 		.def("ping", &Publisher::ping)
 		.def("__str__", &Publisher::toString,
@@ -387,10 +397,9 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("sendTwoParts", &Requester::sendTwoParts,
 				"request1"_a, "request2"_a,
 				py::call_guard<py::gil_scoped_release>())
-
 		.def("receive", [](Requester* instance) {
 
-				// Release the GIL for the blocking call getResult().
+				// Release the GIL for the blocking call.
 				py::gil_scoped_release release;
 
 				auto result = instance->receive();
@@ -404,8 +413,50 @@ PYBIND11_MODULE(cameopy, m) {
 				}
 				return bytesResult;
 			 })
-
 		.def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
+
+		.def("request", [](Requester* instance, const std::string& arg) {
+
+			// Release the GIL for the blocking call.
+			py::gil_scoped_release release;
+
+			auto result = instance->request(arg);
+
+			// Acquire the GIL for security.
+			py::gil_scoped_acquire acquire;
+
+			std::optional<py::bytes> bytesResult;
+			if (result.has_value()) {
+				bytesResult = py::bytes(result.value());
+			}
+			return bytesResult;
+		})
+
+		.def("request", [](Requester* instance, const std::string& arg1, const std::string& arg2) {
+
+			// Release the GIL for the blocking call.
+			py::gil_scoped_release release;
+
+			auto result = instance->request(arg1, arg2);
+
+			// Acquire the GIL for security.
+			py::gil_scoped_acquire acquire;
+
+			std::optional<py::bytes> bytesResult;
+			if (result.has_value()) {
+				bytesResult = py::bytes(result.value());
+			}
+			return bytesResult;
+		})
+
+		.def("requestString", py::overload_cast<const std::string&>(&Requester::request),
+				"message"_a,
+				py::call_guard<py::gil_scoped_release>())
+		.def("requestString", py::overload_cast<const std::string&, const std::string&>(&Requester::request),
+				"messagePart1"_a,
+				"messagePart2"_a,
+				py::call_guard<py::gil_scoped_release>())
+
 		.def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Requester::isCanceled)
 		.def("hasTimedout", &Requester::hasTimedout)

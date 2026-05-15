@@ -19,6 +19,6 @@ print("Synchronized with ", numberOfSubscribers, "subscriber(s)")
 
 for i in range(10):
     message = "message " + str(i)  
-    publisher.send(message)
+    publisher.publish(message)
 
 sys.exit(123)

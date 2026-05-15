@@ -43,34 +43,27 @@ for i in range(numberOfTimes):
     print("Pong ?", pong)
     
     # Send a simple message.
-    requester.send("request")
-    
-    response = requester.receiveString()
+    response = requester.requestString("request")
     print("Response is", response)
     response = requester.receiveString()
     print("Response 2 is", response)
     
     # Send a two-parts message.
-    requester.sendTwoParts("first", "second")
-    
-    response = requester.receiveString()
+    response = requester.requestString("first", "second")
     print("Response is", response)
     
     # Send a simple message but do not receive the response immediately.
-    requester.send("request");
+    response = requester.requestString("request");
     
     print("Wait so that the responder has replied")
     time.sleep(1)
     
-    response = requester.receiveString()
     print("Response is", response)
     
     # Send a new simple message.
-    requester.send("request after wait")
     requester.setTimeout(200)
-
-    response = requester.receiveString()
-    
+    response = requester.requestString("request after wait")
+        
     if not response is None:
         print("Response is", response);
     elif requester.hasTimedout():
@@ -80,7 +73,7 @@ for i in range(numberOfTimes):
 
     # The requester needs to resync after a timeout.
     # If the server does not respond within the configured timeout, an error occurs.
-    requester.send("request after timeout")
+    requester.requestString("request after timeout")
     if requester.hasTimedout():
         print("Timeout while resyncing")
     
@@ -88,17 +81,15 @@ for i in range(numberOfTimes):
     time.sleep(1)
         
     # Resend the request.
-    requester.send("request after timeout")
+    response = requester.requestString("request after timeout")
     if not requester.hasTimedout():
         print("No timeout while sending")
     
-    response = requester.receiveString();
     print("Response is", response)
     
     # Cancel the requester.
     requester.cancel();
-    requester.send("request after cancel");
-    response = requester.receiveString();
+    response = requester.requestString("request after cancel");
 
     if requester.hasTimedout():
         print("Timeout")
@@ -108,8 +99,7 @@ for i in range(numberOfTimes):
 
     # Re-init the requester.
     requester.init();
-    requester.send("2nd request after cancel");
-    response = requester.receiveString();
+    response = requester.requestString("2nd request after cancel");
 
     if requester.hasTimedout():
         print("Timeout")

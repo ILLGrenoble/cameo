@@ -14,7 +14,7 @@ this.setRunning()
 print("Synchronized with the subscriber")
 
 while (True):
-    publisher.send("hello")
+    publisher.publish("hello")
     time.sleep(0.1)
 
 publisher.terminate()
