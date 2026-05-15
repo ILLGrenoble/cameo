@@ -318,6 +318,11 @@ public class Publisher extends StateObject implements ICancelable, IPingable {
 	
 	@Override
 	public synchronized boolean ping() {
+		
+		if (!isReady()) {
+			return false; 
+		}
+		
 		impl.ping();
 		
 		return true;
@@ -347,7 +352,7 @@ public class Publisher extends StateObject implements ICancelable, IPingable {
 				}
 				responder.terminate();
 			}
-			
+		
 			waiting.remove();
 			impl.terminate();
 		}

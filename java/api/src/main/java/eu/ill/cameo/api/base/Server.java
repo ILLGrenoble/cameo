@@ -336,7 +336,7 @@ public class Server extends StateObject implements ITimeoutable, IPingable {
 	 */
 	@Override
 	public void terminate() {
-
+		
 		terminateStatusThread();
 		requestSocket.terminate();
 		
@@ -1033,6 +1033,10 @@ public class Server extends StateObject implements ITimeoutable, IPingable {
 	
 	@Override
 	public boolean ping() {
+		
+		if (!isReady()) {
+			return false; 
+		}
 		
 		JSONObject request = Messages.createPingRequest();
 		

@@ -144,10 +144,10 @@ void This::terminateImpl() {
 
 	// Set terminated.
 	m_terminated = true;
-	m_pingCondition.notify_one();
 
 	// Join the ping thread.
 	if (m_pingThread) {
+		m_pingCondition.notify_one();
 		m_pingThread->join();
 	}
 

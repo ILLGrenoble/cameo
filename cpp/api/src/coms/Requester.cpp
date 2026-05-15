@@ -216,6 +216,11 @@ bool Requester::hasTimedout() const {
 }
 
 bool Requester::ping() {
+
+	if (!isReady()) {
+		return false;
+	}
+
 	std::unique_lock<std::mutex> lock(m_mutex);
 	m_impl->ping();
 	std::optional<std::string> response = m_impl->receive();

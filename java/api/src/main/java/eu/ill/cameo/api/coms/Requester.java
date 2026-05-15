@@ -354,6 +354,11 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable,
 	
 	@Override
 	public synchronized boolean ping() {
+		
+		if (!isReady()) {
+			return false; 
+		}
+		
 		impl.ping();
 		byte[] response = impl.receive();
 		

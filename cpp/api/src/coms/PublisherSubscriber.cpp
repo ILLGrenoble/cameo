@@ -241,6 +241,11 @@ bool Publisher::hasEnded() const {
 }
 
 bool Publisher::ping() {
+
+	if (!isReady()) {
+		return false;
+	}
+
 	std::unique_lock<std::mutex> lock(m_mutex);
 	m_impl->ping();
 

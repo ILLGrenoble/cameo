@@ -11,6 +11,11 @@
 package eu.ill.cameo.api.base;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -44,6 +49,13 @@ public class This {
 	// Definition of a EventListener member.
 	private EventListener eventListener = new EventListener();
 	private WaitingSet waitingSet = new WaitingSet();
+	
+	private PingableSet pingableSet = new PingableSet();
+	private final Lock pingLock = new ReentrantLock();
+	private final Condition pingCondition = pingLock.newCondition();
+	private Thread pingThread;
+	
+	private AtomicBoolean terminated = new AtomicBoolean(false);
 	
 	private Server server;
 	private Server starterServer;
@@ -442,6 +454,14 @@ public class This {
 	}
 	
 	/**
+	 * Starts the heartbeat.
+	 * @param period The period in seconds.
+	 */
+	static public void heartbeat(int period) {
+		instance.startHearbeatThread(period);
+	}
+
+	/**
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @param options The options passed to connect the starter app.
@@ -568,6 +588,9 @@ public class This {
 		// This is de-facto an unregistered application.		
 		registered = false;
 		
+		// Init terminated.
+		terminated.set(false);
+		
 		// Init.
 		initApplication();
 	}
@@ -587,6 +610,9 @@ public class This {
 		
 		// This is de-facto an unregistered application.		
 		registered = false;
+		
+		// Init terminated.
+		terminated.set(false);
 		
 		// Init.
 		initApplication();
@@ -616,6 +642,9 @@ public class This {
 			initStarterCheck();
 		}
 		
+		pingableSet = new PingableSet();
+		
+		// Init com.
 		com = new Com(server, id);
 	}
 		
@@ -634,8 +663,23 @@ public class This {
 	WaitingSet getWaitingSet() {
 		return waitingSet;
 	}
+	
+	PingableSet getPingableSet() {
+		return pingableSet;
+	}
 
 	private void terminateAll() {
+		
+		terminated.set(true);
+		
+		if (pingThread != null) {
+			pingCondition.signal();
+			try {
+				pingThread.join();
+			}
+			catch (InterruptedException e) {
+			}		
+		}
 		
 		waitingSet.terminateAll();
 
@@ -803,6 +847,38 @@ public class This {
 		requestSocket.requestJSON(request);
 	}
 
+	private void startHearbeatThread(int period) {
+		
+		if (pingThread == null) {
+			pingThread = new Thread(new Runnable() {
+				public void run() {
+					while (true) {
+						
+						pingLock.lock();
+						
+						// Await returns false if the waiting time elapsed
+						boolean signaled;
+		                try {
+							signaled = pingCondition.await(period, TimeUnit.SECONDS);
+							if (!signaled) {
+								pingableSet.pingAll();
+							}
+							else {
+								break;
+							}
+		                }
+		                catch (InterruptedException e) {
+							break;
+		                }
+		                finally {
+		                	pingLock.unlock();
+		                }
+					}
+				}
+			});
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return name + "." + id + "@" + serverEndpoint;

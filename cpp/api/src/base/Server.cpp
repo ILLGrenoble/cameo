@@ -787,6 +787,10 @@ int Server::retrieveSubscriberProxyPort() {
 
 bool Server::ping() {
 
+	if (!isReady()) {
+		return false;
+	}
+
 	try {
 		json::Object response {json::toJSON(m_requestSocket->request(createPingRequest()))};
 	}
