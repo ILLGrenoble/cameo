@@ -23,6 +23,7 @@ public interface RequesterImpl {
 	void send(byte[] requestData);
 	void send(String request);
 	void sendTwoParts(byte[] requestData1, byte[] requestData2);
+	void ping();
 	
 	byte[] receive();
 	String receiveString();
@@ -33,5 +34,4 @@ public interface RequesterImpl {
 	boolean hasTimedout();
 	
 	void terminate();
-	
 }

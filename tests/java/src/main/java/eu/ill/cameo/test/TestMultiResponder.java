@@ -69,6 +69,9 @@ public class TestMultiResponder {
 				// Check the state of the responder app.
 				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 				
+				// Ping.
+				boolean pong = requester.ping();
+				System.out.println("Pong ? " + pong);
 				
 				// Send a simple message.
 				requester.sendString("request");

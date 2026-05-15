@@ -33,7 +33,7 @@ import eu.ill.cameo.common.strings.StringId;
  * Class defining a Cameo remote server.
  * A Server object is not a server responding to requests but the representation of a remote Cameo server.
  */
-public class Server extends StateObject implements ITimeoutable {
+public class Server extends StateObject implements ITimeoutable, IPingable {
 
 	private String serverEndpointString;
 	private Endpoint serverEndpoint;
@@ -1029,6 +1029,21 @@ public class Server extends StateObject implements ITimeoutable {
 		connectionChecker.start(getAvailableTimeout(), pollingTimeMs);
 		
 		return connectionChecker;
+	}
+	
+	@Override
+	public boolean ping() {
+		
+		JSONObject request = Messages.createPingRequest();
+		
+		try {
+			JSONObject response = requestSocket.requestJSON(request);
+		}
+		catch (Throwable e) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override

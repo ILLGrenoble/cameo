@@ -124,6 +124,15 @@ public class PublisherZmq implements PublisherImpl {
 		return ended.get();
 	}
 	
+	public void ping() {
+		
+		publisher.sendMore(publisherIdentity);
+		
+		JSONObject messageType = new JSONObject();
+		messageType.put(Messages.TYPE, Messages.PING);
+		publisher.send(Messages.serialize(messageType), 0);
+	}
+	
 	public void terminate() {
 		
 		sendEnd();

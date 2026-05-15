@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.simple.JSONObject;
 
 import eu.ill.cameo.api.base.ICancelable;
+import eu.ill.cameo.api.base.IPingable;
 import eu.ill.cameo.api.base.InitException;
 import eu.ill.cameo.api.base.KeyAlreadyExistsException;
 import eu.ill.cameo.api.base.StateObject;
@@ -34,7 +35,7 @@ import eu.ill.cameo.common.strings.StringId;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-public class Publisher extends StateObject implements ICancelable {
+public class Publisher extends StateObject implements ICancelable, IPingable {
 
 	private String name;
 	private int numberOfSubscribers = 0;
@@ -281,6 +282,13 @@ public class Publisher extends StateObject implements ICancelable {
 	 */
 	public boolean hasEnded() {
 		return impl.hasEnded();
+	}
+	
+	@Override
+	public synchronized boolean ping() {
+		impl.ping();
+		
+		return true;
 	}
 	
 	/**

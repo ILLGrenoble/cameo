@@ -188,6 +188,9 @@ public class SubscriberZmq implements SubscriberImpl {
 				else if (type == Messages.SYNC_STREAM) {
 					// Do nothing.
 				}
+				else if (type == Messages.PING) {
+					// Do nothing.
+				}
 				else if (type == Messages.STREAM_END) {
 					ended.set(true);
 					return null;	
@@ -257,6 +260,12 @@ public class SubscriberZmq implements SubscriberImpl {
 					result[1] = receiveMessage();
 					
 					return result;
+				}
+				else if (type == Messages.SYNC_STREAM) {
+					// Do nothing.
+				}
+				else if (type == Messages.PING) {
+					// Do nothing.
 				}
 				else if (type == Messages.STREAM_END) {
 					ended.set(true);

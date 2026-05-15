@@ -37,6 +37,10 @@ public class BasicRequester {
 			Requester requester = Requester.create(starter.getApp(), "responder");
 			requester.init();
 			
+			// Ping.
+			boolean pong = requester.ping();
+			System.out.println("Pong ? " + pong);
+			
 			// Set the state.
 			This.setRunning();
 

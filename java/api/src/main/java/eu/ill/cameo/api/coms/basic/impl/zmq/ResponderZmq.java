@@ -152,6 +152,13 @@ public class ResponderZmq implements ResponderImpl {
 					
 					// Do not return, continue the loop.
 				}
+				else if (type == Messages.PING) {
+					
+					// Reply immediately.
+					replyPong();
+					
+					// Do not return, continue the loop.
+				}
 			}
 			finally {
 				if (message != null) {
@@ -187,7 +194,20 @@ public class ResponderZmq implements ResponderImpl {
 		
 		reply.send(responder);
 	}
+	
+	private void replyPong() {
 		
+		Zmq.Msg reply = new Zmq.Msg();
+		
+		for (int i = 0; i < HEADER_SIZE; ++i) {
+			reply.add(requestHeader[i]);
+		}
+		
+		reply.add(Messages.serialize(Messages.createPongResponse()));
+		
+		reply.send(responder);
+	}
+
 	public void cancel() {
 		
 		if (canceled.get()) {

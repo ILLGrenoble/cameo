@@ -245,6 +245,15 @@ public class RequesterZmq implements RequesterImpl {
 		sendRequest(Messages.serialize(jsonRequest), requestData1, requestData2);
 	}
 
+	@Override
+	public void ping() {
+	
+		JSONObject jsonRequest = new JSONObject();
+		jsonRequest.put(Messages.TYPE, Messages.PING);
+		
+		sendRequest(Messages.serialize(jsonRequest));
+	}
+	
 	private Zmq.Msg receiveMessage() {
 		
 		// Define the number of iterations.
@@ -311,6 +320,9 @@ public class RequesterZmq implements RequesterImpl {
 						
 			if (type == Messages.RESPONSE) {
 				return data[4];
+			}
+			else if (type == Messages.PONG) {
+				return "Pong".getBytes();
 			}
 			else {
 				return null;

@@ -77,6 +77,10 @@ public class TestBasicResponder {
 				
 				System.out.println("Created requester " + requester);
 			
+				// Ping.
+				boolean pong = requester.ping();
+				System.out.println("Pong ? " + pong);
+				
 				// Check the state of the responder app.
 				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 				

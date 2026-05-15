@@ -22,5 +22,6 @@ public interface PublisherImpl {
 	void sendTwoParts(byte[] data1, byte[] data2);
 	void sendEnd();
 	boolean hasEnded();
+	void ping();
 	void terminate();
 }

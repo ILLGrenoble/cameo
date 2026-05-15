@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 
 		// Ping.
 		bool pong = requester->ping();
-		cout << "Pong is " << pong << endl;
+		cout << "Pong ? " << pong << endl;
 
 		// Send a simple message.
 		optional<string> response = requester->request("request");

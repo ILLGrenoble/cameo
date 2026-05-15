@@ -50,6 +50,10 @@ public class TestSimple {
 		// Try a second init. 
 		server.init();
 		
+		// Ping.
+		boolean pong = server.ping();
+		System.out.println("Server pong ? " + pong);
+		
 		Date d = new Date();
 		
 		try {
