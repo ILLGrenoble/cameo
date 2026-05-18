@@ -16,11 +16,10 @@ import eu.ill.cameo.api.base.App;
 import eu.ill.cameo.api.base.App.Com.KeyValueGetter;
 import eu.ill.cameo.api.base.ConnectionTimeout;
 import eu.ill.cameo.api.base.ICancelable;
-import eu.ill.cameo.api.base.IPingable;
 import eu.ill.cameo.api.base.ITimeoutable;
 import eu.ill.cameo.api.base.InitException;
+import eu.ill.cameo.api.base.PingableObject;
 import eu.ill.cameo.api.base.State;
-import eu.ill.cameo.api.base.StateObject;
 import eu.ill.cameo.api.base.SynchronizationTimeout;
 import eu.ill.cameo.api.base.This;
 import eu.ill.cameo.api.base.Timeout;
@@ -37,7 +36,7 @@ import eu.ill.cameo.common.strings.StringId;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-public class Requester extends StateObject implements ITimeoutable, ICancelable, IPingable {
+public class Requester extends PingableObject implements ITimeoutable, ICancelable {
 
 	static class Checker {
 		
@@ -161,6 +160,9 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable,
 			// The object is already initialized.
 			return;
 		}
+		
+		// Initializes the super class.
+		super.init();
 		
 		// Get the responder data.
 		try {
@@ -374,6 +376,9 @@ public class Requester extends StateObject implements ITimeoutable, ICancelable,
 	 */
 	@Override
 	public void terminate() {
+		
+		// Terminates the super class.
+		super.terminate();
 		
 		waiting.remove();
 		

@@ -76,6 +76,8 @@ public class TestSubscriberTimeout {
 					System.out.println("Has not received data, has timedout " + subscriber.hasTimedout());
 				}
 				
+				subscriber.terminate();
+				
 			});
 			td.start();
 			
@@ -99,6 +101,8 @@ public class TestSubscriberTimeout {
 				td.join();
 			} catch (InterruptedException e) {
 			}
+			
+			publisher.terminate();
 		}
 		finally {
 			server.terminate();

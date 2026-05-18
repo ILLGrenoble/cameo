@@ -42,6 +42,8 @@ def subscriberThread(server):
         print("Received", data)
     else:
         print("Has not received data, has timedout", subscriber.hasTimedout())
+        
+    subscriber.terminate()
 
 t = threading.Thread(target=subscriberThread, args=(server,))
 t.start()

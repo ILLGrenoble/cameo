@@ -16,10 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.json.simple.JSONObject;
 
 import eu.ill.cameo.api.base.ICancelable;
-import eu.ill.cameo.api.base.IPingable;
 import eu.ill.cameo.api.base.InitException;
 import eu.ill.cameo.api.base.KeyAlreadyExistsException;
-import eu.ill.cameo.api.base.StateObject;
+import eu.ill.cameo.api.base.PingableObject;
 import eu.ill.cameo.api.base.This;
 import eu.ill.cameo.api.base.UndefinedKeyException;
 import eu.ill.cameo.api.coms.basic.Request;
@@ -35,7 +34,7 @@ import eu.ill.cameo.common.strings.StringId;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-public class Publisher extends StateObject implements ICancelable, IPingable {
+public class Publisher extends PingableObject implements ICancelable {
 
 	private String name;
 	private int numberOfSubscribers = 0;
@@ -90,6 +89,9 @@ public class Publisher extends StateObject implements ICancelable, IPingable {
 			// The object is already initialized.
 			return;
 		}
+		
+		// Initializes the super class.
+		super.init();
 		
 		// Replace the implementation if sync.
 		this.impl = ImplFactory.createPublisher(syncSubscribers);
@@ -333,6 +335,9 @@ public class Publisher extends StateObject implements ICancelable, IPingable {
 	 */
 	@Override
 	public void terminate() {
+		
+		// Terminates the super class.
+		super.terminate();
 		
 		if (impl != null) {
 			try {
