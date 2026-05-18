@@ -111,9 +111,6 @@ public class Server extends PingableObject implements ITimeoutable {
 			return;
 		}
 
-		// Initializes the super class.
-		super.init();
-		
 		if (serverEndpointString != null) {
 		
 			try {
@@ -147,6 +144,9 @@ public class Server extends PingableObject implements ITimeoutable {
 		}
 		
 		setReady();
+		
+		// Registers this pingable object.
+		super.init();
 	}
 	
 	/**
@@ -340,7 +340,7 @@ public class Server extends PingableObject implements ITimeoutable {
 	@Override
 	public void terminate() {
 		
-		// Terminates the super class.
+		// Unregisters this pingable object.
 		super.terminate();
 		
 		terminateStatusThread();
@@ -1038,16 +1038,20 @@ public class Server extends PingableObject implements ITimeoutable {
 	}
 	
 	@Override
-	public boolean ping() {
+	public boolean ping(int timeout) {
 		
 		if (!isReady()) {
 			return false; 
 		}
 		
-		JSONObject request = Messages.createPingRequest();
+		int pingTimeout = -1;
+		int currentTimeout = requestSocket.getTimeout();
+		if (currentTimeout == 0) {
+			pingTimeout = currentTimeout * 1000;
+		}
 		
 		try {
-			JSONObject response = requestSocket.requestJSON(request);
+			JSONObject response = requestSocket.requestJSON(Messages.createPingRequest(), pingTimeout);
 		}
 		catch (Throwable e) {
 			return false;
@@ -1060,7 +1064,7 @@ public class Server extends PingableObject implements ITimeoutable {
 	public String toString() {
 		
 		String serverEndpointStr = "";
-		if (!serverEndpointString.isEmpty()) {
+		if (serverEndpointString != null && !serverEndpointString.isEmpty()) {
 			serverEndpointStr = serverEndpointString;
 		}
 		else {

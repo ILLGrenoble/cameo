@@ -17,7 +17,8 @@ public interface IPingable {
 
 	/**
 	 * Pings the object.
+	 * @param timeout The timeout.
 	 * @return True if there is no error.
 	 */
-	boolean ping();
+	boolean ping(int timeout);
 }

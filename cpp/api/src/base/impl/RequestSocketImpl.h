@@ -21,6 +21,7 @@ public:
 	virtual ~RequestSocketImpl() {}
 
 	virtual void setTimeout(int timeout) = 0;
+	virtual int getTimeout() const = 0;
 
 	virtual std::string request(const std::string& request, int overrideTimeout) = 0;
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout) = 0;

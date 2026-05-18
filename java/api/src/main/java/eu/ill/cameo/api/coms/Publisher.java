@@ -90,9 +90,6 @@ public class Publisher extends PingableObject implements ICancelable {
 			return;
 		}
 		
-		// Initializes the super class.
-		super.init();
-		
 		// Replace the implementation if sync.
 		this.impl = ImplFactory.createPublisher(syncSubscribers);
 		
@@ -173,6 +170,9 @@ public class Publisher extends PingableObject implements ICancelable {
 		}
 		
 		setReady();
+		
+		// Registers this pingable object.
+		super.init();
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class Publisher extends PingableObject implements ICancelable {
 	}
 	
 	@Override
-	public synchronized boolean ping() {
+	public synchronized boolean ping(int timeout) {
 		
 		if (!isReady()) {
 			return false; 
@@ -336,10 +336,11 @@ public class Publisher extends PingableObject implements ICancelable {
 	@Override
 	public void terminate() {
 		
-		// Terminates the super class.
-		super.terminate();
-		
 		if (impl != null) {
+			
+			// Unregisters this pingable object.
+			super.terminate();
+			
 			try {
 				This.getCom().removeKey(key);
 			}

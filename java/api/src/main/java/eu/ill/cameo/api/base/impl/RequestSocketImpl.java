@@ -13,6 +13,7 @@ package eu.ill.cameo.api.base.impl;
 public interface RequestSocketImpl {
 
 	void setTimeout(int timeout);
+	int getTimeout();
 	
 	byte[][] request(byte[] part1, int overrideTimeout);
 	byte[][] request(byte[] part1, byte[] part2, int overrideTimeout);

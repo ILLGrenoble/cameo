@@ -27,6 +27,7 @@ public:
 	virtual ~RequestSocketZmq();
 
 	virtual void setTimeout(int timeout);
+	virtual int getTimeout() const;
 
 	virtual std::string request(const std::string& request, int overrideTimeout);
 	virtual std::string request(const std::string& requestPart1, const std::string& requestPart2, int overrideTimeout);

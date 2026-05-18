@@ -81,6 +81,8 @@ void Server::init() {
 	}
 
 	setReady();
+
+	Pingable::init();
 }
 
 Server::Server(const Endpoint& endpoint, int options) :
@@ -124,6 +126,8 @@ Server::~Server() {
 }
 
 void Server::terminate() {
+
+	Pingable::terminate();
 
 	// Stop the event thread.
 	if (m_eventThread) {
@@ -785,14 +789,20 @@ int Server::retrieveSubscriberProxyPort() {
 	return response[message::RequestResponse::VALUE].GetInt();
 }
 
-bool Server::ping() {
+bool Server::ping(int timeout) {
 
 	if (!isReady()) {
 		return false;
 	}
 
+	int pingTimeout = -1;
+	int currentTimeout = m_requestSocket->getTimeout();
+	if (currentTimeout == 0) {
+		pingTimeout = currentTimeout * 1000;
+	}
+
 	try {
-		json::Object response {json::toJSON(m_requestSocket->request(createPingRequest()))};
+		json::Object response {json::toJSON(m_requestSocket->request(createPingRequest(), pingTimeout))};
 	}
 	catch (const ConnectionTimeout&) {
 		return false;

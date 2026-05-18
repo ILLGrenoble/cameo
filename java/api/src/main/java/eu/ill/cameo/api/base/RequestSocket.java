@@ -46,6 +46,14 @@ public class RequestSocket {
 	public void setTimeout(int timeout) {
 		this.impl.setTimeout(timeout);
 	}
+
+	/**
+	 * Gets the timeout.
+	 * @return The timeout.
+	 */
+	public int getTimeout() {
+		return this.impl.getTimeout();
+	}
 	
 	/**
 	 * Send a request.
@@ -141,4 +149,5 @@ public class RequestSocket {
 	public void terminate() {
 		impl.terminate();
 	}
+
 }

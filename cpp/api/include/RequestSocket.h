@@ -48,6 +48,12 @@ public:
 	void setTimeout(int timeout);
 
 	/**
+	 * Gets the timeout.
+	 * \return The timeout.
+	 */
+	int getTimeout() const;
+
+	/**
 	 * Send a request.
 	 * \param request The request.
 	 * \param overrideTimeout Timeout that overrides the timeout defined previously.

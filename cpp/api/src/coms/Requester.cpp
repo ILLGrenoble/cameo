@@ -78,6 +78,8 @@ Requester::~Requester() {
 
 void Requester::terminate() {
 
+	Pingable::terminate();
+
 	if (m_checker) {
 		m_checker->terminate();
 		m_checker.reset();
@@ -139,6 +141,8 @@ void Requester::init() {
 	}
 
 	setReady();
+
+	Pingable::init();
 }
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {
@@ -150,6 +154,7 @@ void Requester::setCheckApp(bool value) {
 }
 
 void Requester::setTimeout(int value) {
+	std::unique_lock<std::mutex> lock(m_mutex);
 	m_timeout = value;
 	m_impl->setTimeout(value);
 }
@@ -215,15 +220,26 @@ bool Requester::hasTimedout() const {
 	return m_impl->hasTimedout();
 }
 
-bool Requester::ping() {
+bool Requester::ping(int timeout) {
 
 	if (!isReady()) {
 		return false;
 	}
 
 	std::unique_lock<std::mutex> lock(m_mutex);
+
+	int pingTimeout = 0;
+	if (m_timeout == -1) {
+		pingTimeout = timeout * 1000;
+		m_impl->setTimeout(pingTimeout);
+	}
+
 	m_impl->ping();
 	std::optional<std::string> response = m_impl->receive();
+
+	if (m_timeout == -1) {
+		m_impl->setTimeout(0);
+	}
 
 	if (response.has_value()) {
 		return true;

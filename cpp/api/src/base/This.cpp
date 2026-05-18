@@ -337,8 +337,8 @@ void This::handleStop(StopFunctionType function, int stoppingTime) {
 	m_instance.initStopCheck(function, stoppingTime);
 }
 
-void This::heartbeat(int period) {
-	m_instance.startHearbeatThread(period);
+void This::heartbeat(int period, int timeout) {
+	m_instance.startHearbeatThread(period, timeout);
 }
 
 void This::cancelAll() {
@@ -525,10 +525,10 @@ void This::checkStates() {
 	m_stopFunction = StopFunctionType{};
 }
 
-void This::startHearbeatThread(int period) {
+void This::startHearbeatThread(int period, int timeout) {
 
 	if (!m_pingThread) {
-		m_pingThread = std::make_unique<std::thread>([this, period]() {
+		m_pingThread = std::make_unique<std::thread>([this, period, timeout]() {
 
 			while (true) {
 
@@ -539,7 +539,7 @@ void This::startHearbeatThread(int period) {
 					break;
 				}
 
-				m_pingableSet->pingAll();
+				m_pingableSet->pingAll(timeout);
 			}
 		});
 	}

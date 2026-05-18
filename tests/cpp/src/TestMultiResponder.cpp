@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 		cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 
 		// Ping.
-		bool pong = requester->ping();
+		bool pong = requester->ping(10);
 		cout << "Pong ? " << pong << endl;
 
 		// Send a simple message.

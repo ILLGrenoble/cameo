@@ -135,7 +135,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @param value The value.
 	 */
 	@Override
-	public void setTimeout(int value) {
+	public synchronized void setTimeout(int value) {
 		timeout = value;
 		impl.setTimeout(value);
 	}
@@ -160,9 +160,6 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 			// The object is already initialized.
 			return;
 		}
-		
-		// Initializes the super class.
-		super.init();
 		
 		// Get the responder data.
 		try {
@@ -207,6 +204,9 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 		}
 		
 		setReady();
+		
+		// Registers this pingable object.
+		super.init();		
 	}
 
 	/**
@@ -355,14 +355,24 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	}
 	
 	@Override
-	public synchronized boolean ping() {
+	public synchronized boolean ping(int timeout) {
 		
 		if (!isReady()) {
 			return false; 
 		}
 		
+		int pingTimeout = 0;
+		if (timeout == -1) {
+			pingTimeout = timeout * 1000;
+			impl.setTimeout(pingTimeout);
+		}
+		
 		impl.ping();
 		byte[] response = impl.receive();
+		
+		if (timeout == -1) {
+			impl.setTimeout(0);
+		}
 		
 		if (response != null) {
 			return true;
@@ -377,7 +387,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	@Override
 	public void terminate() {
 		
-		// Terminates the super class.
+		// Unregisters this pingable object.
 		super.terminate();
 		
 		waiting.remove();

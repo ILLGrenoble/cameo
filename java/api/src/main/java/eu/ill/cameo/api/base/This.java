@@ -456,9 +456,18 @@ public class This {
 	/**
 	 * Starts the heartbeat.
 	 * @param period The period in seconds.
+	 * @param timeout The timeout.
+	 */
+	static public void heartbeat(int period, int timeout) {
+		instance.startHearbeatThread(period, timeout);
+	}
+	
+	/**
+	 * Starts the heartbeat with timeout 10s.
+	 * @param period The period in seconds.
 	 */
 	static public void heartbeat(int period) {
-		instance.startHearbeatThread(period);
+		instance.startHearbeatThread(period, 10);
 	}
 
 	/**
@@ -673,12 +682,25 @@ public class This {
 		terminated.set(true);
 		
 		if (pingThread != null) {
-			pingCondition.signal();
+			System.out.println("Terminate ping");
+			try {
+				pingLock.lock();
+				System.out.println("Signaling");
+				pingCondition.signal();
+			}
+			finally {
+				pingLock.unlock();
+				System.out.println("Unlocked from terminate");
+			}
+
 			try {
 				pingThread.join();
+				System.out.println("Thread joined");
 			}
 			catch (InterruptedException e) {
-			}		
+			}
+			
+			System.out.println("Ping ok");
 		}
 		
 		waitingSet.terminateAll();
@@ -847,7 +869,7 @@ public class This {
 		requestSocket.requestJSON(request);
 	}
 
-	private void startHearbeatThread(int period) {
+	private void startHearbeatThread(int period, int timeout) {
 		
 		if (pingThread == null) {
 			pingThread = new Thread(new Runnable() {
@@ -855,15 +877,21 @@ public class This {
 					while (true) {
 						
 						pingLock.lock();
+						System.out.println("Locked");
 						
 						// Await returns false if the waiting time elapsed
 						boolean signaled;
 		                try {
+		                	
+		                	System.out.println("Ping condition await");
+		                	
 							signaled = pingCondition.await(period, TimeUnit.SECONDS);
+							System.out.println("Ping condition " + signaled);
 							if (!signaled) {
-								pingableSet.pingAll();
+								pingableSet.pingAll(timeout);
 							}
 							else {
+								System.out.println("Exit thread");
 								break;
 							}
 		                }
@@ -872,10 +900,13 @@ public class This {
 		                }
 		                finally {
 		                	pingLock.unlock();
+		                	System.out.println("Unlocked");
 		                }
 					}
+					System.out.println("End thread");
 				}
 			});
+			pingThread.start();
 		}
 	}
 	

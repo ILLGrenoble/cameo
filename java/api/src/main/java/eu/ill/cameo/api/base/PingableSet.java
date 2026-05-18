@@ -29,7 +29,9 @@ public class PingableSet {
 	public void add(IPingable pingable) {
 		synchronized (pingableSet) {
 			pingableSet.add(pingable);
-		}	
+		}
+		
+		System.out.println("Added pingable " + pingable);
 	}
 	
 	/**
@@ -40,19 +42,29 @@ public class PingableSet {
 		synchronized (pingableSet) {
 			pingableSet.remove(pingable);
 		}	
+		
+		System.out.println("Removed pingable " + pingable);
 	}
 	
 	/**
 	 * Pings all the IPingable objects.
+	 * @param timeout The timeout.
 	 */
-	public void pingAll() {
-
+	public void pingAll(int timeout) {
+		
 		synchronized (pingableSet) {
 			// The iteration must be in the synchronized block.
 			Iterator<IPingable> i = pingableSet.iterator();
 			while (i.hasNext()) {
-				IPingable IPingable = i.next();
-				IPingable.ping();
+				IPingable pingable = i.next();
+				boolean pong = pingable.ping(timeout);
+				
+				if (pong) {
+					System.out.println("Pong for " + pingable);
+				}
+				else {
+					System.out.println("No pong for " + pingable);
+				}
 			}
 		}
 	}

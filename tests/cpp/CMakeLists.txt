@@ -164,3 +164,9 @@ target_link_libraries(remoteserver PRIVATE Cameo::cameo-api-cpp)
 
 add_executable(testremoteserver src/TestRemoteServer.cpp)
 target_link_libraries(testremoteserver PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(heartbeat src/Heartbeat.cpp)
+target_link_libraries(heartbeat PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testheartbeat src/TestHeartbeat.cpp)
+target_link_libraries(testheartbeat PRIVATE Cameo::cameo-api-cpp)

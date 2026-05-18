@@ -25,7 +25,7 @@ RequestSocketZmq::RequestSocketZmq(Context * context, const std::string& endpoin
 	m_context{dynamic_cast<ContextZmq *>(context)},
 	m_endpoint{endpoint},
 	m_responderIdentity{responderIdentity},
-	m_timeout{0} {
+	m_timeout{-1} {
 
 	init();
 }
@@ -38,6 +38,10 @@ void RequestSocketZmq::setTimeout(int timeout) {
 
 	// Apply the linger to the socket.
 	setSocketLinger();
+}
+
+int RequestSocketZmq::getTimeout() const {
+	return m_timeout;
 }
 
 void RequestSocketZmq::setSocketLinger() {

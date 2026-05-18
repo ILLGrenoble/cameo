@@ -39,6 +39,10 @@ public class RequestSocketZmq implements RequestSocketImpl {
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
+	
+	public int getTimeout() {
+		return this.timeout;
+	}
 
 	public void init() {
 

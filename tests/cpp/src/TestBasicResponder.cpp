@@ -72,11 +72,13 @@ int main(int argc, char *argv[]) {
 			requester->init();
 
 			cout << "Created requester " << *requester << endl;
+			cout << "Requester timeout is " << requester->getTimeout() << endl;
 
 			// Pings the responder.
-			bool pong = requester->ping();
+			bool pong = requester->ping(10);
 
 			cout << "Pong ? " << pong << endl;
+			cout << "Requester timeout is " << requester->getTimeout() << endl;
 
 			cout << "Application " << *responderApplication << " has state " << toString(responderApplication->getState()) << endl;
 

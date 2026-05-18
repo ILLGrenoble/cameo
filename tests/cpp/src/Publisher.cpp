@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 		cout << "Synchronized with " << numberOfSubscribers << " subscriber(s)" << endl;
 
 		// Ping the subscribers.
-		publisher->ping();
+		publisher->ping(10);
 
 		// Sending data.
 		for (int i = 0; i < 100; ++i) {

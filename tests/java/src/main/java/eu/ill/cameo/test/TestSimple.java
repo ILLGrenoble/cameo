@@ -51,7 +51,7 @@ public class TestSimple {
 		server.init();
 		
 		// Ping.
-		boolean pong = server.ping();
+		boolean pong = server.ping(10);
 		System.out.println("Server pong ? " + pong);
 		
 		Date d = new Date();

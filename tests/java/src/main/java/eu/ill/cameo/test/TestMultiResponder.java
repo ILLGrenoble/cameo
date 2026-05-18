@@ -70,7 +70,7 @@ public class TestMultiResponder {
 				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));
 				
 				// Ping.
-				boolean pong = requester.ping();
+				boolean pong = requester.ping(10);
 				System.out.println("Pong ? " + pong);
 				
 				// Send a simple message.

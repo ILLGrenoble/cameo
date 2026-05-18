@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 	cout << "Created requester" << endl;
 
 	// Pings the responder.
-	bool pong = requester->ping();
+	bool pong = requester->ping(10);
 
 	cout << "Pong ? " << pong << endl;
 

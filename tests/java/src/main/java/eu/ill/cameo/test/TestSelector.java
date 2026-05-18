@@ -176,6 +176,7 @@ public class TestSelector {
 		apps.add("testrespondererrorjava");
 		apps.add("testpublishererrorjava");
 		apps.add("testsubscribertimeoutjava");
+		apps.add("testheartbeatjava");
 		
 		return apps;
 	}
@@ -206,6 +207,7 @@ public class TestSelector {
 		apps.add("testrespondererrorcpp");
 		apps.add("testpublishererrorcpp");
 		apps.add("testsubscribertimeoutcpp");
+		apps.add("testheartbeatcpp");
 		
 		return apps;
 	}

@@ -218,8 +218,9 @@ public:
 	/**
 	 * Starts the heartbeat.
 	 * \param period The period in seconds.
+	 * \param period The timeout in seconds.
 	 */
-	static void heartbeat(int period);
+	static void heartbeat(int period, int timeout = 10);
 
 	/**
 	 * Cancels all the waiting calls.
@@ -273,7 +274,7 @@ private:
 	void checkStates();
 	void initStarterCheck();
 	void startCheckStatesThread();
-	void startHearbeatThread(int period);
+	void startHearbeatThread(int period, int timeout);
 
 	std::string m_name;
 	int m_id;

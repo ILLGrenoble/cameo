@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	server->init();
 
 	// Ping.
-	bool pong = server->ping();
+	bool pong = server->ping(10);
 
 	cout << "Server pong ? " << pong << endl;
 

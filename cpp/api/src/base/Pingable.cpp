@@ -14,7 +14,7 @@
 
 namespace cameo {
 
-Pingable::Pingable() {
+void Pingable::init() {
 
 	// Add the object in the pingable set if This exists.
 	if (This::m_instance.m_inited) {
@@ -22,7 +22,7 @@ Pingable::Pingable() {
 	}
 }
 
-Pingable::~Pingable() {
+void Pingable::terminate() {
 
 	// Remove the object from the pingable set if This exists.
 	if (This::m_instance.m_inited) {

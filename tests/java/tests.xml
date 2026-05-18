@@ -189,6 +189,14 @@
 		<application name="testsubscribertimeoutjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="java" args="eu.ill.cameo.test.TestSubscriberTimeout"/>
 		</application>
+		
+		<application name="heartbeatjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="eu.ill.cameo.test.Heartbeat"/>
+		</application>
+		
+		<application name="testheartbeatjava" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="java" args="eu.ill.cameo.test.TestHeartbeat heartbeatjava"/>
+		</application>
 
 		<!-- C++ apps -->
 		
@@ -371,7 +379,14 @@
 		<application name="testremoteservercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="testremoteserver"/>
 		</application>
+
+		<application name="heartbeatcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="heartbeat"/>
+		</application>
 		
+		<application name="testheartbeatcpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testheartbeat" args="heartbeatcpp"/>
+		</application>
 		
 		<!-- Python apps -->
 		

@@ -76,10 +76,12 @@ public class TestBasicResponder {
 				requester.init();
 				
 				System.out.println("Created requester " + requester);
-			
+				System.out.println("Requester has timeout " + requester.getTimeout());
+				
 				// Ping.
-				boolean pong = requester.ping();
+				boolean pong = requester.ping(10);
 				System.out.println("Pong ? " + pong);
+				System.out.println("Requester has timeout " + requester.getTimeout());
 				
 				// Check the state of the responder app.
 				System.out.println("Application " + responderApplication + " has state " + State.toString(responderApplication.getState()));

@@ -44,8 +44,9 @@ public:
 
 	/**
 	 * Pings all the Pingable objects.
+	 * \param timeout the timeout.
 	 */
-	void pingAll();
+	void pingAll(int timeout);
 
 private:
 	std::mutex m_mutex;

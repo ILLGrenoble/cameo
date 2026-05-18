@@ -53,6 +53,9 @@ Publisher::~Publisher() {
 void Publisher::terminate() {
 
 	if (m_impl) {
+
+		Pingable::terminate();
+
 		This::getCom().removeKey(m_key);
 
 		if (m_responderThread) {
@@ -136,6 +139,8 @@ void Publisher::init() {
 	}
 
 	setReady();
+
+	Pingable::init();
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name) {
@@ -240,7 +245,7 @@ bool Publisher::hasEnded() const {
 	return m_impl->hasEnded();
 }
 
-bool Publisher::ping() {
+bool Publisher::ping(int timeout) {
 
 	if (!isReady()) {
 		return false;

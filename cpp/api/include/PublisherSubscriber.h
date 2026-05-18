@@ -133,9 +133,10 @@ public:
 
 	/**
 	 * Pings with response.
+	 * \param timeout The timeout.
 	 * \return always true.
 	 */
-	bool ping() override;
+	bool ping(int timeout) override;
 
 	/**
 	 * Returns a string representation of the publisher.

@@ -160,9 +160,10 @@ public:
 
 	/**
 	 * Pings with response.
+	 * \param timeout The timeout.
 	 * \return true if there is no timeout.
 	 */
-	bool ping() override;
+	bool ping(int timeout) override;
 
 	/**
 	 * Returns a string representation of the requester.

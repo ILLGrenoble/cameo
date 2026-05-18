@@ -91,9 +91,10 @@ public:
 
 	/**
 	 * Pings with response.
+	 * \param timeout The timeout.
 	 * \return true if there is no timeout.
 	 */
-	virtual bool ping() override;
+	virtual bool ping(int timeout) override;
 
 	/**
 	 * Gets the endpoint of the server running this remote application.

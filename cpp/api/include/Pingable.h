@@ -22,20 +22,26 @@ class CAMEO_EXPORT Pingable {
 
 public:
 	/**
-	 * Constructor.
-	 */
-	Pingable();
-
-	/**
 	 * Destructor.
 	 */
-	virtual ~Pingable();
+	virtual ~Pingable() {}
+
+	/**
+	 * Registers the pingable.
+	 */
+	void init();
+
+	/**
+	 * Unregisters the pingable.
+	 */
+	void terminate();
 
 	/**
 	 * Pings with response.
+	 * \param timeout The timeout.
 	 * \return true if there is no timeout.
 	 */
-	virtual bool ping() = 0;
+	virtual bool ping(int timeout) = 0;
 };
 
 }
