@@ -46,14 +46,16 @@ void PingableSet::pingAll(int timeout) {
 	std::lock_guard<std::mutex> lock {m_mutex};
 
 	for (std::set<Pingable *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
-		//std::cout << "Pinging " << *it << std::endl;
-		bool pong = (*it)->ping(timeout);
-//		if (pong) {
-//			std::cout << "Pong " << *it << std::endl;
-//		}
-//		else {
-//			std::cout << "No pong " << *it << std::endl;
-//		}
+		if ((*it)->isPinged()) {
+			//std::cout << "Pinging " << *it << std::endl;
+			bool pong = (*it)->ping(timeout);
+//			if (pong) {
+//				std::cout << "Pong " << *it << std::endl;
+//			}
+//			else {
+//				std::cout << "No pong " << *it << std::endl;
+//			}
+		}
 	}
 }
 

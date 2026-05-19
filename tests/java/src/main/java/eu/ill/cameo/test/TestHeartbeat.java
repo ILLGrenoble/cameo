@@ -72,8 +72,14 @@ public class TestHeartbeat {
 
 			System.out.println("Publisher ready ? " + publisher.isReady());
 			
+			eu.ill.cameo.api.coms.Publisher publisherNotPinged = eu.ill.cameo.api.coms.Publisher.create("publisher-not-pinged");
+			publisherNotPinged.setPinged(false);
+			publisherNotPinged.init();
+
+			System.out.println("Publisher ready ? " + publisherNotPinged.isReady());
+			
 			try {
-				int N = 5;
+				int N = 10;
 				for (int i = 0; i < N; i++) {
 					System.out.println("" + (i + 1) + " / " + N);
 					Thread.sleep(1000);
@@ -90,6 +96,7 @@ public class TestHeartbeat {
 			
 			requester.terminate();
 			publisher.terminate();
+			publisherNotPinged.terminate();
 		}
 		finally {
 			server.terminate();

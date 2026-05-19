@@ -203,6 +203,8 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("setTimeout", &Server::setTimeout,
 				"value"_a)
 		.def("getTimeout", &Server::getTimeout)
+		.def("setPinged", &Server::setPinged)
+		.def("isPinged", &Server::isPinged)
 		.def("ping", &Server::ping)
 		.def("getEndpoint", &Server::getEndpoint)
 		.def("getVersion", &Server::getVersion)
@@ -314,6 +316,8 @@ PYBIND11_MODULE(cameopy, m) {
 		   		py::call_guard<py::gil_scoped_release>())
 		.def("publishEnd", &Publisher::publishEnd, py::call_guard<py::gil_scoped_release>())
 	    .def("hasEnded", &Publisher::hasEnded)
+		.def("setPinged", &Server::setPinged)
+		.def("isPinged", &Server::isPinged)
 		.def("ping", &Publisher::ping)
 		.def("__str__", &Publisher::toString,
 				py::call_guard<py::gil_scoped_release>());
@@ -461,6 +465,8 @@ PYBIND11_MODULE(cameopy, m) {
 		.def("cancel", &Requester::cancel, py::call_guard<py::gil_scoped_release>())
 		.def("isCanceled", &Requester::isCanceled)
 		.def("hasTimedout", &Requester::hasTimedout)
+		.def("setPinged", &Server::setPinged)
+		.def("isPinged", &Server::isPinged)
 		.def("ping", &Requester::ping)
 		.def("__str__", &Requester::toString,
 				py::call_guard<py::gil_scoped_release>());

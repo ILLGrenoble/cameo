@@ -68,7 +68,13 @@ int main(int argc, char *argv[]) {
 
 		cout << "Publisher ready ? " << publisher->isReady() << endl;
 
-		int N = 5;
+		unique_ptr<coms::Publisher> publisherNotPinged = coms::Publisher::create("publisher-not-pinged");
+		publisherNotPinged->setPinged(false);
+		publisherNotPinged->init();
+
+		cout << "Publisher ready ? " << publisherNotPinged->isReady() << endl;
+
+		int N = 10;
 		for (int i = 0; i < N; i++) {
 			cout << (i + 1) << " / " << N << endl;
 			std::this_thread::sleep_for(std::chrono::seconds(1));

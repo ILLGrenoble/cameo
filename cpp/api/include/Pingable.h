@@ -12,6 +12,7 @@
 #define CAMEO_PINGABLE_H_
 
 #include "Defines.h"
+#include <atomic>
 
 namespace cameo {
 
@@ -37,11 +38,25 @@ public:
 	void terminate();
 
 	/**
+	 * Enables the pingable object.
+	 */
+	void setPinged(bool value);
+
+	/**
+	 * Returns true if is enabled.
+	 * \return true if is enabled.
+	 */
+	bool isPinged() const;
+
+	/**
 	 * Pings with response.
 	 * \param timeout The timeout.
 	 * \return true if there is no timeout.
 	 */
 	virtual bool ping(int timeout) = 0;
+
+private:
+	std::atomic_bool m_enabled = true;
 };
 
 }

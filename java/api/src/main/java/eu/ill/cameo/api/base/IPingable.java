@@ -16,6 +16,18 @@ package eu.ill.cameo.api.base;
 public interface IPingable {
 
 	/**
+	 * Enables the pingable object.
+	 * @param value True if pinged.
+	 */
+	void setPinged(boolean value);
+	
+	/**
+	 * Returns true if is enabled.
+	 * @return true if is enabled.
+	 */
+	boolean isPinged();
+	
+	/**
 	 * Pings the object.
 	 * @param timeout The timeout.
 	 * @return True if there is no error.

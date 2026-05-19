@@ -40,7 +40,13 @@ publisher.init()
 
 print("Publisher ready ?", publisher.isReady())
 
-N = 5
+publisherNotPinged = cameopy.coms.Publisher.create("publisher-not-pinged")
+publisherNotPinged.setPinged(False)
+publisherNotPinged.init()
+
+print("Publisher ready ?", publisherNotPinged.isReady())
+
+N = 10
 for i in range(N):
     print(i + 1, "/", N)
     time.sleep(1)
@@ -51,6 +57,7 @@ heartbeatApp.waitFor()
 
 requester.terminate()
 publisher.terminate()
+publisherNotPinged.terminate()
    
 print("Finished the application")
 

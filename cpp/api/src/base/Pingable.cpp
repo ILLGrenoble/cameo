@@ -30,4 +30,12 @@ void Pingable::terminate() {
 	}
 }
 
+void Pingable::setPinged(bool value) {
+	m_enabled = value;
+}
+
+bool Pingable::isPinged() const {
+	return m_enabled;
+}
+
 }
