@@ -362,7 +362,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 		}
 		
 		int pingTimeout = 0;
-		if (timeout == -1) {
+		if (this.timeout == -1) {
 			pingTimeout = timeout * 1000;
 			impl.setTimeout(pingTimeout);
 		}

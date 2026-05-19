@@ -682,25 +682,19 @@ public class This {
 		terminated.set(true);
 		
 		if (pingThread != null) {
-			System.out.println("Terminate ping");
 			try {
 				pingLock.lock();
-				System.out.println("Signaling");
 				pingCondition.signal();
 			}
 			finally {
 				pingLock.unlock();
-				System.out.println("Unlocked from terminate");
 			}
 
 			try {
 				pingThread.join();
-				System.out.println("Thread joined");
 			}
 			catch (InterruptedException e) {
 			}
-			
-			System.out.println("Ping ok");
 		}
 		
 		waitingSet.terminateAll();
@@ -877,21 +871,16 @@ public class This {
 					while (true) {
 						
 						pingLock.lock();
-						System.out.println("Locked");
 						
 						// Await returns false if the waiting time elapsed
 						boolean signaled;
-		                try {
-		                	
-		                	System.out.println("Ping condition await");
-		                	
+
+						try {
 							signaled = pingCondition.await(period, TimeUnit.SECONDS);
-							System.out.println("Ping condition " + signaled);
 							if (!signaled) {
 								pingableSet.pingAll(timeout);
 							}
 							else {
-								System.out.println("Exit thread");
 								break;
 							}
 		                }
@@ -900,10 +889,8 @@ public class This {
 		                }
 		                finally {
 		                	pingLock.unlock();
-		                	System.out.println("Unlocked");
 		                }
 					}
-					System.out.println("End thread");
 				}
 			});
 			pingThread.start();

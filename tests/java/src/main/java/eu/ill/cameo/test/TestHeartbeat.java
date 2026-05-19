@@ -56,21 +56,21 @@ public class TestHeartbeat {
 		try {
 			This.heartbeat(1, 1);
 			
-//			// Args.
-//			String[] appArgs = new String[] {args[2]};
-//			
-//			// Start the application.
-//			App heartbeatApplication = server.start(applicationName, appArgs);
-//			
-//			Requester requester = Requester.create(heartbeatApplication, "responder");
-//			requester.init();
-//			
-//			System.out.println("Requester ready ? " + requester.isReady());
-//			
-//			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
-//			publisher.init();
-//
-//			System.out.println("Publisher ready ? " + publisher.isReady());
+			// Args.
+			String[] appArgs = new String[] {args[2]};
+			
+			// Start the application.
+			App heartbeatApplication = server.start(applicationName, appArgs);
+			
+			Requester requester = Requester.create(heartbeatApplication, "responder");
+			requester.init();
+			
+			System.out.println("Requester ready ? " + requester.isReady());
+			
+			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
+			publisher.init();
+
+			System.out.println("Publisher ready ? " + publisher.isReady());
 			
 			try {
 				Thread.sleep(5000);
@@ -78,9 +78,12 @@ public class TestHeartbeat {
 			catch (InterruptedException e) {
 			}
 			
-//			heartbeatApplication.waitFor();
+			heartbeatApplication.waitFor();
 			
 			System.out.println("Application terminated");
+			
+			requester.terminate();
+			publisher.terminate();
 		}
 		finally {
 			server.terminate();
