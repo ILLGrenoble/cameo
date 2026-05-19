@@ -233,6 +233,7 @@ public class TestSelector {
 		apps.add("testrespondererrorpy");
 		apps.add("testpublishererrorpy");
 		apps.add("testsubscribertimeoutpy");
+		apps.add("testheartbeatpy");
 		
 		return apps;
 	}

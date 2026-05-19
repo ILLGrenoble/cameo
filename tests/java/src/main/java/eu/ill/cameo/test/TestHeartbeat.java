@@ -73,10 +73,16 @@ public class TestHeartbeat {
 			System.out.println("Publisher ready ? " + publisher.isReady());
 			
 			try {
-				Thread.sleep(5000);
+				int N = 5;
+				for (int i = 0; i < N; i++) {
+					System.out.println("" + (i + 1) + " / " + N);
+					Thread.sleep(1000);
+				}
 			}
 			catch (InterruptedException e) {
 			}
+			
+			System.out.println("Waiting for the application");
 			
 			heartbeatApplication.waitFor();
 			

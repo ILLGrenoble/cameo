@@ -68,7 +68,13 @@ int main(int argc, char *argv[]) {
 
 		cout << "Publisher ready ? " << publisher->isReady() << endl;
 
-		std::this_thread::sleep_for(std::chrono::seconds(5));
+		int N = 5;
+		for (int i = 0; i < N; i++) {
+			cout << (i + 1) << " / " << N << endl;
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+		}
+
+		cout << "Waiting for the application" << endl;
 
 		heartbeatApplication->waitFor();
 

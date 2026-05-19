@@ -529,6 +529,14 @@
 		<application name="testsubscribertimeoutpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python" args="-u tests/python/src/testsubscribertimeout.py"/>
 		</application>
+		
+		<application name="heartbeatpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python" args="-u tests/python/src/heartbeat.py"/>
+		</application>
+		
+		<application name="testheartbeatpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python" args="-u tests/python/src/testheartbeat.py heartbeatpy"/>
+		</application>
 				
 	</applications>
 	

@@ -31,7 +31,7 @@ public class PingableSet {
 			pingableSet.add(pingable);
 		}
 		
-		System.out.println("Added pingable " + pingable);
+		//System.out.println("Added pingable " + pingable);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class PingableSet {
 			pingableSet.remove(pingable);
 		}	
 		
-		System.out.println("Removed pingable " + pingable);
+		//System.out.println("Removed pingable " + pingable);
 	}
 	
 	/**
@@ -57,15 +57,15 @@ public class PingableSet {
 			Iterator<IPingable> i = pingableSet.iterator();
 			while (i.hasNext()) {
 				IPingable pingable = i.next();
-				System.out.println("Pinging " + pingable);
+				//System.out.println("Pinging " + pingable);
 				boolean pong = pingable.ping(timeout);
 				
-				if (pong) {
-					System.out.println("Pong for " + pingable);
-				}
-				else {
-					System.out.println("No pong for " + pingable);
-				}
+//				if (pong) {
+//					System.out.println("Pong for " + pingable);
+//				}
+//				else {
+//					System.out.println("No pong for " + pingable);
+//				}
 			}
 		}
 	}
