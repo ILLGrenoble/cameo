@@ -15,6 +15,8 @@
 
 namespace cameo {
 
+class Heartbeat;
+
 /**
  * Class managing the current Cameo application.
  *
@@ -25,6 +27,7 @@ class CAMEO_EXPORT This : private EventListener {
 	friend class cameo::Waiting;
 	friend class cameo::Pingable;
 	friend class cameo::Server;
+	friend class ThisHeartbeat;
 	friend std::ostream& operator<<(std::ostream&, const cameo::This&);
 
 public:
@@ -274,7 +277,7 @@ private:
 	void checkStates();
 	void initStarterCheck();
 	void startCheckStatesThread();
-	void startHearbeatThread(int period, int timeout);
+	void startHeartbeat(int period, int timeout);
 
 	std::string m_name;
 	int m_id;
@@ -297,9 +300,7 @@ private:
 	std::unique_ptr<std::thread> m_checkStatesThread;
 
 	std::unique_ptr<PingableSet> m_pingableSet;
-	std::mutex m_mutex;
-	std::condition_variable m_pingCondition;
-	std::unique_ptr<std::thread> m_pingThread;
+	std::unique_ptr<Heartbeat> m_heartbeat;
 
 	std::atomic_bool m_inited;
 	std::atomic_bool m_terminated;

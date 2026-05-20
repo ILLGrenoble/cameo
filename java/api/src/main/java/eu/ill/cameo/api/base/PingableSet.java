@@ -58,7 +58,7 @@ public class PingableSet {
 			while (i.hasNext()) {
 				IPingable pingable = i.next();
 				if (pingable.isPinged()) {
-					//System.out.println("Pinging " + pingable);
+//					System.out.println("Pinging " + pingable);
 					boolean pong = pingable.ping(timeout);
 					
 //					if (pong) {

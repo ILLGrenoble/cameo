@@ -49,12 +49,12 @@ void PingableSet::pingAll(int timeout) {
 		if ((*it)->isPinged()) {
 			//std::cout << "Pinging " << *it << std::endl;
 			bool pong = (*it)->ping(timeout);
-//			if (pong) {
-//				std::cout << "Pong " << *it << std::endl;
-//			}
-//			else {
-//				std::cout << "No pong " << *it << std::endl;
-//			}
+			//if (pong) {
+			//	std::cout << "Pong " << *it << std::endl;
+			//}
+			//else {
+			//	std::cout << "No pong " << *it << std::endl;
+			//}
 		}
 	}
 }

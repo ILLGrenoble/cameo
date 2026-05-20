@@ -24,6 +24,7 @@ import org.json.simple.parser.ParseException;
 import eu.ill.cameo.common.messages.JSON;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.utils.Heartbeat;
 import eu.ill.cameo.processhandle.ProcessHandlerImpl;
 
 /**
@@ -51,9 +52,22 @@ public class This {
 	private WaitingSet waitingSet = new WaitingSet();
 	
 	private PingableSet pingableSet = new PingableSet();
-	private final Lock pingLock = new ReentrantLock();
-	private final Condition pingCondition = pingLock.newCondition();
-	private Thread pingThread;
+	
+	private class ThisHeartbeat extends Heartbeat {
+		
+		private int timeout;
+		
+		public ThisHeartbeat(int period, int timeout) {
+			super(period);
+			this.timeout = timeout;
+		}
+		
+		public void pingAll() {
+			pingableSet.pingAll(timeout);
+		}
+	}
+	
+	private ThisHeartbeat heartbeat;
 	
 	private AtomicBoolean terminated = new AtomicBoolean(false);
 	
@@ -681,20 +695,24 @@ public class This {
 		
 		terminated.set(true);
 		
-		if (pingThread != null) {
-			try {
-				pingLock.lock();
-				pingCondition.signal();
-			}
-			finally {
-				pingLock.unlock();
-			}
-
-			try {
-				pingThread.join();
-			}
-			catch (InterruptedException e) {
-			}
+//		if (pingThread != null) {
+//			try {
+//				pingLock.lock();
+//				pingCondition.signal();
+//			}
+//			finally {
+//				pingLock.unlock();
+//			}
+//
+//			try {
+//				pingThread.join();
+//			}
+//			catch (InterruptedException e) {
+//			}
+//		}
+		
+		if (heartbeat != null) {
+			heartbeat.terminate();
 		}
 		
 		waitingSet.terminateAll();
@@ -865,36 +883,39 @@ public class This {
 
 	private void startHearbeatThread(int period, int timeout) {
 		
-		if (pingThread == null) {
-			pingThread = new Thread(new Runnable() {
-				public void run() {
-					while (true) {
-						
-						pingLock.lock();
-						
-						// Await returns false if the waiting time elapsed
-						boolean signaled;
-
-						try {
-							signaled = pingCondition.await(period, TimeUnit.SECONDS);
-							if (!signaled) {
-								pingableSet.pingAll(timeout);
-							}
-							else {
-								break;
-							}
-		                }
-		                catch (InterruptedException e) {
-							break;
-		                }
-		                finally {
-		                	pingLock.unlock();
-		                }
-					}
-				}
-			});
-			pingThread.start();
-		}
+//		if (pingThread == null) {
+//			pingThread = new Thread(new Runnable() {
+//				public void run() {
+//					while (true) {
+//						
+//						pingLock.lock();
+//						
+//						// Await returns false if the waiting time elapsed
+//						boolean signaled;
+//
+//						try {
+//							signaled = pingCondition.await(period, TimeUnit.SECONDS);
+//							if (!signaled) {
+//								pingableSet.pingAll(timeout);
+//							}
+//							else {
+//								break;
+//							}
+//		                }
+//		                catch (InterruptedException e) {
+//							break;
+//		                }
+//		                finally {
+//		                	pingLock.unlock();
+//		                }
+//					}
+//				}
+//			});
+//			pingThread.start();
+//		}
+		
+		heartbeat = new ThisHeartbeat(period, timeout);
+		heartbeat.start();
 	}
 	
 	@Override

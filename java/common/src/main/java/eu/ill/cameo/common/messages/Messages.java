@@ -69,6 +69,7 @@ public class Messages {
 		public static final String STATUS = "status";
 		public static final String RESULT = "result";
 		public static final String KEYVALUE = "keyvalue";
+		public static final String PING = "ping";
 	}
 
 	public static class ApplicationIdentity {

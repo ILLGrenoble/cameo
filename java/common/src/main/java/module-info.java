@@ -15,4 +15,5 @@ module eu.ill.cameo.common {
 	exports eu.ill.cameo.common;
 	exports eu.ill.cameo.common.messages;
 	exports eu.ill.cameo.common.strings;
+	exports eu.ill.cameo.common.utils;
 }

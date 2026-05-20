@@ -28,6 +28,7 @@ import eu.ill.cameo.com.Zmq.Context;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.ApplicationIdentity;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.utils.Heartbeat;
 import eu.ill.cameo.server.exception.IdNotFoundException;
 import eu.ill.cameo.server.exception.KeyAlreadyExistsException;
 import eu.ill.cameo.server.exception.MaxGlobalNumberOfApplicationsReached;
@@ -45,6 +46,24 @@ public class Manager extends ConfigLoader {
 	private int maxId = 0;
 	private Zmq.Socket eventPublisher;
 	private HashMap<String, Zmq.Socket> streamPublishers = new HashMap<String, Zmq.Socket>();
+	
+	private class ThisHeartbeat extends Heartbeat {
+		
+		public ThisHeartbeat(int period) {
+			super(period);
+		}
+		
+		public void pingAll() {
+			
+			sendEventPing();
+			
+			for (Zmq.Socket socket : streamPublishers.values()) {
+				publishPing(socket);
+			}
+		}
+	}
+	
+	private ThisHeartbeat heartbeat;
 	
 	public Manager(String xmlPath) {
 		super(xmlPath);
@@ -141,6 +160,23 @@ public class Manager extends ConfigLoader {
 			}	
 		}
 	}
+	
+	public void startHeartbeat() {
+		
+		System.out.println("START HEARTBEAT ?");
+		
+		int heartbeatPeriod = ConfigManager.getInstance().getHeartbeatPeriod();
+		if (heartbeatPeriod > 0) {
+			heartbeat = new ThisHeartbeat(ConfigManager.getInstance().getHeartbeatPeriod());
+			heartbeat.start();
+		}
+	}
+	
+	public void terminateHeartbeat() {
+		if (heartbeat != null) {
+			heartbeat.terminate();
+		}
+	}
 
 	public Zmq.Socket getStreamPublisher(String name) {
 		return streamPublishers.get(name);
@@ -151,6 +187,13 @@ public class Manager extends ConfigLoader {
 		synchronized (publisher) {
 			publisher.sendMore(topicId);
 			publisher.send(data, 0);
+		}
+	}
+	
+	public static void publishPing(Zmq.Socket publisher) {
+		
+		synchronized (publisher) {
+			publisher.send(Messages.Event.PING);
 		}
 	}
 
@@ -206,6 +249,10 @@ public class Manager extends ConfigLoader {
 		
 		eventPublisher.sendMore(Messages.Event.KEYVALUE);
 		eventPublisher.send(Messages.serialize(event), 0);
+	}
+	
+	public synchronized void sendEventPing() {
+		eventPublisher.send(Messages.Event.PING);
 	}
 	
 	private int findFreeId(int begin, int end) {

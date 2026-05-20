@@ -226,6 +226,7 @@ namespace message {
 		constexpr static const char* STATUS = "status";
 		constexpr static const char* RESULT = "result";
 		constexpr static const char* KEYVALUE = "keyvalue";
+		constexpr static const char* PING = "ping";
 	};
 
 	/**

@@ -39,7 +39,7 @@ for i in range(numberOfTimes):
     
     print("Created requester", requester)
     
-    pong = requester.ping()
+    pong = requester.ping(10)
     print("Pong ?", pong)
     
     # Send a simple message.

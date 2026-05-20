@@ -60,6 +60,7 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 		// Subscribe to the topic.
 		String topicId = StringId.from(Messages.Event.STREAM, name);
 		subscriber.subscribe(topicId);
+		subscriber.subscribe(Messages.Event.PING);
 		
 		String cancelEndpoint = "inproc://" + IdGenerator.newStringId();
 		
@@ -111,6 +112,11 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 			if (messageType.equals(Messages.Event.CANCEL)) {
 				canceled.set(true);
 				return null;
+			}
+			else if (messageType.equals(Messages.Event.PING)) {
+				// Continue if message is PING.
+				System.out.println("Ping stream");
+				continue;
 			}
 			
 			// Get the second part of the message.

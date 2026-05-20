@@ -188,6 +188,9 @@ public class Server {
 
 		// Init the stream sockets.
 		manager.initStreamSockets(context);
+		
+		// Start the heartbeat.
+		manager.startHeartbeat();
 
 		// Create a shutdown hook.
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -205,6 +208,9 @@ public class Server {
 				if (pubProxyProcess != null) {
 					pubProxyProcess.destroyForcibly();
 				}
+				
+				// Terminate the heartbeat.
+				manager.terminateHeartbeat();
 				
 				Log.logger().fine("Exited");
 			}

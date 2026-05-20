@@ -16,7 +16,7 @@ if useProxy:
 server = cameopy.Server.create(endpoint, options)
 server.init()
 
-pong = server.ping()
+pong = server.ping(10)
 print("Server pong ?", pong)
 
 for i in range(numberOfTimes):    

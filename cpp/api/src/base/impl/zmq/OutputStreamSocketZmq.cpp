@@ -45,6 +45,7 @@ void OutputStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Re
 
 	topicsList.push_back(topicId);
 	topicsList.push_back(message::Event::CANCEL);
+	topicsList.push_back(message::Event::PING);
 
 	for (std::vector<std::string>::const_iterator s = topicsList.begin(); s != topicsList.end(); ++s) {
 		m_socket->set(zmq::sockopt::subscribe, *s);

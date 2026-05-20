@@ -61,6 +61,9 @@ public abstract class ConfigLoader {
 	public final static String ARGS = "args";
 	public final static String ARG = "arg";
 	public final static String VALUE = "value";
+	public final static String HEARTBEAT = "heartbeat";
+	
+	private static final String INF = "inf";
 	
 	protected List<ApplicationConfig> applicationList;
 
@@ -266,7 +269,21 @@ public abstract class ConfigLoader {
 		}
 		
 		ConfigManager.getInstance().setPollingTime(pollingTime);
+				
+		// Heartbeat.
+		int heartbeatPeriod = 0;
+		String heartbeatPeriodString = getElementAttribute(root, HEARTBEAT);
+		if (heartbeatPeriodString != null && !heartbeatPeriodString.equals(INF)) {
+			try {
+				heartbeatPeriod = Integer.parseInt(heartbeatPeriodString);
+			}
+			catch (NumberFormatException e) {
+				// Set default value.
+			}
+		}
 		
+		ConfigManager.getInstance().setHeartbeatPeriod(heartbeatPeriod);
+				
 		// Get applications.
 		Element apps = getElementChild(root, APPLICATIONS);
 		List<Element> listApplication = getElementChildren(apps, APPLICATION);

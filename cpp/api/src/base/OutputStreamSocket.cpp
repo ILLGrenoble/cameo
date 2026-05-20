@@ -85,6 +85,11 @@ std::optional<Output> OutputStreamSocket::receive() {
 			m_canceled = true;
 			return {};
 		}
+		else if (messageType == message::Event::PING) {
+			// Continue if message is PING.
+			std::cout << "Ping stream" << std::endl;
+			continue;
+		}
 
 		// Get the second part of the message.
 		std::string message {m_impl->receive()};

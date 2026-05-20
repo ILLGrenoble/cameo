@@ -19,7 +19,7 @@ app = starter.getApp()
 requester = cameopy.coms.Requester.create(app, "responder")
 requester.init()
 
-pong = requester.ping()
+pong = requester.ping(10)
 print("Pong ?", pong)
 
 this.setRunning()

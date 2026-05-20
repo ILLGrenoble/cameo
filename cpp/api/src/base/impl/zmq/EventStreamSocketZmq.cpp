@@ -42,6 +42,7 @@ void EventStreamSocketZmq::init(Context * context, const Endpoint& endpoint, Req
 	streamList.push_back(message::Event::RESULT);
 	streamList.push_back(message::Event::KEYVALUE);
 	streamList.push_back(message::Event::CANCEL);
+	streamList.push_back(message::Event::PING);
 
 	for (std::vector<std::string>::const_iterator s = streamList.begin(); s != streamList.end(); ++s) {
 		m_socket->set(zmq::sockopt::subscribe, *s);

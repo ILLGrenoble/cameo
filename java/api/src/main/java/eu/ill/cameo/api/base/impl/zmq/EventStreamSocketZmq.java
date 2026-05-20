@@ -59,6 +59,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 		subscriber.subscribe(Messages.Event.STATUS);
 		subscriber.subscribe(Messages.Event.RESULT);
 		subscriber.subscribe(Messages.Event.KEYVALUE);
+		subscriber.subscribe(Messages.Event.PING);
 		
 		String cancelEndpoint = "inproc://" + IdGenerator.newStringId();
 		
@@ -94,87 +95,91 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 	
 	public Event receive() {
 		
-		String message = this.subscriberSocket.recvStr();
-		Event event = null;
-		
-		// We can receive messages from the status publisher located in the server
-		// as well as messages from the cancel publisher located in the same process.
-		if (message.equals(Messages.Event.STATUS)) {
-			
-			byte[] statusMessage = this.subscriberSocket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(statusMessage));
+		while (true) {
+			// Receive the message.
+			String message = this.subscriberSocket.recvStr();
 				
-				int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
-				String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
-				int state = JSON.getInt(jsonObject, Messages.StatusEvent.APPLICATION_STATE);
-				int pastStates = JSON.getInt(jsonObject, Messages.StatusEvent.PAST_APPLICATION_STATES);
-								
-				if (jsonObject.containsKey(Messages.StatusEvent.EXIT_CODE)) {
-					int exitCode = JSON.getInt(jsonObject, Messages.StatusEvent.EXIT_CODE);
-					event = new StatusEvent(id, name, state, pastStates, exitCode);
+			// We can receive messages from the status publisher located in the server
+			// as well as messages from the cancel publisher located in the same process.
+			if (message.equals(Messages.Event.STATUS)) {
+				
+				byte[] statusMessage = this.subscriberSocket.recv();
+				
+				try {
+					// Get the JSON object.
+					JSONObject jsonObject = parser.parse(Messages.parseString(statusMessage));
+					
+					int id = JSON.getInt(jsonObject, Messages.StatusEvent.ID);
+					String name = JSON.getString(jsonObject, Messages.StatusEvent.NAME);
+					int state = JSON.getInt(jsonObject, Messages.StatusEvent.APPLICATION_STATE);
+					int pastStates = JSON.getInt(jsonObject, Messages.StatusEvent.PAST_APPLICATION_STATES);
+									
+					if (jsonObject.containsKey(Messages.StatusEvent.EXIT_CODE)) {
+						int exitCode = JSON.getInt(jsonObject, Messages.StatusEvent.EXIT_CODE);
+						return new StatusEvent(id, name, state, pastStates, exitCode);
+					}
+					else {
+						return new StatusEvent(id, name, state, pastStates);	
+					}
 				}
-				else {
-					event = new StatusEvent(id, name, state, pastStates);	
-				}
-			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-		}
-		else if (message.equals(Messages.Event.RESULT)) {
-				
-			byte[] resultMessage = this.subscriberSocket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(resultMessage));
-				
-				int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
-				String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
-				
-				// Get the next message to get the data.
-				byte[] data = this.subscriberSocket.recv();
-				
-				event = new ResultEvent(id, name, data);
-			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
-			}
-		}
-		else if (message.equals(Messages.Event.KEYVALUE)) {
-			
-			byte[] keyValueMessage = this.subscriberSocket.recv();
-			
-			try {
-				// Get the JSON object.
-				JSONObject jsonObject = parser.parse(Messages.parseString(keyValueMessage));
-				
-				int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
-				String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);
-				long status = JSON.getLong(jsonObject, Messages.KeyEvent.STATUS);
-				String key = JSON.getString(jsonObject, Messages.KeyEvent.KEY);
-				String value = JSON.getString(jsonObject, Messages.KeyEvent.VALUE);
-				
-				if (status == Messages.STORE_KEY_VALUE) {
-					event = new KeyEvent(id, name, KeyEvent.Status.STORED, key, value);
-				}
-				else {
-					event = new KeyEvent(id, name, KeyEvent.Status.REMOVED, key, value);
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse response");
 				}
 			}
-			catch (ParseException e) {
-				throw new UnexpectedException("Cannot parse response");
+			else if (message.equals(Messages.Event.RESULT)) {
+					
+				byte[] resultMessage = this.subscriberSocket.recv();
+				
+				try {
+					// Get the JSON object.
+					JSONObject jsonObject = parser.parse(Messages.parseString(resultMessage));
+					
+					int id = JSON.getInt(jsonObject, Messages.ResultEvent.ID);
+					String name = JSON.getString(jsonObject, Messages.ResultEvent.NAME);
+					
+					// Get the next message to get the data.
+					byte[] data = this.subscriberSocket.recv();
+					
+					return new ResultEvent(id, name, data);
+				}
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse response");
+				}
+			}
+			else if (message.equals(Messages.Event.KEYVALUE)) {
+				
+				byte[] keyValueMessage = this.subscriberSocket.recv();
+				
+				try {
+					// Get the JSON object.
+					JSONObject jsonObject = parser.parse(Messages.parseString(keyValueMessage));
+					
+					int id = JSON.getInt(jsonObject, Messages.KeyEvent.ID);
+					String name = JSON.getString(jsonObject, Messages.KeyEvent.NAME);
+					long status = JSON.getLong(jsonObject, Messages.KeyEvent.STATUS);
+					String key = JSON.getString(jsonObject, Messages.KeyEvent.KEY);
+					String value = JSON.getString(jsonObject, Messages.KeyEvent.VALUE);
+					
+					if (status == Messages.STORE_KEY_VALUE) {
+						return new KeyEvent(id, name, KeyEvent.Status.STORED, key, value);
+					}
+					else {
+						return new KeyEvent(id, name, KeyEvent.Status.REMOVED, key, value);
+					}
+				}
+				catch (ParseException e) {
+					throw new UnexpectedException("Cannot parse response");
+				}
+			}
+			else if (message.equals(Messages.Event.CANCEL)) {
+				canceled.set(true);
+				return null;
+			}
+			else if (message.equals(Messages.Event.PING)) {
+				// Do nothing.
+				System.out.println("Ping event");
 			}
 		}
-		else if (message.equals(Messages.Event.CANCEL)) {
-			canceled.set(true);
-			return null;
-		}
-	
-		return event;
 	}
 
 	public void cancel() {

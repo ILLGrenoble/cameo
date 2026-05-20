@@ -18,11 +18,27 @@
 #include "RequestSocket.h"
 #include "CancelEvent.h"
 #include "StatusEvent.h"
+#include "Heartbeat.h"
 
 namespace cameo {
 
 This This::m_instance;
 const std::string This::RUNNING_STATE = "RUNNING";
+
+class ThisHeartbeat : public Heartbeat {
+
+public:
+	ThisHeartbeat(int period, int timeout) :
+		Heartbeat(period), m_timeout(timeout) {
+	}
+
+	void pingAll() override {
+		This::m_instance.m_pingableSet->pingAll(m_timeout);
+	}
+
+private:
+	int m_timeout;
+};
 
 This::Com::Com(Server * server, int applicationId) :
 	m_server(server),
@@ -145,10 +161,9 @@ void This::terminateImpl() {
 	// Set terminated.
 	m_terminated = true;
 
-	// Join the ping thread.
-	if (m_pingThread) {
-		m_pingCondition.notify_one();
-		m_pingThread->join();
+	// Terminate the heartbeat.
+	if (m_heartbeat) {
+		m_heartbeat->terminate();
 	}
 
 	// Terminate the unregistered application.
@@ -338,7 +353,7 @@ void This::handleStop(StopFunctionType function, int stoppingTime) {
 }
 
 void This::heartbeat(int period, int timeout) {
-	m_instance.startHearbeatThread(period, timeout);
+	m_instance.startHeartbeat(period, timeout);
 }
 
 void This::cancelAll() {
@@ -525,29 +540,14 @@ void This::checkStates() {
 	m_stopFunction = StopFunctionType{};
 }
 
-void This::startHearbeatThread(int period, int timeout) {
+void This::startHeartbeat(int period, int timeout) {
 
-	if (!m_pingThread) {
-		m_pingThread = std::make_unique<std::thread>([this, period, timeout]() {
-
-			while (true) {
-
-				std::unique_lock<std::mutex> lock(m_mutex);
-				m_pingCondition.wait_for(lock, std::chrono::seconds(period));
-
-				if (m_terminated) {
-					break;
-				}
-
-				m_pingableSet->pingAll(timeout);
-			}
-		});
-	}
+	m_heartbeat = std::make_unique<ThisHeartbeat>(period, timeout);
+	m_heartbeat->start();
 }
 
 std::string This::toString() {
 	return AppIdentity{m_instance.m_name, m_instance.m_id, ServerIdentity{m_instance.m_server->getEndpoint().toString(), m_instance.m_server->usesProxy()}}.toJSONString();
 }
-
 
 }
