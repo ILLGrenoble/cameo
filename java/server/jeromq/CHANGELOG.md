@@ -1,3 +1,8 @@
+3.1.0 (not published)
+-----
+
+* Heartbeat implementation.
+
 3.0.3
 -----
 

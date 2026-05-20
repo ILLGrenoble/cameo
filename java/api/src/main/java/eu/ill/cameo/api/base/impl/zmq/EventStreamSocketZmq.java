@@ -177,7 +177,7 @@ public class EventStreamSocketZmq implements EventStreamSocketImpl {
 			}
 			else if (message.equals(Messages.Event.PING)) {
 				// Do nothing.
-				System.out.println("Ping event");
+				//System.out.println("Ping event");
 			}
 		}
 	}

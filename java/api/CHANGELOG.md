@@ -1,8 +1,9 @@
-3.0.2 (not published)
+3.1.0 (not published)
 -----
 
 * Better timeout and cancel management in Requester.
 * Removal of cameo-api-cpp-static target.
+* Heartbeat implementation.
 
 3.0.1
 -----

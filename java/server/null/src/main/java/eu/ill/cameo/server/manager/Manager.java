@@ -163,8 +163,6 @@ public class Manager extends ConfigLoader {
 	
 	public void startHeartbeat() {
 		
-		System.out.println("START HEARTBEAT ?");
-		
 		int heartbeatPeriod = ConfigManager.getInstance().getHeartbeatPeriod();
 		if (heartbeatPeriod > 0) {
 			heartbeat = new ThisHeartbeat(ConfigManager.getInstance().getHeartbeatPeriod());

@@ -110,7 +110,7 @@ std::unique_ptr<Event> EventStreamSocket::receive(bool blocking) {
 		}
 		else if (message == message::Event::PING) {
 			// Do nothing.
-			std::cout << "Ping event" << std::endl;
+			//std::cout << "Ping event" << std::endl;
 		}
 	}
 }

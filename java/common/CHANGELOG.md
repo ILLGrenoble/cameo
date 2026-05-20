@@ -1,3 +1,8 @@
+3.1.0 (not published)
+-----
+
+* Added Heartbeat class.
+
 3.0.0
 -----
 
