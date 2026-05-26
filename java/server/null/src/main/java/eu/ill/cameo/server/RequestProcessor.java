@@ -507,7 +507,7 @@ public class RequestProcessor {
 	 */
 	public void processOutputPortRequest(JSONObject request, Msg reply, Manager manager) {
 		
-		Log.logger().finest("Received OuputPort request " + request);
+		Log.logger().finest("Received OutputPort request " + request);
 		
 		int port = manager.getApplicationStreamPort(JSON.getString(request, Messages.OutputRequest.NAME));
 		

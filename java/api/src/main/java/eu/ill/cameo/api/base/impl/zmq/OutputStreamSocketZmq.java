@@ -115,7 +115,6 @@ public class OutputStreamSocketZmq implements OutputStreamSocketImpl {
 			}
 			else if (messageType.equals(Messages.Event.PING)) {
 				// Continue if message is PING.
-				System.out.println("Ping stream");
 				continue;
 			}
 			
