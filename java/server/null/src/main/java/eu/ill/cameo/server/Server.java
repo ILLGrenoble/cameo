@@ -484,7 +484,6 @@ public class Server {
 		
 		// Set the proxy ports if defined.
 		if (proxyPorts != null) {
-			System.out.println("PROXY PORTS !!!!!!!!!!");
 			server.setProxyPorts(proxyPorts);
 		}
 		

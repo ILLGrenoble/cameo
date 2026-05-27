@@ -87,7 +87,7 @@ std::optional<Output> OutputStreamSocket::receive() {
 		}
 		else if (messageType == message::Event::PING) {
 			// Continue if message is PING.
-			std::cout << "Ping stream" << std::endl;
+			//std::cout << "Ping stream" << std::endl;
 			continue;
 		}
 
