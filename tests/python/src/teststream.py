@@ -38,9 +38,10 @@ time.sleep(1)
 print("Canceling output")
 
 socket.cancel()
-socket.terminate()
 
 t.join()
+
+socket.terminate()
 
 state = app.waitFor()
 
