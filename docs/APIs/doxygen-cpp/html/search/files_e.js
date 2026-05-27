@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['waiting_2eh_612',['Waiting.h',['../Waiting_8h.html',1,'']]]
+  ['undefinedapplicationexception_2eh_629',['UndefinedApplicationException.h',['../UndefinedApplicationException_8h.html',1,'']]],
+  ['undefinedkeyexception_2eh_630',['UndefinedKeyException.h',['../UndefinedKeyException_8h.html',1,'']]],
+  ['unregisteredapplicationexception_2eh_631',['UnregisteredApplicationException.h',['../UnregisteredApplicationException_8h.html',1,'']]]
 ];

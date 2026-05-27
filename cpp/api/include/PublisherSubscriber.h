@@ -108,7 +108,7 @@ public:
 
 	/**
 	 * Publishes a message in one part.
-	 * \param data The data to send.
+	 * \param message The data to send.
 	 */
 	void publish(const std::string &message);
 
@@ -216,7 +216,6 @@ public:
 	 * Returns a new subscriber.
 	 * \param app The application where the publisher is defined.
 	 * \param publisherName The name of the publisher.
-	 * \param checkApp If true, a thread is checking the state of the app and cancels the subscriber if it fails.
 	 * \return A new Subscriber object.
 	 */
 	static std::unique_ptr<Subscriber> create(const App & app, const std::string &publisherName);

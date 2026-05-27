@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['versionresponse_559',['VersionResponse',['../structcameo_1_1message_1_1VersionResponse.html',1,'cameo::message']]]
+  ['undefinedapplicationexception_574',['UndefinedApplicationException',['../classcameo_1_1UndefinedApplicationException.html',1,'cameo']]],
+  ['undefinedkeyexception_575',['UndefinedKeyException',['../classcameo_1_1UndefinedKeyException.html',1,'cameo']]],
+  ['unregisteredapplicationexception_576',['UnregisteredApplicationException',['../classcameo_1_1UnregisteredApplicationException.html',1,'cameo']]]
 ];

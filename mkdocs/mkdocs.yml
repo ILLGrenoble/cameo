@@ -42,7 +42,7 @@ nav:
   - 'app-registration.md'
   - 'synchronization.md'
   - 'track-the-app-failures.md'
-  - 'use-the-proxies-with-a-firewall.md'
+  - 'with-a-firewall.md'
   - 'exceptions.md'
   - 'examples.md'
   - 'APIs.md'

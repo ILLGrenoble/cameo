@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">cameo
-   &#160;<span id="projectnumber">3.0.2</span>
+   &#160;<span id="projectnumber">3.1.0</span>
    </div>
   </td>
  </tr>
@@ -129,6 +129,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1EventStreamSocket.html">EventStreamSocket</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class defining an event stream socket.  <a href="classcameo_1_1EventStreamSocket.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Heartbeat.html">Heartbeat</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract class defining a heartbeat.  <a href="classcameo_1_1Heartbeat.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1IdGenerator.html">IdGenerator</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class managing the ids of communication objects.  <a href="classcameo_1_1IdGenerator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,6 +158,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1OutputStreamSocket.html">OutputStreamSocket</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class defining an output stream socket.  <a href="classcameo_1_1OutputStreamSocket.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html">Pingable</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class defining an interface for pingable objects.  <a href="classcameo_1_1Pingable.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1RemoteException.html">RemoteException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for remote exception.  <a href="classcameo_1_1RemoteException.html#details">More...</a><br /></td></tr>
@@ -327,6 +333,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a138b7f2f48ef4f6c0de6505e626dc859"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecameo.html#a138b7f2f48ef4f6c0de6505e626dc859">createPortsRequest</a> ()</td></tr>
 <tr class="memdesc:a138b7f2f48ef4f6c0de6505e626dc859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a ports request.  <a href="namespacecameo.html#a138b7f2f48ef4f6c0de6505e626dc859">More...</a><br /></td></tr>
 <tr class="separator:a138b7f2f48ef4f6c0de6505e626dc859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4f1d27a29925ff980c2ef0793077ed5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecameo.html#ae4f1d27a29925ff980c2ef0793077ed5">createPingRequest</a> ()</td></tr>
+<tr class="memdesc:ae4f1d27a29925ff980c2ef0793077ed5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a ping request.  <a href="namespacecameo.html#ae4f1d27a29925ff980c2ef0793077ed5">More...</a><br /></td></tr>
+<tr class="separator:ae4f1d27a29925ff980c2ef0793077ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaf58330cec024da41c5ef50c637a22d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecameo.html#afaf58330cec024da41c5ef50c637a22d">createPongResponse</a> ()</td></tr>
+<tr class="memdesc:afaf58330cec024da41c5ef50c637a22d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a pong response.  <a href="namespacecameo.html#afaf58330cec024da41c5ef50c637a22d">More...</a><br /></td></tr>
+<tr class="separator:afaf58330cec024da41c5ef50c637a22d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaa2f54289e559697e5d2645d29278a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecameo.html#afaa2f54289e559697e5d2645d29278a0">split</a> (const std::string &amp;str, char c)</td></tr>
 <tr class="memdesc:afaa2f54289e559697e5d2645d29278a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the string with delimiter.  <a href="namespacecameo.html#afaa2f54289e559697e5d2645d29278a0">More...</a><br /></td></tr>
 <tr class="separator:afaa2f54289e559697e5d2645d29278a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -353,7 +365,7 @@ Variables</h2></td></tr>
 
 <p>Array of <a class="el" href="classcameo_1_1App.html" title="Class defining a remote Cameo application.">App</a> objects. </p>
 
-<p class="definition">Definition at line <a class="el" href="Application_8h_source.html#l00624">624</a> of file <a class="el" href="Application_8h_source.html">Application.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Application_8h_source.html#l00626">626</a> of file <a class="el" href="Application_8h_source.html">Application.h</a>.</p>
 
 </div>
 </div>
@@ -1311,6 +1323,46 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Creates a ports request. </p>
+<dl class="section return"><dt>Returns</dt><dd>The JSON string. </dd></dl>
+
+</div>
+</div>
+<a id="ae4f1d27a29925ff980c2ef0793077ed5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4f1d27a29925ff980c2ef0793077ed5">&#9670;&nbsp;</a></span>createPingRequest()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::string cameo::createPingRequest </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a ping request. </p>
+<dl class="section return"><dt>Returns</dt><dd>The JSON string. </dd></dl>
+
+</div>
+</div>
+<a id="afaf58330cec024da41c5ef50c637a22d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaf58330cec024da41c5ef50c637a22d">&#9670;&nbsp;</a></span>createPongResponse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a> std::string cameo::createPongResponse </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a pong response. </p>
 <dl class="section return"><dt>Returns</dt><dd>The JSON string. </dd></dl>
 
 </div>

@@ -1,6 +1,19 @@
 # Documentation
 
 To generate the documentation, you need *mkdocs material* and *doxygen*. You can get *mkdocs* using *pip*:
+First generate a virtual environment:
+
+```
+python3 -m venv .venv
+```
+
+Activate the environment:
+
+```
+source .venv/bin/activate
+```
+
+Install the dependency:
 
 ```
 pip install mkdocs-material

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">cameo
-   &#160;<span id="projectnumber">3.0.2</span>
+   &#160;<span id="projectnumber">3.1.0</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,7 @@ $(function() {
   <map id="cameo::coms::Publisher_map" name="cameo::coms::Publisher_map">
 <area href="classcameo_1_1Object.html" title="Class defining an abstract Cameo object that can be initialized and terminated." alt="cameo::Object" shape="rect" coords="0,0,143,24"/>
 <area href="classcameo_1_1Cancelable.html" title="Class defining an interface for cancelable objects." alt="cameo::Cancelable" shape="rect" coords="153,0,296,24"/>
+<area href="classcameo_1_1Pingable.html" title="Class defining an interface for pingable objects." alt="cameo::Pingable" shape="rect" coords="306,0,449,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -128,9 +129,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0f75d40d9fba0de424e361bd6a3d713e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#a0f75d40d9fba0de424e361bd6a3d713e">sendEnd</a> () const</td></tr>
 <tr class="memdesc:a0f75d40d9fba0de424e361bd6a3d713e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends the end of the stream.  <a href="classcameo_1_1coms_1_1Publisher.html#a0f75d40d9fba0de424e361bd6a3d713e">More...</a><br /></td></tr>
 <tr class="separator:a0f75d40d9fba0de424e361bd6a3d713e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc8576cdb92add6f2199302c23db7236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#afc8576cdb92add6f2199302c23db7236">publish</a> (const std::string &amp;message)</td></tr>
+<tr class="memdesc:afc8576cdb92add6f2199302c23db7236"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publishes a message in one part.  <a href="classcameo_1_1coms_1_1Publisher.html#afc8576cdb92add6f2199302c23db7236">More...</a><br /></td></tr>
+<tr class="separator:afc8576cdb92add6f2199302c23db7236"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2861f2efc143f7380c86010c4460590c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#a2861f2efc143f7380c86010c4460590c">publish</a> (const std::string &amp;messagePart1, const std::string &amp;messagePart2)</td></tr>
+<tr class="memdesc:a2861f2efc143f7380c86010c4460590c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publishes a message in two parts.  <a href="classcameo_1_1coms_1_1Publisher.html#a2861f2efc143f7380c86010c4460590c">More...</a><br /></td></tr>
+<tr class="separator:a2861f2efc143f7380c86010c4460590c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0915e21d74b4b395f442f67895adcfd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#a0915e21d74b4b395f442f67895adcfd7">publishEnd</a> ()</td></tr>
+<tr class="memdesc:a0915e21d74b4b395f442f67895adcfd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Publishes the end of the stream.  <a href="classcameo_1_1coms_1_1Publisher.html#a0915e21d74b4b395f442f67895adcfd7">More...</a><br /></td></tr>
+<tr class="separator:a0915e21d74b4b395f442f67895adcfd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e7f6dd748d7d6590b22cd104b6b41dd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#a3e7f6dd748d7d6590b22cd104b6b41dd">hasEnded</a> () const</td></tr>
 <tr class="memdesc:a3e7f6dd748d7d6590b22cd104b6b41dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the stream ended.  <a href="classcameo_1_1coms_1_1Publisher.html#a3e7f6dd748d7d6590b22cd104b6b41dd">More...</a><br /></td></tr>
 <tr class="separator:a3e7f6dd748d7d6590b22cd104b6b41dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2c1b74392af385818457a9c28c915a7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#ac2c1b74392af385818457a9c28c915a7">ping</a> (int timeout) override</td></tr>
+<tr class="memdesc:ac2c1b74392af385818457a9c28c915a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pings with response.  <a href="classcameo_1_1coms_1_1Publisher.html#ac2c1b74392af385818457a9c28c915a7">More...</a><br /></td></tr>
+<tr class="separator:ac2c1b74392af385818457a9c28c915a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cdf79c6de66516139d3598a04d5c8d3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1coms_1_1Publisher.html#a1cdf79c6de66516139d3598a04d5c8d3">toString</a> () const override</td></tr>
 <tr class="memdesc:a1cdf79c6de66516139d3598a04d5c8d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string representation of the publisher.  <a href="classcameo_1_1coms_1_1Publisher.html#a1cdf79c6de66516139d3598a04d5c8d3">More...</a><br /></td></tr>
 <tr class="separator:a1cdf79c6de66516139d3598a04d5c8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,6 +164,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa22410df6f16f7d005c420ba1d7f9865 inherit pub_methods_classcameo_1_1Cancelable"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Cancelable.html#aa22410df6f16f7d005c420ba1d7f9865">~Cancelable</a> ()</td></tr>
 <tr class="memdesc:aa22410df6f16f7d005c420ba1d7f9865 inherit pub_methods_classcameo_1_1Cancelable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="classcameo_1_1Cancelable.html#aa22410df6f16f7d005c420ba1d7f9865">More...</a><br /></td></tr>
 <tr class="separator:aa22410df6f16f7d005c420ba1d7f9865 inherit pub_methods_classcameo_1_1Cancelable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcameo_1_1Pingable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcameo_1_1Pingable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcameo_1_1Pingable.html">cameo::Pingable</a></td></tr>
+<tr class="memitem:a337a9327ee2e3efd85256ea447ddd81b inherit pub_methods_classcameo_1_1Pingable"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html#a337a9327ee2e3efd85256ea447ddd81b">~Pingable</a> ()</td></tr>
+<tr class="memdesc:a337a9327ee2e3efd85256ea447ddd81b inherit pub_methods_classcameo_1_1Pingable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="classcameo_1_1Pingable.html#a337a9327ee2e3efd85256ea447ddd81b">More...</a><br /></td></tr>
+<tr class="separator:a337a9327ee2e3efd85256ea447ddd81b inherit pub_methods_classcameo_1_1Pingable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92ee76751c684c5d85171fe02c33ffc1 inherit pub_methods_classcameo_1_1Pingable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html#a92ee76751c684c5d85171fe02c33ffc1">init</a> ()</td></tr>
+<tr class="memdesc:a92ee76751c684c5d85171fe02c33ffc1 inherit pub_methods_classcameo_1_1Pingable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers the pingable.  <a href="classcameo_1_1Pingable.html#a92ee76751c684c5d85171fe02c33ffc1">More...</a><br /></td></tr>
+<tr class="separator:a92ee76751c684c5d85171fe02c33ffc1 inherit pub_methods_classcameo_1_1Pingable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d3511361434b2260eb1e8f43d132353 inherit pub_methods_classcameo_1_1Pingable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html#a6d3511361434b2260eb1e8f43d132353">terminate</a> ()</td></tr>
+<tr class="memdesc:a6d3511361434b2260eb1e8f43d132353 inherit pub_methods_classcameo_1_1Pingable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unregisters the pingable.  <a href="classcameo_1_1Pingable.html#a6d3511361434b2260eb1e8f43d132353">More...</a><br /></td></tr>
+<tr class="separator:a6d3511361434b2260eb1e8f43d132353 inherit pub_methods_classcameo_1_1Pingable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac045f1d98bbd3705e13f287e1ef032c4 inherit pub_methods_classcameo_1_1Pingable"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html#ac045f1d98bbd3705e13f287e1ef032c4">setPinged</a> (bool value)</td></tr>
+<tr class="memdesc:ac045f1d98bbd3705e13f287e1ef032c4 inherit pub_methods_classcameo_1_1Pingable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables the pingable object.  <a href="classcameo_1_1Pingable.html#ac045f1d98bbd3705e13f287e1ef032c4">More...</a><br /></td></tr>
+<tr class="separator:ac045f1d98bbd3705e13f287e1ef032c4 inherit pub_methods_classcameo_1_1Pingable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49384fd672975203a40ad1e0ae90b3bf inherit pub_methods_classcameo_1_1Pingable"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcameo_1_1Pingable.html#a49384fd672975203a40ad1e0ae90b3bf">isPinged</a> () const</td></tr>
+<tr class="memdesc:a49384fd672975203a40ad1e0ae90b3bf inherit pub_methods_classcameo_1_1Pingable"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if is enabled.  <a href="classcameo_1_1Pingable.html#a49384fd672975203a40ad1e0ae90b3bf">More...</a><br /></td></tr>
+<tr class="separator:a49384fd672975203a40ad1e0ae90b3bf inherit pub_methods_classcameo_1_1Pingable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -530,6 +559,88 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="afc8576cdb92add6f2199302c23db7236"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc8576cdb92add6f2199302c23db7236">&#9670;&nbsp;</a></span>publish() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cameo::coms::Publisher::publish </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>message</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Publishes a message in one part. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>The data to send. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2861f2efc143f7380c86010c4460590c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2861f2efc143f7380c86010c4460590c">&#9670;&nbsp;</a></span>publish() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cameo::coms::Publisher::publish </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>messagePart1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>messagePart2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Publishes a message in two parts. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">messagePart1</td><td>The first part. </td></tr>
+    <tr><td class="paramname">messagePart2</td><td>The second part. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0915e21d74b4b395f442f67895adcfd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0915e21d74b4b395f442f67895adcfd7">&#9670;&nbsp;</a></span>publishEnd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cameo::coms::Publisher::publishEnd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Publishes the end of the stream. </p>
+
+</div>
+</div>
 <a id="a3e7f6dd748d7d6590b22cd104b6b41dd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e7f6dd748d7d6590b22cd104b6b41dd">&#9670;&nbsp;</a></span>hasEnded()</h2>
 
@@ -547,6 +658,43 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Returns true if the stream ended. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the stream ended. </dd></dl>
+
+</div>
+</div>
+<a id="ac2c1b74392af385818457a9c28c915a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2c1b74392af385818457a9c28c915a7">&#9670;&nbsp;</a></span>ping()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cameo::coms::Publisher::ping </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>timeout</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pings with response. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timeout</td><td>The timeout. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>always true. </dd></dl>
+
+<p>Implements <a class="el" href="classcameo_1_1Pingable.html#ad1543498cfb976ad85615a150c351bad">cameo::Pingable</a>.</p>
 
 </div>
 </div>
@@ -603,7 +751,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Constant uuid for the unique publisher key. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00123">123</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00150">150</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
@@ -629,7 +777,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Port key for the JSON object stored for the responder key. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00128">128</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00155">155</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
@@ -655,7 +803,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Number of subscribers key for the JSON object stored for the responder key. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00133">133</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00160">160</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
@@ -681,7 +829,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Sync subscribers key for the JSON object stored for the responder key. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00138">138</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00165">165</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
@@ -707,7 +855,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Prefix for the temporary responder used for the synchronization. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00143">143</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00170">170</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
@@ -733,12 +881,12 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Message type for the responder used for the synchronization. </p>
 
-<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00148">148</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PublisherSubscriber_8h_source.html#l00175">175</a> of file <a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/legoc/work/cameo-dev/cameo/cpp/api/include/<a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a></li>
+<li>/home/legoc/work/cameo/cameo/cpp/api/include/<a class="el" href="PublisherSubscriber_8h_source.html">PublisherSubscriber.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -221,7 +221,7 @@ public:
 	/**
 	 * Starts the heartbeat.
 	 * \param period The period in seconds.
-	 * \param period The timeout in seconds.
+	 * \param timeout The timeout in seconds.
 	 */
 	static void heartbeat(int period, int timeout = 10);
 

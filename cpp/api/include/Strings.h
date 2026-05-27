@@ -312,8 +312,8 @@ struct CAMEO_EXPORT StringId {
 
 	/**
 	 * Creates the string id.
-	 * \param id The first name.
-	 * \param name The second name.
+	 * \param name1 The first name.
+	 * \param name2 The second name.
 	 * \return The composed string id.
 	 */
 	static std::string from(const std::string& name1, const std::string& name2);

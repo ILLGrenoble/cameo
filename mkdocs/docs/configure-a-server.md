@@ -43,6 +43,7 @@ sleep_time    | 5                     | Sleep duration in milliseconds between t
 max_applications | 65536              | Max number of running apps at a time.
 log_level     | INFO                  | Log level. Possible values are OFF, INFO, FINE, FINER, FINEST.
 log_directory | .                     | The directory where the file *cameo.log* is written.
+heartbeat     | 0                     | The period in seconds of the heartbeat i.e. the ping messages sent by the server publisher sockets. The value must be greater than 0 to be used.
 
 Attributes of the *application* tag:
 

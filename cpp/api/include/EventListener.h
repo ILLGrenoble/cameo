@@ -57,6 +57,7 @@ public:
 	/**
 	 * Pops the event from the queue.
 	 * \param blocking True if the call is blocking.
+	 * \param timeout The timeout before the call returns. Let default value to have no timeout.
 	 */
 	std::unique_ptr<Event> popEvent(bool blocking = true, int timeout = -1);
 

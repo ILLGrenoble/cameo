@@ -1,4 +1,4 @@
-# Use the proxies with a firewall
+# With a firewall
 
 
 In the context of a firewall, you may run the CAMEO server with proxies so that the number of exposed ports is fixed.
@@ -57,7 +57,7 @@ Once the server is created, the definition of a *Requester* or *Subscriber* is e
 Currently, the proxy programs are written in C++. When the CAMEO server starts, it tries to launch the proxy programs. However if they are not installed in a standard path, they may not be found. In that case, an argument is provided:
 
 ```
-java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/to/proxies config.xml
+cameo-server --proxy-path /my/path/to/proxies config.xml
 ```
 
 ## Override ports of the configuration
@@ -65,7 +65,7 @@ java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-path /my/path/t
 It is possible to override the ports of the configuration by defining them in the command line:
 
 ```
-java -jar java/server/target/cameo-server-2.0.0-full.jar --proxy-ports "12000, 12001, 12002" config.xml
+cameo-server --proxy-ports "12000, 12001, 12002" config.xml
 ```
 
 
@@ -93,3 +93,23 @@ Notice that it is possible that each computer has a CAMEO proxy and two remote a
 *App2* on the computer *B* is connecting to *App1* on computer A. For that the CAMEO server representing *A* on *B* is created with a proxy. A message is sent to the proxy of *A* that forwards it to the CAMEO server.
 
 Then *App2* requests *App1* using the proxy automatically. This time when *App1* receives a request it connects to the requester. For that it is using the proxy meaning that it sends a message to the proxy of *B* that is forwarded to *App2*.
+
+## Heartbeat
+
+To ensure that the communications are not dropped by a firewall it can be necessary to configure a heartbeat so that a hidden ping message is sent periodically.
+
+For a CAMEO application, it is possible to set the heartbeat with the *This* interface. In C++:
+
+```cpp
+#include <cameo/api/cameo.h>
+
+int main(int argc, char *argv[]) {
+	
+    // Initialise the CAMEO application represented by This. 
+    cameo::This::init(argc, argv);
+    
+    // Set the heartbeat period in seconds with a timeout.
+    cameo::This::heartbeat(60, 10);
+```
+
+The interface is the same in Java and Python.

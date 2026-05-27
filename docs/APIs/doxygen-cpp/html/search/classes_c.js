@@ -1,19 +1,15 @@
 var searchData=
 [
-  ['server_535',['Server',['../classcameo_1_1Server.html',1,'cameo']]],
-  ['serverandapp_536',['ServerAndApp',['../classcameo_1_1ServerAndApp.html',1,'cameo']]],
-  ['serveridentity_537',['ServerIdentity',['../classcameo_1_1ServerIdentity.html',1,'cameo']]],
-  ['setresultrequest_538',['SetResultRequest',['../structcameo_1_1message_1_1SetResultRequest.html',1,'cameo::message']]],
-  ['setstatusrequest_539',['SetStatusRequest',['../structcameo_1_1message_1_1SetStatusRequest.html',1,'cameo::message']]],
-  ['setstophandlerrequest_540',['SetStopHandlerRequest',['../structcameo_1_1message_1_1SetStopHandlerRequest.html',1,'cameo::message']]],
-  ['socketexception_541',['SocketException',['../classcameo_1_1SocketException.html',1,'cameo']]],
-  ['startexception_542',['StartException',['../classcameo_1_1StartException.html',1,'cameo']]],
-  ['startrequest_543',['StartRequest',['../structcameo_1_1message_1_1StartRequest.html',1,'cameo::message']]],
-  ['statusevent_544',['StatusEvent',['../structcameo_1_1message_1_1StatusEvent.html',1,'cameo::message']]],
-  ['stoprequest_545',['StopRequest',['../structcameo_1_1message_1_1StopRequest.html',1,'cameo::message']]],
-  ['storekeyvaluerequest_546',['StoreKeyValueRequest',['../structcameo_1_1message_1_1StoreKeyValueRequest.html',1,'cameo::message']]],
-  ['stringid_547',['StringId',['../structcameo_1_1StringId.html',1,'cameo']]],
-  ['subscriber_548',['Subscriber',['../classcameo_1_1coms_1_1Subscriber.html',1,'cameo::coms']]],
-  ['synchronizationtimeout_549',['SynchronizationTimeout',['../classcameo_1_1SynchronizationTimeout.html',1,'cameo']]],
-  ['syncstreamrequest_550',['SyncStreamRequest',['../structcameo_1_1message_1_1SyncStreamRequest.html',1,'cameo::message']]]
+  ['releaseportrequest_541',['ReleasePortRequest',['../structcameo_1_1message_1_1ReleasePortRequest.html',1,'cameo::message']]],
+  ['remoteexception_542',['RemoteException',['../classcameo_1_1RemoteException.html',1,'cameo']]],
+  ['removekeyrequest_543',['RemoveKeyRequest',['../structcameo_1_1message_1_1RemoveKeyRequest.html',1,'cameo::message']]],
+  ['request_544',['Request',['../classcameo_1_1coms_1_1basic_1_1Request.html',1,'cameo::coms::basic::Request'],['../classcameo_1_1coms_1_1multi_1_1Request.html',1,'cameo::coms::multi::Request'],['../structcameo_1_1message_1_1Request.html',1,'cameo::message::Request']]],
+  ['requester_545',['Requester',['../classcameo_1_1coms_1_1Requester.html',1,'cameo::coms']]],
+  ['requestportrequest_546',['RequestPortRequest',['../structcameo_1_1message_1_1RequestPortRequest.html',1,'cameo::message']]],
+  ['requestresponse_547',['RequestResponse',['../structcameo_1_1message_1_1RequestResponse.html',1,'cameo::message']]],
+  ['requestsocket_548',['RequestSocket',['../classcameo_1_1RequestSocket.html',1,'cameo']]],
+  ['responder_549',['Responder',['../classcameo_1_1coms_1_1basic_1_1Responder.html',1,'cameo::coms::basic::Responder'],['../classcameo_1_1coms_1_1multi_1_1Responder.html',1,'cameo::coms::multi::Responder']]],
+  ['responderrouter_550',['ResponderRouter',['../classcameo_1_1coms_1_1multi_1_1ResponderRouter.html',1,'cameo::coms::multi']]],
+  ['response_551',['Response',['../classcameo_1_1Response.html',1,'cameo']]],
+  ['resultevent_552',['ResultEvent',['../structcameo_1_1message_1_1ResultEvent.html',1,'cameo::message']]]
 ];
