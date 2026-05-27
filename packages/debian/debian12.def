@@ -1,0 +1,28 @@
+BootStrap: debootstrap
+OSVersion: bookworm
+MirrorURL: http://deb.debian.org/debian/
+
+%post
+    echo 'deb http://deb.debian.org/debian/ bookworm main main non-free contrib' > /etc/apt/sources.list
+    apt update
+    apt-get -y install pkg-config \
+                  wget \
+                  git \
+                  gcc \
+                  build-essential \
+                  cmake \
+                  file \
+                  maven \
+                  libzmq3-dev \
+                  libzmq-jni \
+                  rapidjson-dev \
+                  pybind11-dev
+                  
+%runscript
+    git clone https://github.com/ILLGrenoble/cameo.git
+    cd cameo/packages/debian
+    ./buildpackages.sh /output
+
+%labels 
+    Author Yannick
+              

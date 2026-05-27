@@ -8,4 +8,6 @@
 **/.settings
 **/Debug
 
+*.sif
+
 .venv
