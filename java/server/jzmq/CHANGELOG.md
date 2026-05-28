@@ -1,4 +1,4 @@
-3.1.0 (not published)
+3.1.0
 -----
 
 * Heartbeat implementation.

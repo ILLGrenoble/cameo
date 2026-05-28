@@ -1,7 +1,8 @@
-3.0.4 (not published)
+3.1.0
 -----
 
 * Better timeout and cancel management in Requester.
+* Heartbeat implementation.
 
 3.0.3
 -----
