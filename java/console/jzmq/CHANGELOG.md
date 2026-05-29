@@ -1,3 +1,8 @@
+3.1.1
+-----
+
+* Change of version of cameo API.
+
 3.1.0
 -----
 

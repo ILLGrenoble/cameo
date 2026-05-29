@@ -1,3 +1,8 @@
+3.1.1
+-----
+
+* Heartbeat configuration passed to started apps.
+
 3.1.0
 -----
 

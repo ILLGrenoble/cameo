@@ -1,3 +1,8 @@
+3.1.1
+-----
+
+* Heartbeat configuration from Cameo server.
+
 3.1.0
 -----
 

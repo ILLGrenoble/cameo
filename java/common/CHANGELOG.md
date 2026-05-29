@@ -1,3 +1,8 @@
+3.1.1
+-----
+
+* More heartbeat constants.
+
 3.1.0
 -----
 
