@@ -903,9 +903,14 @@
 <td>The directory where the file <em>cameo.log</em> is written.</td>
 </tr>
 <tr>
-<td>heartbeat</td>
+<td>heartbeat_period</td>
 <td>0</td>
-<td>The period in seconds of the heartbeat i.e. the ping messages sent by the server publisher sockets. The value must be greater than 0 to be used.</td>
+<td>The period in seconds of the heartbeat i.e. the ping messages sent by the server publisher sockets. The value must be greater than 0 to be used. The value <em>inf</em> is equivalent to 0.</td>
+</tr>
+<tr>
+<td>heartbeat_timeout</td>
+<td>10</td>
+<td>The timeout in seconds of the heartbeat.</td>
 </tr>
 </tbody>
 </table>

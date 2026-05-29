@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['unlinked_986',['UNLINKED',['../namespacecameo_1_1option.html#a3e92d37b2a64439d297128676eb88b4d',1,'cameo::option']]],
-  ['use_5fproxy_987',['USE_PROXY',['../namespacecameo_1_1option.html#a3089f1b312a6e131b26a0be028db4037',1,'cameo::option']]]
+  ['timeout_996',['TIMEOUT',['../structcameo_1_1message_1_1Heartbeat.html#a89be74830c8024150fdb6c3c5e2c4109',1,'cameo::message::Heartbeat']]],
+  ['type_997',['TYPE',['../namespacecameo_1_1message.html#a0284bc3d5dc45ca1f75bf5cea386d060',1,'cameo::message']]]
 ];

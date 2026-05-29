@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['value_988',['VALUE',['../structcameo_1_1message_1_1RequestResponse.html#ab2b87c18124187356369e5107fb219cd',1,'cameo::message::RequestResponse::VALUE()'],['../structcameo_1_1message_1_1StoreKeyValueRequest.html#aab6408aeaed4b323eb7bedebcc83fa95',1,'cameo::message::StoreKeyValueRequest::VALUE()'],['../structcameo_1_1message_1_1KeyEvent.html#a2b2cc6500c40233a12646a2f97634bef',1,'cameo::message::KeyEvent::VALUE()']]]
+  ['unlinked_998',['UNLINKED',['../namespacecameo_1_1option.html#a3e92d37b2a64439d297128676eb88b4d',1,'cameo::option']]],
+  ['use_5fproxy_999',['USE_PROXY',['../namespacecameo_1_1option.html#a3089f1b312a6e131b26a0be028db4037',1,'cameo::option']]]
 ];

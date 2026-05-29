@@ -106,14 +106,15 @@ $(function() {
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">int</span> m_period;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    std::mutex m_mutex;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::condition_variable m_pingCondition;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::unique_ptr&lt;std::thread&gt; m_pingThread;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">bool</span> m_terminated = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    std::mutex m_mutex;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::condition_variable m_pingCondition;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::unique_ptr&lt;std::thread&gt; m_pingThread;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;};</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aDefines_8h_html"><div class="ttname"><a href="Defines_8h.html">Defines.h</a></div></div>
 <div class="ttc" id="aDefines_8h_html_ae77d0e7e4dc382097a8b19aadab34ff6"><div class="ttname"><a href="Defines_8h.html#ae77d0e7e4dc382097a8b19aadab34ff6">CAMEO_EXPORT</a></div><div class="ttdeci">#define CAMEO_EXPORT</div><div class="ttdef"><b>Definition:</b> <a href="Defines_8h_source.html#l00028">Defines.h:28</a></div></div>
 <div class="ttc" id="aclasscameo_1_1Heartbeat_html"><div class="ttname"><a href="classcameo_1_1Heartbeat.html">cameo::Heartbeat</a></div><div class="ttdoc">Abstract class defining a heartbeat.</div><div class="ttdef"><b>Definition:</b> <a href="Heartbeat_8h_source.html#l00025">Heartbeat.h:25</a></div></div>
