@@ -61,7 +61,8 @@ public abstract class ConfigLoader {
 	public final static String ARGS = "args";
 	public final static String ARG = "arg";
 	public final static String VALUE = "value";
-	public final static String HEARTBEAT = "heartbeat";
+	public final static String HEARTBEAT_PERIOD = "heartbeat_period";
+	public final static String HEARTBEAT_TIMEOUT = "heartbeat_timeout";
 	
 	private static final String INF = "inf";
 	
@@ -272,7 +273,7 @@ public abstract class ConfigLoader {
 				
 		// Heartbeat.
 		int heartbeatPeriod = 0;
-		String heartbeatPeriodString = getElementAttribute(root, HEARTBEAT);
+		String heartbeatPeriodString = getElementAttribute(root, HEARTBEAT_PERIOD);
 		if (heartbeatPeriodString != null && !heartbeatPeriodString.equals(INF)) {
 			try {
 				heartbeatPeriod = Integer.parseInt(heartbeatPeriodString);
@@ -283,7 +284,20 @@ public abstract class ConfigLoader {
 		}
 		
 		ConfigManager.getInstance().setHeartbeatPeriod(heartbeatPeriod);
-				
+		
+		int heartbeatTimeout = 10;
+		String heartbeatTimeoutString = getElementAttribute(root, HEARTBEAT_TIMEOUT);
+		if (heartbeatTimeoutString != null) {
+			try {
+				heartbeatTimeout = Integer.parseInt(heartbeatTimeoutString);
+			}
+			catch (NumberFormatException e) {
+				// Set default value.
+			}
+		}
+		
+		ConfigManager.getInstance().setHeartbeatTimeout(heartbeatTimeout);
+		
 		// Get applications.
 		Element apps = getElementChild(root, APPLICATIONS);
 		List<Element> listApplication = getElementChildren(apps, APPLICATION);
@@ -337,6 +351,12 @@ public abstract class ConfigLoader {
 						
 			application.setRestart(getElementAttribute(item, RESTART));
 			application.setEnvironmentFile(getElementAttribute(item, ENVIRONMENT));
+			
+			
+			// Set the heartbeat from the global configuration.
+			application.setHeartbeatPeriod(ConfigManager.getInstance().getHeartbeatPeriod());
+			application.setHeartbeatTimeout(ConfigManager.getInstance().getHeartbeatTimeout());
+			
 			
 			// Start command.
 			Element startItem = getElementChild(item, START);

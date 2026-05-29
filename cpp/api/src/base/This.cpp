@@ -238,6 +238,13 @@ void This::initApplication(int argc, char *argv[]) {
 		m_starterLinked = infoObject[message::ApplicationIdentity::STARTER_LINKED].GetBool();
 	}
 
+	// Heartbeat.
+	if (infoObject.HasMember(message::Heartbeat::HEARTBEAT)) {
+		json::Value& heartbeatValue = infoObject[message::Heartbeat::HEARTBEAT];
+		m_heartbeatPeriod = heartbeatValue[message::Heartbeat::PERIOD].GetInt();
+		m_heartbeatTimeout = heartbeatValue[message::Heartbeat::TIMEOUT].GetInt();
+	}
+
 	// Init the app.
 	initApplication();
 }
@@ -294,6 +301,11 @@ void This::initApplication() {
 	}
 
 	m_pingableSet = std::make_unique<PingableSet>();
+
+	// Init heartbeat.
+	if (m_heartbeatPeriod > 0) {
+		startHeartbeat(m_heartbeatPeriod, m_heartbeatTimeout);
+	}
 
 	// Init com.
 	m_com = std::unique_ptr<Com>{new Com(m_server.get(), m_id)};
@@ -541,6 +553,10 @@ void This::checkStates() {
 }
 
 void This::startHeartbeat(int period, int timeout) {
+
+	if (m_heartbeat) {
+		m_heartbeat->terminate();
+	}
 
 	m_heartbeat = std::make_unique<ThisHeartbeat>(period, timeout);
 	m_heartbeat->start();

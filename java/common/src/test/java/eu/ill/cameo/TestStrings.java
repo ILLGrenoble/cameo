@@ -104,7 +104,7 @@ public class TestStrings {
 		ApplicationIdentity application = new ApplicationIdentity("my-app", 31, new Endpoint("gamma75", 9000));
 		ApplicationIdentity starter = new ApplicationIdentity("your-app", 76, new Endpoint("gamma57", 7000));
 		
-		ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(application, starter, 10000, true);
+		ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(application, starter, 10000, true, 0, 0);
 		
 		String jsonString = identity.toJSON().toJSONString();
 		

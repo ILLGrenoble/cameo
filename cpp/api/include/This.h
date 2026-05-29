@@ -219,7 +219,7 @@ public:
 	static void handleStop(StopFunctionType function, int stoppingTime = -1);
 
 	/**
-	 * Starts the heartbeat.
+	 * Starts or restarts the heartbeat.
 	 * \param period The period in seconds.
 	 * \param timeout The timeout in seconds.
 	 */
@@ -300,6 +300,10 @@ private:
 	std::unique_ptr<std::thread> m_checkStatesThread;
 
 	std::unique_ptr<PingableSet> m_pingableSet;
+
+	int m_heartbeatPeriod = 0;
+	int m_heartbeatTimeout = 0;
+
 	std::unique_ptr<Heartbeat> m_heartbeat;
 
 	std::atomic_bool m_inited;

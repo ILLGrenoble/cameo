@@ -37,6 +37,7 @@ public final class ConfigManager {
 	private Endpoint subscriberProxyHostEndpoint;
 	private boolean proxies;
 	private int heartbeatPeriod = 0;
+	private int heartbeatTimeout = 0;
 	
 	private final static int DEFAULT_MAX_APPLICATIONS = 65536;
 	private final static int DEFAULT_PORT = 7000;
@@ -313,6 +314,14 @@ public final class ConfigManager {
 	
 	public int getHeartbeatPeriod() {
 		return heartbeatPeriod;
+	}
+
+	public void setHeartbeatTimeout(int timeout) {
+		heartbeatTimeout = timeout;
+	}
+	
+	public int getHeartbeatTimeout() {
+		return heartbeatTimeout;
 	}
 
 }

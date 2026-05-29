@@ -31,6 +31,10 @@ public class ApplicationConfig {
 	protected boolean runSingle = false;
 	protected int runMaxApplications = -1; // Indicates infinity
 	protected boolean restart = false;
+	
+	protected int heartbeatPeriod = 0;
+	protected int heartbeatTimeout = 0;
+	
 	protected boolean infoArg;
 	protected HashMap<String, String> environmentVariables = new HashMap<String, String>(); 
 	
@@ -315,6 +319,22 @@ public class ApplicationConfig {
 	
 	public boolean isRestart() {
 		return restart;
+	}
+	
+	public void setHeartbeatPeriod(int period) {
+		this.heartbeatPeriod = period;
+	}
+	
+	public int getHeartbeatPeriod() {
+		return this.heartbeatPeriod;
+	}
+	
+	public void setHeartbeatTimeout(int timeout) {
+		this.heartbeatTimeout = timeout;
+	}
+	
+	public int getHeartbeatTimeout() {
+		return this.heartbeatTimeout;
 	}
 
 	public boolean hasInfoArg() {

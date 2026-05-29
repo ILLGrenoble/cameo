@@ -20,12 +20,16 @@ public class ApplicationWithStarterIdentity {
 	private ApplicationIdentity starter;
 	private int starterProxyPort;
 	private boolean starterLinked;
+	private int heartbeatPeriod;
+	private int heartbeatTimeout;
 	
-	public ApplicationWithStarterIdentity(ApplicationIdentity application, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked) {
+	public ApplicationWithStarterIdentity(ApplicationIdentity application, ApplicationIdentity starter, int starterProxyPort, boolean starterLinked, int heartbeatPeriod, int heartbeatTimeout) {
 		this.application = application;
 		this.starter = starter;
 		this.starterProxyPort = starterProxyPort;
 		this.starterLinked = starterLinked;
+		this.heartbeatPeriod = heartbeatPeriod;
+		this.heartbeatTimeout = heartbeatTimeout;
 	}
 	
 	public ApplicationWithStarterIdentity(ApplicationIdentity application) {
@@ -48,6 +52,13 @@ public class ApplicationWithStarterIdentity {
 			result.put(Messages.ApplicationIdentity.STARTER, starter.toJSON());
 			result.put(Messages.ApplicationIdentity.STARTER_PROXY_PORT, starterProxyPort);
 			result.put(Messages.ApplicationIdentity.STARTER_LINKED, starterLinked);
+		}
+		
+		if (heartbeatPeriod > 0) {
+			JSONObject heartbeat = new JSONObject();
+			heartbeat.put(Messages.Heartbeat.PERIOD, heartbeatPeriod);
+			heartbeat.put(Messages.Heartbeat.TIMEOUT, heartbeatTimeout);
+			result.put(Messages.Heartbeat.HEARTBEAT, heartbeat);
 		}
 		
 		return result;

@@ -33,17 +33,18 @@ The root tag is *config* which has the *applications* tag as child which has man
 
 Attributes of the *config* tag:
 
-**Attribute** | **Default value**     | **Description**
---------------|-----------------------|----------------
-host          | The default interface | Hostname or "IP" or an IPv4 address or localhost to override the default interface. If "IP" then the IPv4 address related to localhost is provided.
-port          | 7000                  | The base port of the server.
-proxy_ports   |                       | The three ports used by the proxy. The first two ports are accessible from outside, the third one is for internal use. By default, proxies are not started.
-polling_time  | 100                   | Sleep duration in milliseconds between some phases of the lifecycle of an app and sleep duration in the output stream retrieval of an app.
-sleep_time    | 5                     | Sleep duration in milliseconds between two requests process. It avoids the server to stall if there are two many pending requests.
-max_applications | 65536              | Max number of running apps at a time.
-log_level     | INFO                  | Log level. Possible values are OFF, INFO, FINE, FINER, FINEST.
-log_directory | .                     | The directory where the file *cameo.log* is written.
-heartbeat     | 0                     | The period in seconds of the heartbeat i.e. the ping messages sent by the server publisher sockets. The value must be greater than 0 to be used.
+**Attribute**     | **Default value**     | **Description**
+------------------|-----------------------|----------------
+host              | The default interface | Hostname or "IP" or an IPv4 address or localhost to override the default interface. If "IP" then the IPv4 address related to localhost is provided.
+port              | 7000                  | The base port of the server.
+proxy_ports       |                       | The three ports used by the proxy. The first two ports are accessible from outside, the third one is for internal use. By default, proxies are not started.
+polling_time      | 100                   | Sleep duration in milliseconds between some phases of the lifecycle of an app and sleep duration in the output stream retrieval of an app.
+sleep_time        | 5                     | Sleep duration in milliseconds between two requests process. It avoids the server to stall if there are two many pending requests.
+max_applications  | 65536                 | Max number of running apps at a time.
+log_level         | INFO                  | Log level. Possible values are OFF, INFO, FINE, FINER, FINEST.
+log_directory     | .                     | The directory where the file *cameo.log* is written.
+heartbeat_period  | 0                     | The period in seconds of the heartbeat i.e. the ping messages sent by the server publisher sockets. The value must be greater than 0 to be used. The value *inf* is equivalent to 0.
+heartbeat_timeout | 10                    | The timeout in seconds of the heartbeat.
 
 Attributes of the *application* tag:
 
@@ -57,7 +58,7 @@ stopping_time       | 10                    | The duration in seconds after whic
 multiple            | inf                   | If *no*, then only one instance is accepted. If *yes* or *inf*, there is no limit on the number of parallel instances. A number indicates the maximum of parallel instances. Possible values are *yes*, *no*, *inf* or a strictly positive number.
 restart             | no                    | If *yes*, the app is automatically restarted when it died unexpectedly. Possible values are *yes* and *no*.
 info_arg            | yes                   | If *yes*, an additional argument containing information about the app is passed. For unmanaged application, it can be necessary to set it to *no*. Possible values are *yes* and *no*.
-stream              | yes                  | If *yes*, the standard error and output stream are published to the console application and other instance reference objects. Possible values are *yes* and *no*.
+stream              | yes                   | If *yes*, the standard error and output stream are published to the console application and other instance reference objects. Possible values are *yes* and *no*.
 log_directory       |                       | The directory where the *&lt;name&gt;.&lt;id&gt;.log* file of the app instance is written. An empty value means no log, a *default* value means it inherits the value of the *config* tag.
 environment         |                       | The path to the properties file where environment variables dedicated to the app can be defined. It can be absolute or relative to the folder of the main configuration file.
 

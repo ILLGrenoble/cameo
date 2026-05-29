@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
 		unique_ptr<Server> server = Server::create(endpoint, options);
 		server->init();
 
+		This::heartbeat(2, 1);
 		This::heartbeat(1, 1);
 
 		// Args.

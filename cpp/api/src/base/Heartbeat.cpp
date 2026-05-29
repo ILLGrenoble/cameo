@@ -27,6 +27,13 @@ void Heartbeat::start() {
 			while (true) {
 
 				std::unique_lock<std::mutex> lock(m_mutex);
+
+				// The heartbeat can be terminated here.
+				if (m_terminated) {
+					break;
+				}
+
+				// Wait for the period.
 				std::cv_status status = m_pingCondition.wait_for(lock, std::chrono::seconds(m_period));
 
 				if (status == std::cv_status::timeout) {
@@ -41,9 +48,16 @@ void Heartbeat::start() {
 }
 
 void Heartbeat::terminate() {
-	// Join the ping thread.
+
 	if (m_pingThread) {
-		m_pingCondition.notify_one();
+		// Lock
+		{
+			std::unique_lock<std::mutex> lock(m_mutex);
+			m_terminated = true;
+			m_pingCondition.notify_one();
+		}
+
+		// Join the ping thread.
 		m_pingThread->join();
 	}
 }

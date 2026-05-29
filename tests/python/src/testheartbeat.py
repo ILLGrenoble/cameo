@@ -25,6 +25,7 @@ if useProxy:
 server = cameopy.Server.create(endpoint, options)
 server.init()
 
+this.heartbeat(2, 1)
 this.heartbeat(1, 1)
     
 args = ["true" if useProxy else "false"]

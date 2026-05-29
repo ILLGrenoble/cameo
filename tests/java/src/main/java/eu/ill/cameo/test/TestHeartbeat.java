@@ -54,6 +54,7 @@ public class TestHeartbeat {
 		server.init();
 		
 		try {
+			This.heartbeat(2, 1);
 			This.heartbeat(1, 1);
 			
 			// Args.

@@ -43,6 +43,9 @@ public class RegisteredApplication extends Application {
 		this.setRunMultiple(config.runSingle());
 		this.setRunMaxApplications(config.runMaxApplications());
 		this.setRestart(config.isRestart());
+		this.setHeartbeatPeriod(config.getHeartbeatPeriod());
+		this.setHeartbeatTimeout(config.getHeartbeatTimeout());
+		
 		this.setInfoArg(config.hasInfoArg());
 
 		this.setStartExecutable(config.getStartExecutable());
@@ -113,7 +116,7 @@ public class RegisteredApplication extends Application {
 			// Add the endpoint and id
 			if (hasInfoArg()) {
 				// Pass the info in JSON format.
-				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter, starterProxyPort, starterLinked);
+				ApplicationWithStarterIdentity identity = new ApplicationWithStarterIdentity(new ApplicationIdentity(name, id, endpoint), starter, starterProxyPort, starterLinked, heartbeatPeriod, heartbeatTimeout);
 
 				// On Windows, " are removed, so we need to force their presence by escaping.
 				String identityString = identity.toJSONString();

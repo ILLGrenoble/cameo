@@ -52,6 +52,8 @@ public class PingableSet {
 	 */
 	public void pingAll(int timeout) {
 		
+//		System.out.println("ping all " + timeout);
+		
 		synchronized (pingableSet) {
 			// The iteration must be in the synchronized block.
 			Iterator<IPingable> i = pingableSet.iterator();

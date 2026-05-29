@@ -52,6 +52,7 @@ public:
 
 private:
 	int m_period;
+	bool m_terminated = false;
 	std::mutex m_mutex;
 	std::condition_variable m_pingCondition;
 	std::unique_ptr<std::thread> m_pingThread;

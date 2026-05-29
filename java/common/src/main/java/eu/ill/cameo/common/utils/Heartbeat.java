@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Heartbeat {
 
 	private int period;
+	private boolean terminated = false;
 	private final Lock pingLock = new ReentrantLock();
 	private final Condition pingCondition = pingLock.newCondition();
 	private Thread pingThread;
@@ -34,6 +35,11 @@ public abstract class Heartbeat {
 					while (true) {
 						
 						pingLock.lock();
+						
+						// The heartbeat can be terminated here.
+						if (terminated) {
+							break;
+						}
 						
 						// Await returns false if the waiting time elapsed
 						boolean signaled;
@@ -68,6 +74,7 @@ public abstract class Heartbeat {
 		if (pingThread != null) {
 			try {
 				pingLock.lock();
+				terminated = true;
 				pingCondition.signal();
 			}
 			finally {

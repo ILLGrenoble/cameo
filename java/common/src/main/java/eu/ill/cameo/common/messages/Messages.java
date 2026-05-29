@@ -80,6 +80,12 @@ public class Messages {
 		public static final String STARTER_PROXY_PORT = "starterProxyPort"; // int32
 		public static final String STARTER_LINKED = "starterLinked"; // boolean		
 	}
+	
+	public static class Heartbeat {
+		public static final String HEARTBEAT = "heartbeat";
+		public static final String PERIOD = "period"; // int32
+		public static final String TIMEOUT = "timeout"; // int32
+	}
 
 	public static class SyncStreamRequest {
 		public static final String NAME = "name"; // string

@@ -43,6 +43,8 @@ void PingableSet::remove(Pingable * pingable) {
 
 void PingableSet::pingAll(int timeout) {
 
+	//std::cout << "ping all " << timeout << std::endl;
+
 	std::lock_guard<std::mutex> lock {m_mutex};
 
 	for (std::set<Pingable *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {

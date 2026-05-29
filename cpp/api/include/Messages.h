@@ -242,6 +242,15 @@ namespace message {
 	};
 
 	/**
+	 * Heartbeat message constants.
+	 */
+	struct Heartbeat {
+		constexpr static const char* HEARTBEAT = "heartbeat";
+		constexpr static const char* PERIOD = "period"; // int32
+		constexpr static const char* TIMEOUT = "timeout"; // int32
+	};
+
+	/**
 	 * Sync stream request message constants.
 	 */
 	struct SyncStreamRequest {

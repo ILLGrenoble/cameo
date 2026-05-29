@@ -53,6 +53,9 @@ public class This {
 	
 	private PingableSet pingableSet = new PingableSet();
 	
+	private int heartbeatPeriod = 0;
+	private int heartbeatTimeout = 0;
+	
 	private class ThisHeartbeat extends Heartbeat {
 		
 		private int timeout;
@@ -468,12 +471,12 @@ public class This {
 	}
 	
 	/**
-	 * Starts the heartbeat.
+	 * Starts or restarts the heartbeat.
 	 * @param period The period in seconds.
 	 * @param timeout The timeout.
 	 */
 	static public void heartbeat(int period, int timeout) {
-		instance.startHearbeatThread(period, timeout);
+		instance.startHeartbeat(period, timeout);
 	}
 	
 	/**
@@ -481,7 +484,7 @@ public class This {
 	 * @param period The period in seconds.
 	 */
 	static public void heartbeat(int period) {
-		instance.startHearbeatThread(period, 10);
+		instance.startHeartbeat(period, 10);
 	}
 
 	/**
@@ -594,7 +597,14 @@ public class This {
 			starterId = JSON.getInt(starterObject, Messages.ApplicationIdentity.ID);
 			starterProxyPort = JSON.getInt(infoObject, Messages.ApplicationIdentity.STARTER_PROXY_PORT);
 			starterLinked = JSON.getBoolean(infoObject, Messages.ApplicationIdentity.STARTER_LINKED);
-		}		
+		}
+		
+		// Heartbeat.
+		if (infoObject.containsKey(Messages.Heartbeat.HEARTBEAT)) {
+			JSONObject heartbeatObject = JSON.getObject(infoObject, Messages.Heartbeat.HEARTBEAT);
+			heartbeatPeriod = JSON.getInt(heartbeatObject, Messages.Heartbeat.PERIOD);
+			heartbeatTimeout = JSON.getInt(heartbeatObject, Messages.Heartbeat.TIMEOUT);
+		}
 		
 		// Init.
 		initApplication();
@@ -667,6 +677,11 @@ public class This {
 		
 		pingableSet = new PingableSet();
 		
+		// Init heartbeat.
+		if (heartbeatPeriod > 0) {
+			startHeartbeat(heartbeatPeriod, heartbeatTimeout);
+		}
+		
 		// Init com.
 		com = new Com(server, id);
 	}
@@ -694,22 +709,6 @@ public class This {
 	private void terminateAll() {
 		
 		terminated.set(true);
-		
-//		if (pingThread != null) {
-//			try {
-//				pingLock.lock();
-//				pingCondition.signal();
-//			}
-//			finally {
-//				pingLock.unlock();
-//			}
-//
-//			try {
-//				pingThread.join();
-//			}
-//			catch (InterruptedException e) {
-//			}
-//		}
 		
 		if (heartbeat != null) {
 			heartbeat.terminate();
@@ -881,38 +880,11 @@ public class This {
 		requestSocket.requestJSON(request);
 	}
 
-	private void startHearbeatThread(int period, int timeout) {
+	private void startHeartbeat(int period, int timeout) {
 		
-//		if (pingThread == null) {
-//			pingThread = new Thread(new Runnable() {
-//				public void run() {
-//					while (true) {
-//						
-//						pingLock.lock();
-//						
-//						// Await returns false if the waiting time elapsed
-//						boolean signaled;
-//
-//						try {
-//							signaled = pingCondition.await(period, TimeUnit.SECONDS);
-//							if (!signaled) {
-//								pingableSet.pingAll(timeout);
-//							}
-//							else {
-//								break;
-//							}
-//		                }
-//		                catch (InterruptedException e) {
-//							break;
-//		                }
-//		                finally {
-//		                	pingLock.unlock();
-//		                }
-//					}
-//				}
-//			});
-//			pingThread.start();
-//		}
+		if (heartbeat != null) {
+			heartbeat.terminate();
+		}
 		
 		heartbeat = new ThisHeartbeat(period, timeout);
 		heartbeat.start();
