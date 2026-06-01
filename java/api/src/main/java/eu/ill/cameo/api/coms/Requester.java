@@ -10,6 +10,9 @@
 
 package eu.ill.cameo.api.coms;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.json.simple.JSONObject;
 
 import eu.ill.cameo.api.base.App;
@@ -92,6 +95,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	private String appName;
 	private int appId;
 	private Endpoint appEndpoint;
+	private final Lock lock = new ReentrantLock();
 	private RequesterImpl impl;
 	private RequesterWaiting waiting = new RequesterWaiting(this);
 	private String key;
@@ -136,8 +140,15 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 */
 	@Override
 	public synchronized void setTimeout(int value) {
-		timeout = value;
-		impl.setTimeout(value);
+		
+		lock.lock();
+		try {
+			timeout = value;
+			impl.setTimeout(value);
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 
 	/**
@@ -279,6 +290,22 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	}
 	
 	/**
+	 * Starts a request. Should only be used with send() or sendTwoParts() and multiple receive().
+	 * A call to endRequest() must be done after the multiple receive().
+	 */
+	public void startRequest() {
+		lock.lock();
+	}
+
+	/**
+	 * Ends a request with one send() or sendTwoParts() and multiple receive().
+	 * Must be called after startRequest().
+	 */
+	public void endRequest() {
+		lock.unlock();
+	}
+	
+	/**
 	 * Returns a byte array or nothing if the requester is canceled or a timeout occurred.
 	 * @return The response or null.
 	 */
@@ -301,8 +328,15 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @return The response or null.
 	 */
 	public synchronized byte[] request(byte[] request) {
-		impl.send(request);
-		return impl.receive();
+		
+		lock.lock();
+		try {
+			impl.send(request);
+			return impl.receive();
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
@@ -312,8 +346,15 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @return The response or null.
 	 */
 	public synchronized String request(String request) {
-		impl.send(request);
-		return impl.receiveString();
+		
+		lock.lock();
+		try {
+			impl.send(request);
+			return impl.receiveString();
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
@@ -324,8 +365,15 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @return The response or null. Use Messages.parseString() to convert the response to a string.
 	 */
 	public synchronized byte[] request(byte[] requestPart1, byte[] requestPart2) {
-		impl.sendTwoParts(requestPart1, requestPart2);
-		return impl.receive();
+		
+		lock.lock();
+		try {
+			impl.sendTwoParts(requestPart1, requestPart2);
+			return impl.receive();
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
@@ -357,28 +405,35 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	@Override
 	public synchronized boolean ping(int timeout) {
 		
-		if (!isReady()) {
-			return false; 
+		lock.lock();
+		try {
+			if (!isReady()) {
+				return false; 
+			}
+			
+			int pingTimeout = 0;
+			if (this.timeout == -1) {
+				pingTimeout = timeout * 1000;
+				impl.setTimeout(pingTimeout);
+			}
+			
+			impl.ping();
+			byte[] response = impl.receive();
+			
+			if (timeout == -1) {
+				impl.setTimeout(0);
+			}
+			
+			if (response != null) {
+				return true;
+			}
+			
+			return false;
 		}
-		
-		int pingTimeout = 0;
-		if (this.timeout == -1) {
-			pingTimeout = timeout * 1000;
-			impl.setTimeout(pingTimeout);
+		finally {
+			lock.unlock();
 		}
-		
-		impl.ping();
-		byte[] response = impl.receive();
-		
-		if (timeout == -1) {
-			impl.setTimeout(0);
-		}
-		
-		if (response != null) {
-			return true;
-		}
-		
-		return false;
+
 	}
 	
 	/**

@@ -420,6 +420,9 @@ PYBIND11_MODULE(cameopy, m) {
 			 })
 		.def("receiveString", &Requester::receive, py::call_guard<py::gil_scoped_release>())
 
+		.def("startRequest", &Requester::startRequest, py::call_guard<py::gil_scoped_release>())
+		.def("endRequest", &Requester::endRequest, py::call_guard<py::gil_scoped_release>())
+
 		.def("request", [](Requester* instance, const std::string& arg) {
 
 			// Release the GIL for the blocking call.

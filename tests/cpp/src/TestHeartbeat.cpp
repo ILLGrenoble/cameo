@@ -64,6 +64,18 @@ int main(int argc, char *argv[]) {
 
 		cout << "Requester ready ? " << requester->isReady() << endl;
 
+		requester->startRequest();
+		{
+			requester->send("request");
+			auto response = requester->receive();
+			cout << "Received " << response.value() << endl;
+			response = requester->receive();
+			cout << "Received " << response.value() << endl;
+			response = requester->receive();
+			cout << "Received " << response.value() << endl;
+		}
+		requester->endRequest();
+
 		unique_ptr<coms::Publisher> publisher = coms::Publisher::create("publisher");
 		publisher->init();
 

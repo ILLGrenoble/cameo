@@ -11,6 +11,7 @@
 package eu.ill.cameo.test;
 
 import eu.ill.cameo.api.base.This;
+import eu.ill.cameo.api.coms.basic.Request;
 
 
 public class Heartbeat {
@@ -35,6 +36,19 @@ public class Heartbeat {
 			
 			// Set the state.
 			This.setRunning();
+			
+			Request request = responder.receive();
+
+			try {
+				request.replyString("1");
+				Thread.sleep(1000);
+				request.replyString("2");
+				Thread.sleep(1000);
+				request.replyString("3");
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e) {
+			}	
 			
 			Thread cancelThread = new Thread(new Runnable() {
 				@Override

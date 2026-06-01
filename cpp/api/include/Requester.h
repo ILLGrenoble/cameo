@@ -134,6 +134,18 @@ public:
 	std::optional<std::string> receive();
 
 	/**
+	 * Starts a request. Should only be used with send() or sendTwoParts() and multiple receive().
+	 * A call to endRequest() must be done after the multiple receive().
+	 */
+	void startRequest();
+
+	/**
+	 * Ends a request with one send() or sendTwoParts() and multiple receive().
+	 * Must be called after startRequest().
+	 */
+	void endRequest();
+
+	/**
 	 * Sends a request in one part.
 	 * If the requester timed out in the last request, then it is reinitialized and can time out during the synchronization.
 	 * Returns a string or nothing if the requester is canceled or a timeout occurred.

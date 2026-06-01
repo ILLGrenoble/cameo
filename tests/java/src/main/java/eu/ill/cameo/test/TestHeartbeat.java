@@ -68,6 +68,18 @@ public class TestHeartbeat {
 			
 			System.out.println("Requester ready ? " + requester.isReady());
 			
+			requester.startRequest();
+			
+			requester.sendString("request");
+			String response = requester.receiveString();
+			System.out.println("Received " + response);
+			response = requester.receiveString();
+			System.out.println("Received " + response);
+			response = requester.receiveString();
+			System.out.println("Received " + response);
+			
+			requester.endRequest();
+			
 			eu.ill.cameo.api.coms.Publisher publisher = eu.ill.cameo.api.coms.Publisher.create("publisher");
 			publisher.init();
 

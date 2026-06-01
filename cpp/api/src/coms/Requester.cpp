@@ -195,6 +195,14 @@ std::optional<std::string> Requester::receive() {
 	return m_impl->receive();
 }
 
+void Requester::startRequest() {
+	m_mutex.lock();
+}
+
+void Requester::endRequest() {
+	m_mutex.unlock();
+}
+
 std::optional<std::string> Requester::request(const std::string& request) {
 	std::unique_lock<std::mutex> lock(m_mutex);
 	m_impl->send(request);

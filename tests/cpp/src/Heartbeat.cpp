@@ -38,6 +38,15 @@ int main(int argc, char *argv[]) {
 
 		This::setRunning();
 
+		unique_ptr<coms::basic::Request> request = responder->receive();
+		const std::string& requestString = request->get();
+		request->reply("1");
+		this_thread::sleep_for(chrono::seconds(1));
+		request->reply("2");
+		this_thread::sleep_for(chrono::seconds(1));
+		request->reply("3");
+		this_thread::sleep_for(chrono::seconds(1));
+
 		thread cancelThread([&] {
 			this_thread::sleep_for(chrono::seconds(2));
 			cout << "Canceling responder" << endl;
@@ -45,7 +54,7 @@ int main(int argc, char *argv[]) {
 			cout << "Canceled responder" << endl;
 		});
 
-		unique_ptr<coms::basic::Request> request = responder->receive();
+		request = responder->receive();
 
 		cancelThread.join();
 

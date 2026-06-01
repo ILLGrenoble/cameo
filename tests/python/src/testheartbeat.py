@@ -36,6 +36,18 @@ requester.init()
 
 print("Requester ready ?", requester.isReady())
 
+requester.startRequest()
+
+requester.send("request")
+response = requester.receiveString()
+print("Received", response)
+response = requester.receiveString()
+print("Received", response)
+response = requester.receiveString()
+print("Received", response)
+
+requester.endRequest()
+
 publisher = cameopy.coms.Publisher.create("publisher")
 publisher.init()
 

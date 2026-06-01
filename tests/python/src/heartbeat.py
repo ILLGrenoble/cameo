@@ -25,6 +25,14 @@ print("Created responder")
 
 this.setRunning()
 
+request = responder.receive()
+request.reply("1")
+time.sleep(1)
+request.reply("2")
+time.sleep(1)
+request.reply("3")
+time.sleep(1)
+
 # Create the cancel thread
 t = threading.Thread(target=cancelResponder, args=(responder,))
 t.start()
