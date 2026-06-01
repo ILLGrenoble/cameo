@@ -1,24 +1,6 @@
 # Documentation
 
-To generate the documentation, you need *mkdocs material* and *doxygen*. You can get *mkdocs* using *pip*:
-First generate a virtual environment:
-
-```
-python3 -m venv .venv
-```
-
-Activate the environment:
-
-```
-source .venv/bin/activate
-```
-
-Install the dependency:
-
-```
-pip install mkdocs-material
-```
-
+To generate the documentation, you need *mkdocs material* and *doxygen*. You can get *mkdocs* and *mkdocs-material* using *pip* or with a distribution package.
 Do not forget to activate the option *CAMEO_DOC* while configuring with *CMake*.
 
 You can test the site:
