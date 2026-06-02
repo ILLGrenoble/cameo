@@ -251,10 +251,15 @@ bool Publisher::ping(int timeout) {
 		return false;
 	}
 
-	std::unique_lock<std::mutex> lock(m_mutex);
-	m_impl->ping();
+	// Lock only if the mutex is available.
+	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
+	if (lock.try_lock()) {
+		m_impl->ping();
 
-	return true;
+		return true;
+	}
+
+	return false;
 }
 
 std::string Publisher::toString() const {

@@ -139,7 +139,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @param value The value.
 	 */
 	@Override
-	public synchronized void setTimeout(int value) {
+	public void setTimeout(int value) {
 		
 		lock.lock();
 		try {
@@ -327,7 +327,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @param request The binary request.
 	 * @return The response or null.
 	 */
-	public synchronized byte[] request(byte[] request) {
+	public byte[] request(byte[] request) {
 		
 		lock.lock();
 		try {
@@ -345,7 +345,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @param request The string request.
 	 * @return The response or null.
 	 */
-	public synchronized String request(String request) {
+	public String request(String request) {
 		
 		lock.lock();
 		try {
@@ -364,7 +364,7 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	 * @param requestPart2 The seconds part of the request.
 	 * @return The response or null. Use Messages.parseString() to convert the response to a string.
 	 */
-	public synchronized byte[] request(byte[] requestPart1, byte[] requestPart2) {
+	public byte[] request(byte[] requestPart1, byte[] requestPart2) {
 		
 		lock.lock();
 		try {
@@ -403,37 +403,40 @@ public class Requester extends PingableObject implements ITimeoutable, ICancelab
 	}
 	
 	@Override
-	public synchronized boolean ping(int timeout) {
-		
-		lock.lock();
-		try {
-			if (!isReady()) {
-				return false; 
-			}
-			
-			int pingTimeout = 0;
-			if (this.timeout == -1) {
-				pingTimeout = timeout * 1000;
-				impl.setTimeout(pingTimeout);
-			}
-			
-			impl.ping();
-			byte[] response = impl.receive();
-			
-			if (timeout == -1) {
-				impl.setTimeout(0);
-			}
-			
-			if (response != null) {
-				return true;
-			}
-			
-			return false;
+	public boolean ping(int timeout) {
+
+		if (!isReady()) {
+			return false; 
 		}
-		finally {
-			lock.unlock();
+		
+		// Lock only if the mutex is available.
+		if (lock.tryLock()) {
+			try {
+				int pingTimeout = 0;
+				if (this.timeout == -1) {
+					pingTimeout = timeout * 1000;
+					impl.setTimeout(pingTimeout);
+				}
+				
+				impl.ping();
+				byte[] response = impl.receive();
+				
+				if (timeout == -1) {
+					impl.setTimeout(0);
+				}
+				
+				if (response != null) {
+					return true;
+				}
+				
+				return false;
+			}
+			finally {
+				lock.unlock();
+			}
 		}
 
+		return false;
 	}
 	
 	/**

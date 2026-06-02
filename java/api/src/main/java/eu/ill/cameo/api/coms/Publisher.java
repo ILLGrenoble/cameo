@@ -12,6 +12,8 @@ package eu.ill.cameo.api.coms;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.simple.JSONObject;
 
@@ -39,6 +41,7 @@ public class Publisher extends PingableObject implements ICancelable {
 	private String name;
 	private int numberOfSubscribers = 0;
 	private boolean syncSubscribers = false;
+	private final Lock lock = new ReentrantLock();
 	private PublisherImpl impl = ImplFactory.createPublisher(false);
 	private PublisherWaiting waiting = new PublisherWaiting(this);
 	private String key;
@@ -282,16 +285,30 @@ public class Publisher extends PingableObject implements ICancelable {
 	 * Publishes a message in one binary part.
 	 * @param message The data to send.
 	 */
-	public synchronized void publish(byte[] message) {
-		impl.send(message);
+	public void publish(byte[] message) {
+		
+		lock.lock();
+		try {
+			impl.send(message);
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
 	 * Publishes a message in one string part.
 	 * @param message The data to send.
 	 */
-	public synchronized void publish(String message) {
-		impl.send(message);
+	public void publish(String message) {
+		
+		lock.lock();
+		try {
+			impl.send(message);
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
@@ -299,15 +316,29 @@ public class Publisher extends PingableObject implements ICancelable {
 	 * \param messagePart1 The first part.
 	 * \param messagePart2 The second part.
 	 */		
-	public synchronized void publish(byte[] messagePart1, byte[] messagePart2) {
-		impl.sendTwoParts(messagePart1, messagePart2);
+	public void publish(byte[] messagePart1, byte[] messagePart2) {
+		
+		lock.lock();
+		try {
+			impl.sendTwoParts(messagePart1, messagePart2);
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 	
 	/**
 	 * Publishes the end of the stream.
 	 */
-	public synchronized void publishEnd() {
-		impl.sendEnd();
+	public void publishEnd() {
+		
+		lock.lock();
+		try {
+			impl.sendEnd();
+		}
+		finally {
+			lock.unlock();
+		}
 	}
 		
 	/**
@@ -319,15 +350,21 @@ public class Publisher extends PingableObject implements ICancelable {
 	}
 	
 	@Override
-	public synchronized boolean ping(int timeout) {
+	public boolean ping(int timeout) {
 		
 		if (!isReady()) {
 			return false; 
 		}
 		
-		impl.ping();
+		lock.lock();
+		try {
+			impl.ping();
+		}
+		finally {
+			lock.unlock();
+		}
 		
-		return true;
+		return true;		
 	}
 	
 	/**

@@ -234,23 +234,25 @@ bool Requester::ping(int timeout) {
 		return false;
 	}
 
-	std::unique_lock<std::mutex> lock(m_mutex);
+	// Lock only if the mutex is available.
+	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
+	if (lock.try_lock()) {
+		int pingTimeout = 0;
+		if (m_timeout == -1) {
+			pingTimeout = timeout * 1000;
+			m_impl->setTimeout(pingTimeout);
+		}
 
-	int pingTimeout = 0;
-	if (m_timeout == -1) {
-		pingTimeout = timeout * 1000;
-		m_impl->setTimeout(pingTimeout);
-	}
+		m_impl->ping();
+		std::optional<std::string> response = m_impl->receive();
 
-	m_impl->ping();
-	std::optional<std::string> response = m_impl->receive();
+		if (m_timeout == -1) {
+			m_impl->setTimeout(0);
+		}
 
-	if (m_timeout == -1) {
-		m_impl->setTimeout(0);
-	}
-
-	if (response.has_value()) {
-		return true;
+		if (response.has_value()) {
+			return true;
+		}
 	}
 
 	return false;

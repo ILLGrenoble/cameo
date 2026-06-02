@@ -1,3 +1,8 @@
+3.2.1
+-----
+
+* Ping implementation of Publisher and Requester with try lock rather than lock.
+
 3.2.0
 -----
 
