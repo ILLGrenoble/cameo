@@ -901,6 +901,7 @@ public class This {
 		
 		if (heartbeat != null) {
 			heartbeat.terminate();
+			heartbeat = null;
 		}
 	}
 	

@@ -570,6 +570,7 @@ void This::stopHeartbeat() {
 
 	if (m_heartbeat) {
 		m_heartbeat->terminate();
+		m_heartbeat.reset();
 	}
 }
 
