@@ -368,6 +368,10 @@ void This::heartbeat(int period, int timeout) {
 	m_instance.startHeartbeat(period, timeout);
 }
 
+void This::noHeartbeat() {
+	m_instance.stopHeartbeat();
+}
+
 void This::cancelAll() {
 	m_instance.m_waitingSet->cancelAll();
 }
@@ -561,6 +565,14 @@ void This::startHeartbeat(int period, int timeout) {
 	m_heartbeat = std::make_unique<ThisHeartbeat>(period, timeout);
 	m_heartbeat->start();
 }
+
+void This::stopHeartbeat() {
+
+	if (m_heartbeat) {
+		m_heartbeat->terminate();
+	}
+}
+
 
 std::string This::toString() {
 	return AppIdentity{m_instance.m_name, m_instance.m_id, ServerIdentity{m_instance.m_server->getEndpoint().toString(), m_instance.m_server->usesProxy()}}.toJSONString();

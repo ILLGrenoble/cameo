@@ -1,7 +1,8 @@
-3.1.2
+3.2.0
 -----
 
 * Added startRequest() and endRequest() in Requester for requests with multiple receive() with active heartbeat.
+* Added noHeartbeat() in This.
 
 3.1.1
 -----

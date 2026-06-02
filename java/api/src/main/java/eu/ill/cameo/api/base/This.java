@@ -488,6 +488,13 @@ public class This {
 	}
 
 	/**
+	 * Stops the heartbeat.
+	 */
+	static public void noHeartbeat() {
+		instance.stopHeartbeat();
+	}
+	
+	/**
 	 * Connects to the starter application, i.e. the application which started this application.
 	 * The server and instance are returned. Be careful, the instance is linked to the server, so it must not be destroyed before.
 	 * @param options The options passed to connect the starter app.
@@ -888,6 +895,13 @@ public class This {
 		
 		heartbeat = new ThisHeartbeat(period, timeout);
 		heartbeat.start();
+	}
+
+	private void stopHeartbeat() {
+		
+		if (heartbeat != null) {
+			heartbeat.terminate();
+		}
 	}
 	
 	@Override

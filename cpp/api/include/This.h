@@ -226,6 +226,11 @@ public:
 	static void heartbeat(int period, int timeout = 10);
 
 	/**
+	 * Stops the heartbeat.
+	 */
+	static void noHeartbeat();
+
+	/**
 	 * Cancels all the waiting calls.
 	 */
 	static void cancelAll();
@@ -278,6 +283,7 @@ private:
 	void initStarterCheck();
 	void startCheckStatesThread();
 	void startHeartbeat(int period, int timeout);
+	void stopHeartbeat();
 
 	std::string m_name;
 	int m_id;

@@ -129,6 +129,8 @@ PYBIND11_MODULE(cameopy, m) {
 				"period"_a,
 				"timeout"_a = 10,
 				py::call_guard<py::gil_scoped_release>())
+		.def_static("noHeartbeat", &This::noHeartbeat,
+				py::call_guard<py::gil_scoped_release>())
 		.def_static("__str__", &This::toString,
 				py::call_guard<py::gil_scoped_release>());
 
