@@ -64,10 +64,14 @@ int main(int argc, char *argv[]) {
 
 		cout << "Requester ready ? " << requester->isReady() << endl;
 
+		cout << "Sending request with response in 4s..." << endl;
+		auto response = requester->request("request");
+		cout << "Received " << response.value() << endl;
+
 		requester->startRequest();
 		{
 			requester->send("request");
-			auto response = requester->receive();
+			response = requester->receive();
 			cout << "Received " << response.value() << endl;
 			response = requester->receive();
 			cout << "Received " << response.value() << endl;

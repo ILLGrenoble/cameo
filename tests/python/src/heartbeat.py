@@ -26,6 +26,10 @@ print("Created responder")
 this.setRunning()
 
 request = responder.receive()
+time.sleep(4)
+request.reply("response")
+
+request = responder.receive()
 request.reply("1")
 time.sleep(1)
 request.reply("2")

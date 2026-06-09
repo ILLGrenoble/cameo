@@ -37,9 +37,12 @@ public class Heartbeat {
 			// Set the state.
 			This.setRunning();
 			
-			Request request = responder.receive();
-
 			try {
+				Request request = responder.receive();
+				Thread.sleep(4000);
+				request.replyString("response");
+						
+				request = responder.receive();
 				request.replyString("1");
 				Thread.sleep(1000);
 				request.replyString("2");

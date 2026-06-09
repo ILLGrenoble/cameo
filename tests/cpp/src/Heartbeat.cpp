@@ -39,7 +39,10 @@ int main(int argc, char *argv[]) {
 		This::setRunning();
 
 		unique_ptr<coms::basic::Request> request = responder->receive();
-		const std::string& requestString = request->get();
+		this_thread::sleep_for(chrono::seconds(4));
+		request->reply("response");
+
+		request = responder->receive();
 		request->reply("1");
 		this_thread::sleep_for(chrono::seconds(1));
 		request->reply("2");

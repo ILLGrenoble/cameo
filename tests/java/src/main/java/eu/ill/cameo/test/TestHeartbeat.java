@@ -68,10 +68,14 @@ public class TestHeartbeat {
 			
 			System.out.println("Requester ready ? " + requester.isReady());
 			
+			System.out.println("Sending request with response in 4s...");
+			String response = requester.request("request");
+			System.out.println("Received " + response);
+			
 			requester.startRequest();
 			
 			requester.sendString("request");
-			String response = requester.receiveString();
+			response = requester.receiveString();
 			System.out.println("Received " + response);
 			response = requester.receiveString();
 			System.out.println("Received " + response);

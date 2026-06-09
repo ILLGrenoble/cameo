@@ -36,6 +36,10 @@ requester.init()
 
 print("Requester ready ?", requester.isReady())
 
+print("Sending request with response in 4s...")
+response = requester.requestString("request")
+print("Received", response)
+
 requester.startRequest()
 
 requester.send("request")
