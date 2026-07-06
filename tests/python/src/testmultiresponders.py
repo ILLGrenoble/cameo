@@ -55,6 +55,8 @@ def requesterProcess(id):
         print(id, "receives", response)
         
 
+print("Start the threads")
+
 for id in range(N):
     t = threading.Thread(target=requesterProcess, args=(id,))
     t.start()
