@@ -45,7 +45,6 @@ for id in range(N):
         
     print("Created requester", requester)
 
-
 tds = []
 
 def requesterProcess(id):
