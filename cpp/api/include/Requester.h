@@ -24,7 +24,7 @@ class RequesterImpl;
 /**
  * Class defining a requester. The request and response must be sent and received sequentially.
  */
-class CAMEO_EXPORT Requester : public Object, public Timeoutable, public Cancelable, public Pingable {
+class CAMEO_EXPORT Requester : public PingableObject, public Timeoutable, public Cancelable {
 
 public:
 	/**

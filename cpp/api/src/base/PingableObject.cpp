@@ -8,13 +8,13 @@
  *
  */
 
-#include "Pingable.h"
+#include "PingableObject.h"
 #include "PingableSet.h"
 #include "This.h"
 
 namespace cameo {
 
-void Pingable::init() {
+void PingableObject::init() {
 
 	// Add the object in the pingable set if This exists.
 	if (This::m_instance.m_inited) {
@@ -22,7 +22,7 @@ void Pingable::init() {
 	}
 }
 
-void Pingable::terminate() {
+void PingableObject::terminate() {
 
 	// Remove the object from the pingable set if This exists.
 	if (This::m_instance.m_inited) {
@@ -30,11 +30,11 @@ void Pingable::terminate() {
 	}
 }
 
-void Pingable::setPinged(bool value) {
+void PingableObject::setPinged(bool value) {
 	m_enabled = value;
 }
 
-bool Pingable::isPinged() const {
+bool PingableObject::isPinged() const {
 	return m_enabled;
 }
 

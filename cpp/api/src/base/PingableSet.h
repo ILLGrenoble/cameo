@@ -16,7 +16,7 @@
 
 namespace cameo {
 
-class Pingable;
+class PingableObject;
 
 /**
  * Class containing a set of Pingable objects.
@@ -32,15 +32,15 @@ public:
 
 	/**
 	 * Adds a Pingable object.
-	 * \param Pingable The Pingable object.
+	 * \param object The Pingable object.
 	 */
-	void add(Pingable * Pingable);
+	void add(PingableObject * object);
 
 	/**
 	 * Removes a Pingable object.
-	 * \param Pingable The Pingable object.
+	 * \param object The Pingable object.
 	 */
-	void remove(Pingable * Pingable);
+	void remove(PingableObject * object);
 
 	/**
 	 * Pings all the Pingable objects.
@@ -50,7 +50,7 @@ public:
 
 private:
 	std::mutex m_mutex;
-	std::set<Pingable *> m_set;
+	std::set<PingableObject *> m_set;
 };
 
 }

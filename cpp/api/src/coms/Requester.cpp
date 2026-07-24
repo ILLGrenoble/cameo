@@ -78,7 +78,7 @@ Requester::~Requester() {
 
 void Requester::terminate() {
 
-	Pingable::terminate();
+	PingableObject::terminate();
 
 	if (m_checker) {
 		m_checker->terminate();
@@ -142,7 +142,7 @@ void Requester::init() {
 
 	setReady();
 
-	Pingable::init();
+	PingableObject::init();
 }
 
 std::unique_ptr<Requester> Requester::create(const App & app, const std::string& responderName) {

@@ -32,7 +32,7 @@ class Responder;
 /**
  * Class defining a publisher. It can be synchronized with a certain number of subscribers or not.
  */
-class CAMEO_EXPORT Publisher : public Object, public Cancelable, public Pingable {
+class CAMEO_EXPORT Publisher : public PingableObject, public Cancelable  {
 
 public:
 	/**

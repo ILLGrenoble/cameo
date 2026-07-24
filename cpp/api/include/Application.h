@@ -12,9 +12,9 @@
 #define CAMEO_APPLICATION_H_
 
 #include "Object.h"
+#include "PingableObject.h"
 #include "Cancelable.h"
 #include "Timeoutable.h"
-#include "Pingable.h"
 #include "InvalidArgumentException.h"
 #include "UnregisteredApplicationException.h"
 #include "SocketException.h"

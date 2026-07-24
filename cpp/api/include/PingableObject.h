@@ -8,24 +8,23 @@
  *
  */
 
-#ifndef CAMEO_PINGABLE_H_
-#define CAMEO_PINGABLE_H_
+#ifndef CAMEO_PINGABLEOBJECT_H_
+#define CAMEO_PINGABLEOBJECT_H_
 
-#include "Defines.h"
-#include <atomic>
+#include "Object.h"
 
 namespace cameo {
 
 /**
  * Class defining an interface for pingable objects.
  */
-class CAMEO_EXPORT Pingable {
+class CAMEO_EXPORT PingableObject : public Object {
 
 public:
 	/**
 	 * Destructor.
 	 */
-	virtual ~Pingable() {}
+	virtual ~PingableObject() {}
 
 	/**
 	 * Registers the pingable.

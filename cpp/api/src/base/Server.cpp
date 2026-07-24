@@ -82,7 +82,7 @@ void Server::init() {
 
 	setReady();
 
-	Pingable::init();
+	PingableObject::init();
 }
 
 Server::Server(const Endpoint& endpoint, int options) :
@@ -127,7 +127,7 @@ Server::~Server() {
 
 void Server::terminate() {
 
-	Pingable::terminate();
+	PingableObject::terminate();
 
 	// Stop the event thread.
 	if (m_eventThread) {
@@ -857,7 +857,18 @@ std::string Server::toString() const {
 		serverEndpoint = m_serverEndpoint.toString();
 	}
 
-	return ServerIdentity{serverEndpoint, m_useProxy}.toJSONString();
+	json::StringObject jsonObject;
+
+	jsonObject.pushKey("type");
+	jsonObject.pushValue(std::string{"server"});
+
+	jsonObject.pushKey("endpoint");
+	jsonObject.pushValue(serverEndpoint);
+
+	jsonObject.pushKey("proxy");
+	jsonObject.pushValue(m_useProxy);
+
+	return jsonObject.dump();
 }
 
 }

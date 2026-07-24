@@ -54,7 +54,7 @@ void Publisher::terminate() {
 
 	if (m_impl) {
 
-		Pingable::terminate();
+		PingableObject::terminate();
 
 		This::getCom().removeKey(m_key);
 
@@ -140,7 +140,7 @@ void Publisher::init() {
 
 	setReady();
 
-	Pingable::init();
+	PingableObject::init();
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name) {

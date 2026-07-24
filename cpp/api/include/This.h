@@ -25,7 +25,7 @@ class Heartbeat;
 class CAMEO_EXPORT This : private EventListener {
 
 	friend class cameo::Waiting;
-	friend class cameo::Pingable;
+	friend class cameo::PingableObject;
 	friend class cameo::Server;
 	friend class ThisHeartbeat;
 	friend std::ostream& operator<<(std::ostream&, const cameo::This&);
