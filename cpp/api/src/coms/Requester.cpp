@@ -96,6 +96,8 @@ void Requester::init() {
 		return;
 	}
 
+	Logger::log(std::string{"Init"} + toString());
+
 	// Get the responder data.
 	try {
 		TimeoutCounter timeoutCounter {m_timeout};
@@ -105,6 +107,8 @@ void Requester::init() {
 		if (m_keyValueGetter->isCanceled()) {
 			return;
 		}
+
+		Logger::log(std::string{"Received info for "} + toString());
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -122,6 +126,8 @@ void Requester::init() {
 		}
 
 		m_impl->init(endpoint, StringId::from(m_key, m_appId), timeoutCounter);
+
+		Logger::log(std::string{"Inited "} + toString());
 	}
 	catch (const ConnectionTimeout&) {
 		throw;

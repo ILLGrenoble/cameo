@@ -181,7 +181,7 @@ void Publisher::responderLoop() {
 
 bool Publisher::waitForSubscribers() {
 
-	// Loop until the number of subscribers is reached.
+	// Loop until the number of subscribers is reached.autoreduction-process.2.log
 	int counter = 0;
 
 	while (counter < m_numberOfSubscribers) {
@@ -405,6 +405,8 @@ void Subscriber::init() {
 		return;
 	}
 
+	Logger::log(std::string{"Init "} + toString());
+
 	// Get the publisher data.
 	try {
 		TimeoutCounter timeoutCounter {m_timeout};
@@ -414,6 +416,8 @@ void Subscriber::init() {
 		if (m_keyValueGetter->isCanceled()) {
 			return;
 		}
+
+		Logger::log(std::string{"Received info for "} + toString());
 
 		json::Object jsonData;
 		json::parse(jsonData, jsonString);
@@ -437,8 +441,12 @@ void Subscriber::init() {
 
 		// Synchronize the subscriber only if the number of subscribers > 0.
 		if (numberOfSubscribers > 0 || syncSubscribers) {
+			// Do the synchronization.
+			Logger::log(std::string{"Synchronize "} + toString());
 			synchronize(timeoutCounter, numberOfSubscribers, syncSubscribers);
 		}
+
+		Logger::log(std::string{"Inited "} + toString());
 	}
 	catch (const ConnectionTimeout&) {
 		throw;

@@ -35,6 +35,7 @@
 #include "Waiting.h"
 #include "Messages.h"
 #include "TimeoutCounter.h"
+#include "Logger.h"
 #include <functional>
 #include <vector>
 #include <set>

@@ -10,6 +10,7 @@
 
 #include "PingableSet.h"
 #include "PingableObject.h"
+#include "Logger.h"
 #include <iostream>
 
 namespace cameo {
@@ -23,40 +24,40 @@ void PingableSet::add(PingableObject * object) {
 
 	m_set.insert(object);
 
-	//std::cout << "Inserted " << object->toString() << std::endl;
+	Logger::log(std::string{"Inserted"} + object->toString());
 }
 
 void PingableSet::remove(PingableObject * object) {
 
 	std::lock_guard<std::mutex> lock {m_mutex};
 
-	//std::cout << "Removing " << object->toString() << std::endl;
+	Logger::log(std::string{"Removing "} + object->toString());
 
 	std::set<PingableObject *>::iterator it = m_set.find(object);
 
 	if (it != m_set.end()) {
 		m_set.erase(it);
 
-		//std::cout << "Removed " << object->toString() << std::endl;
+		Logger::log(std::string{"Removed "} + object->toString());
 	}
 }
 
 void PingableSet::pingAll(int timeout) {
 
-	//std::cout << "Ping all " << timeout << std::endl;
+	Logger::log(std::string{"Ping all "} + std::to_string(timeout));
 
 	std::lock_guard<std::mutex> lock {m_mutex};
 
 	for (std::set<PingableObject *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
 		if ((*it)->isPinged()) {
-			//std::cout << "Pinging " << (*it)->toString() << std::endl;
+			Logger::log(std::string{"Ping "} + (*it)->toString());
 			bool pong = (*it)->ping(timeout);
-//			if (pong) {
-//				std::cout << "Pong " << (*it)->toString() << std::endl;
-//			}
-//			else {
-//				std::cout << "No pong " << (*it)->toString() << std::endl;
-//			}
+			if (pong) {
+				Logger::log(std::string{"Pong for "} + (*it)->toString());
+			}
+			else {
+				Logger::log(std::string{"No pong for "} + (*it)->toString());
+			}
 		}
 	}
 }

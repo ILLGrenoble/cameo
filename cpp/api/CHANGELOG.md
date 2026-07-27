@@ -1,3 +1,8 @@
+3.3.0
+-----
+
+* Added Logger class and called it in some classes.
+
 3.2.1
 -----
 
