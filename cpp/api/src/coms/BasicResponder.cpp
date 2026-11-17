@@ -167,6 +167,8 @@ void Responder::init() {
 		return;
 	}
 
+	Logger::log(std::string{"Init "} + toString());
+
 	// Set the key.
 	m_key = KEY + "-" + m_name;
 
@@ -188,6 +190,8 @@ void Responder::init() {
 	}
 
 	setReady();
+
+	Logger::log(std::string{"Inited "} + toString());
 }
 
 std::unique_ptr<Responder> Responder::create(const std::string& name) {

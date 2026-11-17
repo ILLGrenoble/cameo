@@ -172,6 +172,8 @@ void ResponderRouter::init() {
 		return;
 	}
 
+	Logger::log(std::string{"Init "} + toString());
+
 	// Set the key.
 	m_key = KEY + "-" + m_name;
 
@@ -196,6 +198,8 @@ void ResponderRouter::init() {
 	}
 
 	setReady();
+
+	Logger::log(std::string{"Inited "} + toString());
 }
 
 const std::string& ResponderRouter::getDealerEndpoint() const {

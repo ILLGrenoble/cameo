@@ -86,6 +86,8 @@ void Publisher::init() {
 		return;
 	}
 
+	Logger::log(std::string{"Init "} + toString());
+
 	// Replace the implementation if sync.
 	if (m_syncSubscribers) {
 		m_impl = ImplFactory::createPublisher(m_syncSubscribers);
@@ -141,6 +143,8 @@ void Publisher::init() {
 	setReady();
 
 	PingableObject::init();
+
+	Logger::log(std::string{"Inited "} + toString());
 }
 
 std::unique_ptr<Publisher> Publisher::create(const std::string& name) {

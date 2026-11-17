@@ -96,7 +96,7 @@ void Requester::init() {
 		return;
 	}
 
-	Logger::log(std::string{"Init"} + toString());
+	Logger::log(std::string{"Init "} + toString());
 
 	// Get the responder data.
 	try {

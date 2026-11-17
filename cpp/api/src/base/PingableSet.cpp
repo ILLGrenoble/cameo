@@ -24,7 +24,7 @@ void PingableSet::add(PingableObject * object) {
 
 	m_set.insert(object);
 
-	Logger::log(std::string{"Inserted"} + object->toString());
+	Logger::log(std::string{"Inserted "} + object->toString());
 }
 
 void PingableSet::remove(PingableObject * object) {
@@ -44,20 +44,18 @@ void PingableSet::remove(PingableObject * object) {
 
 void PingableSet::pingAll(int timeout) {
 
-	Logger::log(std::string{"Ping all "} + std::to_string(timeout));
-
 	std::lock_guard<std::mutex> lock {m_mutex};
 
 	for (std::set<PingableObject *>::iterator it = m_set.begin(); it != m_set.end(); ++it) {
 		if ((*it)->isPinged()) {
-			Logger::log(std::string{"Ping "} + (*it)->toString());
+			//Logger::log(std::string{"Ping "} + (*it)->toString());
 			bool pong = (*it)->ping(timeout);
-			if (pong) {
-				Logger::log(std::string{"Pong for "} + (*it)->toString());
-			}
-			else {
-				Logger::log(std::string{"No pong for "} + (*it)->toString());
-			}
+//			if (pong) {
+//				Logger::log(std::string{"Pong for "} + (*it)->toString());
+//			}
+//			else {
+//				Logger::log(std::string{"No pong for "} + (*it)->toString());
+//			}
 		}
 	}
 }

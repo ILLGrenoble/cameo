@@ -123,6 +123,7 @@ std::string App::Com::KeyValueGetter::get(const TimeoutCounter& timeoutCounter) 
 					if (keyEvent->getKey() == m_key) {
 						// Set the status and value.
 						if (keyEvent->getStatus() == KeyEvent::Status::STORED) {
+							std::cout << "Key " << m_id << " : " << m_key << " retrieved by event" << std::endl;
 							return keyEvent->getValue();
 						}
 
