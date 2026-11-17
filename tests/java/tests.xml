@@ -288,6 +288,16 @@
 			<start executable="testbasicresponder" args="basicrespondercpp"/>
 		</application>
 
+
+		<application name="laterespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="lateresponder"/>
+		</application>
+
+		<application name="testlaterespondercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="testlateresponder" args="laterespondercpp"/>
+		</application>
+
+
 		<application name="basicrequestercpp" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="basicrequester"/>
 		</application>
@@ -457,6 +467,16 @@
 		<application name="testbasicresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
 			<start executable="python" args="-u tests/python/src/testbasicresponder.py basicresponderpy"/>
 		</application>
+		
+		
+		<application name="lateresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
+			<start executable="python" args="-u tests/python/src/lateresponder.py"/>
+		</application>
+		
+		<application name="testlateresponderpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="no" restart="no" log_directory="logs">
+			<start executable="python" args="-u tests/python/src/testlateresponder.py lateresponderpy"/>
+		</application>
+		
 
 		<application name="basicrequesterpy" starting_time="0" stopping_time="1" output_stream="yes" multiple="yes" restart="no" log_directory="logs">
 			<start executable="python" args="-u tests/python/src/basicrequester.py"/>

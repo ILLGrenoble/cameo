@@ -55,6 +55,11 @@
 			<start executable="python" args="-u examples/python/src/subscriberapp.py"/>
 		</application>
 		
+		
+		<application name="late-requester-python" multiple="no" log_directory="logs">
+			<start executable="python" args="-u examples/python/src/laterequesterapp.py"/>
+		</application>
+		
 	</applications>
 	
 </config>

@@ -193,6 +193,7 @@ public class TestSelector {
 		apps.add("teststoragecpp");
 		apps.add("testwaitstoragecpp");
 		apps.add("testbasicrespondercpp");
+		apps.add("testlaterespondercpp");
 		apps.add("testbasicrequestercpp");
 		//apps.add("testmultirespondercpp");
 		//apps.add("testmultiresponderscpp");		
@@ -224,6 +225,7 @@ public class TestSelector {
 		apps.add("testpublisherpy");
 		apps.add("testsubscriberpy");
 		apps.add("testbasicresponderpy");
+		apps.add("testlateresponderpy");
 		apps.add("testbasicrequesterpy");
 		//apps.add("testmultiresponderpy");
 		//apps.add("testmultiresponderspy");

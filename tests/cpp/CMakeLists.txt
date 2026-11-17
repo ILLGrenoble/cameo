@@ -111,6 +111,14 @@ target_link_libraries(basicresponder PRIVATE Cameo::cameo-api-cpp)
 add_executable(testbasicresponder src/TestBasicResponder.cpp)
 target_link_libraries(testbasicresponder PRIVATE Cameo::cameo-api-cpp)
 
+
+add_executable(lateresponder src/LateResponder.cpp)
+target_link_libraries(lateresponder PRIVATE Cameo::cameo-api-cpp)
+
+add_executable(testlateresponder src/TestLateResponder.cpp)
+target_link_libraries(testlateresponder PRIVATE Cameo::cameo-api-cpp)
+
+
 add_executable(basicrequester src/BasicRequester.cpp)
 target_link_libraries(basicrequester PRIVATE Cameo::cameo-api-cpp)
 
