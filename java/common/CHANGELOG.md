@@ -1,3 +1,8 @@
+4.0.0
+-----
+
+* Added EndpointWithProxy class.
+
 3.1.1
 -----
 

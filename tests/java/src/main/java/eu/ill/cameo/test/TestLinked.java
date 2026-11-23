@@ -35,10 +35,10 @@ public class TestLinked {
 			useProxy = Boolean.parseBoolean(args[1]);
 		}
 		if (useProxy) {
-			endpoint = "tcp://localhost:12000";
+			endpoint = "tcp://localhost:11000:12000";
 		}
 		
-		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
+		Server server = Server.create(endpoint);
 		server.init();
 		
 		// Loop the number of times.

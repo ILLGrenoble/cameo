@@ -22,6 +22,7 @@ import eu.ill.cameo.api.base.ServerAndApp;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.AppIdentity;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.EndpointWithProxy;
 import eu.ill.cameo.common.strings.ServerIdentity;
 
 /**
@@ -131,7 +132,7 @@ public class Request {
 		
 		boolean useProxy = ((options & Option.USE_PROXY) != 0);
 		if (useProxy) {
-			starterServer = Server.create(requesterServerEndpoint.withPort(requesterServerProxyPort), Option.USE_PROXY);
+			starterServer = Server.create(new EndpointWithProxy(requesterServerEndpoint, requesterServerProxyPort));
 		}
 		else {
 			starterServer = Server.create(requesterServerEndpoint, 0);

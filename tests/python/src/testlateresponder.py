@@ -16,13 +16,11 @@ if len(sys.argv) >= 4:
 
 useProxy = False if len(sys.argv) < 5 else (sys.argv[3] == "true") 
 
-options = 0
 endpoint = "tcp://localhost:11000";
 if useProxy:
-    options |= cameopy.option.USE_PROXY
-    endpoint = "tcp://localhost:12000";
+    endpoint = "tcp://localhost:11000:12000";
 
-server = cameopy.Server.create(endpoint, options)
+server = cameopy.Server.create(endpoint)
 server.init()
 
 print("Responder application is", applicationName)

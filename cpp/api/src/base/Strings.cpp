@@ -123,6 +123,95 @@ std::string Endpoint::toString() const {
 	return "";
 }
 
+
+
+EndpointWithProxy::EndpointWithProxy(const Endpoint& endpoint, int proxyPort) :
+	m_endpoint{endpoint}, m_proxyPort{proxyPort} {
+}
+
+EndpointWithProxy::EndpointWithProxy(const std::string& address, int port, int proxyPort) :
+	m_endpoint{address, port}, m_proxyPort{proxyPort} {
+}
+
+EndpointWithProxy::EndpointWithProxy() {
+}
+
+const Endpoint& EndpointWithProxy::getEndpoint() const {
+	return m_endpoint;
+}
+
+int EndpointWithProxy::getProxyPort() const {
+	return m_proxyPort;
+}
+
+bool EndpointWithProxy::operator==(const EndpointWithProxy& endpoint) const {
+	return (m_endpoint == endpoint.getEndpoint() && m_proxyPort == endpoint.getProxyPort());
+}
+
+bool EndpointWithProxy::operator!=(const EndpointWithProxy& endpoint) const {
+	return !(*this == endpoint);
+}
+
+int EndpointWithProxy::numberOfSeparatorsNormalized(const std::string& str) {
+	int count = 0;
+
+	for (char c : str) {
+		if (c == ':') {
+			count++;
+		}
+	}
+
+	if (str.find("tcp://") == std::string::npos) {
+		count++;
+	}
+
+	return count;
+}
+
+
+bool EndpointWithProxy::isNotEndpoint(const std::string& str) {
+	return numberOfSeparatorsNormalized(str) != 2;
+}
+
+bool EndpointWithProxy::isNotEndpointWithProxy(const std::string& str) {
+	return numberOfSeparatorsNormalized(str) != 3;
+}
+
+EndpointWithProxy EndpointWithProxy::parse(const std::string& str) {
+
+	int n = numberOfSeparatorsNormalized(str);
+
+	if (n == 2) {
+		Endpoint endpoint = Endpoint::parse(str);
+		return EndpointWithProxy(endpoint);
+	}
+	else if (n == 3) {
+		int index = str.find_last_of(':');
+
+		std::string endpointString = str.substr(0, index);
+		Endpoint endpoint = Endpoint::parse(endpointString);
+
+		std::string portString = str.substr(index + 1);
+		int port = 0;
+
+		try {
+			port = stoi(portString);
+		}
+		catch (...) {
+			throw BadFormatException("Bad format for endpoint with proxy " + str);
+		}
+
+		return EndpointWithProxy(endpoint, port);
+	}
+
+	throw BadFormatException("Bad format for endpoint with proxy " + str);
+}
+
+std::string EndpointWithProxy::toString() const {
+	return m_endpoint.toString() + ":" + std::to_string(m_proxyPort);
+}
+
+
 ApplicationIdentity::ApplicationIdentity(const std::string& name, int id, const Endpoint& endpoint) :
 	m_name{name},
 	m_id{id},

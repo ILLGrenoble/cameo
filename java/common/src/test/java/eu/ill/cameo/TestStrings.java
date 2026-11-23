@@ -23,6 +23,7 @@ import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.ApplicationIdentity;
 import eu.ill.cameo.common.strings.ApplicationWithStarterIdentity;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.EndpointWithProxy;
 
 public class TestStrings {
 
@@ -72,6 +73,22 @@ public class TestStrings {
 		error = false;
 		try {
 			Endpoint.parse("tcp://:9999");
+		}
+		catch (Exception e) {
+			error = true;
+		}
+		assertTrue(error);
+				
+		assertEquals("tcp://gamma75:9999:10000", new EndpointWithProxy("gamma75", 9999, 10000).toString());
+		EndpointWithProxy endpointWithProxy = EndpointWithProxy.parse("tcp://gamma75:9999:10000");
+		
+		assertEquals("tcp", endpointWithProxy.getEndpoint().getProtocol());
+		assertEquals("gamma75", endpointWithProxy.getEndpoint().getAddress());
+		assertEquals(9999, endpointWithProxy.getEndpoint().getPort());
+		assertEquals(10000, endpointWithProxy.getProxyPort());
+		
+		try {
+			EndpointWithProxy.parse("tcp://:9999");
 		}
 		catch (Exception e) {
 			error = true;

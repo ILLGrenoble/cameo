@@ -43,6 +43,7 @@ public class Endpoint {
 		if (protocol == null && other.getProtocol() != null) {
 			return false;
 		}
+		
 		if (!protocol.equals(other.getProtocol())) {
 			return false;
 		}
@@ -50,6 +51,7 @@ public class Endpoint {
 		if (address == null && other.getAddress() != null) {
 			return false;
 		}
+		
 		if (!address.equals(other.getAddress())) {
 			return false;
 		}

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 project(cameo-api-cpp
-  VERSION 3.3.0
+  VERSION 4.0.0
   LANGUAGES CXX
   HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
   )
@@ -273,5 +273,5 @@ include(CPack)
 if(CAMEO_ALL)
   # Note: execute ctest --verbose to have more details 
   enable_testing()
-  #add_subdirectory(tests)
+  add_subdirectory(tests)
 endif()

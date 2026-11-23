@@ -26,6 +26,7 @@ import eu.ill.cameo.api.factory.ImplFactory;
 import eu.ill.cameo.common.messages.JSON;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.EndpointWithProxy;
 import eu.ill.cameo.common.strings.ServerIdentity;
 import eu.ill.cameo.common.strings.StringId;
 
@@ -54,19 +55,24 @@ public class Server extends PingableObject implements ITimeoutable {
 	private Server(Endpoint endpoint, int options) {
 		
 		this.serverEndpoint = endpoint;
-		this.useProxy = ((options & Option.USE_PROXY) != 0);
 	}
-
+	
+	private Server(EndpointWithProxy endpoint) {
+		
+		this.serverEndpoint = endpoint.getEndpoint();
+		this.useProxy = (endpoint.getProxyPort() != 0);
+		this.responderProxyPort = endpoint.getProxyPort();
+	}
+	
 	private Server(String endpoint, int options) {
 
 		this.serverEndpointString = endpoint;
-		this.useProxy = ((options & Option.USE_PROXY) != 0);
 	}
 	
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param options Uses the proxy with USE_PROXY.
+	 * @param options Deprecated.
 	 */	
 	public static Server create(Endpoint endpoint, int options) {
 		return new Server(endpoint, options);
@@ -79,11 +85,19 @@ public class Server extends PingableObject implements ITimeoutable {
 	public static Server create(Endpoint endpoint) {
 		return new Server(endpoint, 0);
 	}
+	
+	/**
+	 * Creates a server with proxy.
+	 * @param endpoint The endpoint of the remote server with proxy.
+	 */
+	public static Server create(EndpointWithProxy endpoint) {
+		return new Server(endpoint);
+	}
 
 	/**
 	 * Creates a server.
 	 * @param endpoint The endpoint of the remote server.
-	 * @param options Uses the proxy with USE_PROXY.
+	 * @param options Deprecated.
 	 */
 	public static Server create(String endpoint, int options) {
 		return new Server(endpoint, options);
@@ -112,9 +126,21 @@ public class Server extends PingableObject implements ITimeoutable {
 		}
 
 		if (serverEndpointString != null) {
-		
+
 			try {
-				serverEndpoint = Endpoint.parse(serverEndpointString);
+			
+				if (EndpointWithProxy.isNotEndpoint(serverEndpointString)) {
+					
+					EndpointWithProxy serverEndpointWithProxy = EndpointWithProxy.parse(serverEndpointString);
+					serverEndpoint = serverEndpointWithProxy.getEndpoint();
+					if (serverEndpointWithProxy.getProxyPort() != 0) {
+						useProxy = true;
+						responderProxyPort = serverEndpointWithProxy.getProxyPort();
+					}
+				}
+				else {			
+					serverEndpoint = Endpoint.parse(serverEndpointString);
+				}
 			}
 			catch (Exception e) {
 				throw new InvalidArgumentException("Cannot initialize the server " + serverEndpointString + ": invalid endpoint");
@@ -155,15 +181,22 @@ public class Server extends PingableObject implements ITimeoutable {
 	final private void initContext() {
 		
 		context = ImplFactory.getDefaultContext();
-		requestSocket = this.createRequestSocket(serverEndpoint.toString(), StringId.CAMEO_SERVER);
+		String responderIdentity = StringId.from(serverEndpoint.getPort() + "", 0);
+				
+		if (useProxy) {
+			requestSocket = this.createRequestSocket(serverEndpoint.withPort(responderProxyPort).toString(), responderIdentity);
+		}
+		else {
+			requestSocket = this.createRequestSocket(serverEndpoint.toString(), responderIdentity);
+			responderProxyPort = retrieveResponderProxyPort();
+		}
 		
-		// Get the status port.
+		// Get the server ports.
 		serverStatusPort = retrieveStatusPort();
-		
-		// Get the proxy ports.
-		responderProxyPort = retrieveResponderProxyPort();
 		publisherProxyPort = retrievePublisherProxyPort();
 		subscriberProxyPort = retrieveSubscriberProxyPort();
+		
+		System.out.println("Got proxy ports " + responderProxyPort + ", " + publisherProxyPort + ", " + subscriberProxyPort);
 	}
 	
 	private int getAvailableTimeout() {

@@ -421,7 +421,7 @@ std::unique_ptr<ServerAndApp> This::connectToStarter(int options, int timeout) {
 	// Create the server with proxy or not.
 	bool useProxy = ((options & option::USE_PROXY) != 0);
 	if (useProxy) {
-		server = Server::create(m_instance.m_starterEndpoint.withPort(m_instance.m_starterProxyPort), option::USE_PROXY);
+		server = Server::create(EndpointWithProxy(m_instance.m_starterEndpoint, m_instance.m_starterProxyPort));
 	}
 	else {
 		server = Server::create(m_instance.m_starterEndpoint);
@@ -483,7 +483,7 @@ void This::initStarterCheck() {
 	// Create the starter server.
 	// If the starter has a running proxy, then use the proxy is reasonable.
 	if (m_starterProxyPort != 0) {
-		m_starterServer = Server::create(m_starterEndpoint.withPort(m_instance.m_starterProxyPort), option::USE_PROXY);
+		m_starterServer = Server::create(EndpointWithProxy(m_starterEndpoint, m_starterProxyPort));
 	}
 	else {
 		m_starterServer = Server::create(m_starterEndpoint);

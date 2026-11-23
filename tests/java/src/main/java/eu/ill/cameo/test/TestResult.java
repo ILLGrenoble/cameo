@@ -31,13 +31,13 @@ public class TestResult {
 		boolean useProxy = false;
 		String endpoint = "tcp://localhost:11000";
 		if (args.length > 2) {
-			useProxy = Boolean.parseBoolean(args[1]);
+			useProxy = Boolean.parseBoolean(args[2]);
 		}
 		if (useProxy) {
-			endpoint = "tcp://localhost:12000";
+			endpoint = "tcp://localhost:11000:12000";
 		}
 		
-		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
+		Server server = Server.create(endpoint);
 		server.init();
 		
 		try {
