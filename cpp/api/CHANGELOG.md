@@ -1,7 +1,9 @@
-?
--
+4.0.0
+-----
 
 * Changed logger lines.
+* Implementation of the multiple servers behind the same proxy.
+* Option USE_PROXY is no longer used in Server class.
 
 3.3.0
 -----

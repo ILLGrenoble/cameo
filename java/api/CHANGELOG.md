@@ -2,6 +2,7 @@
 -----
 
 * Implementation of the multiple servers behind the same proxy.
+* Option USE_PROXY is no longer used in Server class.
 
 3.2.1
 -----
