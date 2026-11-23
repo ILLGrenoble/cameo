@@ -12,6 +12,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
                   build-essential \
                   cmake \
                   file \
+                  openjdk-21-jdk \
                   maven \
                   libzmq3-dev \
                   libzmq-jni \
