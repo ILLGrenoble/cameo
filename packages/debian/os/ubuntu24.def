@@ -21,7 +21,6 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
                   
 %runscript
     git clone https://github.com/ILLGrenoble/cameo.git
-    
     cd cameo
     git checkout all-distro-packages
     cd packages/debian
