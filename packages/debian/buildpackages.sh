@@ -3,8 +3,6 @@
 # Go to the root directory
 cd "`dirname $0`/../.."
 
-echo `pwd`
-
 set -euo pipefail
 
 CPACK_GENERATORS="DEB"
@@ -29,6 +27,10 @@ function mvPack() {
 }
 
 # Java
+cd java
+mvn clean install
+cd ..
+
 for source_dir in java/server/jzmq java/console/jzmq
 do
 	echo "Building $source_dir"
@@ -38,7 +40,6 @@ do
 	cpack --config $build_dir/CPackConfig.cmake -B $build_dir/packaging/ -G $CPACK_GENERATORS
 	mvPack
 done
-
 
 # Server proxy (C++)
 source_dir=cpp/proxy

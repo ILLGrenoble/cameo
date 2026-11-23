@@ -1,0 +1,34 @@
+BootStrap: debootstrap
+OSVersion: noble
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%post
+    echo 'deb http://us.archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse' > /etc/apt/sources.list
+    apt update
+    apt-get -y install pkg-config \
+                  wget \
+                  git \
+                  gcc \
+                  build-essential \
+                  cmake \
+                  file \
+                  maven \
+                  libzmq3-dev \
+                  libzmq-jni \
+                  rapidjson-dev \
+                  pybind11-dev
+                  
+%runscript
+    git clone https://github.com/ILLGrenoble/cameo.git
+    
+    cd cameo
+    git checkout all-distro-packages
+    cd packages/debian
+    
+    #cd cameo/packages/debian
+    
+    ./buildpackages.sh /output
+
+%labels 
+    Author Yannick
+                  
