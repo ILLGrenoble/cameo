@@ -1,3 +1,8 @@
+4.0.0
+-----
+
+* Implementation of the multiple servers behind the same proxy.
+
 3.2.1
 -----
 

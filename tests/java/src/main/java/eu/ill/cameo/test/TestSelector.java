@@ -304,7 +304,7 @@ public class TestSelector {
 				System.out.println("*** Trying to create server ***");
 				
 				if (useProxy) {
-					server = Server.create("tcp://localhost:12000", Option.USE_PROXY);
+					server = Server.create("tcp://localhost:11000:12000");
 					
 				}
 				else {

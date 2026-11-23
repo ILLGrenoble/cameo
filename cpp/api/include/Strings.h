@@ -111,6 +111,87 @@ private:
 	int m_port;
 };
 
+
+/**
+ * Class defining an endpoint with proxy.
+ */
+class CAMEO_EXPORT EndpointWithProxy {
+
+public:
+	/**
+	 * Constructor.
+	 * \param endpoint The endpoint.
+	 * \param proxyPort The proxy port.
+	 */
+	EndpointWithProxy(const Endpoint& endpoint, int proxyPort = 0);
+
+	/**
+	 * Constructor with default tcp protocol.
+	 * \param address The address, can be an IP or a hostname.
+	 * \param port The port.
+	 * \param proxyPort The proxy port.
+	 */
+	EndpointWithProxy(const std::string& address, int port, int proxyPort);
+
+	/**
+	 * Constructor.
+	 */
+	EndpointWithProxy();
+
+	/**
+	 * Gets the endpoint.
+	 */
+	const Endpoint& getEndpoint() const;
+
+	/**
+	 * Gets the proxy port.
+	 */
+	int getProxyPort() const;
+	/**
+	 * Equals operator.
+	 * \param endpoint The endpoint to compare.
+	 * \return True if equals, false otherwise.
+	 */
+	bool operator==(const EndpointWithProxy& endpoint) const;
+
+	/**
+	 * Non-equals operator.
+	 * \param endpoint The endpoint to compare.
+	 * \return True if equals, false otherwise.
+	 */
+	bool operator!=(const EndpointWithProxy& endpoint) const;
+
+	/**
+	 * Checks the string if it cannot be an endpoint.
+	 * \return True if the string cannot be an endpoint.
+	 */
+	static bool isNotEndpoint(const std::string& str);
+
+	/**
+	 * Checks the string if it cannot be an endpoint with proxy.
+	 * \return True if the string cannot be an endpoint.
+	 */
+	static bool isNotEndpointWithProxy(const std::string& str);
+
+	/**
+	 * Parses the string into EndpointWithProxy.
+	 * \return The parsed endpoint.
+	 */
+	static EndpointWithProxy parse(const std::string& str);
+
+	/**
+	 * Returns a string representation of this endpoint.
+	 * \return The string representation.
+	 */
+	std::string toString() const;
+
+private:
+	static int numberOfSeparatorsNormalized(const std::string& str);
+
+	Endpoint m_endpoint;
+	int m_proxyPort = 0;
+};
+
 /**
  * Class defining an application identity.
  */

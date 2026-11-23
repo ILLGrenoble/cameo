@@ -28,7 +28,7 @@
 				<dependency>
 					<groupId>eu.ill.cameo</groupId>
 					<artifactId>cameo-api</artifactId>
-					<version>3.2.2</version>
+					<version>4.0.0</version>
 				</dependency>
 			</dependencies>
 		</profile>

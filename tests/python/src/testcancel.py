@@ -40,13 +40,11 @@ this.init(sys.argv)
 
 useProxy = False if len(sys.argv) < 3 else (sys.argv[1] == "true") 
 
-options = 0
 endpoint = "tcp://localhost:11000";
 if useProxy:
-    options |= cameopy.option.USE_PROXY
-    endpoint = "tcp://localhost:12000";
+    endpoint = "tcp://localhost:11000:12000";
 
-server = cameopy.Server.create(endpoint, options)
+server = cameopy.Server.create(endpoint)
 server.init()
 
 def testCancelAll():

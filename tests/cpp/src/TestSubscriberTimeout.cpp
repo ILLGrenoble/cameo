@@ -25,20 +25,18 @@ int main(int argc, char *argv[]) {
 		numberOfTimes = stoi(argv[1]);
 	}
 
-	int options = 0;
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
 	if (argc > 3) {
 		useProxy = (string(argv[2]) == "true");
 	}
 	if (useProxy) {
-		options |= option::USE_PROXY;
-		endpoint = "tcp://localhost:12000";
+		endpoint = "tcp://localhost:11000:12000";
 	}
 
 	// Block to ensure order of object deletion.
 	{
-		unique_ptr<Server> server = Server::create(endpoint, options);
+		unique_ptr<Server> server = Server::create(endpoint);
 		server->init();
 
 		std::thread td([&] {

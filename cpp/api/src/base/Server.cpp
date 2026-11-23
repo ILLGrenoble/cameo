@@ -50,8 +50,21 @@ void Server::init() {
 	}
 
 	if (!m_serverEndpointString.empty()) {
+
 		try {
-			m_serverEndpoint = Endpoint::parse(m_serverEndpointString);
+
+			if (EndpointWithProxy::isNotEndpoint(m_serverEndpointString)) {
+
+				EndpointWithProxy serverEndpointWithProxy = EndpointWithProxy::parse(m_serverEndpointString);
+				m_serverEndpoint = serverEndpointWithProxy.getEndpoint();
+				if (serverEndpointWithProxy.getProxyPort() != 0) {
+					m_useProxy = true;
+					m_responderProxyPort = serverEndpointWithProxy.getProxyPort();
+				}
+			}
+			else {
+				m_serverEndpoint = Endpoint::parse(m_serverEndpointString);
+			}
 		}
 		catch (...) {
 			throw InvalidArgumentException(std::string{"Cannot initialize the server "} + m_serverEndpointString + ": invalid endpoint");
@@ -88,6 +101,7 @@ void Server::init() {
 Server::Server(const Endpoint& endpoint, int options) :
 	m_serverEndpoint{endpoint},
 	m_timeout{0},
+	m_useProxy{false},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
 	m_subscriberProxyPort{0},
@@ -95,13 +109,27 @@ Server::Server(const Endpoint& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & option::USE_PROXY) != 0);
+	m_serverVersion = {0, 0, 0};
+}
+
+Server::Server(const EndpointWithProxy& endpoint) :
+	m_serverEndpoint{endpoint.getEndpoint()},
+	m_timeout{0},
+	m_useProxy{endpoint.getProxyPort() != 0},
+	m_responderProxyPort{endpoint.getProxyPort()},
+	m_publisherProxyPort{0},
+	m_subscriberProxyPort{0},
+	m_serverStatusPort{0},
+	m_statusPort{0},
+	m_context{nullptr} {
+
 	m_serverVersion = {0, 0, 0};
 }
 
 Server::Server(const std::string& endpoint, int options) :
 	m_serverEndpointString{endpoint},
 	m_timeout{0},
+	m_useProxy{false},
 	m_responderProxyPort{0},
 	m_publisherProxyPort{0},
 	m_subscriberProxyPort{0},
@@ -109,12 +137,15 @@ Server::Server(const std::string& endpoint, int options) :
 	m_statusPort{0},
 	m_context{nullptr} {
 
-	m_useProxy = ((options & option::USE_PROXY) != 0);
 	m_serverVersion = {0, 0, 0};
 }
 
 std::unique_ptr<Server> Server::create(const Endpoint& endpoint, int options) {
 	return std::unique_ptr<Server>{new Server(endpoint, options)};
+}
+
+std::unique_ptr<Server> Server::create(const EndpointWithProxy& endpoint) {
+	return std::unique_ptr<Server>{new Server(endpoint)};
 }
 
 std::unique_ptr<Server> Server::create(const std::string& endpoint, int options) {
@@ -733,14 +764,19 @@ void Server::initContext() {
 
 void Server::initRequestSocket() {
 
-	// Create the request socket. The server endpoint must have been initialized.
-	m_requestSocket = createRequestSocket(m_serverEndpoint.toString(), CAMEO_SERVER, m_timeout);
+	std::string responderIdentity = StringId::from(std::to_string(m_serverEndpoint.getPort()), 0);
 
-	// Get the status port.
+	// Create the request socket.
+	if (m_useProxy) {
+		m_requestSocket = createRequestSocket(m_serverEndpoint.withPort(m_responderProxyPort).toString(), responderIdentity, m_timeout);
+	}
+	else {
+		m_requestSocket = createRequestSocket(m_serverEndpoint.toString(), responderIdentity, m_timeout);
+		m_responderProxyPort = retrieveResponderProxyPort();
+	}
+
+	// Get the ports.
 	m_serverStatusPort = retrieveStatusPort();
-
-	// Get the proxy ports.
-	m_responderProxyPort = retrieveResponderProxyPort();
 	m_publisherProxyPort = retrievePublisherProxyPort();
 	m_subscriberProxyPort = retrieveSubscriberProxyPort();
 }

@@ -48,14 +48,20 @@ public:
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param options Uses the proxy with USE_PROXY.
+	 * \param options Deprecated.
 	 */
 	static std::unique_ptr<Server> create(const Endpoint& endpoint, int options = 0);
 
 	/**
 	 * Constructor.
 	 * \param endpoint The endpoint of the remote server.
-	 * \param options Uses the proxy with USE_PROXY.
+	 */
+	static std::unique_ptr<Server> create(const EndpointWithProxy& endpoint);
+
+	/**
+	 * Constructor.
+	 * \param endpoint The endpoint of the remote server.
+	 * \param options Deprecated.
 	 */
 	static std::unique_ptr<Server> create(const std::string& endpoint, int options = 0);
 	
@@ -294,6 +300,7 @@ public:
 
 private:
 	Server(const Endpoint& endpoint, int options);
+	Server(const EndpointWithProxy& endpoint);
 	Server(const std::string& endpoint, int options);
 
 	int getResponderProxyPort() const;

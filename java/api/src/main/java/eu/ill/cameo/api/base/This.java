@@ -24,6 +24,7 @@ import org.json.simple.parser.ParseException;
 import eu.ill.cameo.common.messages.JSON;
 import eu.ill.cameo.common.messages.Messages;
 import eu.ill.cameo.common.strings.Endpoint;
+import eu.ill.cameo.common.strings.EndpointWithProxy;
 import eu.ill.cameo.common.utils.Heartbeat;
 import eu.ill.cameo.processhandle.ProcessHandlerImpl;
 
@@ -512,10 +513,10 @@ public class This {
 		
 		boolean useProxy = ((options & Option.USE_PROXY) != 0);
 		if (useProxy) {
-			starterServer = Server.create(instance.getStarterEndpoint().withPort(instance.starterProxyPort), Option.USE_PROXY);
+			starterServer = Server.create(new EndpointWithProxy(instance.getStarterEndpoint(), instance.starterProxyPort));
 		}
 		else {
-			starterServer = Server.create(instance.getStarterEndpoint(), 0);
+			starterServer = Server.create(instance.getStarterEndpoint());
 		}
 		
 		starterServer.setTimeout(timeout);
@@ -855,10 +856,10 @@ public class This {
 		// Create the starter server.
 		// If the starter has a running proxy, then use the proxy: it is reasonable.
 		if (starterProxyPort != 0) {
-			starterServer = Server.create(starterEndpoint.withPort(starterProxyPort), Option.USE_PROXY);
+			starterServer = Server.create(new EndpointWithProxy(starterEndpoint, starterProxyPort));
 		}
 		else {
-			starterServer = Server.create(starterEndpoint, 0);
+			starterServer = Server.create(starterEndpoint);
 		}
 		
 		starterServer.init();

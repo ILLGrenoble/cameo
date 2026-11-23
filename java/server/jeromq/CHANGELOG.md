@@ -1,3 +1,8 @@
+4.0.0
+-----
+
+* Implementation of the multiple servers behind the same proxy: server identity is now *<base port>:0*.
+
 3.1.1
 -----
 

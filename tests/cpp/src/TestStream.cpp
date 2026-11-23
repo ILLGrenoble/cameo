@@ -18,18 +18,16 @@ int main(int argc, char *argv[]) {
 
 	This::init(argc, argv);
 
-	int options = 0;
 	bool useProxy = false;
 	string endpoint = "tcp://localhost:11000";
 	if (argc > 2) {
 		useProxy = (string(argv[1]) == "true");
 	}
 	if (useProxy) {
-		options |= option::USE_PROXY;
-		endpoint = "tcp://localhost:12000";
+		endpoint = "tcp://localhost:11000:12000";
 	}
 
-	unique_ptr<Server> server = Server::create(endpoint, options);
+	unique_ptr<Server> server = Server::create(endpoint);
 	server->init();
 
 	// Start the application.

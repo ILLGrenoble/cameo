@@ -10,6 +10,7 @@
 
 #include "Test.h"
 #include "Strings.h"
+#include <iostream>
 
 using namespace std;
 using namespace cameo;
@@ -77,6 +78,20 @@ int main(int, char *[]) {
 		error = true;
 	}
 	CAMEO_ASSERT_TRUE(error);
+
+	EndpointWithProxy endpointWithProxy = EndpointWithProxy::parse("tcp://gamma75:9999:10000");
+
+	CAMEO_ASSERT_TRUE("tcp" == endpointWithProxy.getEndpoint().getProtocol());
+	CAMEO_ASSERT_TRUE("gamma75" == endpointWithProxy.getEndpoint().getAddress());
+	CAMEO_ASSERT_EQUAL(9999, endpointWithProxy.getEndpoint().getPort());
+	CAMEO_ASSERT_EQUAL(10000, endpointWithProxy.getProxyPort());
+
+	endpointWithProxy = EndpointWithProxy::parse("tcp://gamma75:9999");
+
+	CAMEO_ASSERT_TRUE("tcp" == endpointWithProxy.getEndpoint().getProtocol());
+	CAMEO_ASSERT_TRUE("gamma75" == endpointWithProxy.getEndpoint().getAddress());
+	CAMEO_ASSERT_EQUAL(9999, endpointWithProxy.getEndpoint().getPort());
+	CAMEO_ASSERT_EQUAL(0, endpointWithProxy.getProxyPort());
 
 	return 0;
 }

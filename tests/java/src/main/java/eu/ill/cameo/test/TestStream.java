@@ -25,14 +25,14 @@ public class TestStream {
 		
 		boolean useProxy = false;
 		String endpoint = "tcp://localhost:11000";
-		if (args.length > 1) {
+		if (args.length > 2) {
 			useProxy = Boolean.parseBoolean(args[0]);
 		}
 		if (useProxy) {
-			endpoint = "tcp://localhost:12000";
+			endpoint = "tcp://localhost:11000:12000";
 		}
 		
-		Server server = Server.create(endpoint, (useProxy ? Option.USE_PROXY : 0));
+		Server server = Server.create(endpoint);
 		server.init();
 		
 		// Start the application.

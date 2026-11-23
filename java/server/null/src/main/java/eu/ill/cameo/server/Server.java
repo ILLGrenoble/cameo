@@ -133,8 +133,13 @@ public class Server {
 		// Create the socket.
 		socket = context.createSocket(Zmq.ROUTER);
 		
-		// Set the identity.
-		socket.setIdentity(StringId.CAMEO_SERVER);
+		// Set the identity from the responder port.
+		int port = ConfigManager.getInstance().getHostEndpoint().getPort();
+		String identity = StringId.from(port + "", 0);
+		
+		socket.setIdentity(identity);
+		
+		Log.logger().info("Set responder identity to " + identity);
 
 		// Check proxies.
 		if (ConfigManager.getInstance().hasProxies()) {
@@ -154,13 +159,15 @@ public class Server {
 		}
 		
 		// Bind the socket.
+		String endpoint = ConfigManager.getInstance().getEndpoint();
+		
 		try {
-			socket.bind(ConfigManager.getInstance().getEndpoint());
+			socket.bind(endpoint);
 			
-			Log.logger().fine("Bound responder to " + ConfigManager.getInstance().getEndpoint());			
+			Log.logger().fine("Bound responder to " + endpoint);			
 		}
 		catch (Exception e) {
-			Log.logger().severe("Cannot bind responder to " + ConfigManager.getInstance().getEndpoint() + ": " + e.getMessage());
+			Log.logger().severe("Cannot bind responder to " + endpoint + ": " + e.getMessage());
 			System.exit(1);
 		}
 	}
