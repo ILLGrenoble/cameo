@@ -11,27 +11,13 @@ fi
 osName=$1
 
 mkdir -p output
+mkdir -p tmp
 mkdir -p sif
 mkdir -p releases
 
-apptainer run --containall --bind ./output:/output sif/$osName.sif
+apptainer run --containall --bind ./output:/output --bind ./tmp:/tmp sif/$osName.sif
 
-cd output/packages/
+mv output/packages/ releases/$osName
+rm -fr output tmp
 
-for file in *.deb
-do
-	echo "Found $file"
-done
-
-cd ../..
-
-suffix=".deb"
-prefix=${file%%$suffix*}
-
-debName=$prefix.deb
-outDebName=$prefix-$osName.deb
-
-mv output/packages/$debName releases/$outDebName
-rm -fr output
-
-echo "Generated $outDebName"
+echo "Generated packages for $osName"
