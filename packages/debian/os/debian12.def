@@ -12,15 +12,17 @@ MirrorURL: http://deb.debian.org/debian/
                   build-essential \
                   cmake \
                   file \
-                  libboost-iostreams-dev \
-                  libboost-filesystem-dev \
-                  libboost-system-dev \
-                  libboost-program-options-dev
+                  openjdk-17-jdk \
+                  maven \
+                  libzmq3-dev \
+                  libzmq-jni \
+                  rapidjson-dev \
+                  pybind11-dev
                   
 %runscript
-    git clone https://code.ill.fr/lst/lst-data-process-128.git
-    cd lst-data-process-128/packaging
-    ./buildpackage.sh /output
+    git clone https://github.com/ILLGrenoble/cameo.git
+    cd cameo/packages/debian
+    ./buildpackages.sh /output
 
 %labels 
     Author Yannick
