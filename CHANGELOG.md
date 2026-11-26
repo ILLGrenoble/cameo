@@ -3,6 +3,7 @@
 
 * Implementation of the multiple servers behind the same proxy. Endpoints in the console application and Server constructors in APIs use the syntax *tcp://hostname:port:pport* with *pport* being the proxy port.
 * Option USE_PROXY is no longer used in Server classes.
+* Removed py::call_guard<py::gil_scoped_release>() in python functions that return a py::bytes object.
 
 3.2.1
 -----
