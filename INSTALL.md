@@ -150,6 +150,36 @@ It is also possible to build and create the Debian packages (distribution depend
 The script provides the following *.deb* packages located in *<build directory>/packages/*.
 They can be installed using package manager.
 
+### Option 3: Generate the Debian packages for a specific distribution
+
+Generate the *sif* file for the target distribution *os* i.e. debian12, ubuntu24, ubuntu26:
+
+```
+./buildsif.sh <os>
+```
+
+If you encounter mount namespace error, execute first:
+
+```
+sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+```
+
+Or do it permanently:
+
+```
+echo "kernel.apparmor_restrict_unprivileged_userns=0" | sudo tee /etc/sysctl.d/99-apptainer-userns.conf
+sudo sysctl --system
+```
+
+Once the *sif* file generated for the target *os*, generate the packages:
+
+```
+./generate.sh <os>
+``` 
+
+The packages are generated in *releases*.
+
+
 ### Generate the documentation
 
 Generate the C++ Doxygen:
