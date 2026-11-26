@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(cameo
-  VERSION 3.2.2
-  LANGUAGES C 
-  HOMEPAGE_URL "https://code.ill.fr/cameo/cameo"
-  )
+project(cameo VERSION 4.0.0 LANGUAGES C HOMEPAGE_URL "https://github.com/ILLGrenoble/cameo")
 
 option(CAMEO_ALL "Compile all the components including tests and examples" OFF)
 option(CAMEO_JAVA "Compile Java server, console and API" OFF)

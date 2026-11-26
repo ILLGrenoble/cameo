@@ -1,14 +1,15 @@
 #!/bin/bash
 
-expectedArgs=1
+expectedArgs=2
 
 if [ $# -lt $expectedArgs ]
 then
-	echo "Usage: generate.sh <os name>"
+	echo "Usage: generate.sh <version> <os name>"
 	exit 1
 fi
 
-osName=$1
+version=$1
+osName=$2
 
 mkdir -p output
 mkdir -p tmp
@@ -19,5 +20,9 @@ apptainer run --containall --bind ./output:/output --bind ./tmp:/tmp sif/$osName
 
 mv output/packages/ releases/$osName
 rm -fr output tmp
+
+archiveName="cameo-$version-$osName.zip"
+
+zip -r $archiveName releases/$osName
 
 echo "Generated packages for $osName"
